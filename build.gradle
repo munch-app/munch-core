@@ -1,0 +1,80 @@
+allprojects {
+    apply plugin: 'java'
+    apply plugin: "com.jfrog.artifactory"
+    apply plugin: 'maven-publish'
+
+    group 'com.munch.core'
+    version '0.1'
+}
+
+repositories {
+    mavenCentral()
+}
+
+buildscript {
+    repositories {
+        maven {
+            url 'http://artifactory.fxl.sg/artifactory/plugins-release'
+            credentials {
+                username = "${artifactory_user}"
+                password = "${artifactory_password}"
+            }
+        }
+
+    }
+    dependencies {
+        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4+"
+    }
+}
+
+artifactory {
+    contextUrl = "${artifactory_contextUrl}"   //The base Artifactory URL if not overridden by the publisher/resolver
+    publish {
+        repository {
+            repoKey = 'munch'
+            username = "${artifactory_user}"
+            password = "${artifactory_password}"
+            maven = true
+
+        }
+        defaults {
+            publications('mavenJava')
+        }
+    }
+    resolve {
+        repository {
+            repoKey = 'libs-release'
+            username = "${artifactory_user}"
+            password = "${artifactory_password}"
+            maven = true
+
+        }
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}
+
+dependencies {
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.easytesting:fest-assert:1.4'
+
+    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.1.7'
+    compile group: 'com.spatial4j', name: 'spatial4j', version: '0.5'
+
+    // Apache
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
+    compile group: 'commons-io', name: 'commons-io', version: '2.5'
+    compile group: 'commons-configuration', name: 'commons-configuration', version: '1.10'
+    compile group: 'commons-collections', name: 'commons-collections', version: '3.2.1'
+
+    // AWS
+    compile group: 'com.amazonaws', name: 'aws-java-sdk-dynamodb', version: '1.11.26'
+    compile group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.11.26'
+
+}
