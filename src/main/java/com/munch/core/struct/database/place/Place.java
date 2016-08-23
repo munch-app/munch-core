@@ -3,9 +3,6 @@ package com.munch.core.struct.database.place;
 import com.munch.core.struct.database.abs.AbsAuditData;
 import com.munch.core.struct.database.menu.MenuMedia;
 import com.munch.core.struct.database.menu.MenuWebsite;
-import com.munch.core.struct.database.type.CuisineType;
-import com.munch.core.struct.database.type.MealType;
-import com.munch.core.struct.database.type.VenueType;
 
 import java.util.Set;
 
@@ -25,9 +22,7 @@ public class Place extends AbsAuditData {
     // Informational
     private String phoneNumber;
     private String websiteUrl;
-    private Set<CuisineType> cuisineTypes;
-    private Set<VenueType> venueTypes;
-    private Set<MealType> mealTypes;
+    private Set<PlaceType> types;
 
     // Details
     private double priceStart;
