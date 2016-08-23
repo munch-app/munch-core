@@ -6,6 +6,8 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <non-jta-data-source>VitalDS</non-jta-data-source>
         <!-- Classes -->
+        <class>com.munch.core.struct.database.place.Place</class>
+
         <properties>
             <!-- Basic Config -->
             <!-- Auto Look up -->

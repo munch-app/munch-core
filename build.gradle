@@ -74,10 +74,10 @@ dependencies {
     testCompile 'org.easytesting:fest-assert:1.4'
 
     // Munch
-    compile group: 'com.munch.core', name: 'essential', version: '0.2'
+    compile group: 'com.munch.core', name: 'essential', version: '0.3'
 
     // Database
-    compile group: 'mysql', name: 'mysql-connector-java', version: '6.0.3'
+    compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.39'
     compile group: 'org.hibernate', name: 'hibernate-core', version: '5.2.2.Final'
     compile group: 'org.hibernate', name: 'hibernate-hikaricp', version: '5.2.2.Final'
 

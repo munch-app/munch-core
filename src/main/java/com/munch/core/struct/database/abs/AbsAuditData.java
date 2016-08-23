@@ -4,7 +4,7 @@
  * please do ask for permission.
  */
 
-package com.munch.core.struct.data.abs;
+package com.munch.core.struct.database.abs;
 
 import com.munch.core.essential.util.DateTime;
 
@@ -24,10 +24,7 @@ import java.util.Date;
 @MappedSuperclass
 public abstract class AbsAuditData {
 
-    @Column(nullable = false)
     private Date createdDate;
-
-    @Column(nullable = false)
     private Date updatedDate;
 
     /**
@@ -47,6 +44,7 @@ public abstract class AbsAuditData {
         setUpdatedDate(new Timestamp(DateTime.millisNow()));
     }
 
+    @Column(nullable = false)
     public Date getCreatedDate() {
         return createdDate;
     }
@@ -55,6 +53,7 @@ public abstract class AbsAuditData {
         this.createdDate = createdDate;
     }
 
+    @Column(nullable = false)
     public Date getUpdatedDate() {
         return updatedDate;
     }

@@ -21,8 +21,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Gradle: com.munch.core:essential:0.2" level="project" />
-    <orderEntry type="library" name="Gradle: mysql:mysql-connector-java:6.0.3" level="project" />
+    <orderEntry type="library" name="Gradle: com.munch.core:essential:0.3" level="project" />
+    <orderEntry type="library" name="Gradle: mysql:mysql-connector-java:5.1.39" level="project" />
     <orderEntry type="library" name="Gradle: org.hibernate:hibernate-core:5.2.2.Final" level="project" />
     <orderEntry type="library" name="Gradle: org.hibernate:hibernate-hikaricp:5.2.2.Final" level="project" />
     <orderEntry type="library" name="Gradle: ch.qos.logback:logback-classic:1.1.7" level="project" />
