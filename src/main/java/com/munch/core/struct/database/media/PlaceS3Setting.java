@@ -11,7 +11,7 @@ import com.munch.core.essential.util.CoreConfig;
  * Time: 4:53 PM
  * Project: vital-core
  */
-public class MainS3Setting implements S3Setting {
+public class PlaceS3Setting implements S3Setting {
 
     private ConfigReader config = CoreConfig.getInstance();
 

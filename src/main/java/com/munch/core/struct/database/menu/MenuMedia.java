@@ -4,6 +4,7 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.munch.core.essential.source.DataSource;
 import com.munch.core.struct.database.abs.AbsSortData;
+import com.munch.core.struct.database.media.MenuS3Setting;
 import com.munch.core.struct.database.media.S3Setting;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;

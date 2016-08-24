@@ -1,10 +1,9 @@
-package com.munch.core.struct.database.menu;
+package com.munch.core.struct.database.media;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.munch.core.essential.util.AWSUtil;
 import com.munch.core.essential.util.ConfigReader;
 import com.munch.core.essential.util.CoreConfig;
-import com.munch.core.struct.database.media.S3Setting;
 
 /**
  * Created by: Fuxing

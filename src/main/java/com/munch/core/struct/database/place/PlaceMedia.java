@@ -6,7 +6,7 @@ import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.munch.core.essential.source.DataSource;
 import com.munch.core.struct.database.abs.AbsAuditData;
-import com.munch.core.struct.database.media.MainS3Setting;
+import com.munch.core.struct.database.media.PlaceS3Setting;
 import com.munch.core.struct.database.media.S3Setting;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -36,7 +36,7 @@ public class PlaceMedia extends AbsAuditData {
     public static final int SOURCE_GOOGLE = DataSource.GOOGLE;
     public static final int SOURCE_WEBSITE = DataSource.WEBSITE;
 
-    private static final S3Setting setting = new MainS3Setting();
+    private static final S3Setting setting = new PlaceS3Setting();
 
     // Transient
     private File file;
