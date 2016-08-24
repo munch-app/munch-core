@@ -4,10 +4,9 @@ import com.munch.core.struct.database.abs.AbsAuditData;
 import com.munch.core.struct.database.type.Country;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
+import java.util.Set;
 
 /**
  * Created by: Fuxing
@@ -15,6 +14,8 @@ import java.util.Date;
  * Time: 2:57 AM
  * Project: struct
  */
+@Entity
+@Table(indexes = {@Index(name = "EMAIL_INDEX", columnList = "email"), @Index(name = "PHONE_INDEX", columnList = "phoneNumber")})
 public class Account extends AbsAuditData {
 
     public static final int TYPE_NORMAL = 10_000;
@@ -24,7 +25,6 @@ public class Account extends AbsAuditData {
     // Crucial Info
     private String id;
     private String email;
-    private String phoneCountry;
     private String phoneNumber;
     private Country country;
     private int type;
@@ -44,6 +44,7 @@ public class Account extends AbsAuditData {
     private Date lastLoginDate;
     private boolean emailVerified;
     private boolean phoneVerified;
+    private Set<AccountAccessToken> accessTokens;
 
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid")
@@ -57,7 +58,7 @@ public class Account extends AbsAuditData {
         this.id = id;
     }
 
-    @Column(nullable = false, length = 255, unique = true)
+    @Column(nullable = false, length = 255)
     public String getEmail() {
         return email;
     }
@@ -66,14 +67,7 @@ public class Account extends AbsAuditData {
         this.email = email;
     }
 
-    public String getPhoneCountry() {
-        return phoneCountry;
-    }
-
-    public void setPhoneCountry(String phoneCountry) {
-        this.phoneCountry = phoneCountry;
-    }
-
+    @Column(nullable = true, length = 45)
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -82,6 +76,7 @@ public class Account extends AbsAuditData {
         this.phoneNumber = phoneNumber;
     }
 
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     public Country getCountry() {
         return country;
     }
@@ -90,6 +85,7 @@ public class Account extends AbsAuditData {
         this.country = country;
     }
 
+    @Column
     public int getType() {
         return type;
     }
@@ -98,6 +94,7 @@ public class Account extends AbsAuditData {
         this.type = type;
     }
 
+    @Column(nullable = false, length = 100)
     public String getFirstName() {
         return firstName;
     }
@@ -106,6 +103,7 @@ public class Account extends AbsAuditData {
         this.firstName = firstName;
     }
 
+    @Column(nullable = true, length = 50)
     public String getLastName() {
         return lastName;
     }
@@ -114,6 +112,7 @@ public class Account extends AbsAuditData {
         this.lastName = lastName;
     }
 
+    @Column(nullable = true, length = 255)
     public String getBio() {
         return bio;
     }
@@ -122,6 +121,7 @@ public class Account extends AbsAuditData {
         this.bio = bio;
     }
 
+    @Column(nullable = true, length = 100)
     public String getFacebookUserId() {
         return facebookUserId;
     }
@@ -130,6 +130,7 @@ public class Account extends AbsAuditData {
         this.facebookUserId = facebookUserId;
     }
 
+    @Column(nullable = true, length = 100)
     public String getInstagramUserId() {
         return instagramUserId;
     }
@@ -138,6 +139,7 @@ public class Account extends AbsAuditData {
         this.instagramUserId = instagramUserId;
     }
 
+    @Column(nullable = true, length = 100)
     public String getHashSaltPassword() {
         return hashSaltPassword;
     }
@@ -146,6 +148,7 @@ public class Account extends AbsAuditData {
         this.hashSaltPassword = hashSaltPassword;
     }
 
+    @Column
     public Date getLastActiveDate() {
         return lastActiveDate;
     }
@@ -154,6 +157,7 @@ public class Account extends AbsAuditData {
         this.lastActiveDate = lastActiveDate;
     }
 
+    @Column
     public Date getLastLoginDate() {
         return lastLoginDate;
     }
@@ -162,6 +166,7 @@ public class Account extends AbsAuditData {
         this.lastLoginDate = lastLoginDate;
     }
 
+    @Column
     public boolean isEmailVerified() {
         return emailVerified;
     }
@@ -170,11 +175,21 @@ public class Account extends AbsAuditData {
         this.emailVerified = emailVerified;
     }
 
+    @Column
     public boolean isPhoneVerified() {
         return phoneVerified;
     }
 
     public void setPhoneVerified(boolean phoneVerified) {
         this.phoneVerified = phoneVerified;
+    }
+
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "account")
+    public Set<AccountAccessToken> getAccessTokens() {
+        return accessTokens;
+    }
+
+    protected void setAccessTokens(Set<AccountAccessToken> accessTokens) {
+        this.accessTokens = accessTokens;
     }
 }
