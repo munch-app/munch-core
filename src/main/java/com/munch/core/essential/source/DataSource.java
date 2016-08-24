@@ -22,4 +22,5 @@ public class DataSource {
     public static final int BLOG = 800;
 
     public static final int OTHER = 1000;
+    public static final int RESTAURANT = 2000;
 }
