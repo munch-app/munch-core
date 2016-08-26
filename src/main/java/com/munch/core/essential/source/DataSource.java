@@ -16,6 +16,7 @@ public class DataSource {
 
     public static final int FACEBOOK = 5;
     public static final int GOOGLE = 6;
+    public static final int FACT = 10;
 
     public static final int WEBSITE = 100;
     public static final int INSTAGRAM = 500;
