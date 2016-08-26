@@ -26,6 +26,9 @@
 
         <class>com.munch.core.struct.rdbms.system.KeyValue</class>
 
+        <!-- Admin Data-->
+        <class>com.munch.core.struct.rdbms.admin.AdminAccount</class>
+
         <properties>
             <!-- Basic Config -->
             <!-- Auto Look up -->

@@ -1,10 +1,12 @@
 package com.munch.core.struct.rdbms.account;
 
+import com.munch.core.essential.util.DateTime;
 import com.munch.core.struct.rdbms.abs.AbsAuditData;
 import com.munch.core.struct.rdbms.type.Country;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Set;
 
@@ -45,6 +47,16 @@ public class Account extends AbsAuditData {
     private boolean emailVerified;
     private boolean phoneVerified;
     private Set<AccountAccessToken> accessTokens;
+
+    /**
+     * Default pre persist time stamping
+     */
+    @PrePersist
+    protected void onCreate() {
+        super.onCreate();
+        setLastLoginDate(new Timestamp(DateTime.millisNow()));
+        setLastActiveDate(new Timestamp(DateTime.millisNow()));
+    }
 
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid")
@@ -148,7 +160,7 @@ public class Account extends AbsAuditData {
         this.hashSaltPassword = hashSaltPassword;
     }
 
-    @Column
+    @Column(nullable = false)
     public Date getLastActiveDate() {
         return lastActiveDate;
     }
@@ -157,7 +169,7 @@ public class Account extends AbsAuditData {
         this.lastActiveDate = lastActiveDate;
     }
 
-    @Column
+    @Column(nullable = false)
     public Date getLastLoginDate() {
         return lastLoginDate;
     }
