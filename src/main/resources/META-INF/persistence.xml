@@ -6,7 +6,25 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <non-jta-data-source>VitalDS</non-jta-data-source>
         <!-- Classes -->
-        <class>com.munch.core.struct.database.place.Place</class>
+        <class>com.munch.core.struct.rdbms.place.Place</class>
+        <class>com.munch.core.struct.rdbms.place.BusinessHour</class>
+        <class>com.munch.core.struct.rdbms.place.PlaceLocation</class>
+        <class>com.munch.core.struct.rdbms.place.PlaceMedia</class>
+        <class>com.munch.core.struct.rdbms.place.PlaceTag</class>
+        <class>com.munch.core.struct.rdbms.place.PlaceType</class>
+
+        <class>com.munch.core.struct.rdbms.menu.MenuMedia</class>
+        <class>com.munch.core.struct.rdbms.menu.MenuWebsite</class>
+
+        <class>com.munch.core.struct.rdbms.source.SeedPlaceTrack</class>
+
+        <class>com.munch.core.struct.rdbms.account.Account</class>
+        <class>com.munch.core.struct.rdbms.account.AccountAccessToken</class>
+
+        <class>com.munch.core.struct.rdbms.type.Country</class>
+        <class>com.munch.core.struct.rdbms.type.Nationality</class>
+
+        <class>com.munch.core.struct.rdbms.system.KeyValue</class>
 
         <properties>
             <!-- Basic Config -->
