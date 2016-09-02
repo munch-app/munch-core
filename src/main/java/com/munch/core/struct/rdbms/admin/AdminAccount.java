@@ -24,6 +24,8 @@ public class AdminAccount extends AbsSortData {
     public static final int TYPE_EMPLOYEE = 300;
     public static final int TYPE_CONTACT_EMPLOYEE = 400;
 
+    public static final int TYPE_BOT = 1000;
+
     private String id;
     private int type;
 
@@ -123,5 +125,14 @@ public class AdminAccount extends AbsSortData {
 
     public void setLastLoginDate(Date lastLoginDate) {
         this.lastLoginDate = lastLoginDate;
+    }
+
+    public void updateLastLoginDate() {
+        updateLastActiveDate();
+        setLastLoginDate(DateTime.now());
+    }
+
+    public void updateLastActiveDate() {
+        setLastActiveDate(DateTime.now());
     }
 }

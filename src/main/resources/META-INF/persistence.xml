@@ -5,6 +5,7 @@
     <persistence-unit name="defaultPersistenceUnit">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <non-jta-data-source>VitalDS</non-jta-data-source>
+
         <!-- Classes -->
         <class>com.munch.core.struct.rdbms.place.Place</class>
         <class>com.munch.core.struct.rdbms.place.BusinessHour</class>
@@ -26,7 +27,7 @@
 
         <class>com.munch.core.struct.rdbms.system.KeyValue</class>
 
-        <!-- Admin Data-->
+        <!-- Admin Classes (Munch Dashboard)-->
         <class>com.munch.core.struct.rdbms.admin.AdminAccount</class>
 
         <properties>
