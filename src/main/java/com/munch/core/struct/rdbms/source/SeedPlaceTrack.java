@@ -40,6 +40,8 @@ public class SeedPlaceTrack extends AbsSortData {
     private String name;
     private String placeId; // Final id after the 9_2xx series
 
+    private double lat, lng;
+
     private int status;
     private int source;
     private String origin; // The guy that uploaded it
@@ -90,6 +92,24 @@ public class SeedPlaceTrack extends AbsSortData {
 
     public void setSource(int source) {
         this.source = source;
+    }
+
+    @Column
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    @Column
+    public double getLng() {
+        return lng;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
     }
 
     /**
