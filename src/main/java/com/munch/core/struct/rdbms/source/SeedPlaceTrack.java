@@ -20,6 +20,9 @@ public class SeedPlaceTrack extends AbsSortData {
     // Just entered the system
     public static final int STATUS_RAW = 100;
 
+    // Crawler Spaghetti Conflict
+    public static final int STATUS_DELAY = 3_004;
+
     // Crawler System (Spaghetti)
     public static final int STATUS_LOCATION_OPEN = 3_010;
     public static final int STATUS_PROBE_OPEN = 3_020;

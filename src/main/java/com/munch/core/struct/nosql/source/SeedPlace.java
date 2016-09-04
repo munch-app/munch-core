@@ -67,6 +67,7 @@ public class SeedPlace {
     private String sourceUrl;
     private Date updatedDate;
     private String origin; // The person that seeded this data
+    private String notes;
 
     // Source of others
     private List<SourcePlace> sourcePlaces = new ArrayList<>();
@@ -268,6 +269,15 @@ public class SeedPlace {
 
     public void setOrigin(String origin) {
         this.origin = origin;
+    }
+
+    @DynamoDBAttribute(attributeName = "notes")
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 
     @DynamoDBAttribute(attributeName = "sourcePlaces")
