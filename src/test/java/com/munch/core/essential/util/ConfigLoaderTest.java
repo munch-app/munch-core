@@ -20,7 +20,7 @@ public class ConfigLoaderTest {
 
     @Test
     public void normalUse() {
-        CoreConfig config = CoreConfig.getInstance();
+        MunchConfig config = MunchConfig.getInstance();
         testGets(config);
         config.isDev();
         config.isProd();
@@ -32,7 +32,7 @@ public class ConfigLoaderTest {
      *
      * @param config config to test with
      */
-    private void testGets(CoreConfig config) {
+    private void testGets(MunchConfig config) {
         assertThat(config.getBoolean("key")).isFalse();
         assertThat(config.getString("key")).isNull();
         assertThat(config.getInt("key")).isEqualTo(0);

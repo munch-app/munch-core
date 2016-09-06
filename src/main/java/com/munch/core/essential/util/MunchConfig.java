@@ -18,7 +18,7 @@ import java.util.Map;
  * Time: 8:54 PM
  * Project: PuffinCore
  */
-public final class CoreConfig implements ConfigReader {
+public final class MunchConfig implements ConfigReader {
 
     // Default Template Location
     static final String TEMPLATE_FILE_LOCATION = "META-INF/munch-getInstance.xml";
@@ -26,16 +26,16 @@ public final class CoreConfig implements ConfigReader {
     static final String ENV_FILE_LOCATION = "MUNCH_APP_CONFIG";
 
 
-    static CoreConfig defaultConfig;
-    static Map<String, CoreConfig> configMap = new HashMap<>();
+    static MunchConfig defaultConfig;
+    static Map<String, MunchConfig> configMap = new HashMap<>();
     private ConfigReader defaultReader;
     private ConfigReader fallbackReader;
 
-    public CoreConfig(ConfigReader reader) {
+    public MunchConfig(ConfigReader reader) {
         this.defaultReader = reader;
     }
 
-    public CoreConfig(ConfigReader reader, ConfigReader fallbackReader) {
+    public MunchConfig(ConfigReader reader, ConfigReader fallbackReader) {
         this.defaultReader = reader;
         this.fallbackReader = fallbackReader;
     }
@@ -47,11 +47,11 @@ public final class CoreConfig implements ConfigReader {
      * @param defaultFallback to fall back to old reader
      */
     public static void override(ConfigReader reader, boolean defaultFallback) {
-        synchronized (CoreConfig.class) {
+        synchronized (MunchConfig.class) {
             if (defaultFallback) {
-                defaultConfig = new CoreConfig(reader, getBuiltInReader(System.getenv(ENV_FILE_LOCATION)));
+                defaultConfig = new MunchConfig(reader, getBuiltInReader(System.getenv(ENV_FILE_LOCATION)));
             } else {
-                defaultConfig = new CoreConfig(reader);
+                defaultConfig = new MunchConfig(reader);
             }
 
         }
@@ -62,11 +62,11 @@ public final class CoreConfig implements ConfigReader {
      * With override configs
      * @return XMLConfiguration
      */
-    public static CoreConfig getInstance() {
+    public static MunchConfig getInstance() {
         if (defaultConfig == null) {
-            synchronized (CoreConfig.class) {
+            synchronized (MunchConfig.class) {
                 if (defaultConfig == null) {
-                    defaultConfig = new CoreConfig(getBuiltInReader(System.getenv(ENV_FILE_LOCATION)));
+                    defaultConfig = new MunchConfig(getBuiltInReader(System.getenv(ENV_FILE_LOCATION)));
                 }
             }
         }
@@ -79,11 +79,11 @@ public final class CoreConfig implements ConfigReader {
      *
      * @return XMLConfiguration
      */
-    public static CoreConfig getInstance(String fileLocation) {
+    public static MunchConfig getInstance(String fileLocation) {
         if (!configMap.containsKey(fileLocation)) {
-            synchronized (CoreConfig.class) {
+            synchronized (MunchConfig.class) {
                 if (!configMap.containsKey(fileLocation)) {
-                    configMap.put(fileLocation, new CoreConfig(getBuiltInReader(fileLocation)));
+                    configMap.put(fileLocation, new MunchConfig(getBuiltInReader(fileLocation)));
                 }
             }
         }

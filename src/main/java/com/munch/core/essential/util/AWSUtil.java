@@ -38,7 +38,7 @@ public final class AWSUtil {
         if (amazonS3 == null) {
             synchronized (AWSUtil.class) {
                 if (amazonS3 == null) {
-                    CoreConfig config = CoreConfig.getInstance();
+                    MunchConfig config = MunchConfig.getInstance();
                     if (config.isDev()) {
                         // Development Environment Setup
                         String accessKey = config.getString("development.aws.access-key");
@@ -67,7 +67,7 @@ public final class AWSUtil {
         if (amazonDynamoDB == null) {
             synchronized (AWSUtil.class) {
                 if (amazonDynamoDB == null) {
-                    CoreConfig config = CoreConfig.getInstance();
+                    MunchConfig config = MunchConfig.getInstance();
                     if (config.isDev()) {
                         String accessKey = config.getString("development.aws.access-key");
                         String secretKey = config.getString("development.aws.secret-key");
