@@ -31,6 +31,8 @@ public class PlaceLocation extends AbsSortData {
     private String city;
     private String state;
     private String zipCode;
+    private String unitNumber;
+    private String neighbourhood;
     private Country country;
 
     // Data Tracking
@@ -132,6 +134,24 @@ public class PlaceLocation extends AbsSortData {
 
     public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
+    }
+
+    @Column(length = 35, nullable = true)
+    public String getUnitNumber() {
+        return unitNumber;
+    }
+
+    public void setUnitNumber(String unitNumber) {
+        this.unitNumber = unitNumber;
+    }
+
+    @Column(length = 70, nullable = true)
+    public String getNeighbourhood() {
+        return neighbourhood;
+    }
+
+    public void setNeighbourhood(String neighbourhood) {
+        this.neighbourhood = neighbourhood;
     }
 
     @ManyToOne(optional = false)
