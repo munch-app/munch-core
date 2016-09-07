@@ -12,6 +12,7 @@ public class DataSource {
     public static final int Y = 2;
     public static final int B = 3;
     public static final int H = 1;
+    public static final int H_S = 1_2;
     public static final int F = 4;
 
     public static final int FACEBOOK = 5;
