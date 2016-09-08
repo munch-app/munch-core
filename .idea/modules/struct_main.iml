@@ -25,6 +25,7 @@
     <orderEntry type="library" name="Gradle: mysql:mysql-connector-java:5.1.39" level="project" />
     <orderEntry type="library" name="Gradle: org.hibernate:hibernate-core:5.2.2.Final" level="project" />
     <orderEntry type="library" name="Gradle: org.hibernate:hibernate-hikaricp:5.2.2.Final" level="project" />
+    <orderEntry type="library" name="Gradle: org.hibernate:hibernate-search-orm:5.5.4.Final" level="project" />
     <orderEntry type="library" name="Gradle: ch.qos.logback:logback-classic:1.1.7" level="project" />
     <orderEntry type="library" name="Gradle: com.spatial4j:spatial4j:0.5" level="project" />
     <orderEntry type="library" name="Gradle: de.svenkubiak:jBCrypt:0.4.1" level="project" />
@@ -45,24 +46,31 @@
     <orderEntry type="library" name="Gradle: org.hibernate.common:hibernate-commons-annotations:5.0.1.Final" level="project" />
     <orderEntry type="library" name="Gradle: javax.enterprise:cdi-api:1.1" level="project" />
     <orderEntry type="library" name="Gradle: com.zaxxer:HikariCP-java6:2.3.9" level="project" />
+    <orderEntry type="library" name="Gradle: org.hibernate:hibernate-search-engine:5.5.4.Final" level="project" />
     <orderEntry type="library" name="Gradle: ch.qos.logback:logback-core:1.1.7" level="project" />
     <orderEntry type="library" name="Gradle: org.slf4j:slf4j-api:1.7.20" level="project" />
     <orderEntry type="library" name="Gradle: commons-lang:commons-lang:2.6" level="project" />
     <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-core:1.11.26" level="project" />
     <orderEntry type="library" name="Gradle: com.amazonaws:jmespath-java:1.0" level="project" />
     <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-kms:1.11.26" level="project" />
-    <orderEntry type="library" name="Gradle: javax.el:el-api:2.2" level="project" />
-    <orderEntry type="library" name="Gradle: org.jboss.spec.javax.interceptor:jboss-interceptors-api_1.1_spec:1.0.0.Beta1" level="project" />
-    <orderEntry type="library" name="Gradle: javax.annotation:jsr250-api:1.0" level="project" />
-    <orderEntry type="library" name="Gradle: javax.inject:javax.inject:1" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.lucene:lucene-core:5.3.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.lucene:lucene-backward-codecs:5.3.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.lucene:lucene-misc:5.3.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.lucene:lucene-analyzers-common:5.3.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.lucene:lucene-facet:5.3.1" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.httpcomponents:httpclient:4.5.2" level="project" />
     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.6.6" level="project" />
     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:2.6.6" level="project" />
     <orderEntry type="library" name="Gradle: joda-time:joda-time:2.8.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.lucene:lucene-queries:5.3.1" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.httpcomponents:httpcore:4.4.4" level="project" />
     <orderEntry type="library" name="Gradle: commons-codec:commons-codec:1.9" level="project" />
     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.6.0" level="project" />
     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-core:2.6.6" level="project" />
+    <orderEntry type="library" name="Gradle: javax.el:el-api:2.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.jboss.spec.javax.interceptor:jboss-interceptors-api_1.1_spec:1.0.0.Beta1" level="project" />
+    <orderEntry type="library" name="Gradle: javax.annotation:jsr250-api:1.0" level="project" />
+    <orderEntry type="library" name="Gradle: javax.inject:javax.inject:1" level="project" />
     <orderEntry type="library" name="Gradle: commons-logging:commons-logging:1.2" level="project" />
   </component>
 </module>

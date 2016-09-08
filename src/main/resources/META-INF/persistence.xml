@@ -53,6 +53,11 @@
                       value="jdbc:mysql://localhost:32770/munch?useUnicode=yes&amp;characterEncoding=UTF-8"/>
             <property name="hibernate.hikari.dataSource.user" value="root"/>
             <property name="hibernate.hikari.dataSource.password" value="password"/>
+
+            <!-- Lucene Search-->
+            <property name="hibernate.search.default.directory_provider" value="filesystem"/>
+            <property name="hibernate.search.default.indexBase" value="/var/munch/indexes"/>
+            <property name="hibernate.search.lucene_version" value="LUCENE_CURRENT"/>
         </properties>
     </persistence-unit>
 </persistence>

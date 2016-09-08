@@ -1,12 +1,15 @@
 package com.munch.core.struct.rdbms.source;
 
 import com.munch.core.struct.rdbms.abs.AbsSortData;
+import com.munch.core.struct.util.Lucene;
+import org.apache.lucene.search.Query;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.search.annotations.*;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.jpa.FullTextEntityManager;
+import org.hibernate.search.query.dsl.QueryBuilder;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * Created By: Fuxing Loh
@@ -14,6 +17,8 @@ import javax.persistence.Id;
  * Time: 10:15 PM
  * Project: struct
  */
+@Indexed
+@Spatial(spatialMode = SpatialMode.HASH, name = "seedPlaceTrack")
 @Entity
 public class SeedPlaceTrack extends AbsSortData {
 
@@ -62,6 +67,7 @@ public class SeedPlaceTrack extends AbsSortData {
     }
 
     @Column(length = 255, nullable = false)
+    @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO)
     public String getName() {
         return name;
     }
@@ -98,6 +104,7 @@ public class SeedPlaceTrack extends AbsSortData {
     }
 
     @Column
+    @Latitude(of = "seedPlaceTrack")
     public double getLat() {
         return lat;
     }
@@ -107,6 +114,7 @@ public class SeedPlaceTrack extends AbsSortData {
     }
 
     @Column
+    @Longitude(of = "seedPlaceTrack")
     public double getLng() {
         return lng;
     }
@@ -127,5 +135,59 @@ public class SeedPlaceTrack extends AbsSortData {
 
     public void setOrigin(String origin) {
         this.origin = origin;
+    }
+
+    public static class Search extends Lucene {
+
+        protected Search(EntityManager entityManager) {
+            super(entityManager);
+        }
+
+        /**
+         * Init helper
+         *
+         * @param entityManager entity manager
+         * @return Search instance
+         */
+        public static Search init(EntityManager entityManager) {
+            return new Search(entityManager);
+        }
+
+        /**
+         * Build index and wait
+         *
+         * @return Search Instance
+         * @throws InterruptedException
+         */
+        protected Search buildIndex() throws InterruptedException {
+            super.buildIndexWait();
+            return this;
+        }
+
+        /**
+         * Search with text
+         * Things that are searched are:
+         * - Name
+         * - Phone number
+         * - Description
+         * - Cuisine name
+         * - Venue name
+         * - Meal name
+         *
+         * @param text query string
+         * @return Persistence Query to query
+         */
+        public javax.persistence.Query query(String text) {
+            FullTextEntityManager textManager = getFullTextEntityManager();
+            QueryBuilder qb = buildQuery(textManager, SeedPlaceTrack.class);
+
+            Query luceneQuery = qb.keyword()
+                    .onFields("name")
+                    .matching(text)
+                    .createQuery();
+
+            // wrap Lucene query in a javax.persistence.Query and execute search
+            return textManager.createFullTextQuery(luceneQuery, SeedPlaceTrack.class);
+        }
     }
 }
