@@ -78,7 +78,6 @@ dependencies {
 
     // Database
     compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.39'
-    compile group: 'org.hibernate', name: 'hibernate-entitymanager', version: '5.2.2.Final'
     compile group: 'org.hibernate', name: 'hibernate-core', version: '5.2.2.Final'
     compile group: 'org.hibernate', name: 'hibernate-hikaricp', version: '5.2.2.Final'
 
