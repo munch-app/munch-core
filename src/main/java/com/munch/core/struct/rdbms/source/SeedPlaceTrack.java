@@ -145,7 +145,7 @@ public class SeedPlaceTrack extends AbsSortData {
         this.origin = origin;
     }
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "seedPlaceTrack", cascade = {CascadeType.PERSIST})
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     public PlaceLocation getPlaceLocation() {
         return placeLocation;
     }

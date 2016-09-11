@@ -3,7 +3,7 @@ package com.munch.core.struct.rdbms.media;
 import com.amazonaws.services.s3.AmazonS3;
 import com.munch.core.essential.util.AWSUtil;
 import com.munch.core.essential.util.ConfigReader;
-import com.munch.core.essential.util.CoreConfig;
+import com.munch.core.essential.util.MunchConfig;
 
 /**
  * Created by: Fuxing
@@ -13,7 +13,7 @@ import com.munch.core.essential.util.CoreConfig;
  */
 public class MenuS3Setting implements S3Setting {
 
-    private ConfigReader config = CoreConfig.getInstance();
+    private ConfigReader config = MunchConfig.getInstance();
 
     private String bucket = config.getString("aws.s3.bucket-menu");
     private String region = config.getString("aws.s3.region");
