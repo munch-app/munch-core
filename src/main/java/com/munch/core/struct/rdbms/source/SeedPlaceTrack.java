@@ -208,7 +208,7 @@ public class SeedPlaceTrack extends AbsSortData {
         this.stageFinalEntryDate = stageFinalEntryDate;
     }
 
-    public static class Search extends Lucene {
+    public static class Search extends Lucene implements Lucene.Spatial {
 
         protected Search(EntityManager entityManager) {
             super(entityManager);
@@ -252,6 +252,13 @@ public class SeedPlaceTrack extends AbsSortData {
 
             // wrap Lucene query in a javax.persistence.Query and execute search
             return textManager.createFullTextQuery(luceneQuery, SeedPlaceTrack.class);
+        }
+
+        @Override
+        public javax.persistence.Query distance(double lat, double lng, double radius) {
+            FullTextEntityManager textManager = getFullTextEntityManager();
+            QueryBuilder qb = buildQuery(textManager, SeedPlaceTrack.class);
+            return textManager.createFullTextQuery(distanceQuery(qb, lat, lng, radius), SeedPlaceTrack.class);
         }
     }
 }

@@ -48,7 +48,7 @@ public class Lucene {
         fullTextEntityManager.createIndexer().start();
     }
 
-    public interface Distance<T> {
+    public interface Spatial {
 
         /**
          * Location
@@ -57,7 +57,7 @@ public class Lucene {
          * @param radius km
          * @return Query
          */
-        default T distance(Point point, double radius) {
+        default javax.persistence.Query distance(Point point, double radius) {
             return distance(point.getY(), point.getX(), radius);
         }
 
@@ -67,7 +67,7 @@ public class Lucene {
          * @param radius km
          * @return Query
          */
-        T distance(double lat, double lng, double radius);
+        javax.persistence.Query distance(double lat, double lng, double radius);
 
         default org.apache.lucene.search.Query distanceQuery(QueryBuilder builder, double lat, double lng, double radius) {
             return builder.spatial()
