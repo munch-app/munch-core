@@ -9,6 +9,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.search.annotations.*;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.jpa.FullTextEntityManager;
+import org.hibernate.search.jpa.FullTextQuery;
 import org.hibernate.search.query.dsl.QueryBuilder;
 
 import javax.persistence.*;
@@ -236,7 +237,7 @@ public class Place extends AbsAuditData {
          * @param text query string
          * @return Persistence Query to query
          */
-        public javax.persistence.Query query(String text) {
+        public FullTextQuery query(String text) {
             FullTextEntityManager textManager = getFullTextEntityManager();
             QueryBuilder qb = buildQuery(textManager, Place.class);
 

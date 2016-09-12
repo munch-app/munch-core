@@ -3,12 +3,16 @@ package com.munch.core.struct.rdbms.source;
 import com.munch.core.struct.rdbms.abs.AbsSortData;
 import com.munch.core.struct.rdbms.place.PlaceLocation;
 import com.munch.core.struct.util.Lucene;
+import com.spatial4j.core.shape.Point;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.Sort;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.search.annotations.*;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.jpa.FullTextEntityManager;
+import org.hibernate.search.jpa.FullTextQuery;
 import org.hibernate.search.query.dsl.QueryBuilder;
+import org.hibernate.search.spatial.DistanceSortField;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -20,7 +24,7 @@ import java.util.Date;
  * Project: struct
  */
 @Indexed
-@Spatial(spatialMode = SpatialMode.HASH, name = "seedPlaceTrack")
+@Spatial(spatialMode = SpatialMode.HASH, name = "location")
 @Entity
 public class SeedPlaceTrack extends AbsSortData {
 
@@ -112,7 +116,7 @@ public class SeedPlaceTrack extends AbsSortData {
     }
 
     @Column
-    @Latitude(of = "seedPlaceTrack")
+    @Latitude(of = "location")
     public double getLat() {
         return lat;
     }
@@ -122,7 +126,7 @@ public class SeedPlaceTrack extends AbsSortData {
     }
 
     @Column
-    @Longitude(of = "seedPlaceTrack")
+    @Longitude(of = "location")
     public double getLng() {
         return lng;
     }
@@ -241,7 +245,7 @@ public class SeedPlaceTrack extends AbsSortData {
          * @param text query string
          * @return Persistence Query to query
          */
-        public javax.persistence.Query query(String text) {
+        public FullTextQuery query(String text) {
             FullTextEntityManager textManager = getFullTextEntityManager();
             QueryBuilder qb = buildQuery(textManager, SeedPlaceTrack.class);
 
@@ -255,10 +259,23 @@ public class SeedPlaceTrack extends AbsSortData {
         }
 
         @Override
-        public javax.persistence.Query distance(double lat, double lng, double radius) {
+        public FullTextQuery distance(double lat, double lng, double radius) {
             FullTextEntityManager textManager = getFullTextEntityManager();
             QueryBuilder qb = buildQuery(textManager, SeedPlaceTrack.class);
-            return textManager.createFullTextQuery(distanceQuery(qb, lat, lng, radius), SeedPlaceTrack.class);
+            return textManager.createFullTextQuery(distanceQuery("location", qb, lat, lng, radius), SeedPlaceTrack.class);
+        }
+
+        public FullTextQuery distanceSort(double lat, double lng, double radius) {
+            FullTextEntityManager textManager = getFullTextEntityManager();
+            QueryBuilder qb = buildQuery(textManager, SeedPlaceTrack.class);
+            FullTextQuery query = textManager.createFullTextQuery(distanceQuery("location", qb, lat, lng, radius), SeedPlaceTrack.class);
+            Sort sort = new Sort(new DistanceSortField(lat, lng, "location"));
+            query.setSort(sort);
+            return query;
+        }
+
+        public FullTextQuery distanceSort(Point point, double radius) {
+            return distanceSort(point.getY(), point.getX(), radius);
         }
     }
 }

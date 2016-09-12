@@ -2,6 +2,7 @@ package com.munch.core.struct.util;
 
 import com.spatial4j.core.shape.Point;
 import org.hibernate.search.jpa.FullTextEntityManager;
+import org.hibernate.search.jpa.FullTextQuery;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.hibernate.search.query.dsl.Unit;
 
@@ -57,7 +58,7 @@ public class Lucene {
          * @param radius km
          * @return Query
          */
-        default javax.persistence.Query distance(Point point, double radius) {
+        default FullTextQuery distance(Point point, double radius) {
             return distance(point.getY(), point.getX(), radius);
         }
 
@@ -67,10 +68,18 @@ public class Lucene {
          * @param radius km
          * @return Query
          */
-        javax.persistence.Query distance(double lat, double lng, double radius);
+        FullTextQuery distance(double lat, double lng, double radius);
 
         default org.apache.lucene.search.Query distanceQuery(QueryBuilder builder, double lat, double lng, double radius) {
             return builder.spatial()
+                    .within(radius, Unit.KM)
+                    .ofLatitude(lat).andLongitude(lng)
+                    .createQuery();
+        }
+
+        default org.apache.lucene.search.Query distanceQuery(String name, QueryBuilder builder, double lat, double lng, double radius) {
+            return builder.spatial()
+                    .onField(name)
                     .within(radius, Unit.KM)
                     .ofLatitude(lat).andLongitude(lng)
                     .createQuery();
