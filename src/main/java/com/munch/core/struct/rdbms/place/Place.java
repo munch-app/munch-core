@@ -3,7 +3,13 @@ package com.munch.core.struct.rdbms.place;
 import com.munch.core.struct.rdbms.abs.AbsAuditData;
 import com.munch.core.struct.rdbms.menu.MenuMedia;
 import com.munch.core.struct.rdbms.menu.MenuWebsite;
+import com.munch.core.struct.util.Lucene;
+import org.apache.lucene.search.Query;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.search.annotations.*;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.jpa.FullTextEntityManager;
+import org.hibernate.search.query.dsl.QueryBuilder;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -14,6 +20,7 @@ import java.util.Set;
  * Time: 7:35 PM
  * Project: struct
  */
+@Indexed
 @Entity
 public class Place extends AbsAuditData {
 
@@ -58,6 +65,7 @@ public class Place extends AbsAuditData {
     }
 
     @Column(length = 255, nullable = false)
+    @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO)
     public String getName() {
         return name;
     }
@@ -193,5 +201,52 @@ public class Place extends AbsAuditData {
 
     public void setSourceUrl(String source) {
         this.sourceUrl = source;
+    }
+
+    public static class Search extends Lucene {
+
+        protected Search(EntityManager entityManager) {
+            super(entityManager);
+        }
+
+        /**
+         * Init helper
+         *
+         * @param entityManager entity manager
+         * @return Search instance
+         */
+        public static Search init(EntityManager entityManager) {
+            return new Search(entityManager);
+        }
+
+        /**
+         * Build index and wait
+         *
+         * @return Search Instance
+         * @throws InterruptedException
+         */
+        protected Search buildIndex() throws InterruptedException {
+            super.buildIndexWait();
+            return this;
+        }
+
+        /**
+         * Search with text
+         *
+         * @param text query string
+         * @return Persistence Query to query
+         */
+        public javax.persistence.Query query(String text) {
+            FullTextEntityManager textManager = getFullTextEntityManager();
+            QueryBuilder qb = buildQuery(textManager, Place.class);
+
+            Query luceneQuery = qb.keyword()
+                    .onFields("name")
+                    .matching(text)
+                    .createQuery();
+
+            // wrap Lucene query in a javax.persistence.Query and execute search
+            return textManager.createFullTextQuery(luceneQuery, Place.class);
+        }
     }
 }

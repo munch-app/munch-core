@@ -27,16 +27,13 @@ public class SeedPlaceTrack extends AbsSortData {
     // Just entered the system
     public static final int STATUS_RAW = 100;
 
-    // Crawler Spaghetti Conflict
-    public static final int STATUS_DELAY = 3_004;
-
     // Crawler System (Spaghetti)
     public static final int STATUS_LOCATION_OPEN = 3_010;
     public static final int STATUS_PROBE_OPEN = 3_020;
     public static final int STATUS_SOURCE_ENTRY_OPEN = 3_030;
     public static final int STATUS_EXTRACT_OPEN = 3_040;
     public static final int STATUS_REVIEW_OPEN = 3_050;
-    public static final int STATUS_ENTRY_OPEN = 3_200;
+    public static final int STATUS_FINAL_ENTRY_OPEN = 3_200;
 
     // Branch Location
     public static final int STATUS_BRANCH_OPEN = 4_010;
@@ -45,9 +42,12 @@ public class SeedPlaceTrack extends AbsSortData {
     // Final Outcome
     public static final int STATUS_COMPLETED = 9_200;
     public static final int STATUS_ALREADY_EXIST = 9_201;
-
     public static final int STATUS_DELETED = 9_400;
 
+    // Crawler Spaghetti Conflict
+    public static final int STATUS_DELAY = 9_500;
+
+    // Data Types
     public static final int TYPE_FRESH = 300;
     public static final int TYPE_BRANCH = 500;
 
@@ -228,7 +228,7 @@ public class SeedPlaceTrack extends AbsSortData {
          * Build index and wait
          *
          * @return Search Instance
-         * @throws InterruptedException
+         * @throws InterruptedException, if something goes wrong
          */
         protected Search buildIndex() throws InterruptedException {
             super.buildIndexWait();
@@ -237,13 +237,6 @@ public class SeedPlaceTrack extends AbsSortData {
 
         /**
          * Search with text
-         * Things that are searched are:
-         * - Name
-         * - Phone number
-         * - Description
-         * - Cuisine name
-         * - Venue name
-         * - Meal name
          *
          * @param text query string
          * @return Persistence Query to query
