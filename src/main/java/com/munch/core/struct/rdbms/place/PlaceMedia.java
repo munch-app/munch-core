@@ -46,7 +46,7 @@ public class PlaceMedia extends AbsAuditData {
     private URL presignedUrl;
 
     // Persisted
-    private String key;
+    private String keyId;
     private String description;
     private String originalName;
 
@@ -72,7 +72,7 @@ public class PlaceMedia extends AbsAuditData {
      */
     public void setPresignedUrl(String fileName, int presignedExpiry, int type) {
         setOriginalName(fileName);
-        setKey(RandomStringUtils.randomAlphanumeric(40) + "." + FilenameUtils.getExtension(fileName));
+        setKeyId(RandomStringUtils.randomAlphanumeric(40) + "." + FilenameUtils.getExtension(fileName));
         setStatus(STATUS_PRESIGNED);
         setType(type);
 
@@ -91,7 +91,7 @@ public class PlaceMedia extends AbsAuditData {
     public void setFile(File file, String fileName, int type) {
         this.file = file;
         setOriginalName(fileName);
-        setKey(RandomStringUtils.randomAlphanumeric(40) + "." + FilenameUtils.getExtension(fileName));
+        setKeyId(RandomStringUtils.randomAlphanumeric(40) + "." + FilenameUtils.getExtension(fileName));
         setStatus(STATUS_UPLOADED);
         setType(type);
     }
@@ -110,9 +110,9 @@ public class PlaceMedia extends AbsAuditData {
     @Transient
     public String getUrl() {
         if (setting.getConfig().isDev()) {
-            return String.format("%s/%s/%s", setting.getConfig().getString("development.aws.s3.endpoint"), getBucket(), getKey());
+            return String.format("%s/%s/%s", setting.getConfig().getString("development.aws.s3.endpoint"), getBucket(), getKeyId());
         }
-        return String.format("http://s3-%s.amazonaws.com/%s/%s", setting.getRegion(), getBucket(), getKey());
+        return String.format("http://s3-%s.amazonaws.com/%s/%s", setting.getRegion(), getBucket(), getKeyId());
     }
 
     @PrePersist
@@ -125,13 +125,13 @@ public class PlaceMedia extends AbsAuditData {
             // Add to aws
             // Force setup amazon s3 first
             // Uploaded file are defaulted to public
-            setting.getAmazonS3().putObject(new PutObjectRequest(getBucket(), key, file).withCannedAcl(CannedAccessControlList.PublicRead));
+            setting.getAmazonS3().putObject(new PutObjectRequest(getBucket(), keyId, file).withCannedAcl(CannedAccessControlList.PublicRead));
         } else {
             if (getStatus() == STATUS_PRESIGNED) {
                 Date expiration = new Date();
                 expiration.setTime(expiration.getTime() + presignedExpiryFromNow);
 
-                GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(getBucket(), key);
+                GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(getBucket(), keyId);
                 generatePresignedUrlRequest.setMethod(HttpMethod.PUT);
                 generatePresignedUrlRequest.setExpiration(expiration);
 
@@ -156,7 +156,7 @@ public class PlaceMedia extends AbsAuditData {
      */
     @PreRemove
     protected void onRemove() {
-        setting.getAmazonS3().deleteObject(getBucket(), key);
+        setting.getAmazonS3().deleteObject(getBucket(), keyId);
     }
 
     @Transient
@@ -171,12 +171,12 @@ public class PlaceMedia extends AbsAuditData {
 
     @Id
     @Column(nullable = false, unique = true, length = 55)
-    public String getKey() {
-        return key;
+    public String getKeyId() {
+        return keyId;
     }
 
-    protected void setKey(String fileKey) {
-        this.key = fileKey;
+    protected void setKeyId(String fileKey) {
+        this.keyId = fileKey;
     }
 
     @Transient

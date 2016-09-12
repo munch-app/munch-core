@@ -25,7 +25,7 @@
         <class>com.munch.core.struct.rdbms.type.Country</class>
         <class>com.munch.core.struct.rdbms.type.Nationality</class>
 
-        <class>com.munch.core.struct.rdbms.system.KeyValue</class>
+        <class>com.munch.core.struct.rdbms.system.KeyValuePair</class>
 
         <!-- Admin Classes (Munch Dashboard)-->
         <class>com.munch.core.struct.rdbms.admin.AdminAccount</class>
@@ -36,7 +36,8 @@
             <property name="hibernate.archive.autodetection" value="true"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
             <property name="hibernate.show_sql" value="false"/>
-            <property name="hibernate.hbm2ddl.auto" value="update"/><!--TODO-->
+            <!-- create create-drop update validate -->
+            <property name="hibernate.hbm2ddl.auto" value="validate"/><!--TODO-->
 
             <!-- Connection Pool Config -->
             <property name="hibernate.connection.provider_class"

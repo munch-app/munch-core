@@ -13,20 +13,19 @@ import javax.persistence.Id;
  * Project: struct
  */
 @Entity
-public class KeyValue extends AbsAuditData {
+public class KeyValuePair extends AbsAuditData {
 
-    private String key;
+    private String keyId;
     private String value;
-
 
     @Id
     @Column(nullable = true, length = 255)
-    public String getKey() {
-        return key;
+    public String getKeyId() {
+        return keyId;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setKeyId(String key) {
+        this.keyId = key;
     }
 
     @Column(nullable = true, length = 1000)

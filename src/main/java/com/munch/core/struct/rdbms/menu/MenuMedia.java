@@ -34,7 +34,7 @@ public class MenuMedia extends AbsSortData {
     private File file;
 
     // Persisted
-    private String key;
+    private String keyId;
     private String name;
     private String originalName;
 
@@ -56,7 +56,7 @@ public class MenuMedia extends AbsSortData {
     public void setFile(File file, String fileName, int type) {
         this.file = file;
         setOriginalName(fileName);
-        setKey(RandomStringUtils.randomAlphanumeric(40) + "." + FilenameUtils.getExtension(fileName));
+        setKeyId(RandomStringUtils.randomAlphanumeric(40) + "." + FilenameUtils.getExtension(fileName));
         setStatus(STATUS_UPLOADED);
         setType(type);
     }
@@ -75,9 +75,9 @@ public class MenuMedia extends AbsSortData {
     @Transient
     public String getUrl() {
         if (setting.getConfig().isDev()) {
-            return String.format("%s/%s/%s", setting.getConfig().getString("development.aws.s3.endpoint"), getBucket(), getKey());
+            return String.format("%s/%s/%s", setting.getConfig().getString("development.aws.s3.endpoint"), getBucket(), getKeyId());
         }
-        return String.format("http://s3-%s.amazonaws.com/%s/%s", setting.getRegion(), getBucket(), getKey());
+        return String.format("http://s3-%s.amazonaws.com/%s/%s", setting.getRegion(), getBucket(), getKeyId());
     }
 
     @PrePersist
@@ -86,7 +86,7 @@ public class MenuMedia extends AbsSortData {
         super.onCreate();
         // Uploaded file are defaulted to public
         if (file != null) {
-            setting.getAmazonS3().putObject(new PutObjectRequest(getBucket(), key, file).withCannedAcl(CannedAccessControlList.PublicRead));
+            setting.getAmazonS3().putObject(new PutObjectRequest(getBucket(), keyId, file).withCannedAcl(CannedAccessControlList.PublicRead));
         } else {
             throw new IllegalArgumentException("File not available.");
         }
@@ -106,7 +106,7 @@ public class MenuMedia extends AbsSortData {
      */
     @PreRemove
     protected void onRemove() {
-        setting.getAmazonS3().deleteObject(getBucket(), key);
+        setting.getAmazonS3().deleteObject(getBucket(), keyId);
     }
 
     @Transient
@@ -116,12 +116,12 @@ public class MenuMedia extends AbsSortData {
 
     @Id
     @Column(nullable = false, unique = true, length = 55)
-    public String getKey() {
-        return key;
+    public String getKeyId() {
+        return keyId;
     }
 
-    protected void setKey(String fileKey) {
-        this.key = fileKey;
+    protected void setKeyId(String fileKey) {
+        this.keyId = fileKey;
     }
 
     @Transient

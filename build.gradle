@@ -4,7 +4,7 @@ allprojects {
     apply plugin: 'maven-publish'
 
     group 'com.munch.core'
-    version '0.6.8'
+    version '0.7.0'
 }
 
 buildscript {
@@ -78,8 +78,9 @@ dependencies {
 
     // Database
     compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.39'
-    compile group: 'org.hibernate', name: 'hibernate-core', version: '5.2.2.Final'
-    compile group: 'org.hibernate', name: 'hibernate-hikaricp', version: '5.2.2.Final'
+    compile group: 'org.hibernate', name: 'hibernate-core', version: '5.0.10.Final'
+    compile group: 'org.hibernate', name: 'hibernate-entitymanager', version: '5.0.10.Final'
+    compile group: 'org.hibernate', name: 'hibernate-hikaricp', version: '5.0.10.Final'
 
     // Search
     compile group: 'org.hibernate', name: 'hibernate-search-orm', version: '5.5.4.Final'
