@@ -18,6 +18,16 @@ import java.time.LocalTime;
 @Entity
 public class BusinessHour extends AbsAuditData {
 
+    public static final int MON = 1;
+    public static final int TUE = 2;
+    public static final int WED = 3;
+    public static final int THU = 4;
+    public static final int FRI = 5;
+    public static final int SAT = 6;
+    public static final int SUN = 7;
+
+    public static final int PH = 100;
+
     private String id;
     private int day;
     private LocalTime open;

@@ -37,7 +37,7 @@
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
             <property name="hibernate.show_sql" value="false"/>
             <!-- create create-drop update validate -->
-            <property name="hibernate.hbm2ddl.auto" value="validate"/><!--TODO-->
+            <property name="hibernate.hbm2ddl.auto" value="create-drop"/><!--TODO-->
 
             <!-- Connection Pool Config -->
             <property name="hibernate.connection.provider_class"
@@ -51,7 +51,7 @@
 
             <!-- Connection String TODO -->
             <property name="hibernate.hikari.dataSource.url"
-                      value="jdbc:mysql://localhost:32770/munch?useUnicode=yes&amp;characterEncoding=UTF-8"/>
+                      value="jdbc:mysql://139.59.240.51:3306/munch?useUnicode=yes&amp;characterEncoding=UTF-8"/>
             <property name="hibernate.hikari.dataSource.user" value="root"/>
             <property name="hibernate.hikari.dataSource.password" value="password"/>
 
