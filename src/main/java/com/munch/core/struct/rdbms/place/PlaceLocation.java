@@ -27,7 +27,8 @@ public class PlaceLocation extends AbsSortData {
     // Location
     private double lat;
     private double lng;
-    private String address;
+    private String address; // Address is everything below, (street, city, state, zip code and unit num are formatted data)
+    private String street;
     private String city;
     private String state;
     private String zipCode;
@@ -107,6 +108,15 @@ public class PlaceLocation extends AbsSortData {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    @Column(length = 100, nullable = true)
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
     }
 
     @Column(length = 70, nullable = true)
