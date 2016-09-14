@@ -1,6 +1,7 @@
 package com.munch.core.struct.block.source;
 
 import com.munch.core.struct.block.BlockVersion;
+import com.munch.core.struct.block.website.SourceWebsite;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -51,8 +52,9 @@ public class SeedPlace extends BlockVersion {
 
     // Source of others
     private List<SourcePlace> sourcePlaces = new ArrayList<>();
-    private List<String> sourceWebsites = new ArrayList<>(); // Id of source websites
     private SourceLocation sourceLocation;
+
+    private List<SourceWebsite> sourceWebsites = new ArrayList<>();
 
     /**
      * All data should be named with the version that is introduced
@@ -254,11 +256,11 @@ public class SeedPlace extends BlockVersion {
         this.sourcePlaces = sourcePlaces;
     }
 
-    public List<String> getSourceWebsites() {
+    public List<SourceWebsite> getSourceWebsites() {
         return sourceWebsites;
     }
 
-    public void setSourceWebsites(List<String> sourceWebsites) {
+    public void setSourceWebsites(List<SourceWebsite> sourceWebsites) {
         this.sourceWebsites = sourceWebsites;
     }
 

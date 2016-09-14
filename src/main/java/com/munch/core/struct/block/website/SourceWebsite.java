@@ -13,8 +13,6 @@ import java.util.Set;
  */
 public class SourceWebsite extends BlockVersion {
 
-    public static final String BUCKET_NAME = "munch.spaghetti.website";
-
     private String seedUrl;
     private Set<SourceWebPage> webPages = new HashSet<>();
     private Set<String> urls = new HashSet<>();
