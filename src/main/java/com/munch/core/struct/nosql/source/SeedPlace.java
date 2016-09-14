@@ -72,6 +72,7 @@ public class SeedPlace {
     // Source of others
     private List<SourcePlace> sourcePlaces = new ArrayList<>();
     private List<String> sourceWebsites = new ArrayList<>(); // Id of source websites
+    private SourceLocation sourceLocation;
 
     @DynamoDBHashKey(attributeName = Table.Id)
     public String getId() {
@@ -296,5 +297,14 @@ public class SeedPlace {
 
     public void setSourceWebsites(List<String> sourceWebsites) {
         this.sourceWebsites = sourceWebsites;
+    }
+
+    @DynamoDBAttribute(attributeName = "sourceLocation")
+    public SourceLocation getSourceLocation() {
+        return sourceLocation;
+    }
+
+    public void setSourceLocation(SourceLocation sourceLocation) {
+        this.sourceLocation = sourceLocation;
     }
 }
