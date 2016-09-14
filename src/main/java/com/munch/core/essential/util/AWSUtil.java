@@ -42,9 +42,8 @@ public final class AWSUtil {
                     if (config.isDev()) {
                         // Development Environment Setup
                         String accessKey = config.getString("development.aws.access-key");
-                        String secretAccessKey = config.getString("development.aws.secret-key");
-                        amazonS3 = new AmazonS3Client(new BasicAWSCredentials(accessKey, secretAccessKey));
-
+                        String secretKey = config.getString("development.aws.secret-key");
+                        amazonS3 = new AmazonS3Client(new BasicAWSCredentials(accessKey, secretKey));
                         amazonS3.setRegion(Region.getRegion(Regions.AP_SOUTHEAST_1));
                     } else {
                         amazonS3 = new AmazonS3Client();

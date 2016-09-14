@@ -4,7 +4,7 @@ allprojects {
     apply plugin: 'maven-publish'
 
     group 'com.munch.core'
-    version '0.3.4'
+    version '0.4.0'
 }
 
 buildscript {
@@ -86,4 +86,6 @@ dependencies {
     compile group: 'com.amazonaws', name: 'aws-java-sdk-dynamodb', version: '1.11.26'
     compile group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.11.26'
 
+    // Block
+    compile group: 'com.google.code.gson', name: 'gson', version: '2.7'
 }
