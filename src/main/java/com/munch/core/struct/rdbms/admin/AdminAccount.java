@@ -2,6 +2,7 @@ package com.munch.core.struct.rdbms.admin;
 
 import com.munch.core.essential.util.DateTime;
 import com.munch.core.struct.rdbms.abs.AbsSortData;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -38,6 +39,7 @@ public class AdminAccount extends AbsSortData {
     private String hashSaltPassword;
     // Integrate google sign in with domain check in the future.
     // For contact worker, phone number with password & code? devise something for them
+    private String secretToken;
 
     private Date lastActiveDate;
     private Date lastLoginDate;
@@ -50,6 +52,7 @@ public class AdminAccount extends AbsSortData {
         super.onCreate();
         setLastLoginDate(new Timestamp(DateTime.millisNow()));
         setLastActiveDate(new Timestamp(DateTime.millisNow()));
+        setSecretToken(RandomStringUtils.randomAlphanumeric(200));
     }
 
     @GeneratedValue(generator = "uuid")
@@ -98,6 +101,15 @@ public class AdminAccount extends AbsSortData {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @Column(length = 200, nullable = false)
+    public String getSecretToken() {
+        return secretToken;
+    }
+
+    public void setSecretToken(String secretToken) {
+        this.secretToken = secretToken;
     }
 
     @Column(length = 100)
