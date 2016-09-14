@@ -1,13 +1,13 @@
 package com.munch.core.struct;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
+import com.munch.core.essential.json.BlockMapper;
+import com.munch.core.essential.json.DefaultBlockMapper;
 import com.munch.core.essential.source.DataSource;
-import com.munch.core.essential.util.AWSUtil;
-import com.munch.core.struct.nosql.source.SeedPlace;
-import com.munch.core.struct.nosql.source.SourceHour;
+import com.munch.core.struct.block.source.SeedPlace;
+import com.munch.core.struct.block.source.SourceHour;
 import com.munch.core.struct.rdbms.place.BusinessHour;
 import com.munch.core.struct.rdbms.source.SeedPlaceTrack;
 import com.munch.core.struct.util.HibernateUtil;
@@ -30,7 +30,7 @@ import java.util.Map;
 public class AddSpaghettiTestData {
 
     private EntityManager entityManager;
-    private DynamoDBMapper mapper = new DynamoDBMapper(AWSUtil.getDynamoDB());
+    private BlockMapper blockMapper = new DefaultBlockMapper(SeedPlace.BUCKET_NAME);
 
     public void open() {
         entityManager = HibernateUtil.createEntityManager();
@@ -118,7 +118,7 @@ public class AddSpaghettiTestData {
         seedPlace.setSource(DataSource.FACT);
         seedPlace.setSourceUrl(data.factualId);
         seedPlace.setOrigin("fx");
-        mapper.save(seedPlace);
+        blockMapper.save(seedPlace.getId(), seedPlace);
     }
 
     public static void main(String[] args) throws FileNotFoundException {

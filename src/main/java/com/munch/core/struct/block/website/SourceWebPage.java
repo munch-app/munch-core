@@ -1,7 +1,6 @@
-package com.munch.core.struct.nosql.website;
+package com.munch.core.struct.block.website;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDocument;
+import com.munch.core.struct.block.BlockVersion;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,13 +11,19 @@ import java.util.List;
  * Time: 9:32 PM
  * Project: struct
  */
-@DynamoDBDocument
-public class SourceWebPage {
+public class SourceWebPage extends BlockVersion {
 
     private String url;
     private List<String> content = new ArrayList<>();
 
-    @DynamoDBAttribute(attributeName = "url")
+    /**
+     * All data should be named with the version that is introduced
+     * For data not named, it is there since VERSION_FIRST
+     */
+    public SourceWebPage() {
+        super(VERSION_FIRST);
+    }
+
     public String getUrl() {
         return url;
     }
@@ -27,7 +32,6 @@ public class SourceWebPage {
         this.url = url;
     }
 
-    @DynamoDBAttribute(attributeName = "content")
     public List<String> getContent() {
         return content;
     }

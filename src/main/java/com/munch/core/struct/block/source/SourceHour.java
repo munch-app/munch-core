@@ -1,8 +1,6 @@
-package com.munch.core.struct.nosql.source;
+package com.munch.core.struct.block.source;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDocument;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIgnore;
+import com.munch.core.struct.block.BlockVersion;
 
 import java.time.LocalTime;
 
@@ -12,14 +10,20 @@ import java.time.LocalTime;
  * Time: 5:27 PM
  * Project: struct
  */
-@DynamoDBDocument
-public class SourceHour {
+public class SourceHour extends BlockVersion {
 
     private int day;
     private String open;
     private String close;
 
-    @DynamoDBAttribute(attributeName = "day")
+    /**
+     * All data should be named with the version that is introduced
+     * For data not named, it is there since VERSION_FIRST
+     */
+    public SourceHour() {
+        super(VERSION_FIRST);
+    }
+
     public int getDay() {
         return day;
     }
@@ -28,7 +32,6 @@ public class SourceHour {
         this.day = day;
     }
 
-    @DynamoDBAttribute(attributeName = "open")
     public String getOpen() {
         return open;
     }
@@ -37,7 +40,6 @@ public class SourceHour {
         this.open = open;
     }
 
-    @DynamoDBAttribute(attributeName = "close")
     public String getClose() {
         return close;
     }
@@ -46,7 +48,6 @@ public class SourceHour {
         this.close = close;
     }
 
-    @DynamoDBIgnore
     public LocalTime getOpenLocal() {
         return LocalTime.parse(open);
     }
@@ -55,7 +56,6 @@ public class SourceHour {
         this.open = open.toString();
     }
 
-    @DynamoDBIgnore
     public LocalTime getCloseLocal() {
         return LocalTime.parse(close);
     }

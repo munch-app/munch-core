@@ -1,7 +1,6 @@
-package com.munch.core.struct.nosql.source;
+package com.munch.core.struct.block.source;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDocument;
+import com.munch.core.struct.block.BlockVersion;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,8 +14,7 @@ import java.util.List;
  * Time: 5:27 PM
  * Project: struct
  */
-@DynamoDBDocument
-public class SourcePlace {
+public class SourcePlace extends BlockVersion {
 
     // Basic
     private String name;
@@ -65,7 +63,14 @@ public class SourcePlace {
     private String sourceUrl;
     private Date updatedDate;
 
-    @DynamoDBAttribute(attributeName = "name")
+    /**
+     * All data should be named with the version that is introduced
+     * For data not named, it is there since VERSION_FIRST
+     */
+    public SourcePlace() {
+        super(VERSION_FIRST);
+    }
+
     public String getName() {
         return name;
     }
@@ -74,7 +79,6 @@ public class SourcePlace {
         this.name = name;
     }
 
-    @DynamoDBAttribute(attributeName = "fanCount")
     public long getFanCount() {
         return fanCount;
     }
@@ -83,7 +87,6 @@ public class SourcePlace {
         this.fanCount = fanCount;
     }
 
-    @DynamoDBAttribute(attributeName = "checkInCount")
     public long getCheckInCount() {
         return checkInCount;
     }
@@ -92,7 +95,6 @@ public class SourcePlace {
         this.checkInCount = checkInCount;
     }
 
-    @DynamoDBAttribute(attributeName = "description")
     public String getDescription() {
         return description;
     }
@@ -101,7 +103,6 @@ public class SourcePlace {
         this.description = description;
     }
 
-    @DynamoDBAttribute(attributeName = "websiteUrl")
     public String getWebsiteUrl() {
         return websiteUrl;
     }
@@ -110,7 +111,6 @@ public class SourcePlace {
         this.websiteUrl = websiteUrl;
     }
 
-    @DynamoDBAttribute(attributeName = "tags")
     public List<String> getTags() {
         return tags;
     }
@@ -119,7 +119,6 @@ public class SourcePlace {
         this.tags = tags;
     }
 
-    @DynamoDBAttribute(attributeName = "types")
     public List<String> getTypes() {
         return types;
     }
@@ -128,7 +127,6 @@ public class SourcePlace {
         this.types = types;
     }
 
-    @DynamoDBAttribute(attributeName = "rawContent")
     public List<String> getRawContent() {
         return rawContent;
     }
@@ -137,7 +135,6 @@ public class SourcePlace {
         this.rawContent = rawContent;
     }
 
-    @DynamoDBAttribute(attributeName = "menuUrls")
     public List<String> getMenuUrls() {
         return menuUrls;
     }
@@ -146,7 +143,6 @@ public class SourcePlace {
         this.menuUrls = menuUrls;
     }
 
-    @DynamoDBAttribute(attributeName = "prices")
     public List<String> getPrices() {
         return prices;
     }
@@ -155,7 +151,6 @@ public class SourcePlace {
         this.prices = prices;
     }
 
-    @DynamoDBAttribute(attributeName = "priceStart")
     public double getPriceStart() {
         return priceStart;
     }
@@ -164,7 +159,6 @@ public class SourcePlace {
         this.priceStart = priceStart;
     }
 
-    @DynamoDBAttribute(attributeName = "priceEnd")
     public double getPriceEnd() {
         return priceEnd;
     }
@@ -173,7 +167,6 @@ public class SourcePlace {
         this.priceEnd = priceEnd;
     }
 
-    @DynamoDBAttribute(attributeName = "phoneNumbers")
     public List<String> getPhoneNumbers() {
         return phoneNumbers;
     }
@@ -182,7 +175,6 @@ public class SourcePlace {
         this.phoneNumbers = phoneNumbers;
     }
 
-    @DynamoDBAttribute(attributeName = "emails")
     public List<String> getEmails() {
         return emails;
     }
@@ -191,7 +183,6 @@ public class SourcePlace {
         this.emails = emails;
     }
 
-    @DynamoDBAttribute(attributeName = "hours")
     public List<SourceHour> getHours() {
         return hours;
     }
@@ -200,7 +191,6 @@ public class SourcePlace {
         this.hours = hours;
     }
 
-    @DynamoDBAttribute(attributeName = "lat")
     public double getLat() {
         return lat;
     }
@@ -209,7 +199,6 @@ public class SourcePlace {
         this.lat = lat;
     }
 
-    @DynamoDBAttribute(attributeName = "lng")
     public double getLng() {
         return lng;
     }
@@ -218,7 +207,6 @@ public class SourcePlace {
         this.lng = lng;
     }
 
-    @DynamoDBAttribute(attributeName = "address")
     public String getAddress() {
         return address;
     }
@@ -227,7 +215,6 @@ public class SourcePlace {
         this.address = address;
     }
 
-    @DynamoDBAttribute(attributeName = "addressExt")
     public String getAddressExt() {
         return addressExt;
     }
@@ -236,7 +223,6 @@ public class SourcePlace {
         this.addressExt = addressExt;
     }
 
-    @DynamoDBAttribute(attributeName = "city")
     public String getCity() {
         return city;
     }
@@ -245,7 +231,6 @@ public class SourcePlace {
         this.city = city;
     }
 
-    @DynamoDBAttribute(attributeName = "state")
     public String getState() {
         return state;
     }
@@ -254,7 +239,6 @@ public class SourcePlace {
         this.state = state;
     }
 
-    @DynamoDBAttribute(attributeName = "street")
     public String getStreet() {
         return street;
     }
@@ -263,7 +247,6 @@ public class SourcePlace {
         this.street = street;
     }
 
-    @DynamoDBAttribute(attributeName = "unitNumber")
     public String getUnitNumber() {
         return unitNumber;
     }
@@ -272,7 +255,6 @@ public class SourcePlace {
         this.unitNumber = unitNumber;
     }
 
-    @DynamoDBAttribute(attributeName = "zipCode")
     public String getZipCode() {
         return zipCode;
     }
@@ -281,7 +263,6 @@ public class SourcePlace {
         this.zipCode = zipCode;
     }
 
-    @DynamoDBAttribute(attributeName = "country")
     public String getCountry() {
         return country;
     }
@@ -290,7 +271,6 @@ public class SourcePlace {
         this.country = country;
     }
 
-    @DynamoDBAttribute(attributeName = "ratingPercent")
     public double getRatingPercent() {
         return ratingPercent;
     }
@@ -299,7 +279,6 @@ public class SourcePlace {
         this.ratingPercent = ratingPercent;
     }
 
-    @DynamoDBAttribute(attributeName = "reviewCount")
     public int getReviewCount() {
         return reviewCount;
     }
@@ -308,7 +287,6 @@ public class SourcePlace {
         this.reviewCount = reviewCount;
     }
 
-    @DynamoDBAttribute(attributeName = "posts")
     public List<SourcePost> getPosts() {
         return posts;
     }
@@ -317,7 +295,6 @@ public class SourcePlace {
         this.posts = posts;
     }
 
-    @DynamoDBAttribute(attributeName = "comments")
     public List<SourceComment> getComments() {
         return comments;
     }
@@ -326,7 +303,6 @@ public class SourcePlace {
         this.comments = comments;
     }
 
-    @DynamoDBAttribute(attributeName = "trackingId")
     public String getTrackingId() {
         return trackingId;
     }
@@ -335,7 +311,6 @@ public class SourcePlace {
         this.trackingId = trackingId;
     }
 
-    @DynamoDBAttribute(attributeName = "source")
     public int getSource() {
         return source;
     }
@@ -344,7 +319,6 @@ public class SourcePlace {
         this.source = source;
     }
 
-    @DynamoDBAttribute(attributeName = "sourceUrl")
     public String getSourceUrl() {
         return sourceUrl;
     }
@@ -353,7 +327,6 @@ public class SourcePlace {
         this.sourceUrl = sourceUrl;
     }
 
-    @DynamoDBAttribute(attributeName = "updatedDate")
     public Date getUpdatedDate() {
         return updatedDate;
     }

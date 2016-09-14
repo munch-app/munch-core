@@ -1,7 +1,6 @@
-package com.munch.core.struct.nosql.source;
+package com.munch.core.struct.block.source;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDocument;
+import com.munch.core.struct.block.BlockVersion;
 
 import java.util.Date;
 
@@ -11,8 +10,7 @@ import java.util.Date;
  * Time: 5:27 PM
  * Project: struct
  */
-@DynamoDBDocument
-public class SourceComment {
+public class SourceComment extends BlockVersion {
     // AKA: Review, comments by others
 
     // Personal Information
@@ -32,7 +30,14 @@ public class SourceComment {
     private Date updatedDate;
     private String trackingId;
 
-    @DynamoDBAttribute(attributeName = "username")
+    /**
+     * All data should be named with the version that is introduced
+     * For data not named, it is there since VERSION_FIRST
+     */
+    public SourceComment() {
+        super(VERSION_FIRST);
+    }
+
     public String getUsername() {
         return username;
     }
@@ -41,7 +46,6 @@ public class SourceComment {
         this.username = username;
     }
 
-    @DynamoDBAttribute(attributeName = "date")
     public Date getDate() {
         return date;
     }
@@ -50,7 +54,6 @@ public class SourceComment {
         this.date = date;
     }
 
-    @DynamoDBAttribute(attributeName = "followerCount")
     public int getFollowerCount() {
         return followerCount;
     }
@@ -59,7 +62,6 @@ public class SourceComment {
         this.followerCount = followerCount;
     }
 
-    @DynamoDBAttribute(attributeName = "title")
     public String getTitle() {
         return title;
     }
@@ -68,7 +70,6 @@ public class SourceComment {
         this.title = title;
     }
 
-    @DynamoDBAttribute(attributeName = "message")
     public String getMessage() {
         return message;
     }
@@ -77,7 +78,6 @@ public class SourceComment {
         this.message = message;
     }
 
-    @DynamoDBAttribute(attributeName = "imageUrl")
     public String getImageUrl() {
         return imageUrl;
     }
@@ -86,7 +86,6 @@ public class SourceComment {
         this.imageUrl = imageUrl;
     }
 
-    @DynamoDBAttribute(attributeName = "percent")
     public double getPercent() {
         return percent;
     }
@@ -95,7 +94,6 @@ public class SourceComment {
         this.percent = percent;
     }
 
-    @DynamoDBAttribute(attributeName = "reviewCount")
     public int getReviewCount() {
         return reviewCount;
     }
@@ -104,7 +102,6 @@ public class SourceComment {
         this.reviewCount = reviewCount;
     }
 
-    @DynamoDBAttribute(attributeName = "updateDate")
     public Date getUpdatedDate() {
         return updatedDate;
     }
@@ -113,7 +110,6 @@ public class SourceComment {
         this.updatedDate = updatedDate;
     }
 
-    @DynamoDBAttribute(attributeName = "trackingId")
     public String getTrackingId() {
         return trackingId;
     }

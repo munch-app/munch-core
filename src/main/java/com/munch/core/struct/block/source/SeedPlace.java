@@ -1,10 +1,6 @@
-package com.munch.core.struct.nosql.source;
+package com.munch.core.struct.block.source;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
-import com.munch.core.struct.nosql.website.SourceWebsite;
+import com.munch.core.struct.block.BlockVersion;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,25 +12,9 @@ import java.util.List;
  * Time: 5:22 PM
  * Project: struct
  */
-@DynamoDBTable(tableName = SeedPlace.Table.TableName)
-public class SeedPlace {
-    public static class Table {
-        public static final String TableName = "SeedPlace";
-        public static final String Id = "id";
+public class SeedPlace extends BlockVersion {
 
-        /**
-         * Create an expression with just food venue id key
-         *
-         * @param seedUrl foodVenueId Key
-         * @return expression with key
-         */
-        public static DynamoDBQueryExpression<SourceWebsite> expressKey(String seedUrl) {
-            SourceWebsite data = new SourceWebsite();
-            data.setSeedUrl(seedUrl);
-            return new DynamoDBQueryExpression<SourceWebsite>()
-                    .withHashKeyValues(data).withConsistentRead(false);
-        }
-    }
+    public static final String BUCKET_NAME = "munch.spaghetti.seed.place";
 
     // Basic
     private String id; // Only hash key used
@@ -74,7 +54,14 @@ public class SeedPlace {
     private List<String> sourceWebsites = new ArrayList<>(); // Id of source websites
     private SourceLocation sourceLocation;
 
-    @DynamoDBHashKey(attributeName = Table.Id)
+    /**
+     * All data should be named with the version that is introduced
+     * For data not named, it is there since VERSION_FIRST
+     */
+    public SeedPlace() {
+        super(VERSION_FIRST);
+    }
+
     public String getId() {
         return id;
     }
@@ -83,7 +70,6 @@ public class SeedPlace {
         this.id = id;
     }
 
-    @DynamoDBAttribute(attributeName = "name")
     public String getName() {
         return name;
     }
@@ -92,7 +78,6 @@ public class SeedPlace {
         this.name = name;
     }
 
-    @DynamoDBAttribute(attributeName = "description")
     public String getDescription() {
         return description;
     }
@@ -101,7 +86,6 @@ public class SeedPlace {
         this.description = description;
     }
 
-    @DynamoDBAttribute(attributeName = "phoneNumber")
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -110,7 +94,6 @@ public class SeedPlace {
         this.phoneNumber = phoneNumber;
     }
 
-    @DynamoDBAttribute(attributeName = "websiteUrl")
     public String getWebsiteUrl() {
         return websiteUrl;
     }
@@ -119,7 +102,6 @@ public class SeedPlace {
         this.websiteUrl = websiteUrl;
     }
 
-    @DynamoDBAttribute(attributeName = "types")
     public List<String> getTypes() {
         return types;
     }
@@ -128,7 +110,6 @@ public class SeedPlace {
         this.types = types;
     }
 
-    @DynamoDBAttribute(attributeName = "tags")
     public List<String> getTags() {
         return tags;
     }
@@ -137,7 +118,6 @@ public class SeedPlace {
         this.tags = tags;
     }
 
-    @DynamoDBAttribute(attributeName = "priceStart")
     public double getPriceStart() {
         return priceStart;
     }
@@ -146,7 +126,6 @@ public class SeedPlace {
         this.priceStart = priceStart;
     }
 
-    @DynamoDBAttribute(attributeName = "priceEnd")
     public double getPriceEnd() {
         return priceEnd;
     }
@@ -155,7 +134,6 @@ public class SeedPlace {
         this.priceEnd = priceEnd;
     }
 
-    @DynamoDBAttribute(attributeName = "hours")
     public List<SourceHour> getHours() {
         return hours;
     }
@@ -164,7 +142,6 @@ public class SeedPlace {
         this.hours = hours;
     }
 
-    @DynamoDBAttribute(attributeName = "lat")
     public double getLat() {
         return lat;
     }
@@ -173,7 +150,6 @@ public class SeedPlace {
         this.lat = lat;
     }
 
-    @DynamoDBAttribute(attributeName = "lng")
     public double getLng() {
         return lng;
     }
@@ -182,7 +158,6 @@ public class SeedPlace {
         this.lng = lng;
     }
 
-    @DynamoDBAttribute(attributeName = "address")
     public String getAddress() {
         return address;
     }
@@ -191,7 +166,6 @@ public class SeedPlace {
         this.address = address;
     }
 
-    @DynamoDBAttribute(attributeName = "addressExt")
     public String getAddressExt() {
         return addressExt;
     }
@@ -200,7 +174,6 @@ public class SeedPlace {
         this.addressExt = addressExt;
     }
 
-    @DynamoDBAttribute(attributeName = "city")
     public String getCity() {
         return city;
     }
@@ -209,7 +182,6 @@ public class SeedPlace {
         this.city = city;
     }
 
-    @DynamoDBAttribute(attributeName = "state")
     public String getState() {
         return state;
     }
@@ -218,7 +190,6 @@ public class SeedPlace {
         this.state = state;
     }
 
-    @DynamoDBAttribute(attributeName = "zipCode")
     public String getZipCode() {
         return zipCode;
     }
@@ -227,7 +198,6 @@ public class SeedPlace {
         this.zipCode = zipCode;
     }
 
-    @DynamoDBAttribute(attributeName = "country")
     public String getCountry() {
         return country;
     }
@@ -236,7 +206,6 @@ public class SeedPlace {
         this.country = country;
     }
 
-    @DynamoDBAttribute(attributeName = "source")
     public int getSource() {
         return source;
     }
@@ -245,7 +214,6 @@ public class SeedPlace {
         this.source = source;
     }
 
-    @DynamoDBAttribute(attributeName = "sourceUrl")
     public String getSourceUrl() {
         return sourceUrl;
     }
@@ -254,7 +222,6 @@ public class SeedPlace {
         this.sourceUrl = sourceUrl;
     }
 
-    @DynamoDBAttribute(attributeName = "updatedDate")
     public Date getUpdatedDate() {
         return updatedDate;
     }
@@ -263,7 +230,6 @@ public class SeedPlace {
         this.updatedDate = updatedDate;
     }
 
-    @DynamoDBAttribute(attributeName = "origin")
     public String getOrigin() {
         return origin;
     }
@@ -272,7 +238,6 @@ public class SeedPlace {
         this.origin = origin;
     }
 
-    @DynamoDBAttribute(attributeName = "notes")
     public String getNotes() {
         return notes;
     }
@@ -281,7 +246,6 @@ public class SeedPlace {
         this.notes = notes;
     }
 
-    @DynamoDBAttribute(attributeName = "sourcePlaces")
     public List<SourcePlace> getSourcePlaces() {
         return sourcePlaces;
     }
@@ -290,7 +254,6 @@ public class SeedPlace {
         this.sourcePlaces = sourcePlaces;
     }
 
-    @DynamoDBAttribute(attributeName = "sourceWebsites")
     public List<String> getSourceWebsites() {
         return sourceWebsites;
     }
@@ -299,7 +262,6 @@ public class SeedPlace {
         this.sourceWebsites = sourceWebsites;
     }
 
-    @DynamoDBAttribute(attributeName = "sourceLocation")
     public SourceLocation getSourceLocation() {
         return sourceLocation;
     }

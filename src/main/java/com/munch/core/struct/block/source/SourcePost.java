@@ -1,7 +1,6 @@
-package com.munch.core.struct.nosql.source;
+package com.munch.core.struct.block.source;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDocument;
+import com.munch.core.struct.block.BlockVersion;
 
 /**
  * Created By: Fuxing Loh
@@ -9,8 +8,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDocument;
  * Time: 5:27 PM
  * Project: struct
  */
-@DynamoDBDocument
-public class SourcePost {
+public class SourcePost extends BlockVersion {
     // Post by the Owners of the Source
 
     // General Information
@@ -23,7 +21,14 @@ public class SourcePost {
 
     private String trackingId;
 
-    @DynamoDBAttribute(attributeName = "title")
+    /**
+     * All data should be named with the version that is introduced
+     * For data not named, it is there since VERSION_FIRST
+     */
+    public SourcePost() {
+        super(VERSION_FIRST);
+    }
+
     public String getTitle() {
         return title;
     }
@@ -32,7 +37,6 @@ public class SourcePost {
         this.title = title;
     }
 
-    @DynamoDBAttribute(attributeName = "message")
     public String getMessage() {
         return message;
     }
@@ -41,7 +45,6 @@ public class SourcePost {
         this.message = message;
     }
 
-    @DynamoDBAttribute(attributeName = "imageUrl")
     public String getImageUrl() {
         return imageUrl;
     }
@@ -50,7 +53,6 @@ public class SourcePost {
         this.imageUrl = imageUrl;
     }
 
-    @DynamoDBAttribute(attributeName = "shareCount")
     public long getShareCount() {
         return shareCount;
     }
@@ -59,7 +61,6 @@ public class SourcePost {
         this.shareCount = shareCount;
     }
 
-    @DynamoDBAttribute(attributeName = "likeCount")
     public long getLikeCount() {
         return likeCount;
     }
@@ -68,7 +69,6 @@ public class SourcePost {
         this.likeCount = likeCount;
     }
 
-    @DynamoDBAttribute(attributeName = "trackingId")
     public String getTrackingId() {
         return trackingId;
     }
