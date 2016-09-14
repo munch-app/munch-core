@@ -16,6 +16,7 @@ import java.util.Date;
  * Project: struct
  */
 @Entity
+@Table(indexes = {@Index(name = "SECRET_TOKEN_INDEX", columnList = "secretToken")})
 public class AdminAccount extends AbsSortData {
 
     // High level access
