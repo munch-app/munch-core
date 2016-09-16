@@ -20,6 +20,8 @@ public class SourceWebsite extends BlockVersion {
     private Set<String> mediaUrls = new HashSet<>();
     private Set<String> pdfUrls = new HashSet<>();
 
+    private int source;
+
     /**
      * All data should be named with the version that is introduced
      * For data not named, it is there since VERSION_FIRST
@@ -66,5 +68,13 @@ public class SourceWebsite extends BlockVersion {
 
     public void setPdfUrls(Set<String> pdfUrls) {
         this.pdfUrls = pdfUrls;
+    }
+
+    public int getSource() {
+        return source;
+    }
+
+    public void setSource(int source) {
+        this.source = source;
     }
 }

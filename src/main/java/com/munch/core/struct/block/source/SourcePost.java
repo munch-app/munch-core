@@ -2,6 +2,8 @@ package com.munch.core.struct.block.source;
 
 import com.munch.core.struct.block.BlockVersion;
 
+import java.util.Date;
+
 /**
  * Created By: Fuxing Loh
  * Date: 26/8/2016
@@ -20,6 +22,9 @@ public class SourcePost extends BlockVersion {
     private long likeCount;
 
     private String trackingId;
+    private Date date;
+    private int source;
+    private String sourceUrl;
 
     /**
      * All data should be named with the version that is introduced
@@ -75,5 +80,29 @@ public class SourcePost extends BlockVersion {
 
     public void setTrackingId(String trackingId) {
         this.trackingId = trackingId;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public int getSource() {
+        return source;
+    }
+
+    public void setSource(int source) {
+        this.source = source;
+    }
+
+    public String getSourceUrl() {
+        return sourceUrl;
+    }
+
+    public void setSourceUrl(String sourceUrl) {
+        this.sourceUrl = sourceUrl;
     }
 }
