@@ -2,8 +2,7 @@ package com.munch.core.struct.block.website;
 
 import com.munch.core.struct.block.BlockVersion;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created By: Fuxing Loh
@@ -15,6 +14,10 @@ public class SourceWebPage extends BlockVersion {
 
     private String url;
     private List<String> content = new ArrayList<>();
+    private String title;
+
+    private Set<String> outUrls = new HashSet<>();
+    private Map<String, String> metaTags = new HashMap<>();
 
     /**
      * All data should be named with the version that is introduced
@@ -38,5 +41,29 @@ public class SourceWebPage extends BlockVersion {
 
     public void setContent(List<String> content) {
         this.content = content;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Set<String> getOutUrls() {
+        return outUrls;
+    }
+
+    public void setOutUrls(Set<String> outUrls) {
+        this.outUrls = outUrls;
+    }
+
+    public Map<String, String> getMetaTags() {
+        return metaTags;
+    }
+
+    public void setMetaTags(Map<String, String> metaTags) {
+        this.metaTags = metaTags;
     }
 }
