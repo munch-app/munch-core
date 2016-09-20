@@ -19,6 +19,7 @@ public class SourceWebPage extends BlockVersion {
     private Set<String> outUrls = new HashSet<>();
     private Map<String, String> metaTags = new HashMap<>();
 
+
     /**
      * All data should be named with the version that is introduced
      * For data not named, it is there since VERSION_FIRST

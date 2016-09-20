@@ -69,6 +69,9 @@ public class SourcePlace extends BlockVersion {
     // Source Confirmed Status
     private int sourceConfirmation;
 
+    // For Dashboard to rank
+    private double score;
+
     /**
      * All data should be named with the version that is introduced
      * For data not named, it is there since VERSION_FIRST
@@ -347,6 +350,14 @@ public class SourcePlace extends BlockVersion {
 
     public void setSourceConfirmation(int sourceConfirmation) {
         this.sourceConfirmation = sourceConfirmation;
+    }
+
+    public double getScore() {
+        return score;
+    }
+
+    public void setScore(double score) {
+        this.score = score;
     }
 
     @Transient
