@@ -1,7 +1,9 @@
 package com.munch.core.struct.block.website;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.munch.core.struct.block.BlockVersion;
 
+import java.beans.Transient;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,6 +23,9 @@ public class SourceWebsite extends BlockVersion {
     private Set<String> pdfUrls = new HashSet<>();
 
     private int source;
+
+    // Source Confirmed Status
+    private int sourceConfirmation;
 
     /**
      * All data should be named with the version that is introduced
@@ -76,5 +81,21 @@ public class SourceWebsite extends BlockVersion {
 
     public void setSource(int source) {
         this.source = source;
+    }
+
+    public int getSourceConfirmation() {
+        return sourceConfirmation;
+    }
+
+    public void setSourceConfirmation(int sourceConfirmation) {
+        this.sourceConfirmation = sourceConfirmation;
+    }
+
+    @Transient
+    @JsonIgnore
+    public SourceWebPage getRootPage() {
+        return webPages.stream()
+                .min((o1, o2) -> Integer.compare(o1.getUrl().length(), o2.getUrl().length()))
+                .orElseGet(null);
     }
 }

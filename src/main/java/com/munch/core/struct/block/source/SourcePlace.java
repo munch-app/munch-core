@@ -1,7 +1,10 @@
 package com.munch.core.struct.block.source;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.munch.core.struct.block.BlockVersion;
+import org.apache.commons.lang3.StringUtils;
 
+import java.beans.Transient;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -62,6 +65,9 @@ public class SourcePlace extends BlockVersion {
     private int source;
     private String sourceUrl;
     private Date updatedDate;
+
+    // Source Confirmed Status
+    private int sourceConfirmation;
 
     /**
      * All data should be named with the version that is introduced
@@ -333,5 +339,28 @@ public class SourcePlace extends BlockVersion {
 
     public void setUpdatedDate(Date updatedDate) {
         this.updatedDate = updatedDate;
+    }
+
+    public int getSourceConfirmation() {
+        return sourceConfirmation;
+    }
+
+    public void setSourceConfirmation(int sourceConfirmation) {
+        this.sourceConfirmation = sourceConfirmation;
+    }
+
+    @Transient
+    @JsonIgnore
+    public String getAvailableAddress() {
+        if (StringUtils.isNotEmpty(address)) {
+            if (StringUtils.isNoneEmpty(address, addressExt)) {
+                return address + " " + addressExt;
+            }
+            return address;
+        }
+        if (StringUtils.isNoneEmpty(street)) {
+            return street;
+        }
+        return null;
     }
 }
