@@ -2,6 +2,7 @@ package com.munch.core.struct.block.website;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.munch.core.struct.block.BlockVersion;
+import com.munch.core.struct.block.source.SourceTag;
 
 import java.beans.Transient;
 import java.util.HashSet;
@@ -21,6 +22,7 @@ public class SourceWebsite extends BlockVersion {
 
     private Set<String> mediaUrls = new HashSet<>();
     private Set<String> pdfUrls = new HashSet<>();
+    private Set<SourceTag> sourceTags = new HashSet<>();
 
     private int source;
 
@@ -100,6 +102,14 @@ public class SourceWebsite extends BlockVersion {
 
     public void setScore(double score) {
         this.score = score;
+    }
+
+    public Set<SourceTag> getSourceTags() {
+        return sourceTags;
+    }
+
+    public void setSourceTags(Set<SourceTag> sourceTags) {
+        this.sourceTags = sourceTags;
     }
 
     @Transient
