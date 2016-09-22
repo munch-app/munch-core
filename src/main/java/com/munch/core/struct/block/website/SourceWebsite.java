@@ -25,12 +25,19 @@ public class SourceWebsite extends BlockVersion {
     private Set<SourceTag> sourceTags = new HashSet<>();
 
     private int source;
+    private int sourceCount; // How many times it appeared.
 
     // Source Confirmed Status
     private int sourceConfirmation;
 
     // For Dashboard to rank
     private double score;
+
+    private long extractedCount;
+    private long rawCount;
+
+    private long tagCount;
+    private long typeCount;
 
     /**
      * All data should be named with the version that is introduced
@@ -110,6 +117,46 @@ public class SourceWebsite extends BlockVersion {
 
     public void setSourceTags(Set<SourceTag> sourceTags) {
         this.sourceTags = sourceTags;
+    }
+
+    public long getExtractedCount() {
+        return extractedCount;
+    }
+
+    public void setExtractedCount(long extractedCount) {
+        this.extractedCount = extractedCount;
+    }
+
+    public long getRawCount() {
+        return rawCount;
+    }
+
+    public void setRawCount(long rawCount) {
+        this.rawCount = rawCount;
+    }
+
+    public long getTagCount() {
+        return tagCount;
+    }
+
+    public void setTagCount(long tagCount) {
+        this.tagCount = tagCount;
+    }
+
+    public long getTypeCount() {
+        return typeCount;
+    }
+
+    public void setTypeCount(long typeCount) {
+        this.typeCount = typeCount;
+    }
+
+    public int getSourceCount() {
+        return sourceCount;
+    }
+
+    public void setSourceCount(int sourceCount) {
+        this.sourceCount = sourceCount;
     }
 
     @Transient
