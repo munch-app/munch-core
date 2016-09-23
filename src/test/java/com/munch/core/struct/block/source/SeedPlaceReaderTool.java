@@ -4,6 +4,7 @@ import com.munch.core.essential.json.AwsPersistClient;
 import com.munch.core.essential.json.BlockMapper;
 import com.munch.core.essential.json.GsonConverter;
 import com.munch.core.essential.json.PersistClient;
+import com.munch.core.struct.block.website.SourceWebsite;
 
 /**
  * Created by: Fuxing
@@ -23,7 +24,15 @@ public class SeedPlaceReaderTool {
 
     public static void main(String[] args) {
         SeedPlaceReaderTool tool = new SeedPlaceReaderTool();
-        SeedPlace seedPlace = tool.get("8a80cb8157381d0f0157381d6d0701c0");
+        SeedPlace seedPlace = tool.get("8a80cb8157381d0f0157381d9c4602dc");
+        System.out.println(seedPlace.getName());
+        for (SourcePlace sourcePlace : seedPlace.getSourcePlaces()) {
+            System.out.printf("Track Id: %s, Track Url: %s\n", sourcePlace.getTrackingId(), sourcePlace.getSourceUrl());
+        }
+        System.out.println("\n\n");
+        for (SourceWebsite website : seedPlace.getSourceWebsites()) {
+            System.out.printf("Seed Url: %s\n", website.getSeedUrl());
+        }
     }
 
     public SeedPlace get(String id) {
