@@ -8,8 +8,8 @@ package com.munch.core.essential.json;
  */
 public class BlockMapper {
 
-    private PersistClient persistClient;
-    private JsonConverter jsonConverter;
+    protected PersistClient persistClient;
+    protected JsonConverter jsonConverter;
 
     public BlockMapper(PersistClient persistClient, JsonConverter jsonConverter) {
         this.persistClient = persistClient;
