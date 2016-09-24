@@ -31,7 +31,7 @@ public class BlockMapperModule extends AbstractModule {
     @Provides
     @Named(SeedPlace.BUCKET_NAME)
     @Singleton
-    TypedBlockMapper<SeedPlace> provideSeedPlaceTypedMapper(BlockMapper blockMapper) {
+    TypedBlockMapper<SeedPlace> provideSeedPlaceTypedMapper(@Named(SeedPlace.BUCKET_NAME) BlockMapper blockMapper) {
         return new TypedBlockMapper<>(SeedPlace.class, SeedPlace::getId, blockMapper);
     }
 
