@@ -5,7 +5,7 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.munch.core.essential.source.DataSource;
-import com.munch.core.struct.rdbms.abs.AbsAuditData;
+import com.munch.core.struct.rdbms.media.AbsMedia;
 import com.munch.core.struct.rdbms.media.PlaceS3Setting;
 import com.munch.core.struct.rdbms.media.S3Setting;
 import org.apache.commons.io.FilenameUtils;
@@ -24,13 +24,7 @@ import java.util.Set;
  * Project: vital-core
  */
 @Entity
-public class PlaceMedia extends AbsAuditData {
-
-    public static final int STATUS_PRESIGNED = 100;
-    public static final int STATUS_UPLOADED = 200;
-
-    public static final int TYPE_IMAGE = 2000;
-    public static final int TYPE_VIDEO = 3000;
+public class PlaceMedia extends AbsMedia {
 
     public static final int SOURCE_FACEBOOK = DataSource.FACEBOOK;
     public static final int SOURCE_GOOGLE = DataSource.GOOGLE;
@@ -51,13 +45,13 @@ public class PlaceMedia extends AbsAuditData {
     private String originalName;
 
     private String sourceUrl;
-    private int sourceType;
+    private Integer sourceType;
 
     // Location associated to this place
     private Set<PlaceLocation> locations;
 
-    private int type;
-    private int status;
+    private Integer type;
+    private Integer status;
 
     // TODO all sizes of the image to persist here, and push from lamba to here once resized. Store in different bucket
     // Image size to be pushed also
@@ -220,30 +214,30 @@ public class PlaceMedia extends AbsAuditData {
         this.sourceUrl = sourceUrl;
     }
 
-    @Column
-    public int getSourceType() {
+    @Column(nullable = false)
+    public Integer getSourceType() {
         return sourceType;
     }
 
-    public void setSourceType(int sourceType) {
+    public void setSourceType(Integer sourceType) {
         this.sourceType = sourceType;
     }
 
-    @Column
-    public int getStatus() {
+    @Column(nullable = false)
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 
-    @Column
-    public int getType() {
+    @Column(nullable = false)
+    public Integer getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(Integer type) {
         this.type = type;
     }
 }

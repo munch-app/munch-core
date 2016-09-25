@@ -29,7 +29,7 @@ public class Account extends AbsAuditData {
     private String email;
     private String phoneNumber;
     private Country country;
-    private int type;
+    private Integer type; // Cannot be null
 
     // Personal Info
     private String firstName; // Or name
@@ -44,8 +44,8 @@ public class Account extends AbsAuditData {
     // Tracking
     private Date lastActiveDate;
     private Date lastLoginDate;
-    private boolean emailVerified;
-    private boolean phoneVerified;
+    private boolean emailVerified = false;
+    private boolean phoneVerified = false;
     private Set<AccountAccessToken> accessTokens;
 
     /**
@@ -97,12 +97,12 @@ public class Account extends AbsAuditData {
         this.country = country;
     }
 
-    @Column
-    public int getType() {
+    @Column(nullable = false)
+    public Integer getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(Integer type) {
         this.type = type;
     }
 

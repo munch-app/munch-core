@@ -21,7 +21,7 @@ public class PlaceType extends AbsSortData {
     private long id;
     private String name;
 
-    private int type;
+    private Integer type; // Cannot be null too
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,12 +38,12 @@ public class PlaceType extends AbsSortData {
         this.id = id;
     }
 
-    @Column
-    public int getType() {
+    @Column(nullable = false)
+    public Integer getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(Integer type) {
         this.type = type;
     }
 

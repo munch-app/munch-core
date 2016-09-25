@@ -15,7 +15,7 @@ public class PlaceS3Setting implements S3Setting {
 
     private ConfigReader config = MunchConfig.getInstance();
 
-    private String bucket = config.getString("aws.s3.bucket");
+    private String bucket = config.getString("aws.s3.bucket.place-images");
     private String region = config.getString("aws.s3.region");
 
     @Override

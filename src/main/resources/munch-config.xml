@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='utf-8'?>
+<munch>
+    <environment>development</environment>
+
+    <aws>
+        <provider>ec2</provider><!--ec2/keys -->
+        <region>ap-southeast-1</region>
+
+        <credentials>
+            <access-key>EC2-PROVIDER</access-key>
+            <secret-key>IAM-ROLES</secret-key>
+        </credentials>
+
+        <s3>
+            <bucket>
+                <place-images>munch.place.images</place-images>
+                <place-menus>munch.place.menus</place-menus>
+            </bucket>
+            <region>ap-southeast-1</region>
+        </s3>
+    </aws>
+
+    <google>
+        <api-key></api-key>
+    </google>
+
+    <facebook>
+        <access-token></access-token>
+    </facebook>
+
+    <development>
+        <aws>
+            <access-key></access-key>
+            <secret-key></secret-key>
+
+            <s3>
+                <bucket-images>vital-images</bucket-images>
+                <bucket-videos>vital-videos</bucket-videos>
+                <region>ap-southeast-1</region>
+                <endpoint>http://docker.me:3003</endpoint>
+            </s3>
+
+            <dynamodb>
+                <region>ap-southeast-1</region>
+                <endpoint>http://docker.me:3005</endpoint>
+            </dynamodb>
+        </aws>
+    </development>
+</munch>

@@ -7,6 +7,12 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 /**
+ * Don't know why I created this class for, quite a bad design for rdbms
+ * Should use nosql for this kind of data
+ * <p>
+ * key length = 255
+ * value length = 1000
+ * <p>
  * Created By: Fuxing Loh
  * Date: 23/8/2016
  * Time: 8:50 PM

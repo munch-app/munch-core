@@ -16,6 +16,9 @@ import java.util.Set;
 @Entity
 public class PlaceLocation extends AbsSortData {
 
+    public static final int STATUS_ACTIVE = 200;
+    public static final int STATUS_DELETED = 400;
+
     // Basic
     private String id;
     private String name;
@@ -25,20 +28,28 @@ public class PlaceLocation extends AbsSortData {
     private Set<BusinessHour> businessHours;
 
     // Location
-    private double lat;
-    private double lng;
+    private Double lat;
+    private Double lng;
+
     private String address; // Address is everything below, (street, city, state, zip code and unit num are formatted data)
+
+    private String block;
+    private String town;
     private String street;
-    private String city;
-    private String state;
     private String zipCode;
     private String unitNumber;
-    private String neighbourhood;
+
+    private String city;
+    private String state;
+
     private Country country;
 
+    // TODO Mall, Neigh
+    private String neighbourhood;
+
     // Data Tracking
-    private int status;
-    private int revision;
+    private int status = STATUS_ACTIVE;
+    private int revision = 0;
     private String sourceUrl;
 
     // Backward Accessibility
@@ -83,21 +94,21 @@ public class PlaceLocation extends AbsSortData {
         this.businessHours = businessHours;
     }
 
-    @Column
-    public double getLat() {
+    @Column(nullable = false)
+    public Double getLat() {
         return lat;
     }
 
-    public void setLat(double lat) {
+    public void setLat(Double lat) {
         this.lat = lat;
     }
 
-    @Column
-    public double getLng() {
+    @Column(nullable = false)
+    public Double getLng() {
         return lng;
     }
 
-    public void setLng(double lng) {
+    public void setLng(Double lng) {
         this.lng = lng;
     }
 
@@ -117,6 +128,24 @@ public class PlaceLocation extends AbsSortData {
 
     public void setStreet(String street) {
         this.street = street;
+    }
+
+    @Column(length = 30, nullable = true)
+    public String getBlock() {
+        return block;
+    }
+
+    public void setBlock(String block) {
+        this.block = block;
+    }
+
+    @Column(length = 100, nullable = true)
+    public String getTown() {
+        return town;
+    }
+
+    public void setTown(String town) {
+        this.town = town;
     }
 
     @Column(length = 70, nullable = true)
@@ -155,6 +184,9 @@ public class PlaceLocation extends AbsSortData {
         this.unitNumber = unitNumber;
     }
 
+    /**
+     * TODO
+     */
     @Column(length = 70, nullable = true)
     public String getNeighbourhood() {
         return neighbourhood;
@@ -173,7 +205,7 @@ public class PlaceLocation extends AbsSortData {
         this.country = country;
     }
 
-    @Column
+    @Column(nullable = false)
     public int getStatus() {
         return status;
     }
@@ -182,7 +214,7 @@ public class PlaceLocation extends AbsSortData {
         this.status = status;
     }
 
-    @Column
+    @Column(nullable = false)
     public int getRevision() {
         return revision;
     }
@@ -201,6 +233,11 @@ public class PlaceLocation extends AbsSortData {
 
     public void setSourceUrl(String source) {
         this.sourceUrl = source;
+    }
+
+    @Transient
+    public void incrementRevision() {
+        setRevision(revision++);
     }
 
     @ManyToOne(fetch = FetchType.EAGER)

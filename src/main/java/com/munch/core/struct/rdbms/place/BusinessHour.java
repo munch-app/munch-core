@@ -29,7 +29,7 @@ public class BusinessHour extends AbsAuditData {
     public static final int PH = 100;
 
     private String id;
-    private int day;
+    private Integer day;
     private LocalTime open;
     private LocalTime close;
 
@@ -45,12 +45,12 @@ public class BusinessHour extends AbsAuditData {
         this.id = id;
     }
 
-    @Column
-    public int getDay() {
+    @Column(nullable = false)
+    public Integer getDay() {
         return day;
     }
 
-    public void setDay(int day) {
+    public void setDay(Integer day) {
         this.day = day;
     }
 

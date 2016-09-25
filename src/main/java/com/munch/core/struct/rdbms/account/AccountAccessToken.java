@@ -14,13 +14,13 @@ import javax.persistence.*;
 @Entity
 public class AccountAccessToken extends AbsAuditData {
 
-    public static final int IOS = 20_000;
-    public static final int ANDROID = 21_000;
-    public static final int WEBSITE = 22_000;
+    public static final int TYPE_IOS = 20_000;
+    public static final int TYPE_ANDROID = 21_000;
+    public static final int TYPE_WEBSITE = 22_000;
 
     private String accessKey;
     private String secretKey;
-    private int type;
+    private Integer type;
 
     // Description
     private String uid;
@@ -57,12 +57,12 @@ public class AccountAccessToken extends AbsAuditData {
         this.secretKey = secretKey;
     }
 
-    @Column
-    public int getType() {
+    @Column(nullable = false)
+    public Integer getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(Integer type) {
         this.type = type;
     }
 

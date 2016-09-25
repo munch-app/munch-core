@@ -15,7 +15,7 @@ public class MenuS3Setting implements S3Setting {
 
     private ConfigReader config = MunchConfig.getInstance();
 
-    private String bucket = config.getString("aws.s3.bucket-menu");
+    private String bucket = config.getString("aws.s3.bucket.place-menus");
     private String region = config.getString("aws.s3.region");
 
     @Override

@@ -37,6 +37,7 @@ public class SeedPlaceTrack extends AbsSortData {
     public static final int STATUS_SOURCE_ENTRY_OPEN = 3_030;
     public static final int STATUS_EXTRACT_OPEN = 3_040;
     public static final int STATUS_REVIEW_OPEN = 3_050;
+    public static final int STATUS_CACHE_RESOURCE_OPEN = 3_100;
     public static final int STATUS_FINAL_ENTRY_OPEN = 3_200;
 
     // Branch Location
@@ -52,15 +53,15 @@ public class SeedPlaceTrack extends AbsSortData {
     public static final int STATUS_DELAY = 9_500;
 
     // Data Types
-    public static final int TYPE_FRESH = 300;
-    public static final int TYPE_BRANCH = 500;
+    public static final int TYPE_NEW_PLACE = 300;
+    public static final int TYPE_NEW_BRANCH = 500; // aka branch location
 
     // Main
     private String id;
     private String name;
     private PlaceLocation placeLocation; // Final Place location after adding
 
-    private int dataType;
+    private Integer dataType;
 
     // Stage Completion Dates
     private Date stageLocationDate;
@@ -69,10 +70,10 @@ public class SeedPlaceTrack extends AbsSortData {
     private Date stageExtractDate;
     private Date stageFinalEntryDate;
 
-    private double lat, lng;
+    private Double lat, lng;
 
-    private int status;
-    private int source;
+    private Integer status;
+    private Integer source;
     private String origin; // The guy that uploaded it
 
     @GeneratedValue(generator = "uuid")
@@ -97,41 +98,41 @@ public class SeedPlaceTrack extends AbsSortData {
         this.name = name;
     }
 
-    @Column
-    public int getStatus() {
+    @Column(nullable = false)
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 
-    @Column
-    public int getSource() {
+    @Column(nullable = false)
+    public Integer getSource() {
         return source;
     }
 
-    public void setSource(int source) {
+    public void setSource(Integer source) {
         this.source = source;
     }
 
-    @Column
+    @Column(nullable = false)
     @Latitude(of = "location")
-    public double getLat() {
+    public Double getLat() {
         return lat;
     }
 
-    public void setLat(double lat) {
+    public void setLat(Double lat) {
         this.lat = lat;
     }
 
-    @Column
+    @Column(nullable = false)
     @Longitude(of = "location")
-    public double getLng() {
+    public Double getLng() {
         return lng;
     }
 
-    public void setLng(double lng) {
+    public void setLng(Double lng) {
         this.lng = lng;
     }
 
@@ -159,11 +160,11 @@ public class SeedPlaceTrack extends AbsSortData {
     }
 
     @Column
-    public int getDataType() {
+    public Integer getDataType() {
         return dataType;
     }
 
-    public void setDataType(int dataType) {
+    public void setDataType(Integer dataType) {
         this.dataType = dataType;
     }
 

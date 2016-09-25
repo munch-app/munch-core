@@ -12,7 +12,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import javax.persistence.*;
 import java.io.File;
 
-import static com.munch.core.struct.rdbms.place.PlaceMedia.STATUS_UPLOADED;
+import static com.munch.core.struct.rdbms.media.AbsMedia.STATUS_UPLOADED;
 
 /**
  * Created By: Fuxing Loh
@@ -22,8 +22,7 @@ import static com.munch.core.struct.rdbms.place.PlaceMedia.STATUS_UPLOADED;
  */
 @Entity
 public class MenuMedia extends AbsSortData {
-    public static final int TYPE_IMAGE = 2000;
-    public static final int TYPE_VIDEO = 3000;
+
     public static final int TYPE_PDF = 5000;
 
     public static final int SOURCE_WEBSITE = DataSource.WEBSITE;
@@ -39,10 +38,10 @@ public class MenuMedia extends AbsSortData {
     private String originalName;
 
     private String sourceUrl;
-    private int sourceType;
+    private Integer sourceType; // Cannot be null
 
-    private int type;
-    private int status;
+    private Integer type; // Cannot be null
+    private Integer status; // Cannot be null, replies on onCreate
 
     /**
      * You have to set object before you can upload the object.
@@ -156,30 +155,30 @@ public class MenuMedia extends AbsSortData {
         this.sourceUrl = sourceUrl;
     }
 
-    @Column
-    public int getSourceType() {
+    @Column(nullable = false)
+    public Integer getSourceType() {
         return sourceType;
     }
 
-    public void setSourceType(int sourceType) {
+    public void setSourceType(Integer sourceType) {
         this.sourceType = sourceType;
     }
 
-    @Column
-    public int getStatus() {
+    @Column(nullable = false)
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 
-    @Column
-    public int getType() {
+    @Column(nullable = false)
+    public Integer getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(Integer type) {
         this.type = type;
     }
 }

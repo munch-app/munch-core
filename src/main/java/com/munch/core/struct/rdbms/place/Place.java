@@ -25,6 +25,9 @@ import java.util.Set;
 @Entity
 public class Place extends AbsAuditData {
 
+    public static final int STATUS_ACTIVE = 200;
+    public static final int STATUS_DELETED = 400;
+
     // Basic
     private String id;
     private String name;
@@ -34,11 +37,10 @@ public class Place extends AbsAuditData {
     private String phoneNumber;
     private String websiteUrl;
     private Set<PlaceType> types;
-    private Set<PlaceTag> tags;
 
     // Details
-    private double priceStart;
-    private double priceEnd;
+    private Double priceStart;
+    private Double priceEnd;
 
     // Menu
     private Set<MenuWebsite> menuWebsites;
@@ -49,8 +51,8 @@ public class Place extends AbsAuditData {
     private Set<PlaceMedia> medias;
 
     // Data Tracking
-    private int status;
-    private int revision;
+    private int status = STATUS_ACTIVE;
+    private int revision = 0;
     private String sourceUrl;
 
     @GeneratedValue(generator = "uuid")
@@ -111,30 +113,21 @@ public class Place extends AbsAuditData {
         this.types = types;
     }
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE}, orphanRemoval = true)
-    public Set<PlaceTag> getTags() {
-        return tags;
-    }
-
-    public void setTags(Set<PlaceTag> tags) {
-        this.tags = tags;
-    }
-
     @Column
-    public double getPriceStart() {
+    public Double getPriceStart() {
         return priceStart;
     }
 
-    public void setPriceStart(double priceStart) {
+    public void setPriceStart(Double priceStart) {
         this.priceStart = priceStart;
     }
 
     @Column
-    public double getPriceEnd() {
+    public Double getPriceEnd() {
         return priceEnd;
     }
 
-    public void setPriceEnd(double priceEnd) {
+    public void setPriceEnd(Double priceEnd) {
         this.priceEnd = priceEnd;
     }
 
@@ -174,7 +167,7 @@ public class Place extends AbsAuditData {
         this.medias = medias;
     }
 
-    @Column
+    @Column(nullable = false)
     public int getStatus() {
         return status;
     }
@@ -183,13 +176,18 @@ public class Place extends AbsAuditData {
         this.status = status;
     }
 
-    @Column
+    @Column(nullable = false)
     public int getRevision() {
         return revision;
     }
 
     public void setRevision(int revision) {
         this.revision = revision;
+    }
+
+    @Transient
+    public void incrementRevision() {
+        setRevision(revision++);
     }
 
     /**

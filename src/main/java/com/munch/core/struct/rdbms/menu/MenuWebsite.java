@@ -20,7 +20,7 @@ public class MenuWebsite extends AbsSortData {
     private String id;
 
     private String url;
-    private String name;
+    private String name; // Title, make it editable
 
 
     @GeneratedValue(generator = "uuid")

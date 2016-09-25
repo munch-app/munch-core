@@ -1,6 +1,7 @@
 package com.munch.core.struct.block.source;
 
 import com.munch.core.struct.block.BlockVersion;
+import com.munch.core.struct.block.source.finals.FinalPlace;
 import com.munch.core.struct.block.website.SourceWebsite;
 
 import java.util.ArrayList;
@@ -55,6 +56,9 @@ public class SeedPlace extends BlockVersion {
     private SourceLocation sourceLocation;
 
     private List<SourceWebsite> sourceWebsites = new ArrayList<>();
+
+    // Final Place, although it can be stored in it's own bucket, storing here allows easy access when needs to
+    private FinalPlace finalPlace;
 
     /**
      * All data should be named with the version that is introduced
@@ -270,5 +274,13 @@ public class SeedPlace extends BlockVersion {
 
     public void setSourceLocation(SourceLocation sourceLocation) {
         this.sourceLocation = sourceLocation;
+    }
+
+    public FinalPlace getFinalPlace() {
+        return finalPlace;
+    }
+
+    public void setFinalPlace(FinalPlace finalPlace) {
+        this.finalPlace = finalPlace;
     }
 }
