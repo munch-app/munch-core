@@ -23,7 +23,7 @@ public class Neighborhood extends AbsSortData {
     private Double lat;
     private Double lng;
 
-    // TODO Grid in lat lng?
+    // TODO Grid in lat lng? in the future
 
     private String address;
 

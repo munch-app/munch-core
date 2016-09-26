@@ -1,4 +1,4 @@
-package com.munch.core.struct.rdbms.media;
+package com.munch.core.struct.util;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.munch.core.essential.util.ConfigReader;

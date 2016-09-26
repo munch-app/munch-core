@@ -5,7 +5,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.munch.core.essential.source.DataSource;
 import com.munch.core.struct.rdbms.abs.AbsSortData;
 import com.munch.core.struct.rdbms.media.MenuS3Setting;
-import com.munch.core.struct.rdbms.media.S3Setting;
+import com.munch.core.struct.util.S3Setting;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 

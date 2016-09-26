@@ -44,7 +44,7 @@ public class PlaceLocation extends AbsSortData {
 
     private Country country;
 
-    // TODO Mall, Neigh
+    // TODO Mall, Neigh?
     private String neighbourhood;
 
     // Data Tracking

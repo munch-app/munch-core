@@ -48,7 +48,6 @@ public class Place extends AbsAuditData {
 
     // Related
     private Set<PlaceLocation> locations;
-    private Set<PlaceMedia> medias;
 
     // Data Tracking
     private int status = STATUS_ACTIVE;
@@ -156,15 +155,6 @@ public class Place extends AbsAuditData {
 
     public void setLocations(Set<PlaceLocation> locations) {
         this.locations = locations;
-    }
-
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE}, orphanRemoval = true)
-    public Set<PlaceMedia> getMedias() {
-        return medias;
-    }
-
-    public void setMedias(Set<PlaceMedia> medias) {
-        this.medias = medias;
     }
 
     @Column(nullable = false)

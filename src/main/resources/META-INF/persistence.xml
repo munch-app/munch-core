@@ -10,8 +10,6 @@
         <class>com.munch.core.struct.rdbms.place.Place</class>
         <class>com.munch.core.struct.rdbms.place.BusinessHour</class>
         <class>com.munch.core.struct.rdbms.place.PlaceLocation</class>
-        <class>com.munch.core.struct.rdbms.place.PlaceMedia</class>
-        <class>com.munch.core.struct.rdbms.place.PlaceTag</class>
         <class>com.munch.core.struct.rdbms.place.PlaceType</class>
 
         <class>com.munch.core.struct.rdbms.menu.MenuMedia</class>
@@ -24,8 +22,6 @@
 
         <class>com.munch.core.struct.rdbms.type.Country</class>
         <class>com.munch.core.struct.rdbms.type.Nationality</class>
-
-        <class>com.munch.core.struct.rdbms.system.KeyValuePair</class>
 
         <!-- Admin Classes (Munch Dashboard)-->
         <class>com.munch.core.struct.rdbms.admin.AdminAccount</class>
@@ -52,7 +48,7 @@
             <!-- Connection String TODO -->
             <property name="hibernate.hikari.dataSource.url"
                       value="jdbc:mysql://139.59.240.51:3306/munch?useUnicode=yes&amp;characterEncoding=UTF-8"/>
-            <property name="hibernate.hikari.dataSource.user" value="root"/>
+            <property name="hibernate.hikari.dataSource.username" value="root"/>
             <property name="hibernate.hikari.dataSource.password" value="passwordmunch0327"/>
 
             <!-- Lucene Search-->

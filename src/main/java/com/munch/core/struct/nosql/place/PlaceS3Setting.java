@@ -1,9 +1,10 @@
-package com.munch.core.struct.rdbms.media;
+package com.munch.core.struct.nosql.place;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.munch.core.essential.util.AWSUtil;
 import com.munch.core.essential.util.ConfigReader;
 import com.munch.core.essential.util.MunchConfig;
+import com.munch.core.struct.util.S3Setting;
 
 /**
  * Created by: Fuxing
