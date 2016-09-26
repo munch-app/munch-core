@@ -23,6 +23,9 @@
         <class>com.munch.core.struct.rdbms.type.Country</class>
         <class>com.munch.core.struct.rdbms.type.Nationality</class>
 
+        <class>com.munch.core.struct.rdbms.locality.Container</class>
+        <class>com.munch.core.struct.rdbms.locality.Neighborhood</class>
+
         <!-- Admin Classes (Munch Dashboard)-->
         <class>com.munch.core.struct.rdbms.admin.AdminAccount</class>
 

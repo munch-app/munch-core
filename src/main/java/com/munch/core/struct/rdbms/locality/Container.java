@@ -1,6 +1,12 @@
 package com.munch.core.struct.rdbms.locality;
 
 import com.munch.core.struct.rdbms.type.Country;
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
 /**
  * Created By: Fuxing Loh
@@ -8,6 +14,7 @@ import com.munch.core.struct.rdbms.type.Country;
  * Time: 11:40 PM
  * Project: struct
  */
+@Entity
 public class Container {
 
     public static final int TYPE_MALL = 1350;
@@ -16,8 +23,6 @@ public class Container {
     private String id;
     private Integer type;
 
-    // TODO Images
-
     private String name;
     private String description;
     private String websiteUrl;
@@ -25,7 +30,6 @@ public class Container {
     private Double lat;
     private Double lng;
 
-    // TODO Grid in lat lng? in the future
 
     private String address;
 
@@ -39,4 +43,19 @@ public class Container {
 
     private Country country;
     private Neighborhood neighborhood;
+
+    // TODO Grid in lat lng? in the future
+
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid")
+    @Column(columnDefinition = "CHAR(32)")
+    @Id
+    public String getId() {
+        return id;
+    }
+
+    protected void setId(String id) {
+        this.id = id;
+    }
+
 }
