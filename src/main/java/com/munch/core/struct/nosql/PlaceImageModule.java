@@ -1,11 +1,6 @@
 package com.munch.core.struct.nosql;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-import com.amazonaws.services.s3.AmazonS3;
 import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
-
-import javax.inject.Singleton;
 
 /**
  * Created By: Fuxing Loh
@@ -19,9 +14,4 @@ public class PlaceImageModule extends AbstractModule {
     protected void configure() {
     }
 
-    @Provides
-    @Singleton
-    PlaceImageManager providePlaceImageManager(AmazonS3 amazonS3, DynamoDBMapper mapper) {
-        return new PlaceImageManager(amazonS3, mapper, "munch.place.images");
-    }
 }

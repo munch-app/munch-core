@@ -49,7 +49,8 @@ public class Place extends AbsAuditData {
 
     // Data Tracking
     private int status = STATUS_ACTIVE;
-    private int revision = 0;
+    private int humanVersion = 0;
+    private int machineVersion = 0;
 
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid")
@@ -59,7 +60,7 @@ public class Place extends AbsAuditData {
         return id;
     }
 
-    public void setId(String id) {
+    protected void setId(String id) {
         this.id = id;
     }
 
@@ -109,7 +110,7 @@ public class Place extends AbsAuditData {
         this.types = types;
     }
 
-    @Column
+    @Column(nullable = false)
     public Double getPriceStart() {
         return priceStart;
     }
@@ -118,7 +119,7 @@ public class Place extends AbsAuditData {
         this.priceStart = priceStart;
     }
 
-    @Column
+    @Column(nullable = false)
     public Double getPriceEnd() {
         return priceEnd;
     }
@@ -127,7 +128,7 @@ public class Place extends AbsAuditData {
         this.priceEnd = priceEnd;
     }
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL}, orphanRemoval = true, mappedBy = "place")
     public Set<PlaceMenu> getMenus() {
         return menus;
     }
@@ -136,7 +137,7 @@ public class Place extends AbsAuditData {
         this.menus = menus;
     }
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE}, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true, mappedBy = "place")
     public Set<PlaceLocation> getLocations() {
         return locations;
     }
@@ -155,17 +156,32 @@ public class Place extends AbsAuditData {
     }
 
     @Column(nullable = false)
-    public int getRevision() {
-        return revision;
+    public int getHumanVersion() {
+        return humanVersion;
     }
 
-    public void setRevision(int revision) {
-        this.revision = revision;
+    protected void setHumanVersion(int humanVersion) {
+        this.humanVersion = humanVersion;
+    }
+
+    @Column(nullable = false)
+    public int getMachineVersion() {
+        return machineVersion;
+    }
+
+    protected void setMachineVersion(int machineVersion) {
+        this.machineVersion = machineVersion;
     }
 
     @Transient
-    public void incrementRevision() {
-        setRevision(revision++);
+    public void incrementHumanVersion() {
+        setHumanVersion(humanVersion++);
+        incrementMachineVersion();
+    }
+
+    @Transient
+    public void incrementMachineVersion() {
+        setMachineVersion(machineVersion++);
     }
 
     public static class Search extends Lucene {

@@ -33,5 +33,5 @@ public interface HashSetData {
     public boolean equals(final Object obj) {
         return equals(obj, getClass());
     }
-     */
+    */
 }

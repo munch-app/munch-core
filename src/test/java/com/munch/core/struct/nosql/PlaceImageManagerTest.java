@@ -12,7 +12,7 @@ public class PlaceImageManagerTest {
     @Test
     public void timeNow() throws Exception {
         for (int i = 0; i < 100; i++) {
-            System.out.println(System.nanoTime());
+            System.out.println(System.currentTimeMillis());
         }
 
     }

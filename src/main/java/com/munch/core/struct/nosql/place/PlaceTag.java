@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class PlaceTag {
 
     private String placeId;
-    private String countCumName;
+    private String countName;
 
     private int count;
     private String name;
@@ -37,8 +37,8 @@ public class PlaceTag {
 
     @Deprecated
     @DynamoDBRangeKey(attributeName = "s")
-    public String getCountCumName() {
-        return countCumName;
+    public String getCountName() {
+        return countName;
     }
 
     /**
@@ -46,19 +46,19 @@ public class PlaceTag {
      * @deprecated Since Creation, use builder to create tags
      */
     @Deprecated
-    public void setCountCumName(String countCumName) {
-        this.countCumName = countCumName;
+    public void setCountName(String countCumName) {
+        this.countName = countCumName;
     }
 
     /**
-     * 1 time operation to fill count and name form countCumName
+     * 1 time operation to fill count and name form countName
      *
      * @see PlaceTag#getCount()
      * @see PlaceTag#getName() ()
      */
     @DynamoDBIgnore
     private void fillCountName() {
-        Iterator<String> split = Splitter.on('|').split(countCumName).iterator();
+        Iterator<String> split = Splitter.on('|').split(countName).iterator();
         if (split.hasNext())
             count = Integer.parseInt(split.next());
         if (split.hasNext())
@@ -164,7 +164,7 @@ public class PlaceTag {
         public PlaceTag create(String tag, int count) {
             PlaceTag placeTag = new PlaceTag();
             placeTag.placeId = this.placeId;
-            placeTag.countCumName = convertSort(count, tag);
+            placeTag.countName = convertSort(count, tag);
             return placeTag;
         }
 

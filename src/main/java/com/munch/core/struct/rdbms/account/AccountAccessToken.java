@@ -85,7 +85,6 @@ public class AccountAccessToken extends AbsAuditData {
     }
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "accountId", nullable = false)
     public Account getAccount() {
         return account;
     }

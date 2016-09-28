@@ -1,9 +1,12 @@
 package com.munch.core.struct.rdbms.locality;
 
 import com.munch.core.struct.rdbms.abs.AbsSortData;
+import com.munch.core.struct.rdbms.media.SortedImage;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created By: Fuxing Loh
@@ -22,6 +25,8 @@ public class Neighborhood extends AbsSortData {
 
     private Location location;
     private Double radius; // In KM
+
+    private List<SortedImage> images = new ArrayList<>();
 
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid")
@@ -78,5 +83,15 @@ public class Neighborhood extends AbsSortData {
 
     public void setRadius(Double radius) {
         this.radius = radius;
+    }
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OrderBy("sort desc")
+    public List<SortedImage> getImages() {
+        return images;
+    }
+
+    protected void setImages(List<SortedImage> images) {
+        this.images = images;
     }
 }

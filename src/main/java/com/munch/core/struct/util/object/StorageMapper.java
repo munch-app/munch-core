@@ -54,15 +54,12 @@ public class StorageMapper {
     /**
      * Put file with:
      *
-     * @param keyId            id for the file
-     * @param originalFileName original file name to persist
-     * @param file             file to put
-     * @param acl              acl of the file
+     * @param keyId    id for the file
+     * @param metadata meta data
+     * @param file     file to put
+     * @param acl      acl of the file
      */
-    public void putObject(String keyId, File file, String originalFileName, CannedAccessControlList acl) {
-        ObjectMetadata metadata = new ObjectMetadata();
-        metadata.addUserMetadata("originalFileName", originalFileName);
-
+    public void putObject(String keyId, File file, ObjectMetadata metadata, CannedAccessControlList acl) {
         getAmazonS3().putObject(
                 new PutObjectRequest(getBucket(), keyId, file)
                         .withMetadata(metadata)

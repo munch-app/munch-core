@@ -12,8 +12,6 @@
         <class>com.munch.core.struct.rdbms.place.PlaceLocation</class>
         <class>com.munch.core.struct.rdbms.place.PlaceType</class>
 
-        <class>com.munch.core.struct.rdbms.menu.MenuMedia</class>
-        <class>com.munch.core.struct.rdbms.menu.MenuWebsite</class>
 
         <class>com.munch.core.struct.rdbms.source.SeedPlaceTrack</class>
 
@@ -21,8 +19,6 @@
         <class>com.munch.core.struct.rdbms.account.AccountAccessToken</class>
 
         <class>com.munch.core.struct.rdbms.locality.Country</class>
-        <class>com.munch.core.struct.rdbms.locality.Nationality</class>
-
         <class>com.munch.core.struct.rdbms.locality.Container</class>
         <class>com.munch.core.struct.rdbms.locality.Neighborhood</class>
 
@@ -49,8 +45,9 @@
             <property name="hibernate.hikari.dataSource.useServerPrepStmts" value="true"/>
 
             <!-- Connection String TODO -->
+            <!--139.59.240.51-->
             <property name="hibernate.hikari.dataSource.url"
-                      value="jdbc:mysql://139.59.240.51:3306/munch?useUnicode=yes&amp;characterEncoding=UTF-8"/>
+                      value="jdbc:mysql://:3306/munch?useUnicode=yes&amp;characterEncoding=UTF-8"/>
             <property name="hibernate.hikari.dataSource.username" value="root"/>
             <property name="hibernate.hikari.dataSource.password" value="passwordmunch0327"/>
 

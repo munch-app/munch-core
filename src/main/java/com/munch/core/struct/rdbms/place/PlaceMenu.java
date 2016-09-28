@@ -1,6 +1,7 @@
 package com.munch.core.struct.rdbms.place;
 
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.munch.core.essential.util.AWSUtil;
 import com.munch.core.struct.rdbms.abs.AbsSortData;
 import com.munch.core.struct.rdbms.abs.HashSetData;
@@ -90,7 +91,9 @@ public class PlaceMenu extends AbsSortData implements HashSetData {
         // Uploaded file are defaulted to public
         if (file != null) {
             // Do Actual image put
-            storageMapper.putObject(keyId, file, fileName, CannedAccessControlList.PublicRead);
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.addUserMetadata("originalFileName", fileName);
+            storageMapper.putObject(keyId, file, metadata, CannedAccessControlList.PublicRead);
         } else if (getType() != TYPE_WEBSITE) {
             throw new IllegalArgumentException("File not available. ()");
         }

@@ -42,7 +42,6 @@ public class PlaceLocation extends AbsSortData implements HashSetData {
 
     // Data Tracking
     private int status = STATUS_ACTIVE;
-    private int revision = 0;
 
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid")
@@ -52,7 +51,7 @@ public class PlaceLocation extends AbsSortData implements HashSetData {
         return id;
     }
 
-    public void setId(String id) {
+    protected void setId(String id) {
         this.id = id;
     }
 
@@ -83,7 +82,7 @@ public class PlaceLocation extends AbsSortData implements HashSetData {
         this.phoneNumber = phoneNumber;
     }
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL}, orphanRemoval = true, mappedBy = "placeLocation")
     public Set<PlaceHour> getPlaceHours() {
         return placeHours;
     }
@@ -99,20 +98,6 @@ public class PlaceLocation extends AbsSortData implements HashSetData {
 
     public void setStatus(int status) {
         this.status = status;
-    }
-
-    @Column(nullable = false)
-    public int getRevision() {
-        return revision;
-    }
-
-    public void setRevision(int revision) {
-        this.revision = revision;
-    }
-
-    @Transient
-    public void incrementRevision() {
-        setRevision(revision++);
     }
 
     @OneToOne(cascade = {CascadeType.ALL}, optional = false, orphanRemoval = true)
@@ -143,7 +128,6 @@ public class PlaceLocation extends AbsSortData implements HashSetData {
     }
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "placeId", nullable = false)
     public Place getPlace() {
         return place;
     }

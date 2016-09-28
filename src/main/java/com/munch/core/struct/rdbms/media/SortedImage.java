@@ -1,6 +1,7 @@
 package com.munch.core.struct.rdbms.media;
 
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.munch.core.essential.util.AWSUtil;
 import com.munch.core.struct.rdbms.abs.AbsSortData;
 import com.munch.core.struct.rdbms.abs.HashSetData;
@@ -51,17 +52,6 @@ public class SortedImage extends AbsSortData implements HashSetData {
         setKeyId(RandomStringUtils.randomAlphanumeric(40) + "." + FilenameUtils.getExtension(fileName));
     }
 
-    /**
-     * You have to set object before you can upload the object.
-     * You have to validate the file type yourself, due to the restriction of checking file type on the core.
-     * Check file is only as accurate as it can get, doing your own checking
-     *
-     * @param file the file
-     */
-    public void setFile(File file) {
-        setFile(file, file.getName());
-    }
-
     @PrePersist
     @Override
     protected void onCreate() {
@@ -69,7 +59,10 @@ public class SortedImage extends AbsSortData implements HashSetData {
         // Uploaded file are defaulted to public
         if (file != null) {
             // Do Actual image put
-            storageMapper.putObject(keyId, file, fileName, CannedAccessControlList.PublicRead);
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.addUserMetadata("originalFileName", fileName);
+
+            storageMapper.putObject(keyId, file, metadata, CannedAccessControlList.PublicRead);
         } else {
             throw new IllegalArgumentException("File not available.");
         }
@@ -105,13 +98,12 @@ public class SortedImage extends AbsSortData implements HashSetData {
         this.id = id;
     }
 
-    @Column(length = 255, nullable = false)
+    @Column(nullable = false, unique = true, length = 60)
     public String getKeyId() {
         return keyId;
     }
 
-    @Column(nullable = false, unique = true, length = 60)
-    public void setKeyId(String keyId) {
+    protected void setKeyId(String keyId) {
         this.keyId = keyId;
     }
 
