@@ -70,7 +70,7 @@ public class PlaceMenu extends AbsSortData {
         this.url = url;
     }
 
-    @Column(nullable = false, unique = true, length = 55)
+    @Column(nullable = false, unique = true, length = 60)
     public String getKeyId() {
         return keyId;
     }
