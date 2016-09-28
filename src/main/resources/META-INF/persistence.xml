@@ -8,7 +8,7 @@
 
         <!-- Classes -->
         <class>com.munch.core.struct.rdbms.place.Place</class>
-        <class>com.munch.core.struct.rdbms.place.BusinessHour</class>
+        <class>com.munch.core.struct.rdbms.place.PlaceHour</class>
         <class>com.munch.core.struct.rdbms.place.PlaceLocation</class>
         <class>com.munch.core.struct.rdbms.place.PlaceType</class>
 

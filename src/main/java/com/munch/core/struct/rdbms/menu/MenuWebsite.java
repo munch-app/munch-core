@@ -35,7 +35,7 @@ public class MenuWebsite extends AbsSortData {
         this.id = id;
     }
 
-    @Column(length = 500)
+    @Column(length = 512)
     public String getUrl() {
         return url;
     }

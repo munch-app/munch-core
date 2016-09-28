@@ -1,8 +1,6 @@
 package com.munch.core.struct.rdbms.place;
 
 import com.munch.core.struct.rdbms.abs.AbsAuditData;
-import com.munch.core.struct.rdbms.menu.MenuMedia;
-import com.munch.core.struct.rdbms.menu.MenuWebsite;
 import com.munch.core.struct.util.Lucene;
 import org.apache.lucene.search.Query;
 import org.hibernate.annotations.GenericGenerator;
@@ -13,6 +11,7 @@ import org.hibernate.search.jpa.FullTextQuery;
 import org.hibernate.search.query.dsl.QueryBuilder;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -36,23 +35,21 @@ public class Place extends AbsAuditData {
     // Informational
     private String phoneNumber;
     private String websiteUrl;
-    private Set<PlaceType> types;
+    private Set<PlaceType> types = new HashSet<>();
 
     // Details
     private Double priceStart;
     private Double priceEnd;
 
     // Menu
-    private Set<MenuWebsite> menuWebsites;
-    private Set<MenuMedia> menuMedias;
+    private Set<PlaceMenu> menus = new HashSet<>();
 
     // Related
-    private Set<PlaceLocation> locations;
+    private Set<PlaceLocation> locations = new HashSet<>();
 
     // Data Tracking
     private int status = STATUS_ACTIVE;
     private int revision = 0;
-    private String sourceUrl;
 
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid")
@@ -130,22 +127,13 @@ public class Place extends AbsAuditData {
         this.priceEnd = priceEnd;
     }
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE}, orphanRemoval = true)
-    public Set<MenuWebsite> getMenuWebsites() {
-        return menuWebsites;
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL}, orphanRemoval = true)
+    public Set<PlaceMenu> getMenus() {
+        return menus;
     }
 
-    public void setMenuWebsites(Set<MenuWebsite> menuWebsites) {
-        this.menuWebsites = menuWebsites;
-    }
-
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE}, orphanRemoval = true)
-    public Set<MenuMedia> getMenuMedias() {
-        return menuMedias;
-    }
-
-    public void setMenuMedias(Set<MenuMedia> menuMedias) {
-        this.menuMedias = menuMedias;
+    protected void setMenus(Set<PlaceMenu> menus) {
+        this.menus = menus;
     }
 
     @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE}, orphanRemoval = true)
@@ -153,7 +141,7 @@ public class Place extends AbsAuditData {
         return locations;
     }
 
-    public void setLocations(Set<PlaceLocation> locations) {
+    protected void setLocations(Set<PlaceLocation> locations) {
         this.locations = locations;
     }
 
@@ -178,18 +166,6 @@ public class Place extends AbsAuditData {
     @Transient
     public void incrementRevision() {
         setRevision(revision++);
-    }
-
-    /**
-     * Basic Domain Name Only
-     */
-    @Column(length = 100, nullable = true)
-    public String getSourceUrl() {
-        return sourceUrl;
-    }
-
-    public void setSourceUrl(String source) {
-        this.sourceUrl = source;
     }
 
     public static class Search extends Lucene {

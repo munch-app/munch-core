@@ -1,10 +1,14 @@
 package com.munch.core.struct.rdbms.place;
 
 import com.munch.core.struct.rdbms.abs.AbsSortData;
-import com.munch.core.struct.rdbms.locality.Country;
+import com.munch.core.struct.rdbms.abs.HashSetData;
+import com.munch.core.struct.rdbms.locality.Container;
+import com.munch.core.struct.rdbms.locality.Location;
+import com.munch.core.struct.rdbms.locality.Neighborhood;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -14,7 +18,7 @@ import java.util.Set;
  * Project: struct
  */
 @Entity
-public class PlaceLocation extends AbsSortData {
+public class PlaceLocation extends AbsSortData implements HashSetData {
 
     public static final int STATUS_ACTIVE = 200;
     public static final int STATUS_DELETED = 400;
@@ -22,39 +26,23 @@ public class PlaceLocation extends AbsSortData {
     // Basic
     private String id;
     private String name;
+    private String description;
 
     // Details
     private String phoneNumber;
-    private Set<BusinessHour> businessHours;
+    private Set<PlaceHour> placeHours = new HashSet<>();
 
+    // Location Data
+    private Location location;
+    private Neighborhood neighbourhood;
+    private Container container;
 
-    // Location
-    private Double lat;
-    private Double lng;
-
-    private String address; // Address is everything below, (street, city, state, zip code and unit num are formatted data)
-
-    private String block;
-    private String town;
-    private String street;
-    private String zipCode;
-    private String unitNumber;
-
-    private String city;
-    private String state;
-
-    private Country country;
-
-    // TODO Mall, Neigh?
-    private String neighbourhood;
+    // Backward Accessibility
+    private Place place;
 
     // Data Tracking
     private int status = STATUS_ACTIVE;
     private int revision = 0;
-    private String sourceUrl;
-
-    // Backward Accessibility
-    private Place place;
 
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid")
@@ -77,6 +65,15 @@ public class PlaceLocation extends AbsSortData {
         this.name = name;
     }
 
+    @Column(length = 500, nullable = true)
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     @Column(length = 45, nullable = true)
     public String getPhoneNumber() {
         return phoneNumber;
@@ -86,124 +83,13 @@ public class PlaceLocation extends AbsSortData {
         this.phoneNumber = phoneNumber;
     }
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE}, orphanRemoval = true)
-    public Set<BusinessHour> getBusinessHours() {
-        return businessHours;
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL}, orphanRemoval = true)
+    public Set<PlaceHour> getPlaceHours() {
+        return placeHours;
     }
 
-    public void setBusinessHours(Set<BusinessHour> businessHours) {
-        this.businessHours = businessHours;
-    }
-
-    @Column(nullable = false)
-    public Double getLat() {
-        return lat;
-    }
-
-    public void setLat(Double lat) {
-        this.lat = lat;
-    }
-
-    @Column(nullable = false)
-    public Double getLng() {
-        return lng;
-    }
-
-    public void setLng(Double lng) {
-        this.lng = lng;
-    }
-
-    @Column(length = 255, nullable = true)
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    @Column(length = 100, nullable = true)
-    public String getStreet() {
-        return street;
-    }
-
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
-    @Column(length = 30, nullable = true)
-    public String getBlock() {
-        return block;
-    }
-
-    public void setBlock(String block) {
-        this.block = block;
-    }
-
-    @Column(length = 100, nullable = true)
-    public String getTown() {
-        return town;
-    }
-
-    public void setTown(String town) {
-        this.town = town;
-    }
-
-    @Column(length = 60, nullable = true)
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    @Column(length = 60, nullable = true)
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    @Column(length = 20, nullable = true)
-    public String getZipCode() {
-        return zipCode;
-    }
-
-    public void setZipCode(String zipCode) {
-        this.zipCode = zipCode;
-    }
-
-    @Column(length = 70, nullable = true)
-    public String getUnitNumber() {
-        return unitNumber;
-    }
-
-    public void setUnitNumber(String unitNumber) {
-        this.unitNumber = unitNumber;
-    }
-
-    /**
-     * TODO
-     */
-    @Column(length = 70, nullable = true)
-    public String getNeighbourhood() {
-        return neighbourhood;
-    }
-
-    public void setNeighbourhood(String neighbourhood) {
-        this.neighbourhood = neighbourhood;
-    }
-
-    @ManyToOne(optional = false)
-    public Country getCountry() {
-        return country;
-    }
-
-    public void setCountry(Country country) {
-        this.country = country;
+    protected void setPlaceHours(Set<PlaceHour> placeHours) {
+        this.placeHours = placeHours;
     }
 
     @Column(nullable = false)
@@ -224,21 +110,36 @@ public class PlaceLocation extends AbsSortData {
         this.revision = revision;
     }
 
-    /**
-     * Basic Domain Name Only
-     */
-    @Column(length = 100, nullable = true)
-    public String getSourceUrl() {
-        return sourceUrl;
-    }
-
-    public void setSourceUrl(String source) {
-        this.sourceUrl = source;
-    }
-
     @Transient
     public void incrementRevision() {
         setRevision(revision++);
+    }
+
+    @OneToOne(cascade = {CascadeType.ALL}, optional = false, orphanRemoval = true)
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    @ManyToOne(optional = true)
+    public Neighborhood getNeighbourhood() {
+        return neighbourhood;
+    }
+
+    public void setNeighbourhood(Neighborhood neighbourhood) {
+        this.neighbourhood = neighbourhood;
+    }
+
+    @ManyToOne(optional = true)
+    public Container getContainer() {
+        return container;
+    }
+
+    public void setContainer(Container container) {
+        this.container = container;
     }
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -247,7 +148,18 @@ public class PlaceLocation extends AbsSortData {
         return place;
     }
 
-    public void setPlace(Place place) {
+    protected void setPlace(Place place) {
         this.place = place;
+    }
+
+    // For Hash Set
+    @Override
+    public int hashCode() {
+        return getId().hashCode();
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        return equals(obj, getClass());
     }
 }

@@ -8,7 +8,7 @@ import com.munch.core.essential.json.DefaultBlockMapper;
 import com.munch.core.essential.source.DataSource;
 import com.munch.core.struct.block.source.SeedPlace;
 import com.munch.core.struct.block.source.SourceHour;
-import com.munch.core.struct.rdbms.place.BusinessHour;
+import com.munch.core.struct.rdbms.place.PlaceHour;
 import com.munch.core.struct.rdbms.source.SeedPlaceTrack;
 import com.munch.core.struct.util.HibernateUtil;
 
@@ -64,13 +64,13 @@ public class AddSpaghettiTestData {
     private List<SourceHour> toHours(Map<String, String[][]> data) {
         List<SourceHour> list = new ArrayList<>();
 
-        data.computeIfPresent("monday", (s, strings) -> putHoursToList(list, strings, BusinessHour.MON));
-        data.computeIfPresent("tuesday", (s, strings) -> putHoursToList(list, strings, BusinessHour.TUE));
-        data.computeIfPresent("wednesday", (s, strings) -> putHoursToList(list, strings, BusinessHour.WED));
-        data.computeIfPresent("thursday", (s, strings) -> putHoursToList(list, strings, BusinessHour.THU));
-        data.computeIfPresent("friday", (s, strings) -> putHoursToList(list, strings, BusinessHour.FRI));
-        data.computeIfPresent("saturday", (s, strings) -> putHoursToList(list, strings, BusinessHour.SAT));
-        data.computeIfPresent("sunday", (s, strings) -> putHoursToList(list, strings, BusinessHour.SUN));
+        data.computeIfPresent("monday", (s, strings) -> putHoursToList(list, strings, PlaceHour.MON));
+        data.computeIfPresent("tuesday", (s, strings) -> putHoursToList(list, strings, PlaceHour.TUE));
+        data.computeIfPresent("wednesday", (s, strings) -> putHoursToList(list, strings, PlaceHour.WED));
+        data.computeIfPresent("thursday", (s, strings) -> putHoursToList(list, strings, PlaceHour.THU));
+        data.computeIfPresent("friday", (s, strings) -> putHoursToList(list, strings, PlaceHour.FRI));
+        data.computeIfPresent("saturday", (s, strings) -> putHoursToList(list, strings, PlaceHour.SAT));
+        data.computeIfPresent("sunday", (s, strings) -> putHoursToList(list, strings, PlaceHour.SUN));
 
         return list;
     }

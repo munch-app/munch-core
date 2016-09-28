@@ -1,6 +1,7 @@
 package com.munch.core.struct.rdbms.place;
 
 import com.munch.core.struct.rdbms.abs.AbsAuditData;
+import com.munch.core.struct.rdbms.abs.HashSetData;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Column;
@@ -16,7 +17,7 @@ import java.time.LocalTime;
  * Project: struct
  */
 @Entity
-public class BusinessHour extends AbsAuditData {
+public class PlaceHour extends AbsAuditData implements HashSetData {
 
     public static final int MON = 1;
     public static final int TUE = 2;
@@ -71,4 +72,15 @@ public class BusinessHour extends AbsAuditData {
     public void setClose(LocalTime close) {
         this.close = close;
     }
+
+    @Override
+    public int hashCode() {
+        return getId().hashCode();
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        return equals(obj, getClass());
+    }
+
 }
