@@ -4,7 +4,7 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.munch.core.essential.util.AWSUtil;
 import com.munch.core.struct.rdbms.abs.AbsSortData;
 import com.munch.core.struct.rdbms.abs.HashSetData;
-import com.munch.core.struct.util.object.PlaceImageSetting;
+import com.munch.core.struct.util.object.SortedImageSetting;
 import com.munch.core.struct.util.object.StorageMapper;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -34,7 +34,7 @@ public class SortedImage extends AbsSortData implements HashSetData {
     private String fileName;
 
     // Storage mapper for Sorted Image
-    private static StorageMapper storageMapper = new StorageMapper(AWSUtil.getS3(), new PlaceImageSetting());
+    private static StorageMapper storageMapper = new StorageMapper(AWSUtil.getS3(), new SortedImageSetting());
 
     /**
      * You have to set object before you can upload the object.
@@ -131,5 +131,15 @@ public class SortedImage extends AbsSortData implements HashSetData {
 
     public void setType(Integer type) {
         this.type = type;
+    }
+
+    @Override
+    public int hashCode() {
+        return getId().hashCode();
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        return equals(obj, getClass());
     }
 }

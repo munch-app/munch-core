@@ -1,6 +1,13 @@
 package com.munch.core.struct.rdbms.place;
 
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.munch.core.essential.util.AWSUtil;
 import com.munch.core.struct.rdbms.abs.AbsSortData;
+import com.munch.core.struct.rdbms.abs.HashSetData;
+import com.munch.core.struct.util.object.MenuSetting;
+import com.munch.core.struct.util.object.StorageMapper;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -13,7 +20,7 @@ import java.io.File;
  * Project: struct
  */
 @Entity
-public class PlaceMenu extends AbsSortData {
+public class PlaceMenu extends AbsSortData implements HashSetData {
 
     public static final int TYPE_PDF = 5_100;
     public static final int TYPE_IMAGE = 5_200;
@@ -21,6 +28,7 @@ public class PlaceMenu extends AbsSortData {
 
     private String id;
     private String name; // Editable title
+    private String caption;
     private Integer type;
 
     // For Website Based, it is use URL
@@ -29,7 +37,83 @@ public class PlaceMenu extends AbsSortData {
     private String keyId;
 
     // Transient File
-    private File file; // TODO
+    private File file;
+    private String fileName;
+
+    // Storage mapper for Sorted Image
+    private static StorageMapper storageMapper = new StorageMapper(AWSUtil.getS3(), new MenuSetting());
+
+    /**
+     * Upload PDF Menu
+     *
+     * @param file       pdf file
+     * @param fileName   file name of pdf (filePart.getName)
+     * @param websiteUrl website url of the original source of menu
+     */
+    public void setPdf(File file, String fileName, String websiteUrl) {
+        this.file = file;
+        this.fileName = fileName;
+        setType(TYPE_PDF);
+        setUrl(websiteUrl);
+        setKeyId(RandomStringUtils.randomAlphanumeric(40) + "." + FilenameUtils.getExtension(fileName));
+    }
+
+    /**
+     * Upload Image Menu
+     *
+     * @param file       image file
+     * @param fileName   file name of image (filePart.getName)
+     * @param websiteUrl website url of the original source of menu
+     */
+    public void setImage(File file, String fileName, String websiteUrl) {
+        this.file = file;
+        this.fileName = fileName;
+        setType(TYPE_IMAGE);
+        setUrl(websiteUrl);
+        setKeyId(RandomStringUtils.randomAlphanumeric(40) + "." + FilenameUtils.getExtension(fileName));
+    }
+
+    /**
+     * Add a Website Menu (HTML)
+     *
+     * @param webUrl website url of the html menu
+     */
+    public void setWebsite(String webUrl) {
+        setType(TYPE_WEBSITE);
+        setUrl(webUrl);
+    }
+
+    @PrePersist
+    @Override
+    protected void onCreate() {
+        super.onCreate();
+        // Uploaded file are defaulted to public
+        if (file != null) {
+            // Do Actual image put
+            storageMapper.putObject(keyId, file, fileName, CannedAccessControlList.PublicRead);
+        } else if (getType() != TYPE_WEBSITE) {
+            throw new IllegalArgumentException("File not available. ()");
+        }
+    }
+
+    /**
+     * Not allowed, delete/remove this object and create another again.
+     */
+    @PreUpdate
+    @Override
+    protected void onUpdate() {
+        throw new IllegalArgumentException("Not allowed, delete/remove this object and create another again.");
+    }
+
+    /**
+     * Auto delete file from S3 before being removed from db
+     */
+    @PreRemove
+    protected void onRemove() {
+        if (getType() != TYPE_WEBSITE) {
+            storageMapper.removeObject(getKeyId());
+        }
+    }
 
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid")
@@ -43,13 +127,28 @@ public class PlaceMenu extends AbsSortData {
         this.id = id;
     }
 
-    @Column(length = 255)
+    @Column(length = 50)
     public String getName() {
         return name;
     }
 
+    /**
+     * @param name name/title of menu
+     */
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Column(length = 255)
+    public String getCaption() {
+        return caption;
+    }
+
+    /**
+     * @param caption caption/description of menu
+     */
+    public void setCaption(String caption) {
+        this.caption = caption;
     }
 
     @Column(nullable = false)
@@ -57,7 +156,7 @@ public class PlaceMenu extends AbsSortData {
         return type;
     }
 
-    public void setType(Integer type) {
+    protected void setType(Integer type) {
         this.type = type;
     }
 
@@ -66,7 +165,7 @@ public class PlaceMenu extends AbsSortData {
         return url;
     }
 
-    public void setUrl(String url) {
+    protected void setUrl(String url) {
         this.url = url;
     }
 
@@ -79,8 +178,14 @@ public class PlaceMenu extends AbsSortData {
         this.keyId = fileKey;
     }
 
-    @Transient
-    public File getFile() {
-        return file;
+    @Override
+    public int hashCode() {
+        return getId().hashCode();
     }
+
+    @Override
+    public boolean equals(final Object obj) {
+        return equals(obj, getClass());
+    }
+
 }

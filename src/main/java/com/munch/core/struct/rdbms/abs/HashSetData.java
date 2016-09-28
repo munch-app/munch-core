@@ -11,7 +11,7 @@ public interface HashSetData {
     /**
      * @return Id required for hashcode generation
      */
-    public String getId();
+    String getId();
 
     default boolean equals(final Object obj, Class clazz) {
         if (this == obj)

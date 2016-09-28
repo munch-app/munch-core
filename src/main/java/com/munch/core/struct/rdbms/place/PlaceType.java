@@ -66,4 +66,15 @@ public class PlaceType extends AbsSortData {
     public int hashCode() {
         return Long.valueOf(getId()).hashCode();
     }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        return obj.hashCode() == this.hashCode();
+    }
 }

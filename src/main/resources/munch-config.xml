@@ -15,6 +15,7 @@
             <bucket>
                 <place-images>munch.place.images</place-images>
                 <place-menus>munch.place.menus</place-menus>
+                <sorted>munch.images</sorted>
             </bucket>
             <region>ap-southeast-1</region>
         </s3>
