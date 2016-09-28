@@ -1,7 +1,7 @@
 package com.munch.core.struct.rdbms.place;
 
 import com.munch.core.struct.rdbms.abs.AbsSortData;
-import com.munch.core.struct.rdbms.type.Country;
+import com.munch.core.struct.rdbms.locality.Country;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -26,6 +26,7 @@ public class PlaceLocation extends AbsSortData {
     // Details
     private String phoneNumber;
     private Set<BusinessHour> businessHours;
+
 
     // Location
     private Double lat;
@@ -148,7 +149,7 @@ public class PlaceLocation extends AbsSortData {
         this.town = town;
     }
 
-    @Column(length = 70, nullable = true)
+    @Column(length = 60, nullable = true)
     public String getCity() {
         return city;
     }
@@ -157,7 +158,7 @@ public class PlaceLocation extends AbsSortData {
         this.city = city;
     }
 
-    @Column(length = 70, nullable = true)
+    @Column(length = 60, nullable = true)
     public String getState() {
         return state;
     }
@@ -175,7 +176,7 @@ public class PlaceLocation extends AbsSortData {
         this.zipCode = zipCode;
     }
 
-    @Column(length = 35, nullable = true)
+    @Column(length = 70, nullable = true)
     public String getUnitNumber() {
         return unitNumber;
     }

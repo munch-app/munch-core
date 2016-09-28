@@ -1,4 +1,4 @@
-package com.munch.core.struct.rdbms.type;
+package com.munch.core.struct.rdbms.locality;
 
 import com.munch.core.struct.rdbms.abs.AbsSortData;
 
@@ -13,7 +13,7 @@ import javax.persistence.Id;
  * Project: struct
  */
 @Entity
-public class Nationality extends AbsSortData {
+public class Country extends AbsSortData {
 
     private long id;
     private String name;

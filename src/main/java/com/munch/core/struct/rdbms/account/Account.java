@@ -2,7 +2,7 @@ package com.munch.core.struct.rdbms.account;
 
 import com.munch.core.essential.util.DateTime;
 import com.munch.core.struct.rdbms.abs.AbsAuditData;
-import com.munch.core.struct.rdbms.type.Country;
+import com.munch.core.struct.rdbms.locality.Country;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;

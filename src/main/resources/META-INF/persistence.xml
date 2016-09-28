@@ -20,8 +20,8 @@
         <class>com.munch.core.struct.rdbms.account.Account</class>
         <class>com.munch.core.struct.rdbms.account.AccountAccessToken</class>
 
-        <class>com.munch.core.struct.rdbms.type.Country</class>
-        <class>com.munch.core.struct.rdbms.type.Nationality</class>
+        <class>com.munch.core.struct.rdbms.locality.Country</class>
+        <class>com.munch.core.struct.rdbms.locality.Nationality</class>
 
         <class>com.munch.core.struct.rdbms.locality.Container</class>
         <class>com.munch.core.struct.rdbms.locality.Neighborhood</class>

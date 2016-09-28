@@ -1,13 +1,9 @@
 package com.munch.core.struct.rdbms.locality;
 
 import com.munch.core.struct.rdbms.abs.AbsSortData;
-import com.munch.core.struct.rdbms.type.Country;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * Created By: Fuxing Loh
@@ -19,24 +15,13 @@ import javax.persistence.Id;
 public class Neighborhood extends AbsSortData {
 
     private String id;
-    private Integer type;
 
     private String name;
     private String description;
     private String websiteUrl;
 
-    private Double lat;
-    private Double lng;
-
-
-    private String address;
-
-    private String city;
-    private String state;
-
-    private Country country;
-
-    // TODO Grid in lat lng? in the future
+    private Location location;
+    private Double radius; // In KM
 
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid")
@@ -50,4 +35,48 @@ public class Neighborhood extends AbsSortData {
         this.id = id;
     }
 
+    @Column(length = 255, nullable = false)
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Column(length = 512, nullable = true)
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @Column(length = 255, nullable = true)
+    public String getWebsiteUrl() {
+        return websiteUrl;
+    }
+
+    public void setWebsiteUrl(String websiteUrl) {
+        this.websiteUrl = websiteUrl;
+    }
+
+    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL}, optional = false, orphanRemoval = true)
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    @Column(nullable = true)
+    public Double getRadius() {
+        return radius;
+    }
+
+    public void setRadius(Double radius) {
+        this.radius = radius;
+    }
 }

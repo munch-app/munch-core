@@ -1,14 +1,12 @@
 package com.munch.core.struct.rdbms.locality;
 
-import com.munch.core.struct.rdbms.type.Country;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
+ * Type Includes: Mall, Hawker & Coffee Shop?
+ *
  * Created By: Fuxing Loh
  * Date: 25/9/2016
  * Time: 11:40 PM
@@ -17,8 +15,9 @@ import javax.persistence.Id;
 @Entity
 public class Container {
 
-    public static final int TYPE_MALL = 1350;
-    public static final int TYPE_HAWKER = 1360;
+    public static final int TYPE_MALL = 10_350;
+    public static final int TYPE_HAWKER = 10_360;
+    public static final int TYPE_COFFEE_SHOP = 10_370;
 
     private String id;
     private Integer type;
@@ -27,24 +26,9 @@ public class Container {
     private String description;
     private String websiteUrl;
 
-    private Double lat;
-    private Double lng;
-
-
-    private String address;
-
-    private String block;
-    private String town;
-    private String street;
-    private String zipCode;
-
-    private String city;
-    private String state;
-
-    private Country country;
+    private Location location;
+    private Double radius; // In KM
     private Neighborhood neighborhood;
-
-    // TODO Grid in lat lng? in the future
 
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid")
@@ -58,4 +42,67 @@ public class Container {
         this.id = id;
     }
 
+
+    @Column(nullable = false)
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    @Column(length = 255, nullable = false)
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Column(length = 512, nullable = true)
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @Column(length = 255, nullable = true)
+    public String getWebsiteUrl() {
+        return websiteUrl;
+    }
+
+    public void setWebsiteUrl(String websiteUrl) {
+        this.websiteUrl = websiteUrl;
+    }
+
+    @OneToOne(cascade = {CascadeType.ALL}, optional = false, orphanRemoval = true)
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    @Column(nullable = true)
+    public Double getRadius() {
+        return radius;
+    }
+
+    public void setRadius(Double radius) {
+        this.radius = radius;
+    }
+
+    @ManyToOne(optional = true, cascade = {})
+    public Neighborhood getNeighborhood() {
+        return neighborhood;
+    }
+
+    public void setNeighborhood(Neighborhood neighborhood) {
+        this.neighborhood = neighborhood;
+    }
 }
