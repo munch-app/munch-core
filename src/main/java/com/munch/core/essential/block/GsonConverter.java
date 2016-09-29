@@ -1,4 +1,4 @@
-package com.munch.core.essential.json;
+package com.munch.core.essential.block;
 
 import com.google.gson.Gson;
 

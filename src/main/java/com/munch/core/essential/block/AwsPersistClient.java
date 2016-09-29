@@ -1,4 +1,4 @@
-package com.munch.core.essential.json;
+package com.munch.core.essential.block;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.munch.core.essential.util.AWSUtil;
