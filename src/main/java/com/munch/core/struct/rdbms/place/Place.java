@@ -48,6 +48,7 @@ public class Place extends AbsAuditData implements OneEntity {
     private String facebookPlaceId;
     private String googlePlaceId;
     private String instagramUserId;
+    private String instagramPlaceId;
 
     // Menu
     private Set<PlaceMenu> menus = new BiDirectionHashSet<>(this);
@@ -118,7 +119,7 @@ public class Place extends AbsAuditData implements OneEntity {
         this.types = types;
     }
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     public Double getPriceStart() {
         return priceStart;
     }
@@ -127,7 +128,7 @@ public class Place extends AbsAuditData implements OneEntity {
         this.priceStart = priceStart;
     }
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     public Double getPriceEnd() {
         return priceEnd;
     }
@@ -136,7 +137,7 @@ public class Place extends AbsAuditData implements OneEntity {
         this.priceEnd = priceEnd;
     }
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = true, length = 100)
     public String getFacebookPageId() {
         return facebookPageId;
     }
@@ -145,7 +146,7 @@ public class Place extends AbsAuditData implements OneEntity {
         this.facebookPageId = facebookPageId;
     }
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = true, length = 100)
     public String getFacebookPlaceId() {
         return facebookPlaceId;
     }
@@ -154,7 +155,7 @@ public class Place extends AbsAuditData implements OneEntity {
         this.facebookPlaceId = facebookPlaceId;
     }
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = true, length = 100)
     public String getGooglePlaceId() {
         return googlePlaceId;
     }
@@ -163,13 +164,22 @@ public class Place extends AbsAuditData implements OneEntity {
         this.googlePlaceId = googlePlaceId;
     }
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = true, length = 100)
     public String getInstagramUserId() {
         return instagramUserId;
     }
 
     public void setInstagramUserId(String instagramUserId) {
         this.instagramUserId = instagramUserId;
+    }
+
+    @Column(nullable = true, length = 100)
+    public String getInstagramPlaceId() {
+        return instagramPlaceId;
+    }
+
+    public void setInstagramPlaceId(String instagramPlaceId) {
+        this.instagramPlaceId = instagramPlaceId;
     }
 
     @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL}, orphanRemoval = true, mappedBy = "place")

@@ -138,7 +138,6 @@ public class PlaceLocation extends AbsSortData implements HashSetData, ManyEntit
         this.place = place;
     }
 
-    // For Hash Set
     @Override
     public int hashCode() {
         return getId().hashCode();

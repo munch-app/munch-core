@@ -133,7 +133,7 @@ public class PlaceMenu extends AbsSortData implements HashSetData, ManyEntity<Pl
         this.id = id;
     }
 
-    @Column(length = 50)
+    @Column(length = 50, nullable = true)
     public String getName() {
         return name;
     }
@@ -145,7 +145,7 @@ public class PlaceMenu extends AbsSortData implements HashSetData, ManyEntity<Pl
         this.name = name;
     }
 
-    @Column(length = 255)
+    @Column(length = 255, nullable = true)
     public String getCaption() {
         return caption;
     }
@@ -166,7 +166,7 @@ public class PlaceMenu extends AbsSortData implements HashSetData, ManyEntity<Pl
         this.type = type;
     }
 
-    @Column(length = 512)
+    @Column(length = 512, nullable = true)
     public String getUrl() {
         return url;
     }
