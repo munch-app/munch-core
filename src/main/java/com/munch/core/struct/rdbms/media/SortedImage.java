@@ -37,6 +37,9 @@ public class SortedImage extends AbsSortData implements HashSetData {
     // Storage mapper for Sorted Image
     private static StorageMapper storageMapper = new StorageMapper(AWSUtil.getS3(), new SortedImageSetting());
 
+    // Need a manual for sorted image size,
+    // When send image to user, send all sizes to user
+
     /**
      * You have to set object before you can upload the object.
      * You have to validate the file type yourself, due to the restriction of checking file type on the core.

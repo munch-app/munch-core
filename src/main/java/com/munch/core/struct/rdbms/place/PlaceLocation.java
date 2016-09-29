@@ -5,10 +5,12 @@ import com.munch.core.struct.rdbms.abs.HashSetData;
 import com.munch.core.struct.rdbms.locality.Container;
 import com.munch.core.struct.rdbms.locality.Location;
 import com.munch.core.struct.rdbms.locality.Neighborhood;
+import com.munch.core.struct.util.map.BiDirectionHashSet;
+import com.munch.core.struct.util.map.ManyEntity;
+import com.munch.core.struct.util.map.OneEntity;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -18,7 +20,7 @@ import java.util.Set;
  * Project: struct
  */
 @Entity
-public class PlaceLocation extends AbsSortData implements HashSetData {
+public class PlaceLocation extends AbsSortData implements HashSetData, ManyEntity<Place>, OneEntity {
 
     public static final int STATUS_ACTIVE = 200;
     public static final int STATUS_DELETED = 400;
@@ -30,7 +32,7 @@ public class PlaceLocation extends AbsSortData implements HashSetData {
 
     // Details
     private String phoneNumber;
-    private Set<PlaceHour> placeHours = new HashSet<>();
+    private Set<PlaceHour> placeHours = new BiDirectionHashSet<>(this);
 
     // Location Data
     private Location location;
@@ -145,5 +147,10 @@ public class PlaceLocation extends AbsSortData implements HashSetData {
     @Override
     public boolean equals(final Object obj) {
         return equals(obj, getClass());
+    }
+
+    @Override
+    public void setOneEntity(Place single) {
+        setPlace(single);
     }
 }

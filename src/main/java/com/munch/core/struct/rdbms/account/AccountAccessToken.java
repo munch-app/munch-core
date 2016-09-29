@@ -1,6 +1,7 @@
 package com.munch.core.struct.rdbms.account;
 
 import com.munch.core.struct.rdbms.abs.AbsAuditData;
+import com.munch.core.struct.util.map.ManyEntity;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.persistence.*;
@@ -12,7 +13,7 @@ import javax.persistence.*;
  * Project: struct
  */
 @Entity
-public class AccountAccessToken extends AbsAuditData {
+public class AccountAccessToken extends AbsAuditData implements ManyEntity<Account> {
 
     public static final int TYPE_IOS = 20_000;
     public static final int TYPE_ANDROID = 21_000;
@@ -84,7 +85,7 @@ public class AccountAccessToken extends AbsAuditData {
         this.description = description;
     }
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     public Account getAccount() {
         return account;
     }
@@ -92,4 +93,10 @@ public class AccountAccessToken extends AbsAuditData {
     public void setAccount(Account account) {
         this.account = account;
     }
+
+    @Override
+    public void setOneEntity(Account single) {
+        setAccount(single);
+    }
+
 }

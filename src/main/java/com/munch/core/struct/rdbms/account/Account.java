@@ -3,6 +3,8 @@ package com.munch.core.struct.rdbms.account;
 import com.munch.core.essential.util.DateTime;
 import com.munch.core.struct.rdbms.abs.AbsAuditData;
 import com.munch.core.struct.rdbms.locality.Country;
+import com.munch.core.struct.util.map.BiDirectionHashSet;
+import com.munch.core.struct.util.map.OneEntity;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -18,7 +20,7 @@ import java.util.Set;
  */
 @Entity
 @Table(indexes = {@Index(name = "EMAIL_INDEX", columnList = "email"), @Index(name = "PHONE_INDEX", columnList = "phoneNumber")})
-public class Account extends AbsAuditData {
+public class Account extends AbsAuditData implements OneEntity {
 
     public static final int TYPE_NORMAL = 10_000;
     public static final int TYPE_RESTURANT = 12_000;
@@ -46,7 +48,7 @@ public class Account extends AbsAuditData {
     private Date lastLoginDate;
     private boolean emailVerified = false;
     private boolean phoneVerified = false;
-    private Set<AccountAccessToken> accessTokens;
+    private Set<AccountAccessToken> accessTokens = new BiDirectionHashSet<>(this);
 
     /**
      * Default pre persist time stamping

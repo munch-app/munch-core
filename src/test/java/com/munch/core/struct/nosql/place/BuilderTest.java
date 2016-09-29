@@ -10,6 +10,7 @@ import static org.fest.assertions.Assertions.assertThat;
  * Time: 8:52 PM
  * Project: struct
  */
+@SuppressWarnings("deprecation")
 public class BuilderTest {
 
     @Test
@@ -54,19 +55,19 @@ public class BuilderTest {
         PlaceTag tag4 = builder.create("chicken pot 2", 2000);
         PlaceTag tag5 = builder.create("chicken pot 3", 10000);
 
-        assertThat(tag1.getCountName()).isEqualTo("100|chicken");
+        assertThat(tag1.getCountName()).isEqualTo("00100|chicken");
         assertThat(tag1.getCount()).isEqualTo(100);
         assertThat(tag1.getName()).isEqualTo("chicken");
 
-        assertThat(tag2.getCountName()).isEqualTo("001|chicken pie");
+        assertThat(tag2.getCountName()).isEqualTo("00001|chicken pie");
         assertThat(tag2.getCount()).isEqualTo(1);
         assertThat(tag2.getName()).isEqualTo("chicken pie");
 
-        assertThat(tag3.getCountName()).isEqualTo("020|chicken pot");
+        assertThat(tag3.getCountName()).isEqualTo("00020|chicken pot");
         assertThat(tag3.getCount()).isEqualTo(20);
         assertThat(tag3.getName()).isEqualTo("chicken pot");
 
-        assertThat(tag4.getCountName()).isEqualTo("2000|chicken pot 2");
+        assertThat(tag4.getCountName()).isEqualTo("02000|chicken pot 2");
         assertThat(tag4.getCount()).isEqualTo(2000);
         assertThat(tag4.getName()).isEqualTo("chicken pot 2");
 

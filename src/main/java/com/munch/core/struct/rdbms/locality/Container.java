@@ -2,6 +2,8 @@ package com.munch.core.struct.rdbms.locality;
 
 import com.munch.core.struct.rdbms.media.SortedImage;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -111,8 +113,9 @@ public class Container {
         this.neighborhood = neighborhood;
     }
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true)
     @OrderBy("sort desc")
+    @LazyCollection(LazyCollectionOption.FALSE)
     public List<SortedImage> getImages() {
         return images;
     }

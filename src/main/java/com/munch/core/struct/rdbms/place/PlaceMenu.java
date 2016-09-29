@@ -5,6 +5,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.munch.core.essential.util.AWSUtil;
 import com.munch.core.struct.rdbms.abs.AbsSortData;
 import com.munch.core.struct.rdbms.abs.HashSetData;
+import com.munch.core.struct.util.map.ManyEntity;
 import com.munch.core.struct.util.object.MenuSetting;
 import com.munch.core.struct.util.object.StorageMapper;
 import org.apache.commons.io.FilenameUtils;
@@ -21,7 +22,7 @@ import java.io.File;
  * Project: struct
  */
 @Entity
-public class PlaceMenu extends AbsSortData implements HashSetData {
+public class PlaceMenu extends AbsSortData implements HashSetData, ManyEntity<Place> {
 
     public static final int TYPE_PDF = 5_100;
     public static final int TYPE_IMAGE = 5_200;
@@ -31,6 +32,8 @@ public class PlaceMenu extends AbsSortData implements HashSetData {
     private String name; // Editable title
     private String caption;
     private Integer type;
+
+    private Place place;
 
     // For Website Based, it is use URL
     // For Image/PDF, will be url + fileKeyId
@@ -181,6 +184,15 @@ public class PlaceMenu extends AbsSortData implements HashSetData {
         this.keyId = fileKey;
     }
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    public Place getPlace() {
+        return place;
+    }
+
+    public void setPlace(Place place) {
+        this.place = place;
+    }
+
     @Override
     public int hashCode() {
         return getId().hashCode();
@@ -191,4 +203,8 @@ public class PlaceMenu extends AbsSortData implements HashSetData {
         return equals(obj, getClass());
     }
 
+    @Override
+    public void setOneEntity(Place single) {
+        setPlace(single);
+    }
 }

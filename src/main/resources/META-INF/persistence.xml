@@ -10,17 +10,19 @@
         <class>com.munch.core.struct.rdbms.place.Place</class>
         <class>com.munch.core.struct.rdbms.place.PlaceHour</class>
         <class>com.munch.core.struct.rdbms.place.PlaceLocation</class>
+        <class>com.munch.core.struct.rdbms.place.PlaceMenu</class>
         <class>com.munch.core.struct.rdbms.place.PlaceType</class>
-
-
-        <class>com.munch.core.struct.rdbms.source.SeedPlaceTrack</class>
 
         <class>com.munch.core.struct.rdbms.account.Account</class>
         <class>com.munch.core.struct.rdbms.account.AccountAccessToken</class>
 
+        <class>com.munch.core.struct.rdbms.locality.Location</class>
         <class>com.munch.core.struct.rdbms.locality.Country</class>
         <class>com.munch.core.struct.rdbms.locality.Container</class>
         <class>com.munch.core.struct.rdbms.locality.Neighborhood</class>
+
+        <class>com.munch.core.struct.rdbms.media.SortedImage</class>
+
 
         <!-- Admin Classes (Munch Dashboard)-->
         <class>com.munch.core.struct.rdbms.admin.AdminAccount</class>
@@ -45,11 +47,12 @@
             <property name="hibernate.hikari.dataSource.useServerPrepStmts" value="true"/>
 
             <!-- Connection String TODO -->
-            <!--139.59.240.51-->
+            <!--139.59.240.51:3306-->
             <property name="hibernate.hikari.dataSource.url"
-                      value="jdbc:mysql://:3306/munch?useUnicode=yes&amp;characterEncoding=UTF-8"/>
-            <property name="hibernate.hikari.dataSource.username" value="root"/>
-            <property name="hibernate.hikari.dataSource.password" value="passwordmunch0327"/>
+                      value="jdbc:mysql://localhost:32770/munch?useUnicode=yes&amp;characterEncoding=UTF-8"/>
+            <property name="hibernate.hikari.dataSource.user" value="root"/>
+            <!--passwordmunch0327-->
+            <property name="hibernate.hikari.dataSource.password" value="password"/>
 
             <!-- Lucene Search-->
             <property name="hibernate.search.default.directory_provider" value="filesystem"/>

@@ -2,12 +2,10 @@ package com.munch.core.struct.rdbms.place;
 
 import com.munch.core.struct.rdbms.abs.AbsAuditData;
 import com.munch.core.struct.rdbms.abs.HashSetData;
+import com.munch.core.struct.util.map.ManyEntity;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalTime;
 
 /**
@@ -17,7 +15,7 @@ import java.time.LocalTime;
  * Project: struct
  */
 @Entity
-public class PlaceHour extends AbsAuditData implements HashSetData {
+public class PlaceHour extends AbsAuditData implements HashSetData, ManyEntity<PlaceLocation> {
 
     public static final int MON = 1;
     public static final int TUE = 2;
@@ -33,6 +31,8 @@ public class PlaceHour extends AbsAuditData implements HashSetData {
     private Integer day;
     private LocalTime open;
     private LocalTime close;
+
+    private PlaceLocation placeLocation;
 
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid")
@@ -73,6 +73,15 @@ public class PlaceHour extends AbsAuditData implements HashSetData {
         this.close = close;
     }
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    public PlaceLocation getPlaceLocation() {
+        return placeLocation;
+    }
+
+    public void setPlaceLocation(PlaceLocation placeLocation) {
+        this.placeLocation = placeLocation;
+    }
+
     @Override
     public int hashCode() {
         return getId().hashCode();
@@ -83,4 +92,8 @@ public class PlaceHour extends AbsAuditData implements HashSetData {
         return equals(obj, getClass());
     }
 
+    @Override
+    public void setOneEntity(PlaceLocation single) {
+        setPlaceLocation(single);
+    }
 }

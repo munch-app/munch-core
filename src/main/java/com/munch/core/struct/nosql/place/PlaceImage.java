@@ -35,6 +35,10 @@ public class PlaceImage {
     private String userId;
     private Date createdDate;
 
+    // For resized Url, the sizes will be here key + "-w30h50" + .jpg
+    // Store resized image in another bucket.
+    private Set<String> resizedSizes;
+
     private String title;
     private String caption;
     private String keyId;
@@ -109,6 +113,15 @@ public class PlaceImage {
 
     public void setKeyId(String keyId) {
         this.keyId = keyId;
+    }
+
+    @DynamoDBAttribute(attributeName = "r")
+    public Set<String> getResizedSizes() {
+        return resizedSizes;
+    }
+
+    public void setResizedSizes(Set<String> resizedSizes) {
+        this.resizedSizes = resizedSizes;
     }
 
     /**

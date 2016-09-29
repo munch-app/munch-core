@@ -2,6 +2,8 @@ package com.munch.core.struct.rdbms.place;
 
 import com.munch.core.struct.rdbms.abs.AbsAuditData;
 import com.munch.core.struct.util.Lucene;
+import com.munch.core.struct.util.map.BiDirectionHashSet;
+import com.munch.core.struct.util.map.OneEntity;
 import org.apache.lucene.search.Query;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.search.annotations.*;
@@ -22,7 +24,7 @@ import java.util.Set;
  */
 @Indexed
 @Entity
-public class Place extends AbsAuditData {
+public class Place extends AbsAuditData implements OneEntity {
 
     public static final int STATUS_ACTIVE = 200;
     public static final int STATUS_DELETED = 400;
@@ -42,10 +44,10 @@ public class Place extends AbsAuditData {
     private Double priceEnd;
 
     // Menu
-    private Set<PlaceMenu> menus = new HashSet<>();
+    private Set<PlaceMenu> menus = new BiDirectionHashSet<>(this);
 
     // Related
-    private Set<PlaceLocation> locations = new HashSet<>();
+    private Set<PlaceLocation> locations = new BiDirectionHashSet<>(this);
 
     // Data Tracking
     private int status = STATUS_ACTIVE;
