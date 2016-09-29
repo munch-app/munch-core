@@ -43,6 +43,12 @@ public class Place extends AbsAuditData implements OneEntity {
     private Double priceStart;
     private Double priceEnd;
 
+    // Social Link
+    private String facebookPageId;
+    private String facebookPlaceId;
+    private String googlePlaceId;
+    private String instagramUserId;
+
     // Menu
     private Set<PlaceMenu> menus = new BiDirectionHashSet<>(this);
 
@@ -128,6 +134,42 @@ public class Place extends AbsAuditData implements OneEntity {
 
     public void setPriceEnd(Double priceEnd) {
         this.priceEnd = priceEnd;
+    }
+
+    @Column(nullable = false, length = 100)
+    public String getFacebookPageId() {
+        return facebookPageId;
+    }
+
+    public void setFacebookPageId(String facebookPageId) {
+        this.facebookPageId = facebookPageId;
+    }
+
+    @Column(nullable = false, length = 100)
+    public String getFacebookPlaceId() {
+        return facebookPlaceId;
+    }
+
+    public void setFacebookPlaceId(String facebookPlaceId) {
+        this.facebookPlaceId = facebookPlaceId;
+    }
+
+    @Column(nullable = false, length = 100)
+    public String getGooglePlaceId() {
+        return googlePlaceId;
+    }
+
+    public void setGooglePlaceId(String googlePlaceId) {
+        this.googlePlaceId = googlePlaceId;
+    }
+
+    @Column(nullable = false, length = 100)
+    public String getInstagramUserId() {
+        return instagramUserId;
+    }
+
+    public void setInstagramUserId(String instagramUserId) {
+        this.instagramUserId = instagramUserId;
     }
 
     @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL}, orphanRemoval = true, mappedBy = "place")
