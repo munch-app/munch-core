@@ -2,18 +2,11 @@ package com.munch.core.essential.source;
 
 /**
  * Created By: Fuxing Loh
- * Date: 23/8/2016
- * Time: 10:42 PM
+ * Date: 29/9/2016
+ * Time: 6:32 PM
  * Project: essential
  */
-public class DataSource {
-
-    // Your Bloody Horny Friend
-    public static final int Y = 2;
-    public static final int B = 3;
-    public static final int H = 1;
-    public static final int H_S = 1_2;
-    public static final int F = 4;
+public class MunchSource {
 
     public static final int FACEBOOK = 5;
     public static final int GOOGLE = 6;
@@ -28,4 +21,5 @@ public class DataSource {
     public static final int FACT = 10_010;
     public static final int MUNCH_STAFF = 10_012;
     public static final int MUNCH_USER = 10_014;
+
 }
