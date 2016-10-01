@@ -24,14 +24,14 @@ public class PlaceBlockMapperModule extends AbstractModule {
     @Provides
     @Named(PlaceMenuText.BUCKET_NAME)
     @Singleton
-    BlockMapper provideSeedPlaceBlockMapper(JsonConverter jsonConverter) {
+    BlockMapper providePlaceMenuBlockMapper(JsonConverter jsonConverter) {
         return new BlockMapper(new AwsPersistClient(PlaceMenuText.BUCKET_NAME), jsonConverter);
     }
 
     @Provides
     @Named(PlaceMenuText.BUCKET_NAME)
     @Singleton
-    TypedBlockMapper<PlaceMenuText> provideSeedPlaceTypedMapper(@Named(PlaceMenuText.BUCKET_NAME) BlockMapper blockMapper) {
+    TypedBlockMapper<PlaceMenuText> providePlaceMenuTypedMapper(@Named(PlaceMenuText.BUCKET_NAME) BlockMapper blockMapper) {
         return new TypedBlockMapper<>(PlaceMenuText.class, PlaceMenuText::getMenuId, blockMapper);
     }
 }

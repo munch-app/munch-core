@@ -17,7 +17,7 @@
 .idea/sqlDataSources.xml
 .idea/dynamic.xml
 .idea/uiDesigner.xml
-/.idea/modules/
+.idea/modules/
 
 
 # Gradle:
@@ -64,3 +64,4 @@ gradle-app.setting
 
 classes/
 src/test/resources/
+/.idea/modules/

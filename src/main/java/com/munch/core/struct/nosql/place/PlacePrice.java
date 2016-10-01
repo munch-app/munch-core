@@ -22,6 +22,8 @@ public class PlacePrice {
     private String sort;
 
     private Double price;
+    private Double priceStart;
+    private Double priceEnd;
     private String name;
     private String source;
 
@@ -50,6 +52,24 @@ public class PlacePrice {
 
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    @DynamoDBAttribute(attributeName = "a")
+    public Double getPriceStart() {
+        return priceStart;
+    }
+
+    public void setPriceStart(Double priceStart) {
+        this.priceStart = priceStart;
+    }
+
+    @DynamoDBAttribute(attributeName = "z")
+    public Double getPriceEnd() {
+        return priceEnd;
+    }
+
+    public void setPriceEnd(Double priceEnd) {
+        this.priceEnd = priceEnd;
     }
 
     @DynamoDBAttribute(attributeName = "n")
