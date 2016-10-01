@@ -10,7 +10,7 @@ import com.munch.core.essential.block.BlockVersion;
  */
 public class PlaceMenuText extends BlockVersion {
 
-    public static final String BUCKET_NAME = "munch.place.PlaceMenuText";
+    public static final String BUCKET_NAME = "munch.place.menu.text";
 
     private String menuId;
     private String keyId;
