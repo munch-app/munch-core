@@ -1,8 +1,8 @@
 package com.munch.core.struct.nosql.place;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIndexHashKey;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIndexRangeKey;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
 /**
@@ -20,7 +20,7 @@ public class PlaceImageLink {
     private String locationIdType;
     private String keyId;
 
-    @DynamoDBIndexHashKey(attributeName = "p")
+    @DynamoDBHashKey(attributeName = "p")
     public String getPlaceId() {
         return placeId;
     }
@@ -29,7 +29,7 @@ public class PlaceImageLink {
         this.placeId = placeId;
     }
 
-    @DynamoDBIndexRangeKey(attributeName = "t")
+    @DynamoDBRangeKey(attributeName = "t")
     public String getLocationIdType() {
         return locationIdType;
     }
