@@ -9,9 +9,11 @@
         <!-- Classes -->
         <class>com.munch.core.struct.rdbms.place.Place</class>
         <class>com.munch.core.struct.rdbms.place.PlaceHour</class>
-        <class>com.munch.core.struct.rdbms.place.PlaceLocation</class>
         <class>com.munch.core.struct.rdbms.place.PlaceMenu</class>
         <class>com.munch.core.struct.rdbms.place.PlaceType</class>
+        <class>com.munch.core.struct.rdbms.place.PlaceSocial</class>
+        <class>com.munch.core.struct.rdbms.place.PlaceSummary</class>
+        <class>com.munch.core.struct.rdbms.place.PlaceLocation</class>
 
         <class>com.munch.core.struct.rdbms.account.Account</class>
         <class>com.munch.core.struct.rdbms.account.AccountAccessToken</class>
