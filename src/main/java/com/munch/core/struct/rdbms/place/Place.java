@@ -44,11 +44,7 @@ public class Place extends AbsAuditData implements OneEntity {
     private Double priceEnd;
 
     // Social Link
-    private String facebookPageId;
-    private String facebookPlaceId;
-    private String googlePlaceId;
-    private String instagramUserId;
-    private String instagramPlaceId;
+    private PlaceSocial social;
 
     // Menu
     private Set<PlaceMenu> menus = new BiDirectionHashSet<>(this);
@@ -137,49 +133,13 @@ public class Place extends AbsAuditData implements OneEntity {
         this.priceEnd = priceEnd;
     }
 
-    @Column(nullable = true, length = 100)
-    public String getFacebookPageId() {
-        return facebookPageId;
+    @OneToOne(cascade = {CascadeType.ALL}, optional = false, orphanRemoval = true)
+    public PlaceSocial getSocial() {
+        return social;
     }
 
-    public void setFacebookPageId(String facebookPageId) {
-        this.facebookPageId = facebookPageId;
-    }
-
-    @Column(nullable = true, length = 100)
-    public String getFacebookPlaceId() {
-        return facebookPlaceId;
-    }
-
-    public void setFacebookPlaceId(String facebookPlaceId) {
-        this.facebookPlaceId = facebookPlaceId;
-    }
-
-    @Column(nullable = true, length = 100)
-    public String getGooglePlaceId() {
-        return googlePlaceId;
-    }
-
-    public void setGooglePlaceId(String googlePlaceId) {
-        this.googlePlaceId = googlePlaceId;
-    }
-
-    @Column(nullable = true, length = 100)
-    public String getInstagramUserId() {
-        return instagramUserId;
-    }
-
-    public void setInstagramUserId(String instagramUserId) {
-        this.instagramUserId = instagramUserId;
-    }
-
-    @Column(nullable = true, length = 100)
-    public String getInstagramPlaceId() {
-        return instagramPlaceId;
-    }
-
-    public void setInstagramPlaceId(String instagramPlaceId) {
-        this.instagramPlaceId = instagramPlaceId;
+    public void setSocial(PlaceSocial social) {
+        this.social = social;
     }
 
     @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL}, orphanRemoval = true, mappedBy = "place")

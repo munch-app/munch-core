@@ -31,6 +31,7 @@ public class PlaceLocation extends AbsSortData implements HashSetData, ManyEntit
     private String description;
 
     // Details
+    private PlaceSummary summary;
     private String phoneNumber;
     private Set<PlaceHour> placeHours = new BiDirectionHashSet<>(this);
 
@@ -73,6 +74,15 @@ public class PlaceLocation extends AbsSortData implements HashSetData, ManyEntit
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @OneToOne(cascade = {CascadeType.ALL}, optional = false, orphanRemoval = true)
+    public PlaceSummary getSummary() {
+        return summary;
+    }
+
+    public void setSummary(PlaceSummary summary) {
+        this.summary = summary;
     }
 
     @Column(length = 45, nullable = true)
