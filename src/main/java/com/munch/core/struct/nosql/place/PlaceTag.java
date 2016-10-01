@@ -1,9 +1,6 @@
 package com.munch.core.struct.nosql.place;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIgnore;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import com.google.common.base.Splitter;
 
 import java.util.Iterator;
@@ -17,12 +14,18 @@ import java.util.stream.Collectors;
  * Time: 7:50 PM
  * Project: struct
  */
-@DynamoDBTable(tableName = "PlaceTag")
+@DynamoDBTable(tableName = "munch.place.PlaceTag")
 public class PlaceTag {
+
+    public static final String SOURCE_WEB = "w";
+    public static final String SOURCE_MENU = "m";
+    public static final String SOURCE_REVIEW = "r";
 
     private String placeId;
     private String countName;
+    private Map<String, Integer> sourceMap;
 
+    // Transient
     private int count;
     private String name;
 
@@ -79,6 +82,15 @@ public class PlaceTag {
             fillCountName();
         }
         return count;
+    }
+
+    @DynamoDBAttribute(attributeName = "e")
+    public Map<String, Integer> getSourceMap() {
+        return sourceMap;
+    }
+
+    public void setSourceMap(Map<String, Integer> sourceMap) {
+        this.sourceMap = sourceMap;
     }
 
     /**

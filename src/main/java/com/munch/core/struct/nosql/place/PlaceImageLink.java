@@ -11,7 +11,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
  * Time: 1:36 AM
  * Project: struct
  */
-@DynamoDBTable(tableName = "PlaceImageLink")
+@DynamoDBTable(tableName = "munch.place.PlaceImageLink")
 public class PlaceImageLink {
 
     public static final String TYPE_BANNER = "BANNER";

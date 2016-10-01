@@ -8,7 +8,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.*;
  * Time: 9:30 PM
  * Project: struct
  */
-@DynamoDBTable(tableName = "UserSavedPlace")
+@DynamoDBTable(tableName = "munch.user.UserSavedPlace")
 public class UserSavedPlace {
 
     public static final String REL_LIKE = "l";

@@ -18,7 +18,7 @@ import java.util.Set;
  * Time: 10:08 PM
  * Project: struct
  */
-@DynamoDBTable(tableName = "PlaceImage")
+@DynamoDBTable(tableName = "munch.place.PlaceImage")
 public class PlaceImage {
 
     // Hash Key
