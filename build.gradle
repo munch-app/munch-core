@@ -4,13 +4,13 @@ allprojects {
     apply plugin: 'maven-publish'
 
     group 'com.munch.core'
-    version '0.23.2'
+    version '0.23.3'
 }
 
 buildscript {
     repositories {
         maven {
-            url 'http://artifactory.fxloh.com//artifactory/plugins-release'
+            url 'http://artifactory.fxloh.com/artifactory/plugins-release'
             credentials {
                 username = "${artifactory_user}"
                 password = "${artifactory_password}"
@@ -64,7 +64,7 @@ repositories {
             username = "${artifactory_user}"
             password = "${artifactory_password}"
         }
-        url "http://artifactory.fxl.sg/artifactory/munch"
+        url "http://artifactory.fxloh.com/artifactory/munch"
     }
 }
 

@@ -20,10 +20,10 @@ public class PlaceSocial {
 
     // Social Link
     private String facebookPageId;
-    private String facebookPlaceId;
-    private String googlePlaceId;
+    private String facebookPlaceId; // Unique To Location
+    private String googlePlaceId; // Unique To Location
     private String instagramUserId;
-    private String instagramPlaceId;
+    private String instagramPlaceId; // Unique To Location
 
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid")

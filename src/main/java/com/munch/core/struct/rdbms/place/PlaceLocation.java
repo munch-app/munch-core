@@ -35,6 +35,9 @@ public class PlaceLocation extends AbsSortData implements HashSetData, ManyEntit
     private String phoneNumber;
     private Set<PlaceHour> placeHours = new BiDirectionHashSet<>(this);
 
+    // Place Social (Tied to this Page)
+    private PlaceSocial social;
+
     // Location Data
     private Location location;
     private Neighborhood neighbourhood;
@@ -137,6 +140,15 @@ public class PlaceLocation extends AbsSortData implements HashSetData, ManyEntit
 
     public void setContainer(Container container) {
         this.container = container;
+    }
+
+    @OneToOne(cascade = {CascadeType.ALL}, optional = false, orphanRemoval = true)
+    public PlaceSocial getSocial() {
+        return social;
+    }
+
+    public void setSocial(PlaceSocial social) {
+        this.social = social;
     }
 
     @ManyToOne(fetch = FetchType.EAGER)

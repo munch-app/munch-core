@@ -43,9 +43,6 @@ public class Place extends AbsAuditData implements OneEntity {
     private Double priceStart;
     private Double priceEnd;
 
-    // Social Link
-    private PlaceSocial social;
-
     // Menu
     private Set<PlaceMenu> menus = new BiDirectionHashSet<>(this);
 
@@ -131,15 +128,6 @@ public class Place extends AbsAuditData implements OneEntity {
 
     public void setPriceEnd(Double priceEnd) {
         this.priceEnd = priceEnd;
-    }
-
-    @OneToOne(cascade = {CascadeType.ALL}, optional = false, orphanRemoval = true)
-    public PlaceSocial getSocial() {
-        return social;
-    }
-
-    public void setSocial(PlaceSocial social) {
-        this.social = social;
     }
 
     @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL}, orphanRemoval = true, mappedBy = "place")
