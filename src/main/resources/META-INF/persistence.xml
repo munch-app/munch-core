@@ -28,6 +28,7 @@
 
         <!-- Admin Classes (Munch Dashboard)-->
         <class>com.munch.core.struct.rdbms.admin.AdminAccount</class>
+        <class>com.munch.core.struct.rdbms.admin.KeyValuePair</class>
 
         <properties>
             <!-- Basic Config -->
