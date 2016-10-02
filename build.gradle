@@ -10,7 +10,7 @@ allprojects {
 buildscript {
     repositories {
         maven {
-            url 'http://artifactory.fxl.sg/artifactory/plugins-release'
+            url 'http://artifactory.fxloh.com/artifactory/plugins-release'
             credentials {
                 username = "${artifactory_user}"
                 password = "${artifactory_password}"
@@ -64,7 +64,7 @@ repositories {
             username = "${artifactory_user}"
             password = "${artifactory_password}"
         }
-        url "http://artifactory.fxl.sg/artifactory/munch"
+        url "http://artifactory.fxloh.com/artifactory/munch"
     }
 }
 
