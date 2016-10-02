@@ -15,8 +15,8 @@
         <class>com.munch.core.struct.rdbms.place.PlaceSummary</class>
         <class>com.munch.core.struct.rdbms.place.PlaceLocation</class>
 
-        <class>com.munch.core.struct.rdbms.account.Account</class>
-        <class>com.munch.core.struct.rdbms.account.AccountAccessToken</class>
+        <!--<class>com.munch.core.struct.rdbms.account.Account</class>-->
+        <!--<class>com.munch.core.struct.rdbms.account.AccountAccessToken</class>-->
 
         <class>com.munch.core.struct.rdbms.locality.Location</class>
         <class>com.munch.core.struct.rdbms.locality.Country</class>
@@ -24,7 +24,6 @@
         <class>com.munch.core.struct.rdbms.locality.Neighborhood</class>
 
         <class>com.munch.core.struct.rdbms.media.SortedImage</class>
-
 
         <!-- Admin Classes (Munch Dashboard)-->
         <class>com.munch.core.struct.rdbms.admin.AdminAccount</class>
@@ -37,7 +36,7 @@
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
             <property name="hibernate.show_sql" value="false"/>
             <!-- create create-drop update validate -->
-            <property name="hibernate.hbm2ddl.auto" value="update"/><!--TODO-->
+            <property name="hibernate.hbm2ddl.auto" value="validate"/><!--TODO-->
 
             <!-- Connection Pool Config -->
             <property name="hibernate.connection.provider_class"
@@ -50,12 +49,12 @@
             <property name="hibernate.hikari.dataSource.useServerPrepStmts" value="true"/>
 
             <!-- Connection String TODO -->
-            <!--139.59.240.51:3306-->
             <property name="hibernate.hikari.dataSource.url"
-                      value="jdbc:mysql://localhost:32770/munch?useUnicode=yes&amp;characterEncoding=UTF-8"/>
+                      value="jdbc:mysql://139.59.240.51:3306/munch?useUnicode=yes&amp;characterEncoding=UTF-8"/>
+            <!--value="jdbc:mysql://localhost:32770/munch?useUnicode=yes&amp;characterEncoding=UTF-8"/>-->
             <property name="hibernate.hikari.dataSource.user" value="root"/>
-            <!--passwordmunch0327-->
-            <property name="hibernate.hikari.dataSource.password" value="password"/>
+            <!--<property name="hibernate.hikari.dataSource.password" value="password"/>-->
+            <property name="hibernate.hikari.dataSource.password" value="passwordmunch0327"/>
 
             <!-- Lucene Search-->
             <property name="hibernate.search.default.directory_provider" value="filesystem"/>
