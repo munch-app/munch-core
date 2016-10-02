@@ -135,7 +135,7 @@ public class Location {
         this.state = state;
     }
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     public Country getCountry() {
         return country;
     }

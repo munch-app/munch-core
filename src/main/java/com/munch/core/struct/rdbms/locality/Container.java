@@ -86,7 +86,7 @@ public class Container {
         this.websiteUrl = websiteUrl;
     }
 
-    @OneToOne(cascade = {CascadeType.ALL}, optional = false, orphanRemoval = true)
+    @OneToOne(cascade = {CascadeType.ALL}, optional = false, orphanRemoval = true, fetch = FetchType.EAGER)
     public Location getLocation() {
         return location;
     }
@@ -104,7 +104,7 @@ public class Container {
         this.radius = radius;
     }
 
-    @ManyToOne(optional = true, cascade = {})
+    @ManyToOne(optional = true, cascade = {}, fetch = FetchType.EAGER)
     public Neighborhood getNeighborhood() {
         return neighborhood;
     }
@@ -113,7 +113,7 @@ public class Container {
         this.neighborhood = neighborhood;
     }
 
-    @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true, fetch = FetchType.EAGER)
     @OrderBy("sort desc")
     @LazyCollection(LazyCollectionOption.FALSE)
     public List<SortedImage> getImages() {

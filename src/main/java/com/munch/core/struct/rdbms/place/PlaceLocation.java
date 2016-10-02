@@ -79,7 +79,7 @@ public class PlaceLocation extends AbsSortData implements HashSetData, ManyEntit
         this.description = description;
     }
 
-    @OneToOne(cascade = {CascadeType.ALL}, optional = false, orphanRemoval = true)
+    @OneToOne(cascade = {CascadeType.ALL}, optional = false, orphanRemoval = true, fetch = FetchType.EAGER)
     public PlaceSummary getSummary() {
         return summary;
     }
@@ -115,7 +115,7 @@ public class PlaceLocation extends AbsSortData implements HashSetData, ManyEntit
         this.status = status;
     }
 
-    @OneToOne(cascade = {CascadeType.ALL}, optional = false, orphanRemoval = true)
+    @OneToOne(cascade = {CascadeType.ALL}, optional = false, orphanRemoval = true, fetch = FetchType.EAGER)
     public Location getLocation() {
         return location;
     }
@@ -142,7 +142,7 @@ public class PlaceLocation extends AbsSortData implements HashSetData, ManyEntit
         this.container = container;
     }
 
-    @OneToOne(cascade = {CascadeType.ALL}, optional = false, orphanRemoval = true)
+    @OneToOne(cascade = {CascadeType.ALL}, optional = false, orphanRemoval = true, fetch = FetchType.EAGER)
     public PlaceSocial getSocial() {
         return social;
     }
