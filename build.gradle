@@ -69,10 +69,8 @@ repositories {
 }
 
 dependencies {
-    // Tests
     testCompile 'junit:junit:4.12'
     testCompile 'org.easytesting:fest-assert:1.4'
-    testCompile group: 'com.google.code.gson', name: 'gson', version: '2.7'
 
     // Munch
     compile group: 'com.munch.core', name: 'essential', version: '0.8.0'
