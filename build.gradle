@@ -4,7 +4,7 @@ allprojects {
     apply plugin: 'maven-publish'
 
     group 'com.munch.core'
-    version '0.8.0'
+    version '0.8.1'
 }
 
 buildscript {
@@ -48,17 +48,28 @@ artifactory {
     }
 }
 
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives sourcesJar
+}
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
+            artifact (sourcesJar) {
+                classifier = 'sources'
+            }
         }
     }
 }
 
 repositories {
     mavenCentral()
-    maven { url "https://jitpack.io" }
     maven {
         credentials {
             username = "${artifactory_user}"

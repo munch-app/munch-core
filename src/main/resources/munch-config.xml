@@ -11,15 +11,37 @@
             <secret-key>IAM-ROLES</secret-key>
         </credentials>
         <s3>
-            <bucket-images>vital-images</bucket-images>
+            <bucket>
+                <place-images>munch.place.images</place-images>
+                <place-menus>munch.place.menus</place-menus>
+                <sorted>munch.images</sorted>
+            </bucket>
             <region>ap-southeast-1</region>
         </s3>
     </aws>
 
+    <google>
+        <api-key></api-key>
+    </google>
+
+    <facebook>
+        <access-token></access-token>
+    </facebook>
+
+    <instagram>
+        <api-key></api-key>
+        <api-secret></api-secret>
+        <callback>http://getmunch.co</callback>
+    </instagram>
+
+    <imageproxy>
+        <url></url>
+    </imageproxy>
+
     <development>
         <aws>
-            <access-key>foo</access-key>
-            <secret-key>bar</secret-key>
+            <access-key></access-key>
+            <secret-key></secret-key>
 
             <s3>
                 <bucket-images>vital-images</bucket-images>
