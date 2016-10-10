@@ -14,7 +14,7 @@ import javax.persistence.Id;
  * Project: struct
  */
 @Entity
-public class PlaceSummary {
+public class ReviewSummary {
 
     private String id;
 

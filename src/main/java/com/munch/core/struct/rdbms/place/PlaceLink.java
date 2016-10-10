@@ -8,22 +8,25 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 /**
+ * Place Link with other services
  * Created By: Fuxing Loh
  * Date: 1/10/2016
  * Time: 5:12 PM
  * Project: struct
  */
 @Entity
-public class PlaceSocial {
+public class PlaceLink {
 
     private String id;
 
-    // Social Link
+    // Place Social Link
     private String facebookPageId;
     private String facebookPlaceId; // Unique To Location
     private String googlePlaceId; // Unique To Location
     private String instagramUserId;
     private String instagramPlaceId; // Unique To Location
+
+    private String factualId;
 
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid")
@@ -80,5 +83,14 @@ public class PlaceSocial {
 
     public void setInstagramPlaceId(String instagramPlaceId) {
         this.instagramPlaceId = instagramPlaceId;
+    }
+
+    @Column(nullable = true, length = 100)
+    public String getFactualId() {
+        return factualId;
+    }
+
+    public void setFactualId(String factualId) {
+        this.factualId = factualId;
     }
 }

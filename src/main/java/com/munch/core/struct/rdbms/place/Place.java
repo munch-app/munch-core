@@ -1,8 +1,13 @@
 package com.munch.core.struct.rdbms.place;
 
 import com.munch.core.struct.rdbms.abs.AbsAuditData;
+import com.munch.core.struct.rdbms.abs.HashSetData;
+import com.munch.core.struct.rdbms.locality.Container;
+import com.munch.core.struct.rdbms.locality.Location;
+import com.munch.core.struct.rdbms.locality.Neighborhood;
 import com.munch.core.struct.util.Lucene;
 import com.munch.core.struct.util.map.BiDirectionHashSet;
+import com.munch.core.struct.util.map.ManyEntity;
 import com.munch.core.struct.util.map.OneEntity;
 import org.apache.lucene.search.Query;
 import org.hibernate.annotations.GenericGenerator;
@@ -24,7 +29,7 @@ import java.util.Set;
  */
 @Indexed
 @Entity
-public class Place extends AbsAuditData implements OneEntity {
+public class Place extends AbsAuditData implements OneEntity, ManyEntity<Brand>, HashSetData {
 
     public static final int STATUS_ACTIVE = 200;
     public static final int STATUS_DELETED = 400;
@@ -34,25 +39,30 @@ public class Place extends AbsAuditData implements OneEntity {
     private String name;
     private String description;
 
-    // Informational
+    // Informational (Contact)
     private String phoneNumber;
     private String websiteUrl;
     private Set<PlaceType> types = new HashSet<>();
+    private Set<PlaceHour> placeHours = new BiDirectionHashSet<>(this);
 
-    // Details
+    // Details (Decision)
     private Double priceStart;
     private Double priceEnd;
-
-    // Menu
     private Set<PlaceMenu> menus = new BiDirectionHashSet<>(this);
+    private ReviewSummary summary;
+    private PlaceLink social;
 
-    // Related
-    private Set<PlaceLocation> locations = new BiDirectionHashSet<>(this);
+    // Location Data
+    private Location location;
+    private Neighborhood neighbourhood;
+    private Container container;
+
+    // Brand
+    private Brand brand;
 
     // Data Tracking
     private int status = STATUS_ACTIVE;
-    private int humanVersion = 0;
-    private int machineVersion = 0;
+    private PlaceLog placeLog;
 
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid")
@@ -139,13 +149,67 @@ public class Place extends AbsAuditData implements OneEntity {
         this.menus = menus;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true, mappedBy = "place")
-    public Set<PlaceLocation> getLocations() {
-        return locations;
+    @ManyToOne(fetch = FetchType.LAZY)
+    public Brand getBrand() {
+        return brand;
     }
 
-    protected void setLocations(Set<PlaceLocation> locations) {
-        this.locations = locations;
+    public void setBrand(Brand brand) {
+        this.brand = brand;
+    }
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL}, orphanRemoval = true, mappedBy = "place")
+    public Set<PlaceHour> getPlaceHours() {
+        return placeHours;
+    }
+
+    protected void setPlaceHours(Set<PlaceHour> placeHours) {
+        this.placeHours = placeHours;
+    }
+
+    @OneToOne(cascade = {CascadeType.ALL}, optional = false, orphanRemoval = true, fetch = FetchType.EAGER)
+    public ReviewSummary getSummary() {
+        return summary;
+    }
+
+    public void setSummary(ReviewSummary summary) {
+        this.summary = summary;
+    }
+
+    @OneToOne(cascade = {CascadeType.ALL}, optional = false, orphanRemoval = true, fetch = FetchType.EAGER)
+    public PlaceLink getSocial() {
+        return social;
+    }
+
+    public void setSocial(PlaceLink social) {
+        this.social = social;
+    }
+
+    @OneToOne(cascade = {CascadeType.ALL}, optional = false, orphanRemoval = true, fetch = FetchType.EAGER)
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    @ManyToOne(optional = true)
+    public Neighborhood getNeighbourhood() {
+        return neighbourhood;
+    }
+
+    public void setNeighbourhood(Neighborhood neighbourhood) {
+        this.neighbourhood = neighbourhood;
+    }
+
+    @ManyToOne(optional = true)
+    public Container getContainer() {
+        return container;
+    }
+
+    public void setContainer(Container container) {
+        this.container = container;
     }
 
     @Column(nullable = false)
@@ -157,33 +221,34 @@ public class Place extends AbsAuditData implements OneEntity {
         this.status = status;
     }
 
-    @Column(nullable = false)
-    public int getHumanVersion() {
-        return humanVersion;
+    @OneToOne(cascade = {CascadeType.ALL}, optional = false, orphanRemoval = true, fetch = FetchType.LAZY)
+    public PlaceLog getPlaceLog() {
+        return placeLog;
     }
 
-    protected void setHumanVersion(int humanVersion) {
-        this.humanVersion = humanVersion;
+    public void setPlaceLog(PlaceLog placeLog) {
+        this.placeLog = placeLog;
     }
 
-    @Column(nullable = false)
-    public int getMachineVersion() {
-        return machineVersion;
+    @Override
+    public int hashCode() {
+        return getId().hashCode();
     }
 
-    protected void setMachineVersion(int machineVersion) {
-        this.machineVersion = machineVersion;
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        return obj.hashCode() == this.hashCode();
     }
 
-    @Transient
-    public void incrementHumanVersion() {
-        setHumanVersion(humanVersion++);
-        incrementMachineVersion();
-    }
-
-    @Transient
-    public void incrementMachineVersion() {
-        setMachineVersion(machineVersion++);
+    @Override
+    public void setOneEntity(Brand single) {
+        setBrand(single);
     }
 
     public static class Search extends Lucene {

@@ -15,7 +15,7 @@ import java.time.LocalTime;
  * Project: struct
  */
 @Entity
-public class PlaceHour extends AbsAuditData implements HashSetData, ManyEntity<PlaceLocation> {
+public class PlaceHour extends AbsAuditData implements HashSetData, ManyEntity<Place> {
 
     public static final int MON = 1;
     public static final int TUE = 2;
@@ -32,7 +32,7 @@ public class PlaceHour extends AbsAuditData implements HashSetData, ManyEntity<P
     private LocalTime open;
     private LocalTime close;
 
-    private PlaceLocation placeLocation;
+    private Place place;
 
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid")
@@ -74,12 +74,12 @@ public class PlaceHour extends AbsAuditData implements HashSetData, ManyEntity<P
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    public PlaceLocation getPlaceLocation() {
-        return placeLocation;
+    public Place getPlace() {
+        return place;
     }
 
-    public void setPlaceLocation(PlaceLocation placeLocation) {
-        this.placeLocation = placeLocation;
+    public void setPlace(Place place) {
+        this.place = place;
     }
 
     @Override
@@ -93,7 +93,7 @@ public class PlaceHour extends AbsAuditData implements HashSetData, ManyEntity<P
     }
 
     @Override
-    public void setOneEntity(PlaceLocation single) {
-        setPlaceLocation(single);
+    public void setOneEntity(Place single) {
+        setPlace(single);
     }
 }

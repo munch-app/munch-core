@@ -1,0 +1,80 @@
+package com.munch.core.struct.rdbms.place;
+
+import com.munch.core.struct.rdbms.abs.AbsAuditData;
+import com.munch.core.struct.util.map.BiDirectionHashSet;
+import com.munch.core.struct.util.map.OneEntity;
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import java.util.Set;
+
+/**
+ * Created by: Fuxing
+ * Date: 11/10/2016
+ * Time: 2:50 AM
+ * Project: struct
+ */
+@Entity
+public class Brand extends AbsAuditData implements OneEntity {
+
+    private String id;
+
+    private String name;
+    private String description;
+
+    private String phoneNumber;
+    private String websiteUrl;
+
+    private Set<Place> places = new BiDirectionHashSet<>(this);
+
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid")
+    @Column(columnDefinition = "CHAR(32)")
+    @Id
+    public String getId() {
+        return id;
+    }
+
+    protected void setId(String id) {
+        this.id = id;
+    }
+
+    @Column(length = 255, nullable = false)
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Column(length = 500, nullable = true)
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @Column(length = 45, nullable = true)
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    @Column(length = 255, nullable = true)
+    public String getWebsiteUrl() {
+        return websiteUrl;
+    }
+
+    public void setWebsiteUrl(String websiteUrl) {
+        this.websiteUrl = websiteUrl;
+    }
+}
