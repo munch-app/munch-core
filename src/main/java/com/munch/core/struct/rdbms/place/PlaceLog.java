@@ -18,13 +18,21 @@ public class PlaceLog {
     public static final int STATUS_ACTIVE = 200;
     public static final int STATUS_DELETED = 400;
 
+    public static final int HOW_SPAGHETTI_FEEDFORWARD = 100;
+    public static final int HOW_SPAGHETTI_USER = 120;
+
+    public static final int HOW_DASHBOARD_RESTAURANT = 200;
+    public static final int HOW_CORPUS_INSTAGRAM = 300;
+    public static final int HOW_CORPUS_BLOG = 400;
+
     private String id;
 
     // Data Tracking
     private int humanVersion = 0;
     private int machineVersion = 0;
 
-    // TODO how isit added, who added it
+    private Integer addedHow;
+    private String addedBy; // User Id
 
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid")
@@ -43,7 +51,7 @@ public class PlaceLog {
         return humanVersion;
     }
 
-    protected void setHumanVersion(int humanVersion) {
+    public void setHumanVersion(int humanVersion) {
         this.humanVersion = humanVersion;
     }
 
@@ -52,7 +60,7 @@ public class PlaceLog {
         return machineVersion;
     }
 
-    protected void setMachineVersion(int machineVersion) {
+    public void setMachineVersion(int machineVersion) {
         this.machineVersion = machineVersion;
     }
 
@@ -67,4 +75,21 @@ public class PlaceLog {
         setMachineVersion(machineVersion++);
     }
 
+    @Column(nullable = false)
+    public Integer getAddedHow() {
+        return addedHow;
+    }
+
+    public void setAddedHow(Integer addedHow) {
+        this.addedHow = addedHow;
+    }
+
+    @Column(length = 50, nullable = true)
+    public String getAddedBy() {
+        return addedBy;
+    }
+
+    public void setAddedBy(String addedBy) {
+        this.addedBy = addedBy;
+    }
 }
