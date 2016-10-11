@@ -1,10 +1,11 @@
 allprojects {
+    apply plugin: 'idea'
     apply plugin: 'java'
     apply plugin: "com.jfrog.artifactory"
     apply plugin: 'maven-publish'
 
     group 'com.munch.core'
-    version '0.25.2'
+    version '0.25.3'
 }
 
 buildscript {
@@ -84,7 +85,7 @@ dependencies {
     testCompile 'org.easytesting:fest-assert:1.4'
 
     // Munch
-    compile group: 'com.munch.core', name: 'essential', version: '0.8.0'
+    compile group: 'com.munch.core', name: 'essential', version: '0.8.1'
 
     // Database
     compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.39'

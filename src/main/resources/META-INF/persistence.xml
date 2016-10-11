@@ -30,6 +30,7 @@
         <!-- Admin Classes (Munch Dashboard)-->
         <class>com.munch.core.struct.rdbms.admin.AdminAccount</class>
         <class>com.munch.core.struct.rdbms.admin.KeyValuePair</class>
+        <class>com.munch.core.struct.rdbms.spaghetti.SeedPlaceTrack</class>
 
         <!--<class>com.munch.core.struct.rdbms.account.Account</class>-->
         <!--<class>com.munch.core.struct.rdbms.account.AccountAccessToken</class>-->
