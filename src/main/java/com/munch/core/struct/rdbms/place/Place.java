@@ -76,8 +76,8 @@ public class Place extends AbsAuditData implements OneEntity, ManyEntity<Brand>,
         this.id = id;
     }
 
-    @Column(length = 255, nullable = false)
     @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO)
+    @Column(length = 255, nullable = false)
     public String getName() {
         return name;
     }
@@ -149,7 +149,7 @@ public class Place extends AbsAuditData implements OneEntity, ManyEntity<Brand>,
         this.menus = menus;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
     public Brand getBrand() {
         return brand;
     }
@@ -194,7 +194,7 @@ public class Place extends AbsAuditData implements OneEntity, ManyEntity<Brand>,
         this.location = location;
     }
 
-    @ManyToOne(optional = true)
+    @ManyToOne(optional = true, fetch = FetchType.EAGER)
     public Neighborhood getNeighbourhood() {
         return neighbourhood;
     }
@@ -203,7 +203,7 @@ public class Place extends AbsAuditData implements OneEntity, ManyEntity<Brand>,
         this.neighbourhood = neighbourhood;
     }
 
-    @ManyToOne(optional = true)
+    @ManyToOne(optional = true, fetch = FetchType.EAGER)
     public Container getContainer() {
         return container;
     }

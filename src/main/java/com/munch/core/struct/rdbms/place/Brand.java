@@ -5,10 +5,7 @@ import com.munch.core.struct.util.map.BiDirectionHashSet;
 import com.munch.core.struct.util.map.OneEntity;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Set;
 
 /**
@@ -76,5 +73,14 @@ public class Brand extends AbsAuditData implements OneEntity {
 
     public void setWebsiteUrl(String websiteUrl) {
         this.websiteUrl = websiteUrl;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST}, orphanRemoval = false, mappedBy = "brand")
+    public Set<Place> getPlaces() {
+        return places;
+    }
+
+    protected void setPlaces(Set<Place> places) {
+        this.places = places;
     }
 }
