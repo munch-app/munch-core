@@ -113,7 +113,7 @@ public class Container {
         this.neighborhood = neighborhood;
     }
 
-    @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true)
     @OrderBy("sort desc")
     @LazyCollection(LazyCollectionOption.FALSE)
     public List<SortedImage> getImages() {

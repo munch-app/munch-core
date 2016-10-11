@@ -6,30 +6,33 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <non-jta-data-source>MunchDS</non-jta-data-source>
 
-        <!-- Classes -->
+        <!-- Place Classes -->
         <class>com.munch.core.struct.rdbms.place.Place</class>
         <class>com.munch.core.struct.rdbms.place.PlaceHour</class>
-        <class>com.munch.core.struct.rdbms.place.PlaceLink</class>
         <class>com.munch.core.struct.rdbms.place.PlaceMenu</class>
         <class>com.munch.core.struct.rdbms.place.PlaceType</class>
 
+        <!-- Place Secondary Classes -->
+        <class>com.munch.core.struct.rdbms.place.PlaceLink</class>
         <class>com.munch.core.struct.rdbms.place.PlaceLog</class>
         <class>com.munch.core.struct.rdbms.place.ReviewSummary</class>
         <class>com.munch.core.struct.rdbms.place.Brand</class>
 
-        <!--<class>com.munch.core.struct.rdbms.account.Account</class>-->
-        <!--<class>com.munch.core.struct.rdbms.account.AccountAccessToken</class>-->
-
+        <!-- Location Classes -->
         <class>com.munch.core.struct.rdbms.locality.Location</class>
         <class>com.munch.core.struct.rdbms.locality.Country</class>
         <class>com.munch.core.struct.rdbms.locality.Container</class>
         <class>com.munch.core.struct.rdbms.locality.Neighborhood</class>
 
+        <!-- Media Image Classes -->
         <class>com.munch.core.struct.rdbms.media.SortedImage</class>
 
         <!-- Admin Classes (Munch Dashboard)-->
         <class>com.munch.core.struct.rdbms.admin.AdminAccount</class>
         <class>com.munch.core.struct.rdbms.admin.KeyValuePair</class>
+
+        <!--<class>com.munch.core.struct.rdbms.account.Account</class>-->
+        <!--<class>com.munch.core.struct.rdbms.account.AccountAccessToken</class>-->
 
         <properties>
             <!-- Basic Config -->
@@ -38,7 +41,7 @@
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
             <property name="hibernate.show_sql" value="false"/>
             <!-- create create-drop update validate -->
-            <property name="hibernate.hbm2ddl.auto" value="validate"/><!--TODO-->
+            <property name="hibernate.hbm2ddl.auto" value="create"/><!--TODO-->
 
             <!-- Connection Pool Config -->
             <property name="hibernate.connection.provider_class"
