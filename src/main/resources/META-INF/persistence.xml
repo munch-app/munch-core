@@ -41,7 +41,7 @@
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
             <property name="hibernate.show_sql" value="false"/>
             <!-- create create-drop update validate -->
-            <property name="hibernate.hbm2ddl.auto" value="create"/><!--TODO-->
+            <property name="hibernate.hbm2ddl.auto" value="validate"/><!--TODO-->
 
             <!-- Connection Pool Config -->
             <property name="hibernate.connection.provider_class"
