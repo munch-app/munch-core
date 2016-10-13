@@ -20,7 +20,7 @@ public interface HashSetData {
             return false;
         if (clazz != obj.getClass())
             return false;
-        return obj.hashCode() == this.hashCode();
+        return ((HashSetData) obj).getId().equals(this.getId());
     }
 
     /* Code to be placed at implementing class

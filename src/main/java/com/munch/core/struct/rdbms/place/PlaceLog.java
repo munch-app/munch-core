@@ -15,15 +15,13 @@ import javax.persistence.*;
 @Entity
 public class PlaceLog {
 
-    public static final int STATUS_ACTIVE = 200;
-    public static final int STATUS_DELETED = 400;
+    // Spaghetti can be seeded by multiple sources
+    public static final int THROUGH_SPAGHETTI_FEEDFORWARD = 100;
+    public static final int THROUGH_SPAGHETTI_USER = 120;
 
-    public static final int HOW_SPAGHETTI_FEEDFORWARD = 100;
-    public static final int HOW_SPAGHETTI_USER = 120;
-
-    public static final int HOW_DASHBOARD_RESTAURANT = 200;
-    public static final int HOW_CORPUS_INSTAGRAM = 300;
-    public static final int HOW_CORPUS_BLOG = 400;
+    public static final int THROUGH_DASHBOARD_RESTAURANT = 200;
+    public static final int THROUGH_CORPUS_INSTAGRAM = 300;
+    public static final int THROUGH_CORPUS_BLOG = 400;
 
     private String id;
 
@@ -31,8 +29,10 @@ public class PlaceLog {
     private int humanVersion = 0;
     private int machineVersion = 0;
 
-    private Integer addedHow;
-    private String addedBy; // User Id
+    // Sources
+    private Integer addedThrough; // Internal Platform through how data is passed in
+    private Integer addedHow; // Seed by who source.MunchSource
+    private String addedBy; // User Id or Factual Id
 
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid")
@@ -84,7 +84,16 @@ public class PlaceLog {
         this.addedHow = addedHow;
     }
 
-    @Column(length = 50, nullable = true)
+    @Column(nullable = false)
+    public Integer getAddedThrough() {
+        return addedThrough;
+    }
+
+    public void setAddedThrough(Integer addedThrough) {
+        this.addedThrough = addedThrough;
+    }
+
+    @Column(length = 100, nullable = true)
     public String getAddedBy() {
         return addedBy;
     }

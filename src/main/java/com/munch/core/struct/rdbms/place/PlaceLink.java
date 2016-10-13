@@ -26,7 +26,7 @@ public class PlaceLink {
     private String instagramUserId;
     private String instagramPlaceId; // Unique To Location
 
-    private String factualId;
+    private String factualId; // Factual Link to the place
 
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid")
