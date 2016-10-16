@@ -11,6 +11,10 @@ public class MunchSource {
     public static final int FACEBOOK = 5;
     public static final int GOOGLE = 6;
 
+    public static final int FACEBOOK_PLACE = 5_1;
+    public static final int FACEBOOK_PAGE = 5_2;
+    public static final int FACEBOOK_PLACE_PAGE = 5_3;
+
     public static final int WEBSITE = 100;
 
     // Corpus
