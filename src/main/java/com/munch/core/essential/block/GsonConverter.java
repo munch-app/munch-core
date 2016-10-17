@@ -22,4 +22,8 @@ public class GsonConverter implements JsonConverter {
     public <T> T fromJson(Class<T> clazz, String content) {
         return gson.fromJson(content, clazz);
     }
+
+    public Gson getGson() {
+        return gson;
+    }
 }
