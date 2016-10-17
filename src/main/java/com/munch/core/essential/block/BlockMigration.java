@@ -32,7 +32,14 @@ public abstract class BlockMigration<B extends BlockVersion> {
      * @param block check if block needs to update
      */
     protected boolean isUpdate(JsonObject block) {
-        return block.get("version").getAsInt() < latestVersion;
+        return getVersion(block) < latestVersion;
+    }
+
+    /**
+     * @return block version
+     */
+    protected int getVersion(JsonObject block) {
+        return block.get("version").getAsInt();
     }
 
     protected void incrementalUpdate(JsonObject block) {
