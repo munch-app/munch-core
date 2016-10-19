@@ -14,10 +14,10 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 @DynamoDBTable(tableName = "munch.place.PlaceImageLink")
 public class PlaceImageLink {
 
-    public static final String TYPE_BANNER = "BANNER";
+    public static final String TYPE_BANNER = "b";
 
     private String placeId;
-    private String locationIdType;
+    private String type;
     private String keyId;
 
     @DynamoDBHashKey(attributeName = "p")
@@ -30,22 +30,14 @@ public class PlaceImageLink {
     }
 
     @DynamoDBRangeKey(attributeName = "t")
-    public String getLocationIdType() {
-        return locationIdType;
+    public String getType() {
+        return type;
     }
 
-    /**
-     * @see PlaceImageLink#setLocationIdType(String, String)
-     * @deprecated use setLocationIdType instead
-     */
-    @Deprecated
-    public void setLocationIdType(String locationIdType) {
-        this.locationIdType = locationIdType;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public void setLocationIdType(String locationId, String type) {
-        this.locationIdType = locationId + ":" + type;
-    }
 
     @DynamoDBAttribute(attributeName = "k")
     public String getKeyId() {

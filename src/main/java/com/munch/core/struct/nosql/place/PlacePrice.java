@@ -6,12 +6,14 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
 /**
+ * @deprecated not ready to use yet
  * Created By: Fuxing Loh
  * Date: 1/10/2016
  * Time: 7:09 PM
  * Project: struct
  */
 @DynamoDBTable(tableName = "munch.place.PlacePrice")
+@Deprecated
 public class PlacePrice {
 
     public static final String SOURCE_WEB = "w";

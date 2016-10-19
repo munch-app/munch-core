@@ -9,12 +9,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
+ * @deprecated not ready to use yet
  * Created By: Fuxing Loh
  * Date: 26/9/2016
  * Time: 7:50 PM
  * Project: struct
  */
 @DynamoDBTable(tableName = "munch.place.PlaceTag")
+@Deprecated
 public class PlaceTag {
 
     public static final String SOURCE_WEB = "w";

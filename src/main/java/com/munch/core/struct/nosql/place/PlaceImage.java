@@ -3,8 +3,8 @@ package com.munch.core.struct.nosql.place;
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.munch.core.essential.file.FileMapper;
 import com.munch.core.essential.util.DateTime;
-import com.munch.core.struct.util.object.StorageMapper;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -25,11 +25,6 @@ public class PlaceImage {
     private String placeId;
     // Sort Key = Date+Random
     private String sortKey;
-
-    // If null = apply to all location id,
-    // If not null = only apply to given location id
-    // placeLocationIds NOT_EXIST OR placeLocationIds CONTAINS(placeLocationIds)
-    private Set<String> placeLocationIds;
 
     // User That Uploaded It (Empty = From Dashboard, Look at Meta Data on AWS S3)
     private String userId;
@@ -59,15 +54,6 @@ public class PlaceImage {
 
     public void setSortKey(String sortKey) {
         this.sortKey = sortKey;
-    }
-
-    @DynamoDBAttribute(attributeName = "l")
-    public Set<String> getPlaceLocationIds() {
-        return placeLocationIds;
-    }
-
-    public void setPlaceLocationIds(Set<String> placeLocationIds) {
-        this.placeLocationIds = placeLocationIds;
     }
 
     @DynamoDBAttribute(attributeName = "u")
@@ -130,9 +116,9 @@ public class PlaceImage {
     public static class Manager {
 
         private DynamoDBMapper dynamoMapper;
-        private StorageMapper storageMapper;
+        private FileMapper storageMapper;
 
-        public Manager(DynamoDBMapper dynamoMapper, StorageMapper storageMapper) {
+        public Manager(DynamoDBMapper dynamoMapper, FileMapper storageMapper) {
             this.dynamoMapper = dynamoMapper;
             this.storageMapper = storageMapper;
         }
@@ -142,7 +128,7 @@ public class PlaceImage {
          */
         public void delete(PlaceImage placeImage) {
             dynamoMapper.delete(placeImage);
-            storageMapper.removeObject(placeImage.getKeyId());
+            storageMapper.removeFile(placeImage.getKeyId());
         }
 
         /**
@@ -179,7 +165,7 @@ public class PlaceImage {
                 metadata.addUserMetadata("sourceUrl", sourceUrl);
 
             // Do actual upload
-            storageMapper.putObject(keyId, file, metadata, CannedAccessControlList.PublicRead);
+            storageMapper.putFile(keyId, file, metadata, CannedAccessControlList.PublicRead);
             dynamoMapper.save(placeImage);
         }
 

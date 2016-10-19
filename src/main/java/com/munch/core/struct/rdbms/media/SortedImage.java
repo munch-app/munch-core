@@ -2,11 +2,11 @@ package com.munch.core.struct.rdbms.media;
 
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.munch.core.essential.file.FileMapper;
+import com.munch.core.essential.file.FileSetting;
 import com.munch.core.essential.util.AWSUtil;
 import com.munch.core.struct.rdbms.abs.AbsSortData;
 import com.munch.core.struct.rdbms.abs.HashSetData;
-import com.munch.core.struct.util.object.SortedImageSetting;
-import com.munch.core.struct.util.object.StorageMapper;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.hibernate.annotations.GenericGenerator;
@@ -35,7 +35,7 @@ public class SortedImage extends AbsSortData implements HashSetData {
     private String fileName;
 
     // Storage mapper for Sorted Image
-    private static StorageMapper storageMapper = new StorageMapper(AWSUtil.getS3(), new SortedImageSetting());
+    private static FileMapper fileMapper = new FileMapper(AWSUtil.getS3(), new Setting());
 
     // Need a manual for sorted image size,
     // When send image to user, send all sizes to user
@@ -65,7 +65,7 @@ public class SortedImage extends AbsSortData implements HashSetData {
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.addUserMetadata("originalFileName", fileName);
 
-            storageMapper.putObject(keyId, file, metadata, CannedAccessControlList.PublicRead);
+            fileMapper.putFile(keyId, file, metadata, CannedAccessControlList.PublicRead);
         } else {
             throw new IllegalArgumentException("File not available.");
         }
@@ -85,7 +85,7 @@ public class SortedImage extends AbsSortData implements HashSetData {
      */
     @PreRemove
     protected void onRemove() {
-        storageMapper.removeObject(getKeyId());
+        fileMapper.removeFile(getKeyId());
     }
 
     @GeneratedValue(generator = "uuid")
@@ -136,5 +136,14 @@ public class SortedImage extends AbsSortData implements HashSetData {
     @Override
     public boolean equals(final Object obj) {
         return equals(obj, getClass());
+    }
+
+    public static class Setting implements FileSetting {
+
+        @Override
+        public String getBucket() {
+            return "munch.images";
+        }
+
     }
 }

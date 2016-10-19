@@ -3,12 +3,14 @@ package com.munch.core.struct.nosql.user;
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
 
 /**
+ * @deprecated not ready to use yet
  * Created By: Fuxing Loh
  * Date: 26/9/2016
  * Time: 9:30 PM
  * Project: struct
  */
 @DynamoDBTable(tableName = "munch.user.UserSavedPlace")
+@Deprecated
 public class UserSavedPlace {
 
     public static final String REL_LIKE = "l";

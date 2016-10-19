@@ -2,12 +2,12 @@ package com.munch.core.struct.rdbms.place;
 
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.munch.core.essential.file.FileMapper;
+import com.munch.core.essential.file.FileSetting;
 import com.munch.core.essential.util.AWSUtil;
 import com.munch.core.struct.rdbms.abs.AbsSortData;
 import com.munch.core.struct.rdbms.abs.HashSetData;
 import com.munch.core.struct.util.map.ManyEntity;
-import com.munch.core.struct.util.object.MenuSetting;
-import com.munch.core.struct.util.object.StorageMapper;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.hibernate.annotations.GenericGenerator;
@@ -45,7 +45,7 @@ public class PlaceMenu extends AbsSortData implements HashSetData, ManyEntity<Pl
     private String fileName;
 
     // Storage mapper for Sorted Image
-    private static StorageMapper storageMapper = new StorageMapper(AWSUtil.getS3(), new MenuSetting());
+    private static FileMapper fileMapper = new FileMapper(AWSUtil.getS3(), new Setting());
 
     /**
      * Upload PDF Menu
@@ -96,7 +96,7 @@ public class PlaceMenu extends AbsSortData implements HashSetData, ManyEntity<Pl
             // Do Actual image put
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.addUserMetadata("originalFileName", fileName);
-            storageMapper.putObject(keyId, file, metadata, CannedAccessControlList.PublicRead);
+            fileMapper.putFile(keyId, file, metadata, CannedAccessControlList.PublicRead);
         } else if (getType() != TYPE_WEBSITE) {
             throw new IllegalArgumentException("File not available. ()");
         }
@@ -117,7 +117,7 @@ public class PlaceMenu extends AbsSortData implements HashSetData, ManyEntity<Pl
     @PreRemove
     protected void onRemove() {
         if (getType() != TYPE_WEBSITE) {
-            storageMapper.removeObject(getKeyId());
+            fileMapper.removeFile(getKeyId());
         }
     }
 
@@ -206,5 +206,14 @@ public class PlaceMenu extends AbsSortData implements HashSetData, ManyEntity<Pl
     @Override
     public void setOneEntity(Place single) {
         setPlace(single);
+    }
+
+    public static class Setting implements FileSetting {
+
+        @Override
+        public String getBucket() {
+            return "munch.place.menus";
+        }
+
     }
 }

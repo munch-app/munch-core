@@ -7,12 +7,14 @@ import org.apache.commons.lang3.RandomStringUtils;
 import javax.persistence.*;
 
 /**
+ * @deprecated not ready to use yet
  * Created by: Fuxing
  * Date: 24/8/2016
  * Time: 3:19 AM
  * Project: struct
  */
 @Entity
+@Deprecated
 public class AccountAccessToken extends AbsAuditData implements ManyEntity<Account> {
 
     public static final int TYPE_IOS = 20_000;
