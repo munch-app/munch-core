@@ -4,6 +4,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.munch.core.essential.file.FileMapper;
+import com.munch.core.essential.file.FileSetting;
 import com.munch.core.essential.util.DateTime;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -21,10 +22,9 @@ import java.util.Set;
 @DynamoDBTable(tableName = "munch.place.PlaceImage")
 public class PlaceImage {
 
-    // Hash Key
-    private String placeId;
-    // Sort Key = Date+Random
-    private String sortKey;
+    private String placeId; // Hash Key
+    private String sortKey; // Sort Key = Date+Random
+    private String keyId; // Actual Image Bucket Key
 
     // User That Uploaded It (Empty = From Dashboard, Look at Meta Data on AWS S3)
     private String userId;
@@ -33,10 +33,12 @@ public class PlaceImage {
     // For resized Url, the sizes will be here key + "-w30h50" + .jpg
     // Store resized image in another bucket.
     private Set<String> resizedSizes;
+    // Place Image Link Reference will be here too
+    private Set<String> links;
 
     private String title;
     private String caption;
-    private String keyId;
+
 
     @DynamoDBHashKey(attributeName = "p")
     public String getPlaceId() {
@@ -110,6 +112,33 @@ public class PlaceImage {
         this.resizedSizes = resizedSizes;
     }
 
+    @DynamoDBAttribute(attributeName = "l")
+    public Set<String> getLinks() {
+        return links;
+    }
+
+    public void setLinks(Set<String> links) {
+        this.links = links;
+    }
+
+    public static class Setting implements FileSetting {
+
+        @Override
+        public String getBucket() {
+            return "munch.place.images";
+        }
+
+    }
+
+    public static class ResizedSetting implements FileSetting {
+
+        @Override
+        public String getBucket() {
+            return "munch.place.images.resized";
+        }
+
+    }
+
     /**
      * Manager to Upload & Delete
      */
@@ -134,22 +163,25 @@ public class PlaceImage {
         /**
          * Add Place Image to S3 & DynamoDB
          *
-         * @param placeImage PlaceImage
-         * @param file       file
-         * @param fileName   file name
-         * @param sourceUrl  source url
+         * @param placeImage       PlaceImage
+         * @param file             file
+         * @param originalFileName original file name
          */
-        public void upload(PlaceImage placeImage, File file, String fileName, String sourceUrl) {
+        public void upload(PlaceImage placeImage, File file, String originalFileName) {
             // Check Must Not Null
             assert placeImage.getPlaceId() != null;
             assert placeImage.getUserId() != null;
+
+            // Check Generate Value must be null
+            assert placeImage.getSortKey() == null;
+            assert placeImage.getKeyId() == null;
 
             // Auto Help Fill
             if (placeImage.getCreatedDate() == null)
                 placeImage.setCreatedDate(DateTime.now());
 
             // Create Key Id
-            String keyId = RandomStringUtils.randomAlphanumeric(40) + "." + FilenameUtils.getExtension(fileName);
+            String keyId = RandomStringUtils.randomAlphanumeric(40) + "." + FilenameUtils.getExtension(originalFileName);
             placeImage.setKeyId(keyId);
 
             // Create Sort Key Id
@@ -160,9 +192,13 @@ public class PlaceImage {
 
             // Create Meta Data
             ObjectMetadata metadata = new ObjectMetadata();
-            metadata.addUserMetadata("originalFileName", fileName);
-            if (sourceUrl != null)
-                metadata.addUserMetadata("sourceUrl", sourceUrl);
+            metadata.addUserMetadata("file.originalName", originalFileName);
+            metadata.addUserMetadata("image.placeId", placeImage.getPlaceId());
+            metadata.addUserMetadata("image.sortKey", placeImage.getSortKey());
+            metadata.addUserMetadata("image.userId", placeImage.getUserId());
+            metadata.addUserMetadata("image.createdDate", String.valueOf(placeImage.getCreatedDate().getTime()));
+            metadata.addUserMetadata("image.title", placeImage.getTitle());
+            metadata.addUserMetadata("image.caption", placeImage.getCaption());
 
             // Do actual upload
             storageMapper.putFile(keyId, file, metadata, CannedAccessControlList.PublicRead);
