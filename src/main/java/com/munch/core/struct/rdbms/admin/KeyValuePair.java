@@ -33,7 +33,7 @@ public class KeyValuePair extends AbsAuditData {
         this.keyId = key;
     }
 
-    @Column(nullable = true, length = 4000)
+    @Column(nullable = true, length = 10000)
     public String getValue() {
         return value;
     }

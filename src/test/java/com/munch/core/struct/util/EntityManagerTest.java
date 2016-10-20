@@ -17,4 +17,5 @@ public class EntityManagerTest {
         EntityManager entityManager = HibernateUtil.createEntityManager();
         entityManager.close();
     }
+
 }
