@@ -5,7 +5,35 @@ allprojects {
     apply plugin: 'maven-publish'
 
     group 'com.munch.core'
-    version '0.27.2'
+    version '0.28.0'
+
+    repositories {
+        maven {
+            credentials {
+                username = "${artifactory_user}"
+                password = "${artifactory_password}"
+            }
+            url "http://artifactory.fxloh.com/artifactory/munch"
+        }
+        mavenCentral()
+    }
+}
+
+dependencies {
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.easytesting:fest-assert:1.4'
+
+    // Munch
+    compile group: 'com.munch.core', name: 'essential', version: '0.10.0'
+
+    // Database
+    compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.39'
+    compile group: 'org.hibernate', name: 'hibernate-core', version: '5.0.10.Final'
+    compile group: 'org.hibernate', name: 'hibernate-entitymanager', version: '5.0.10.Final'
+    compile group: 'org.hibernate', name: 'hibernate-hikaricp', version: '5.0.10.Final'
+
+    // Search
+    compile group: 'org.hibernate', name: 'hibernate-search-orm', version: '5.5.4.Final'
 }
 
 buildscript {
@@ -67,32 +95,4 @@ publishing {
             }
         }
     }
-}
-
-repositories {
-    mavenCentral()
-    maven {
-        credentials {
-            username = "${artifactory_user}"
-            password = "${artifactory_password}"
-        }
-        url "http://artifactory.fxloh.com/artifactory/munch"
-    }
-}
-
-dependencies {
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.easytesting:fest-assert:1.4'
-
-    // Munch
-    compile group: 'com.munch.core', name: 'essential', version: '0.10.0'
-
-    // Database
-    compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.39'
-    compile group: 'org.hibernate', name: 'hibernate-core', version: '5.0.10.Final'
-    compile group: 'org.hibernate', name: 'hibernate-entitymanager', version: '5.0.10.Final'
-    compile group: 'org.hibernate', name: 'hibernate-hikaricp', version: '5.0.10.Final'
-
-    // Search
-    compile group: 'org.hibernate', name: 'hibernate-search-orm', version: '5.5.4.Final'
 }

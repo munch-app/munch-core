@@ -58,10 +58,12 @@ public class SeedPlaceTrack extends AbsSortData {
     // Main
     private String id;
     private String name;
+    private String address;
     private Double lat, lng;
 
     private Integer status; // Various Stages
     private Place place; // Final Place after adding
+    private String changes;
 
     // Stage Completion Dates
     private Date stageLocationDate;
@@ -96,6 +98,24 @@ public class SeedPlaceTrack extends AbsSortData {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Column(length = 255, nullable = true)
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    @Column(length = 255, nullable = true)
+    public String getChanges() {
+        return changes;
+    }
+
+    public void setChanges(String changes) {
+        this.changes = changes;
     }
 
     @Column(nullable = false)
