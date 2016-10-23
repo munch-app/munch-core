@@ -9,31 +9,7 @@ package com.munch.core.essential.util;
 /**
  * Default Reader implementation
  */
-public interface ConfigReader {
-
-    /**
-     * Get value from key
-     *
-     * @param key getInstance
-     * @return value
-     */
-    String getString(String key);
-
-    /**
-     * Get boolean from key
-     *
-     * @param key getInstance
-     * @return boolean value
-     */
-    boolean getBoolean(String key);
-
-    /**
-     * Get int from key
-     *
-     * @param key getInstance
-     * @return int value
-     */
-    int getInt(String key);
+public interface ConfigReader extends PropertiesReader {
 
     /**
      * Environment reader

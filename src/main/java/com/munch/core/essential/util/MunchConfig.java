@@ -21,7 +21,7 @@ import java.util.Map;
 public final class MunchConfig implements ConfigReader {
 
     // Default Template Location
-    static final String TEMPLATE_FILE_LOCATION = "META-INF/munch-getInstance.xml";
+    static final String TEMPLATE_FILE_LOCATION = "META-INF/munch-config.xml";
     // Default Dev/Prod Env File Location
     static final String ENV_FILE_LOCATION = "MUNCH_APP_CONFIG";
 
