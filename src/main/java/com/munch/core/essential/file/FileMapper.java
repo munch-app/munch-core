@@ -5,6 +5,7 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 
+import javax.activation.MimetypesFileTypeMap;
 import java.io.File;
 
 /**
@@ -17,10 +18,13 @@ public class FileMapper {
 
     private final AmazonS3 amazonS3;
     private final FileSetting fileSetting;
+    private final MimetypesFileTypeMap mimeTypesMap;
+
 
     public FileMapper(AmazonS3 amazonS3, FileSetting fileSetting) {
         this.amazonS3 = amazonS3;
         this.fileSetting = fileSetting;
+        this.mimeTypesMap = new MimetypesFileTypeMap();
     }
 
     protected AmazonS3 getAmazonS3() {
@@ -97,6 +101,16 @@ public class FileMapper {
      */
     public void removeFile(String keyId) {
         getAmazonS3().deleteObject(getBucket(), keyId);
+    }
+
+    /**
+     * Get content type from file name
+     *
+     * @param name file name
+     * @return content type
+     */
+    public String getContentType(String name) {
+        return mimeTypesMap.getContentType(name);
     }
 
     /**
