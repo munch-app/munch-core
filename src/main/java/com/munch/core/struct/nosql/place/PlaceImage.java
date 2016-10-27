@@ -145,11 +145,11 @@ public class PlaceImage {
     public static class Manager {
 
         private DynamoDBMapper dynamoMapper;
-        private FileMapper storageMapper;
+        private FileMapper fileMapper;
 
-        public Manager(DynamoDBMapper dynamoMapper, FileMapper storageMapper) {
+        public Manager(DynamoDBMapper dynamoMapper, FileMapper fileMapper) {
             this.dynamoMapper = dynamoMapper;
-            this.storageMapper = storageMapper;
+            this.fileMapper = fileMapper;
         }
 
         /**
@@ -157,7 +157,7 @@ public class PlaceImage {
          */
         public void delete(PlaceImage placeImage) {
             dynamoMapper.delete(placeImage);
-            storageMapper.removeFile(placeImage.getKeyId());
+            fileMapper.removeFile(placeImage.getKeyId());
         }
 
         /**
@@ -199,9 +199,10 @@ public class PlaceImage {
             metadata.addUserMetadata("image.createdDate", String.valueOf(placeImage.getCreatedDate().getTime()));
             metadata.addUserMetadata("image.title", placeImage.getTitle());
             metadata.addUserMetadata("image.caption", placeImage.getCaption());
+            metadata.setContentType(fileMapper.getContentType(originalFileName));
 
             // Do actual upload
-            storageMapper.putFile(keyId, file, metadata, CannedAccessControlList.PublicRead);
+            fileMapper.putFile(keyId, file, metadata, CannedAccessControlList.PublicRead);
             dynamoMapper.save(placeImage);
         }
 

@@ -64,7 +64,7 @@ public class SortedImage extends AbsSortData implements HashSetData {
             // Do Actual image put
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.addUserMetadata("originalFileName", fileName);
-
+            metadata.setContentType(fileMapper.getContentType(fileName));
             fileMapper.putFile(keyId, file, metadata, CannedAccessControlList.PublicRead);
         } else {
             throw new IllegalArgumentException("File not available.");
