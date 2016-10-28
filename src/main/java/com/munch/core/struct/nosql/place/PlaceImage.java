@@ -192,14 +192,9 @@ public class PlaceImage {
 
             // Create Meta Data
             ObjectMetadata metadata = new ObjectMetadata();
-            metadata.addUserMetadata("file.originalName", originalFileName);
-            metadata.addUserMetadata("image.placeId", placeImage.getPlaceId());
-            metadata.addUserMetadata("image.sortKey", placeImage.getSortKey());
-            metadata.addUserMetadata("image.userId", placeImage.getUserId());
-            metadata.addUserMetadata("image.createdDate", String.valueOf(placeImage.getCreatedDate().getTime()));
-            metadata.addUserMetadata("image.title", placeImage.getTitle());
-            metadata.addUserMetadata("image.caption", placeImage.getCaption());
-            metadata.setContentType(fileMapper.getContentType(originalFileName));
+            metadata.addUserMetadata("original-name", originalFileName);
+            metadata.addUserMetadata("place-id", placeImage.getPlaceId());
+            metadata.addUserMetadata("sort-key", placeImage.getSortKey());
 
             // Do actual upload
             fileMapper.putFile(keyId, file, metadata, CannedAccessControlList.PublicRead);
