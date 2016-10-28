@@ -2,6 +2,7 @@ package com.munch.core.struct.rdbms.place;
 
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.munch.core.essential.file.ContentTypeException;
 import com.munch.core.essential.file.FileMapper;
 import com.munch.core.essential.file.FileSetting;
 import com.munch.core.essential.util.AWSUtil;
@@ -95,8 +96,12 @@ public class PlaceMenu extends AbsSortData implements HashSetData, ManyEntity<Pl
         if (file != null) {
             // Do Actual image put
             ObjectMetadata metadata = new ObjectMetadata();
-            metadata.addUserMetadata("originalFileName", fileName);
-            fileMapper.putFile(keyId, file, metadata, CannedAccessControlList.PublicRead);
+            metadata.addUserMetadata("original-name", fileName);
+            try {
+                fileMapper.putFile(keyId, file, metadata, CannedAccessControlList.PublicRead);
+            } catch (ContentTypeException e) {
+                throw new IllegalArgumentException(e);
+            }
         } else if (getType() != TYPE_WEBSITE) {
             throw new IllegalArgumentException("File not available. ()");
         }

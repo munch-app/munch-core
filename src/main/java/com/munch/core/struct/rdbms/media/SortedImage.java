@@ -2,6 +2,7 @@ package com.munch.core.struct.rdbms.media;
 
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.munch.core.essential.file.ContentTypeException;
 import com.munch.core.essential.file.FileMapper;
 import com.munch.core.essential.file.FileSetting;
 import com.munch.core.essential.util.AWSUtil;
@@ -64,7 +65,11 @@ public class SortedImage extends AbsSortData implements HashSetData {
             // Do Actual image put
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.addUserMetadata("original-name", fileName);
-            fileMapper.putFile(keyId, file, metadata, CannedAccessControlList.PublicRead);
+            try {
+                fileMapper.putFile(keyId, file, metadata, CannedAccessControlList.PublicRead);
+            } catch (ContentTypeException e) {
+                throw new IllegalArgumentException(e);
+            }
         } else {
             throw new IllegalArgumentException("File not available.");
         }

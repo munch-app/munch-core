@@ -5,7 +5,7 @@ allprojects {
     apply plugin: 'maven-publish'
 
     group 'com.munch.core'
-    version '0.28.1'
+    version '0.28.2'
 
     repositories {
         maven {
@@ -24,7 +24,7 @@ dependencies {
     testCompile 'org.easytesting:fest-assert:1.4'
 
     // Munch
-    compile group: 'com.munch.core', name: 'essential', version: '0.10.3'
+    compile group: 'com.munch.core', name: 'essential', version: '0.10.5'
 
     // Database
     compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.39'

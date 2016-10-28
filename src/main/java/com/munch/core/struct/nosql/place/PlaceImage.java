@@ -3,11 +3,13 @@ package com.munch.core.struct.nosql.place;
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.munch.core.essential.file.ContentTypeException;
 import com.munch.core.essential.file.FileMapper;
 import com.munch.core.essential.file.FileSetting;
 import com.munch.core.essential.util.DateTime;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.util.Date;
@@ -167,14 +169,13 @@ public class PlaceImage {
          * @param file             file
          * @param originalFileName original file name
          */
-        public void upload(PlaceImage placeImage, File file, String originalFileName) {
+        public void upload(PlaceImage placeImage, File file, String originalFileName) throws ContentTypeException {
             // Check Must Not Null
-            assert placeImage.getPlaceId() != null;
-            assert placeImage.getUserId() != null;
-
-            // Check Generate Value must be null
-            assert placeImage.getSortKey() == null;
-            assert placeImage.getKeyId() == null;
+            if (StringUtils.isAnyBlank(placeImage.getPlaceId(), placeImage.getUserId())
+                    // Check Generate Value must be null
+                    || StringUtils.isNoneBlank(placeImage.getSortKey(), placeImage.getKeyId())) {
+                throw new IllegalArgumentException("PlaceImage: notNull: (placeId, userId) & null: (sortKey, keyId)");
+            }
 
             // Auto Help Fill
             if (placeImage.getCreatedDate() == null)
