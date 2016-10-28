@@ -17,16 +17,22 @@ import java.net.URL;
  */
 public class FileMapperTest {
 
+    MimetypesFileTypeMap mimeTypesMap = new MimetypesFileTypeMap();
+
     @Test
     public void getFileType() throws Exception {
-        MimetypesFileTypeMap mimeTypesMap = new MimetypesFileTypeMap();
-        File file = downloadFile(new URL("https://i.kinja-img.com/gawker-media/image/upload/s--482hkXRF--/c_scale,fl_progressive,q_80,w_800/in9kpbgj1zpmp1ni5pjn.png"));
-        System.out.println(mimeTypesMap.getContentType("https://i.kinja-img.com/gawker-media/image/upload/s--482hkXRF--/c_scale,fl_progressive,q_80,w_800/in9kpbgj1zpmp1ni5pjn.png"));
+//        File file = downloadFile(new URL("https://i.kinja-img.com/gawker-media/image/upload/s--482hkXRF--/c_scale,fl_progressive,q_80,w_800/in9kpbgj1zpmp1ni5pjn.png"));
+        System.out.println(mimeTypesMap.getContentType("in9kpbgj1zpmp1ni5pjn.png"));
     }
 
     private File downloadFile(URL url) throws IOException {
         File temp = File.createTempFile(RandomStringUtils.randomAlphabetic(30), "tmp");
         FileUtils.copyURLToFile(url, temp);
         return temp;
+    }
+
+    @Test
+    public void guessFileType() throws Exception {
+        System.out.println(mimeTypesMap.getContentType("in9kpbgj1zpmp1ni5pjn.pdf"));
     }
 }
