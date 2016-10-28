@@ -51,7 +51,7 @@ public class FileMapper {
      * @param keyId id for the file
      * @param file  file to put
      */
-    public void putFile(String keyId, File file) throws IOException {
+    public void putFile(String keyId, File file) throws ContentTypeException {
         putFile(keyId, file, CannedAccessControlList.Private);
     }
 
@@ -62,7 +62,7 @@ public class FileMapper {
      * @param file  file to put
      * @param acl   acl of the file
      */
-    public void putFile(String keyId, File file, CannedAccessControlList acl) throws IOException {
+    public void putFile(String keyId, File file, CannedAccessControlList acl) throws ContentTypeException {
         putFile(keyId, file, null, acl);
     }
 
@@ -73,7 +73,7 @@ public class FileMapper {
      * @param metadata meta data
      * @param file     file to put
      */
-    public void putFile(String keyId, File file, ObjectMetadata metadata) throws IOException {
+    public void putFile(String keyId, File file, ObjectMetadata metadata) throws ContentTypeException {
         putFile(keyId, file, metadata, CannedAccessControlList.Private);
     }
 
@@ -85,7 +85,7 @@ public class FileMapper {
      * @param file     file to put
      * @param acl      acl of the file
      */
-    public void putFile(String keyId, File file, ObjectMetadata metadata, CannedAccessControlList acl) throws IOException {
+    public void putFile(String keyId, File file, ObjectMetadata metadata, CannedAccessControlList acl) throws ContentTypeException {
         PutObjectRequest request = new PutObjectRequest(getBucket(), keyId, file);
         if (metadata == null) {
             metadata = new ObjectMetadata();
@@ -121,18 +121,30 @@ public class FileMapper {
         return tika.detect(filename);
     }
 
-    public String getContentType(String filename, File file) throws IOException {
+    public String getContentType(File file) throws ContentTypeException {
+        try {
+            return tika.detect(file);
+        } catch (IOException e) {
+            throw new ContentTypeException(e);
+        }
+    }
+
+    public String getContentType(byte[] bytes) throws ContentTypeException {
+        return tika.detect(bytes);
+    }
+
+    public String getContentType(String filename, File file) throws ContentTypeException {
         String type = getContentType(filename);
         if (type.equalsIgnoreCase(OCTET_STREAM)) {
-            type = tika.detect(file);
+            type = getContentType(file);
         }
         return type;
     }
 
-    public String getContentType(String filename, byte[] bytes) throws IOException {
+    public String getContentType(String filename, byte[] bytes) throws ContentTypeException {
         String type = getContentType(filename);
         if (type.equalsIgnoreCase(OCTET_STREAM)) {
-            type = tika.detect(bytes);
+            type = getContentType(bytes);
         }
         return type;
     }
