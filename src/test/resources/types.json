@@ -1,0 +1,638 @@
+{
+  "cuisines": [
+    {
+      "id": 10000,
+      "name": "Asian",
+      "popularity": 0
+    },
+    {
+      "id": 10100,
+      "name": "Chinese",
+      "popularity": 1000
+    },
+    {
+      "id": 10101,
+      "name": "Beijing",
+      "popularity": 0
+    },
+    {
+      "id": 10102,
+      "name": "Cantonese",
+      "popularity": 0
+    },
+    {
+      "id": 10103,
+      "name": "Dim Sum",
+      "popularity": 0
+    },
+    {
+      "id": 10104,
+      "name": "Dongbei",
+      "popularity": 0
+    },
+    {
+      "id": 10105,
+      "name": "Foochow",
+      "popularity": 0
+    },
+    {
+      "id": 10106,
+      "name": "Fujian",
+      "popularity": 0
+    },
+    {
+      "id": 10107,
+      "name": "Hainanese",
+      "popularity": 0
+    },
+    {
+      "id": 10108,
+      "name": "Hakka",
+      "popularity": 0
+    },
+    {
+      "id": 10109,
+      "name": "Hokkien",
+      "popularity": 0
+    },
+    {
+      "id": 10110,
+      "name": "Hong Kong",
+      "popularity": 0
+    },
+    {
+      "id": 10111,
+      "name": "Shanghainese",
+      "popularity": 0
+    },
+    {
+      "id": 10112,
+      "name": "Sichuan",
+      "popularity": 0
+    },
+    {
+      "id": 10113,
+      "name": "Taiwanese",
+      "popularity": 0
+    },
+    {
+      "id": 10114,
+      "name": "Teochew",
+      "popularity": 0
+    },
+    {
+      "id": 10115,
+      "name": "Zi Char",
+      "popularity": 0
+    },
+    {
+      "id": 10116,
+      "name": "Singaporean",
+      "popularity": 0
+    },
+    {
+      "id": 10117,
+      "name": "Steamboat",
+      "popularity": 0
+    },
+    {
+      "id": 10200,
+      "name": "Indian",
+      "popularity": 1000
+    },
+    {
+      "id": 10201,
+      "name": "Bangladeshi",
+      "popularity": 0
+    },
+    {
+      "id": 10202,
+      "name": "North Indian",
+      "popularity": 0
+    },
+    {
+      "id": 10203,
+      "name": "South Indian",
+      "popularity": 0
+    },
+    {
+      "id": 10300,
+      "name": "Arabic",
+      "popularity": 0
+    },
+    {
+      "id": 10400,
+      "name": "Middle Eastern",
+      "popularity": 0
+    },
+    {
+      "id": 10401,
+      "name": "Iranian",
+      "popularity": 0
+    },
+    {
+      "id": 10402,
+      "name": "Lebanese",
+      "popularity": 0
+    },
+    {
+      "id": 10403,
+      "name": "Pakistani",
+      "popularity": 0
+    },
+    {
+      "id": 10404,
+      "name": "Cuban",
+      "popularity": 0
+    },
+    {
+      "id": 10405,
+      "name": "Turkish",
+      "popularity": 0
+    },
+    {
+      "id": 10501,
+      "name": "Indochinese",
+      "popularity": 0
+    },
+    {
+      "id": 10502,
+      "name": "Japanese",
+      "popularity": 1000
+    },
+    {
+      "id": 10503,
+      "name": "Korean",
+      "popularity": 1000
+    },
+    {
+      "id": 10504,
+      "name": "Malay Indonesian",
+      "popularity": 0
+    },
+    {
+      "id": 10505,
+      "name": "Mongolian",
+      "popularity": 0
+    },
+    {
+      "id": 10506,
+      "name": "Nonya",
+      "popularity": 0,
+      "altName": "Peranakan"
+    },
+    {
+      "id": 10507,
+      "name": "Cambodian",
+      "popularity": 0
+    },
+    {
+      "id": 10508,
+      "name": "Burmese",
+      "popularity": 0
+    },
+    {
+      "id": 10509,
+      "name": "Russian",
+      "popularity": 0
+    },
+    {
+      "id": 10510,
+      "name": "Thai",
+      "popularity": 1000
+    },
+    {
+      "id": 10511,
+      "name": "Vietnamese",
+      "popularity": 0
+    },
+    {
+      "id": 20100,
+      "name": "American",
+      "popularity": 0
+    },
+    {
+      "id": 20101,
+      "name": "Steak and Grills",
+      "popularity": 0,
+      "altName": "Steak and Grill"
+    },
+    {
+      "id": 20102,
+      "name": "Western",
+      "popularity": 1000
+    },
+    {
+      "id": 20200,
+      "name": "Latin American",
+      "popularity": 0,
+      "altName": "South American"
+    },
+    {
+      "id": 20201,
+      "name": "Argentinean",
+      "popularity": 0
+    },
+    {
+      "id": 20202,
+      "name": "Brazilian",
+      "popularity": 0
+    },
+    {
+      "id": 20203,
+      "name": "Mexican",
+      "popularity": 0
+    },
+    {
+      "id": 30100,
+      "name": "European",
+      "popularity": 1000
+    },
+    {
+      "id": 30101,
+      "name": "Belgian",
+      "popularity": 0
+    },
+    {
+      "id": 30200,
+      "name": "Modern European",
+      "popularity": 0
+    },
+    {
+      "id": 30201,
+      "name": "Dutch",
+      "popularity": 0
+    },
+    {
+      "id": 30202,
+      "name": "English",
+      "popularity": 0
+    },
+    {
+      "id": 30203,
+      "name": "Eurasian",
+      "popularity": 0
+    },
+    {
+      "id": 30205,
+      "name": "French",
+      "popularity": 1000
+    },
+    {
+      "id": 30206,
+      "name": "German",
+      "popularity": 0
+    },
+    {
+      "id": 30207,
+      "name": "Greek",
+      "popularity": 0
+    },
+    {
+      "id": 30208,
+      "name": "Mediterranean",
+      "popularity": 0
+    },
+    {
+      "id": 30209,
+      "name": "Irish",
+      "popularity": 0
+    },
+    {
+      "id": 30210,
+      "name": "Italian",
+      "popularity": 1000
+    },
+    {
+      "id": 30211,
+      "name": "Caribbean",
+      "popularity": 0
+    },
+    {
+      "id": 30212,
+      "name": "Portuguese",
+      "popularity": 0
+    },
+    {
+      "id": 30213,
+      "name": "Spanish",
+      "popularity": 0
+    },
+    {
+      "id": 30214,
+      "name": "Swiss",
+      "popularity": 0
+    },
+    {
+      "id": 40000,
+      "name": "Australian",
+      "popularity": 0
+    },
+    {
+      "id": 50000,
+      "name": "African",
+      "popularity": 0
+    },
+    {
+      "id": 50001,
+      "name": "Moroccan",
+      "popularity": 0
+    },
+    {
+      "id": 60000,
+      "name": "International",
+      "popularity": 0
+    },
+    {
+      "id": 60001,
+      "name": "Pizza",
+      "popularity": 0
+    },
+    {
+      "id": 60002,
+      "name": "Barbecue",
+      "popularity": 0
+    },
+    {
+      "id": 60003,
+      "name": "Desserts",
+      "popularity": 0,
+      "altName": "Dessert"
+    },
+    {
+      "id": 60004,
+      "name": "Fruits and Drinks",
+      "popularity": 10,
+      "altName": "Fruit and Drink"
+    },
+    {
+      "id": 60005,
+      "name": "Fusion",
+      "popularity": 0
+    },
+    {
+      "id": 60006,
+      "name": "Seafood",
+      "popularity": 0
+    },
+    {
+      "id": 60007,
+      "name": "Snacks",
+      "popularity": 0,
+      "altName": "Snack"
+    },
+    {
+      "id": 60008,
+      "name": "Vegetarian",
+      "popularity": 10
+    }
+  ],
+  "mealTypes": [
+    {
+      "id": 2,
+      "name": "Breakfast",
+      "popularity": 0
+    },
+    {
+      "id": 3,
+      "name": "Desserts",
+      "popularity": 0,
+      "altName": "Dessert"
+    },
+    {
+      "id": 4,
+      "name": "High Tea",
+      "popularity": 0
+    },
+    {
+      "id": 5,
+      "name": "Snack",
+      "popularity": 0
+    },
+    {
+      "id": 6,
+      "name": "Buffet",
+      "popularity": 0
+    },
+    {
+      "id": 7,
+      "name": "Supper",
+      "popularity": 0
+    },
+    {
+      "id": 8,
+      "name": "Brunch",
+      "popularity": 0
+    },
+    {
+      "id": 101,
+      "name": "After Work",
+      "popularity": 0
+    },
+    {
+      "id": 102,
+      "name": "Al fresco Dining",
+      "popularity": 0
+    },
+    {
+      "id": 103,
+      "name": "BBQ",
+      "popularity": 0
+    },
+    {
+      "id": 104,
+      "name": "Birthdays",
+      "popularity": 0,
+      "altName": "Birthday"
+    },
+    {
+      "id": 105,
+      "name": "Boys Night Out",
+      "popularity": 0
+    },
+    {
+      "id": 106,
+      "name": "Business Meals",
+      "popularity": 0,
+      "altName": "Business Meal"
+    },
+    {
+      "id": 107,
+      "name": "Budget",
+      "popularity": 0,
+      "altName": "Cheap"
+    },
+    {
+      "id": 108,
+      "name": "Chillout",
+      "popularity": 0
+    },
+    {
+      "id": 109,
+      "name": "Children",
+      "popularity": 0
+    },
+    {
+      "id": 110,
+      "name": "Dates",
+      "popularity": 0,
+      "altName": "Date"
+    },
+    {
+      "id": 111,
+      "name": "Dinner",
+      "popularity": 0
+    },
+    {
+      "id": 112,
+      "name": "Fine Dining",
+      "popularity": 0
+    },
+    {
+      "id": 113,
+      "name": "Football Screening",
+      "popularity": 0
+    },
+    {
+      "id": 114,
+      "name": "Healthy Eating",
+      "popularity": 0
+    },
+    {
+      "id": 115,
+      "name": "Hidden Gem",
+      "popularity": 0
+    },
+    {
+      "id": 116,
+      "name": "Large Group",
+      "popularity": 0
+    },
+    {
+      "id": 117,
+      "name": "Live Band",
+      "popularity": 0
+    },
+    {
+      "id": 118,
+      "name": "Lunch",
+      "popularity": 0
+    },
+    {
+      "id": 119,
+      "name": "Ladies Night",
+      "popularity": 0
+    },
+    {
+      "id": 120,
+      "name": "Private Dining",
+      "popularity": 0
+    },
+    {
+      "id": 121,
+      "name": "People Watching",
+      "popularity": 0
+    },
+    {
+      "id": 122,
+      "name": "Pet Friendly",
+      "popularity": 0
+    },
+    {
+      "id": 123,
+      "name": "Quiet",
+      "popularity": 0
+    },
+    {
+      "id": 124,
+      "name": "Takeaway",
+      "popularity": 0
+    },
+    {
+      "id": 126,
+      "name": "Wheelchair Friendly",
+      "popularity": 0
+    },
+    {
+      "id": 127,
+      "name": "Waterfront",
+      "popularity": 0
+    }
+  ],
+  "venueTypes": [
+    {
+      "id": 1003,
+      "name": "Bistro",
+      "popularity": 0
+    },
+    {
+      "id": 1004,
+      "name": "Cafe",
+      "popularity": 5000,
+      "altName": "Café"
+    },
+    {
+      "id": 1008,
+      "name": "Coffee Shop",
+      "popularity": 4000
+    },
+    {
+      "id": 1010,
+      "name": "Delivery",
+      "popularity": 0
+    },
+    {
+      "id": 1011,
+      "name": "Fast Food",
+      "popularity": 500
+    },
+    {
+      "id": 1012,
+      "name": "Food Court",
+      "popularity": 3500
+    },
+    {
+      "id": 1012,
+      "name": "Cafeteria",
+      "popularity": 3500
+    },
+    {
+      "id": 1013,
+      "name": "Food Stall",
+      "popularity": 0,
+      "altName": "Food Stalls"
+    },
+    {
+      "id": 1013,
+      "name": "Kiosk",
+      "popularity": 0,
+      "altName": "Kiosks"
+    },
+    {
+      "id": 1014,
+      "name": "Hawker",
+      "popularity": 3000
+    },
+    {
+      "id": 1019,
+      "name": "Bar",
+      "popularity": 1000,
+      "altName": "Pub"
+    },
+    {
+      "id": 1020,
+      "name": "Restaurant",
+      "popularity": 10000
+    },
+    {
+      "id": 1021,
+      "name": "Food Shop",
+      "popularity": 0
+    },
+    {
+      "id": 1026,
+      "name": "Bakery",
+      "popularity": 0
+    }
+  ]
+}
