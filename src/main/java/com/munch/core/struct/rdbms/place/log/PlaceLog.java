@@ -1,12 +1,12 @@
 package com.munch.core.struct.rdbms.place.log;
 
+import com.munch.core.struct.util.map.BiArrayList;
 import com.munch.core.struct.util.map.OneEntity;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,7 +36,7 @@ public class PlaceLog implements OneEntity {
     private int machineVersion = 0; // Edited by any machine task
 
     // Historical place edit log edited by human
-    private List<PlaceEdit> edits = new ArrayList<>();
+    private List<PlaceEdit> edits = new BiArrayList<>(this);
 
     // Sources
     private Integer addedThrough; // Internal Platform through how data is passed in

@@ -1,7 +1,7 @@
 package com.munch.core.struct.rdbms.place;
 
 import com.munch.core.struct.rdbms.abs.AbsAuditData;
-import com.munch.core.struct.util.map.BiDirectionHashSet;
+import com.munch.core.struct.util.map.BiHashSet;
 import com.munch.core.struct.util.map.OneEntity;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -25,7 +25,7 @@ public class Brand extends AbsAuditData implements OneEntity {
     private String phoneNumber;
     private String websiteUrl;
 
-    private Set<Place> places = new BiDirectionHashSet<>(this);
+    private Set<Place> places = new BiHashSet<>(this);
 
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid")

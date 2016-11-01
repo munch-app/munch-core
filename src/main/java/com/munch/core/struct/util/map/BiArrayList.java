@@ -1,18 +1,18 @@
 package com.munch.core.struct.util.map;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 
 /**
- * Created By: Fuxing Loh
- * Date: 29/9/2016
- * Time: 8:16 PM
+ * Created by: Fuxing
+ * Date: 2/11/2016
+ * Time: 3:09 AM
  * Project: struct
  */
-public class BiDirectionHashSet<O extends OneEntity, T extends ManyEntity<O>> extends HashSet<T> {
+public class BiArrayList<O extends OneEntity, T extends ManyEntity<O>> extends ArrayList<T> {
 
     private O single;
 
-    public BiDirectionHashSet(O single) {
+    public BiArrayList(O single) {
         super();
         this.single = single;
     }
@@ -28,4 +28,5 @@ public class BiDirectionHashSet<O extends OneEntity, T extends ManyEntity<O>> ex
         many.setOneEntity(single);
         return super.add(many);
     }
+
 }

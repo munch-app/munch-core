@@ -7,7 +7,7 @@ import com.munch.core.struct.rdbms.locality.Location;
 import com.munch.core.struct.rdbms.locality.Neighborhood;
 import com.munch.core.struct.rdbms.place.log.PlaceLog;
 import com.munch.core.struct.util.Lucene;
-import com.munch.core.struct.util.map.BiDirectionHashSet;
+import com.munch.core.struct.util.map.BiHashSet;
 import com.munch.core.struct.util.map.ManyEntity;
 import com.munch.core.struct.util.map.OneEntity;
 import org.apache.lucene.search.Query;
@@ -44,12 +44,12 @@ public class Place extends AbsAuditData implements OneEntity, ManyEntity<Brand>,
     private String phoneNumber;
     private String websiteUrl;
     private Set<PlaceType> types = new HashSet<>();
-    private Set<PlaceHour> placeHours = new BiDirectionHashSet<>(this);
+    private Set<PlaceHour> placeHours = new BiHashSet<>(this);
 
     // Details (Decision)
     private Double priceStart;
     private Double priceEnd;
-    private Set<PlaceMenu> menus = new BiDirectionHashSet<>(this);
+    private Set<PlaceMenu> menus = new BiHashSet<>(this);
     private ReviewSummary summary;
     private PlaceLink social;
 

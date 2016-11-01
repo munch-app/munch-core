@@ -3,7 +3,7 @@ package com.munch.core.struct.rdbms.account;
 import com.munch.core.essential.util.DateTime;
 import com.munch.core.struct.rdbms.abs.AbsAuditData;
 import com.munch.core.struct.rdbms.locality.Country;
-import com.munch.core.struct.util.map.BiDirectionHashSet;
+import com.munch.core.struct.util.map.BiHashSet;
 import com.munch.core.struct.util.map.OneEntity;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -50,7 +50,7 @@ public class Account extends AbsAuditData implements OneEntity {
     private Date lastLoginDate;
     private boolean emailVerified = false;
     private boolean phoneVerified = false;
-    private Set<AccountAccessToken> accessTokens = new BiDirectionHashSet<>(this);
+    private Set<AccountAccessToken> accessTokens = new BiHashSet<>(this);
 
     /**
      * Default pre persist time stamping
