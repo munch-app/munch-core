@@ -14,9 +14,11 @@
 
         <!-- Place Secondary Classes -->
         <class>com.munch.core.struct.rdbms.place.PlaceLink</class>
-        <class>com.munch.core.struct.rdbms.place.PlaceLog</class>
         <class>com.munch.core.struct.rdbms.place.ReviewSummary</class>
         <class>com.munch.core.struct.rdbms.place.Brand</class>
+
+        <class>com.munch.core.struct.rdbms.place.log.PlaceLog</class>
+        <class>com.munch.core.struct.rdbms.place.log.PlaceEdit</class>
 
         <!-- Location Classes -->
         <class>com.munch.core.struct.rdbms.locality.Location</class>

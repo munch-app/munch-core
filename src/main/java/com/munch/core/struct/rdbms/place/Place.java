@@ -5,6 +5,7 @@ import com.munch.core.struct.rdbms.abs.HashSetData;
 import com.munch.core.struct.rdbms.locality.Container;
 import com.munch.core.struct.rdbms.locality.Location;
 import com.munch.core.struct.rdbms.locality.Neighborhood;
+import com.munch.core.struct.rdbms.place.log.PlaceLog;
 import com.munch.core.struct.util.Lucene;
 import com.munch.core.struct.util.map.BiDirectionHashSet;
 import com.munch.core.struct.util.map.ManyEntity;

@@ -1,8 +1,13 @@
-package com.munch.core.struct.rdbms.place;
+package com.munch.core.struct.rdbms.place.log;
 
+import com.munch.core.struct.util.map.OneEntity;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * All Related tracking and status data is moved to this class as this data can be confusing
@@ -13,7 +18,7 @@ import javax.persistence.*;
  * Project: struct
  */
 @Entity
-public class PlaceLog {
+public class PlaceLog implements OneEntity {
 
     // Spaghetti can be seeded by multiple sources
     public static final int THROUGH_SPAGHETTI_FEEDFORWARD = 100;
@@ -25,9 +30,13 @@ public class PlaceLog {
 
     private String id;
 
-    // Data Tracking
-    private int humanVersion = 0;
-    private int machineVersion = 0;
+    // Data Tracking, 0 means not edited yet
+    private int munchVersion = 0; // Edited by munch staff
+    private int humanVersion = 0; // Edited by any human, including munch staff
+    private int machineVersion = 0; // Edited by any machine task
+
+    // Historical place edit log edited by human
+    private List<PlaceEdit> edits = new ArrayList<>();
 
     // Sources
     private Integer addedThrough; // Internal Platform through how data is passed in
@@ -44,6 +53,15 @@ public class PlaceLog {
 
     protected void setId(String id) {
         this.id = id;
+    }
+
+    @Column(nullable = false)
+    public int getMunchVersion() {
+        return munchVersion;
+    }
+
+    public void setMunchVersion(int munchVersion) {
+        this.munchVersion = munchVersion;
     }
 
     @Column(nullable = false)
@@ -64,6 +82,18 @@ public class PlaceLog {
         this.machineVersion = machineVersion;
     }
 
+    /**
+     * Only call this method if the data is edited by a munch staff
+     */
+    @Transient
+    public void incrementMunchVerion() {
+        munchVersion++;
+        incrementHumanVersion();
+    }
+
+    /**
+     * Only call this method if the data is edited by a human
+     */
     @Transient
     public void incrementHumanVersion() {
         setHumanVersion(humanVersion++);
@@ -100,5 +130,16 @@ public class PlaceLog {
 
     public void setAddedBy(String addedBy) {
         this.addedBy = addedBy;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true, mappedBy = "log")
+    @OrderBy("editedDate desc")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    public List<PlaceEdit> getEdits() {
+        return edits;
+    }
+
+    public void setEdits(List<PlaceEdit> edits) {
+        this.edits = edits;
     }
 }
