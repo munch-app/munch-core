@@ -47,6 +47,8 @@ public class SeedPlaceTrack extends AbsSortData {
     public static final int STATUS_FASTFORWARD_OPEN = 4_000;
     public static final int STATUS_FASTFORWARD_FINAL_SAVE_OPEN = 4_200;
 
+    public static final int STATUS_SAVE_SAVING = 5_000;
+
     // Spaghetti Final Outcome
     public static final int STATUS_COMPLETED = 9_200;
     public static final int STATUS_ALREADY_EXIST = 9_201;
