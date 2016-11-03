@@ -2,9 +2,9 @@ package com.munch.core.essential.file;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import org.apache.tika.Tika;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,16 +17,13 @@ import java.io.IOException;
  */
 public class FileMapper {
 
-    public static final String OCTET_STREAM = "application/octet-stream";
 
     private final AmazonS3 amazonS3;
     private final FileSetting fileSetting;
-    private final Tika tika;
 
     public FileMapper(AmazonS3 amazonS3, FileSetting fileSetting) {
         this.amazonS3 = amazonS3;
         this.fileSetting = fileSetting;
-        this.tika = new Tika();
     }
 
     protected AmazonS3 getAmazonS3() {
@@ -90,7 +87,7 @@ public class FileMapper {
         if (metadata == null) {
             metadata = new ObjectMetadata();
         }
-        metadata.setContentType(getContentType(keyId, file));
+        metadata.setContentType(FileMapperUtils.getContentType(keyId, file));
         metadata.setContentDisposition("inline"); // For Browser to display
         request.withMetadata(metadata);
 
@@ -112,41 +109,26 @@ public class FileMapper {
     }
 
     /**
-     * Get content type from file name
+     * Get file from AmazonS3
      *
-     * @param filename file name
-     * @return content type
+     * @param keyId keyId of file in bucket
+     * @return File temp file created
+     * @throws IOException thrown if temp file cannot be created
      */
-    public String getContentType(String filename) {
-        return tika.detect(filename);
+    public File getFile(String keyId) throws IOException {
+        File tempFile = File.createTempFile(keyId, "tmp");
+        getAmazonS3().getObject(new GetObjectRequest(getBucket(), keyId), tempFile);
+        return tempFile;
     }
 
-    public String getContentType(File file) throws ContentTypeException {
-        try {
-            return tika.detect(file);
-        } catch (IOException e) {
-            throw new ContentTypeException(e);
-        }
-    }
-
-    public String getContentType(byte[] bytes) throws ContentTypeException {
-        return tika.detect(bytes);
-    }
-
-    public String getContentType(String filename, File file) throws ContentTypeException {
-        String type = getContentType(filename);
-        if (type.equalsIgnoreCase(OCTET_STREAM)) {
-            type = getContentType(file);
-        }
-        return type;
-    }
-
-    public String getContentType(String filename, byte[] bytes) throws ContentTypeException {
-        String type = getContentType(filename);
-        if (type.equalsIgnoreCase(OCTET_STREAM)) {
-            type = getContentType(bytes);
-        }
-        return type;
+    /**
+     * Get file from AmazonS3 bucket and save it to file given
+     *
+     * @param keyId keyId of file in the bucket
+     * @param file  file to save it to
+     */
+    public void getFile(String keyId, File file) {
+        getAmazonS3().getObject(new GetObjectRequest(getBucket(), keyId), file);
     }
 
     /**
