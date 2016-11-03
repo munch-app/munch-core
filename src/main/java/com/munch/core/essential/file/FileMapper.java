@@ -26,19 +26,19 @@ public class FileMapper {
         this.fileSetting = fileSetting;
     }
 
-    protected AmazonS3 getAmazonS3() {
+    public AmazonS3 getAmazonS3() {
         return amazonS3;
     }
 
-    protected FileSetting getFileSetting() {
+    public FileSetting getFileSetting() {
         return fileSetting;
     }
 
-    protected String getBucket() {
+    public String getBucket() {
         return fileSetting.getBucket();
     }
 
-    protected String getRegion() {
+    public String getRegion() {
         return fileSetting.getRegion();
     }
 
