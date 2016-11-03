@@ -6,8 +6,6 @@ package com.munch.core.struct.util.map;
  * Time: 9:21 PM
  * Project: struct
  */
-public interface ManyEntity<O extends OneEntity> {
-
-    void setOneEntity(O single);
-
+public interface EntityOne {
+    // One To Many, mapped by size
 }

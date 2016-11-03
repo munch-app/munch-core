@@ -2,7 +2,7 @@ package com.munch.core.struct.rdbms.place.log;
 
 import com.munch.core.essential.util.DateTime;
 import com.munch.core.struct.rdbms.abs.HashSetData;
-import com.munch.core.struct.util.map.ManyEntity;
+import com.munch.core.struct.util.map.EntityMany;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 @Entity
-public class PlaceEdit implements HashSetData, ManyEntity<PlaceLog> {
+public class PlaceEdit implements HashSetData, EntityMany<PlaceLog> {
 
     public static final int AUTHORITY_MUNCH_STAFF = 327;
     public static final int AUTHORITY_RESTAURANT_OWNER = 500;
@@ -81,7 +81,7 @@ public class PlaceEdit implements HashSetData, ManyEntity<PlaceLog> {
     }
 
     @Override
-    public void setOneEntity(PlaceLog single) {
-        setLog(single);
+    public void applyEntityOne(PlaceLog one) {
+        setLog(one);
     }
 }

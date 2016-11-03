@@ -8,7 +8,7 @@ import com.munch.core.essential.file.FileSetting;
 import com.munch.core.essential.util.AWSUtil;
 import com.munch.core.struct.rdbms.abs.AbsSortData;
 import com.munch.core.struct.rdbms.abs.HashSetData;
-import com.munch.core.struct.util.map.ManyEntity;
+import com.munch.core.struct.util.map.EntityMany;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.hibernate.annotations.GenericGenerator;
@@ -23,15 +23,15 @@ import java.io.File;
  * Project: struct
  */
 @Entity
-public class PlaceMenu extends AbsSortData implements HashSetData, ManyEntity<Place> {
+public class PlaceMenu extends AbsSortData implements HashSetData, EntityMany<Place> {
 
     public static final int TYPE_PDF = 5_100;
     public static final int TYPE_IMAGE = 5_200;
     public static final int TYPE_WEBSITE = 5_300;
 
     private String id;
-    private String name; // Editable title
-    private String caption;
+    private String name; // Optional Editable title
+    private String caption; // Optional
     private Integer type;
 
     private Place place;
@@ -138,7 +138,7 @@ public class PlaceMenu extends AbsSortData implements HashSetData, ManyEntity<Pl
         this.id = id;
     }
 
-    @Column(length = 50, nullable = true)
+    @Column(length = 75, nullable = true)
     public String getName() {
         return name;
     }
@@ -209,8 +209,8 @@ public class PlaceMenu extends AbsSortData implements HashSetData, ManyEntity<Pl
     }
 
     @Override
-    public void setOneEntity(Place single) {
-        setPlace(single);
+    public void applyEntityOne(Place one) {
+        setPlace(one);
     }
 
     public static class Setting implements FileSetting {

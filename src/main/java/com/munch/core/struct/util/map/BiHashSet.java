@@ -8,13 +8,13 @@ import java.util.HashSet;
  * Time: 8:16 PM
  * Project: struct
  */
-public class BiHashSet<O extends OneEntity, T extends ManyEntity<O>> extends HashSet<T> {
+public class BiHashSet<O extends EntityOne, T extends EntityMany<O>> extends HashSet<T> {
 
-    private O single;
+    private final O one;
 
-    public BiHashSet(O single) {
+    public BiHashSet(O one) {
         super();
-        this.single = single;
+        this.one = one;
     }
 
     /**
@@ -25,7 +25,8 @@ public class BiHashSet<O extends OneEntity, T extends ManyEntity<O>> extends Has
      */
     @Override
     public boolean add(T many) {
-        many.setOneEntity(single);
+        many.applyEntityOne(one);
         return super.add(many);
     }
+
 }

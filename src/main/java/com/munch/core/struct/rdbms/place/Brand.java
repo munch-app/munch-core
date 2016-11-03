@@ -2,7 +2,7 @@ package com.munch.core.struct.rdbms.place;
 
 import com.munch.core.struct.rdbms.abs.AbsAuditData;
 import com.munch.core.struct.util.map.BiHashSet;
-import com.munch.core.struct.util.map.OneEntity;
+import com.munch.core.struct.util.map.EntityOne;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -15,7 +15,7 @@ import java.util.Set;
  * Project: struct
  */
 @Entity
-public class Brand extends AbsAuditData implements OneEntity {
+public class Brand extends AbsAuditData implements EntityOne {
 
     private String id;
 

@@ -1,7 +1,7 @@
 package com.munch.core.struct.rdbms.place.log;
 
 import com.munch.core.struct.util.map.BiArrayList;
-import com.munch.core.struct.util.map.OneEntity;
+import com.munch.core.struct.util.map.EntityOne;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -18,7 +18,7 @@ import java.util.List;
  * Project: struct
  */
 @Entity
-public class PlaceLog implements OneEntity {
+public class PlaceLog implements EntityOne {
 
     // Spaghetti can be seeded by multiple sources
     public static final int THROUGH_SPAGHETTI_FEEDFORWARD = 100;

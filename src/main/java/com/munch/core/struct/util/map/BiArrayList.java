@@ -8,13 +8,13 @@ import java.util.ArrayList;
  * Time: 3:09 AM
  * Project: struct
  */
-public class BiArrayList<O extends OneEntity, T extends ManyEntity<O>> extends ArrayList<T> {
+public class BiArrayList<O extends EntityOne, T extends EntityMany<O>> extends ArrayList<T> {
 
-    private O single;
+    private final O one;
 
-    public BiArrayList(O single) {
+    public BiArrayList(O one) {
         super();
-        this.single = single;
+        this.one = one;
     }
 
     /**
@@ -25,7 +25,7 @@ public class BiArrayList<O extends OneEntity, T extends ManyEntity<O>> extends A
      */
     @Override
     public boolean add(T many) {
-        many.setOneEntity(single);
+        many.applyEntityOne(one);
         return super.add(many);
     }
 

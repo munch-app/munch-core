@@ -8,8 +8,8 @@ import com.munch.core.struct.rdbms.locality.Neighborhood;
 import com.munch.core.struct.rdbms.place.log.PlaceLog;
 import com.munch.core.struct.util.Lucene;
 import com.munch.core.struct.util.map.BiHashSet;
-import com.munch.core.struct.util.map.ManyEntity;
-import com.munch.core.struct.util.map.OneEntity;
+import com.munch.core.struct.util.map.EntityMany;
+import com.munch.core.struct.util.map.EntityOne;
 import org.apache.lucene.search.Query;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.search.annotations.*;
@@ -30,7 +30,7 @@ import java.util.Set;
  */
 @Indexed
 @Entity
-public class Place extends AbsAuditData implements OneEntity, ManyEntity<Brand>, HashSetData {
+public class Place extends AbsAuditData implements EntityOne, EntityMany<Brand>, HashSetData {
 
     public static final int STATUS_ACTIVE = 200;
     public static final int STATUS_DELETED = 400;
@@ -248,8 +248,8 @@ public class Place extends AbsAuditData implements OneEntity, ManyEntity<Brand>,
     }
 
     @Override
-    public void setOneEntity(Brand single) {
-        setBrand(single);
+    public void applyEntityOne(Brand one) {
+        setBrand(one);
     }
 
     public static class Search extends Lucene {

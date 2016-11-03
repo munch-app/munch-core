@@ -1,5 +1,6 @@
 package com.munch.core.struct.nosql;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 /**
@@ -15,5 +16,14 @@ public class PlaceImageManagerTest {
             System.out.println(System.currentTimeMillis());
         }
 
+    }
+
+    @Test
+    public void anyBlank() throws Exception {
+        System.out.println(StringUtils.isAnyBlank(null, null));
+        System.out.println(StringUtils.isNoneBlank("123", "fr"));
+
+        System.out.println(StringUtils.isAnyBlank("123", "4565"));
+        System.out.println(StringUtils.isNoneBlank("", ""));
     }
 }

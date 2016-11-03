@@ -28,21 +28,19 @@ public class PlaceImage {
     private String sortKey; // Sort Key = Date+Random
     private String keyId; // Actual Image Bucket Key
 
+    private String bannerSort; // Global Secondary Index Sort Key, null if not applicable
+
+    // For resized Url, the sizes will be here 50x50 = width x height
+    // Store resized image in another bucket. (key + "-w30h50" + .jpg)
+    private Set<String> resizedSizes;
+
     // User That Uploaded It (Empty = From Dashboard, Look at Meta Data on AWS S3)
     private String userId;
+    private String caption;
     private Date createdDate;
 
-    // For resized Url, the sizes will be here key + "-w30h50" + .jpg
-    // Store resized image in another bucket.
-    private Set<String> resizedSizes;
-    // Place Image Link Reference will be here too
-    private Set<String> links;
-
-    private String title;
-    private String caption;
-
-
     @DynamoDBHashKey(attributeName = "p")
+    @DynamoDBIndexHashKey(attributeName = "p")
     public String getPlaceId() {
         return placeId;
     }
@@ -67,15 +65,6 @@ public class PlaceImage {
 
     public void setUserId(String userId) {
         this.userId = userId;
-    }
-
-    @DynamoDBAttribute(attributeName = "t")
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     @DynamoDBAttribute(attributeName = "c")
@@ -114,13 +103,13 @@ public class PlaceImage {
         this.resizedSizes = resizedSizes;
     }
 
-    @DynamoDBAttribute(attributeName = "l")
-    public Set<String> getLinks() {
-        return links;
+    @DynamoDBIndexRangeKey(attributeName = "b")
+    public String getBannerSort() {
+        return bannerSort;
     }
 
-    public void setLinks(Set<String> links) {
-        this.links = links;
+    public void setBannerSort(String bannerSort) {
+        this.bannerSort = bannerSort;
     }
 
     public static class Setting implements FileSetting {
@@ -146,8 +135,8 @@ public class PlaceImage {
      */
     public static class Manager {
 
-        private DynamoDBMapper dynamoMapper;
-        private FileMapper fileMapper;
+        protected DynamoDBMapper dynamoMapper;
+        protected FileMapper fileMapper;
 
         public Manager(DynamoDBMapper dynamoMapper, FileMapper fileMapper) {
             this.dynamoMapper = dynamoMapper;
@@ -162,14 +151,7 @@ public class PlaceImage {
             fileMapper.removeFile(placeImage.getKeyId());
         }
 
-        /**
-         * Add Place Image to S3 & DynamoDB
-         *
-         * @param placeImage       PlaceImage
-         * @param file             file
-         * @param originalFileName original file name
-         */
-        public void upload(PlaceImage placeImage, File file, String originalFileName) throws ContentTypeException {
+        protected void constraintCheck(PlaceImage placeImage) {
             // Check Must Not Null
             if (StringUtils.isAnyBlank(placeImage.getPlaceId(), placeImage.getUserId())
                     // Check Generate Value must be null
@@ -180,7 +162,9 @@ public class PlaceImage {
             // Auto Help Fill
             if (placeImage.getCreatedDate() == null)
                 placeImage.setCreatedDate(DateTime.now());
+        }
 
+        protected void generateRandom(PlaceImage placeImage, String originalFileName) {
             // Create Key Id
             String keyId = RandomStringUtils.randomAlphanumeric(40) + "." + FilenameUtils.getExtension(originalFileName);
             placeImage.setKeyId(keyId);
@@ -190,6 +174,18 @@ public class PlaceImage {
             String random = RandomStringUtils.randomAlphanumeric(20);
             //noinspection deprecation
             placeImage.setSortKey(sort + random);
+        }
+
+        /**
+         * Add Place Image to S3 & DynamoDB
+         *
+         * @param placeImage       PlaceImage
+         * @param file             file
+         * @param originalFileName original file name
+         */
+        public void upload(PlaceImage placeImage, File file, String originalFileName) throws ContentTypeException {
+            constraintCheck(placeImage);
+            generateRandom(placeImage, originalFileName);
 
             // Create Meta Data
             ObjectMetadata metadata = new ObjectMetadata();
@@ -198,7 +194,7 @@ public class PlaceImage {
             metadata.addUserMetadata("sort-key", placeImage.getSortKey());
 
             // Do actual upload
-            fileMapper.putFile(keyId, file, metadata, CannedAccessControlList.PublicRead);
+            fileMapper.putFile(placeImage.getKeyId(), file, metadata, CannedAccessControlList.PublicRead);
             dynamoMapper.save(placeImage);
         }
 

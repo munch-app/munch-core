@@ -2,7 +2,7 @@ package com.munch.core.struct.rdbms.place;
 
 import com.munch.core.struct.rdbms.abs.AbsAuditData;
 import com.munch.core.struct.rdbms.abs.HashSetData;
-import com.munch.core.struct.util.map.ManyEntity;
+import com.munch.core.struct.util.map.EntityMany;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -15,7 +15,7 @@ import java.time.LocalTime;
  * Project: struct
  */
 @Entity
-public class PlaceHour extends AbsAuditData implements HashSetData, ManyEntity<Place> {
+public class PlaceHour extends AbsAuditData implements HashSetData, EntityMany<Place> {
 
     public static final int MON = 1;
     public static final int TUE = 2;
@@ -93,7 +93,7 @@ public class PlaceHour extends AbsAuditData implements HashSetData, ManyEntity<P
     }
 
     @Override
-    public void setOneEntity(Place single) {
-        setPlace(single);
+    public void applyEntityOne(Place one) {
+        setPlace(one);
     }
 }

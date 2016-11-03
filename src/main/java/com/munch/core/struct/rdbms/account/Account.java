@@ -4,7 +4,7 @@ import com.munch.core.essential.util.DateTime;
 import com.munch.core.struct.rdbms.abs.AbsAuditData;
 import com.munch.core.struct.rdbms.locality.Country;
 import com.munch.core.struct.util.map.BiHashSet;
-import com.munch.core.struct.util.map.OneEntity;
+import com.munch.core.struct.util.map.EntityOne;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -22,7 +22,7 @@ import java.util.Set;
 @Entity
 @Table(indexes = {@Index(name = "EMAIL_INDEX", columnList = "email"), @Index(name = "PHONE_INDEX", columnList = "phoneNumber")})
 @Deprecated
-public class Account extends AbsAuditData implements OneEntity {
+public class Account extends AbsAuditData implements EntityOne {
 
     public static final int TYPE_NORMAL = 10_000;
     public static final int TYPE_RESTURANT = 12_000;
