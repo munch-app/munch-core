@@ -33,6 +33,7 @@ public class PlaceImage {
     // For resized Url, the sizes will be here 50x50 = width x height
     // Store resized image in another bucket. (key + "-w30h50" + .jpg)
     private Set<String> resizedSizes;
+    private Set<String> labels; // Image Types, can be food, menu, place
 
     // User That Uploaded It (Empty = From Dashboard, Look at Meta Data on AWS S3)
     private String userId;
@@ -110,6 +111,15 @@ public class PlaceImage {
 
     public void setBannerSort(String bannerSort) {
         this.bannerSort = bannerSort;
+    }
+
+    @DynamoDBAttribute(attributeName = "l")
+    public Set<String> getLabels() {
+        return labels;
+    }
+
+    public void setLabels(Set<String> labels) {
+        this.labels = labels;
     }
 
     public static class Setting implements FileSetting {
