@@ -5,9 +5,16 @@ allprojects {
     apply plugin: 'maven-publish'
 
     group 'com.munch.core'
-    version '0.31.3'
 
     repositories {
+        maven {
+            url 'http://artifactory.fxloh.com/artifactory/plugins-release'
+            credentials {
+                username = "${artifactory_user}"
+                password = "${artifactory_password}"
+            }
+        }
+        mavenCentral()
         maven {
             credentials {
                 username = "${artifactory_user}"
@@ -15,8 +22,32 @@ allprojects {
             }
             url "http://artifactory.fxloh.com/artifactory/munch"
         }
-        mavenCentral()
     }
+
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+
+    artifacts {
+        archives sourcesJar
+    }
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+                artifact(sourcesJar) {
+                    classifier = 'sources'
+                }
+            }
+        }
+    }
+}
+
+version '1.0-SNAPSHOT'
+dependencies {
+    compile project(':essential')
 }
 
 buildscript {
@@ -56,26 +87,6 @@ artifactory {
             password = "${artifactory_password}"
             maven = true
 
-        }
-    }
-}
-
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-artifacts {
-    archives sourcesJar
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-            artifact(sourcesJar) {
-                classifier = 'sources'
-            }
         }
     }
 }
