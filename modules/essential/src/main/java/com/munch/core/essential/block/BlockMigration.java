@@ -1,0 +1,60 @@
+package com.munch.core.essential.block;
+
+import com.google.gson.JsonObject;
+
+/**
+ * Created by: Fuxing
+ * Date: 17/10/2016
+ * Time: 8:31 AM
+ * Project: essential
+ */
+public abstract class BlockMigration<B extends BlockVersion> {
+
+    private final int latestVersion;
+
+    /**
+     * @param latestVersion latest version of the block
+     */
+    public BlockMigration(int latestVersion) {
+        this.latestVersion = latestVersion;
+    }
+
+    /**
+     * Helper initializer that uses that latest block to init
+     *
+     * @param block new Block()
+     */
+    public BlockMigration(B block) {
+        this(block.getVersion());
+    }
+
+    /**
+     * @param block check if block needs to update
+     */
+    protected boolean isUpdate(JsonObject block) {
+        return getVersion(block) < latestVersion;
+    }
+
+    /**
+     * @return block version
+     */
+    protected int getVersion(JsonObject block) {
+        return block.get("version").getAsInt();
+    }
+
+    protected void incrementalUpdate(JsonObject block) {
+        if (isUpdate(block)) {
+            update(block);
+            // Incrementally update util the latest version
+            incrementalUpdate(block);
+        }
+    }
+
+    /**
+     * Remember to constantly update the version at each update
+     *
+     * @param block block to update
+     */
+    protected abstract void update(JsonObject block);
+
+}
