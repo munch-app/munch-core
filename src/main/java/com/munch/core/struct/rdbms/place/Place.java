@@ -1,15 +1,15 @@
 package com.munch.core.struct.rdbms.place;
 
 import com.munch.core.struct.rdbms.abs.AbsAuditData;
-import com.munch.core.struct.rdbms.abs.HashSetData;
+import com.munch.core.struct.util.many.CollectionEntity;
 import com.munch.core.struct.rdbms.locality.Container;
 import com.munch.core.struct.rdbms.locality.Location;
 import com.munch.core.struct.rdbms.locality.Neighborhood;
 import com.munch.core.struct.rdbms.place.log.PlaceLog;
 import com.munch.core.struct.util.Lucene;
-import com.munch.core.struct.util.map.BiHashSet;
-import com.munch.core.struct.util.map.EntityMany;
-import com.munch.core.struct.util.map.EntityOne;
+import com.munch.core.struct.util.many.BiHashSet;
+import com.munch.core.struct.util.many.EntityMany;
+import com.munch.core.struct.util.many.EntityOne;
 import org.apache.lucene.search.Query;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.search.annotations.*;
@@ -30,7 +30,7 @@ import java.util.Set;
  */
 @Indexed
 @Entity
-public class Place extends AbsAuditData implements EntityOne, EntityMany<Brand>, HashSetData {
+public class Place extends AbsAuditData implements EntityOne, EntityMany<Brand>, CollectionEntity {
 
     public static final int STATUS_ACTIVE = 200;
     public static final int STATUS_DELETED = 400;
@@ -233,18 +233,16 @@ public class Place extends AbsAuditData implements EntityOne, EntityMany<Brand>,
 
     @Override
     public int hashCode() {
-        return getId().hashCode();
+        if (getId() == null) {
+            return super.hashCode();
+        } else {
+            return getId().hashCode();
+        }
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        return obj.hashCode() == this.hashCode();
+    public boolean equals(Object obj) {
+        return equals(obj, getClass());
     }
 
     @Override

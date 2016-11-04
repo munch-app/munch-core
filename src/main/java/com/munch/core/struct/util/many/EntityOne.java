@@ -1,4 +1,4 @@
-package com.munch.core.struct.util.map;
+package com.munch.core.struct.util.many;
 
 /**
  * Created By: Fuxing Loh

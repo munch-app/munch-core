@@ -1,18 +1,18 @@
-package com.munch.core.struct.util.map;
+package com.munch.core.struct.util.many;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
- * Created by: Fuxing
- * Date: 2/11/2016
- * Time: 3:09 AM
+ * Created By: Fuxing Loh
+ * Date: 29/9/2016
+ * Time: 8:16 PM
  * Project: struct
  */
-public class BiArrayList<O extends EntityOne, T extends EntityMany<O>> extends ArrayList<T> {
+public class BiHashSet<O extends EntityOne, T extends EntityMany<O>> extends HashSet<T> {
 
     private final O one;
 
-    public BiArrayList(O one) {
+    public BiHashSet(O one) {
         super();
         this.one = one;
     }

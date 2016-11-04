@@ -1,4 +1,4 @@
-package com.munch.core.struct.rdbms.abs;
+package com.munch.core.struct.util.many;
 
 /**
  * Created By: Fuxing Loh
@@ -6,7 +6,7 @@ package com.munch.core.struct.rdbms.abs;
  * Time: 7:14 PM
  * Project: struct
  */
-public interface HashSetData {
+public interface CollectionEntity {
 
     /**
      * @return Id required for hashcode generation
@@ -16,21 +16,23 @@ public interface HashSetData {
     default boolean equals(final Object obj, Class clazz) {
         if (this == obj)
             return true;
-        if (obj == null)
+        if (obj == null || clazz != obj.getClass())
             return false;
-        if (clazz != obj.getClass())
-            return false;
-        return ((HashSetData) obj).getId().equals(this.getId());
+        return ((CollectionEntity) obj).getId().equals(this.getId());
     }
 
     /* Code to be placed at implementing class
     @Override
     public int hashCode() {
-        return getId().hashCode();
+        if (getId() == null) {
+            return super.hashCode();
+        } else {
+            return getId().hashCode();
+        }
     }
 
     @Override
-    public boolean equals(final Object obj) {
+    public boolean equals(Object obj) {
         return equals(obj, getClass());
     }
     */

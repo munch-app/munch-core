@@ -7,7 +7,7 @@ import com.munch.core.essential.file.FileMapper;
 import com.munch.core.essential.file.FileSetting;
 import com.munch.core.essential.util.AWSUtil;
 import com.munch.core.struct.rdbms.abs.AbsSortData;
-import com.munch.core.struct.rdbms.abs.HashSetData;
+import com.munch.core.struct.util.many.CollectionEntity;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.hibernate.annotations.GenericGenerator;
@@ -22,7 +22,7 @@ import java.io.File;
  * Project: struct
  */
 @Entity
-public class SortedImage extends AbsSortData implements HashSetData {
+public class SortedImage extends AbsSortData implements CollectionEntity {
 
     private String id;
     private String keyId;

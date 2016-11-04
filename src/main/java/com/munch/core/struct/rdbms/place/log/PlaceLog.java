@@ -1,7 +1,7 @@
 package com.munch.core.struct.rdbms.place.log;
 
-import com.munch.core.struct.util.map.BiArrayList;
-import com.munch.core.struct.util.map.EntityOne;
+import com.munch.core.struct.util.many.BiArrayList;
+import com.munch.core.struct.util.many.EntityOne;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;

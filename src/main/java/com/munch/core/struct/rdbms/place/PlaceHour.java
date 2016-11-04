@@ -1,8 +1,8 @@
 package com.munch.core.struct.rdbms.place;
 
 import com.munch.core.struct.rdbms.abs.AbsAuditData;
-import com.munch.core.struct.rdbms.abs.HashSetData;
-import com.munch.core.struct.util.map.EntityMany;
+import com.munch.core.struct.util.many.CollectionEntity;
+import com.munch.core.struct.util.many.EntityMany;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -15,7 +15,7 @@ import java.time.LocalTime;
  * Project: struct
  */
 @Entity
-public class PlaceHour extends AbsAuditData implements HashSetData, EntityMany<Place> {
+public class PlaceHour extends AbsAuditData implements CollectionEntity, EntityMany<Place> {
 
     public static final int MON = 1;
     public static final int TUE = 2;
@@ -84,11 +84,15 @@ public class PlaceHour extends AbsAuditData implements HashSetData, EntityMany<P
 
     @Override
     public int hashCode() {
-        return getId().hashCode();
+        if (getId() == null) {
+            return super.hashCode();
+        } else {
+            return getId().hashCode();
+        }
     }
 
     @Override
-    public boolean equals(final Object obj) {
+    public boolean equals(Object obj) {
         return equals(obj, getClass());
     }
 

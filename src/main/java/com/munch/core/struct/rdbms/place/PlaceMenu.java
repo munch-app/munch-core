@@ -7,8 +7,8 @@ import com.munch.core.essential.file.FileMapper;
 import com.munch.core.essential.file.FileSetting;
 import com.munch.core.essential.util.AWSUtil;
 import com.munch.core.struct.rdbms.abs.AbsSortData;
-import com.munch.core.struct.rdbms.abs.HashSetData;
-import com.munch.core.struct.util.map.EntityMany;
+import com.munch.core.struct.util.many.CollectionEntity;
+import com.munch.core.struct.util.many.EntityMany;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.hibernate.annotations.GenericGenerator;
@@ -23,7 +23,7 @@ import java.io.File;
  * Project: struct
  */
 @Entity
-public class PlaceMenu extends AbsSortData implements HashSetData, EntityMany<Place> {
+public class PlaceMenu extends AbsSortData implements CollectionEntity, EntityMany<Place> {
 
     public static final int TYPE_PDF = 5_100;
     public static final int TYPE_IMAGE = 5_200;
@@ -200,11 +200,15 @@ public class PlaceMenu extends AbsSortData implements HashSetData, EntityMany<Pl
 
     @Override
     public int hashCode() {
-        return getId().hashCode();
+        if (getId() == null) {
+            return super.hashCode();
+        } else {
+            return getId().hashCode();
+        }
     }
 
     @Override
-    public boolean equals(final Object obj) {
+    public boolean equals(Object obj) {
         return equals(obj, getClass());
     }
 

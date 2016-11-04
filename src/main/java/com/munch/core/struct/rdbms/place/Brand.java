@@ -1,8 +1,8 @@
 package com.munch.core.struct.rdbms.place;
 
 import com.munch.core.struct.rdbms.abs.AbsAuditData;
-import com.munch.core.struct.util.map.BiHashSet;
-import com.munch.core.struct.util.map.EntityOne;
+import com.munch.core.struct.util.many.BiHashSet;
+import com.munch.core.struct.util.many.EntityOne;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
