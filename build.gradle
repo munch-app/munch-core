@@ -45,6 +45,22 @@ allprojects {
     }
 }
 
+project(':munch-struct') {
+    task publishLib {
+        dependsOn 'build'
+        dependsOn 'artifactoryPublish'
+        tasks.findByName('artifactoryPublish').mustRunAfter 'build'
+    }
+}
+
+project(':munch-utils') {
+    task publishLib {
+        dependsOn 'build'
+        dependsOn 'artifactoryPublish'
+        tasks.findByName('artifactoryPublish').mustRunAfter 'build'
+    }
+}
+
 version '1.0-SNAPSHOT'
 dependencies {
 }
