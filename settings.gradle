@@ -1,12 +1,9 @@
-include 'essential'
-include 'struct'
+include 'munch-utils'
+include 'munch-struct'
 
-rootProject.name = 'core'
+rootProject.name = 'munch-core'
 rootProject.children.each {project ->
-    String fileBaseName = project.name.replaceAll("\\p{Upper}") { "-${it.toLowerCase()}" }
-    String projectDirName = "modules/$fileBaseName"
-    project.projectDir = new File(settingsDir, projectDirName)
-    project.buildFileName = "${fileBaseName}.gradle"
+    project.buildFileName = "${project.name}.gradle"
     assert project.projectDir.isDirectory()
     assert project.buildFile.isFile()
 }
