@@ -2,8 +2,10 @@ include 'munch-utils'
 include 'munch-struct'
 
 rootProject.name = 'munch-core'
-rootProject.children.each {project ->
+rootProject.children.each { project ->
     project.buildFileName = "${project.name}.gradle"
     assert project.projectDir.isDirectory()
     assert project.buildFile.isFile()
 }
+include 'munch-api'
+

@@ -1,0 +1,9 @@
+version '1.0-SNAPSHOT'
+
+ext.dropwizardVersion = '1.0.0'
+dependencies {
+    compile project(':munch-struct')
+    compile group: 'io.dropwizard', name: 'dropwizard-core', version: dropwizardVersion
+    compile group: 'com.hubspot.dropwizard', name: 'dropwizard-guice', version: '1.0.0.2'
+    compile group: 'com.scottescue', name: 'dropwizard-entitymanager', version: '1.0.0-1'
+}

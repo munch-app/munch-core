@@ -45,24 +45,15 @@ allprojects {
     }
 }
 
-project(':munch-struct') {
+// munch-utils & munch-struct
+configure(subprojects.findAll {it.name.matches("munch-(struct|utils)")}) {
+    version '0.33-SNAPSHOT'
+
     task publishLib {
         dependsOn 'build'
         dependsOn 'artifactoryPublish'
         tasks.findByName('artifactoryPublish').mustRunAfter 'build'
     }
-}
-
-project(':munch-utils') {
-    task publishLib {
-        dependsOn 'build'
-        dependsOn 'artifactoryPublish'
-        tasks.findByName('artifactoryPublish').mustRunAfter 'build'
-    }
-}
-
-version '1.0-SNAPSHOT'
-dependencies {
 }
 
 buildscript {
@@ -74,7 +65,6 @@ buildscript {
                 password = "${artifactory_password}"
             }
         }
-
     }
     dependencies {
         classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4+"
