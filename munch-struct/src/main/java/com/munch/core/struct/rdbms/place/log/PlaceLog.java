@@ -1,5 +1,7 @@
 package com.munch.core.struct.rdbms.place.log;
 
+import com.munch.core.essential.util.DateTime;
+import com.munch.core.struct.rdbms.abs.AbsAuditData;
 import com.munch.core.struct.util.many.BiArrayList;
 import com.munch.core.struct.util.many.EntityOne;
 import org.hibernate.annotations.GenericGenerator;
@@ -7,6 +9,8 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -18,7 +22,7 @@ import java.util.List;
  * Project: struct
  */
 @Entity
-public class PlaceLog implements EntityOne {
+public class PlaceLog extends AbsAuditData implements EntityOne {
 
     // Spaghetti can be seeded by multiple sources
     public static final int THROUGH_SPAGHETTI_FEEDFORWARD = 100;
@@ -37,6 +41,12 @@ public class PlaceLog implements EntityOne {
 
     // Historical place edit log edited by human
     private List<PlaceEdit> edits = new BiArrayList<>(this);
+
+    // Dates
+    private Date integrityCheckDate;
+    private Date munchUpdateDate;
+    private Date humanUpdateDate;
+    private Date machineUpdateDate;
 
     // Sources
     private Integer addedThrough; // Internal Platform through how data is passed in
@@ -88,6 +98,7 @@ public class PlaceLog implements EntityOne {
     @Transient
     public void incrementMunchVerion() {
         munchVersion++;
+        setMunchUpdateDate(new Timestamp(DateTime.millisNow()));
         incrementHumanVersion();
     }
 
@@ -97,12 +108,14 @@ public class PlaceLog implements EntityOne {
     @Transient
     public void incrementHumanVersion() {
         setHumanVersion(humanVersion++);
+        setHumanUpdateDate(new Timestamp(DateTime.millisNow()));
         incrementMachineVersion();
     }
 
     @Transient
     public void incrementMachineVersion() {
         setMachineVersion(machineVersion++);
+        setMachineUpdateDate(new Timestamp(DateTime.millisNow()));
     }
 
     @Column(nullable = false)
@@ -141,5 +154,46 @@ public class PlaceLog implements EntityOne {
 
     public void setEdits(List<PlaceEdit> edits) {
         this.edits = edits;
+    }
+
+    @Transient
+    public void updateIntegrityCheckToNow() {
+        setIntegrityCheckDate(new Timestamp(DateTime.millisNow()));
+    }
+
+    @Column(nullable = true)
+    public Date getIntegrityCheckDate() {
+        return integrityCheckDate;
+    }
+
+    public void setIntegrityCheckDate(Date integrityCheckDate) {
+        this.integrityCheckDate = integrityCheckDate;
+    }
+
+    @Column(nullable = true)
+    public Date getMunchUpdateDate() {
+        return munchUpdateDate;
+    }
+
+    public void setMunchUpdateDate(Date munchUpdateDate) {
+        this.munchUpdateDate = munchUpdateDate;
+    }
+
+    @Column(nullable = true)
+    public Date getHumanUpdateDate() {
+        return humanUpdateDate;
+    }
+
+    public void setHumanUpdateDate(Date humanUpdateDate) {
+        this.humanUpdateDate = humanUpdateDate;
+    }
+
+    @Column(nullable = true)
+    public Date getMachineUpdateDate() {
+        return machineUpdateDate;
+    }
+
+    public void setMachineUpdateDate(Date machineUpdateDate) {
+        this.machineUpdateDate = machineUpdateDate;
     }
 }

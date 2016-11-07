@@ -1,13 +1,12 @@
 package com.munch.core.struct.rdbms.place;
 
-import com.munch.core.struct.rdbms.abs.AbsAuditData;
-import com.munch.core.struct.util.many.CollectionEntity;
 import com.munch.core.struct.rdbms.locality.Container;
 import com.munch.core.struct.rdbms.locality.Location;
 import com.munch.core.struct.rdbms.locality.Neighborhood;
 import com.munch.core.struct.rdbms.place.log.PlaceLog;
 import com.munch.core.struct.util.Lucene;
 import com.munch.core.struct.util.many.BiHashSet;
+import com.munch.core.struct.util.many.CollectionEntity;
 import com.munch.core.struct.util.many.EntityMany;
 import com.munch.core.struct.util.many.EntityOne;
 import org.apache.lucene.search.Query;
@@ -30,7 +29,7 @@ import java.util.Set;
  */
 @Indexed
 @Entity
-public class Place extends AbsAuditData implements EntityOne, EntityMany<Brand>, CollectionEntity {
+public class Place implements EntityOne, EntityMany<Brand>, CollectionEntity {
 
     public static final int STATUS_ACTIVE = 200;
     public static final int STATUS_DELETED = 400;

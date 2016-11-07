@@ -14,7 +14,7 @@ public class AbsSortData extends AbsAuditData {
 
     private long sort;
 
-    @Column
+    @Column(nullable = false)
     public long getSort() {
         return sort;
     }

@@ -47,7 +47,7 @@ allprojects {
 
 // munch-utils & munch-struct
 configure(subprojects.findAll {it.name.matches("munch-(struct|utils)")}) {
-    version '0.33-SNAPSHOT'
+    version '0.33.0'
 
     task publishLib {
         dependsOn 'build'
