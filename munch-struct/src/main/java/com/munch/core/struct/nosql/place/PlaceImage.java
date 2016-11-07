@@ -41,7 +41,7 @@ public class PlaceImage {
     private Date createdDate;
 
     @DynamoDBHashKey(attributeName = "p")
-    @DynamoDBIndexHashKey(attributeName = "p")
+    @DynamoDBIndexHashKey(attributeName = "p", globalSecondaryIndexName = "p-b-index")
     public String getPlaceId() {
         return placeId;
     }
@@ -104,7 +104,8 @@ public class PlaceImage {
         this.resizedSizes = resizedSizes;
     }
 
-    @DynamoDBIndexRangeKey(attributeName = "b")
+    @DynamoDBIndexRangeKey(attributeName = "b", globalSecondaryIndexName = "p-b-index")
+    @DynamoDBAttribute(attributeName = "b")
     public String getBannerSort() {
         return bannerSort;
     }

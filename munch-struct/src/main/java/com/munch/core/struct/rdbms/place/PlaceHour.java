@@ -1,5 +1,6 @@
 package com.munch.core.struct.rdbms.place;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.munch.core.struct.rdbms.abs.AbsAuditData;
 import com.munch.core.struct.util.many.CollectionEntity;
 import com.munch.core.struct.util.many.EntityMany;
@@ -74,6 +75,7 @@ public class PlaceHour extends AbsAuditData implements CollectionEntity, EntityM
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
     public Place getPlace() {
         return place;
     }

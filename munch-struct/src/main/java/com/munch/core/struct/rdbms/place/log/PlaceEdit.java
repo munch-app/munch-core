@@ -1,5 +1,6 @@
 package com.munch.core.struct.rdbms.place.log;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.munch.core.essential.util.DateTime;
 import com.munch.core.struct.util.many.CollectionEntity;
 import com.munch.core.struct.util.many.EntityMany;
@@ -40,6 +41,7 @@ public class PlaceEdit implements CollectionEntity, EntityMany<PlaceLog> {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
     public PlaceLog getLog() {
         return log;
     }

@@ -1,5 +1,6 @@
 package com.munch.core.struct.rdbms.spaghetti;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.munch.core.struct.rdbms.abs.AbsSortData;
 import com.munch.core.struct.rdbms.place.Place;
 import com.munch.core.struct.util.Lucene;
@@ -159,6 +160,7 @@ public class SeedPlaceTrack extends AbsSortData {
     }
 
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @JsonIgnore
     public Place getPlace() {
         return place;
     }

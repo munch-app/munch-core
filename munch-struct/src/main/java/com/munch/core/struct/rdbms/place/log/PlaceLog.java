@@ -1,5 +1,6 @@
 package com.munch.core.struct.rdbms.place.log;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.munch.core.essential.util.DateTime;
 import com.munch.core.struct.rdbms.abs.AbsAuditData;
 import com.munch.core.struct.util.many.BiArrayList;
@@ -148,6 +149,7 @@ public class PlaceLog extends AbsAuditData implements EntityOne {
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true, mappedBy = "log")
     @OrderBy("editedDate desc")
     @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonManagedReference
     public List<PlaceEdit> getEdits() {
         return edits;
     }

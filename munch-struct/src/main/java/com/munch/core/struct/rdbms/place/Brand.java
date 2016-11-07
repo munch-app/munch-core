@@ -1,5 +1,6 @@
 package com.munch.core.struct.rdbms.place;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.munch.core.struct.rdbms.abs.AbsAuditData;
 import com.munch.core.struct.util.many.BiHashSet;
 import com.munch.core.struct.util.many.EntityOne;
@@ -76,6 +77,7 @@ public class Brand extends AbsAuditData implements EntityOne {
     }
 
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST}, orphanRemoval = false, mappedBy = "brand")
+    @JsonManagedReference
     public Set<Place> getPlaces() {
         return places;
     }

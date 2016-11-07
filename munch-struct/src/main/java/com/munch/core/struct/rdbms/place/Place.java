@@ -1,5 +1,7 @@
 package com.munch.core.struct.rdbms.place;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.munch.core.struct.rdbms.locality.Container;
 import com.munch.core.struct.rdbms.locality.Location;
 import com.munch.core.struct.rdbms.locality.Neighborhood;
@@ -50,7 +52,7 @@ public class Place implements EntityOne, EntityMany<Brand>, CollectionEntity {
     private Double priceEnd;
     private Set<PlaceMenu> menus = new BiHashSet<>(this);
     private ReviewSummary summary;
-    private PlaceLink social;
+    private PlaceLink placeLink;
 
     // Location Data
     private Location location;
@@ -141,6 +143,7 @@ public class Place implements EntityOne, EntityMany<Brand>, CollectionEntity {
     }
 
     @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL}, orphanRemoval = true, mappedBy = "place")
+    @JsonManagedReference
     public Set<PlaceMenu> getMenus() {
         return menus;
     }
@@ -150,6 +153,7 @@ public class Place implements EntityOne, EntityMany<Brand>, CollectionEntity {
     }
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JsonBackReference
     public Brand getBrand() {
         return brand;
     }
@@ -159,6 +163,7 @@ public class Place implements EntityOne, EntityMany<Brand>, CollectionEntity {
     }
 
     @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL}, orphanRemoval = true, mappedBy = "place")
+    @JsonManagedReference
     public Set<PlaceHour> getPlaceHours() {
         return placeHours;
     }
@@ -167,7 +172,7 @@ public class Place implements EntityOne, EntityMany<Brand>, CollectionEntity {
         this.placeHours = placeHours;
     }
 
-    @OneToOne(cascade = {CascadeType.ALL}, optional = false, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToOne(cascade = {CascadeType.ALL}, optional = true, orphanRemoval = true, fetch = FetchType.EAGER)
     public ReviewSummary getSummary() {
         return summary;
     }
@@ -176,13 +181,16 @@ public class Place implements EntityOne, EntityMany<Brand>, CollectionEntity {
         this.summary = summary;
     }
 
+    /**
+     * Init first but don't need to populate internal data
+     */
     @OneToOne(cascade = {CascadeType.ALL}, optional = false, orphanRemoval = true, fetch = FetchType.EAGER)
-    public PlaceLink getSocial() {
-        return social;
+    public PlaceLink getPlaceLink() {
+        return placeLink;
     }
 
-    public void setSocial(PlaceLink social) {
-        this.social = social;
+    public void setPlaceLink(PlaceLink placeLink) {
+        this.placeLink = placeLink;
     }
 
     @OneToOne(cascade = {CascadeType.ALL}, optional = false, orphanRemoval = true, fetch = FetchType.EAGER)

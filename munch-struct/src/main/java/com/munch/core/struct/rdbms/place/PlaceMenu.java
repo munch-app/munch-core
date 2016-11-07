@@ -2,6 +2,7 @@ package com.munch.core.struct.rdbms.place;
 
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.munch.core.essential.file.ContentTypeException;
 import com.munch.core.essential.file.FileMapper;
 import com.munch.core.essential.file.FileSetting;
@@ -190,6 +191,7 @@ public class PlaceMenu extends AbsSortData implements CollectionEntity, EntityMa
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
     public Place getPlace() {
         return place;
     }
