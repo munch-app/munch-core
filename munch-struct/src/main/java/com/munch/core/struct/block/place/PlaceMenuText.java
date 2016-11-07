@@ -22,7 +22,6 @@ public class PlaceMenuText extends BlockVersion {
      * @see PlaceMenu#getId()
      */
     private String menuId;
-
     private List<String> textList;
 
     /**
@@ -65,6 +64,6 @@ public class PlaceMenuText extends BlockVersion {
         protected void update(JsonObject block) {
             throw new NotImplementedException("No updates implemented yet.");
         }
-
     }
+
 }

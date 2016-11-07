@@ -4,7 +4,7 @@
  * please do ask for permission.
  */
 
-package com.munch.core.essential.util;
+package com.munch.core.essential.util.config;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;

@@ -11,7 +11,15 @@ import com.google.gson.Gson;
 public class GsonConverter implements JsonConverter {
 
     // Gson Version: 2.7
-    private Gson gson = new Gson();
+    protected final Gson gson;
+
+    public GsonConverter(Gson gson) {
+        this.gson = gson;
+    }
+
+    public GsonConverter() {
+        this(new Gson());
+    }
 
     @Override
     public String toJson(Object object) {

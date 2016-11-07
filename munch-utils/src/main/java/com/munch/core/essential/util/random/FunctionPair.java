@@ -7,6 +7,7 @@ package com.munch.core.essential.util.random;
  * Project: PuffinCore
  */
 public class FunctionPair {
+
     public final Integer left;
     public final RandomFunction.Function right;
 

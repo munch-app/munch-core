@@ -33,6 +33,13 @@ public class MigrateBlockMapper<T extends BlockVersion> extends TypedBlockMapper
         this.jsonParser = new JsonParser();
     }
 
+    public MigrateBlockMapper(Class<T> clazz, KeySupplier<T> keySupplier, PersistClient persistClient, GsonConverter gsonConverter, BlockMigration<T> blockMigrate, JsonParser jsonParser) {
+        super(clazz, keySupplier, new BlockMapper(persistClient, gsonConverter));
+        this.gsonConverter = gsonConverter;
+        this.blockMigrate = blockMigrate;
+        this.jsonParser = jsonParser;
+    }
+
     /**
      * Load as Json Element and apply incremental updates to block
      *

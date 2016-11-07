@@ -13,6 +13,7 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.munch.core.essential.util.config.MunchConfig;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -92,20 +93,4 @@ public final class AWSUtil {
         return amazonDynamoDB;
     }
 
-    /**
-     * Force production mode on AWSUtils, some stupid injector problem
-     */
-    public static void setToProduction() {
-        amazonDynamoDB = new AmazonDynamoDBClient();
-        amazonDynamoDB.setRegion(Region.getRegion(Regions.AP_SOUTHEAST_1));
-        amazonS3 = new AmazonS3Client();
-        amazonS3.setRegion(Region.getRegion(Regions.AP_SOUTHEAST_1));
-    }
-
-    public static void setToNull() {
-        synchronized (AWSUtil.class) {
-            amazonDynamoDB = null;
-            amazonS3 = null;
-        }
-    }
 }

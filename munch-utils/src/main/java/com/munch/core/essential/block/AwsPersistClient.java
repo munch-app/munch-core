@@ -11,12 +11,16 @@ import com.munch.core.essential.util.AWSUtil;
  */
 public class AwsPersistClient implements PersistClient {
 
-    private AmazonS3 amazonS3 = AWSUtil.getS3();
-
-    private String bucketName;
+    protected final String bucketName;
+    protected final AmazonS3 amazonS3;
 
     public AwsPersistClient(String bucketName) {
+        this(bucketName, AWSUtil.getS3());
+    }
+
+    public AwsPersistClient(String bucketName, AmazonS3 amazonS3) {
         this.bucketName = bucketName;
+        this.amazonS3 = amazonS3;
     }
 
     @Override

@@ -17,9 +17,8 @@ import java.io.IOException;
  */
 public class FileMapper {
 
-
-    private final AmazonS3 amazonS3;
-    private final FileSetting fileSetting;
+    protected final AmazonS3 amazonS3;
+    protected final FileSetting fileSetting;
 
     public FileMapper(AmazonS3 amazonS3, FileSetting fileSetting) {
         this.amazonS3 = amazonS3;

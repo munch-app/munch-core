@@ -52,6 +52,22 @@ public abstract class BlockMigration<B extends BlockVersion> {
 
     /**
      * Remember to constantly update the version at each update
+     * e.g.
+     *  switch (getVersion(block)){
+     *      case BlockVersion.VERSION_FIRST:
+     *          update logic
+     *          block.addProperty("version", 2);
+     *      case 2:
+     *          block.addProperty("version", 3);
+     *      case 3:
+     *          block.addProperty("version", 4);
+     *      case 4:
+     *          block.addProperty("version", 5);
+     *      case 5:
+     *          block.addProperty("version", 6);
+     *      case 6:
+     *          block.addProperty("version", 7);
+     * }
      *
      * @param block block to update
      */

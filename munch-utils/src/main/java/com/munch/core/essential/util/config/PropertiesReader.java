@@ -1,4 +1,4 @@
-package com.munch.core.essential.util;
+package com.munch.core.essential.util.config;
 
 import org.apache.commons.configuration.XMLConfiguration;
 

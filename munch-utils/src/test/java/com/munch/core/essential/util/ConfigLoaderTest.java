@@ -6,6 +6,7 @@
 
 package com.munch.core.essential.util;
 
+import com.munch.core.essential.util.config.MunchConfig;
 import org.junit.Test;
 
 import static org.fest.assertions.Assertions.assertThat;
