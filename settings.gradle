@@ -1,5 +1,6 @@
 include 'munch-utils'
 include 'munch-struct'
+include 'munch-api'
 
 rootProject.name = 'munch-core'
 rootProject.children.each { project ->
@@ -7,5 +8,4 @@ rootProject.children.each { project ->
     assert project.projectDir.isDirectory()
     assert project.buildFile.isFile()
 }
-include 'munch-api'
 
