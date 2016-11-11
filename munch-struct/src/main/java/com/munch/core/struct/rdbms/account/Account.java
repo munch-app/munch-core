@@ -3,14 +3,15 @@ package com.munch.core.struct.rdbms.account;
 import com.munch.core.essential.util.DateTime;
 import com.munch.core.struct.rdbms.abs.AbsAuditData;
 import com.munch.core.struct.rdbms.locality.Country;
-import com.munch.core.struct.util.many.BiHashSet;
-import com.munch.core.struct.util.many.EntityOne;
+import com.munch.core.utils.rdbms.many.BiHashSet;
+import com.munch.core.utils.rdbms.many.EntityOne;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Set;
+
 
 /**
  * @deprecated not ready to use yet

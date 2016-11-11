@@ -2,8 +2,8 @@ package com.munch.core.struct.rdbms.place;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.munch.core.struct.rdbms.abs.AbsAuditData;
-import com.munch.core.struct.util.many.BiHashSet;
-import com.munch.core.struct.util.many.EntityOne;
+import com.munch.core.utils.rdbms.many.BiHashSet;
+import com.munch.core.utils.rdbms.many.EntityOne;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;

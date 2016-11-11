@@ -2,8 +2,8 @@ package com.munch.core.struct.rdbms.place.log;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.munch.core.essential.util.DateTime;
-import com.munch.core.struct.util.many.CollectionEntity;
-import com.munch.core.struct.util.many.EntityMany;
+import com.munch.core.utils.rdbms.many.CollectionEntity;
+import com.munch.core.utils.rdbms.many.EntityMany;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;

@@ -1,4 +1,4 @@
-package com.munch.core.struct.util.many;
+package com.munch.core.utils.rdbms.many;
 
 /**
  * Created By: Fuxing Loh

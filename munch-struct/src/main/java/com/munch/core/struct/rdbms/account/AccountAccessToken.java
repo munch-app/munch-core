@@ -1,7 +1,7 @@
 package com.munch.core.struct.rdbms.account;
 
 import com.munch.core.struct.rdbms.abs.AbsAuditData;
-import com.munch.core.struct.util.many.EntityMany;
+import com.munch.core.utils.rdbms.many.EntityMany;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.persistence.*;
