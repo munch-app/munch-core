@@ -1,7 +1,4 @@
 dependencies {
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.easytesting:fest-assert:1.4'
-
     // Debugging
     compile group: 'com.google.code.findbugs', name: 'annotations', version: '3.0.1u2'
 

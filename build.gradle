@@ -45,8 +45,15 @@ allprojects {
     }
 }
 
+subprojects {
+    dependencies {
+        testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.0.0-M2'
+        testCompile group: 'org.easytesting', name: 'fest-assert', version: '1.4'
+    }
+}
+
 // munch-utils & munch-struct
-configure(subprojects.findAll {it.name.matches("munch-(struct|utils)")}) {
+configure(subprojects.findAll { it.name.matches("munch-(struct|utils)") }) {
     version '0.34.0-SNAPSHOT'
 
     task publishLib {

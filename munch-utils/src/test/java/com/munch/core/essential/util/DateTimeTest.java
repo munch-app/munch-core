@@ -6,7 +6,7 @@
 
 package com.munch.core.essential.util;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.fest.assertions.Assertions.assertThat;
 

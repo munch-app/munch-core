@@ -1,7 +1,6 @@
 package com.munch.core.struct.rdbms.account;
 
 import com.munch.core.struct.rdbms.abs.AbsAuditData;
-import com.munch.core.utils.rdbms.many.EntityMany;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.persistence.*;
@@ -15,7 +14,7 @@ import javax.persistence.*;
  */
 @Entity
 @Deprecated
-public class AccountAccessToken extends AbsAuditData implements EntityMany<Account> {
+public class AccountAccessToken extends AbsAuditData {
 
     public static final int TYPE_IOS = 20_000;
     public static final int TYPE_ANDROID = 21_000;
@@ -94,11 +93,6 @@ public class AccountAccessToken extends AbsAuditData implements EntityMany<Accou
 
     public void setAccount(Account account) {
         this.account = account;
-    }
-
-    @Override
-    public void applyEntityOne(Account one) {
-        setAccount(one);
     }
 
 }

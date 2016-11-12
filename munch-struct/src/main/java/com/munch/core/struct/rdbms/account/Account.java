@@ -3,13 +3,12 @@ package com.munch.core.struct.rdbms.account;
 import com.munch.core.essential.util.DateTime;
 import com.munch.core.struct.rdbms.abs.AbsAuditData;
 import com.munch.core.struct.rdbms.locality.Country;
-import com.munch.core.utils.rdbms.many.BiHashSet;
-import com.munch.core.utils.rdbms.many.EntityOne;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -23,7 +22,7 @@ import java.util.Set;
 @Entity
 @Table(indexes = {@Index(name = "EMAIL_INDEX", columnList = "email"), @Index(name = "PHONE_INDEX", columnList = "phoneNumber")})
 @Deprecated
-public class Account extends AbsAuditData implements EntityOne {
+public class Account extends AbsAuditData {
 
     public static final int TYPE_NORMAL = 10_000;
     public static final int TYPE_RESTURANT = 12_000;
@@ -51,7 +50,7 @@ public class Account extends AbsAuditData implements EntityOne {
     private Date lastLoginDate;
     private boolean emailVerified = false;
     private boolean phoneVerified = false;
-    private Set<AccountAccessToken> accessTokens = new BiHashSet<>(this);
+    private Set<AccountAccessToken> accessTokens = new HashSet<>();
 
     /**
      * Default pre persist time stamping

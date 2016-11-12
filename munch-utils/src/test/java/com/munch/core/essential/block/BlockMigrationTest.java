@@ -3,7 +3,7 @@ package com.munch.core.essential.block;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.fest.assertions.Assertions.assertThat;
 

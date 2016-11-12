@@ -1,6 +1,6 @@
 package com.munch.core.struct.nosql;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Created By: Fuxing Loh

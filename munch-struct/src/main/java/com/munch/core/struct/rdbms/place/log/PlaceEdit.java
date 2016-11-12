@@ -2,8 +2,7 @@ package com.munch.core.struct.rdbms.place.log;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.munch.core.essential.util.DateTime;
-import com.munch.core.utils.rdbms.many.CollectionEntity;
-import com.munch.core.utils.rdbms.many.EntityMany;
+import com.munch.core.struct.util.CollectionEntity;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -11,7 +10,7 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 @Entity
-public class PlaceEdit implements CollectionEntity, EntityMany<PlaceLog> {
+public class PlaceEdit implements CollectionEntity {
 
     public static final int AUTHORITY_MUNCH_STAFF = 327;
     public static final int AUTHORITY_RESTAURANT_OWNER = 500;
@@ -91,8 +90,4 @@ public class PlaceEdit implements CollectionEntity, EntityMany<PlaceLog> {
         return equals(obj, getClass());
     }
 
-    @Override
-    public void applyEntityOne(PlaceLog one) {
-        setLog(one);
-    }
 }

@@ -8,8 +8,7 @@ import com.munch.core.essential.file.FileMapper;
 import com.munch.core.essential.file.FileSetting;
 import com.munch.core.essential.util.AWSUtil;
 import com.munch.core.struct.rdbms.abs.AbsSortData;
-import com.munch.core.utils.rdbms.many.CollectionEntity;
-import com.munch.core.utils.rdbms.many.EntityMany;
+import com.munch.core.struct.util.CollectionEntity;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.hibernate.annotations.GenericGenerator;
@@ -24,7 +23,7 @@ import java.io.File;
  * Project: struct
  */
 @Entity
-public class PlaceMenu extends AbsSortData implements CollectionEntity, EntityMany<Place> {
+public class PlaceMenu extends AbsSortData implements CollectionEntity {
 
     public static final int TYPE_PDF = 5_100;
     public static final int TYPE_IMAGE = 5_200;
@@ -212,11 +211,6 @@ public class PlaceMenu extends AbsSortData implements CollectionEntity, EntityMa
     @Override
     public boolean equals(Object obj) {
         return equals(obj, getClass());
-    }
-
-    @Override
-    public void applyEntityOne(Place one) {
-        setPlace(one);
     }
 
     public static class Setting implements FileSetting {

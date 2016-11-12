@@ -7,7 +7,7 @@ import com.munch.core.essential.file.FileMapper;
 import com.munch.core.essential.file.FileSetting;
 import com.munch.core.essential.util.AWSUtil;
 import com.munch.core.struct.rdbms.abs.AbsSortData;
-import com.munch.core.utils.rdbms.many.CollectionEntity;
+import com.munch.core.struct.util.CollectionEntity;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.hibernate.annotations.GenericGenerator;

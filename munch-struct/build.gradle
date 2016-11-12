@@ -1,9 +1,6 @@
 ext.hibernateVersion = '5.0.10.Final'
 
 dependencies {
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.easytesting:fest-assert:1.4'
-
     // Munch
     compile project(':munch-utils')
 

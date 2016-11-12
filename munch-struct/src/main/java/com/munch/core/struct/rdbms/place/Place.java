@@ -6,11 +6,8 @@ import com.munch.core.struct.rdbms.locality.Container;
 import com.munch.core.struct.rdbms.locality.Location;
 import com.munch.core.struct.rdbms.locality.Neighborhood;
 import com.munch.core.struct.rdbms.place.log.PlaceLog;
+import com.munch.core.struct.util.CollectionEntity;
 import com.munch.core.struct.util.Lucene;
-import com.munch.core.utils.rdbms.many.BiHashSet;
-import com.munch.core.utils.rdbms.many.CollectionEntity;
-import com.munch.core.utils.rdbms.many.EntityMany;
-import com.munch.core.utils.rdbms.many.EntityOne;
 import org.apache.lucene.search.Query;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.search.annotations.*;
@@ -31,7 +28,7 @@ import java.util.Set;
  */
 @Indexed
 @Entity
-public class Place implements EntityOne, EntityMany<Brand>, CollectionEntity {
+public class Place implements CollectionEntity {
 
     public static final int STATUS_ACTIVE = 200;
     public static final int STATUS_DELETED = 400;
@@ -45,12 +42,12 @@ public class Place implements EntityOne, EntityMany<Brand>, CollectionEntity {
     private String phoneNumber;
     private String websiteUrl;
     private Set<PlaceType> types = new HashSet<>();
-    private Set<PlaceHour> placeHours = new BiHashSet<>(this);
+    private Set<PlaceHour> placeHours = new HashSet<>();
 
     // Details (Decision)
     private Double priceStart;
     private Double priceEnd;
-    private Set<PlaceMenu> menus = new BiHashSet<>(this);
+    private Set<PlaceMenu> menus = new HashSet<>();
     private ReviewSummary summary;
     private PlaceLink placeLink;
 
@@ -142,7 +139,7 @@ public class Place implements EntityOne, EntityMany<Brand>, CollectionEntity {
         this.priceEnd = priceEnd;
     }
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL}, orphanRemoval = true, mappedBy = "place")
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL}, orphanRemoval = true)
     @JsonManagedReference
     public Set<PlaceMenu> getMenus() {
         return menus;
@@ -162,7 +159,7 @@ public class Place implements EntityOne, EntityMany<Brand>, CollectionEntity {
         this.brand = brand;
     }
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL}, orphanRemoval = true, mappedBy = "place")
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL}, orphanRemoval = true)
     @JsonManagedReference
     public Set<PlaceHour> getPlaceHours() {
         return placeHours;
@@ -250,11 +247,6 @@ public class Place implements EntityOne, EntityMany<Brand>, CollectionEntity {
     @Override
     public boolean equals(Object obj) {
         return equals(obj, getClass());
-    }
-
-    @Override
-    public void applyEntityOne(Brand one) {
-        setBrand(one);
     }
 
     public static class Search extends Lucene {

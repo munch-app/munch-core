@@ -2,8 +2,7 @@ package com.munch.core.struct.rdbms.place;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.munch.core.struct.rdbms.abs.AbsAuditData;
-import com.munch.core.utils.rdbms.many.CollectionEntity;
-import com.munch.core.utils.rdbms.many.EntityMany;
+import com.munch.core.struct.util.CollectionEntity;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -16,7 +15,7 @@ import java.time.LocalTime;
  * Project: struct
  */
 @Entity
-public class PlaceHour extends AbsAuditData implements CollectionEntity, EntityMany<Place> {
+public class PlaceHour extends AbsAuditData implements CollectionEntity {
 
     public static final int MON = 1;
     public static final int TUE = 2;
@@ -29,6 +28,7 @@ public class PlaceHour extends AbsAuditData implements CollectionEntity, EntityM
     public static final int PH = 100;
 
     private String id;
+
     private Integer day;
     private LocalTime open;
     private LocalTime close;
@@ -98,8 +98,4 @@ public class PlaceHour extends AbsAuditData implements CollectionEntity, EntityM
         return equals(obj, getClass());
     }
 
-    @Override
-    public void applyEntityOne(Place one) {
-        setPlace(one);
-    }
 }

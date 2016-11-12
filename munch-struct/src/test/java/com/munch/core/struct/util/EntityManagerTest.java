@@ -1,7 +1,7 @@
 package com.munch.core.struct.util;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -24,7 +24,7 @@ public class EntityManagerTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void updateDatabase() throws Exception {
         Map<String, String> properties = new HashMap<>();
         properties.put("hibernate.hbm2ddl.auto", "update");

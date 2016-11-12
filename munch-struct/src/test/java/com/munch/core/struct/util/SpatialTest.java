@@ -1,8 +1,8 @@
 package com.munch.core.struct.util;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.persistence.EntityManager;
 
@@ -16,12 +16,12 @@ public class SpatialTest {
 
     EntityManager entityManager;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         entityManager = HibernateUtil.createEntityManager();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         entityManager.close();
     }

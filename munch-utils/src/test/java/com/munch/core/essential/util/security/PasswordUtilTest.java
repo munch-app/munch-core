@@ -4,8 +4,8 @@ import com.munch.core.essential.security.PasswordUtil;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.lang3.tuple.Pair;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -20,7 +20,7 @@ public class PasswordUtilTest {
     private Pair[] presetPassword = new Pair[]{Pair.of("neiH5nANZcXM5n2OabbF5kiSJkBLHa", "$2a$10$4pQsta6VrO.AMtxmK8ddu.XW9GVBBkNE1RqTb5RWZ9m5.GaSM3Ile"), Pair.of("7xfeJoITyYvaaO5hF5yx5a6Del8Phk", "$2a$10$9q3QzcAxC9IKXEgnmbbvVupGXksgYnRmJgcugHmB/3p9xPd181DhG"), Pair.of("WY770NlKDrrJ3VD46M4WfiOtZVaPGe", "$2a$10$A0MaA3qaOh2PLK.7AJUn2ukH8rz7ud8.OCZw5zxMFZZTdbVZfkSlW"), Pair.of("dZNL65j0H0dte6taRMvUFgaj58pipP", "$2a$10$iM1eBU.th9LiM/WH61pE..xDeeiX1rTpIrm3A0GWPa4T9brSzj0yO"), Pair.of("zAjO96tUpC5iyPuPk9Dd18MQOqzeSC", "$2a$10$aKpOYIyXMLbR4Jrlt6t1Xet2lNOZD6m1wAev84fHY5YB.kVxs/G86"), Pair.of("igryCQ4FcpRcVMeSGgzT4YkeW5Faok", "$2a$10$eC/ShUH8ucKySDEqQt1vMOQRL1iuFe3SArH4X.oZ442sXIF8I3Tq."), Pair.of("iCzdDWgv1WA771AS2ix6rYYci77LR7", "$2a$10$xD6HohSisOb1QLMQ/GUzFeXMSoMpTgOfp4BxGdO9RN.K0SHnyvLci"), Pair.of("tY0cl7VFOTDwoLfYn0h9MLiDFch9LG", "$2a$10$D2wFGPhQJ4GYZMvePcFweOvVjnNmcQfBHL0r7ULwrkyL7R01/.Hnq"), Pair.of("NRHf3fvTJEkD0KBzzA0yZ3FU0dodMv", "$2a$10$MWLD3BBWhEH9TVECv35YxeVxL80XUzjKAUzcJAgo8UjNqZqkekbhy"), Pair.of("iu4lCY63qercGvvCYvZa7Lfd5BJxQ9", "$2a$10$MV5Up9FYJrUzjoDhAdcyouvbUsJoot32azgpvy9.8K2UHLLzNP6zC")};
     private PasswordUtil passwordUtil;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         passwordUtil = new PasswordUtil();
     }

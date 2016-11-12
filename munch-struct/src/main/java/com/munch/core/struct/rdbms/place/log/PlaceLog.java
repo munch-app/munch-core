@@ -3,14 +3,13 @@ package com.munch.core.struct.rdbms.place.log;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.munch.core.essential.util.DateTime;
 import com.munch.core.struct.rdbms.abs.AbsAuditData;
-import com.munch.core.utils.rdbms.many.BiArrayList;
-import com.munch.core.utils.rdbms.many.EntityOne;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -23,7 +22,7 @@ import java.util.List;
  * Project: struct
  */
 @Entity
-public class PlaceLog extends AbsAuditData implements EntityOne {
+public class PlaceLog extends AbsAuditData {
 
     // Spaghetti can be seeded by multiple sources
     public static final int THROUGH_SPAGHETTI_FEEDFORWARD = 100;
@@ -41,7 +40,7 @@ public class PlaceLog extends AbsAuditData implements EntityOne {
     private int machineVersion = 0; // Edited by any machine task
 
     // Historical place edit log edited by human
-    private List<PlaceEdit> edits = new BiArrayList<>(this);
+    private List<PlaceEdit> edits = new ArrayList<>();
 
     // Dates
     private Date integrityCheckDate;
@@ -146,7 +145,7 @@ public class PlaceLog extends AbsAuditData implements EntityOne {
         this.addedBy = addedBy;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true, mappedBy = "log")
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
     @OrderBy("editedDate desc")
     @LazyCollection(LazyCollectionOption.FALSE)
     @JsonManagedReference

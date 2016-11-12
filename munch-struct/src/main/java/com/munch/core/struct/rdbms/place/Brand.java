@@ -2,11 +2,10 @@ package com.munch.core.struct.rdbms.place;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.munch.core.struct.rdbms.abs.AbsAuditData;
-import com.munch.core.utils.rdbms.many.BiHashSet;
-import com.munch.core.utils.rdbms.many.EntityOne;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -16,7 +15,7 @@ import java.util.Set;
  * Project: struct
  */
 @Entity
-public class Brand extends AbsAuditData implements EntityOne {
+public class Brand extends AbsAuditData {
 
     private String id;
 
@@ -26,7 +25,7 @@ public class Brand extends AbsAuditData implements EntityOne {
     private String phoneNumber;
     private String websiteUrl;
 
-    private Set<Place> places = new BiHashSet<>(this);
+    private Set<Place> places = new HashSet<>();
 
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid")
@@ -76,7 +75,7 @@ public class Brand extends AbsAuditData implements EntityOne {
         this.websiteUrl = websiteUrl;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST}, orphanRemoval = false, mappedBy = "brand")
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST}, orphanRemoval = false)
     @JsonManagedReference
     public Set<Place> getPlaces() {
         return places;

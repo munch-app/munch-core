@@ -2,11 +2,8 @@ package com.munch.core.struct.rdbms.admin;
 
 import com.munch.core.essential.security.PasswordUtil;
 import com.munch.core.struct.util.HibernateUtil;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import javax.persistence.EntityManager;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -18,49 +15,44 @@ import static org.fest.assertions.Assertions.assertThat;
  */
 public class AdminAccountTest {
 
-    EntityManager entityManager;
-    PasswordUtil passwordUtil;
-    AdminAccount account;
+    PasswordUtil passwordUtil = new PasswordUtil();
+    String accountId;
 
-    @Before
-    public void setUp() throws Exception {
-        passwordUtil = new PasswordUtil();
-        entityManager = HibernateUtil.createEntityManager();
-    }
-
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
-        entityManager.getTransaction().begin();
-        entityManager.remove(account);
-        entityManager.getTransaction().commit();
-        entityManager.close();
+        HibernateUtil.with(em -> em.remove(em.find(AdminAccount.class, accountId)));
     }
 
     @Test
     public void createAccount() throws Exception {
-        account = new AdminAccount();
-        account.setType(AdminAccount.TYPE_BOT);
-        account.setEmail("lohfuxing@gmail.com");
-        account.setHashSaltPassword(passwordUtil.hashPassword("My Awesome Password"));
-        account.setName("Fuxing");
-        account.setPhoneNumber("1234 5678");
+        accountId = HibernateUtil.reduce(em -> {
+            AdminAccount account = new AdminAccount();
+            account.setType(AdminAccount.TYPE_BOT);
+            account.setEmail("lohfuxing@gmail.com");
+            account.setHashSaltPassword(passwordUtil.hashPassword("My Awesome Password"));
+            account.setName("Fuxing");
+            account.setPhoneNumber("1234 5678");
 
-        entityManager.getTransaction().begin();
-        entityManager.persist(account);
-        entityManager.getTransaction().commit();
+            em.persist(account);
+            return account.getId();
+        });
 
-        assertThat(account.getId()).isNotNull();
-        AdminAccount getAccount = entityManager.find(AdminAccount.class, account.getId());
+        assertThat(accountId).isNotNull();
 
-        assertThat(getAccount.getEmail()).isEqualTo(account.getEmail());
-        assertThat(passwordUtil.check("My Awesome Password", getAccount.getHashSaltPassword())).isEqualTo(true);
-        assertThat(getAccount.getType()).isEqualTo(account.getType());
-        assertThat(getAccount.getName()).isEqualTo(account.getName());
-        assertThat(getAccount.getPhoneNumber()).isEqualTo(account.getPhoneNumber());
+        HibernateUtil.with(em -> {
+            AdminAccount account = em.find(AdminAccount.class, accountId);
 
-        assertThat(getAccount.getLastActiveDate()).isNotNull();
-        assertThat(getAccount.getLastLoginDate()).isNotNull();
-        assertThat(getAccount.getCreatedDate()).isNotNull();
-        assertThat(getAccount.getUpdatedDate()).isNotNull();
+            assertThat(account.getEmail()).isEqualTo("lohfuxing@gmail.com");
+            assertThat(passwordUtil.check("My Awesome Password", account.getHashSaltPassword()))
+                    .isEqualTo(true);
+            assertThat(account.getType()).isEqualTo(AdminAccount.TYPE_BOT);
+            assertThat(account.getName()).isEqualTo("Fuxing");
+            assertThat(account.getPhoneNumber()).isEqualTo("1234 5678");
+
+            assertThat(account.getLastActiveDate()).isNotNull();
+            assertThat(account.getLastLoginDate()).isNotNull();
+            assertThat(account.getCreatedDate()).isNotNull();
+            assertThat(account.getUpdatedDate()).isNotNull();
+        });
     }
 }
