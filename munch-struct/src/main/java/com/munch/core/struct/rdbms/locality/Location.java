@@ -23,10 +23,9 @@ public class Location {
     private String address;
 
     private String block;
-    private String town;
     private String street;
-    private String unit;
-    private String zipCode;
+    private String unitNumber;
+    private String postal;
 
     private String city;
     private String state;
@@ -82,15 +81,6 @@ public class Location {
     }
 
     @Column(length = 100, nullable = true)
-    public String getTown() {
-        return town;
-    }
-
-    public void setTown(String town) {
-        this.town = town;
-    }
-
-    @Column(length = 100, nullable = true)
     public String getStreet() {
         return street;
     }
@@ -100,21 +90,21 @@ public class Location {
     }
 
     @Column(length = 70, nullable = true)
-    public String getUnit() {
-        return unit;
+    public String getUnitNumber() {
+        return unitNumber;
     }
 
-    public void setUnit(String unit) {
-        this.unit = unit;
+    public void setUnitNumber(String unit) {
+        this.unitNumber = unit;
     }
 
     @Column(length = 20, nullable = true)
-    public String getZipCode() {
-        return zipCode;
+    public String getPostal() {
+        return postal;
     }
 
-    public void setZipCode(String zipCode) {
-        this.zipCode = zipCode;
+    public void setPostal(String zipCode) {
+        this.postal = zipCode;
     }
 
     @Column(length = 70, nullable = true)

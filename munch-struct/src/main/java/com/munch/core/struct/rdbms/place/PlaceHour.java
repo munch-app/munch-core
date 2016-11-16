@@ -1,11 +1,13 @@
 package com.munch.core.struct.rdbms.place;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.munch.core.struct.rdbms.abs.AbsAuditData;
 import com.munch.core.struct.util.CollectionEntity;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.time.LocalTime;
 
 /**
@@ -32,8 +34,6 @@ public class PlaceHour extends AbsAuditData implements CollectionEntity {
     private Integer day;
     private LocalTime open;
     private LocalTime close;
-
-    private Place place;
 
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid")
@@ -72,16 +72,6 @@ public class PlaceHour extends AbsAuditData implements CollectionEntity {
 
     public void setClose(LocalTime close) {
         this.close = close;
-    }
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonBackReference
-    public Place getPlace() {
-        return place;
-    }
-
-    public void setPlace(Place place) {
-        this.place = place;
     }
 
     @Override

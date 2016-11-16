@@ -1,17 +1,12 @@
-package com.munch.core.struct.rdbms.place.log;
+package com.munch.core.struct.rdbms.place;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.munch.core.essential.util.DateTime;
 import com.munch.core.struct.rdbms.abs.AbsAuditData;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 /**
  * All Related tracking and status data is moved to this class as this data can be confusing
@@ -38,9 +33,6 @@ public class PlaceLog extends AbsAuditData {
     private int munchVersion = 0; // Edited by munch staff
     private int humanVersion = 0; // Edited by any human, including munch staff
     private int machineVersion = 0; // Edited by any machine task
-
-    // Historical place edit log edited by human
-    private List<PlaceEdit> edits = new ArrayList<>();
 
     // Dates
     private Date integrityCheckDate;
@@ -143,18 +135,6 @@ public class PlaceLog extends AbsAuditData {
 
     public void setAddedBy(String addedBy) {
         this.addedBy = addedBy;
-    }
-
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
-    @OrderBy("editedDate desc")
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @JsonManagedReference
-    public List<PlaceEdit> getEdits() {
-        return edits;
-    }
-
-    public void setEdits(List<PlaceEdit> edits) {
-        this.edits = edits;
     }
 
     @Transient

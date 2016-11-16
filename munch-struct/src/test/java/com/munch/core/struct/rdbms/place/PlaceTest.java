@@ -4,7 +4,6 @@ import com.munch.core.essential.source.MunchSource;
 import com.munch.core.struct.rdbms.locality.AbstractCountryTest;
 import com.munch.core.struct.rdbms.locality.Location;
 import com.munch.core.struct.rdbms.locality.LocationTestInterface;
-import com.munch.core.struct.rdbms.place.log.PlaceLog;
 import com.munch.core.struct.util.HibernateUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

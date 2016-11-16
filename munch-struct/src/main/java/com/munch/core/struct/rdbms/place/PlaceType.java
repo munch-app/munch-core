@@ -20,7 +20,6 @@ public class PlaceType extends AbsSortData {
 
     private long id;
     private String name;
-
     private Integer type; // Cannot be null too
 
     @Id

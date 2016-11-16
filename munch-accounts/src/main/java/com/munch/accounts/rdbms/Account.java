@@ -1,8 +1,6 @@
-package com.munch.core.struct.rdbms.account;
+package com.munch.accounts.rdbms;
 
 import com.munch.core.essential.util.DateTime;
-import com.munch.core.struct.rdbms.abs.AbsAuditData;
-import com.munch.core.struct.rdbms.locality.Country;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -13,7 +11,6 @@ import java.util.Set;
 
 
 /**
- * @deprecated not ready to use yet
  * Created by: Fuxing
  * Date: 24/8/2016
  * Time: 2:57 AM
@@ -21,7 +18,6 @@ import java.util.Set;
  */
 @Entity
 @Table(indexes = {@Index(name = "EMAIL_INDEX", columnList = "email"), @Index(name = "PHONE_INDEX", columnList = "phoneNumber")})
-@Deprecated
 public class Account extends AbsAuditData {
 
     public static final int TYPE_NORMAL = 10_000;

@@ -2,7 +2,6 @@ package com.munch.core.struct.rdbms.place;
 
 import com.munch.core.essential.source.MunchSource;
 import com.munch.core.struct.rdbms.EntityTestInterface;
-import com.munch.core.struct.rdbms.place.log.PlaceLog;
 
 import java.time.LocalTime;
 

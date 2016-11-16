@@ -2,7 +2,6 @@ package com.munch.core.struct.rdbms.place;
 
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.munch.core.essential.file.ContentTypeException;
 import com.munch.core.essential.file.FileMapper;
 import com.munch.core.essential.file.FileSetting;
@@ -33,8 +32,6 @@ public class PlaceMenu extends AbsSortData implements CollectionEntity {
     private String name; // Optional Editable title
     private String caption; // Optional
     private Integer type;
-
-    private Place place;
 
     // For Website Based, it is use URL
     // For Image/PDF, will be url + fileKeyId
@@ -187,16 +184,6 @@ public class PlaceMenu extends AbsSortData implements CollectionEntity {
 
     protected void setKeyId(String fileKey) {
         this.keyId = fileKey;
-    }
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonBackReference
-    public Place getPlace() {
-        return place;
-    }
-
-    public void setPlace(Place place) {
-        this.place = place;
     }
 
     @Override

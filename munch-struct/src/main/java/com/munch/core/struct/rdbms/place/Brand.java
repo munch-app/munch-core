@@ -48,7 +48,7 @@ public class Brand extends AbsAuditData {
         this.name = name;
     }
 
-    @Column(length = 500, nullable = true)
+    @Column(length = 1000, nullable = true)
     public String getDescription() {
         return description;
     }
@@ -75,7 +75,7 @@ public class Brand extends AbsAuditData {
         this.websiteUrl = websiteUrl;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST}, orphanRemoval = false)
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST}, orphanRemoval = false, mappedBy = "brand")
     @JsonManagedReference
     public Set<Place> getPlaces() {
         return places;

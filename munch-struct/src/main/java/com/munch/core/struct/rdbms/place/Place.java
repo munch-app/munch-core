@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.munch.core.struct.rdbms.locality.Container;
 import com.munch.core.struct.rdbms.locality.Location;
 import com.munch.core.struct.rdbms.locality.Neighborhood;
-import com.munch.core.struct.rdbms.place.log.PlaceLog;
 import com.munch.core.struct.util.CollectionEntity;
 import com.munch.core.struct.util.Lucene;
 import org.apache.lucene.search.Query;
@@ -85,7 +84,7 @@ public class Place implements CollectionEntity {
         this.name = name;
     }
 
-    @Column(length = 500, nullable = true)
+    @Column(length = 1000, nullable = true)
     public String getDescription() {
         return description;
     }
