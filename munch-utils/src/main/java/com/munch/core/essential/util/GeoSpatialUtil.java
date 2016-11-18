@@ -6,9 +6,9 @@
 
 package com.munch.core.essential.util;
 
-import com.spatial4j.core.context.SpatialContext;
-import com.spatial4j.core.distance.DistanceUtils;
-import com.spatial4j.core.shape.Point;
+import org.locationtech.spatial4j.context.SpatialContext;
+import org.locationtech.spatial4j.distance.DistanceUtils;
+import org.locationtech.spatial4j.shape.Point;
 
 /**
  * Distance util in km (4326 projection)
@@ -30,7 +30,7 @@ public class GeoSpatialUtil {
      * @return Point
      */
     public static Point makePoint(double lat, double lng) {
-        return SpatialContext.GEO.makePoint(lng, lat);
+        return SpatialContext.GEO.getShapeFactory().pointXY(lng, lat);
     }
 
     /**
@@ -46,9 +46,10 @@ public class GeoSpatialUtil {
 
     /**
      * Calculate distance between 2 point
+     *
      * @param point point a
-     * @param lat point b latitude
-     * @param lng point b longitude
+     * @param lat   point b latitude
+     * @param lng   point b longitude
      * @return distance apart in km
      */
     public static double calcDistance(Point point, double lat, double lng) {
@@ -57,6 +58,7 @@ public class GeoSpatialUtil {
 
     /**
      * Calculate distance between 2 lat/lng
+     *
      * @param lat1 point a latitude
      * @param lng1 point a longitude
      * @param lat2 point b latitude

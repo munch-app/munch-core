@@ -1,10 +1,10 @@
 package com.munch.core.struct.util;
 
-import com.spatial4j.core.shape.Point;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.hibernate.search.query.dsl.Unit;
+import org.locationtech.spatial4j.shape.Point;
 
 import javax.persistence.EntityManager;
 

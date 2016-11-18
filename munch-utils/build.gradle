@@ -1,25 +1,27 @@
+ext.amazonawsVersion = '1.11.56'
+
 dependencies {
     // Debugging
     compile group: 'com.google.code.findbugs', name: 'annotations', version: '3.0.1u2'
 
     // Basic
     compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.1.7' // Logging
-    compile group: 'com.spatial4j', name: 'spatial4j', version: '0.5' // GeoSpatial Util
+    compile group: 'org.locationtech.spatial4j', name: 'spatial4j', version: '0.6' // GeoSpatial Util
     compile group: 'de.svenkubiak', name: 'jBCrypt', version: '0.4.1' // Password Util Library
     compile group: 'com.google.inject', name: 'guice', version: '4.0' // Injection Library
 
     // Apache
-    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
     compile group: 'commons-io', name: 'commons-io', version: '2.5'
     compile group: 'commons-configuration', name: 'commons-configuration', version: '1.10'
     compile group: 'commons-collections', name: 'commons-collections', version: '3.2.1'
     compile group: 'org.apache.tika', name: 'tika-core', version: '1.13'
 
     // AWS
-    compile group: 'com.amazonaws', name: 'aws-java-sdk-dynamodb', version: '1.11.26'
-    compile group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.11.26'
+    compile group: 'com.amazonaws', name: 'aws-java-sdk-dynamodb', version: amazonawsVersion
+    compile group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: amazonawsVersion
 
     // Block
-    compile group: 'com.google.code.gson', name: 'gson', version: '2.7'
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.8.3'
+    compile group: 'com.google.code.gson', name: 'gson', version: '2.8.0'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.8.5'
 }

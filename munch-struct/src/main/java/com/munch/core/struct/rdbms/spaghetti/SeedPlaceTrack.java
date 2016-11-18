@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.munch.core.struct.rdbms.abs.AbsSortData;
 import com.munch.core.struct.rdbms.place.Place;
 import com.munch.core.struct.util.Lucene;
-import com.spatial4j.core.shape.Point;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.hibernate.annotations.GenericGenerator;
@@ -14,6 +13,7 @@ import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.hibernate.search.spatial.DistanceSortField;
+import org.locationtech.spatial4j.shape.Point;
 
 import javax.persistence.*;
 import java.util.Date;
