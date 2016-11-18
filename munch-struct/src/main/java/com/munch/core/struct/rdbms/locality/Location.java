@@ -22,7 +22,6 @@ public class Location {
     // Full address eg: 73 Ayer Rajah Crescent #03-27 Singapore 133952
     private String address;
 
-    private String block;
     private String street;
     private String unitNumber;
     private String postal;
@@ -69,15 +68,6 @@ public class Location {
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    @Column(length = 30, nullable = true)
-    public String getBlock() {
-        return block;
-    }
-
-    public void setBlock(String block) {
-        this.block = block;
     }
 
     @Column(length = 100, nullable = true)

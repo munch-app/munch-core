@@ -10,7 +10,7 @@ import javax.persistence.MappedSuperclass;
  * Project: struct
  */
 @MappedSuperclass
-public class AbsSortData extends AbsAuditData {
+public abstract class AbsSortData extends AbsAuditData {
 
     private long sort;
 

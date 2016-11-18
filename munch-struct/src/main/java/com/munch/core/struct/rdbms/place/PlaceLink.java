@@ -28,6 +28,8 @@ public class PlaceLink {
 
     private String factualId; // Factual Link to the place
 
+    // TODO: Evolving
+
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid")
     @Column(columnDefinition = "CHAR(32)")

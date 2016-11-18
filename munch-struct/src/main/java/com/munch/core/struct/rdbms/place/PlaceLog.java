@@ -34,6 +34,8 @@ public class PlaceLog extends AbsAuditData {
     private int humanVersion = 0; // Edited by any human, including munch staff
     private int machineVersion = 0; // Edited by any machine task
 
+    // TODO: Evolving
+
     // Dates
     private Date integrityCheckDate;
     private Date munchUpdateDate;
