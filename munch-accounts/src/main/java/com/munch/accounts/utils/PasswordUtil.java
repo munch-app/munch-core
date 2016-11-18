@@ -1,4 +1,4 @@
-package com.munch.core.essential.security;
+package com.munch.accounts.utils;
 
 import org.mindrot.jbcrypt.BCrypt;
 

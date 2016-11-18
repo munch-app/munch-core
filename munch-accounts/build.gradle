@@ -3,6 +3,8 @@ ext.hibernateVersion = '5.0.10.Final'
 dependencies {
     compile project(':munch-utils')
 
+    compile group: 'de.svenkubiak', name: 'jBCrypt', version: '0.4.1' // Password Util Library
+
     // Database
     compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.39'
     compile group: 'org.hibernate', name: 'hibernate-core', version: hibernateVersion

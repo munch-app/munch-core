@@ -1,6 +1,5 @@
 package com.munch.core.struct.rdbms.admin;
 
-import com.munch.core.essential.security.PasswordUtil;
 import com.munch.core.struct.util.HibernateUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
