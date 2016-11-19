@@ -16,9 +16,7 @@
         <class>com.munch.core.struct.rdbms.place.PlaceLink</class>
         <class>com.munch.core.struct.rdbms.place.ReviewSummary</class>
         <class>com.munch.core.struct.rdbms.place.Brand</class>
-
         <class>com.munch.core.struct.rdbms.place.PlaceLog</class>
-        <class>com.munch.core.struct.rdbms.place.log.PlaceEdit</class>
 
         <!-- Location Classes -->
         <class>com.munch.core.struct.rdbms.locality.Location</class>
@@ -33,9 +31,6 @@
         <class>com.munch.core.struct.rdbms.admin.AdminAccount</class>
         <class>com.munch.core.struct.rdbms.admin.KeyValuePair</class>
         <class>com.munch.core.struct.rdbms.spaghetti.SeedPlaceTrack</class>
-
-        <!--<class>com.munch.core.struct.rdbms.account.Account</class>-->
-        <!--<class>com.munch.core.struct.rdbms.account.AccountAccessToken</class>-->
 
         <properties>
             <!-- Basic Config -->

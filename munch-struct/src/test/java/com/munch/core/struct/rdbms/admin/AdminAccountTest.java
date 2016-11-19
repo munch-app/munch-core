@@ -1,8 +1,10 @@
 package com.munch.core.struct.rdbms.admin;
 
 import com.munch.core.struct.util.HibernateUtil;
+import com.munch.core.struct.util.PasswordUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+
 
 import static org.fest.assertions.Assertions.assertThat;
 
