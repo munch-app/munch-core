@@ -16,12 +16,16 @@ public interface ConfigReader extends PropertiesReader {
      *
      * @return bool
      */
-    boolean isDev();
+    default boolean isDev() {
+        return getString("environment").equalsIgnoreCase("development");
+    }
 
     /**
      * Environment reader
      *
      * @return bool
      */
-    boolean isProd();
+    default boolean isProd() {
+        return getString("environment").equalsIgnoreCase("production");
+    }
 }

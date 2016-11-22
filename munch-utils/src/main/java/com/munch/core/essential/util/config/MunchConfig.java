@@ -9,7 +9,10 @@ package com.munch.core.essential.util.config;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,52 +28,48 @@ public final class MunchConfig implements ConfigReader {
     // Default Dev/Prod Env File Location
     static final String ENV_FILE_LOCATION = "MUNCH_APP_CONFIG";
 
-
-    static MunchConfig defaultConfig;
+    static MunchConfig configInstance;
     static Map<String, MunchConfig> configMap = new HashMap<>();
-    private ConfigReader defaultReader;
-    private ConfigReader fallbackReader;
 
-    public MunchConfig(ConfigReader reader) {
+    private final List<ConfigReader> configList = new ArrayList<>();
+    private final ConfigReader defaultReader;
+
+    private MunchConfig(ConfigReader reader) {
         this.defaultReader = reader;
+        this.configList.add(defaultReader);
     }
 
-    public MunchConfig(ConfigReader reader, ConfigReader fallbackReader) {
-        this.defaultReader = reader;
-        this.fallbackReader = fallbackReader;
+    public static void addConfigReader(File file) {
+        addConfigReader(PropertiesReader.getReader(file));
     }
 
-    /**
-     * Override existing getInstance with implementable reader
-     *
-     * @param reader          implementable reader
-     * @param defaultFallback to fall back to old reader
-     */
-    public static void override(ConfigReader reader, boolean defaultFallback) {
-        synchronized (MunchConfig.class) {
-            if (defaultFallback) {
-                defaultConfig = new MunchConfig(reader, getBuiltInReader(System.getenv(ENV_FILE_LOCATION)));
-            } else {
-                defaultConfig = new MunchConfig(reader);
-            }
+    public static void addConfigReader(ConfigReader reader) {
+        getInstance().configList.add(0, reader);
+    }
 
-        }
+    public static void addConfigReader(Class clazz, String resourceName) {
+        addConfigReader(PropertiesReader.getReaderFromResource(clazz, resourceName));
+    }
+
+    public static ConfigReader getDefaultInstance() {
+        return getInstance().defaultReader;
     }
 
     /**
      * The default puffincore.xml file
      * With override configs
+     *
      * @return XMLConfiguration
      */
     public static MunchConfig getInstance() {
-        if (defaultConfig == null) {
+        if (configInstance == null) {
             synchronized (MunchConfig.class) {
-                if (defaultConfig == null) {
-                    defaultConfig = new MunchConfig(getBuiltInReader(System.getenv(ENV_FILE_LOCATION)));
+                if (configInstance == null) {
+                    configInstance = new MunchConfig(getBuiltInReader(System.getenv(ENV_FILE_LOCATION)));
                 }
             }
         }
-        return defaultConfig;
+        return configInstance;
     }
 
     /**
@@ -106,18 +105,8 @@ public final class MunchConfig implements ConfigReader {
                 }
 
                 @Override
-                public int getInt(String key) {
-                    return configuration.getInt(key, 0);
-                }
-
-                @Override
-                public boolean isDev() {
-                    return getString("environment").equalsIgnoreCase("development");
-                }
-
-                @Override
-                public boolean isProd() {
-                    return getString("environment").equalsIgnoreCase("production");
+                public long getLong(String key) {
+                    return configuration.getLong(key, 0);
                 }
             };
         } catch (ConfigurationException ex) {
@@ -133,11 +122,7 @@ public final class MunchConfig implements ConfigReader {
      * @return value
      */
     public String getString(String key) {
-        String value = defaultReader.getString(key);
-        if (value == null && fallbackReader != null) {
-            value = fallbackReader.getString(key);
-        }
-        return value;
+        return getString(key, null);
     }
 
     /**
@@ -147,42 +132,58 @@ public final class MunchConfig implements ConfigReader {
      * @return value
      */
     public boolean getBoolean(String key) {
-        boolean value = defaultReader.getBoolean(key);
-        if (defaultReader.getString(key) == null && fallbackReader != null) {
-            value = fallbackReader.getBoolean(key);
-        }
-        return value;
+        return getBoolean(key, false);
     }
 
     /**
-     * Get integer value with key from configuration file
+     * Get long value with key from configuration file
      *
      * @param key String
      * @return value
      */
-    public int getInt(String key) {
-        int value = defaultReader.getInt(key);
-        if (defaultReader.getString(key) == null && fallbackReader != null) {
-            value = fallbackReader.getInt(key);
+    public long getLong(String key) {
+        return getLong(key, 0);
+    }
+
+    /**
+     * Get string value with key from configuration file
+     *
+     * @param key String
+     * @return value
+     */
+    public String getString(String key, String defaultValue) {
+        for (ConfigReader configReader : configList) {
+            String value = configReader.getString(key);
+            if (value != null) return value;
         }
-        return value;
+        return defaultValue;
     }
 
     /**
-     * Check the environment
+     * Get boolean value with key from configuration file
      *
-     * @return bool
+     * @param key String
+     * @return value
      */
-    public boolean isDev() {
-        return defaultReader.isDev();
+    public boolean getBoolean(String key, boolean defaultValue) {
+        for (ConfigReader configReader : configList) {
+            String value = configReader.getString(key);
+            if (value != null) return configReader.getBoolean(key);
+        }
+        return defaultValue;
     }
 
     /**
-     * Check the environment
+     * Get long value with key from configuration file
      *
-     * @return bool
+     * @param key String
+     * @return value
      */
-    public boolean isProd() {
-        return defaultReader.isProd();
+    public long getLong(String key, long defaultValue) {
+        for (ConfigReader configReader : configList) {
+            String value = configReader.getString(key);
+            if (value != null) return configReader.getLong(key);
+        }
+        return defaultValue;
     }
 }

@@ -35,10 +35,20 @@ public interface PropertiesReader {
      * @param key key value
      * @return int default: 0
      */
-    int getInt(String key);
+    default int getInt(String key) {
+        return (int) getLong(key);
+    }
+
+    /**
+     * Get long from key
+     *
+     * @param key key value
+     * @return int default: 0
+     */
+    long getLong(String key);
 
     @SuppressWarnings("ConstantConditions")
-    static PropertiesReader getReaderFromResource(Class clazz, String resourceName) {
+    static ConfigReader getReaderFromResource(Class clazz, String resourceName) {
         try {
             return getReader(new File(clazz.getClassLoader().getResource(resourceName).getFile()));
         } catch (NullPointerException e) {
@@ -46,9 +56,9 @@ public interface PropertiesReader {
         }
     }
 
-    static PropertiesReader getReader(File file) {
+    static ConfigReader getReader(File file) {
         try {
-            return new PropertiesReader() {
+            return new ConfigReader() {
                 XMLConfiguration configuration = new XMLConfiguration(file);
 
                 @Override
@@ -62,8 +72,8 @@ public interface PropertiesReader {
                 }
 
                 @Override
-                public int getInt(String key) {
-                    return configuration.getInt(key, 0);
+                public long getLong(String key) {
+                    return configuration.getLong(key, 0);
                 }
 
             };
