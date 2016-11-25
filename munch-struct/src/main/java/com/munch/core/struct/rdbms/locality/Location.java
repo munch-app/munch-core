@@ -70,7 +70,7 @@ public class Location {
         this.address = address;
     }
 
-    @Column(length = 100, nullable = true)
+    @Column(length = 255, nullable = true)
     public String getStreet() {
         return street;
     }
