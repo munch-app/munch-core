@@ -1,7 +1,6 @@
 package com.munch.core.struct.rdbms.place;
 
 import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.munch.core.essential.file.ContentTypeException;
 import com.munch.core.essential.file.FileMapper;
 import com.munch.core.essential.file.FileSetting;
@@ -40,7 +39,6 @@ public class PlaceMenu extends AbsSortData implements CollectionEntity {
 
     // Transient File
     private File file;
-    private String fileName;
 
     // Storage mapper for Sorted Image
     private static FileMapper fileMapper = new FileMapper(AWSUtil.getS3(), new Setting());
@@ -54,7 +52,6 @@ public class PlaceMenu extends AbsSortData implements CollectionEntity {
      */
     public void setPdf(File file, String fileName, String websiteUrl) {
         this.file = file;
-        this.fileName = fileName;
         setType(TYPE_PDF);
         setUrl(websiteUrl);
         setKeyId(RandomStringUtils.randomAlphanumeric(40) + "." + FilenameUtils.getExtension(fileName));
@@ -69,7 +66,6 @@ public class PlaceMenu extends AbsSortData implements CollectionEntity {
      */
     public void setImage(File file, String fileName, String websiteUrl) {
         this.file = file;
-        this.fileName = fileName;
         setType(TYPE_IMAGE);
         setUrl(websiteUrl);
         setKeyId(RandomStringUtils.randomAlphanumeric(40) + "." + FilenameUtils.getExtension(fileName));
@@ -92,10 +88,8 @@ public class PlaceMenu extends AbsSortData implements CollectionEntity {
         // Uploaded file are defaulted to public
         if (file != null) {
             // Do Actual image put
-            ObjectMetadata metadata = new ObjectMetadata();
-            metadata.addUserMetadata("original-name", fileName);
             try {
-                fileMapper.putFile(keyId, file, metadata, CannedAccessControlList.PublicRead);
+                fileMapper.putFile(keyId, file, CannedAccessControlList.PublicRead);
             } catch (ContentTypeException e) {
                 throw new IllegalArgumentException(e);
             }
