@@ -22,5 +22,4 @@ dependencies {
 
     // Block
     compile group: 'com.google.code.gson', name: 'gson', version: '2.8.0'
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.8.5'
 }
