@@ -21,6 +21,7 @@ import java.io.File;
  * Project: struct
  */
 @Entity
+@Deprecated
 public class PlaceMenu extends AbsSortData implements CollectionEntity {
 
     public static final int TYPE_PDF = 5_100;

@@ -22,6 +22,7 @@ import java.io.File;
  * Project: struct
  */
 @Entity
+@Deprecated
 public class SortedImage extends AbsSortData implements CollectionEntity {
 
     private String id;

@@ -23,6 +23,7 @@ import org.apache.commons.lang3.StringUtils;
  * Time: 6:06 PM
  * Project: PuffinCore
  */
+@Deprecated
 public final class AWSUtil {
 
     private static AmazonS3 amazonS3 = null;

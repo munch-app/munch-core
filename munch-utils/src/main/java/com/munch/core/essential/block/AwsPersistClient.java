@@ -1,7 +1,6 @@
 package com.munch.core.essential.block;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.munch.core.essential.util.AWSUtil;
 
 /**
  * Created by: Fuxing
@@ -13,10 +12,6 @@ public class AwsPersistClient implements PersistClient {
 
     protected final String bucketName;
     protected final AmazonS3 amazonS3;
-
-    public AwsPersistClient(String bucketName) {
-        this(bucketName, AWSUtil.getS3());
-    }
 
     public AwsPersistClient(String bucketName, AmazonS3 amazonS3) {
         this.bucketName = bucketName;
