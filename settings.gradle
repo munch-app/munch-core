@@ -1,6 +1,5 @@
 rootProject.name = 'munch-core'
 
-include 'munch-utils'
 include 'munch-struct'
 include 'munch-api'
 include 'munch-accounts'
