@@ -15,15 +15,12 @@ import java.io.InputStream;
  * Time: 8:12 AM
  * Project: munch-core
  */
-public class AccountService extends SparkServer.Controller {
+public class AccountService extends SparkServer.Controller implements Service {
 
     @Override
     public void route() {
-        Filter before = (request, response) -> {
-            // TODO token validation
-        };
-        Spark.before("/api/v1/account", before);
-        Spark.before("/api/v1/account/*", before);
+        Spark.before("/api/v1/account", validateToken());
+        Spark.before("/api/v1/account/*", validateToken());
 
         Spark.post("/api/v1/account", APP_JSON, this::update, toJson);
         Spark.get("/api/v1/account", this::get, toJson);

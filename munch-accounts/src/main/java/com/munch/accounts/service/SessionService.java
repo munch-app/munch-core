@@ -12,7 +12,7 @@ import spark.Spark;
  * Time: 8:12 AM
  * Project: munch-core
  */
-public class SessionService extends SparkServer.Controller {
+public class SessionService extends SparkServer.Controller implements Service {
 
     @Override
     public void route() {
@@ -38,8 +38,7 @@ public class SessionService extends SparkServer.Controller {
     }
 
     /**
-     *
-     * @param request spark req
+     * @param request  spark req
      * @param response spark res
      * @return JsonNode {token: ""}
      */
