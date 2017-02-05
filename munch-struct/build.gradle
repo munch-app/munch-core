@@ -1,9 +1,6 @@
 ext.hibernateVersion = '5.0.10.Final'
 
 dependencies {
-    // Munch
-    compile project(':munch-utils')
-
     compile group: 'de.svenkubiak', name: 'jBCrypt', version: '0.4.1' // Password Util Library
 
     // Database
