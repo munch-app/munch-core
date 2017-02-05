@@ -1,19 +1,12 @@
-package com.munch.accounts.controller;
-
-import com.munch.accounts.spark.SparkServer;
+package com.munch.accounts.service;
 
 /**
  * Created by: Fuxing
- * Date: 4/2/2017
- * Time: 6:33 PM
+ * Date: 5/2/2017
+ * Time: 8:12 AM
  * Project: munch-core
  */
-public class SessionController extends SparkServer.Controller {
-
-    @Override
-    public void route() {
-
-    }
+public class SessionService {
 
     private void loginEmail(String email, char[] password) {
         // TODO email login
@@ -28,4 +21,5 @@ public class SessionController extends SparkServer.Controller {
     private void logout(String token) {
 
     }
+
 }

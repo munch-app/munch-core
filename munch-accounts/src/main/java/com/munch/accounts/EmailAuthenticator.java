@@ -15,6 +15,8 @@ import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordA
 public class EmailAuthenticator implements Authenticator<UsernamePasswordCredentials> {
     SimpleTestUsernamePasswordAuthenticator authenticator = new SimpleTestUsernamePasswordAuthenticator();
 
+    // TODO real server implementation
+
     @Override
     public void validate(UsernamePasswordCredentials credentials, WebContext context) throws HttpAction {
         authenticator.validate(credentials, context);

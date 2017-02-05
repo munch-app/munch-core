@@ -23,16 +23,4 @@ public class WebsiteController {
 
     }
 
-
-    public void createAccount(){
-
-    }
-
-    public void getAccount(){
-
-    }
-
-    public void updateAccount(){
-
-    }
 }

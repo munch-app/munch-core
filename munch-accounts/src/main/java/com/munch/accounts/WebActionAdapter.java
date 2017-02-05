@@ -16,11 +16,11 @@ import static spark.Spark.halt;
  * Time: 1:53 AM
  * Project: munch-core
  */
-public class DemoHttpActionAdapter extends DefaultHttpActionAdapter {
+public class WebActionAdapter extends DefaultHttpActionAdapter {
 
     private final TemplateEngine templateEngine;
 
-    public DemoHttpActionAdapter(final TemplateEngine templateEngine) {
+    public WebActionAdapter(final TemplateEngine templateEngine) {
         this.templateEngine = templateEngine;
     }
 

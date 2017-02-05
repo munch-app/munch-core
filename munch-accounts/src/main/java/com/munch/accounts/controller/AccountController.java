@@ -12,19 +12,21 @@ public class AccountController {
 
     // Put, Get, Update Account with token
 
+
+
+    public void create() {
+
+    }
+
+    public void get() {
+
+    }
+
+    public void update() {
+
+    }
+
     public void verifyEmail() {
-
-    }
-
-    public void createAccount() {
-
-    }
-
-    public void getAccount() {
-
-    }
-
-    public void updateAccount() {
 
     }
 }
