@@ -1,5 +1,6 @@
 package com.munch.accounts;
 
+import com.munch.accounts.controller.PacConfigFactory;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.config.Config;
@@ -38,7 +39,7 @@ public class AccountSystem {
 
         get("/", AccountSystem::index, templateEngine);
 
-        final Config config = new MunchConfigFactory(templateEngine).build();
+        final Config config = new PacConfigFactory(templateEngine).build();
         final CallbackRoute callback = new CallbackRoute(config, null, true);
         get("/callback", callback);
         post("/callback", callback);

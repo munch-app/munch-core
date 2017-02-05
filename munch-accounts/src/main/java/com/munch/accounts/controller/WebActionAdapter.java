@@ -1,4 +1,4 @@
-package com.munch.accounts;
+package com.munch.accounts.controller;
 
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.sparkjava.DefaultHttpActionAdapter;
@@ -26,6 +26,7 @@ public class WebActionAdapter extends DefaultHttpActionAdapter {
 
     @Override
     public Object adapt(int code, SparkWebContext context) {
+        // TODO better halter
         if (code == HttpConstants.UNAUTHORIZED) {
             halt(401, templateEngine.render(new ModelAndView(new HashMap<>(), "error401.mustache")));
         } else if (code == HttpConstants.FORBIDDEN) {

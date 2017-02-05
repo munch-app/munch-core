@@ -1,4 +1,4 @@
-package com.munch.accounts;
+package com.munch.accounts.controller;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
@@ -15,10 +15,9 @@ import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordA
 public class EmailAuthenticator implements Authenticator<UsernamePasswordCredentials> {
     SimpleTestUsernamePasswordAuthenticator authenticator = new SimpleTestUsernamePasswordAuthenticator();
 
-    // TODO real server implementation
-
     @Override
     public void validate(UsernamePasswordCredentials credentials, WebContext context) throws HttpAction {
+        // TODO real server implementation
         authenticator.validate(credentials, context);
     }
 }

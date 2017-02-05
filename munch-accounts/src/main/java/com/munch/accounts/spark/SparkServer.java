@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import spark.Request;
 import spark.ResponseTransformer;
 import spark.Spark;
+import spark.TemplateEngine;
+import spark.template.handlebars.HandlebarsTemplateEngine;
 
 import java.io.IOException;
 
@@ -78,8 +80,9 @@ public class SparkServer {
     public abstract static class Controller {
         public static final String APP_JSON = "application/json";
 
-        protected final ObjectMapper objectMapper = new ObjectMapper();
-        protected final ResponseTransformer toString = objectMapper::writeValueAsString;
+        protected static final TemplateEngine templateEngine = new HandlebarsTemplateEngine();
+        protected static final ObjectMapper objectMapper = new ObjectMapper();
+        protected static final ResponseTransformer toJson = objectMapper::writeValueAsString;
 
         /**
          * Start the controller
