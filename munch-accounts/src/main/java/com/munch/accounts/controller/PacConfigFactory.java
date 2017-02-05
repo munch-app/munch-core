@@ -57,6 +57,6 @@ public class PacConfigFactory implements ConfigFactory {
      * @return Email Form Client
      */
     private FormClient buildEmail() {
-        return new FormClient("http://localhost:8080/loginForm", new EmailAuthenticator());
+        return new FormClient("http://localhost:8080/login", new EmailAuthenticator());
     }
 }

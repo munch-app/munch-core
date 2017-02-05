@@ -6,7 +6,7 @@ import org.pac4j.sparkjava.SparkWebContext;
 import spark.ModelAndView;
 import spark.TemplateEngine;
 
-import java.util.HashMap;
+import java.util.Collections;
 
 import static spark.Spark.halt;
 
@@ -20,17 +20,19 @@ public class WebActionAdapter extends DefaultHttpActionAdapter {
 
     private final TemplateEngine templateEngine;
 
-    public WebActionAdapter(final TemplateEngine templateEngine) {
+    /**
+     * @param templateEngine template engine to render errors
+     */
+    WebActionAdapter(final TemplateEngine templateEngine) {
         this.templateEngine = templateEngine;
     }
 
     @Override
     public Object adapt(int code, SparkWebContext context) {
-        // TODO better halter
         if (code == HttpConstants.UNAUTHORIZED) {
-            halt(401, templateEngine.render(new ModelAndView(new HashMap<>(), "error401.mustache")));
+            halt(401, templateEngine.render(new ModelAndView(Collections.emptyMap(), "error/401.hbs")));
         } else if (code == HttpConstants.FORBIDDEN) {
-            halt(403, templateEngine.render(new ModelAndView(new HashMap<>(), "error403.mustache")));
+            halt(403, templateEngine.render(new ModelAndView(Collections.emptyMap(), "error/403.hbs")));
         } else {
             return super.adapt(code, context);
         }

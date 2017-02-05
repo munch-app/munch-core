@@ -14,6 +14,8 @@ import spark.Spark;
  */
 public class SessionService extends SparkServer.Controller implements Service {
 
+    // TODO services for partners and main app to use
+
     @Override
     public void route() {
         Spark.put("/api/v1/create", APP_JSON, this::create);
