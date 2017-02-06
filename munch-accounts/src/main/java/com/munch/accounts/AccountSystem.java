@@ -1,5 +1,7 @@
 package com.munch.accounts;
 
+import com.munch.accounts.spark.SparkServer;
+
 /**
  * Created by: Fuxing
  * Date: 5/2/2017
@@ -8,6 +10,9 @@ package com.munch.accounts;
  */
 public class AccountSystem {
     public static void main(String[] args) {
+
+
+        SparkServer server = new SparkServer();
         // TODO once done
     }
 }

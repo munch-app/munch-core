@@ -2,6 +2,7 @@ package com.munch.accounts.spark;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.munch.accounts.PacConfigFactory;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.apache.commons.lang3.StringUtils;
@@ -81,6 +82,7 @@ public class SparkServer {
         public static final String APP_JSON = "application/json";
 
         protected static final TemplateEngine templateEngine = new HandlebarsTemplateEngine();
+        protected static final org.pac4j.core.config.Config pacConfig = new PacConfigFactory(templateEngine).build();
         protected static final ObjectMapper objectMapper = new ObjectMapper();
         protected static final ResponseTransformer toJson = objectMapper::writeValueAsString;
 
@@ -104,13 +106,6 @@ public class SparkServer {
          */
         protected void throwMessage(String message, int status) {
             throw new ExpectedError(message, status);
-        }
-
-        /**
-         * Helper method to get config
-         */
-        protected Config getConfig() {
-            return ConfigFactory.load().getConfig("munch.accounts");
         }
 
         protected JsonNode readNode(Request request) throws JsonException {

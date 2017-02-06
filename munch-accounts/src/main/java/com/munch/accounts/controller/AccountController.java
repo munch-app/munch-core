@@ -1,6 +1,14 @@
 package com.munch.accounts.controller;
 
 import com.munch.accounts.spark.SparkServer;
+import org.pac4j.sparkjava.SecurityFilter;
+import spark.ModelAndView;
+import spark.Request;
+import spark.Response;
+import spark.Spark;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by: Fuxing
@@ -12,25 +20,27 @@ public class AccountController extends SparkServer.Controller {
 
     @Override
     public void route() {
+        Spark.post("/email/verify", this::verifyEmail, templateEngine);
 
+        Spark.before("/user/*", new SecurityFilter(pacConfig, null));
+        Spark.get("/user/account", this::viewAccount, templateEngine);
+        Spark.post("/user/account", this::updateAccount);
     }
 
-    // Verify email?
-    // Put, Get, Update Account with token
+    // TODO 3 actions
 
-    public void create() {
-
+    private ModelAndView verifyEmail(Request request, Response response) {
+        Map<String, Object> map = new HashMap<>();
+        return new ModelAndView(map, "verifiedEmail.hbs");
     }
 
-    public void get() {
-
+    private ModelAndView viewAccount(Request request, Response response) {
+        Map<String, Object> map = new HashMap<>();
+        return new ModelAndView(map, "account.hbs");
     }
 
-    public void update() {
-
-    }
-
-    public void verifyEmail() {
-
+    private Void updateAccount(Request request, Response response) {
+        response.redirect("/user/account");
+        return null;
     }
 }

@@ -33,11 +33,9 @@ public class WebsiteController extends SparkServer.Controller {
     // Show account page to edit details
     // Show login page and redirect
 
-    private final Config pacConfig;
     private final FormClient formClient;
 
     public WebsiteController() {
-        this.pacConfig = new PacConfigFactory(templateEngine).build();
         this.formClient = pacConfig.getClients().findClient(FormClient.class);
     }
 
@@ -47,7 +45,10 @@ public class WebsiteController extends SparkServer.Controller {
         CallbackRoute callback = new CallbackRoute(pacConfig, null, true);
         Spark.get("/callback", callback);
         Spark.post("/callback", callback);
-        // TODO facebook auth
+        // TODO facebook auth on callback
+
+        Spark.get("/create", this::viewLogin, templateEngine);
+        Spark.post("/create", this::viewLogin, templateEngine);
 
         // Login Page/Form
         Spark.get("/login", this::viewLogin, templateEngine);
@@ -57,10 +58,6 @@ public class WebsiteController extends SparkServer.Controller {
         Spark.before("/login/email", new SecurityFilter(pacConfig, "FormClient"));
         Spark.get("/login/facebook", this::redirect);
         Spark.get("/login/email", this::redirect);
-
-        Spark.before("/user/*", new SecurityFilter(pacConfig, null));
-        Spark.get("/user/account", this::viewAccount, templateEngine);
-        Spark.post("/user/account", this::updateAccount);
 
         Spark.get("/logout", new ApplicationLogoutRoute(pacConfig, "/???"));
     }
@@ -78,7 +75,7 @@ public class WebsiteController extends SparkServer.Controller {
         if (StringUtils.isNotBlank(to)) {
             if (to.equalsIgnoreCase("partner")) {
                 // TODO real redirect implementation
-                response.redirect("https://partner.munchapp.co/callback?token=");
+                response.redirect("https://partner.munchapp.co/login?token=");
             }
         } else {
             response.redirect("/user/account");
@@ -92,13 +89,13 @@ public class WebsiteController extends SparkServer.Controller {
         return new ModelAndView(map, "login.hbs");
     }
 
-    private ModelAndView viewAccount(Request request, Response response) {
+    private ModelAndView viewCreate(Request request, Response response) {
         Map<String, Object> map = new HashMap<>();
-        return new ModelAndView(map, "account.hbs");
+        return new ModelAndView(map, "create.hbs");
     }
 
-    private Void updateAccount(Request request, Response response) {
-        response.redirect("/user/account");
+    private Void create(Request request, Response response) {
+        response.redirect(""); // TODO create and redirect
         return null;
     }
 

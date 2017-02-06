@@ -23,7 +23,7 @@ public class WebActionAdapter extends DefaultHttpActionAdapter {
     /**
      * @param templateEngine template engine to render errors
      */
-    WebActionAdapter(final TemplateEngine templateEngine) {
+    public WebActionAdapter(final TemplateEngine templateEngine) {
         this.templateEngine = templateEngine;
     }
 

@@ -1,8 +1,12 @@
-package com.munch.accounts.controller;
+package com.munch.accounts;
 
+import com.munch.accounts.controller.EmailAuthenticator;
+import com.munch.accounts.controller.WebActionAdapter;
+import com.munch.accounts.service.TokenAuthenticator;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.config.ConfigFactory;
+import org.pac4j.http.client.direct.HeaderClient;
 import org.pac4j.http.client.indirect.FormClient;
 import org.pac4j.oauth.client.FacebookClient;
 import spark.TemplateEngine;
@@ -32,13 +36,17 @@ public class PacConfigFactory implements ConfigFactory {
         // Configure Instagram Login TODO
 
         // Configure Email Login
-        FormClient formClient = buildEmail();
+        FormClient formClient = new FormClient("http://localhost:8080/login", new EmailAuthenticator());
 
-        final Clients clients = new Clients("http://localhost:8080/callback", facebookClient, formClient);
+        // Configure Token Authenticator
+        HeaderClient tokenClient = new HeaderClient("Authorization", "Bearer ", new TokenAuthenticator());
 
-        final Config pacConfig = new Config(clients);
+        Clients clients = new Clients("http://localhost:8080/callback", facebookClient, formClient, tokenClient);
+
+        Config pacConfig = new Config(clients);
         pacConfig.setHttpActionAdapter(new WebActionAdapter(templateEngine));
         return pacConfig;
+        // TODO custom session store?
     }
 
     /**
@@ -51,12 +59,5 @@ public class PacConfigFactory implements ConfigFactory {
         String facebookKey = config.getString("facebook.key");
         String facebookSecret = config.getString("facebook.secret");
         return new FacebookClient(facebookKey, facebookSecret);
-    }
-
-    /**
-     * @return Email Form Client
-     */
-    private FormClient buildEmail() {
-        return new FormClient("http://localhost:8080/login", new EmailAuthenticator());
     }
 }
