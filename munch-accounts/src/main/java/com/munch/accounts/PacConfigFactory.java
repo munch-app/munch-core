@@ -38,12 +38,13 @@ public class PacConfigFactory implements ConfigFactory {
         InstagramClient instagramClient = buildInstagram(config);
 
         // Configure Email Login
-        FormClient formClient = new FormClient("http://localhost:8080/login", new EmailAuthenticator());
+        FormClient formClient = new FormClient("/login", new EmailAuthenticator());
 
         // Configure Token Authenticator
         HeaderClient tokenClient = new HeaderClient("Authorization", "Bearer ", new TokenAuthenticator());
 
-        Clients clients = new Clients("http://localhost:8080/callback", facebookClient, formClient, tokenClient);
+        String baseUrl = config.getString("http.url");
+        Clients clients = new Clients(baseUrl + "/callback", facebookClient, formClient, tokenClient);
 
         Config pacConfig = new Config(clients);
         pacConfig.setHttpActionAdapter(new WebActionAdapter(templateEngine));

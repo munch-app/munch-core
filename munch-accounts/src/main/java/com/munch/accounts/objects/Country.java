@@ -1,8 +1,6 @@
 package com.munch.accounts.objects;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * Created by: Fuxing
@@ -10,38 +8,39 @@ import javax.persistence.Id;
  * Time: 2:30 AM
  * Project: munch-core
  */
-@Entity
-public final class Country {
+public enum Country {
+    Singapore("SGP", "Singapore", 702),
+    Malaysia("MYS", "Malaysia", 458);
 
-    private String iso;
-    private String code;
-    private String name;
+    private final String iso;
+    private final String name;
+    private final int code;
 
-    @Id
-    @Column(nullable = false, length = 3, updatable = false)
+    Country(String iso, String name, int code) {
+        this.iso = iso;
+        this.name = name;
+        this.code = code;
+    }
+
+    /**
+     * @return 3 char iso of the Country
+     */
+    @JsonValue
     public String getIso() {
         return iso;
     }
 
-    public void setIso(String iso) {
-        this.iso = iso;
-    }
-
-    @Column(nullable = false, length = 3, updatable = false, unique = true)
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    @Column(nullable = false, length = 80, updatable = false, unique = true)
+    /**
+     * @return name of the Country
+     */
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    /**
+     * @return int code of the country
+     */
+    public int getCode() {
+        return code;
     }
 }

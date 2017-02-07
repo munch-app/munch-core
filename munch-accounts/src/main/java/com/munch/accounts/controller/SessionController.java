@@ -28,27 +28,30 @@ import java.util.Map;
  * Time: 6:38 PM
  * Project: munch-core
  */
-public class WebsiteController extends SparkServer.Controller {
+public class SessionController extends SparkServer.Controller {
 
     // Show account page to edit details
     // Show login page and redirect
 
     private final FormClient formClient;
 
-    public WebsiteController() {
+    public SessionController() {
         this.formClient = pacConfig.getClients().findClient(FormClient.class);
     }
 
     @Override
     public void route() {
+        // Index page redirect
+        Spark.get("/", this::index);
+
         // Login Callback
         CallbackRoute callback = new CallbackRoute(pacConfig, null, true);
         Spark.get("/callback", callback);
         Spark.post("/callback", callback);
         // TODO facebook auth on callback
 
-        Spark.get("/create", this::viewLogin, templateEngine);
-        Spark.post("/create", this::viewLogin, templateEngine);
+        Spark.get("/create", this::viewCreate, templateEngine);
+        Spark.post("/create", this::create);
 
         // Login Page/Form
         Spark.get("/login", this::viewLogin, templateEngine);
@@ -63,7 +66,26 @@ public class WebsiteController extends SparkServer.Controller {
     }
 
     /**
-     * Redirect to /user/account or
+     * Redirect to /account if user logged in
+     * or /login if user not logged in
+     *
+     * @param request  request
+     * @param response response
+     * @return null
+     */
+    private Void index(Request request, Response response) {
+        SparkWebContext context = new SparkWebContext(request, response);
+        ProfileManager manager = new ProfileManager(context);
+        if (manager.isAuthenticated()) {
+            response.redirect("/account");
+        } else {
+            response.redirect("/login");
+        }
+        return null;
+    }
+
+    /**
+     * Redirect to /account or
      * https://partner.munchapp.co/callback
      *
      * @param request  request
@@ -78,7 +100,7 @@ public class WebsiteController extends SparkServer.Controller {
                 response.redirect("https://partner.munchapp.co/login?token=");
             }
         } else {
-            response.redirect("/user/account");
+            response.redirect("/account");
         }
         return null;
     }

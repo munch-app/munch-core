@@ -33,6 +33,8 @@ public final class Account {
     private String lastName; // Surname
     private String pictureUrl;
     private String bio;
+    private Date birthDate; // Date of birth
+    private Gender gender;
 
     private Date createdDate;
     private Date updatedDate;
@@ -115,7 +117,7 @@ public final class Account {
      * @return country in which account is created at
      */
     @Column(nullable = false)
-    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
     public Country getCountry() {
         return country;
     }
@@ -197,6 +199,34 @@ public final class Account {
 
     public void setBio(String bio) {
         this.bio = bio;
+    }
+
+    /**
+     * @return user date of birth
+     */
+    @Column(nullable = false)
+    public Date getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    /**
+     * @return Gender enum
+     */
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    public Gender getGender() {
+        return gender;
+    }
+
+    /**
+     * @param gender enum of gender
+     */
+    public void setGender(Gender gender) {
+        this.gender = gender;
     }
 
     /**

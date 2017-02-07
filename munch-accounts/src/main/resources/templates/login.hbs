@@ -1,5 +1,96 @@
-<form action="{{callbackUrl}}" method="POST">
-	<input type="text" name="username" value="" />
-	<input type="password" name="password" value="" />
-	<input type="submit" name="submit" value="Submit" />
-</form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" type="image/png" href="/images/icon.png">
+
+    <title>Munch Accounts</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <link href="/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="/css/bootstrap-grid.min.css" rel="stylesheet" type="text/css">
+    <link href="/css/bootstrap-reboot.min.css" rel="stylesheet" type="text/css">
+    <link href="/css/tether.min.css" rel="stylesheet" type="text/css">
+    <link href="/css/library.css" rel="stylesheet" type="text/css">
+    <link href="/css/main.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<div class="container">
+
+    <div class="row header">
+        <div class="logo logo-image" aria-label="Munch"></div>
+    </div>
+
+    <div class="row login-form">
+        <div class="col-sm col-md col-lg col-xl"></div>
+        <div class="col-12 col-sm-9 col-md-7 col-lg-5">
+            <h5>Log in with your Munch Account</h5>
+            <form action="/login/facebook" method="get">
+                <button class="btn btn-block btn-facebook" name="button" type="submit">
+                    <span class="text-container">Log in with Facebook</span>
+                </button>
+            </form>
+
+            <div class="row login-divider">
+                <div class="col">
+                    <div class="strike">
+                        <span>or</span>
+                    </div>
+                </div>
+            </div>
+
+            <form action="{{callbackUrl}}" method="get">
+
+                <div class="form-group row">
+                    <div class="col-sm-12">
+                        <input type="email" class="form-control" id="inputEmail" name="username" placeholder="Email">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-12">
+                        <input type="password" class="form-control" name="password" placeholder="Password">
+                    </div>
+                </div>
+
+                <div class="login-options clearfix">
+                    <div class="form-check remember-me float-left">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" checked>
+                            Remember me
+                        </label>
+                    </div>
+                    <div class="forget-password float-right">
+                        <a href="/forget">Forget password?</a>
+                    </div>
+                </div>
+
+                <button class="btn btn-block btn-munch" name="button" type="submit">
+                    <span class="text-container">Log in</span>
+                </button>
+            </form>
+
+            <hr/>
+            <div class="create-account">
+                <a href="/create">Create account</a>
+            </div>
+            <hr/>
+
+            <div class="signup-terms">
+                <p>
+                    If you click "Log in with Facebook" and are not a Munch user, you will be registered
+                    and you agree to
+                    <a href="/legal/terms" target="_blank">Munch's Terms of Use and Privacy Policy</a>.
+                </p>
+            </div>
+        </div>
+        <div class="col-sm col-md col-lg col-xl"></div>
+    </div>
+</div>
+
+<script type="text/javascript" src="/js/jquery-3.1.1.slim.min.js"></script>
+<script type="text/javascript" src="/js/tether.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+</body>
+</html>
