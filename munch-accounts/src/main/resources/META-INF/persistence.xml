@@ -8,6 +8,7 @@
         <class>com.munch.accounts.objects.Country</class>
 
         <class>com.munch.accounts.objects.Account</class>
+        <class>com.munch.accounts.objects.AuthProvider</class>
         <class>com.munch.accounts.objects.ClientToken</class>
 
         <properties>

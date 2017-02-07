@@ -21,6 +21,7 @@ public final class Account {
     // Identity Info
     private String accountId;
     private String email;
+    private String password;
     private String phone;
     private Country country;
 
@@ -30,6 +31,7 @@ public final class Account {
     // Personal Info
     private String firstName; // Given Name
     private String lastName; // Surname
+    private String pictureUrl;
     private String bio;
 
     private Date createdDate;
@@ -37,6 +39,7 @@ public final class Account {
     private Date lastLoginDate;
 
     private Set<ClientToken> tokens = new HashSet<>();
+    private Set<AuthProvider> providers = new HashSet<>();
 
     @PrePersist
     protected void onCreate() {
@@ -80,6 +83,20 @@ public final class Account {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    /**
+     * Optional, if null means password is not enable, must use auth provider to login
+     *
+     * @return SHA-256 hashed password
+     */
+    @Column(columnDefinition = "CHAR(64)", nullable = true)
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     /**
@@ -157,6 +174,19 @@ public final class Account {
         this.lastName = lastName;
     }
 
+
+    /**
+     * @return public url of person profile image
+     */
+    @Column(length = 500, nullable = false)
+    public String getPictureUrl() {
+        return pictureUrl;
+    }
+
+    public void setPictureUrl(String pictureUrl) {
+        this.pictureUrl = pictureUrl;
+    }
+
     /**
      * @return short bio biography of a person
      */
@@ -214,5 +244,14 @@ public final class Account {
 
     public void setTokens(Set<ClientToken> tokens) {
         this.tokens = tokens;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true, mappedBy = "account")
+    public Set<AuthProvider> getProviders() {
+        return providers;
+    }
+
+    public void setProviders(Set<AuthProvider> providers) {
+        this.providers = providers;
     }
 }

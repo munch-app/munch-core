@@ -2,6 +2,7 @@ package com.munch.accounts;
 
 import com.munch.accounts.controller.EmailAuthenticator;
 import com.munch.accounts.controller.WebActionAdapter;
+import com.munch.accounts.instagram.InstagramClient;
 import com.munch.accounts.service.TokenAuthenticator;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.config.Config;
@@ -33,7 +34,8 @@ public class PacConfigFactory implements ConfigFactory {
         // Configure Facebook Login
         FacebookClient facebookClient = buildFacebook(config);
 
-        // Configure Instagram Login TODO
+        // Configure Instagram Login
+        InstagramClient instagramClient = buildInstagram(config);
 
         // Configure Email Login
         FormClient formClient = new FormClient("http://localhost:8080/login", new EmailAuthenticator());
@@ -56,8 +58,19 @@ public class PacConfigFactory implements ConfigFactory {
      * @return Facebook Client
      */
     private FacebookClient buildFacebook(com.typesafe.config.Config config) {
-        String facebookKey = config.getString("facebook.key");
-        String facebookSecret = config.getString("facebook.secret");
-        return new FacebookClient(facebookKey, facebookSecret);
+        String key = config.getString("facebook.key");
+        String secret = config.getString("facebook.secret");
+        FacebookClient client = new FacebookClient(key, secret);
+        client.setScope("public_profile,user_friends,email");
+        return client;
     }
+
+    private InstagramClient buildInstagram(com.typesafe.config.Config config) {
+        String key = config.getString("instagram.key");
+        String secret = config.getString("instagram.secret");
+        InstagramClient client = new InstagramClient(key, secret);
+        client.setScope("basic");
+        return client;
+    }
+
 }
