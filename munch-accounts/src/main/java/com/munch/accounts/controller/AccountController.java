@@ -1,7 +1,6 @@
 package com.munch.accounts.controller;
 
 import com.munch.accounts.spark.SparkServer;
-import org.pac4j.sparkjava.SecurityFilter;
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
@@ -22,26 +21,26 @@ public class AccountController extends SparkServer.Controller {
     public void route() {
         Spark.post("/email/verify", this::verifyEmail, templateEngine);
 
-        Spark.before("/account", new SecurityFilter(pacConfig, null));
-        Spark.before("/account/*", new SecurityFilter(pacConfig, null));
-        Spark.get("/account", this::viewAccount, templateEngine);
-        Spark.post("/account", this::updateAccount);
+//        Spark.before("/account", new SecurityFilter(pacConfig, null));
+//        Spark.before("/account/*", new SecurityFilter(pacConfig, null));
+//        Spark.get("/account", this::viewAccount, templateEngine);
+//        Spark.post("/account", this::updateAccount);
     }
 
-    // TODO 3 actions
+    // TODO verify email
 
     private ModelAndView verifyEmail(Request request, Response response) {
         Map<String, Object> map = new HashMap<>();
         return new ModelAndView(map, "verifiedEmail.hbs");
     }
 
-    private ModelAndView viewAccount(Request request, Response response) {
-        Map<String, Object> map = new HashMap<>();
-        return new ModelAndView(map, "account.hbs");
-    }
-
-    private Void updateAccount(Request request, Response response) {
-        response.redirect("/account");
-        return null;
-    }
+//    private ModelAndView viewAccount(Request request, Response response) {
+//        Map<String, Object> map = new HashMap<>();
+//        return new ModelAndView(map, "account.hbs");
+//    }
+//
+//    private Void updateAccount(Request request, Response response) {
+//        response.redirect("/account");
+//        return null;
+//    }
 }

@@ -54,6 +54,7 @@ public class SessionService extends SparkServer.Controller implements Service {
 
     private JsonNode logout(Request request, Response response) {
         String token;
+        // TODO revoke token
         return null;
     }
 

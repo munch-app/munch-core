@@ -47,9 +47,9 @@ public class PacConfigFactory implements ConfigFactory {
         Clients clients = new Clients(baseUrl + "/callback", facebookClient, formClient, tokenClient);
 
         Config pacConfig = new Config(clients);
+        // TODO custom session store once the application goes distributed
         pacConfig.setHttpActionAdapter(new WebActionAdapter(templateEngine));
         return pacConfig;
-        // TODO custom session store?
     }
 
     /**
