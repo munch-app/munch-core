@@ -1,17 +1,17 @@
 package com.munch.accounts;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.munch.accounts.controller.EmailAuthenticator;
 import com.munch.accounts.controller.WebActionAdapter;
 import com.munch.accounts.instagram.InstagramClient;
 import com.munch.accounts.service.TokenAuthenticator;
-import com.munch.hibernate.utils.TransactionProvider;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.config.ConfigFactory;
 import org.pac4j.http.client.direct.HeaderClient;
 import org.pac4j.http.client.indirect.FormClient;
 import org.pac4j.oauth.client.FacebookClient;
-import spark.TemplateEngine;
 
 /**
  * Created by: Fuxing
@@ -19,15 +19,17 @@ import spark.TemplateEngine;
  * Time: 1:39 AM
  * Project: munch-core
  */
+@Singleton
 public class PacConfigFactory implements ConfigFactory {
 
-    private final TemplateEngine templateEngine;
-    private final TransactionProvider provider;
+    @Inject
+    private WebActionAdapter actionAdapter;
 
-    public PacConfigFactory(final TemplateEngine templateEngine, TransactionProvider provider) {
-        this.templateEngine = templateEngine;
-        this.provider = provider;
-    }
+    @Inject
+    private EmailAuthenticator emailAuthenticator;
+
+    @Inject
+    private TokenAuthenticator tokenAuthenticator;
 
     @Override
     public Config build() {
@@ -41,17 +43,17 @@ public class PacConfigFactory implements ConfigFactory {
         InstagramClient instagramClient = buildInstagram(config);
 
         // Configure Email Login
-        FormClient formClient = new FormClient("/login", new EmailAuthenticator(provider));
+        FormClient formClient = new FormClient("/login", emailAuthenticator);
 
         // Configure Token Authenticator
-        HeaderClient tokenClient = new HeaderClient("Authorization", "Bearer ", new TokenAuthenticator());
+        HeaderClient tokenClient = new HeaderClient("Authorization", "Bearer ", tokenAuthenticator);
 
         String baseUrl = config.getString("http.url");
         Clients clients = new Clients(baseUrl + "/callback", facebookClient, formClient, tokenClient);
 
+        // TODO Future: custom session store once the application goes distributed
         Config pacConfig = new Config(clients);
-        // TODO custom session store once the application goes distributed
-        pacConfig.setHttpActionAdapter(new WebActionAdapter(templateEngine));
+        pacConfig.setHttpActionAdapter(actionAdapter);
         return pacConfig;
     }
 
@@ -69,6 +71,7 @@ public class PacConfigFactory implements ConfigFactory {
         return client;
     }
 
+    // TODO MA-10
     private InstagramClient buildInstagram(com.typesafe.config.Config config) {
         String key = config.getString("instagram.key");
         String secret = config.getString("instagram.secret");

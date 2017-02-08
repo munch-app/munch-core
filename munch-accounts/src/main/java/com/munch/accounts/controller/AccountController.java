@@ -1,5 +1,6 @@
 package com.munch.accounts.controller;
 
+import com.google.inject.Singleton;
 import com.munch.utils.spark.SparkController;
 import spark.ModelAndView;
 import spark.Request;
@@ -15,6 +16,7 @@ import java.util.Map;
  * Time: 6:33 PM
  * Project: munch-core
  */
+@Singleton
 public class AccountController implements SparkController {
 
     @Override
@@ -27,7 +29,7 @@ public class AccountController implements SparkController {
 //        Spark.post("/account", this::updateAccount);
     }
 
-    // TODO verify email
+    // TODO MA-19 verify email
 
     private ModelAndView verifyEmail(Request request, Response response) {
         Map<String, Object> map = new HashMap<>();

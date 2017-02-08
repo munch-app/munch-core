@@ -16,8 +16,9 @@ class AccountSystemTest {
 
     @BeforeEach
     void setUp() throws Exception {
+        // TODO MA-30 Protected Testing
 //        server = new SparkServer(AccountSystem.controllers());
-        server.start();
+        server.start(1);
     }
 
     @Test

@@ -19,16 +19,6 @@ public interface SparkService extends SparkRouter {
     ResponseTransformer toJson = objectMapper::writeValueAsString;
 
     /**
-     * Throws a expected error
-     *
-     * @param message message to put to response body
-     * @param status  status code to response
-     */
-    default void throwsMessage(String message, int status) {
-        SparkUtils.throwsMessage(message, status);
-    }
-
-    /**
      * @param request spark request
      * @return JsonNode
      * @throws JsonException json exception from reading

@@ -1,14 +1,13 @@
 package com.munch.accounts.controller;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.munch.hibernate.utils.TransactionProvider;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.authc.credential.DefaultPasswordService;
-import org.apache.shiro.authc.credential.PasswordService;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.password.PasswordEncoder;
-import org.pac4j.core.credentials.password.ShiroPasswordEncoder;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
@@ -21,6 +20,7 @@ import java.util.Optional;
  * Time: 5:41 AM
  * Project: munch-core
  */
+@Singleton
 public class EmailAuthenticator implements Authenticator<UsernamePasswordCredentials> {
 
     private final TransactionProvider provider;
@@ -31,10 +31,10 @@ public class EmailAuthenticator implements Authenticator<UsernamePasswordCredent
      *
      * @param provider transaction provider to read account from database
      */
-    public EmailAuthenticator(TransactionProvider provider) {
+    @Inject
+    public EmailAuthenticator(TransactionProvider provider, PasswordEncoder encoder) {
         this.provider = provider;
-        PasswordService service = new DefaultPasswordService();
-        this.encoder = new ShiroPasswordEncoder(service);
+        this.encoder = encoder;
     }
 
     /**

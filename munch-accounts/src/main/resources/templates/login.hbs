@@ -13,6 +13,7 @@
     <link href="/css/bootstrap-reboot.min.css" rel="stylesheet" type="text/css">
     <link href="/css/tether.min.css" rel="stylesheet" type="text/css">
     <link href="/css/library.css" rel="stylesheet" type="text/css">
+    <link href="/css/parsley.css" rel="stylesheet" type="text/css">
     <link href="/css/main.css" rel="stylesheet" type="text/css">
 </head>
 <body>
@@ -44,20 +45,32 @@
             <form action="{{callbackUrl}}" method="get">
 
                 <div class="form-group row">
-                    <div class="col-sm-12">
-                        <input type="email" class="form-control" id="inputEmail" name="username" placeholder="Email">
+                    <div class="col-12">
+                        <input type="email" class="form-control" id="inputEmail" name="username" placeholder="Email"
+                               required data-parsley-error-message="Please enter your email."
+                               data-parsley-errors-container=".email-error">
+                    </div>
+                    <div class="col-12 email-error col-error">
+
                     </div>
                 </div>
                 <div class="form-group row">
-                    <div class="col-sm-12">
-                        <input type="password" class="form-control" name="password" placeholder="Password">
+                    <div class="col-12">
+                        <input type="password" class="form-control" name="password" placeholder="Password"
+                               required data-parsley-required-message="Please enter your password."
+                               minlength="8"
+                               data-parsley-minlength-message="Password should have 8 characters or more."
+                               data-parsley-errors-container=".password-error">
+                    </div>
+                    <div class="col-12 password-error col-error">
+
                     </div>
                 </div>
 
                 <div class="login-options clearfix">
                     <div class="form-check remember-me float-left">
                         <label class="form-check-label">
-                            <input class="form-check-input" type="checkbox" checked>
+                            <input class="form-check-input" type="checkbox" name="remember" checked>
                             Remember me
                         </label>
                     </div>
@@ -92,5 +105,12 @@
 <script type="text/javascript" src="/js/jquery-3.1.1.slim.min.js"></script>
 <script type="text/javascript" src="/js/tether.min.js"></script>
 <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/js/parsley.min.js"></script>
+
+<script type="text/javascript">
+    $(function () {
+        $('form').parsley();
+    });
+</script>
 </body>
 </html>

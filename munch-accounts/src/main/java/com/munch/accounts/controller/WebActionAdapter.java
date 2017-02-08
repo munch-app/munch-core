@@ -1,5 +1,7 @@
 package com.munch.accounts.controller;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.sparkjava.DefaultHttpActionAdapter;
 import org.pac4j.sparkjava.SparkWebContext;
@@ -16,6 +18,7 @@ import static spark.Spark.halt;
  * Time: 1:53 AM
  * Project: munch-core
  */
+@Singleton
 public class WebActionAdapter extends DefaultHttpActionAdapter {
 
     private final TemplateEngine templateEngine;
@@ -23,7 +26,8 @@ public class WebActionAdapter extends DefaultHttpActionAdapter {
     /**
      * @param templateEngine template engine to render errors
      */
-    public WebActionAdapter(final TemplateEngine templateEngine) {
+    @Inject
+    public WebActionAdapter(TemplateEngine templateEngine) {
         this.templateEngine = templateEngine;
     }
 

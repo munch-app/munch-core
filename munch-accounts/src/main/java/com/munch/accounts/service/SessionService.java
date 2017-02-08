@@ -1,6 +1,7 @@
 package com.munch.accounts.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.inject.Singleton;
 import com.munch.utils.spark.SparkService;
 import spark.Request;
 import spark.Response;
@@ -12,6 +13,7 @@ import spark.Spark;
  * Time: 8:12 AM
  * Project: munch-core
  */
+@Singleton
 public class SessionService implements SparkService {
 
     // TODO services for partners and main app to use

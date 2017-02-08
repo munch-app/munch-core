@@ -5,6 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -33,7 +34,7 @@ public final class Account {
     private String lastName; // Surname
     private String pictureUrl;
     private String bio;
-    private Date birthDate; // Date of birth
+    private Calendar birthDate; // Date of birth
     private Gender gender;
 
     private Date createdDate;
@@ -205,11 +206,12 @@ public final class Account {
      * @return user date of birth
      */
     @Column(nullable = false)
-    public Date getBirthDate() {
+    @Temporal(TemporalType.DATE)
+    public Calendar getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(Date birthDate) {
+    public void setBirthDate(Calendar birthDate) {
         this.birthDate = birthDate;
     }
 

@@ -13,27 +13,30 @@ import com.typesafe.config.ConfigFactory;
 import java.util.Set;
 
 /**
- * Created by: Fuxing
- * Date: 5/2/2017
- * Time: 1:58 AM
+ * Created By: Fuxing Loh
+ * Date: 8/2/2017
+ * Time: 7:24 PM
  * Project: munch-core
  */
-public class AccountSystem {
+@Singleton
+public final class AccountsServer extends SparkServer {
 
+    @Inject
+    public AccountsServer(Set<SparkRouter> routers) {
+        super(routers);
+    }
+
+    /**
+     * Starting point for accounts erver
+     */
     public static void main(String[] args) {
-        Injector injector = Guice.createInjector(new AccountsModule(), new ControllerModule());
+        Injector injector = Guice.createInjector(
+                new PostgresModule(),
+                new AccountsModule(),
+                new ControllerModule()
+        );
 
         Config config = ConfigFactory.load().getConfig("munch.accounts");
         injector.getInstance(AccountsServer.class).start(config.getInt("http.port"));
-    }
-
-    @Singleton
-    public static class AccountsServer extends SparkServer {
-
-        @Inject
-        public AccountsServer(Set<SparkRouter> routers) {
-            super(routers);
-        }
-
     }
 }

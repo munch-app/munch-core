@@ -10,6 +10,6 @@ import org.pac4j.oauth.profile.OAuth20Profile;
  */
 public class InstagramProfile extends OAuth20Profile {
 
-    // TODO
+    // TODO MA-10 Instagram Login system
 
 }

@@ -24,6 +24,26 @@ public interface SparkRouter {
     void route();
 
     /**
+     * Throws a expected error
+     *
+     * @param message message to put in json body
+     * @param status  status code to response
+     */
+    default void throwsMessage(String message, int status) {
+        SparkUtils.throwsMessage(message, status);
+    }
+
+    /**
+     * Throws a expected error
+     * status default to 400
+     *
+     * @param message message to put in json body
+     */
+    default void throwsMessage(String message) {
+        throwsMessage(message, 400);
+    }
+
+    /**
      * @param request spark request
      * @param name    name of query string
      * @return Long value
