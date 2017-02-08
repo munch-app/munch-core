@@ -1,6 +1,6 @@
 package com.munch.accounts;
 
-import com.munch.accounts.spark.SparkServer;
+import com.munch.utils.spark.SparkServer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +16,7 @@ class AccountSystemTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        server = new SparkServer(AccountSystem.controllers());
+//        server = new SparkServer(AccountSystem.controllers());
         server.start();
     }
 

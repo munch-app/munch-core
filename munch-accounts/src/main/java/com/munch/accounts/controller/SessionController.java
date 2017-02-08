@@ -1,6 +1,7 @@
 package com.munch.accounts.controller;
 
-import com.munch.accounts.spark.SparkServer;
+import com.google.inject.Inject;
+import com.munch.utils.spark.SparkController;
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
@@ -28,14 +29,14 @@ import java.util.Map;
  * Time: 6:38 PM
  * Project: munch-core
  */
-public class SessionController extends SparkServer.Controller {
+public class SessionController implements SparkController {
 
-    // Show account page to edit details
-    // Show login page and redirect
-
+    private final Config pacConfig;
     private final FormClient formClient;
 
-    public SessionController() {
+    @Inject
+    public SessionController(Config pacConfig) {
+        this.pacConfig = pacConfig;
         this.formClient = pacConfig.getClients().findClient(FormClient.class);
     }
 

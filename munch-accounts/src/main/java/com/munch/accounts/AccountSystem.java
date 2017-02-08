@@ -1,9 +1,16 @@
 package com.munch.accounts;
 
-import com.munch.accounts.controller.AccountController;
-import com.munch.accounts.controller.AssetsController;
-import com.munch.accounts.controller.SessionController;
-import com.munch.accounts.spark.SparkServer;
+import com.google.inject.Guice;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Singleton;
+import com.munch.accounts.controller.ControllerModule;
+import com.munch.utils.spark.SparkRouter;
+import com.munch.utils.spark.SparkServer;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+
+import java.util.Set;
 
 /**
  * Created by: Fuxing
@@ -13,19 +20,20 @@ import com.munch.accounts.spark.SparkServer;
  */
 public class AccountSystem {
 
-    /**
-     * @return all the controllers account system uses
-     */
-    static SparkServer.Controller[] controllers() {
-        return new SparkServer.Controller[]{
-                new AssetsController(),
-                new SessionController(),
-                new AccountController()
-        };
+    public static void main(String[] args) {
+        Injector injector = Guice.createInjector(new AccountsModule(), new ControllerModule());
+
+        Config config = ConfigFactory.load().getConfig("munch.accounts");
+        injector.getInstance(AccountsServer.class).start(config.getInt("http.port"));
     }
 
-    public static void main(String[] args) {
-        SparkServer server = new SparkServer(controllers());
-        server.start();
+    @Singleton
+    public static class AccountsServer extends SparkServer {
+
+        @Inject
+        public AccountsServer(Set<SparkRouter> routers) {
+            super(routers);
+        }
+
     }
 }

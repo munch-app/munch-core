@@ -4,6 +4,7 @@ import com.munch.accounts.controller.EmailAuthenticator;
 import com.munch.accounts.controller.WebActionAdapter;
 import com.munch.accounts.instagram.InstagramClient;
 import com.munch.accounts.service.TokenAuthenticator;
+import com.munch.hibernate.utils.TransactionProvider;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.config.ConfigFactory;
@@ -21,9 +22,11 @@ import spark.TemplateEngine;
 public class PacConfigFactory implements ConfigFactory {
 
     private final TemplateEngine templateEngine;
+    private final TransactionProvider provider;
 
-    public PacConfigFactory(final TemplateEngine templateEngine) {
+    public PacConfigFactory(final TemplateEngine templateEngine, TransactionProvider provider) {
         this.templateEngine = templateEngine;
+        this.provider = provider;
     }
 
     @Override
@@ -38,7 +41,7 @@ public class PacConfigFactory implements ConfigFactory {
         InstagramClient instagramClient = buildInstagram(config);
 
         // Configure Email Login
-        FormClient formClient = new FormClient("/login", new EmailAuthenticator());
+        FormClient formClient = new FormClient("/login", new EmailAuthenticator(provider));
 
         // Configure Token Authenticator
         HeaderClient tokenClient = new HeaderClient("Authorization", "Bearer ", new TokenAuthenticator());

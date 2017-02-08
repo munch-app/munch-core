@@ -1,6 +1,6 @@
 package com.munch.accounts.controller;
 
-import com.munch.hibernate.utils.HibernateUtils;
+import com.munch.hibernate.utils.TransactionProvider;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authc.credential.DefaultPasswordService;
 import org.apache.shiro.authc.credential.PasswordService;
@@ -23,25 +23,38 @@ import java.util.Optional;
  */
 public class EmailAuthenticator implements Authenticator<UsernamePasswordCredentials> {
 
+    private final TransactionProvider provider;
     private final PasswordEncoder encoder;
 
-    public EmailAuthenticator() {
+    /**
+     * Email authenticator with default password service from shiro, SHA-256
+     *
+     * @param provider transaction provider to read account from database
+     */
+    public EmailAuthenticator(TransactionProvider provider) {
+        this.provider = provider;
         PasswordService service = new DefaultPasswordService();
         this.encoder = new ShiroPasswordEncoder(service);
     }
 
+    /**
+     * @param credentials credentials to validate
+     * @param context     web context
+     * @throws HttpAction           exception
+     * @throws CredentialsException message to show user
+     */
     @Override
     public void validate(UsernamePasswordCredentials credentials, WebContext context) throws HttpAction {
         String email = credentials.getUsername();
         String password = credentials.getPassword();
         if (StringUtils.isBlank(email)) {
-            throwsException("Email cannot be blank.");
+            throwsMessage("Email cannot be blank.");
         }
         if (StringUtils.isBlank(password)) {
-            throwsException("Password cannot be blank.");
+            throwsMessage("Password cannot be blank.");
         }
 
-        Optional<String> hashedPassword = HibernateUtils.optional(em -> em.createQuery(
+        Optional<String> hashedPassword = provider.optional(em -> em.createQuery(
                 "SELECT a.password FROM Account a WHERE a.email = :email", String.class)
                 .setParameter("email", email)
                 .getSingleResult());
@@ -52,17 +65,18 @@ public class EmailAuthenticator implements Authenticator<UsernamePasswordCredent
                 profile.setId(email);
                 credentials.setUserProfile(profile);
             } else {
-                throwsException("Email or Password does not match.");
+                throwsMessage("Email or Password does not match.");
             }
         } else {
-            // TODO something if no password
+            // Password is not yet set. User probably using other auth provider
+            throwsMessage("Email or Password does not match.");
         }
     }
 
     /**
      * @param message failure message to throw
      */
-    protected void throwsException(final String message) {
+    protected void throwsMessage(final String message) {
         throw new CredentialsException(message);
     }
 }

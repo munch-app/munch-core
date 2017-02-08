@@ -1,6 +1,6 @@
 package com.munch.accounts.controller;
 
-import com.munch.accounts.spark.SparkServer;
+import com.munch.utils.spark.SparkController;
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
@@ -15,7 +15,7 @@ import java.util.Map;
  * Time: 6:33 PM
  * Project: munch-core
  */
-public class AccountController extends SparkServer.Controller {
+public class AccountController implements SparkController {
 
     @Override
     public void route() {

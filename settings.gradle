@@ -5,4 +5,5 @@ include 'munch-api'
 include 'munch-accounts'
 
 include 'cache-layers'
+include 'spark-utils'
 

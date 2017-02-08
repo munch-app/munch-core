@@ -3,11 +3,11 @@ package com.munch.utils.spark;
 import com.munch.utils.spark.exceptions.ExpectedError;
 import com.munch.utils.spark.exceptions.JsonException;
 import com.munch.utils.spark.exceptions.ParamException;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.Spark;
+
+import java.util.Set;
 
 /**
  * Created by: Fuxing
@@ -18,25 +18,31 @@ import spark.Spark;
 public class SparkServer {
     protected static final Logger logger = LoggerFactory.getLogger(SparkServer.class);
 
-    private final SparkRouter[] controllers;
+    private final SparkRouter[] routers;
 
     /**
-     * @param controllers controllers for spark to route
+     * @param routers array of routes for spark server to route with
      */
-    public SparkServer(SparkRouter... controllers) {
-        this.controllers = controllers;
+    public SparkServer(SparkRouter... routers) {
+        this.routers = routers;
     }
 
     /**
-     * Start Spark The Server
+     * @param routers set of routes for spark server to route with
      */
-    public void start() {
-        Config config = ConfigFactory.load().getConfig("munch.accounts");
-        // Setup port
-        Spark.port(config.getInt("http.port"));
+    public SparkServer(Set<SparkRouter> routers) {
+        this.routers = routers.toArray(new SparkRouter[routers.size()]);
+    }
 
-        // Setup all controllers
-        for (SparkRouter controller : controllers) {
+    /**
+     * Start Spark Server with given routers
+     */
+    public void start(int port) {
+        // Setup port
+        Spark.port(port);
+
+        // Setup all routers
+        for (SparkRouter controller : routers) {
             controller.start();
         }
 

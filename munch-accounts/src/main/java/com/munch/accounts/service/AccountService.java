@@ -1,8 +1,10 @@
 package com.munch.accounts.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.munch.accounts.spark.SparkServer;
-import spark.*;
+import com.munch.utils.spark.SparkService;
+import spark.Request;
+import spark.Response;
+import spark.Spark;
 
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletException;
@@ -15,12 +17,12 @@ import java.io.InputStream;
  * Time: 8:12 AM
  * Project: munch-core
  */
-public class AccountService extends SparkServer.Controller implements Service {
+public final class AccountService implements SparkService {
 
     @Override
     public void route() {
-        Spark.before("/api/v1/account", validateToken());
-        Spark.before("/api/v1/account/*", validateToken());
+//        Spark.before("/api/v1/account", validateToken());
+//        Spark.before("/api/v1/account/*", validateToken());
 
         Spark.post("/api/v1/account", APP_JSON, this::update, toJson);
         Spark.get("/api/v1/account", this::get, toJson);
