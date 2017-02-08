@@ -46,4 +46,9 @@ public class AccountsModule extends AbstractModule {
     Pattern providesPasswordPattern() {
         return Pattern.compile("^([0-9]+[a-zA-Z]+|[a-zA-Z]+[0-9]+)[0-9a-zA-Z]*$");
     }
+
+    @Provides
+    com.typesafe.config.Config provideConfig() {
+        return com.typesafe.config.ConfigFactory.load().getConfig("munch.accounts");
+    }
 }

@@ -12,7 +12,8 @@ import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
 
-import java.util.Optional;
+import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * Created by: Fuxing
@@ -54,21 +55,32 @@ public class EmailAuthenticator implements Authenticator<UsernamePasswordCredent
             throwsMessage("Password cannot be blank.");
         }
 
-        Optional<String> hashedPassword = provider.optional(em -> em.createQuery(
-                "SELECT a.password FROM Account a WHERE a.email = :email", String.class)
-                .setParameter("email", email)
-                .getSingleResult());
+        boolean success = provider.reduce(em -> {
+            List<String> passwords = em.createQuery("SELECT a.password FROM Account a WHERE a.email = :email", String.class)
+                    .setParameter("email", email)
+                    .getResultList();
 
-        if (hashedPassword.isPresent()) {
-            if (encoder.matches(password, hashedPassword.get())) {
-                CommonProfile profile = new CommonProfile();
-                profile.setId(email);
-                credentials.setUserProfile(profile);
-            } else {
-                throwsMessage("Email or Password does not match.");
+            if (passwords.isEmpty()) {
+                return false;
             }
-        } else {
-            // Password is not yet set. User probably using other auth provider
+            if (!encoder.matches(password, passwords.get(0))) {
+                return false;
+            }
+
+            // Update last login date
+            em.createQuery("UPDATE Account a " +
+                    "SET a.lastLoginDate = :timeNow WHERE a.email = :email")
+                    .setParameter("timeNow", new Timestamp(System.currentTimeMillis()))
+                    .setParameter("email", email)
+                    .executeUpdate();
+
+            CommonProfile profile = new CommonProfile();
+            profile.setId(email);
+            credentials.setUserProfile(profile);
+            return true;
+        });
+
+        if (!success) {
             throwsMessage("Email or Password does not match.");
         }
     }

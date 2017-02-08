@@ -93,7 +93,7 @@ public final class Account {
      *
      * @return SHA-256 hashed password
      */
-    @Column(columnDefinition = "CHAR(64)", nullable = true)
+    @Column(length = 255, nullable = true)
     public String getPassword() {
         return password;
     }

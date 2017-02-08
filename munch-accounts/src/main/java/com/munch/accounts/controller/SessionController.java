@@ -31,9 +31,7 @@ import spark.Spark;
 
 import java.time.Year;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -45,6 +43,8 @@ import java.util.regex.Pattern;
 @Singleton
 public class SessionController implements SparkController {
     private static final Logger logger = LoggerFactory.getLogger(SessionController.class);
+    private final String redirectPartner;
+    private final String redirectMunch;
 
     private final Pattern passwordPattern;
     private final Config pacConfig;
@@ -55,17 +55,21 @@ public class SessionController implements SparkController {
 
     @Inject
     public SessionController(Config pacConfig, TransactionProvider provider, PasswordEncoder passwordEncoder,
-                             @Named("PasswordPattern") Pattern passwordPattern) {
+                             @Named("PasswordPattern") Pattern passwordPattern, com.typesafe.config.Config config) {
         this.pacConfig = pacConfig;
         this.formClient = pacConfig.getClients().findClient(FormClient.class);
         this.provider = provider;
         this.passwordEncoder = passwordEncoder;
         this.passwordPattern = passwordPattern;
+
+        // Init redirect urls
+        this.redirectPartner = config.getString("redirect.partner");
+        this.redirectMunch = config.getString("redirect.munch");
     }
 
     @Override
     public void route() {
-        // Index page redirect
+        // Index page
         Spark.get("/", this::index);
 
         // Login Callback
@@ -75,24 +79,54 @@ public class SessionController implements SparkController {
         // TODO MA-15 facebook auth on callback
         // TODO MA-24 account profile image if don't exist
 
-        // TODO login redirect chaining
-
+        // Sign up Page
+        Spark.before("/signup", this::authenticatedFilter);
+        Spark.before("/signup", this::persistRedirectFilter);
         Spark.get("/signup", this::viewSignup, templateEngine);
         Spark.post("/signup", this::create);
 
         // Login Page/Form
+        Spark.before("/login", this::authenticatedFilter);
+        Spark.before("/login", this::persistRedirectFilter);
         Spark.get("/login", this::viewLogin, templateEngine);
 
-        // Login Provider
+        // Login Provider (Force Login)
+        Spark.before("/login/*", this::persistRedirectFilter);
         Spark.before("/login/facebook", new SecurityFilter(pacConfig, "FacebookClient"));
         Spark.before("/login/email", new SecurityFilter(pacConfig, "FormClient"));
         Spark.get("/login/facebook", this::redirect);
         Spark.get("/login/email", this::redirect);
 
-        Spark.get("/logout", new ApplicationLogoutRoute(pacConfig, "/???"));
+        Spark.get("/logout", new ApplicationLogoutRoute(pacConfig, "/"));
     }
 
     /**
+     * Redirect to persisted chaining
+     */
+    private void persistRedirectFilter(Request request, Response response) {
+        // Persist redirect to in browser cookie store.
+        String to = request.queryParams("to");
+        if (StringUtils.isNotBlank(to)) {
+            response.cookie("redirectTo", to, -1, true);
+        }
+    }
+
+    /**
+     * Check for logged in user, auto redirect
+     */
+    private void authenticatedFilter(Request request, Response response) {
+        SparkWebContext context = new SparkWebContext(request, response);
+        ProfileManager manager = new ProfileManager(context);
+
+        // Authenticated, just redirect
+        if (manager.isAuthenticated()) {
+            redirect(request, response);
+            Spark.halt();
+        }
+    }
+
+    /**
+     * Future: now just redirect to login
      * Redirect to /account if user logged in
      * or /login if user not logged in
      *
@@ -101,17 +135,12 @@ public class SessionController implements SparkController {
      * @return null
      */
     private Void index(Request request, Response response) {
-        SparkWebContext context = new SparkWebContext(request, response);
-        ProfileManager manager = new ProfileManager(context);
-        if (manager.isAuthenticated()) {
-            response.redirect("/account");
-        } else {
-            response.redirect("/login");
-        }
+        response.redirect("/login");
         return null;
     }
 
     /**
+     * Read redirectTo from session and choose
      * Redirect to /account or
      * https://partner.munchapp.co/callback
      *
@@ -120,27 +149,48 @@ public class SessionController implements SparkController {
      * @return null
      */
     private Void redirect(Request request, Response response) {
-        String to = request.queryParams("to");
-        if (StringUtils.isNotBlank(to)) {
-            if (to.equalsIgnoreCase("partner")) {
-                // TODO MA-16
-                response.redirect("https://partner.munchapp.co/login?token=");
-            }
-        } else {
-            response.redirect("https://munchapp.co/login?token=");
+        String to = request.cookie("redirectTo");
+        switch (StringUtils.trimToEmpty(to)) {
+            case "partner":
+                response.redirect(redirectPartner + "token");
+                return null;
+            case "munch":
+            default:
+                response.redirect(redirectMunch + "token");
+                return null;
         }
-        return null;
     }
 
+    /**
+     * Render login view
+     *
+     * @param request  spark request
+     * @param response spark response
+     * @return login.hbs view
+     */
     private ModelAndView viewLogin(Request request, Response response) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("callbackUrl", formClient.getCallbackUrl());
-        return new ModelAndView(map, "login.hbs");
+        SparkWebContext context = new SparkWebContext(request, response);
+        ProfileManager manager = new ProfileManager(context);
+
+        // Authenticated, just redirect
+        if (manager.isAuthenticated()) {
+            redirect(request, response);
+            Spark.halt();
+            return null;
+        } else {
+            return singleView("callbackUrl", formClient.getCallbackUrl(), "login.hbs");
+        }
     }
 
+    /**
+     * Render create view
+     *
+     * @param request  spark request
+     * @param response spark response
+     * @return create.hbs view
+     */
     private ModelAndView viewSignup(Request request, Response response) {
-        Map<String, Object> map = new HashMap<>();
-        return new ModelAndView(map, "create.hbs");
+        return view("create.hbs");
     }
 
     /**
@@ -191,15 +241,14 @@ public class SessionController implements SparkController {
             if (list.isEmpty()) {
                 em.persist(account);
                 return true;
-            } else {
-                // Account with that email already exist
+            } else { // Account with that email already exist
                 logger.warn("Account with email: {} already exist in database with id: {}", email, list.get(0));
                 return false;
             }
         });
 
         if (!created) {
-            // Already created, redirect to login with error
+            // Account already created, redirect to login with error
             response.redirect("/login?email=" + email
                     + "&error=Their is an existing account with the following email. Try logging in?");
             Spark.halt();
@@ -208,23 +257,17 @@ public class SessionController implements SparkController {
                 // Perform local login
                 SparkWebContext context = new SparkWebContext(request, response);
                 CommonProfile profile = formClient.getUserProfile(formClient.getCredentials(context), context);
-                // Save to profile manage rand login
+                // Save to profile manager
                 ProfileManager<CommonProfile> manager = new ProfileManager<>(context);
                 manager.save(true, profile, true);
+
+                // Send to /login for auto redirect
+                response.redirect("/login");
             } catch (final HttpAction e) {
                 logger.error("HTTP action required in signup {}, signup auto login should not have error.", e.getCode());
                 throwsMessage("Signup auto login error.");
             }
-
-            // Delegate redirect to /login/email
-            String to = request.queryParams("to");
-            if (StringUtils.isNotBlank(to)) {
-                response.redirect("/login/email?to=" + to);
-            } else {
-                response.redirect("/login/email");
-            }
         }
-
         return null;
     }
 
