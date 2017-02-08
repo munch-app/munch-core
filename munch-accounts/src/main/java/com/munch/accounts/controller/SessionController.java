@@ -76,6 +76,7 @@ public class SessionController implements SparkController {
         CallbackRoute callback = new CallbackRoute(pacConfig, null, true);
         Spark.get("/callback", callback);
         Spark.post("/callback", callback);
+        // Spark after filter to capture profiles and redirect to redirect();
         // TODO MA-15 facebook auth on callback
         // TODO MA-24 account profile image if don't exist
 
