@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.munch.utils.spark.exceptions.ExpectedError;
 import com.munch.utils.spark.exceptions.JsonException;
 import com.munch.utils.spark.exceptions.ParamException;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.Spark;
@@ -94,7 +93,7 @@ public class SparkServer {
             ObjectNode node = objectMapper.createObjectNode();
             node.put("id", "expected_error");
             node.put("message", exception.getMessage());
-            node.put("detailed", ExceptionUtils.getStackTrace(exception));
+            logger.error("Expected Error", exception);
             try {
                 response.body(objectMapper.writeValueAsString(node));
             } catch (JsonProcessingException e) {
@@ -109,7 +108,7 @@ public class SparkServer {
             ObjectNode node = objectMapper.createObjectNode();
             node.put("id", "unknown_error");
             node.put("message", exception.getMessage());
-            node.put("detailed", ExceptionUtils.getStackTrace(exception));
+            logger.error("Unknown Error", exception);
             try {
                 response.body(objectMapper.writeValueAsString(node));
             } catch (JsonProcessingException e) {

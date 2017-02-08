@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="shortcut icon" type="image/png" href="/images/icon.png">
 
-    <title>Munch Accounts</title>
+    <title>Sign up - Munch</title>
 
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
     <link href="/css/bootstrap.min.css" rel="stylesheet" type="text/css">
@@ -41,7 +41,7 @@
                 </div>
             </div>
 
-            <form action="/create" method="post">
+            <form action="/signup" method="post">
                 <div class="form-group row">
                     <div class="col-12">
                         <input type="text" class="form-control" name="firstName" placeholder="First name"
@@ -104,8 +104,9 @@
                 <div class="row no-gutters">
                     <div class="col-3">
                         <input type="number" class="form-control" placeholder="Day" name="dobDay"
-                               min="0" max="31"
+                               min="1" max="31"
                                data-parsley-errors-container="#dob-error"
+                               data-parsley-range-message="Day of your birth is invalid."
                                required data-parsley-required-message="What day were you born on?">
                     </div>
                     <div class="col-6 col-month">

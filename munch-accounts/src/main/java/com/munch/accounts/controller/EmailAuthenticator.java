@@ -44,7 +44,7 @@ public class EmailAuthenticator implements Authenticator<UsernamePasswordCredent
      * @throws CredentialsException message to show user
      */
     @Override
-    public void validate(UsernamePasswordCredentials credentials, WebContext context) throws HttpAction {
+    public void validate(UsernamePasswordCredentials credentials, WebContext context) throws HttpAction, CredentialsException {
         String email = credentials.getUsername();
         String password = credentials.getPassword();
         if (StringUtils.isBlank(email)) {

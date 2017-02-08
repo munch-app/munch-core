@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import com.munch.accounts.objects.Account;
+import com.munch.accounts.objects.Country;
 import com.munch.accounts.objects.Gender;
 import com.munch.hibernate.utils.TransactionProvider;
 import com.munch.utils.spark.SparkController;
@@ -21,6 +22,8 @@ import org.pac4j.sparkjava.ApplicationLogoutRoute;
 import org.pac4j.sparkjava.CallbackRoute;
 import org.pac4j.sparkjava.SecurityFilter;
 import org.pac4j.sparkjava.SparkWebContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
@@ -41,6 +44,7 @@ import java.util.regex.Pattern;
  */
 @Singleton
 public class SessionController implements SparkController {
+    private static final Logger logger = LoggerFactory.getLogger(SessionController.class);
 
     private final Pattern passwordPattern;
     private final Config pacConfig;
@@ -71,10 +75,10 @@ public class SessionController implements SparkController {
         // TODO MA-15 facebook auth on callback
         // TODO MA-24 account profile image if don't exist
 
-        Spark.get("/create", this::viewCreate, templateEngine);
-        Spark.post("/create", this::create);
-        Spark.after("/create", new SecurityFilter(pacConfig, "FormClient"));
+        // TODO login redirect chaining
 
+        Spark.get("/signup", this::viewSignup, templateEngine);
+        Spark.post("/signup", this::create);
 
         // Login Page/Form
         Spark.get("/login", this::viewLogin, templateEngine);
@@ -134,7 +138,7 @@ public class SessionController implements SparkController {
         return new ModelAndView(map, "login.hbs");
     }
 
-    private ModelAndView viewCreate(Request request, Response response) {
+    private ModelAndView viewSignup(Request request, Response response) {
         Map<String, Object> map = new HashMap<>();
         return new ModelAndView(map, "create.hbs");
     }
@@ -152,7 +156,7 @@ public class SessionController implements SparkController {
         int month = queryInt(request, "dobMonth");
         int year = queryInt(request, "dobYear");
 
-        // Validate
+        // Validate password and dob
         if (password.length() < 8 || !passwordPattern.matcher(password).matches()) {
             throwsMessage("Password must contain 8 characters, including at least 1 number and letter.");
         }
@@ -166,6 +170,9 @@ public class SessionController implements SparkController {
         account.setEmail(email);
         account.setPassword(passwordEncoder.encode(password));
 
+        // Set default required fields
+        account.setCountry(Country.Singapore);
+
         // Gender, default to male if client manipulate html
         Gender gender = queryString(request, "gender").equalsIgnoreCase("female") ?
                 Gender.Female : Gender.Male;
@@ -174,12 +181,48 @@ public class SessionController implements SparkController {
         // Date of birth as Calendar
         account.setBirthDate(new GregorianCalendar(year, month, day));
 
-        // Delegate to /login/email
-        String to = request.queryParams("to");
-        if (StringUtils.isNotBlank(to)) {
-            response.redirect("/login/email?to=" + to);
+        // Persist account
+        boolean created = provider.reduce(em -> {
+            // Check if account already exist
+            List<String> list = em.createQuery("SELECT a.id FROM Account a " +
+                    "WHERE a.email = :email", String.class)
+                    .setParameter("email", email).getResultList();
+
+            if (list.isEmpty()) {
+                em.persist(account);
+                return true;
+            } else {
+                // Account with that email already exist
+                logger.warn("Account with email: {} already exist in database with id: {}", email, list.get(0));
+                return false;
+            }
+        });
+
+        if (!created) {
+            // Already created, redirect to login with error
+            response.redirect("/login?email=" + email
+                    + "&error=Their is an existing account with the following email. Try logging in?");
+            Spark.halt();
         } else {
-            response.redirect("/login/email");
+            try {
+                // Perform local login
+                SparkWebContext context = new SparkWebContext(request, response);
+                CommonProfile profile = formClient.getUserProfile(formClient.getCredentials(context), context);
+                // Save to profile manage rand login
+                ProfileManager<CommonProfile> manager = new ProfileManager<>(context);
+                manager.save(true, profile, true);
+            } catch (final HttpAction e) {
+                logger.error("HTTP action required in signup {}, signup auto login should not have error.", e.getCode());
+                throwsMessage("Signup auto login error.");
+            }
+
+            // Delegate redirect to /login/email
+            String to = request.queryParams("to");
+            if (StringUtils.isNotBlank(to)) {
+                response.redirect("/login/email?to=" + to);
+            } else {
+                response.redirect("/login/email");
+            }
         }
 
         return null;

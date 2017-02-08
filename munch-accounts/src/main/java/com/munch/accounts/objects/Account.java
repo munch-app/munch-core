@@ -177,11 +177,10 @@ public final class Account {
         this.lastName = lastName;
     }
 
-
     /**
      * @return public url of person profile image
      */
-    @Column(length = 500, nullable = false)
+    @Column(length = 500, nullable = true)
     public String getPictureUrl() {
         return pictureUrl;
     }

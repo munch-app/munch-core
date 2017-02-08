@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="shortcut icon" type="image/png" href="/images/icon.png">
 
-    <title>Munch Accounts</title>
+    <title>Login - Munch</title>
 
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
     <link href="/css/bootstrap.min.css" rel="stylesheet" type="text/css">
@@ -42,7 +42,7 @@
                 </div>
             </div>
 
-            <form action="{{callbackUrl}}" method="get">
+            <form action="{{callbackUrl}}" method="post">
 
                 <div class="form-group row">
                     <div class="col-12">
@@ -67,6 +67,12 @@
                     </div>
                 </div>
 
+                <div class="row server-error" style="display: none">
+                    <div class="col-12">
+                        <p class="text-danger"></p>
+                    </div>
+                </div>
+
                 <div class="login-options clearfix">
                     <div class="form-check remember-me float-left">
                         <label class="form-check-label">
@@ -86,7 +92,7 @@
 
             <hr/>
             <div class="create-account">
-                <a href="/create">Create account</a>
+                <a href="/signup">Create account</a>
             </div>
             <hr/>
 
@@ -108,8 +114,29 @@
 <script type="text/javascript" src="/js/parsley.min.js"></script>
 
 <script type="text/javascript">
+    function queryString(name) {
+        name = name.replace(/[\[\]]/g, "\\$&");
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                results = regex.exec(window.location.href);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
+
     $(function () {
         $('form').parsley();
+
+        // Credentials Error
+        $('#inputEmail').val(queryString('username'))
+        var errorMessage = queryString("error");
+        if (errorMessage) {
+            if (errorMessage == 'CredentialsException') {
+                $('.server-error p').text("Email or password is incorrect.");
+            } else {
+                $('.server-error p').text(errorMessage);
+            }
+            $('.server-error').show();
+        }
     });
 </script>
 </body>
