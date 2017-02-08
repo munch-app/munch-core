@@ -1,4 +1,4 @@
-package com.munch.accounts.spark;
+package com.munch.utils.spark.exceptions;
 
 /**
  * Created by: Fuxing
@@ -8,7 +8,7 @@ package com.munch.accounts.spark;
  */
 public class JsonException extends Exception {
 
-    JsonException(Throwable cause) {
+    public JsonException(Throwable cause) {
         super(cause);
     }
 

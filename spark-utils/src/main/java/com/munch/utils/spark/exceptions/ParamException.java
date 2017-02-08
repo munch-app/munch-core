@@ -1,4 +1,4 @@
-package com.munch.accounts.spark;
+package com.munch.utils.spark.exceptions;
 
 /**
  * Created by: Fuxing
@@ -8,7 +8,7 @@ package com.munch.accounts.spark;
  */
 public class ParamException extends Exception {
 
-    ParamException(String name, String message) {
+    public ParamException(String name, String message) {
         super(name + " is required but not valid. reason: " + message);
     }
 }

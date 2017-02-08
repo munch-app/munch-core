@@ -1,4 +1,4 @@
-package com.munch.accounts.spark;
+package com.munch.utils.spark.exceptions;
 
 /**
  * Only for service package to use
@@ -19,7 +19,7 @@ public class ExpectedError extends RuntimeException {
      * @param message message to put to response body
      * @param status  status code to response
      */
-    ExpectedError(String message, int status) {
+    public ExpectedError(String message, int status) {
         this.message = message;
         this.status = status;
     }
