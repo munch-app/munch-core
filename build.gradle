@@ -33,6 +33,8 @@ allprojects {
         archives sourcesJar
     }
 
+    configurations.all { resolutionStrategy.cacheChangingModulesFor 0, 'seconds' }
+
     publishing {
         publications {
             mavenJava(MavenPublication) {

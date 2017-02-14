@@ -1,0 +1,3 @@
+dependencies {
+    compile group: 'com.catalyst', name: 'catalyst-consumer-client', version: '0.1.0-SNAPSHOT', changing: true
+}
