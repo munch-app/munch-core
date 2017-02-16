@@ -1,6 +1,5 @@
 package com.munch.accounts;
 
-import com.munch.utils.spark.SparkServer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
