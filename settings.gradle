@@ -3,9 +3,10 @@ rootProject.name = 'munch-core'
 include 'munch-struct'
 include 'munch-api'
 include 'munch-accounts'
-
-include 'cache-layers'
 include 'munch-catalyst'
+
+// Library modules
+include 'cache-layers'
 include 'spark-api'
 include 'spark-web'
 

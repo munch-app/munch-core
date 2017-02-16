@@ -84,4 +84,34 @@ public interface SparkRouter {
     default String queryString(Request request, String name) throws ParamException {
         return SparkUtils.queryString(request, name);
     }
+
+    /**
+     * @param request spark request
+     * @param name    name of path param
+     * @return Long value
+     * @throws ParamException if parameter don't exist
+     */
+    default long pathLong(Request request, String name) throws ParamException {
+        return SparkUtils.pathLong(request, name);
+    }
+
+    /**
+     * @param request spark request
+     * @param name    name of path param
+     * @return Int value
+     * @throws ParamException if parameter don't exist
+     */
+    default int pathInt(Request request, String name) throws ParamException {
+        return SparkUtils.pathInt(request, name);
+    }
+
+    /**
+     * @param request spark request
+     * @param name    name of path param
+     * @return String value
+     * @throws ParamException if parameter don't exist
+     */
+    default String pathString(Request request, String name) throws ParamException {
+        return SparkUtils.pathString(request, name);
+    }
 }

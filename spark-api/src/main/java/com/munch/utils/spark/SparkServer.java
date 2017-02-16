@@ -46,12 +46,14 @@ public class SparkServer {
         Spark.port(port);
 
         // Setup all routers
-        for (SparkRouter controller : routers) {
-            controller.start();
+        for (SparkRouter router : routers) {
+            router.start();
+            logger.info("Started SparkRouter: {}", router.getClass().getSimpleName());
         }
 
         // Handle all expected exceptions
         handleException();
+        logger.info("Started Spark Server on port: {}", port);
     }
 
     /**

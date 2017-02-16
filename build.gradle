@@ -6,6 +6,9 @@ allprojects {
 
     group 'com.munch.core'
 
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
     repositories {
         maven {
             url 'http://artifactory.fxloh.com/artifactory/plugins-release'
@@ -33,8 +36,6 @@ allprojects {
         archives sourcesJar
     }
 
-    configurations.all { resolutionStrategy.cacheChangingModulesFor 0, 'seconds' }
-
     publishing {
         publications {
             mavenJava(MavenPublication) {
@@ -45,24 +46,18 @@ allprojects {
             }
         }
     }
+
+    configurations.all { resolutionStrategy.cacheChangingModulesFor 0, 'seconds' }
+
+    dependencies {
+        testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.0.0-M3'
+        testCompile group: 'org.easytesting', name: 'fest-assert', version: '1.4'
+
+        compile group: 'com.google.code.findbugs', name: 'annotations', version: '3.0.1u2'
+    }
 }
 
 subprojects {
-    dependencies {
-        testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.0.0-M2'
-        testCompile group: 'org.easytesting', name: 'fest-assert', version: '1.4'
-    }
-}
-
-// munch-utils & munch-struct
-configure(subprojects.findAll { it.name.matches("munch-(struct|utils)") }) {
-    version '0.35.0-SNAPSHOT'
-
-    task publishLib {
-        dependsOn 'build'
-        dependsOn 'artifactoryPublish'
-        tasks.findByName('artifactoryPublish').mustRunAfter 'build'
-    }
 }
 
 buildscript {

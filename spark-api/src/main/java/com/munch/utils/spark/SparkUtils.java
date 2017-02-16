@@ -125,4 +125,54 @@ public final class SparkUtils {
         throw new ParamException(name, "param is blank");
     }
 
+    /**
+     * @param request spark request
+     * @param name    name of path param
+     * @return Long value
+     * @throws ParamException if parameter don't exist
+     */
+    public static long pathLong(Request request, String name) throws ParamException {
+        String value = request.params(name);
+        if (StringUtils.isNotBlank(value)) {
+            try {
+                return Long.parseLong(value);
+            } catch (NumberFormatException e) {
+                throw new ParamException(name, e.getMessage());
+            }
+        }
+        throw new ParamException(name, "param is blank");
+    }
+
+    /**
+     * @param request spark request
+     * @param name    name of path param
+     * @return Int value
+     * @throws ParamException if parameter don't exist
+     */
+    public static int pathInt(Request request, String name) throws ParamException {
+        String value = request.params(name);
+        if (StringUtils.isNotBlank(value)) {
+            try {
+                return Integer.parseInt(value);
+            } catch (NumberFormatException e) {
+                throw new ParamException(name, e.getMessage());
+            }
+        }
+        throw new ParamException(name, "param is blank");
+    }
+
+    /**
+     * @param request spark request
+     * @param name    name of path param
+     * @return String value
+     * @throws ParamException if parameter don't exist
+     */
+    public static String pathString(Request request, String name) throws ParamException {
+        String value = request.params(name);
+        if (StringUtils.isNotBlank(value)) {
+            return value;
+        }
+        throw new ParamException(name, "param is blank");
+    }
+
 }
