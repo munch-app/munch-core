@@ -3,8 +3,12 @@ package com.munch.utils.spark;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.munch.utils.spark.exceptions.JsonException;
+import com.munch.utils.spark.exceptions.ParamException;
 import spark.Request;
 import spark.ResponseTransformer;
+
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  * Created By: Fuxing Loh
@@ -36,5 +40,13 @@ public interface SparkService extends SparkRouter {
      */
     default <T> T readJson(Request request, Class<T> clazz) throws JsonException {
         return SparkUtils.readJson(request, clazz);
+    }
+
+    /**
+     * @param params params not found
+     * @throws ParamException expected parameter exception
+     */
+    default void throwParams(String... params) throws ParamException {
+        throw new ParamException(Arrays.stream(params).collect(Collectors.joining()), "param is blank");
     }
 }
