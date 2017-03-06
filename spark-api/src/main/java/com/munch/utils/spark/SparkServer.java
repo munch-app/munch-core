@@ -43,6 +43,7 @@ public class SparkServer {
      * 200: ok
      * 400: structured error
      * 500: unknown error
+     * 404: not found
      *
      * @param port port to run server with
      */
@@ -50,11 +51,19 @@ public class SparkServer {
         // Setup port
         Spark.port(port);
 
+        // Spark after register json as content type
+        Spark.after((req, res) -> res.type(JsonService.APP_JSON));
+        logger.info("Registered all response Content-Type as application/json");
+
         // Setup all routers
         for (SparkRouter router : routers) {
             router.start();
             logger.info("Started SparkRouter: {}", router.getClass().getSimpleName());
         }
+
+        // Default not found meta
+        Spark.notFound((req, res) -> "{\"meta\":{\"code\":404,\"type\":\"NotFoundException\",\"message\":\"Requested endpoint is not registered.\"}}");
+        logger.info("Registered not found json response.");
 
         // Handle all expected exceptions
         handleException();

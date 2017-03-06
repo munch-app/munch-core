@@ -12,8 +12,10 @@ import spark.ResponseTransformer;
  * Time: 2:29 PM
  * Project: munch-core
  */
-public interface SparkService extends SparkRouter {
+public interface JsonService extends SparkRouter {
     String APP_JSON = "application/json";
+
+    // TODO special json service
 
     ObjectMapper objectMapper = SparkUtils.objectMapper;
     ResponseTransformer toJson = objectMapper::writeValueAsString;
@@ -31,4 +33,5 @@ public interface SparkService extends SparkRouter {
     default <T> T readJson(Request request, Class<T> clazz) throws JsonException {
         return SparkUtils.readJson(request, clazz);
     }
+
 }
