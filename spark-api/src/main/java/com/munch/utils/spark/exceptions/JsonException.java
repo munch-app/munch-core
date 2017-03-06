@@ -6,10 +6,13 @@ package com.munch.utils.spark.exceptions;
  * Time: 11:26 AM
  * Project: corpus-catalyst
  */
-public class JsonException extends Exception {
+public final class JsonException extends StructuredException {
 
+    /**
+     * @param cause throwable for actual cause of json exception
+     */
     public JsonException(Throwable cause) {
-        super(cause);
+        super("JsonException", cause.getMessage());
     }
 
 }

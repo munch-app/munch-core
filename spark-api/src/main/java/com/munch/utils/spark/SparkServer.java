@@ -4,12 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.munch.utils.spark.exceptions.ExpectedError;
-import com.munch.utils.spark.exceptions.JsonException;
-import com.munch.utils.spark.exceptions.ParamException;
+import com.munch.utils.spark.exceptions.StructuredException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import spark.Response;
 import spark.Spark;
 
 import java.util.Set;
@@ -42,6 +39,12 @@ public class SparkServer {
 
     /**
      * Start Spark Server with given routers
+     * Expected status code spark server should return is
+     * 200: ok
+     * 400: structured error
+     * 500: unknown error
+     *
+     * @param port port to run server with
      */
     public void start(int port) {
         // Setup port
@@ -58,45 +61,48 @@ public class SparkServer {
         logger.info("Started Spark Server on port: {}", port);
     }
 
-    private void responseError(Response response, String id, String message, String detailed) {
-        ObjectNode errorNode = objectMapper.createObjectNode();
-        errorNode.put("id", id);
-        errorNode.put("message", message);
-        errorNode.put("detailed", detailed);
-        try {
-            JsonNode node = objectMapper.createObjectNode().set("error", errorNode);
-            response.body(objectMapper.writeValueAsString(node));
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     /**
-     * All exceptions that can be expected and handled is handled
-     * However for website, please handle website expected explicitly
+     * All exceptions that can be expected and handled is handled.
+     * Expected status code is
+     * 400: structured error
+     * 500: unknown error
      */
     void handleException() {
-        logger.info("Adding exception handling for ParamException, JsonException and Exception");
-        Spark.exception(ParamException.class, (exception, request, response) -> {
-            response.status(400);
-            responseError(response, "params_required", "Required field is available.", exception.getMessage());
+        logger.info("Adding exception handling for StructuredError.");
+        Spark.exception(StructuredException.class, (exception, request, response) -> {
+            logger.warn("Structured exception thrown", exception);
+            StructuredException error = (StructuredException) exception;
+
+            ObjectNode metaNode = objectMapper.createObjectNode();
+            metaNode.put("code", error.getCode());
+            metaNode.put("type", error.getType());
+            metaNode.put("message", error.getMessage());
+
+            try {
+                response.status(error.getCode());
+                JsonNode node = objectMapper.createObjectNode().set("meta", metaNode);
+                response.body(objectMapper.writeValueAsString(node));
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
         });
 
-        Spark.exception(JsonException.class, (exception, request, response) -> {
-            response.status(400);
-            responseError(response, "json_error", "Unable to parse json.", exception.getMessage());
-        });
-
-        Spark.exception(ExpectedError.class, (exception, request, response) -> {
-            logger.error("Expected Error", exception);
-            response.status(((ExpectedError) exception).getStatus());
-            responseError(response, "expected_error", exception.getMessage(), null);
-        });
-
+        logger.info("Adding exception handling for all Exception.");
         Spark.exception(Exception.class, (exception, request, response) -> {
-            logger.error("Unknown Error", exception);
-            response.status(500);
-            responseError(response, "unknown_error", exception.getMessage(), null);
+            logger.error("Unknown exception thrown", exception);
+
+            ObjectNode metaNode = objectMapper.createObjectNode();
+            metaNode.put("code", 500);
+            metaNode.put("type", "UnknownException");
+            metaNode.put("message", exception.getMessage());
+
+            try {
+                response.status(500);
+                JsonNode node = objectMapper.createObjectNode().set("meta", metaNode);
+                response.body(objectMapper.writeValueAsString(node));
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
         });
     }
 }

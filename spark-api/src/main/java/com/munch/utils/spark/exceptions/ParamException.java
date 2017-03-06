@@ -6,9 +6,32 @@ package com.munch.utils.spark.exceptions;
  * Time: 11:16 AM
  * Project: corpus-catalyst
  */
-public class ParamException extends Exception {
+public final class ParamException extends StructuredException {
 
-    public ParamException(String name, String message) {
-        super(name + " is required but not valid. reason: " + message);
+    /**
+     * Exception should be thrown for
+     * Param is Blank
+     * Param is Empty
+     * Param is not formatted correctly (Number, Boolean)
+     * Can be thrown for QueryString, PathParams
+     *
+     * @param param param that is not available
+     */
+    public ParamException(String param) {
+        super("ParamException", "Parameter " + param + " is required but not processable.");
     }
+
+    /**
+     * Exception should be thrown for
+     * Param is Blank
+     * Param is Empty
+     * Param is not formatted correctly (Number, Boolean)
+     * Can be thrown for QueryString, PathParams
+     *
+     * @param params list of param that is not available
+     */
+    public ParamException(String... params) {
+        super("ParamException", "Parameter " + String.join(", ", params) + " is required but not processable.");
+    }
+
 }

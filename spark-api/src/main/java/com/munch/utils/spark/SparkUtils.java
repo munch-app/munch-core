@@ -2,9 +2,9 @@ package com.munch.utils.spark;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.munch.utils.spark.exceptions.ExpectedError;
 import com.munch.utils.spark.exceptions.JsonException;
 import com.munch.utils.spark.exceptions.ParamException;
+import com.munch.utils.spark.exceptions.StructuredException;
 import org.apache.commons.lang3.StringUtils;
 import spark.Request;
 
@@ -22,21 +22,42 @@ public final class SparkUtils {
     public static final ObjectMapper objectMapper = new ObjectMapper();
 
     /**
-     * Throws a expected error
+     * Construct a error to throw.
+     * Spark Server will catch this error and present the error in meta.
+     * E.g.
+     * <pre>
+     * {
+     *     meta: {
+     *         code: 400,
+     *         type: "PascalCase"
+     *         message: "English sentence."
+     *     }
+     * }
+     * </pre>
      *
-     * @param message message to put to response body
-     * @param status  status code to response
+     * @param type    error type, short hand for consumer to identify and present their own response
+     *                String should be formatted in PascalCase
+     * @param message error message, in full readable english sentence for consumer to present
+     *                String should be formatted in structured english.
      */
-    public static void throwsMessage(String message, int status) {
-        throw new ExpectedError(message, status);
+    public static void throwError(String type, String message) {
+        throw new StructuredException(type, message);
+    }
+
+    /**
+     * @param params list of param that is not available
+     * @throws ParamException param exception
+     */
+    public static void throwParams(String... params) throws ParamException {
+        throw new ParamException(params);
     }
 
     /**
      * @param request spark request
-     * @return JsonNode
-     * @throws JsonException expected json exception
+     * @return request body as JsonNode
+     * @throws JsonException json exception
      */
-    public static JsonNode readNode(Request request) throws JsonException {
+    public static JsonNode readJson(Request request) throws JsonException {
         try {
             return objectMapper.readTree(request.bodyAsBytes());
         } catch (IOException e) {
@@ -46,10 +67,10 @@ public final class SparkUtils {
 
     /**
      * @param request spark request
-     * @param clazz   class to return
-     * @param <T>     Class Type
-     * @return JsonNode
-     * @throws JsonException expected json exception
+     * @param clazz   Class Type to return
+     * @param <T>     Return Class Type
+     * @return request body as @code{<T>}
+     * @throws JsonException json exception
      */
     public static <T> T readJson(Request request, Class<T> clazz) throws JsonException {
         try {
@@ -62,8 +83,8 @@ public final class SparkUtils {
     /**
      * @param request spark request
      * @param name    name of query string
-     * @return Long value
-     * @throws ParamException if parameter don't exist
+     * @return long value from query string
+     * @throws ParamException query param not found
      */
     public static long queryLong(Request request, String name) throws ParamException {
         String value = request.queryParams(name);
@@ -71,17 +92,17 @@ public final class SparkUtils {
             try {
                 return Long.parseLong(value);
             } catch (NumberFormatException e) {
-                throw new ParamException(name, e.getMessage());
+                throw new ParamException(name);
             }
         }
-        throw new ParamException(name, "param is blank");
+        throw new ParamException(name);
     }
 
     /**
      * @param request spark request
      * @param name    name of query string
-     * @return Int value
-     * @throws ParamException if parameter don't exist
+     * @return integer value from query string
+     * @throws ParamException query param not found
      */
     public static int queryInt(Request request, String name) throws ParamException {
         String value = request.queryParams(name);
@@ -89,47 +110,47 @@ public final class SparkUtils {
             try {
                 return Integer.parseInt(value);
             } catch (NumberFormatException e) {
-                throw new ParamException(name, e.getMessage());
+                throw new ParamException(name);
             }
         }
-        throw new ParamException(name, "param is blank");
+        throw new ParamException(name);
     }
 
     /**
-     * string.equal("true")
+     * Boolean query string by checking string.equal("true")
      *
      * @param request spark request
      * @param name    name of query string
-     * @return Boolean value
-     * @throws ParamException if parameter don't exist
+     * @return boolean value from query string
+     * @throws ParamException query param not found
      */
     public static boolean queryBool(Request request, String name) throws ParamException {
         String value = request.queryParams(name);
         if (StringUtils.isNotBlank(value)) {
             return Boolean.parseBoolean(value);
         }
-        throw new ParamException(name, "param is blank");
+        throw new ParamException(name);
     }
 
     /**
      * @param request spark request
      * @param name    name of query string
      * @return String value
-     * @throws ParamException if parameter don't exist
+     * @throws ParamException query param not found
      */
     public static String queryString(Request request, String name) throws ParamException {
         String value = request.queryParams(name);
         if (StringUtils.isNotBlank(value)) {
             return value;
         }
-        throw new ParamException(name, "param is blank");
+        throw new ParamException(name);
     }
 
     /**
      * @param request spark request
      * @param name    name of path param
      * @return Long value
-     * @throws ParamException if parameter don't exist
+     * @throws ParamException path param not found
      */
     public static long pathLong(Request request, String name) throws ParamException {
         String value = request.params(name);
@@ -137,17 +158,17 @@ public final class SparkUtils {
             try {
                 return Long.parseLong(value);
             } catch (NumberFormatException e) {
-                throw new ParamException(name, e.getMessage());
+                throw new ParamException(name);
             }
         }
-        throw new ParamException(name, "param is blank");
+        throw new ParamException(name);
     }
 
     /**
      * @param request spark request
      * @param name    name of path param
      * @return Int value
-     * @throws ParamException if parameter don't exist
+     * @throws ParamException path param not found
      */
     public static int pathInt(Request request, String name) throws ParamException {
         String value = request.params(name);
@@ -155,24 +176,24 @@ public final class SparkUtils {
             try {
                 return Integer.parseInt(value);
             } catch (NumberFormatException e) {
-                throw new ParamException(name, e.getMessage());
+                throw new ParamException(name);
             }
         }
-        throw new ParamException(name, "param is blank");
+        throw new ParamException(name);
     }
 
     /**
      * @param request spark request
      * @param name    name of path param
      * @return String value
-     * @throws ParamException if parameter don't exist
+     * @throws ParamException path param not found
      */
     public static String pathString(Request request, String name) throws ParamException {
         String value = request.params(name);
         if (StringUtils.isNotBlank(value)) {
             return value;
         }
-        throw new ParamException(name, "param is blank");
+        throw new ParamException(name);
     }
 
 }
