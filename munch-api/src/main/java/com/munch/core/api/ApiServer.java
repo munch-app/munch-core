@@ -29,6 +29,11 @@ public final class ApiServer extends SparkServer {
         super.start(port);
     }
 
+    /**
+     * Start api server with predefined modules
+     *
+     * @param args not required
+     */
     public static void main(String[] args) {
         Injector injector = Guice.createInjector(
                 // TODO
@@ -38,7 +43,7 @@ public final class ApiServer extends SparkServer {
         final int port = config.getInt("http.port");
         final SparkServer server = injector.getInstance(ApiServer.class);
 
-        // Start api server
+        // Start api server on port.
         server.start(port);
     }
 }

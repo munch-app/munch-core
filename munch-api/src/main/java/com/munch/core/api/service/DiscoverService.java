@@ -1,7 +1,8 @@
 package com.munch.core.api.service;
 
-import com.munch.utils.spark.JsonService;
-import spark.Spark;
+import com.fasterxml.jackson.databind.JsonNode;
+import spark.Request;
+import spark.Response;
 
 /**
  * Created by: Fuxing
@@ -9,17 +10,16 @@ import spark.Spark;
  * Time: 3:18 AM
  * Project: munch-core
  */
-public class DiscoverService implements JsonService {
+public class DiscoverService extends MunchService {
 
     @Override
     public void route() {
-        Spark.path("/v1/places", () -> {
-            Spark.post("/discover", APP_JSON, (request, response) -> {
-                return null;
-            }, toJson);
+        path("/v1/places", () -> {
+            post("/discover", this::discover);
         });
-
-        // TODO develop a structured communication
     }
 
+    private JsonNode discover(Request request, Response response, JsonNode node) {
+        return null;
+    }
 }

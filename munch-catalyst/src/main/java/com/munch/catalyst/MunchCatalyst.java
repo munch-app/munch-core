@@ -1,10 +1,9 @@
 package com.munch.catalyst;
 
-import com.catalyst.CatalystConsumer;
+import com.catalyst.client.CatalystConsumer;
+import com.munch.hibernate.utils.TransactionProvider;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-
-import java.io.IOException;
 
 /**
  * Created by: Fuxing
@@ -14,16 +13,31 @@ import java.io.IOException;
  */
 public class MunchCatalyst {
 
+    private final TransactionProvider provider;
     private final CatalystConsumer consumer;
 
-    public MunchCatalyst(final String url) {
+    /**
+     * Munch catalyst consumer, prepared from application.conf
+     *
+     * @param provider core munch database transaction provider
+     */
+    public MunchCatalyst(TransactionProvider provider) {
+        this.provider = provider;
         Config config = ConfigFactory.load().getConfig("munch.catalyst");
+
+        // Prepare consumer from config
         String clientUrl = config.getString("consumer.url");
         int size = config.getInt("consumer.size");
-        this.consumer = new CatalystConsumer(clientUrl, size, new MunchPersistStore());
+        this.consumer = new CatalystConsumer(clientUrl, size, new MunchGroupPersist(provider));
     }
 
-    public void run() throws IOException {
+    private void start() {
+        provider.reduce(em -> {
+            return null;
+        });
+    }
+
+    public void run() {
         // TODO run consumer with
         // 1. Saving of date and group key for next
         // 2. Ability to handle exceptions
