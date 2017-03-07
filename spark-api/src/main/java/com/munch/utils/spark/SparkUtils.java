@@ -1,14 +1,9 @@
 package com.munch.utils.spark;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.munch.utils.spark.exceptions.JsonException;
 import com.munch.utils.spark.exceptions.ParamException;
 import com.munch.utils.spark.exceptions.StructuredException;
 import org.apache.commons.lang3.StringUtils;
 import spark.Request;
-
-import java.io.IOException;
 
 /**
  * Created By: Fuxing Loh
@@ -18,8 +13,6 @@ import java.io.IOException;
  */
 public final class SparkUtils {
     private SparkUtils() {/* Utils Class */}
-
-    public static final ObjectMapper objectMapper = new ObjectMapper();
 
     /**
      * Construct a error to throw.
@@ -50,34 +43,6 @@ public final class SparkUtils {
      */
     public static void throwParams(String... params) throws ParamException {
         throw new ParamException(params);
-    }
-
-    /**
-     * @param request spark request
-     * @return request body as JsonNode
-     * @throws JsonException json exception
-     */
-    public static JsonNode readJson(Request request) throws JsonException {
-        try {
-            return objectMapper.readTree(request.bodyAsBytes());
-        } catch (IOException e) {
-            throw new JsonException(e);
-        }
-    }
-
-    /**
-     * @param request spark request
-     * @param clazz   Class Type to return
-     * @param <T>     Return Class Type
-     * @return request body as @code{<T>}
-     * @throws JsonException json exception
-     */
-    public static <T> T readJson(Request request, Class<T> clazz) throws JsonException {
-        try {
-            return objectMapper.readValue(request.bodyAsBytes(), clazz);
-        } catch (IOException e) {
-            throw new JsonException(e);
-        }
     }
 
     /**

@@ -19,7 +19,7 @@ import java.util.Set;
  */
 public class SparkServer {
     protected static final Logger logger = LoggerFactory.getLogger(SparkServer.class);
-    protected static final ObjectMapper objectMapper = SparkUtils.objectMapper;
+    protected static final ObjectMapper objectMapper = JsonService.objectMapper;
 
     private final SparkRouter[] routers;
 
@@ -38,12 +38,21 @@ public class SparkServer {
     }
 
     /**
-     * Start Spark Server with given routers
+     * Start Spark Json Server with given routers
      * Expected status code spark server should return is
-     * 200: ok
-     * 400: structured error
-     * 500: unknown error
-     * 404: not found
+     * 200: ok, no error in request
+     * 400: structured error, constructed error from developer
+     * 500: unknown error, all exception
+     * 404: not found, endpoint not found
+     * <p>
+     * body: always json
+     * <pre>
+     * {
+     *     meta: {code: 200},
+     *     data: {name: "Explicit data body"},
+     *     "other": {name: "Other implicit data body"}
+     * }
+     * </pre>
      *
      * @param port port to run server with
      */
@@ -62,7 +71,7 @@ public class SparkServer {
         }
 
         // Default not found meta
-        Spark.notFound((req, res) -> "{\"meta\":{\"code\":404,\"type\":\"NotFoundException\",\"message\":\"Requested endpoint is not registered.\"}}");
+        Spark.notFound((req, res) -> "{\"meta\":{\"code\":404,\"errorType\":\"EndpointNotFound\",\"errorMessage\":\"Requested endpoint is not registered.\"}}");
         logger.info("Registered not found json response.");
 
         // Handle all expected exceptions
@@ -84,8 +93,8 @@ public class SparkServer {
 
             ObjectNode metaNode = objectMapper.createObjectNode();
             metaNode.put("code", error.getCode());
-            metaNode.put("type", error.getType());
-            metaNode.put("message", error.getMessage());
+            metaNode.put("errorType", error.getType());
+            metaNode.put("errorMessage", error.getMessage());
 
             try {
                 response.status(error.getCode());
@@ -102,8 +111,8 @@ public class SparkServer {
 
             ObjectNode metaNode = objectMapper.createObjectNode();
             metaNode.put("code", 500);
-            metaNode.put("type", "UnknownException");
-            metaNode.put("message", exception.getMessage());
+            metaNode.put("errorType", "UnknownException");
+            metaNode.put("errorMessage", exception.getMessage());
 
             try {
                 response.status(500);
