@@ -1,6 +1,7 @@
 package com.munch.core.struct;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.Set;
 
 /**
@@ -21,6 +22,9 @@ public final class Place {
 
     private Set<OpeningHours> openingHours;
     private Location location;
+
+    private Date createdDate;
+    private Date updatedDate;
 
     /**
      * @return place id, provided by catalyst groupId
@@ -117,5 +121,29 @@ public final class Place {
 
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    /**
+     * @return created date from catalyst group
+     */
+    @Column(nullable = false)
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    /**
+     * @return updated date from catalyst group
+     */
+    @Column(nullable = false)
+    public Date getUpdatedDate() {
+        return updatedDate;
+    }
+
+    public void setUpdatedDate(Date updatedDate) {
+        this.updatedDate = updatedDate;
     }
 }

@@ -1,12 +1,19 @@
 ext.hibernateVersion = '5.0.11.Final'
 
 dependencies {
+    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.1.7'
+    compile group: 'com.typesafe', name: 'config', version: '1.3.1'
+    compile group: 'com.google.code.findbugs', name: 'annotations', version: '3.0.1u2'
+
     // Core Database
     compile group: 'com.munch', name: 'hibernate-utils', version: hibernateVersion
     compile group: 'org.hibernate', name: 'hibernate-core', version: hibernateVersion
     compile group: 'org.hibernate', name: 'hibernate-entitymanager', version: hibernateVersion
     compile group: 'org.hibernate', name: 'hibernate-hikaricp', version: hibernateVersion
     compile group: 'org.postgresql', name: 'postgresql', version: '9.4.1212.jre7'
+
+    // Injection
+    compile group: 'com.google.inject', name: 'guice', version: '4.1.0'
 
     // Json
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.8.7'

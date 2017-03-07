@@ -1,10 +1,27 @@
 dependencies {
     compile group: 'com.catalyst', name: 'catalyst-client', version: '0.1.0-SNAPSHOT', changing: true
+    compile project(':munch-struct')
 
-    // Core Munch Database
-    compile group: 'com.munch', name: 'hibernate-utils', version: '5.0.11.Final'
-    compile group: 'org.hibernate', name: 'hibernate-core', version: '5.0.11.Final'
-    compile group: 'org.hibernate', name: 'hibernate-entitymanager', version: '5.0.11.Final'
-    compile group: 'org.postgresql', name: 'postgresql', version: '9.4.1212.jre7'
-    compile group: 'org.hibernate', name: 'hibernate-hikaricp', version: '5.0.11.Final'
+    // Injection
+    compile group: 'com.google.inject', name: 'guice', version: '4.1.0'
+
+    // For the use for exception retriable and ObjectUtils
+    compile group: 'com.catalyst', name: 'corpus-core', version: '0.1.0-SNAPSHOT'
+}
+
+apply plugin: 'application'
+apply plugin: 'com.bmuschko.docker-java-application'
+
+mainClassName = 'com.munch.catalyst.MunchCatalyst'
+
+dockerDistTar {
+    runCommand('apk add --update bash && rm -rf /var/cache/apk/*')
+}
+
+docker {
+    javaApplication {
+        baseImage = 'openjdk:8-jdk-alpine'
+        maintainer = 'Fuxing'
+        tag = 'munch-catalyst:latest'
+    }
 }
