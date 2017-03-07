@@ -8,9 +8,9 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
-import com.munch.core.struct.Place;
-import com.munch.core.struct.module.PostgresModule;
 import com.munch.hibernate.utils.TransactionProvider;
+import com.munch.struct.Place;
+import com.munch.struct.module.DatabaseModule;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;
@@ -109,7 +109,7 @@ public class MunchCatalyst {
 
     public static void main(String[] args) {
         Injector injector = Guice.createInjector(
-                new PostgresModule()
+                new DatabaseModule()
         );
 
         MunchCatalyst catalyst = injector.getInstance(MunchCatalyst.class);

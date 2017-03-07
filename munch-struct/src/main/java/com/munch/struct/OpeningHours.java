@@ -1,12 +1,5 @@
-package com.munch.core.struct;
+package com.munch.struct;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.GenericGenerator;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import java.time.LocalTime;
 
 /**
@@ -15,8 +8,7 @@ import java.time.LocalTime;
  * Time: 7:10 PM
  * Project: munch-core
  */
-@Entity
-public final class OpeningHours {
+public class OpeningHours {
 
     public static final int MON = 1;
     public static final int TUE = 2;
@@ -28,24 +20,11 @@ public final class OpeningHours {
 
     public static final int PH = 100;
 
-    private String id;
+    // TODO json adaption
 
     private Integer day;
     private LocalTime open;
     private LocalTime close;
-
-    @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(columnDefinition = "CHAR(36)", nullable = false, updatable = false)
-    @JsonIgnore
-    public String getId() {
-        return id;
-    }
-
-    protected void setId(String id) {
-        this.id = id;
-    }
 
     /**
      * @return day in integer
@@ -53,7 +32,6 @@ public final class OpeningHours {
      * @see OpeningHours#SUN
      * @see OpeningHours#PH
      */
-    @Column(nullable = false)
     public Integer getDay() {
         return day;
     }
@@ -65,7 +43,6 @@ public final class OpeningHours {
     /**
      * @return opening hours, start
      */
-    @Column(nullable = false)
     public LocalTime getOpen() {
         return open;
     }
@@ -77,7 +54,6 @@ public final class OpeningHours {
     /**
      * @return opening hours, end
      */
-    @Column(nullable = false)
     public LocalTime getClose() {
         return close;
     }

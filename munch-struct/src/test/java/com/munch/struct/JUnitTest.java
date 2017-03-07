@@ -1,4 +1,4 @@
-package com.munch.core.struct;
+package com.munch.struct;
 
 import org.junit.jupiter.api.Test;
 

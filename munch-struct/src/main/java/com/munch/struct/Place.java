@@ -1,4 +1,4 @@
-package com.munch.core.struct;
+package com.munch.struct;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -25,6 +25,8 @@ public final class Place {
 
     private Date createdDate;
     private Date updatedDate;
+
+    // TODO JsonB adaption
 
     /**
      * @return place id, provided by catalyst groupId

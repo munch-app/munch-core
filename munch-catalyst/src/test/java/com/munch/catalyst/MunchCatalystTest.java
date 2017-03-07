@@ -2,7 +2,6 @@ package com.munch.catalyst;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.munch.core.struct.module.H2FileModule;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -16,7 +15,7 @@ class MunchCatalystTest {
     @Test
     void run() throws Exception {
         Injector injector = Guice.createInjector(
-                new H2FileModule()
+//                new H2FileModule()
         );
 
         MunchCatalyst catalyst = injector.getInstance(MunchCatalyst.class);

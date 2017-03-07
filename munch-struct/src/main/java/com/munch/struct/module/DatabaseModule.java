@@ -1,6 +1,11 @@
-package com.munch.core.struct.module;
+package com.munch.struct.module;
 
+import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 import com.munch.hibernate.utils.HibernateUtils;
+import com.munch.hibernate.utils.TransactionProvider;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
@@ -8,12 +13,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created By: Fuxing Loh
- * Date: 8/2/2017
- * Time: 7:22 PM
+ * Created by: Fuxing
+ * Date: 7/3/2017
+ * Time: 3:32 AM
  * Project: munch-core
  */
-public class PostgresModule extends DatabaseModule {
+public class DatabaseModule extends AbstractModule {
+
+    private static final String UnitName = "munchStructPersistenceUnit";
 
     @Override
     protected void configure() {
@@ -21,13 +28,13 @@ public class PostgresModule extends DatabaseModule {
     }
 
     /**
-     * Setup testing h2 database
+     * Setup postgres database module
      */
     private void setupDatabase() {
         Config config = ConfigFactory.load().getConfig("munch.struct.database");
 
         Map<String, String> properties = new HashMap<>();
-        properties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQL82Dialect");
+        properties.put("hibernate.dialect", "com.munch.struct.hibernate.JsonPostgreSQLDialect");
         properties.put("hibernate.connection.provider_class", "com.zaxxer.hikari.hibernate.HikariConnectionProvider");
 
         properties.put("hibernate.hikari.dataSourceClassName", "org.postgresql.ds.PGSimpleDataSource");
@@ -43,4 +50,10 @@ public class PostgresModule extends DatabaseModule {
         HibernateUtils.setupFactory(UnitName, properties);
     }
 
+    @Provides
+    @Singleton
+    @Named("struct")
+    TransactionProvider provideTransactionProvider() {
+        return HibernateUtils.get(UnitName);
+    }
 }
