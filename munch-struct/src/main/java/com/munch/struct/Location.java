@@ -6,7 +6,7 @@ package com.munch.struct;
  * Time: 7:10 PM
  * Project: munch-core
  */
-public class Location {
+public final class Location {
 
     private String address;
     private String unitNumber;

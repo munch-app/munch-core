@@ -3,14 +3,12 @@ package com.munch.catalyst;
 import com.catalyst.client.CatalystConsumer;
 import com.corpus.exception.Retriable;
 import com.corpus.exception.SleepRetriable;
-import com.google.inject.Guice;
-import com.google.inject.Inject;
-import com.google.inject.Injector;
-import com.google.inject.Singleton;
+import com.google.inject.*;
 import com.google.inject.name.Named;
 import com.munch.hibernate.utils.TransactionProvider;
-import com.munch.struct.Place;
-import com.munch.struct.module.DatabaseModule;
+import com.munch.struct.EntityPlace;
+import com.munch.struct.module.ElasticModule;
+import com.munch.struct.module.PostgresModule;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;
@@ -28,8 +26,8 @@ import java.util.concurrent.TimeUnit;
  * Project: munch-core
  */
 @Singleton
-public class MunchCatalyst {
-    private static final Logger logger = LoggerFactory.getLogger(MunchCatalyst.class);
+public class CatalystBridge {
+    private static final Logger logger = LoggerFactory.getLogger(CatalystBridge.class);
 
     private final Duration sleepDuration;
 
@@ -43,18 +41,19 @@ public class MunchCatalyst {
      * @param provider core munch database transaction provider
      */
     @Inject
-    public MunchCatalyst(@Named("struct") TransactionProvider provider, MunchGroupPersist groupPersist) {
-        this.provider = provider;
+    public CatalystBridge(@Named("struct") TransactionProvider provider, MunchPersist groupPersist) {
         Config config = ConfigFactory.load().getConfig("munch.catalyst");
+        this.provider = provider;
 
         // Max retry for 3 days interval of 15 minutes before timeout
         this.retriable = new SleepRetriable(3 * 24 * 4, TimeUnit.MINUTES, 15);
+        this.sleepDuration = config.getDuration("consumer.sleep");
 
         // Prepare consumer from config
-        this.sleepDuration = config.getDuration("consumer.sleep");
-        String clientUrl = config.getString("consumer.url");
-        int size = config.getInt("consumer.size");
-        this.consumer = new CatalystConsumer(clientUrl, size, groupPersist);
+        this.consumer = new CatalystConsumer(
+                config.getString("consumer.url"),
+                config.getInt("consumer.size"),
+                groupPersist);
     }
 
     /**
@@ -62,11 +61,10 @@ public class MunchCatalyst {
      *
      * @throws IOException from consumer
      */
-    private boolean start() throws IOException {
-        Place lastPlace = provider.optional(em -> em.createQuery("SELECT p FROM Place p " +
-                "ORDER BY p.id DESC , p.updatedDate DESC", Place.class)
-                .setMaxResults(1)
-                .getSingleResult()).orElse(null);
+    private boolean establish() throws IOException {
+        EntityPlace lastPlace = provider.optional(em -> em.createQuery("SELECT p FROM EntityPlace p " +
+                "ORDER BY p.id DESC , p.updatedDate DESC", EntityPlace.class)
+                .setMaxResults(1).getSingleResult()).orElse(null);
 
         // Start new
         if (lastPlace == null) {
@@ -83,9 +81,10 @@ public class MunchCatalyst {
      * Start running
      * Main interface
      */
-    public void run() {
+    public void connect() {
         try {
-            start();
+            // Start establish first connection first
+            establish();
         } catch (IOException e) {
             logger.error("Unable to start.");
             throw new RuntimeException(e);
@@ -107,12 +106,15 @@ public class MunchCatalyst {
         logger.info("Munch catalyst stopped");
     }
 
-    public static void main(String[] args) {
-        Injector injector = Guice.createInjector(
-                new DatabaseModule()
-        );
+    /**
+     * @param modules guice modules for bridge system
+     */
+    public static void start(Module... modules) {
+        Injector injector = Guice.createInjector(modules);
+        injector.getInstance(CatalystBridge.class).connect();
+    }
 
-        MunchCatalyst catalyst = injector.getInstance(MunchCatalyst.class);
-        catalyst.run();
+    public static void main(String[] args) {
+        start(new PostgresModule(), new ElasticModule());
     }
 }

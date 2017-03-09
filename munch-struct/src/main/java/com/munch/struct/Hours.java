@@ -8,7 +8,7 @@ import java.time.LocalTime;
  * Time: 7:10 PM
  * Project: munch-core
  */
-public class OpeningHours {
+public final class Hours {
 
     public static final int MON = 1;
     public static final int TUE = 2;
@@ -20,17 +20,20 @@ public class OpeningHours {
 
     public static final int PH = 100;
 
-    // TODO json adaption
-
     private Integer day;
     private LocalTime open;
     private LocalTime close;
 
     /**
      * @return day in integer
-     * @see OpeningHours#MON
-     * @see OpeningHours#SUN
-     * @see OpeningHours#PH
+     * @see Hours#MON
+     * @see Hours#TUE
+     * @see Hours#WED
+     * @see Hours#THU
+     * @see Hours#FRI
+     * @see Hours#SAT
+     * @see Hours#SUN
+     * @see Hours#PH
      */
     public Integer getDay() {
         return day;

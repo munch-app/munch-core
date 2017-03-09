@@ -1,6 +1,5 @@
 package com.munch.struct;
 
-import javax.persistence.*;
 import java.util.Date;
 import java.util.Set;
 
@@ -10,36 +9,30 @@ import java.util.Set;
  * Time: 5:54 PM
  * Project: munch-core
  */
-@Entity
 public final class Place {
 
     private String id;
 
+    // Basic
     private String name;
     private String phone;
     private String website;
     private String description;
 
-    private Set<OpeningHours> openingHours;
+    private Set<Hours> hours;
     private Location location;
 
+    // Dates
     private Date createdDate;
     private Date updatedDate;
-
-    // TODO JsonB adaption
 
     /**
      * @return place id, provided by catalyst groupId
      */
-    @Id
-    @Column(columnDefinition = "CHAR(36)", nullable = false, updatable = false)
     public String getId() {
         return id;
     }
 
-    /**
-     * @param id from catalyst groupId
-     */
     public void setId(String id) {
         this.id = id;
     }
@@ -47,7 +40,6 @@ public final class Place {
     /**
      * @return name of the place, trim if over
      */
-    @Column(nullable = true, length = 255)
     public String getName() {
         return name;
     }
@@ -61,7 +53,6 @@ public final class Place {
      *
      * @return phone number of the place
      */
-    @Column(nullable = true, length = 50)
     public String getPhone() {
         return phone;
     }
@@ -77,7 +68,6 @@ public final class Place {
      *
      * @return website url of place
      */
-    @Column(nullable = true, length = 2000)
     public String getWebsite() {
         return website;
     }
@@ -92,7 +82,6 @@ public final class Place {
      *
      * @return description of place
      */
-    @Column(nullable = true, length = 1000)
     public String getDescription() {
         return description;
     }
@@ -104,19 +93,17 @@ public final class Place {
     /**
      * @return opening hours of place
      */
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL}, orphanRemoval = true)
-    public Set<OpeningHours> getOpeningHours() {
-        return openingHours;
+    public Set<Hours> getHours() {
+        return hours;
     }
 
-    public void setOpeningHours(Set<OpeningHours> openingHours) {
-        this.openingHours = openingHours;
+    public void setHours(Set<Hours> hours) {
+        this.hours = hours;
     }
 
     /**
      * @return location of place
      */
-    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL}, orphanRemoval = true, optional = false)
     public Location getLocation() {
         return location;
     }
@@ -128,7 +115,6 @@ public final class Place {
     /**
      * @return created date from catalyst group
      */
-    @Column(nullable = false)
     public Date getCreatedDate() {
         return createdDate;
     }
@@ -140,7 +126,6 @@ public final class Place {
     /**
      * @return updated date from catalyst group
      */
-    @Column(nullable = false)
     public Date getUpdatedDate() {
         return updatedDate;
     }

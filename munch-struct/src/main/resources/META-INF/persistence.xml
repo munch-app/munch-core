@@ -5,9 +5,7 @@
     <persistence-unit name="munchStructPersistenceUnit">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-        <class>com.munch.struct.Place</class>
-        <class>com.munch.struct.Location</class>
-        <class>com.munch.struct.OpeningHours</class>
+        <class>com.munch.struct.EntityPlace</class>
 
         <properties>
             <property name="hibernate.hbm2ddl.auto" value="validate"/>

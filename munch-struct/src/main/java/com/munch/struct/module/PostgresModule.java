@@ -6,6 +6,8 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import com.munch.hibernate.utils.HibernateUtils;
 import com.munch.hibernate.utils.TransactionProvider;
+import com.munch.struct.utils.DocumentDatabase;
+import com.munch.struct.utils.SQLDocumentDatabase;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
@@ -18,13 +20,14 @@ import java.util.Map;
  * Time: 3:32 AM
  * Project: munch-core
  */
-public class DatabaseModule extends AbstractModule {
+public class PostgresModule extends AbstractModule {
 
     private static final String UnitName = "munchStructPersistenceUnit";
 
     @Override
     protected void configure() {
         setupDatabase();
+        bind(DocumentDatabase.class).to(SQLDocumentDatabase.class);
     }
 
     /**
