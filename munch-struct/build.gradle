@@ -5,12 +5,15 @@ dependencies {
     compile group: 'com.typesafe', name: 'config', version: '1.3.1'
     compile group: 'com.google.code.findbugs', name: 'annotations', version: '3.0.1u2'
 
-    // Core Database
+    // Document Database
     compile group: 'com.munch', name: 'hibernate-utils', version: hibernateVersion
     compile group: 'org.hibernate', name: 'hibernate-core', version: hibernateVersion
     compile group: 'org.hibernate', name: 'hibernate-entitymanager', version: hibernateVersion
     compile group: 'org.hibernate', name: 'hibernate-hikaricp', version: hibernateVersion
     compile group: 'org.postgresql', name: 'postgresql', version: '9.4.1212.jre7'
+
+    // Search Database
+    compile group: 'org.elasticsearch.client', name: 'rest', version: '5.2.2'
 
     // Injection
     compile group: 'com.google.inject', name: 'guice', version: '4.1.0'

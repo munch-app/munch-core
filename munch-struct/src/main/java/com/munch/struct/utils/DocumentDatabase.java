@@ -15,32 +15,32 @@ public interface DocumentDatabase {
     /**
      * @param place place to put to database
      */
-    void put(Place place);
+    void put(Place place) throws Exception;
 
     /**
      * @param places list of place to put to database
      */
-    void put(List<Place> places);
+    void put(List<Place> places) throws Exception;
 
     /**
      * @param key of place to delete
      */
-    boolean delete(String key);
+    boolean delete(String key) throws Exception;
 
     /**
      * @param keys list of key of place to delete
      */
-    boolean delete(List<String> keys);
+    boolean delete(List<String> keys) throws Exception;
 
     /**
      * @param key key of place
      * @return Place with they key, nullable
      */
-    Place get(String key);
+    Place get(String key) throws Exception;
 
     /**
      * @param keys list of key to query of a place
      * @return List of Place, non null values
      */
-    List<Place> get(List<String> keys);
+    List<Place> get(List<String> keys) throws Exception;
 }

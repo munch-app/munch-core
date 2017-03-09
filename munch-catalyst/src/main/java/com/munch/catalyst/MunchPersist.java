@@ -1,6 +1,5 @@
 package com.munch.catalyst;
 
-import com.catalyst.client.GroupPersist;
 import com.corpus.object.GroupObject;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -20,7 +19,7 @@ import java.util.stream.Collectors;
  * Project: munch-core
  */
 @Singleton
-public class MunchPersist implements GroupPersist {
+public class MunchPersist {
     private static final Logger logger = LoggerFactory.getLogger(MunchPersist.class);
 
     private final DocumentDatabase documentDatabase;
@@ -44,8 +43,7 @@ public class MunchPersist implements GroupPersist {
      *
      * @param list list to persist
      */
-    @Override
-    public void persist(List<GroupObject> list) {
+    public void persist(List<GroupObject> list) throws Exception {
         final List<Place> places = map(list);
         logger.info("Persisting {} group to document & search.", list.size());
 

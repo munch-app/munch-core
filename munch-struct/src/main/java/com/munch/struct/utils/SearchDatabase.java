@@ -15,20 +15,20 @@ public interface SearchDatabase {
     /**
      * @param place place to put to search database
      */
-    void put(Place place);
+    void put(Place place) throws Exception;
 
     /**
      * @param places list of place to put to search database
      */
-    void put(List<Place> places);
+    void put(List<Place> places) throws Exception;
 
     /**
      * @param key of place to delete
      */
-    void delete(String key);
+    void delete(String key) throws Exception;
 
     /**
      * @param keys list of key of place to delete
      */
-    void delete(List<String> keys);
+    void delete(List<String> keys) throws Exception;
 }

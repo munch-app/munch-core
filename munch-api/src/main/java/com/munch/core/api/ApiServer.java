@@ -36,7 +36,6 @@ public final class ApiServer extends SparkServer {
      */
     public static void main(String[] args) {
         Injector injector = Guice.createInjector(
-                // TODO
         );
 
         Config config = injector.getInstance(Config.class);

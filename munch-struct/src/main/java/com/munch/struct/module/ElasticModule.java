@@ -1,8 +1,14 @@
 package com.munch.struct.module;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
 import com.munch.struct.utils.ElasticSearchDatabase;
 import com.munch.struct.utils.SearchDatabase;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+import org.apache.http.HttpHost;
+import org.elasticsearch.client.RestClient;
 
 /**
  * Created By: Fuxing Loh
@@ -17,6 +23,15 @@ public class ElasticModule extends AbstractModule {
         bind(SearchDatabase.class).to(ElasticSearchDatabase.class);
     }
 
-    // TODO setup es module
+    @Provides
+    @Singleton
+    RestClient provideClient() {
+        Config config = ConfigFactory.load().getConfig("munch.struct.searchDatabase");
 
+        return RestClient.builder(new HttpHost(
+                config.getString("hostname"),
+                config.getInt("port"),
+                config.getString("scheme"))
+        ).build();
+    }
 }
