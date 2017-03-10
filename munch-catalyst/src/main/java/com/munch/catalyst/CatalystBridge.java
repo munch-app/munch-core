@@ -45,7 +45,7 @@ public class CatalystBridge {
      * Munch catalyst consumer, prepared from application.conf
      *
      * @param provider core munch database transaction provider
-     * @param persist munch persist
+     * @param persist  munch persist
      */
     @Inject
     public CatalystBridge(@Named("struct") TransactionProvider provider, MunchPersist persist) {
@@ -53,8 +53,8 @@ public class CatalystBridge {
         this.provider = provider;
         this.persist = persist;
 
-        // Max retry for 3 days interval of 15 minutes before timeout
-        this.retriable = new SleepRetriable(3 * 24 * 4, TimeUnit.MINUTES, 15);
+        // Max retry for 2 days interval of 15 minutes before timeout
+        this.retriable = new SleepRetriable(2 * 24 * 4, TimeUnit.DAYS, 2);
         this.sleepDuration = config.getDuration("consumer.sleep");
     }
 

@@ -22,7 +22,7 @@ import java.util.Map;
  */
 public class PostgresModule extends AbstractModule {
 
-    private static final String UnitName = "munchStructPersistenceUnit";
+    protected static final String UnitName = "munchStructPersistenceUnit";
 
     @Override
     protected void configure() {
@@ -33,8 +33,8 @@ public class PostgresModule extends AbstractModule {
     /**
      * Setup postgres database module
      */
-    private void setupDatabase() {
-        Config config = ConfigFactory.load().getConfig("munch.struct.database");
+    protected void setupDatabase() {
+        Config config = ConfigFactory.load().getConfig("munch.struct.document");
 
         Map<String, String> properties = new HashMap<>();
         properties.put("hibernate.dialect", "com.munch.struct.hibernate.JsonPostgreSQLDialect");

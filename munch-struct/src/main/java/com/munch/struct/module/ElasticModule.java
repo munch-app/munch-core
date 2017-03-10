@@ -26,7 +26,7 @@ public class ElasticModule extends AbstractModule {
     @Provides
     @Singleton
     RestClient provideClient() {
-        Config config = ConfigFactory.load().getConfig("munch.struct.searchDatabase");
+        Config config = ConfigFactory.load().getConfig("munch.struct.search");
 
         return RestClient.builder(new HttpHost(
                 config.getString("hostname"),

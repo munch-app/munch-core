@@ -1,12 +1,9 @@
 package com.munch.struct.hibernate;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
-import org.hibernate.internal.util.ReflectHelper;
 import org.hibernate.type.SerializationException;
-import org.hibernate.usertype.ParameterizedType;
 import org.hibernate.usertype.UserType;
 
 import java.io.IOException;
@@ -16,7 +13,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.Properties;
 
 /**
  * Created By: Fuxing Loh
@@ -24,8 +20,7 @@ import java.util.Properties;
  * Time: 4:06 PM
  * Project: corpus-catalyst
  */
-public class JsonUserType implements UserType, ParameterizedType {
-
+public class NodeUserType implements UserType {
     private static final ObjectMapper Mapper = new ObjectMapper();
 
     @Override
@@ -33,12 +28,11 @@ public class JsonUserType implements UserType, ParameterizedType {
         return new int[]{Types.JAVA_OBJECT};
     }
 
-    private Class<?> returnedClass;
-
     @Override
     public Class<Object> returnedClass() {
         return Object.class;
     }
+
 
     @Override
     public boolean equals(Object x, Object y) throws HibernateException {
@@ -64,18 +58,14 @@ public class JsonUserType implements UserType, ParameterizedType {
             return null;
         }
         try {
-            // Check if to convert to JsonNode or POJO
-            if (returnedClass.isAssignableFrom(JsonNode.class)) {
-                return Mapper.readTree(cellContent.getBytes("UTF-8"));
-            } else {
-                return Mapper.readValue(cellContent.getBytes("UTF-8"), returnedClass);
-            }
+            return Mapper.readTree(cellContent.getBytes("UTF-8"));
         } catch (Exception ex) {
             throw new HibernateException(ex);
         }
     }
 
     @Override
+    @SuppressWarnings("Duplicates")
     public void nullSafeSet(PreparedStatement ps, Object value, int index, SessionImplementor session) throws HibernateException, SQLException {
         if (value == null) {
             ps.setNull(index, Types.OTHER);
@@ -126,16 +116,5 @@ public class JsonUserType implements UserType, ParameterizedType {
     @Override
     public Object replace(Object original, Object target, Object owner) throws HibernateException {
         return deepCopy(original);
-    }
-
-    @Override
-    public void setParameterValues(Properties parameters) {
-        final String clazz = (String) parameters.get("CLASS");
-        try {
-            returnedClass = ReflectHelper.classForName(clazz);
-        } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException("Class: " + clazz
-                    + " is not a known class type.");
-        }
     }
 }

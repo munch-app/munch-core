@@ -3,7 +3,7 @@ version: '2'
 services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:5.2.2
-    container_name: struct-es
+    container_name: struct-elasticsearch
     environment:
       ES_JAVA_OPTS: "-Xms1g -Xmx1g"
       # disable X-Pack
@@ -27,6 +27,15 @@ services:
       - /h/docker/struct/es:/usr/share/elasticsearch/data
     ports:
       - 9200:9200
+    networks:
+      - esnet
+  postgres:
+    image: postgres:9-alpine
+    container_name: struct-postgres
+    ports:
+      - "5444:5432"
+    environment:
+      - POSTGRES_PASSWORD=K851xsSffyTJP3e1M7rd
     networks:
       - esnet
 

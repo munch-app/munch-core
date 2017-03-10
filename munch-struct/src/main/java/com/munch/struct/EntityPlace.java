@@ -1,6 +1,6 @@
 package com.munch.struct;
 
-import com.munch.struct.hibernate.JsonUserType;
+import com.munch.struct.hibernate.PlaceUserType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
@@ -16,7 +16,7 @@ import java.util.Date;
  * Project: munch-core
  */
 @Entity
-@TypeDef(name = "jsonb", typeClass = JsonUserType.class)
+@TypeDef(name = "place", typeClass = PlaceUserType.class)
 public final class EntityPlace {
 
     private String id;
@@ -46,7 +46,7 @@ public final class EntityPlace {
         this.id = key;
     }
 
-    @Type(type = "jsonb")
+    @Type(type = "place")
     @Column(nullable = true)
     public Place getPlace() {
         return place;
