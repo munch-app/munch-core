@@ -72,13 +72,20 @@ public class MunchPersist {
         // Delete
         final List<String> deletes = map(list, inActives, GroupObject::getGroupKey);
         logger.info("Deleting {} group to document & search.", deletes.size());
-        documentDatabase.delete(deletes);
         searchDatabase.delete(deletes);
+        documentDatabase.delete(deletes);
 
         // Persist
         final List<Place> puts = map(list, actives, GroupConverter::create);
         logger.info("Persisting {} group to document & search.", puts.size());
         documentDatabase.put(puts);
-        searchDatabase.put(puts);
+        try {
+            searchDatabase.put(puts);
+        } catch (Exception e) {
+            logger.info("Rolling back document update because search put failed. {}", e);
+            List<String> keys = puts.stream().map(Place::getId).collect(Collectors.toList());
+            documentDatabase.delete(keys);
+            throw e;
+        }
     }
 }
