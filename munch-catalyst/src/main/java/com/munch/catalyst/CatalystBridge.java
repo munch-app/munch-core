@@ -20,7 +20,6 @@ import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by: Fuxing
@@ -54,7 +53,7 @@ public class CatalystBridge {
         this.persist = persist;
 
         // Max retry for 2 days interval of 15 minutes before timeout
-        this.retriable = new SleepRetriable(2 * 24 * 4, TimeUnit.DAYS, 2);
+        this.retriable = new SleepRetriable(2 * 24 * 4, Duration.ofMinutes(15));
         this.sleepDuration = config.getDuration("consumer.sleep");
     }
 
