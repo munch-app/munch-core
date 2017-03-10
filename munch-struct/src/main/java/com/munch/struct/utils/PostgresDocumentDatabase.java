@@ -57,6 +57,7 @@ public class PostgresDocumentDatabase implements DocumentDatabase {
      * @param places list of place to put to database
      */
     public void put(List<Place> places) {
+        if (places.isEmpty()) return;
         provider.with(em -> places.forEach(place -> persist(em, place)));
     }
 
@@ -73,8 +74,9 @@ public class PostgresDocumentDatabase implements DocumentDatabase {
      * @param keys list of key of place to delete
      */
     public boolean delete(List<String> keys) {
+        if (keys.isEmpty()) return true;
         return provider.reduce(em -> em.createQuery("DELETE FROM EntityPlace e " +
-                "WHERE e.id IN :keys").setParameter("keys", keys)
+                "WHERE e.id IN (:keys)").setParameter("keys", keys)
                 .executeUpdate()) != 0;
     }
 
@@ -94,7 +96,7 @@ public class PostgresDocumentDatabase implements DocumentDatabase {
     public List<Place> get(List<String> keys) {
         if (keys.isEmpty()) return Collections.emptyList();
         List<EntityPlace> list = provider.reduce(em -> em.createQuery("SELECT e FROM EntityPlace e " +
-                "WHERE e.id IN :keys", EntityPlace.class).getResultList());
+                "WHERE e.id IN (:keys)", EntityPlace.class).getResultList());
         return list.stream().map(EntityPlace::getPlace).collect(Collectors.toList());
     }
 }

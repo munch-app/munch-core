@@ -19,6 +19,7 @@ public final class Place {
     private String website;
     private String description;
 
+    private Set<String> labels;
     private Set<Hours> hours;
     private Location location;
 
@@ -110,6 +111,17 @@ public final class Place {
 
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    /**
+     * @return labels or type about a place
+     */
+    public Set<String> getLabels() {
+        return labels;
+    }
+
+    public void setLabels(Set<String> labels) {
+        this.labels = labels;
     }
 
     /**

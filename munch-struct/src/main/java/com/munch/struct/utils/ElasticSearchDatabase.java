@@ -13,6 +13,7 @@ import org.apache.http.nio.entity.NStringEntity;
 import org.elasticsearch.client.Response;
 import org.elasticsearch.client.RestClient;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -31,11 +32,19 @@ public class ElasticSearchDatabase implements SearchDatabase {
     /**
      * https://www.elastic.co/guide/en/elasticsearch/client/java-api/current/java-docs-index.html
      *
-     * @param client injected rest client
+     * @param client  injected rest client
+     * @param mapping mapping validator
+     * @throws RuntimeException if ElasticSearchMapping validation failed
      */
     @Inject
-    public ElasticSearchDatabase(RestClient client) {
+    public ElasticSearchDatabase(RestClient client, ElasticSearchMapping mapping) {
         this.client = client;
+        try {
+            if (!mapping.validate())
+                throw new RuntimeException("ElasticSearchMapping for /munch/place index validation failed.");
+        } catch (IOException e) {
+            throw new RuntimeException("ElasticSearchMapping failed", e);
+        }
     }
 
     /**
@@ -44,8 +53,8 @@ public class ElasticSearchDatabase implements SearchDatabase {
      */
     private void isSuccessful(Response response) throws RuntimeException {
         int code = response.getStatusLine().getStatusCode();
-        if (code < 300) {
-            throw new RuntimeException("Response code is higher than 300, code: " + code);
+        if (code > 299) {
+            throw new RuntimeException("Response code is higher than 299, code: " + code);
         }
     }
 
@@ -79,22 +88,26 @@ public class ElasticSearchDatabase implements SearchDatabase {
         node.put("postal", location.getPostal());
 
         // https://www.elastic.co/guide/en/elasticsearch/reference/current/geo-shape.html
-        // location.geo Node
-        ObjectNode geo = mapper.createObjectNode();
-        geo.put("type", "Point");
+        // location.geo Node, only if lat, lng exist
+        if (location.getLng() != null) {
+            ObjectNode geo = mapper.createObjectNode();
+            geo.put("type", "Point");
 
-        // location.geo.coordinates Node
-        ArrayNode coordinates = mapper.createArrayNode();
-        coordinates.add(location.getLng());
-        coordinates.add(location.getLat());
-        geo.set("coordinates", coordinates);
+            // location.geo.coordinates Node
+            ArrayNode coordinates = mapper.createArrayNode();
+            coordinates.add(location.getLng());
+            coordinates.add(location.getLat());
+            geo.set("coordinates", coordinates);
 
-        node.set("geo", geo);
+            node.set("geo", geo);
+        }
+
         return node;
     }
-    
+
     @Override
     public void put(List<Place> places) throws Exception {
+        if (places.isEmpty()) return;
         for (Place place : places) {
             put(place);
         }
@@ -111,6 +124,7 @@ public class ElasticSearchDatabase implements SearchDatabase {
 
     @Override
     public void delete(List<String> keys) throws Exception {
+        if (keys.isEmpty()) return;
         for (String key : keys) {
             delete(key);
         }

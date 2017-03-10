@@ -10,7 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created By: Fuxing Loh
@@ -38,6 +40,7 @@ public class GroupConverter {
         // Set other entity
         place.setLocation(createLocation(group));
         place.setHours(createHours(group));
+        place.setLabels(createLabels(group));
 
         // Set tracking dates
         place.setCreatedDate(group.getCreatedDate());
@@ -76,6 +79,15 @@ public class GroupConverter {
 
     /**
      * @param group group object
+     * @return set of PlaceType labels of place
+     */
+    public static Set<String> createLabels(GroupObject group) {
+        List<GroupField> fields = ObjectUtils.getAllField(group.getValues(), "PlaceType.others");
+        return fields.stream().map(GroupField::getValue).collect(Collectors.toSet());
+    }
+
+    /**
+     * @param group group object
      * @param key   key of field
      * @return string value, return null if value not found
      */
@@ -90,6 +102,7 @@ public class GroupConverter {
      */
     private static Double getDouble(GroupObject group, String key) {
         String string = getString(group, key);
+        if (string == null) return null;
         try {
             return Double.parseDouble(string);
         } catch (NumberFormatException e) {
