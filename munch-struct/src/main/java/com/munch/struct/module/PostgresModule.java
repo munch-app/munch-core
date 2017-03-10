@@ -7,7 +7,7 @@ import com.google.inject.name.Named;
 import com.munch.hibernate.utils.HibernateUtils;
 import com.munch.hibernate.utils.TransactionProvider;
 import com.munch.struct.utils.DocumentDatabase;
-import com.munch.struct.utils.SQLDocumentDatabase;
+import com.munch.struct.utils.PostgresDocumentDatabase;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
@@ -27,7 +27,7 @@ public class PostgresModule extends AbstractModule {
     @Override
     protected void configure() {
         setupDatabase();
-        bind(DocumentDatabase.class).to(SQLDocumentDatabase.class);
+        bind(DocumentDatabase.class).to(PostgresDocumentDatabase.class);
     }
 
     /**

@@ -20,12 +20,12 @@ import java.util.stream.Collectors;
  * Project: munch-core
  */
 @Singleton
-public class SQLDocumentDatabase implements DocumentDatabase {
+public class PostgresDocumentDatabase implements DocumentDatabase {
 
     private final TransactionProvider provider;
 
     @Inject
-    public SQLDocumentDatabase(@Named("struct") TransactionProvider provider) {
+    public PostgresDocumentDatabase(@Named("struct") TransactionProvider provider) {
         this.provider = provider;
     }
 

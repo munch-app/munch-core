@@ -1,9 +1,11 @@
 package com.munch.struct.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.munch.struct.Location;
 import com.munch.struct.Place;
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.ContentType;
@@ -55,14 +57,7 @@ public class ElasticSearchDatabase implements SearchDatabase {
         node.put("website", place.getWebsite());
         node.put("description", place.getDescription());
 
-        ObjectNode location = mapper.createObjectNode();
-        location.put("address", place.getLocation().getAddress());
-        location.put("city", place.getLocation().getCity());
-        location.put("country", place.getLocation().getCountry());
-        location.put("postal", place.getLocation().getPostal());
-        location.put("lat", place.getLocation().getLat());
-        location.put("lng", place.getLocation().getLng());
-        node.set("location", location);
+        node.set("location", locationNode(place.getLocation()));
 
         String json = mapper.writeValueAsString(node);
         HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
@@ -75,6 +70,29 @@ public class ElasticSearchDatabase implements SearchDatabase {
         isSuccessful(response);
     }
 
+    private ObjectNode locationNode(Location location) {
+        // location node
+        ObjectNode node = mapper.createObjectNode();
+        node.put("address", location.getAddress());
+        node.put("city", location.getCity());
+        node.put("country", location.getCountry());
+        node.put("postal", location.getPostal());
+
+        // https://www.elastic.co/guide/en/elasticsearch/reference/current/geo-shape.html
+        // location.geo Node
+        ObjectNode geo = mapper.createObjectNode();
+        geo.put("type", "Point");
+
+        // location.geo.coordinates Node
+        ArrayNode coordinates = mapper.createArrayNode();
+        coordinates.add(location.getLng());
+        coordinates.add(location.getLat());
+        geo.set("coordinates", coordinates);
+
+        node.set("geo", geo);
+        return node;
+    }
+    
     @Override
     public void put(List<Place> places) throws Exception {
         for (Place place : places) {
