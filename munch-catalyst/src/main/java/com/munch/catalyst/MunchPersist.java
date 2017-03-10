@@ -1,15 +1,20 @@
 package com.munch.catalyst;
 
 import com.corpus.object.GroupObject;
+import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.munch.struct.Place;
 import com.munch.struct.utils.DocumentDatabase;
 import com.munch.struct.utils.SearchDatabase;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -25,6 +30,9 @@ public class MunchPersist {
     private final DocumentDatabase documentDatabase;
     private final SearchDatabase searchDatabase;
 
+    private final Set<String> actives;
+    private final Set<String> inActives;
+
     /**
      * @param documentDatabase document database
      * @param searchDatabase   search database
@@ -33,6 +41,23 @@ public class MunchPersist {
     public MunchPersist(DocumentDatabase documentDatabase, SearchDatabase searchDatabase) {
         this.documentDatabase = documentDatabase;
         this.searchDatabase = searchDatabase;
+
+        Config config = ConfigFactory.load().getConfig("munch.catalyst.consumer.group");
+        this.actives = ImmutableSet.copyOf(config.getStringList("active"));
+        this.inActives = ImmutableSet.copyOf(config.getStringList("inActive"));
+    }
+
+    /**
+     * List of group to map to place
+     *
+     * @param list list of group to map
+     * @return mapped list of Place
+     */
+    private <R> List<R> map(List<GroupObject> list, Set<String> status, Function<GroupObject, R> mapper) {
+        return list.stream()
+                .filter(group -> status.contains(group.getStatus()))
+                .map(mapper)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -44,22 +69,16 @@ public class MunchPersist {
      * @param list list to persist
      */
     public void persist(List<GroupObject> list) throws Exception {
-        final List<Place> places = map(list);
-        logger.info("Persisting {} group to document & search.", list.size());
+        // Delete
+        final List<String> deletes = map(list, inActives, GroupObject::getGroupKey);
+        logger.info("Deleting {} group to document & search.", deletes.size());
+        documentDatabase.delete(deletes);
+        searchDatabase.delete(deletes);
 
-        // Map to list of Place and put
-        documentDatabase.put(places);
-        searchDatabase.put(places);
-    }
-
-    /**
-     * List of group to map to place
-     *
-     * @param list list of group to map
-     * @return mapped list of Place
-     */
-    private List<Place> map(List<GroupObject> list) {
-        return list.stream().map(GroupConverter::create)
-                .collect(Collectors.toList());
+        // Persist
+        final List<Place> puts = map(list, actives, GroupConverter::create);
+        logger.info("Persisting {} group to document & search.", puts.size());
+        documentDatabase.put(puts);
+        searchDatabase.put(puts);
     }
 }

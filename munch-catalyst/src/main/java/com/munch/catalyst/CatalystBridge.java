@@ -36,20 +36,22 @@ public class CatalystBridge {
     private final Retriable retriable;
 
     private final TransactionProvider provider;
+    private final MunchPersist persist;
     private final Config config;
 
     private CatalystConsumer consumer;
-    private MunchPersist persist;
 
     /**
      * Munch catalyst consumer, prepared from application.conf
      *
      * @param provider core munch database transaction provider
+     * @param persist munch persist
      */
     @Inject
-    public CatalystBridge(@Named("struct") TransactionProvider provider) {
+    public CatalystBridge(@Named("struct") TransactionProvider provider, MunchPersist persist) {
         this.config = ConfigFactory.load().getConfig("munch.catalyst");
         this.provider = provider;
+        this.persist = persist;
 
         // Max retry for 3 days interval of 15 minutes before timeout
         this.retriable = new SleepRetriable(3 * 24 * 4, TimeUnit.MINUTES, 15);
@@ -61,7 +63,7 @@ public class CatalystBridge {
      *
      * @throws IOException from consumer
      */
-    private void initialize() throws IOException {
+    public void initialize() throws IOException {
         EntityPlace lastPlace = provider.optional(em -> em.createQuery("SELECT p FROM EntityPlace p " +
                 "ORDER BY p.id DESC , p.updatedDate DESC", EntityPlace.class)
                 .setMaxResults(1).getSingleResult()).orElse(null);
@@ -111,12 +113,14 @@ public class CatalystBridge {
     /**
      * @param modules guice modules for bridge system
      */
-    public static void start(Module... modules) {
+    public static void start(Module... modules) throws IOException {
         Injector injector = Guice.createInjector(modules);
-        injector.getInstance(CatalystBridge.class).connect();
+        CatalystBridge bridge = injector.getInstance(CatalystBridge.class);
+        bridge.initialize();
+        bridge.connect();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         start(new PostgresModule(), new ElasticModule());
     }
 }

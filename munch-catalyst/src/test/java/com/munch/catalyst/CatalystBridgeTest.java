@@ -16,4 +16,5 @@ class CatalystBridgeTest {
     void run() throws Exception {
         CatalystBridge.start(new PostgresModule(), new ElasticModule());
     }
+
 }
