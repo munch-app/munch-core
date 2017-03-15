@@ -64,7 +64,7 @@ public class CatalystBridge {
      */
     public void initialize() throws IOException {
         EntityPlace lastPlace = provider.optional(em -> em.createQuery("SELECT p FROM EntityPlace p " +
-                "ORDER BY p.id DESC , p.updatedDate DESC", EntityPlace.class)
+                "ORDER BY p.updatedDate DESC, p.id DESC", EntityPlace.class)
                 .setMaxResults(1).getSingleResult()).orElse(null);
 
         // Prepare consumer from config
