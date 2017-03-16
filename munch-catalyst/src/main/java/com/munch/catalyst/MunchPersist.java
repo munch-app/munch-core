@@ -69,6 +69,7 @@ public class MunchPersist {
      * @param list list to persist
      */
     public void persist(List<GroupObject> list) throws Exception {
+        if (list.isEmpty()) return;
         // Delete
         final List<String> deletes = map(list, inActives, GroupObject::getGroupKey);
         logger.info("Deleting {} group to document & search.", deletes.size());

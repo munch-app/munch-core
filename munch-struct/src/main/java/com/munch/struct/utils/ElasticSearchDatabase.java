@@ -11,6 +11,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.nio.entity.NStringEntity;
 import org.elasticsearch.client.Response;
+import org.elasticsearch.client.ResponseException;
 import org.elasticsearch.client.RestClient;
 
 import java.io.IOException;
@@ -115,11 +116,18 @@ public class ElasticSearchDatabase implements SearchDatabase {
 
     @Override
     public void delete(String key) throws Exception {
-        Response response = client.performRequest(
-                "DELETE",
-                "/munch/place/" + key,
-                Collections.emptyMap());
-        isSuccessful(response);
+        try {
+            Response response = client.performRequest(
+                    "DELETE",
+                    "/munch/place/" + key,
+                    Collections.emptyMap());
+            isSuccessful(response);
+        } catch (ResponseException responseException) {
+            int code = responseException.getResponse().getStatusLine().getStatusCode();
+            if (code != 404) {
+                throw responseException;
+            }
+        }
     }
 
     @Override
