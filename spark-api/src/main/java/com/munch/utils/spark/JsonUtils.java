@@ -106,6 +106,18 @@ public final class JsonUtils {
     }
 
     /**
+     * @param object object
+     * @return object write to json string
+     */
+    public static String toJson(Object object) {
+        try {
+            return objectMapper.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
      * @param request spark request
      * @return request body as JsonNode
      * @throws JsonException json exception

@@ -1,8 +1,7 @@
 package com.munch.core.api.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import spark.Request;
-import spark.Response;
+import com.munch.utils.spark.JsonCall;
 
 /**
  * Created by: Fuxing
@@ -19,7 +18,7 @@ public class DiscoverService extends MunchService {
         });
     }
 
-    private JsonNode discover(Request request, Response response, JsonNode node) {
+    private JsonNode discover(JsonCall call, JsonNode node) {
         return null;
     }
 }

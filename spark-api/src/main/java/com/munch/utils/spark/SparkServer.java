@@ -11,6 +11,8 @@ import spark.Spark;
 
 import java.util.Set;
 
+import static com.munch.utils.spark.JsonUtils.metaNode;
+
 /**
  * Created by: Fuxing
  * Date: 9/12/2016
@@ -71,8 +73,10 @@ public class SparkServer {
         }
 
         // Default not found meta
-        Spark.notFound((req, res) -> "{\"meta\":{\"code\":404,\"errorType\":\"EndpointNotFound\",\"errorMessage\":\"Requested endpoint is not registered.\"}}");
-        logger.info("Registered not found json response.");
+        JsonNode notFound = JsonUtils.nodes(metaNode(
+                404, "EndpointNotFound", "Requested endpoint is not registered."));
+        Spark.notFound((req, res) -> JsonUtils.toJson(notFound));
+        logger.info("Registered http 404 not found json response.");
 
         // Handle all expected exceptions
         handleException();

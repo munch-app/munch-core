@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.munch.utils.spark.exceptions.JsonException;
 import spark.ResponseTransformer;
-import spark.Route;
 import spark.RouteGroup;
 import spark.Spark;
 
@@ -21,32 +20,25 @@ import static com.munch.utils.spark.JsonUtils.metaNode;
 public interface JsonService extends SparkRouter {
     String APP_JSON = "application/json";
 
-    JsonNode Meta200 = JsonUtils.nodes(metaNode(200));
-    JsonNode Meta404 = JsonUtils.nodes(metaNode(404, "ObjectNotFound",
-            "Object requested not found."));
+    ObjectMapper objectMapper = JsonUtils.objectMapper;
 
-    ObjectMapper objectMapper = new ObjectMapper();
+    JsonNode Meta200 = JsonUtils.nodes(metaNode(200));
+    JsonNode Meta404 = JsonUtils.nodes(metaNode(
+            404, "ObjectNotFound", "Object requested not found."));
+
+    String Meta200String = JsonUtils.toJson(Meta200);
+    String Meta404String = JsonUtils.toJson(Meta404);
+
     ResponseTransformer toJson = (Object model) -> {
-        // Object not found
-        if (model == null) {
-            return "{\"meta\":{\"code\":404,\"errorType\":\"ObjectNotFound\",\"errorMessage\":\"Object requested not found.\"}}";
-        }
+        // Check if JsonNode is any of the static helpers
+        if (model == null || model == Meta404) return Meta404String;
+        if (model == Meta200) return Meta200String;
 
         // Json node means already structured
-        if (model instanceof JsonNode) {
-            // Check if JsonNode is any of the static helpers
-            if (model == Meta200) {
-                return "{\"meta\":{\"code\":200}}";
-            } else if (model == Meta404) {
-                return "{\"meta\":{\"code\":404,\"errorType\":\"ObjectNotFound\",\"errorMessage\":\"Object requested not found.\"}}";
-            } else {
-                return objectMapper.writeValueAsString(model);
-            }
-        }
+        if (model instanceof JsonNode) return JsonUtils.toJson(model);
 
         // If not json node, wrap it into data node
-        JsonNode nodes = JsonUtils.nodes(200, model);
-        return objectMapper.writeValueAsString(nodes);
+        return JsonUtils.toJson(JsonUtils.nodes(200, model));
     };
 
     /**
@@ -61,9 +53,9 @@ public interface JsonService extends SparkRouter {
      * Map route for HTTP Get
      *
      * @param path  the path
-     * @param route the route
+     * @param route json route
      */
-    default void get(String path, Route route) {
+    default void get(String path, JsonRoute route) {
         Spark.get(path, route, toJson);
     }
 
@@ -71,53 +63,49 @@ public interface JsonService extends SparkRouter {
      * Map route for HTTP Post
      *
      * @param path  the path
-     * @param route the route
+     * @param route json route
      */
-    default void post(String path, Route route) {
+    default void post(String path, JsonRoute route) {
         Spark.post(path, route, toJson);
     }
 
     /**
      * Map route for HTTP Post
-     * This method provide json node in route function
      *
      * @param path  the path
-     * @param route the json route
+     * @param route json node route
      */
-    default void post(String path, JsonRoute route) {
-        Spark.post(path, (request, response) ->
-                route.handle(request, response, JsonUtils.readJson(request)), toJson);
+    default void post(String path, JsonRoute.Node route) {
+        Spark.post(path, route, toJson);
     }
 
     /**
      * Map route for HTTP Put
      *
      * @param path  the path
-     * @param route the route
+     * @param route json route
      */
-    default void put(String path, Route route) {
+    default void put(String path, JsonRoute route) {
         Spark.put(path, route, toJson);
     }
 
     /**
      * Map route for HTTP Put
-     * This method provide json node in route function
      *
      * @param path  the path
-     * @param route the json route
+     * @param route json node route
      */
-    default void put(String path, JsonRoute route) {
-        Spark.put(path, (request, response) ->
-                route.handle(request, response, JsonUtils.readJson(request)), toJson);
+    default void put(String path, JsonRoute.Node route) {
+        Spark.put(path, route, toJson);
     }
 
     /**
      * Map route for HTTP Delete
      *
      * @param path  the path
-     * @param route the route
+     * @param route json route
      */
-    default void delete(String path, Route route) {
+    default void delete(String path, JsonRoute route) {
         Spark.delete(path, route, toJson);
     }
 
@@ -125,9 +113,9 @@ public interface JsonService extends SparkRouter {
      * Map route for HTTP Head
      *
      * @param path  the path
-     * @param route the route
+     * @param route json route
      */
-    default void head(String path, Route route) {
+    default void head(String path, JsonRoute route) {
         Spark.head(path, route, toJson);
     }
 
@@ -135,16 +123,16 @@ public interface JsonService extends SparkRouter {
      * Map route for HTTP Patch
      *
      * @param path  the path
-     * @param route the route
+     * @param route json route
      */
-    default void patch(String path, Route route) {
+    default void patch(String path, JsonRoute route) {
         Spark.patch(path, route, toJson);
     }
 
     /**
      * {@link JsonUtils#readJson(JsonNode, Class)}
      */
-    default <T> T readJson(JsonNode node, Class<T> clazz) throws JsonException {
+    default <T> T readObject(JsonNode node, Class<T> clazz) throws JsonException {
         return JsonUtils.readJson(node, clazz);
     }
 
