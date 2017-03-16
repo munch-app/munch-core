@@ -110,6 +110,16 @@ public interface JsonService extends SparkRouter {
     }
 
     /**
+     * Map route for HTTP Delete
+     *
+     * @param path  the path
+     * @param route json node route
+     */
+    default void delete(String path, JsonRoute.Node route) {
+        Spark.delete(path, route, toJson);
+    }
+
+    /**
      * Map route for HTTP Head
      *
      * @param path  the path
