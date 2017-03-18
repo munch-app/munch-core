@@ -147,6 +147,13 @@ public interface JsonService extends SparkRouter {
     }
 
     /**
+     * {@link JsonUtils#toTree(Object)}
+     */
+    default JsonNode toTree(Object object) {
+        return JsonUtils.toTree(object);
+    }
+
+    /**
      * {@link JsonUtils#newNode()}
      */
     default ObjectNode newNode() {

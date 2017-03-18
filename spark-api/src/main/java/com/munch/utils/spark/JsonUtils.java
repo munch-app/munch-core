@@ -118,6 +118,14 @@ public final class JsonUtils {
     }
 
     /**
+     * @param object object
+     * @return json object write to json string
+     */
+    public static JsonNode toTree(Object object) {
+        return objectMapper.valueToTree(object);
+    }
+
+    /**
      * @param request spark request
      * @return request body as JsonNode
      * @throws JsonException json exception
