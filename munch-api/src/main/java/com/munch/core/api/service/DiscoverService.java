@@ -1,7 +1,7 @@
 package com.munch.core.api.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.munch.utils.spark.JsonCall;
+import munch.restful.server.JsonCall;
 
 /**
  * Created by: Fuxing

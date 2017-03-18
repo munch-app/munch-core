@@ -6,5 +6,6 @@ include 'munch-catalyst'
 
 // Library modules
 include 'cache-layers'
-include 'spark-api'
+include 'restful-server'
+include 'restful-client'
 

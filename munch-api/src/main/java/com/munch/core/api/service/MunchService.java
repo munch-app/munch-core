@@ -1,6 +1,6 @@
 package com.munch.core.api.service;
 
-import com.munch.utils.spark.JsonService;
+import munch.restful.server.JsonService;
 
 /**
  * Created by: Fuxing

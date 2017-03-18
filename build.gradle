@@ -4,7 +4,7 @@ allprojects {
     apply plugin: "com.jfrog.artifactory"
     apply plugin: 'maven-publish'
 
-    group 'com.munch.core'
+    group 'munch.core'
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
@@ -57,7 +57,19 @@ allprojects {
     }
 }
 
-subprojects {
+configure(subprojects.findAll { it.name.matches("restful-(.+)") }) {
+    group 'munch'
+    version '0.5.0-SNAPSHOT'
+
+    dependencies {
+
+    }
+
+    task publishLib {
+        dependsOn 'build'
+        dependsOn 'artifactoryPublish'
+        tasks.findByName('artifactoryPublish').mustRunAfter 'build'
+    }
 }
 
 buildscript {

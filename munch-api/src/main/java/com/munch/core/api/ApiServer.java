@@ -4,8 +4,8 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
-import com.munch.utils.spark.SparkRouter;
-import com.munch.utils.spark.SparkServer;
+import munch.restful.server.RestfulService;
+import munch.restful.server.RestfulServer;
 import com.typesafe.config.Config;
 
 import java.util.Set;
@@ -17,10 +17,10 @@ import java.util.Set;
  * Project: munch-core
  */
 @Singleton
-public final class ApiServer extends SparkServer {
+public final class ApiServer extends RestfulServer {
 
     @Inject
-    public ApiServer(Set<SparkRouter> routers) {
+    public ApiServer(Set<RestfulService> routers) {
         super(routers);
     }
 
@@ -40,7 +40,7 @@ public final class ApiServer extends SparkServer {
 
         Config config = injector.getInstance(Config.class);
         final int port = config.getInt("http.port");
-        final SparkServer server = injector.getInstance(ApiServer.class);
+        final RestfulServer server = injector.getInstance(ApiServer.class);
 
         // Start api server on port.
         server.start(port);
