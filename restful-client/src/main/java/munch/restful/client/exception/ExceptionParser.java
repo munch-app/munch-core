@@ -10,7 +10,7 @@ import org.apache.http.conn.HttpHostConnectException;
  * Time: 4:41 PM
  * Project: munch-core
  */
-public final class ExceptionHandler {
+public final class ExceptionParser {
 
     /**
      * @param e all exception
@@ -29,11 +29,11 @@ public final class ExceptionHandler {
      */
     static RestfulException handle(UnirestException e) {
         if (e.getCause() instanceof HttpHostConnectException) {
-            return new OfflineException(e.getMessage());
+            return new OfflineException(e);
         }
 
         if (e.getCause() instanceof NoHttpResponseException) {
-            return new OfflineException(e.getMessage());
+            return new OfflineException(e);
         }
 
         return new RestfulException(e);

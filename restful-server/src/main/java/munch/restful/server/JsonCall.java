@@ -1,10 +1,12 @@
 package munch.restful.server;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import munch.restful.server.exceptions.JsonException;
 import munch.restful.server.exceptions.ParamException;
 import spark.Request;
 import spark.Response;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by: Fuxing
@@ -48,10 +50,24 @@ public class JsonCall {
     }
 
     /**
-     * {@link JsonUtils#readJson(JsonNode, Class)}
+     * @return request body as json object
      */
-    public <T> T readJson(JsonNode node, Class<T> clazz) throws JsonException {
-        return JsonUtils.readJson(node, clazz);
+    public <T> T bodyAsObject(Class<T> clazz) {
+        return JsonUtils.readJson(request, clazz);
+    }
+
+    /**
+     * @param clazz clazz
+     * @param <T>   Type
+     * @return List as type
+     */
+    public <T> List<T> bodyAsList(Class<T> clazz) {
+        JsonNode nodes = bodyAsJson();
+        List<T> list = new ArrayList<>();
+        for (JsonNode node : nodes) {
+            list.add(JsonUtils.readJson(node, clazz));
+        }
+        return list;
     }
 
     /**

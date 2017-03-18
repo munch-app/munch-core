@@ -22,6 +22,7 @@ public class RestfulServer {
     protected static final ObjectMapper objectMapper = JsonService.objectMapper;
 
     private final RestfulService[] routers;
+    private boolean started = false;
 
     /**
      * @param routers array of routes for spark server to route with
@@ -81,6 +82,7 @@ public class RestfulServer {
         // Handle all expected exceptions
         handleException();
         logger.info("Started Spark Server on port: {}", port);
+        this.started = true;
     }
 
     /**
@@ -126,5 +128,20 @@ public class RestfulServer {
                 throw new RuntimeException(e);
             }
         });
+    }
+
+    /**
+     * @return true if restful server has started
+     */
+    public boolean isStarted() {
+        return started;
+    }
+
+    /**
+     * @return port
+     * @throws IllegalStateException when the server is not started
+     */
+    public int getPort() {
+        return Spark.port();
     }
 }

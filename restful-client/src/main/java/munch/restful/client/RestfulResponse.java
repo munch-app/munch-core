@@ -6,9 +6,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.Headers;
 import com.mashape.unirest.http.HttpResponse;
-import munch.restful.client.exception.ExceptionHandler;
+import munch.restful.client.exception.ExceptionParser;
 import munch.restful.client.exception.StructuredException;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -26,20 +27,12 @@ public class RestfulResponse {
     private final JsonNode jsonNode;
     private final HttpResponse<InputStream> response;
 
-    public RestfulResponse(HttpResponse<InputStream> response) {
+    RestfulResponse(HttpResponse<InputStream> response) {
         this.response = response;
         try {
             this.jsonNode = mapper.readTree(response.getBody());
-
-            // Check if meta contains exception
-            JsonNode meta = jsonNode.path("meta");
-            if (meta.has("errorType")) {
-                String type = meta.path("errorType").asText();
-                String message = meta.path("errorMessage").asText();
-                throw new StructuredException(type, message);
-            }
         } catch (IOException e) {
-            throw ExceptionHandler.handle(e);
+            throw ExceptionParser.handle(e);
         }
     }
 
@@ -77,17 +70,59 @@ public class RestfulResponse {
     }
 
     /**
+     * @return error type from meta node
+     */
+    @Nullable
+    public String getErrorType() {
+        return getMetaNode().path("errorType").asText(null);
+    }
+
+    /**
+     * @param type error type
+     * @return true if has error type and is equal to given type
+     */
+    public boolean hasErrorType(String type) {
+        return getErrorType() != null && getErrorType().equals(type);
+    }
+
+    /**
      * @return json node
      */
     public JsonNode getDataNode() {
         return getNode().path("data");
     }
 
+    /**
+     * Check that meta json has follow codes
+     * if not structured error will be thrown
+     *
+     * @param codes allowed codes in meta
+     * @return RestfulResponse
+     * @throws StructuredException if codes are not matched
+     */
+    public RestfulResponse hasMetaCodes(int... codes) throws StructuredException {
+        JsonNode meta = jsonNode.path("meta");
+        int code = meta.path("code").asInt();
+        for (int c : codes) {
+            if (code == c) return this;
+        }
+
+        // Construct StructuredException
+        String type = meta.path("errorType").asText(null);
+        String message = meta.path("errorMessage").asText(null);
+        throw new StructuredException(code, type, message);
+    }
+
+    public <E extends Exception> RestfulResponse throwIf(ResponseHandler<E> handler) throws E {
+        handler.handle(this);
+        return this;
+    }
+
     public <T> T asDataObject(Class<T> clazz) {
         try {
             return mapper.treeToValue(getDataNode(), clazz);
         } catch (JsonProcessingException e) {
-            throw ExceptionHandler.handle(e);
+            throw ExceptionParser.handle(e);
         }
     }
 
@@ -99,7 +134,7 @@ public class RestfulResponse {
             }
             return list;
         } catch (JsonProcessingException e) {
-            throw ExceptionHandler.handle(e);
+            throw ExceptionParser.handle(e);
         }
     }
 }

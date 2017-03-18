@@ -4,6 +4,7 @@ import munch.restful.server.exceptions.ParamException;
 import munch.restful.server.exceptions.StructuredException;
 import org.apache.commons.lang3.StringUtils;
 import spark.Request;
+import spark.Spark;
 
 /**
  * Created By: Fuxing Loh
@@ -161,4 +162,11 @@ public final class RestfulUtils {
         throw new ParamException(name);
     }
 
+    /**
+     * @return port of the server
+     * @throws IllegalStateException when the server is not started
+     */
+    public static int getPort() {
+        return Spark.port();
+    }
 }

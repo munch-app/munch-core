@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.HttpMethod;
-import munch.restful.client.exception.ExceptionHandler;
+import munch.restful.client.exception.ExceptionParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,43 +35,43 @@ public abstract class RestfulClient {
         return url + path;
     }
 
-    protected RestfulRequest get(String path) {
+    protected RestfulRequest doGet(String path) {
         return new RestfulRequest(HttpMethod.GET, path(path));
     }
 
-    protected RestfulRequest head(String path) {
+    protected RestfulRequest doHead(String path) {
         return new RestfulRequest(HttpMethod.HEAD, path(path));
     }
 
-    protected RestfulRequest options(String path) {
+    protected RestfulRequest doOptions(String path) {
         return new RestfulRequest(HttpMethod.OPTIONS, path(path));
     }
 
-    protected RestfulRequest post(String path) {
+    protected RestfulRequest doPost(String path) {
         return new RestfulRequest(HttpMethod.POST, path(path));
     }
 
-    protected RestfulRequest delete(String path) {
+    protected RestfulRequest doDelete(String path) {
         return new RestfulRequest(HttpMethod.DELETE, path(path));
     }
 
-    protected RestfulRequest patch(String path) {
+    protected RestfulRequest doPatch(String path) {
         return new RestfulRequest(HttpMethod.PATCH, path(path));
     }
 
-    protected RestfulRequest put(String path) {
+    protected RestfulRequest doPut(String path) {
         return new RestfulRequest(HttpMethod.PUT, path(path));
     }
 
-    public <T> T toObject(JsonNode node, Class<T> clazz) {
+    public static <T> T toObject(JsonNode node, Class<T> clazz) {
         try {
             return mapper.treeToValue(node, clazz);
         } catch (JsonProcessingException e) {
-            throw ExceptionHandler.handle(e);
+            throw ExceptionParser.handle(e);
         }
     }
 
-    public <T> List<T> toList(JsonNode nodes, Class<T> clazz) {
+    public static <T> List<T> toList(JsonNode nodes, Class<T> clazz) {
         try {
             List<T> list = new ArrayList<>();
             for (JsonNode node : nodes) {
@@ -79,7 +79,7 @@ public abstract class RestfulClient {
             }
             return list;
         } catch (JsonProcessingException e) {
-            throw ExceptionHandler.handle(e);
+            throw ExceptionParser.handle(e);
         }
     }
 }

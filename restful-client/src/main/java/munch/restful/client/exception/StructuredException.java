@@ -8,6 +8,7 @@ package munch.restful.client.exception;
  */
 public class StructuredException extends RestfulException {
 
+    private final int code;
     private final String type;
 
     /**
@@ -16,9 +17,14 @@ public class StructuredException extends RestfulException {
      * @param type    type
      * @param message message
      */
-    public StructuredException(String type, String message) {
+    public StructuredException(int code, String type, String message) {
         super(message);
+        this.code = code;
         this.type = type;
+    }
+
+    public int getCode() {
+        return code;
     }
 
     public String getType() {
