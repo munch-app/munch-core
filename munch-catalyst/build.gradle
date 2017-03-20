@@ -1,12 +1,12 @@
 dependencies {
-    compile group: 'com.catalyst', name: 'catalyst-client', version: '0.1.0-SNAPSHOT', changing: true
+    compile group: 'com.catalyst', name: 'catalyst-client', version: '0.1.0'
     compile project(':munch-struct')
 
     // Injection
     compile group: 'com.google.inject', name: 'guice', version: '4.1.0'
 
     // For the use for exception retriable and ObjectUtils
-    compile group: 'com.catalyst', name: 'corpus-core', version: '0.1.0-SNAPSHOT'
+    compile group: 'com.catalyst', name: 'corpus-core', version: '0.1.0'
 }
 
 apply plugin: 'application'

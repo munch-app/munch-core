@@ -1,4 +1,4 @@
-package com.munch.core.api;
+package munch.api;
 
 import com.google.inject.Guice;
 import com.google.inject.Inject;
@@ -27,6 +27,14 @@ public final class ApiServer extends RestfulServer {
     @Override
     public void start(int port) {
         super.start(port);
+        handleException();
+    }
+
+    /**
+     * Handle exceptions
+     */
+    private void handleException() {
+        // TODO handle exceptions
     }
 
     /**

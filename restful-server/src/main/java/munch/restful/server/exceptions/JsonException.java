@@ -15,4 +15,10 @@ public final class JsonException extends StructuredException {
         super("JsonException", cause.getMessage());
     }
 
+    /**
+     * @param message readable message
+     */
+    public JsonException(String message) {
+        super("JsonException", message);
+    }
 }
