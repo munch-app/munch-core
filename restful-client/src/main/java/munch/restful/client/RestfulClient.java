@@ -3,10 +3,10 @@ package munch.restful.client;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.CollectionType;
 import com.mashape.unirest.http.HttpMethod;
 import munch.restful.client.exception.ExceptionParser;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -72,14 +72,7 @@ public abstract class RestfulClient {
     }
 
     public static <T> List<T> toList(JsonNode nodes, Class<T> clazz) {
-        try {
-            List<T> list = new ArrayList<>();
-            for (JsonNode node : nodes) {
-                list.add(mapper.treeToValue(node, clazz));
-            }
-            return list;
-        } catch (JsonProcessingException e) {
-            throw ExceptionParser.handle(e);
-        }
+        CollectionType type = mapper.getTypeFactory().constructCollectionType(List.class, clazz);
+        return mapper.convertValue(nodes, type);
     }
 }

@@ -14,6 +14,8 @@ public class StructuredException extends RuntimeException {
     private final String errorMessage;
     private final int code;
 
+    private String errorDetailed;
+
     /**
      * Construct a expected error to throw and response with
      *
@@ -57,5 +59,16 @@ public class StructuredException extends RuntimeException {
 
     public int getCode() {
         return code;
+    }
+
+    /**
+     * @return error stack trace
+     */
+    public String getErrorDetailed() {
+        return errorDetailed;
+    }
+
+    public void setErrorDetailed(String errorDetailed) {
+        this.errorDetailed = errorDetailed;
     }
 }

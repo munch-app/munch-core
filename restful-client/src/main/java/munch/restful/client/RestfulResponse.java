@@ -4,6 +4,7 @@ package munch.restful.client;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.CollectionType;
 import com.mashape.unirest.http.Headers;
 import com.mashape.unirest.http.HttpResponse;
 import munch.restful.client.exception.ExceptionParser;
@@ -12,7 +13,6 @@ import munch.restful.client.exception.StructuredException;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -110,7 +110,8 @@ public class RestfulResponse {
         // Construct StructuredException
         String type = meta.path("errorType").asText(null);
         String message = meta.path("errorMessage").asText(null);
-        throw new StructuredException(code, type, message);
+        String detailed = meta.path("errorDetailed").asText(null);
+        throw new StructuredException(code, type, message, detailed);
     }
 
     public <E extends Exception> RestfulResponse throwIf(ResponseHandler<E> handler) throws E {
@@ -127,14 +128,7 @@ public class RestfulResponse {
     }
 
     public <T> List<T> asDataList(Class<T> clazz) {
-        try {
-            List<T> list = new ArrayList<>();
-            for (JsonNode node : getDataNode()) {
-                list.add(mapper.treeToValue(node, clazz));
-            }
-            return list;
-        } catch (JsonProcessingException e) {
-            throw ExceptionParser.handle(e);
-        }
+        CollectionType type = mapper.getTypeFactory().constructCollectionType(List.class, clazz);
+        return mapper.convertValue(getDataNode(), type);
     }
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import munch.restful.server.exceptions.StructuredException;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.Spark;
@@ -119,6 +120,7 @@ public class RestfulServer {
             metaNode.put("code", 500);
             metaNode.put("errorType", "UnknownException");
             metaNode.put("errorMessage", exception.getMessage());
+            metaNode.put("errorDetailed", ExceptionUtils.getStackTrace(exception));
 
             try {
                 response.status(500);
