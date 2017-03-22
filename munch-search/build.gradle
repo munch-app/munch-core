@@ -1,0 +1,7 @@
+dependencies {
+    compile project(':munch-struct')
+
+    // Core
+    compile group: 'com.google.inject', name: 'guice', version: '4.1.0'
+    compile group: 'org.elasticsearch.client', name: 'rest', version: '5.2.2'
+}

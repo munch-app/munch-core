@@ -2,8 +2,8 @@ package munch.api.endpoints;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Singleton;
-import munch.api.services.SearchService;
 import munch.restful.server.JsonCall;
+import munch.search.SearchQuery;
 
 import javax.inject.Inject;
 
@@ -16,11 +16,11 @@ import javax.inject.Inject;
 @Singleton
 public class DiscoverEndpoint extends MunchEndpoint {
 
-    private final SearchService service;
+    private final SearchQuery search;
 
     @Inject
-    public DiscoverEndpoint(SearchService service) {
-        this.service = service;
+    public DiscoverEndpoint(SearchQuery search) {
+        this.search = search;
     }
 
     @Override
@@ -37,7 +37,6 @@ public class DiscoverEndpoint extends MunchEndpoint {
      */
     private JsonNode discover(JsonCall call, JsonNode node) {
         Spatial spatial = getSpatial(node);
-
         return null;
     }
 }

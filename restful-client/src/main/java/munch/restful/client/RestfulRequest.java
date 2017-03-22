@@ -25,10 +25,15 @@ import java.util.Map;
 public class RestfulRequest {
     protected static final ObjectMapper mapper = RestfulClient.mapper;
 
-    private final HttpRequestWithBody request;
+    protected final HttpRequestWithBody request;
 
     public RestfulRequest(HttpMethod method, String url) {
         this.request = new HttpRequestWithBody(method, url);
+    }
+
+    public RestfulRequest basicAuth(String username, String password) {
+        request.basicAuth(username, password);
+        return this;
     }
 
     public RestfulRequest routeParam(String name, String value) {

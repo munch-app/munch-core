@@ -35,32 +35,49 @@ public abstract class RestfulClient {
         return url + path;
     }
 
+    /**
+     * Parse and do something to the request
+     *
+     * @param request request
+     * @return same or another request
+     */
+    protected RestfulRequest before(RestfulRequest request) {
+        return request;
+    }
+
     protected RestfulRequest doGet(String path) {
-        return new RestfulRequest(HttpMethod.GET, path(path));
+        RestfulRequest request = new RestfulRequest(HttpMethod.GET, path(path));
+        return before(request);
     }
 
     protected RestfulRequest doHead(String path) {
-        return new RestfulRequest(HttpMethod.HEAD, path(path));
+        RestfulRequest request = new RestfulRequest(HttpMethod.HEAD, path(path));
+        return before(request);
     }
 
     protected RestfulRequest doOptions(String path) {
-        return new RestfulRequest(HttpMethod.OPTIONS, path(path));
+        RestfulRequest request = new RestfulRequest(HttpMethod.OPTIONS, path(path));
+        return before(request);
     }
 
     protected RestfulRequest doPost(String path) {
-        return new RestfulRequest(HttpMethod.POST, path(path));
+        RestfulRequest request = new RestfulRequest(HttpMethod.POST, path(path));
+        return before(request);
     }
 
     protected RestfulRequest doDelete(String path) {
-        return new RestfulRequest(HttpMethod.DELETE, path(path));
+        RestfulRequest request = new RestfulRequest(HttpMethod.DELETE, path(path));
+        return before(request);
     }
 
     protected RestfulRequest doPatch(String path) {
-        return new RestfulRequest(HttpMethod.PATCH, path(path));
+        RestfulRequest request = new RestfulRequest(HttpMethod.PATCH, path(path));
+        return before(request);
     }
 
     protected RestfulRequest doPut(String path) {
-        return new RestfulRequest(HttpMethod.PUT, path(path));
+        RestfulRequest request = new RestfulRequest(HttpMethod.PUT, path(path));
+        return before(request);
     }
 
     public static <T> T toObject(JsonNode node, Class<T> clazz) {
