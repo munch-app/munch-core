@@ -1,0 +1,71 @@
+version: '2'
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.2.2
+    container_name: munch-struct-elasticsearch
+    environment:
+      ES_JAVA_OPTS: "-Xms1g -Xmx1g"
+      xpack.security.enabled: "false"
+      xpack.monitoring.enabled: "false"
+      xpack.graph.enabled: "false"
+      xpack.watcher.enabled: "false"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    mem_limit: 1g
+    cap_add:
+      - IPC_LOCK
+    ports:
+      - 9200:9200
+    networks:
+      - struct-network
+  document:
+    image: postgres:9-alpine
+    container_name: munch-struct-postgres
+    ports:
+      - "5444:5432"
+    environment:
+      - POSTGRES_PASSWORD=K851xsSffyTJP3e1M7rd
+    networks:
+      - struct-network
+  bridge:
+    image: munch-core/catalyst-bridge:latest
+    container_name: munch-struct-bridge
+    environment:
+      - CATALYST_URL=http://catalyst.munch.space:8201
+      - CATALYST_USER=catalyst
+      - CATALYST_PASSWORD=bq1Enf1p32pTEvqzLz9OrtXtXsEWFhU5cO9Eoww9
+
+      - DOCUMENT_DATABASE_URL=jdbc:postgresql://document:5432/postgres
+      - DOCUMENT_DATABASE_USERNAME=postgres
+      - DOCUMENT_DATABASE_PASSWORD=K851xsSffyTJP3e1M7rd
+      - SEARCH_DATABASE_HOSTNAME=elasticsearch
+    links:
+      - document
+      - elasticsearch
+    networks:
+      - struct-network
+  munch-api:
+    image: munch-core/munch-api:latest
+    container_name: munch-api
+    environment:
+      - DOCUMENT_DATABASE_URL=jdbc:postgresql://document:5432/postgres
+      - DOCUMENT_DATABASE_USERNAME=postgres
+      - DOCUMENT_DATABASE_PASSWORD=K851xsSffyTJP3e1M7rd
+      - SEARCH_DATABASE_HOSTNAME=elasticsearch
+    ports:
+      - "8088:8088"
+    links:
+      - document
+      - elasticsearch
+    networks:
+      - struct-network
+
+networks:
+  struct-network:
+    driver: bridge
