@@ -1,8 +1,9 @@
 package munch.restful.client.exception;
 
-import com.mashape.unirest.http.exceptions.UnirestException;
 import org.apache.http.NoHttpResponseException;
 import org.apache.http.conn.HttpHostConnectException;
+
+import java.net.SocketTimeoutException;
 
 /**
  * Created By: Fuxing Loh
@@ -17,26 +18,49 @@ public final class ExceptionParser {
      * @return converted restful exception
      */
     public static RestfulException handle(Exception e) {
-        if (e instanceof UnirestException) {
-            return handle((UnirestException) e);
-        }
+        RestfulException restful;
+
+        // Offline
+        restful = handleOffline(e);
+        if (restful != null) throw restful;
+
+        // Timeout
+        restful = handleTimeout(e);
+        if (restful != null) throw restful;
+
+        // Else default wrap still
         return new RestfulException(e);
     }
 
     /**
-     * @param e all unirest exception
-     * @return Restful exception
+     * Try parse offline exception
+     *
+     * @param e all exception
+     * @return Restful Offline exception
      */
-    static RestfulException handle(UnirestException e) {
-        if (e.getCause() instanceof HttpHostConnectException) {
+    static RestfulException handleOffline(Exception e) {
+        if (e instanceof HttpHostConnectException) {
             return new OfflineException(e);
         }
 
-        if (e.getCause() instanceof NoHttpResponseException) {
+        if (e instanceof NoHttpResponseException) {
             return new OfflineException(e);
         }
 
-        return new RestfulException(e);
+        return null;
     }
 
+    /**
+     * Try parse timeout exception
+     *
+     * @param e all exception
+     * @return Restful Timeout exception
+     */
+    static TimeoutException handleTimeout(Exception e) {
+        if (e instanceof SocketTimeoutException) {
+            return new TimeoutException(e);
+        }
+
+        return null;
+    }
 }

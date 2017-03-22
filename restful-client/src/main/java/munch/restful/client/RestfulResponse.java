@@ -114,11 +114,6 @@ public class RestfulResponse {
         throw new StructuredException(code, type, message, detailed);
     }
 
-    public <E extends Exception> RestfulResponse throwIf(ResponseHandler<E> handler) throws E {
-        handler.handle(this);
-        return this;
-    }
-
     public <T> T asDataObject(Class<T> clazz) {
         try {
             return mapper.treeToValue(getDataNode(), clazz);

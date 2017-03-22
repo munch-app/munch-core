@@ -138,15 +138,25 @@ public class RestfulRequest {
         return asResponse().hasMetaCodes(codes);
     }
 
-    public <E extends Exception> RestfulResponse throwIf(ResponseHandler<E> handler) throws E {
-        return asResponse().throwIf(handler);
+    /**
+     * Using default exception parser
+     *
+     * @return RestfulResponse
+     */
+    public RestfulResponse asResponse() {
+        return asResponse((exception, response) -> {
+            if (exception != null) throw ExceptionParser.handle(exception);
+        });
     }
 
-    public RestfulResponse asResponse() {
+    public <E extends Exception> RestfulResponse asResponse(ResponseHandler<E> handler) throws E {
         try {
-            return new RestfulResponse(request.asBinary());
+            RestfulResponse response = new RestfulResponse(request.asBinary());
+            handler.handle(null, response);
+            return response;
         } catch (UnirestException e) {
-            throw ExceptionParser.handle(e);
+            handler.handle((Exception) e.getCause(), null);
+            return null;
         }
     }
 }

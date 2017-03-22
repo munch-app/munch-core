@@ -15,6 +15,6 @@ public interface ResponseHandler<E extends Exception> {
      * @param response restful response
      * @throws E exception that is handled
      */
-    void handle(RestfulResponse response) throws E;
+    void handle(Exception exception, RestfulResponse response) throws E;
 
 }
