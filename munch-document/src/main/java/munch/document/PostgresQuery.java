@@ -44,7 +44,9 @@ public class PostgresQuery implements DocumentQuery {
     public List<Place> get(List<String> keys) {
         if (keys.isEmpty()) return Collections.emptyList();
         List<PostgresPlace> list = provider.reduce(em -> em.createQuery("SELECT e FROM PostgresPlace e " +
-                "WHERE e.id IN (:keys)", PostgresPlace.class).getResultList());
+                "WHERE e.id IN (:keys)", PostgresPlace.class)
+                .setParameter("keys", keys)
+                .getResultList());
         return list.stream().map(PostgresPlace::getPlace).collect(Collectors.toList());
     }
 }

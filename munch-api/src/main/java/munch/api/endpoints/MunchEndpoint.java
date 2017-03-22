@@ -52,7 +52,7 @@ public abstract class MunchEndpoint implements JsonService {
          */
         public Spatial(JsonNode rootNode) {
             JsonNode spatial = rootNode.path("spatial");
-            if (spatial.has("lat") && spatial.has("lng")) {
+            if (!(spatial.has("lat") && spatial.has("lng"))) {
                 throw new JsonException("Required spatial node not found in root node.");
             }
             this.lat = spatial.path("lat").asDouble();

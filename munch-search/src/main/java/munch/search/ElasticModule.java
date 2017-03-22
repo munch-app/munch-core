@@ -19,12 +19,13 @@ public class ElasticModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(SearchStore.class).to(ElasticStore.class);
+        bind(SearchQuery.class).to(ElasticQuery.class);
     }
 
     @Provides
     @Singleton
     RestClient provideClient() {
-        Config config = ConfigFactory.load().getConfig("munch.struct.search");
+        Config config = ConfigFactory.load().getConfig("munch.search");
 
         return RestClient.builder(new HttpHost(
                 config.getString("hostname"),

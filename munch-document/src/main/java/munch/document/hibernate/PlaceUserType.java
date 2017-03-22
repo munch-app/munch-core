@@ -1,5 +1,7 @@
 package munch.document.hibernate;
 
+import munch.struct.Place;
+
 /**
  * Created By: Fuxing Loh
  * Date: 10/3/2017

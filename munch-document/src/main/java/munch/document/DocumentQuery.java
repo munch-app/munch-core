@@ -23,5 +23,4 @@ public interface DocumentQuery {
      * @return List of Place, non null values
      */
     List<Place> get(List<String> keys);
-
 }

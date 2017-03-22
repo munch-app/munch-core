@@ -26,6 +26,7 @@ public class PostgresModule extends AbstractModule {
     protected void configure() {
         setupDatabase();
         bind(DocumentStore.class).to(PostgresStore.class);
+        bind(DocumentQuery.class).to(PostgresQuery.class);
     }
 
     /**
@@ -35,7 +36,7 @@ public class PostgresModule extends AbstractModule {
         Config config = ConfigFactory.load().getConfig("munch.document");
 
         Map<String, String> properties = new HashMap<>();
-        properties.put("hibernate.dialect", "com.munch.struct.hibernate.JsonPostgreSQLDialect");
+        properties.put("hibernate.dialect", "munch.document.hibernate.JsonPostgreSQLDialect");
         properties.put("hibernate.connection.provider_class", "com.zaxxer.hikari.hibernate.HikariConnectionProvider");
 
         properties.put("hibernate.hikari.dataSourceClassName", "org.postgresql.ds.PGSimpleDataSource");

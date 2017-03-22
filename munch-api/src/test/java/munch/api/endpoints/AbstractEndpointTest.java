@@ -1,0 +1,33 @@
+package munch.api.endpoints;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.inject.AbstractModule;
+import munch.api.ApiTestServer;
+import munch.api.TestModules;
+import munch.restful.client.RestfulClient;
+
+/**
+ * Created By: Fuxing Loh
+ * Date: 22/3/2017
+ * Time: 9:33 PM
+ * Project: munch-core
+ */
+public abstract class AbstractEndpointTest extends RestfulClient
+        implements ApiTestServer, TestModules {
+
+    protected static final ObjectMapper mapper = new ObjectMapper();
+
+    public <T extends MunchEndpoint> AbstractEndpointTest(Class<T> type, AbstractModule... modules) {
+        super("http://localhost:" + DEFAULT_PORT + "/v1");
+        ApiTestServer.start(type, modules);
+    }
+
+    protected JsonNode spatialNode(double lat, double lng) {
+        ObjectNode spatial = mapper.createObjectNode();
+        spatial.put("lat", lat);
+        spatial.put("lng", lng);
+        return spatial;
+    }
+}
