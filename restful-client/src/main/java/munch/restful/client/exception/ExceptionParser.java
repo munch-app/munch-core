@@ -22,11 +22,11 @@ public final class ExceptionParser {
 
         // Offline
         restful = handleOffline(e);
-        if (restful != null) throw restful;
+        if (restful != null) return restful;
 
         // Timeout
         restful = handleTimeout(e);
-        if (restful != null) throw restful;
+        if (restful != null) return restful;
 
         // Else default wrap still
         return new RestfulException(e);
