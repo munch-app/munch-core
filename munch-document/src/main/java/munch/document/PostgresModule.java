@@ -44,13 +44,8 @@ public class PostgresModule extends AbstractModule {
         properties.put("hibernate.hikari.dataSource.user", config.getString("username"));
         properties.put("hibernate.hikari.dataSource.password", config.getString("password"));
 
-        if (config.getBoolean("autoCreate")) {
-            properties.put("hibernate.hbm2ddl.auto", "update");
-        } else {
-            // Disable by default due to this error: found [bpchar (Types#CHAR)], but expecting [char(36) (Types#VARCHAR)]
-            properties.put("hibernate.hbm2ddl.auto", "none");
-        }
-
+        // Disable by default due to this error: found [bpchar (Types#CHAR)], but expecting [char(36) (Types#VARCHAR)]
+        properties.put("hibernate.hbm2ddl.auto", config.getBoolean("autoCreate") ? "update" : "none");
         properties.put("hibernate.hikari.maximumPoolSize", String.valueOf(config.getInt("maxPoolSize")));
 
         HibernateUtils.setupFactory(UnitName, properties);

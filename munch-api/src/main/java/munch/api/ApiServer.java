@@ -4,11 +4,11 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
+import com.typesafe.config.Config;
 import munch.api.endpoints.EndpointsModule;
 import munch.document.PostgresModule;
-import munch.restful.server.RestfulService;
 import munch.restful.server.RestfulServer;
-import com.typesafe.config.Config;
+import munch.restful.server.RestfulService;
 import munch.search.ElasticModule;
 
 import java.util.Set;
@@ -47,6 +47,7 @@ public final class ApiServer extends RestfulServer {
      */
     public static void main(String[] args) {
         Injector injector = Guice.createInjector(
+                new ApiModule(),
                 new PostgresModule(),
                 new ElasticModule(),
                 new EndpointsModule()

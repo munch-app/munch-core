@@ -2,6 +2,7 @@ package munch.api.endpoints;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.multibindings.Multibinder;
+import munch.restful.server.RestfulService;
 
 /**
  * Created By: Fuxing Loh
@@ -12,7 +13,7 @@ import com.google.inject.multibindings.Multibinder;
 public class EndpointsModule extends AbstractModule {
     @Override
     protected void configure() {
-        Multibinder<MunchEndpoint> routerBinder = Multibinder.newSetBinder(binder(), MunchEndpoint.class);
+        Multibinder<RestfulService> routerBinder = Multibinder.newSetBinder(binder(), RestfulService.class);
         routerBinder.addBinding().to(DiscoverEndpoint.class);
     }
 }
