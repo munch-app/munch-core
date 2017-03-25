@@ -3,7 +3,7 @@ package munch.catalyst;
 import com.corpus.object.GroupField;
 import com.corpus.object.GroupObject;
 import com.corpus.object.ObjectUtils;
-import munch.struct.Hours;
+import munch.struct.Hour;
 import munch.struct.Location;
 import munch.struct.Place;
 import org.slf4j.Logger;
@@ -73,7 +73,7 @@ public class GroupConverter {
      * @param group group object
      * @return set of opening hours created
      */
-    public static Set<Hours> createHours(GroupObject group) {
+    public static Set<Hour> createHours(GroupObject group) {
         return Collections.emptySet();
     }
 

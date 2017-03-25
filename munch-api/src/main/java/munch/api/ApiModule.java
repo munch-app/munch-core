@@ -12,6 +12,7 @@ import com.typesafe.config.ConfigFactory;
  * Project: munch-core
  */
 public class ApiModule extends AbstractModule {
+
     @Override
     protected void configure() {
 

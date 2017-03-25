@@ -19,9 +19,16 @@ public final class Place {
     private String website;
     private String description;
 
-    private Set<String> labels;
-    private Set<Hours> hours;
+    // One
+    private Price price;
     private Location location;
+
+    // Many
+    private Set<String> mainLabels;
+    private Set<String> labels;
+    private Set<Media> medias;
+    private Set<Menu> menus;
+    private Set<Hour> hours;
 
     // Dates
     private Date createdDate;
@@ -94,11 +101,11 @@ public final class Place {
     /**
      * @return opening hours of place
      */
-    public Set<Hours> getHours() {
+    public Set<Hour> getHours() {
         return hours;
     }
 
-    public void setHours(Set<Hours> hours) {
+    public void setHours(Set<Hour> hours) {
         this.hours = hours;
     }
 

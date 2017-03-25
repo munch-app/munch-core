@@ -8,7 +8,7 @@ import java.time.LocalTime;
  * Time: 7:10 PM
  * Project: munch-core
  */
-public final class Hours {
+public final class Hour {
 
     public static final int MON = 1;
     public static final int TUE = 2;
@@ -20,26 +20,26 @@ public final class Hours {
 
     public static final int PH = 100;
 
-    private Integer day;
+    private int day;
     private LocalTime open;
     private LocalTime close;
 
     /**
-     * @return day in integer
-     * @see Hours#MON
-     * @see Hours#TUE
-     * @see Hours#WED
-     * @see Hours#THU
-     * @see Hours#FRI
-     * @see Hours#SAT
-     * @see Hours#SUN
-     * @see Hours#PH
+     * @return day in int
+     * @see Hour#MON
+     * @see Hour#TUE
+     * @see Hour#WED
+     * @see Hour#THU
+     * @see Hour#FRI
+     * @see Hour#SAT
+     * @see Hour#SUN
+     * @see Hour#PH
      */
-    public Integer getDay() {
+    public int getDay() {
         return day;
     }
 
-    public void setDay(Integer day) {
+    public void setDay(int day) {
         this.day = day;
     }
 
