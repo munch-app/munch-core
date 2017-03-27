@@ -12,6 +12,7 @@ import java.util.Set;
 public final class Place {
 
     private String id;
+    // TODO version number?
 
     // Basic
     private String name;
@@ -24,8 +25,8 @@ public final class Place {
     private Location location;
 
     // Many
-    private Set<String> mainLabels;
-    private Set<String> labels;
+    private Set<String> establishments;
+    private Set<String> amenities;
     private Set<Media> medias;
     private Set<Menu> menus;
     private Set<Hour> hours;
@@ -109,6 +110,38 @@ public final class Place {
         this.hours = hours;
     }
 
+    public Price getPrice() {
+        return price;
+    }
+
+    public void setPrice(Price price) {
+        this.price = price;
+    }
+
+    public Set<String> getEstablishments() {
+        return establishments;
+    }
+
+    public void setEstablishments(Set<String> establishments) {
+        this.establishments = establishments;
+    }
+
+    public Set<Media> getMedias() {
+        return medias;
+    }
+
+    public void setMedias(Set<Media> medias) {
+        this.medias = medias;
+    }
+
+    public Set<Menu> getMenus() {
+        return menus;
+    }
+
+    public void setMenus(Set<Menu> menus) {
+        this.menus = menus;
+    }
+
     /**
      * @return location of place
      */
@@ -121,14 +154,14 @@ public final class Place {
     }
 
     /**
-     * @return labels or type about a place
+     * @return amenities or type about a place
      */
-    public Set<String> getLabels() {
-        return labels;
+    public Set<String> getAmenities() {
+        return amenities;
     }
 
-    public void setLabels(Set<String> labels) {
-        this.labels = labels;
+    public void setAmenities(Set<String> amenities) {
+        this.amenities = amenities;
     }
 
     /**

@@ -40,7 +40,7 @@ public class GroupConverter {
         // Set other entity
         place.setLocation(createLocation(group));
         place.setHours(createHours(group));
-        place.setLabels(createLabels(group));
+        place.setAmenities(createLabels(group));
 
         // Set tracking dates
         place.setCreatedDate(group.getCreatedDate());

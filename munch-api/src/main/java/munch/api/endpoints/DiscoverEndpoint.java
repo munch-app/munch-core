@@ -3,6 +3,7 @@ package munch.api.endpoints;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Singleton;
+import munch.api.PlaceRandom;
 import munch.document.DocumentQuery;
 import munch.restful.server.JsonCall;
 import munch.search.SearchQuery;
@@ -25,10 +26,13 @@ public class DiscoverEndpoint extends MunchEndpoint {
     private final SearchQuery search;
     private final DocumentQuery document;
 
+    private final PlaceRandom placeRandom;
+
     @Inject
-    public DiscoverEndpoint(SearchQuery search, DocumentQuery document) {
+    public DiscoverEndpoint(SearchQuery search, DocumentQuery document, PlaceRandom placeRandom) {
         this.search = search;
         this.document = document;
+        this.placeRandom = placeRandom;
     }
 
     @Override
@@ -39,7 +43,6 @@ public class DiscoverEndpoint extends MunchEndpoint {
     }
 
     /**
-     * TODO iterative improvements
      * @param call json call
      * @param node json node
      * @return JsonNode discover data
@@ -58,6 +61,7 @@ public class DiscoverEndpoint extends MunchEndpoint {
 
         List<Place> places = document.get(search.query(root)
                 .stream().map(Place::getId).collect(Collectors.toList()));
-        return nodes(Meta200, places);
+        places.forEach(placeRandom::random);
+        return nodes(200, places);
     }
 }

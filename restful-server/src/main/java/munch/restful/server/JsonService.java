@@ -20,6 +20,10 @@ public interface JsonService extends RestfulService {
 
     ObjectMapper objectMapper = JsonUtils.objectMapper;
 
+    /**
+     * Theses nodes are pre-build notes, use the as a whole don't
+     * put them in another node
+     */
     JsonNode Meta200 = JsonUtils.nodes(JsonUtils.metaNode(200));
     JsonNode Meta404 = JsonUtils.nodes(JsonUtils.metaNode(
             404, "ObjectNotFound", "Object requested not found."));

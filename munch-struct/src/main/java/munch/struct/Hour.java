@@ -1,7 +1,5 @@
 package munch.struct;
 
-import java.time.LocalTime;
-
 /**
  * Created by: Fuxing
  * Date: 7/3/2017
@@ -21,8 +19,26 @@ public final class Hour {
     public static final int PH = 100;
 
     private int day;
-    private LocalTime open;
-    private LocalTime close;
+
+    /**
+     * HH:mm
+     * 00:00 - 23:59
+     * Midnight - 1 Min before midnight Max
+     * <p>
+     * 12:00 - 22:00
+     * Noon - 10pm
+     * <p>
+     * 08:00 - 19:00
+     * 8am - 7pm
+     * <p>
+     * Not Allowed:
+     * 20:00 - 04:00
+     * 20:00 - 24:00
+     * Not allowed to put 24:00 Highest is 23:59
+     * Not allowed to cross to another day
+     */
+    private String open;
+    private String close;
 
     /**
      * @return day in int
@@ -44,24 +60,24 @@ public final class Hour {
     }
 
     /**
-     * @return opening hours, start
+     * @return opening hours
      */
-    public LocalTime getOpen() {
+    public String getOpen() {
         return open;
     }
 
-    public void setOpen(LocalTime open) {
+    public void setOpen(String open) {
         this.open = open;
     }
 
     /**
-     * @return opening hours, end
+     * @return closing hours
      */
-    public LocalTime getClose() {
+    public String getClose() {
         return close;
     }
 
-    public void setClose(LocalTime close) {
+    public void setClose(String close) {
         this.close = close;
     }
 }

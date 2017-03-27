@@ -10,6 +10,9 @@ dependencies {
 
     // For Testing
     testCompile project(':restful-client')
+
+    // For Mvp Testing
+    compile group: 'com.thedeanda', name: 'lorem', version: '2.1'
 }
 
 apply plugin: 'application'
