@@ -50,21 +50,21 @@ services:
       - elasticsearch
     networks:
       - struct-network
-  munch-api:
-    image: munch-core/munch-api:latest
-    container_name: munch-core-api
-    environment:
-      - DOCUMENT_DATABASE_URL=jdbc:postgresql://document:5432/postgres
-      - DOCUMENT_DATABASE_USERNAME=postgres
-      - DOCUMENT_DATABASE_PASSWORD=K851xsSffyTJP3e1M7rd
-      - SEARCH_DATABASE_HOSTNAME=elasticsearch
-    ports:
-      - "8088:8088"
-    links:
-      - document
-      - elasticsearch
-    networks:
-      - struct-network
+#  munch-api:
+#    image: munch-core/munch-api:latest
+#    container_name: munch-core-api
+#    environment:
+#      - DOCUMENT_DATABASE_URL=jdbc:postgresql://document:5432/postgres
+#      - DOCUMENT_DATABASE_USERNAME=postgres
+#      - DOCUMENT_DATABASE_PASSWORD=K851xsSffyTJP3e1M7rd
+#      - SEARCH_DATABASE_HOSTNAME=elasticsearch
+#    ports:
+#      - "8088:8088"
+#    links:
+#      - document
+#      - elasticsearch
+#    networks:
+#      - struct-network
 
 networks:
   struct-network:

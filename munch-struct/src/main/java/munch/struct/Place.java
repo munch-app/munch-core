@@ -1,5 +1,8 @@
 package munch.struct;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.Date;
 import java.util.Set;
 
@@ -9,6 +12,8 @@ import java.util.Set;
  * Time: 5:54 PM
  * Project: munch-core
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public final class Place {
 
     private String id;
@@ -27,7 +32,7 @@ public final class Place {
     // Many
     private Set<String> establishments;
     private Set<String> amenities;
-    private Set<Media> medias;
+    private Set<Image> images;
     private Set<Menu> menus;
     private Set<Hour> hours;
 
@@ -126,12 +131,12 @@ public final class Place {
         this.establishments = establishments;
     }
 
-    public Set<Media> getMedias() {
-        return medias;
+    public Set<Image> getImages() {
+        return images;
     }
 
-    public void setMedias(Set<Media> medias) {
-        this.medias = medias;
+    public void setImages(Set<Image> images) {
+        this.images = images;
     }
 
     public Set<Menu> getMenus() {
