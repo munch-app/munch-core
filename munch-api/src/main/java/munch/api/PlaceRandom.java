@@ -53,7 +53,8 @@ public class PlaceRandom {
             "http://s3.amazonaws.com/stnd-narcissa-prod/graphics/assets/000/000/026/medium/narcissa_night_january_2014_cwmosier-5.jpg?1390860090",
             "http://www.hotelvillemarie.com/img/restaurant/lebanese-restaurant-montreal-zawedeh-restaurant.jpg",
             "https://media.timeout.com/images/103700310/630/472/image.jpg",
-            "http://nandos.com.sg/nandos_sg/images/restaurants/junction8.png"
+            "http://nandos.com.sg/nandos_sg/images/restaurants/junction8.png",
+            "https://www.ledr.com/colours/white.jpg"
     );
 
     /**
