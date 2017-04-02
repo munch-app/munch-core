@@ -10,4 +10,5 @@ include 'restful-server'
 include 'restful-client'
 include 'munch-document'
 include 'munch-search'
+include 'munch-object'
 

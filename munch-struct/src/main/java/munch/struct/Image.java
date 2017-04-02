@@ -8,6 +8,7 @@ package munch.struct;
  */
 public final class Image {
 
+    private String imageId;
     private String url;
 
     /**
