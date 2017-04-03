@@ -1,9 +1,10 @@
-package munch.api.endpoints;
+package munch.api.endpoints.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Singleton;
 import munch.api.PlaceRandom;
+import munch.api.endpoints.AbstractEndpoint;
 import munch.document.DocumentQuery;
 import munch.restful.server.JsonCall;
 import munch.search.SearchQuery;
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
  * Project: munch-core
  */
 @Singleton
-public class DiscoverEndpoint extends MunchEndpoint {
+public class DiscoverService extends AbstractEndpoint {
 
     private final SearchQuery search;
     private final DocumentQuery document;
@@ -29,7 +30,7 @@ public class DiscoverEndpoint extends MunchEndpoint {
     private final PlaceRandom placeRandom;
 
     @Inject
-    public DiscoverEndpoint(SearchQuery search, DocumentQuery document, PlaceRandom placeRandom) {
+    public DiscoverService(SearchQuery search, DocumentQuery document, PlaceRandom placeRandom) {
         this.search = search;
         this.document = document;
         this.placeRandom = placeRandom;
@@ -37,9 +38,6 @@ public class DiscoverEndpoint extends MunchEndpoint {
 
     @Override
     public void route() {
-        path("/discover", () -> {
-            post("", this::discover);
-        });
     }
 
     /**
@@ -47,7 +45,7 @@ public class DiscoverEndpoint extends MunchEndpoint {
      * @param node json node
      * @return JsonNode discover data
      */
-    private JsonNode discover(JsonCall call, JsonNode node) throws IOException {
+    public JsonNode discover(JsonCall call, JsonNode node) throws IOException {
         Spatial spatial = getSpatial(node);
 
         JsonNode geoFilter = search.createGeoFilter(spatial.getLat(), spatial.getLng(), 1000);

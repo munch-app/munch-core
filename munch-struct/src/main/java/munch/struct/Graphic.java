@@ -6,14 +6,18 @@ package munch.struct;
  * Time: 7:16 PM
  * Project: munch-core
  */
-public class Shot {
+public class Graphic {
 
     // Internal munch id
     private String id;
 
     // Instagram media id
     private String mediaId;
+    private String imageUrl;
 
+    /**
+     * @return unique id of graphic in munch
+     */
     public String getId() {
         return id;
     }
@@ -22,11 +26,25 @@ public class Shot {
         this.id = id;
     }
 
+    /**
+     * @return instagram media id
+     */
     public String getMediaId() {
         return mediaId;
     }
 
     public void setMediaId(String mediaId) {
         this.mediaId = mediaId;
+    }
+
+    /**
+     * @return image url of graphic
+     */
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

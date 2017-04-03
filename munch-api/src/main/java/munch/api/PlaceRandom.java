@@ -7,10 +7,7 @@ import munch.struct.*;
 import org.apache.commons.lang3.RandomUtils;
 
 import javax.inject.Singleton;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created By: Fuxing Loh
@@ -74,6 +71,31 @@ public class PlaceRandom {
         place.setImages(randomImages());
         place.setMenus(randomMenus());
         place.setHours(randomHours());
+    }
+
+    public List<Graphic> randomGraphics(int size) {
+        List<Graphic> list = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            Graphic graphic = new Graphic();
+            graphic.setId(UUID.randomUUID().toString());
+            graphic.setMediaId(UUID.randomUUID().toString());
+            graphic.setImageUrl(random(this.images));
+            list.add(graphic);
+        }
+        return list;
+    }
+
+    public List<Article> randomArticles(int size) {
+        List<Article> list = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            Article article = new Article();
+            article.setId(UUID.randomUUID().toString());
+            article.setAuthor(lorem.getFirstName());
+            article.setSummary(lorem.getParagraphs(3, 5));
+            article.setImageUrl(random(images));
+            list.add(article);
+        }
+        return list;
     }
 
     private Price randomPrice() {

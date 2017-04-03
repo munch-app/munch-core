@@ -19,7 +19,7 @@ public abstract class AbstractEndpointTest extends RestfulClient
 
     protected static final ObjectMapper mapper = new ObjectMapper();
 
-    public <T extends MunchEndpoint> AbstractEndpointTest(Class<T> type, AbstractModule... modules) {
+    public <T extends AbstractEndpoint> AbstractEndpointTest(Class<T> type, AbstractModule... modules) {
         super("http://localhost:" + DEFAULT_PORT + "/v1");
         ApiTestServer.start(type, modules);
     }

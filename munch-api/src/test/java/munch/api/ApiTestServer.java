@@ -3,7 +3,7 @@ package munch.api;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import munch.api.endpoints.MunchEndpoint;
+import munch.api.endpoints.AbstractEndpoint;
 import org.fest.util.Collections;
 
 /**
@@ -24,7 +24,7 @@ public interface ApiTestServer {
         return Guice.createInjector(modules);
     }
 
-    static <T extends MunchEndpoint> void start(Class<T> type, AbstractModule... modules) {
+    static <T extends AbstractEndpoint> void start(Class<T> type, AbstractModule... modules) {
         Injector injector = injector(modules);
         T endpoint = injector.getInstance(type);
 

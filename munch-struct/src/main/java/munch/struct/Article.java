@@ -11,11 +11,14 @@ public class Article {
     private String id;
 
     private String author;
-    private String description;
+    private String summary;
 
     private String imageUrl;
     private String url;
 
+    /**
+     * @return unique id of article in munch
+     */
     public String getId() {
         return id;
     }
@@ -35,14 +38,20 @@ public class Article {
         this.author = author;
     }
 
-    public String getDescription() {
-        return description;
+    /**
+     * @return summary of the article
+     */
+    public String getSummary() {
+        return summary;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setSummary(String summary) {
+        this.summary = summary;
     }
 
+    /**
+     * @return url of image representing the article
+     */
     public String getImageUrl() {
         return imageUrl;
     }
@@ -51,6 +60,9 @@ public class Article {
         this.imageUrl = imageUrl;
     }
 
+    /**
+     * @return url that lead directly to the article
+     */
     public String getUrl() {
         return url;
     }

@@ -1,11 +1,15 @@
 package munch.api.endpoints;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.PlaceRandom;
+import munch.api.endpoints.service.DiscoverService;
 import munch.document.DocumentQuery;
 import munch.restful.server.JsonCall;
+import munch.struct.Article;
+import munch.struct.Graphic;
+
+import java.util.List;
 
 /**
  * Created by: Fuxing
@@ -14,14 +18,16 @@ import munch.restful.server.JsonCall;
  * Project: munch-core
  */
 @Singleton
-public class PlaceEndpoint extends MunchEndpoint {
+public class PlaceEndpoint extends AbstractEndpoint {
+
+    private final DiscoverService discover;
 
     private final DocumentQuery document;
-
     private final PlaceRandom placeRandom;
 
     @Inject
-    public PlaceEndpoint(DocumentQuery document, PlaceRandom placeRandom) {
+    public PlaceEndpoint(DiscoverService discover, DocumentQuery document, PlaceRandom placeRandom) {
+        this.discover = discover;
         this.document = document;
         this.placeRandom = placeRandom;
     }
@@ -29,19 +35,21 @@ public class PlaceEndpoint extends MunchEndpoint {
     @Override
     public void route() {
         path("/places", () -> {
+            post("/discover", discover::discover);
+
             // TODO gallery/articles pagination
             get("/:placeId/gallery", this::gallery);
             get("/:placeId/articles", this::articles);
         });
     }
 
-    private JsonNode gallery(JsonCall call) {
+    private List<Graphic> gallery(JsonCall call) {
         String placeId = call.pathString("placeId");
-        return null;
+        return placeRandom.randomGraphics(20);
     }
 
-    private JsonNode articles(JsonCall call) {
+    private List<Article> articles(JsonCall call) {
         String placeId = call.pathString("placeId");
-        return null;
+        return placeRandom.randomArticles(6);
     }
 }

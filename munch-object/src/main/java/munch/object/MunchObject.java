@@ -7,5 +7,5 @@ package munch.object;
  * Project: munch-core
  */
 public class MunchObject {
-
+    // TODO storage service
 }
