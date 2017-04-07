@@ -8,6 +8,7 @@ import munch.document.DocumentQuery;
 import munch.restful.server.JsonCall;
 import munch.struct.Article;
 import munch.struct.Graphic;
+import org.apache.commons.lang3.RandomUtils;
 
 import java.util.List;
 
@@ -45,11 +46,11 @@ public class PlaceEndpoint extends AbstractEndpoint {
 
     private List<Graphic> gallery(JsonCall call) {
         String placeId = call.pathString("placeId");
-        return placeRandom.randomGraphics(20);
+        return placeRandom.randomGraphics(RandomUtils.nextInt(20, 30));
     }
 
     private List<Article> articles(JsonCall call) {
         String placeId = call.pathString("placeId");
-        return placeRandom.randomArticles(6);
+        return placeRandom.randomArticles(RandomUtils.nextInt(8, 12));
     }
 }

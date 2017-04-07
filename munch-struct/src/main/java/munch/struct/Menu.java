@@ -13,6 +13,7 @@ public final class Menu {
     public static final int TYPE_PDF = 30;
 
     private int type;
+    private String thumbUrl;
     private String url;
 
     /**
@@ -27,6 +28,17 @@ public final class Menu {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    /**
+     * @return thumbnail url of the image
+     */
+    public String getThumbUrl() {
+        return thumbUrl;
+    }
+
+    public void setThumbUrl(String thumbUrl) {
+        this.thumbUrl = thumbUrl;
     }
 
     /**
