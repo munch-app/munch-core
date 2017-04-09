@@ -93,6 +93,7 @@ public class PlaceRandom {
             article.setAuthor(lorem.getFirstName());
             article.setSummary(lorem.getParagraphs(3, 5));
             article.setImageUrl(random(images));
+            article.setUrl("http://www.ladyironchef.com/2010/04/best-buffet-singapore/");
             list.add(article);
         }
         return list;
@@ -128,9 +129,10 @@ public class PlaceRandom {
 
     private static Menu createMenu(String thumbUrl) {
         Menu menu = new Menu();
-        menu.setType(Menu.TYPE_PDF);
+        menu.setType(Menu.TYPE_IMAGE);
         menu.setThumbUrl(thumbUrl);
-        menu.setUrl("http://nandos.com.sg/nandos_sg/download/Nandos-Singapore-Website-Menu-Jan-2017.pdf");
+        menu.setUrl("http://hooters.com.sg/images/OurMenu/ChefMenu2011-1.jpg");
+//        menu.setUrl("http://nandos.com.sg/nandos_sg/download/Nandos-Singapore-Website-Menu-Jan-2017.pdf");
         return menu;
     }
 
