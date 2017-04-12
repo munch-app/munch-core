@@ -2,7 +2,7 @@ package munch.api.endpoints;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import munch.api.endpoints.service.DiscoverService;
+import munch.api.endpoints.service.SearchService;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -11,10 +11,10 @@ import org.junit.jupiter.api.Test;
  * Time: 9:32 PM
  * Project: munch-core
  */
-class DiscoverServiceTest extends AbstractEndpointTest {
+class SearchServiceTest extends AbstractEndpointTest {
 
-    public DiscoverServiceTest() {
-        super(DiscoverService.class, Elastic.get(), Postgres.get());
+    public SearchServiceTest() {
+        super(SearchService.class, Elastic.get(), Postgres.get());
     }
 
     @Test

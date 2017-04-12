@@ -1,5 +1,7 @@
 dependencies {
     compile project(':restful-server')
+    compile project(':restful-client')
+    
     compile project(':munch-struct')
     compile project(':munch-document')
     compile project(':munch-search')
@@ -7,9 +9,6 @@ dependencies {
     // Injection
     compile group: 'com.google.inject', name: 'guice', version: '4.1.0'
     compile group: 'com.google.inject.extensions', name: 'guice-multibindings', version: '4.1.0'
-
-    // For Testing
-    testCompile project(':restful-client')
 
     // For Mvp Testing
     compile group: 'com.thedeanda', name: 'lorem', version: '2.1'

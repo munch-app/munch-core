@@ -33,6 +33,7 @@ public abstract class AbstractEndpoint implements JsonService {
 
     /**
      * Spatial node
+     * Spatial node is used to understand where to user is at
      * <pre>
      * {
      *      spatial:{

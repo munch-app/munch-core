@@ -1,13 +1,15 @@
 package munch.api.endpoints;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.PlaceRandom;
-import munch.api.endpoints.service.DiscoverService;
+import munch.api.endpoints.service.SearchService;
 import munch.document.DocumentQuery;
 import munch.restful.server.JsonCall;
 import munch.struct.Article;
 import munch.struct.Graphic;
+import munch.struct.Place;
 import org.apache.commons.lang3.RandomUtils;
 
 import java.util.List;
@@ -21,13 +23,13 @@ import java.util.List;
 @Singleton
 public class PlaceEndpoint extends AbstractEndpoint {
 
-    private final DiscoverService discover;
+    private final SearchService discover;
 
     private final DocumentQuery document;
     private final PlaceRandom placeRandom;
 
     @Inject
-    public PlaceEndpoint(DiscoverService discover, DocumentQuery document, PlaceRandom placeRandom) {
+    public PlaceEndpoint(SearchService discover, DocumentQuery document, PlaceRandom placeRandom) {
         this.discover = discover;
         this.document = document;
         this.placeRandom = placeRandom;
@@ -36,12 +38,23 @@ public class PlaceEndpoint extends AbstractEndpoint {
     @Override
     public void route() {
         path("/places", () -> {
-            post("/discover", discover::discover);
+            post("/search", this::search);
 
             // TODO gallery/articles pagination
             get("/:placeId/gallery", this::gallery);
             get("/:placeId/articles", this::articles);
         });
+    }
+
+    private List<Place> search(JsonCall call, JsonNode node) {
+        if (node.path("location").has("lat")) {
+            double lat = node.path("location").path("lat").asDouble();
+        }
+
+        String query = node.path("query").asText(null);
+
+
+        return null;
     }
 
     private List<Graphic> gallery(JsonCall call) {
