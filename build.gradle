@@ -69,7 +69,7 @@ configure(subprojects.findAll { it.name.matches("munch-(.+)") }) {
 
 configure(subprojects.findAll { it.name.matches("restful-(.+)") }) {
     group 'munch'
-    version '0.5.5'
+    version '0.5.6'
 
     dependencies {
 

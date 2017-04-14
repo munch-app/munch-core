@@ -83,6 +83,24 @@ public final class RestfulUtils {
     }
 
     /**
+     * @param request spark request
+     * @param name    name of query string
+     * @return double value from query string
+     * @throws ParamException query param not found
+     */
+    public static double queryDouble(Request request, String name) throws ParamException {
+        String value = request.queryParams(name);
+        if (StringUtils.isNotBlank(value)) {
+            try {
+                return Double.parseDouble(value);
+            } catch (NumberFormatException e) {
+                throw new ParamException(name);
+            }
+        }
+        throw new ParamException(name);
+    }
+
+    /**
      * Boolean query string by checking string.equal("true")
      *
      * @param request spark request
@@ -141,6 +159,24 @@ public final class RestfulUtils {
         if (StringUtils.isNotBlank(value)) {
             try {
                 return Integer.parseInt(value);
+            } catch (NumberFormatException e) {
+                throw new ParamException(name);
+            }
+        }
+        throw new ParamException(name);
+    }
+
+    /**
+     * @param request spark request
+     * @param name    name of path param
+     * @return Double value
+     * @throws ParamException path param not found
+     */
+    public static double pathDouble(Request request, String name) throws ParamException {
+        String value = request.params(name);
+        if (StringUtils.isNotBlank(value)) {
+            try {
+                return Double.parseDouble(value);
             } catch (NumberFormatException e) {
                 throw new ParamException(name);
             }

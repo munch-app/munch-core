@@ -85,6 +85,13 @@ public class JsonCall {
     }
 
     /**
+     * {@link RestfulUtils#queryDouble(Request, String)}
+     */
+    public double queryDouble(String name) throws ParamException {
+        return RestfulUtils.queryDouble(request, name);
+    }
+
+    /**
      * {@link RestfulUtils#queryBool(Request, String)}
      */
     public boolean queryBool(String name) throws ParamException {
@@ -110,6 +117,13 @@ public class JsonCall {
      */
     public int pathInt(String name) throws ParamException {
         return RestfulUtils.pathInt(request, name);
+    }
+
+    /**
+     * {@link RestfulUtils#pathDouble(Request, String)}
+     */
+    public double pathDouble(String name) throws ParamException {
+        return RestfulUtils.pathDouble(request, name);
     }
 
     /**

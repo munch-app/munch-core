@@ -1,0 +1,60 @@
+dependencies {
+    compile project(':restful-server')
+
+    // Injection
+    compile group: 'com.google.inject', name: 'guice', version: '4.1.0'
+    compile group: 'com.google.inject.extensions', name: 'guice-multibindings', version: '4.1.0'
+
+    // Hibernate
+    compile group: 'com.munch', name: 'hibernate-utils', version: '5.0.11.Final'
+    compile group: 'org.hibernate', name: 'hibernate-core', version: '5.0.11.Final'
+    compile group: 'org.hibernate', name: 'hibernate-entitymanager', version: '5.0.11.Final'
+    compile group: 'org.hibernate', name: 'hibernate-search-orm', version: '5.5.5.Final'
+
+    // Geo
+    compile group: 'org.opengeo', name: 'geodb', version: '0.8'
+    compile group: 'org.wololo', name: 'jts2geojson', version: '0.10.0'
+    compile group: 'org.hibernate', name: 'hibernate-spatial', version: '5.0.11.Final'
+}
+
+repositories {
+    // For geodb
+    maven {
+        url 'http://artifactory.fxloh.com/artifactory/boundlessgeo'
+        credentials {
+            username = "${artifactory_user}"
+            password = "${artifactory_password}"
+        }
+    }
+}
+
+apply plugin: 'application'
+apply plugin: 'com.bmuschko.docker-java-application'
+
+mainClassName = 'munch.geocoder.GeocoderApi'
+
+dockerDistTar {
+    runCommand('apk add --update bash && rm -rf /var/cache/apk/*')
+}
+
+ext.dockerTag = 'munch-core/munch-geocoder:latest'
+ext.dockerHost = '197547471367.dkr.ecr.ap-southeast-1.amazonaws.com/'
+
+docker {
+    javaApplication {
+        baseImage = 'openjdk:8-jdk-alpine'
+        maintainer = 'Fuxing'
+        ports = [8088]
+        tag = dockerTag
+    }
+}
+
+task publishDocker {
+    dependsOn 'dockerBuildImage'
+
+    doLast {
+        exec { commandLine "docker", "tag", dockerTag, dockerHost + dockerTag }
+        exec { commandLine "docker", "push", dockerHost + dockerTag }
+    }
+}
+
