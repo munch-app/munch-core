@@ -50,8 +50,8 @@ public class PlaceRandom {
             "http://s3.amazonaws.com/stnd-narcissa-prod/graphics/assets/000/000/026/medium/narcissa_night_january_2014_cwmosier-5.jpg?1390860090",
             "http://www.hotelvillemarie.com/img/restaurant/lebanese-restaurant-montreal-zawedeh-restaurant.jpg",
             "https://media.timeout.com/images/103700310/630/472/image.jpg",
-            "http://nandos.com.sg/nandos_sg/images/restaurants/junction8.png",
-            "https://www.ledr.com/colours/white.jpg"
+            "http://nandos.com.sg/nandos_sg/images/restaurants/junction8.png"
+//            ,"https://www.ledr.com/colours/white.jpg"
     );
 
     /**
@@ -124,6 +124,7 @@ public class PlaceRandom {
         menus.add(createMenu("https://s-media-cache-ak0.pinimg.com/originals/e7/a4/ba/e7a4ba1c9764939cde30912f90c3912a.png"));
         menus.add(createMenu("http://hooters.com.sg/images/OurMenu/ChefMenu2011-1.jpg"));
         menus.add(createMenu("https://static1.squarespace.com/static/5566a0a8e4b027e20d761a0e/55cc25bbe4b06cc6fabdde12/55cc28cfe4b0b32ffb4ea4db/1486465413595/PC+Menu+2016_Page_16.jpg?format=500w"));
+        menus.add(createMenu("http://hooters.com.sg/images/OurMenu/ChefMenu2011-1.jpg"));
         return menus;
     }
 
@@ -131,7 +132,7 @@ public class PlaceRandom {
         Menu menu = new Menu();
         menu.setType(Menu.TYPE_IMAGE);
         menu.setThumbUrl(thumbUrl);
-        menu.setUrl("http://hooters.com.sg/images/OurMenu/ChefMenu2011-1.jpg");
+        menu.setUrl(thumbUrl);
 //        menu.setUrl("http://nandos.com.sg/nandos_sg/download/Nandos-Singapore-Website-Menu-Jan-2017.pdf");
         return menu;
     }
