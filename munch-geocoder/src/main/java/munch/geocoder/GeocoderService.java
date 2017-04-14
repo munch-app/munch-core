@@ -48,8 +48,8 @@ public class GeocoderService implements JsonService {
 
     @Override
     public void route() {
-        get("/geocode", this::search);
-        get("/geocode/search", this::complete);
+        get("/geocode", this::geocode);
+        get("/geocode/search", this::search);
         get("/geocode/reverse", this::reverse);
     }
 
@@ -88,7 +88,7 @@ public class GeocoderService implements JsonService {
      * @return code 200: Place if exist
      * code 404: if none found
      */
-    private Place search(JsonCall call) {
+    private Place geocode(JsonCall call) {
         String text = call.queryString("text").toLowerCase();
         return provider.optional(em -> em.createQuery("SELECT p FROM Place p " +
                 "WHERE LOWER(p.name) = :name", Place.class)
@@ -107,7 +107,7 @@ public class GeocoderService implements JsonService {
      * @return code 200: List of places
      * if none found empty data list
      */
-    private List<Place> complete(JsonCall call) {
+    private List<Place> search(JsonCall call) {
         String text = call.queryString("text").toLowerCase();
         if (text.length() < 3) return Collections.emptyList();
 
