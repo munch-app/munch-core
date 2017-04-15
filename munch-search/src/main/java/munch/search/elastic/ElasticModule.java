@@ -1,10 +1,9 @@
-package munch.search;
+package munch.search.elastic;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
 
@@ -24,13 +23,13 @@ public class ElasticModule extends AbstractModule {
 
     @Provides
     @Singleton
-    RestClient provideClient() {
-        Config config = ConfigFactory.load().getConfig("munch.search");
+    RestClient provideClient(Config config) {
+        Config elastic = config.getConfig("elastic");
 
         return RestClient.builder(new HttpHost(
-                config.getString("hostname"),
-                config.getInt("port"),
-                config.getString("scheme"))
+                elastic.getString("hostname"),
+                elastic.getInt("port"),
+                elastic.getString("scheme"))
         ).build();
     }
 }

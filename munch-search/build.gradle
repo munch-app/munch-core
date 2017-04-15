@@ -1,7 +1,12 @@
 dependencies {
-    compile project(':munch-struct')
+    compile project(':restful-server')
+
+    // Injection
+    compile group: 'com.google.inject', name: 'guice', version: '4.1.0'
+    compile group: 'com.google.inject.extensions', name: 'guice-multibindings', version: '4.1.0'
 
     // Core
-    compile group: 'com.google.inject', name: 'guice', version: '4.1.0'
+    compile project(':munch-struct')
+    compile group: 'org.wololo', name: 'jts2geojson', version: '0.10.0'
     compile group: 'org.elasticsearch.client', name: 'rest', version: '5.2.2'
 }

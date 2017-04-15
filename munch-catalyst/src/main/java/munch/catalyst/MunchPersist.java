@@ -7,7 +7,7 @@ import com.google.inject.Singleton;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import munch.document.DocumentStore;
-import munch.search.SearchStore;
+import munch.search.elastic.SearchStore;
 import munch.struct.Place;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

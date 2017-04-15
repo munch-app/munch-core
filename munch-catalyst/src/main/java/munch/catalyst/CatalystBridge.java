@@ -12,7 +12,7 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import munch.document.PostgresModule;
 import munch.document.PostgresPlace;
-import munch.search.ElasticModule;
+import munch.search.elastic.ElasticModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

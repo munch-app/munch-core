@@ -1,4 +1,4 @@
-package munch.search;
+package munch.search.elastic;
 
 import munch.struct.Place;
 

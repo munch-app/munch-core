@@ -4,6 +4,9 @@ include 'munch-struct'
 include 'munch-api'
 include 'munch-catalyst'
 
+// Service modules
+include 'munch-service-geocoder'
+
 // Library modules
 include 'cache-layers'
 include 'restful-server'
@@ -11,5 +14,4 @@ include 'restful-client'
 include 'munch-document'
 include 'munch-search'
 include 'munch-object'
-include 'munch-geocoder'
 
