@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.PlaceRandom;
-import munch.api.endpoints.service.SearchService;
 import munch.document.DocumentQuery;
 import munch.restful.server.JsonCall;
 import munch.struct.Article;
@@ -23,14 +22,11 @@ import java.util.List;
 @Singleton
 public class PlaceEndpoint extends AbstractEndpoint {
 
-    private final SearchService discover;
-
     private final DocumentQuery document;
     private final PlaceRandom placeRandom;
 
     @Inject
-    public PlaceEndpoint(SearchService discover, DocumentQuery document, PlaceRandom placeRandom) {
-        this.discover = discover;
+    public PlaceEndpoint(DocumentQuery document, PlaceRandom placeRandom) {
         this.document = document;
         this.placeRandom = placeRandom;
     }
@@ -47,13 +43,12 @@ public class PlaceEndpoint extends AbstractEndpoint {
     }
 
     private List<Place> search(JsonCall call, JsonNode node) {
+        // TODO
         if (node.path("location").has("lat")) {
             double lat = node.path("location").path("lat").asDouble();
         }
 
         String query = node.path("query").asText(null);
-
-
         return null;
     }
 

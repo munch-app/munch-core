@@ -11,9 +11,11 @@ import munch.restful.server.RestfulService;
  * Project: munch-core
  */
 public class EndpointsModule extends AbstractModule {
+
     @Override
     protected void configure() {
         Multibinder<RestfulService> routerBinder = Multibinder.newSetBinder(binder(), RestfulService.class);
         routerBinder.addBinding().to(PlaceEndpoint.class);
     }
+
 }

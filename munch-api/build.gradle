@@ -6,6 +6,9 @@ dependencies {
     compile project(':munch-document')
     compile project(':munch-search')
 
+    // For Geo Json
+    compile group: 'org.wololo', name: 'jts2geojson', version: '0.10.0'
+
     // Injection
     compile group: 'com.google.inject', name: 'guice', version: '4.1.0'
     compile group: 'com.google.inject.extensions', name: 'guice-multibindings', version: '4.1.0'

@@ -36,16 +36,16 @@ import java.util.Set;
                         // Normalize token text to lowercase, as the user is unlikely to
                         // care about casing when searching for matches
                         @TokenFilterDef(factory = PatternReplaceFilterFactory.class, params = {
-                                @Parameter(name = "pattern",value = "([^a-zA-Z0-9\\.])"),
+                                @Parameter(name = "pattern", value = "([^a-zA-Z0-9\\.])"),
                                 @Parameter(name = "replacement", value = " "),
-                                @Parameter(name = "replace", value = "all") }),
+                                @Parameter(name = "replace", value = "all")}),
                         @TokenFilterDef(factory = LowerCaseFilterFactory.class),
                         @TokenFilterDef(factory = StopFilterFactory.class),
                         // Index partial words starting at the front, so we can provide
                         // Autocomplete functionality
                         @TokenFilterDef(factory = EdgeNGramFilterFactory.class, params = {
                                 @Parameter(name = "minGramSize", value = "3"),
-                                @Parameter(name = "maxGramSize", value = "50") }) }),
+                                @Parameter(name = "maxGramSize", value = "50")})}),
 
         @AnalyzerDef(name = "autocompleteNGramAnalyzer",
 
@@ -59,11 +59,11 @@ import java.util.Set;
                         @TokenFilterDef(factory = LowerCaseFilterFactory.class),
                         @TokenFilterDef(factory = NGramFilterFactory.class, params = {
                                 @Parameter(name = "minGramSize", value = "3"),
-                                @Parameter(name = "maxGramSize", value = "5") }),
+                                @Parameter(name = "maxGramSize", value = "5")}),
                         @TokenFilterDef(factory = PatternReplaceFilterFactory.class, params = {
-                                @Parameter(name = "pattern",value = "([^a-zA-Z0-9\\.])"),
+                                @Parameter(name = "pattern", value = "([^a-zA-Z0-9\\.])"),
                                 @Parameter(name = "replacement", value = " "),
-                                @Parameter(name = "replace", value = "all") })
+                                @Parameter(name = "replace", value = "all")})
                 }),
 
         @AnalyzerDef(name = "standardAnalyzer",
@@ -79,7 +79,7 @@ import java.util.Set;
                         @TokenFilterDef(factory = PatternReplaceFilterFactory.class, params = {
                                 @Parameter(name = "pattern", value = "([^a-zA-Z0-9\\.])"),
                                 @Parameter(name = "replacement", value = " "),
-                                @Parameter(name = "replace", value = "all") })
+                                @Parameter(name = "replace", value = "all")})
                 }) // Def
 })
 public final class Place {
@@ -139,6 +139,7 @@ public final class Place {
      *
      * @return multi linked region of place
      */
+    @JsonIgnore
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     public Set<Region> getRegions() {
         return regions;

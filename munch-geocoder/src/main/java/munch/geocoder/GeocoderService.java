@@ -1,5 +1,8 @@
 package munch.geocoder;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.munch.hibernate.utils.TransactionProvider;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -14,13 +17,14 @@ import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.hibernate.search.jpa.Search;
 import org.hibernate.search.query.dsl.QueryBuilder;
+import org.wololo.geojson.Feature;
+import org.wololo.jts2geojson.GeoJSONWriter;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created By: Fuxing Loh
@@ -32,6 +36,8 @@ import java.util.List;
 public class GeocoderService implements JsonService {
     private final TransactionProvider provider;
     private final GeometryFactory factory = new GeometryFactory();
+
+    private Map<String, JsonNode> placeCache = new HashMap<>();
 
     /**
      * @param dataImporter data to import to geocoding services
@@ -49,8 +55,8 @@ public class GeocoderService implements JsonService {
     @Override
     public void route() {
         get("/geocode", this::geocode);
-        get("/geocode/search", this::search);
-        get("/geocode/reverse", this::reverse);
+        get("/search", this::search);
+        get("/reverse", this::reverse);
     }
 
     /**
@@ -63,7 +69,7 @@ public class GeocoderService implements JsonService {
      * @return code 200: Place if exist
      * code 404: if none found
      */
-    private Place reverse(JsonCall call) {
+    private JsonNode reverse(JsonCall call) {
         double lat = call.queryDouble("lat");
         double lng = call.queryDouble("lng");
         Point point = factory.createPoint(new Coordinate(lng, lat));
@@ -75,6 +81,7 @@ public class GeocoderService implements JsonService {
                 .map(Region::getPlaces)
                 .flatMap(List::stream)
                 .max(Comparator.comparingLong(Place::getSort))
+                .map(this::convert)
                 .orElse(null);
     }
 
@@ -88,12 +95,14 @@ public class GeocoderService implements JsonService {
      * @return code 200: Place if exist
      * code 404: if none found
      */
-    private Place geocode(JsonCall call) {
+    private JsonNode geocode(JsonCall call) {
         String text = call.queryString("text").toLowerCase();
         return provider.optional(em -> em.createQuery("SELECT p FROM Place p " +
                 "WHERE LOWER(p.name) = :name", Place.class)
                 .setParameter("name", text)
-                .getSingleResult()).orElse(null);
+                .getSingleResult())
+                .map(this::convert)
+                .orElse(null);
     }
 
     /**
@@ -107,11 +116,11 @@ public class GeocoderService implements JsonService {
      * @return code 200: List of places
      * if none found empty data list
      */
-    private List<Place> search(JsonCall call) {
+    private JsonNode search(JsonCall call) {
         String text = call.queryString("text").toLowerCase();
-        if (text.length() < 3) return Collections.emptyList();
+        if (text.length() < 3) return nodes(200, Collections.emptyList());
 
-        return provider.reduce(em -> {
+        List<Place> places = provider.reduce(em -> {
             FullTextEntityManager fullText = Search.getFullTextEntityManager(em);
 
             QueryBuilder titleQB = fullText.getSearchFactory().buildQueryBuilder().forEntity(Place.class).get();
@@ -125,5 +134,43 @@ public class GeocoderService implements JsonService {
             //noinspection unchecked
             return fullTextQuery.getResultList();
         });
+        if (places.isEmpty()) return nodes(200, Collections.emptyList());
+
+        ArrayNode nodes = newArrayNode();
+        places.forEach(place -> nodes.add(convert(place)));
+        return nodes(200, nodes);
+    }
+
+    /**
+     * Convert place to json node
+     *
+     * @param place place
+     * @return converted json node
+     */
+    private JsonNode convert(Place place) {
+        if (!placeCache.containsKey(place.getName())) {
+            ObjectNode node = newNode();
+            // Put name
+            node.put("name", place.getName());
+
+            // Put geo json
+            GeoJSONWriter writer = new GeoJSONWriter();
+            List<Feature> features = place.getRegions().stream()
+                    .map(Region::getGeometry)
+                    .map(geo -> new Feature(writer.write(geo), Collections.emptyMap()))
+                    .collect(Collectors.toList());
+            JsonNode geoJson = objectMapper.valueToTree(writer.write(features));
+            node.set("geo", geoJson);
+
+            // If center exist, put a node for it
+            if (place.getCenter() != null) {
+                ObjectNode center = newNode();
+                center.put("lat", place.getCenter().getY());
+                center.put("lng", place.getCenter().getX());
+                node.set("center", center);
+            }
+            placeCache.put(place.getName(), node);
+        }
+        return placeCache.getOrDefault(place.getName(), null);
     }
 }

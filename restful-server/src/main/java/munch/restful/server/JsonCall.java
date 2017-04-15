@@ -132,4 +132,12 @@ public class JsonCall {
     public String pathString(String name) throws ParamException {
         return RestfulUtils.pathString(request, name);
     }
+
+    /**
+     * @param name name of header
+     * @return nullable string header
+     */
+    public String getHeader(String name) {
+        return request().headers(name);
+    }
 }

@@ -2,7 +2,6 @@ package munch.api.endpoints;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import munch.api.endpoints.service.SearchService;
 import org.junit.jupiter.api.Test;
 
 /**

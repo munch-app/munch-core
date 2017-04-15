@@ -1,11 +1,12 @@
 package munch.api.endpoints;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
-import munch.restful.server.exceptions.JsonException;
-import munch.restful.server.exceptions.ParamException;
+import org.apache.commons.lang3.StringUtils;
 import spark.RouteGroup;
 import spark.Spark;
+
+import java.util.Optional;
 
 /**
  * Created by: Fuxing
@@ -23,41 +24,30 @@ public abstract class AbstractEndpoint implements JsonService {
     }
 
     /**
-     * @param rootNode root node with {spatial:{}}
-     * @return Spatial object
-     * @throws ParamException if spatial: {} not found
+     * Required Headers:
+     * Spatial-Lat
+     * Spatial-Lng
+     *
+     * @param call json call to search header object
+     * @return Optional Spatial object
      */
-    protected static Spatial getSpatial(JsonNode rootNode) {
-        return new Spatial(rootNode);
+    protected static Optional<Spatial> getSpatial(JsonCall call) {
+        String lat = call.getHeader("Spatial-Lat");
+        String lng = call.getHeader("Spatial-Lng");
+        if (StringUtils.isAnyBlank(lat, lng)) return Optional.empty();
+        return Optional.of(new Spatial(lat, lng));
     }
 
     /**
-     * Spatial node
-     * Spatial node is used to understand where to user is at
-     * <pre>
-     * {
-     *      spatial:{
-     *          lat: 1.34
-     *          lng: 103.8
-     *      }
-     *  }
-     * </pre>
+     * Spatial header
      */
     public static class Spatial {
-
         private final double lat;
         private final double lng;
 
-        /**
-         * @param rootNode root node to extract spatial data
-         */
-        public Spatial(JsonNode rootNode) {
-            JsonNode spatial = rootNode.path("spatial");
-            if (!(spatial.has("lat") && spatial.has("lng"))) {
-                throw new JsonException("Required spatial node not found in root node.");
-            }
-            this.lat = spatial.path("lat").asDouble();
-            this.lng = spatial.path("lng").asDouble();
+        protected Spatial(String lat, String lng) {
+            this.lat = Double.parseDouble(lat);
+            this.lng = Double.parseDouble(lng);
         }
 
         /**

@@ -34,6 +34,7 @@ public final class Region {
      */
     @Id
     @Column(length = 255, updatable = false, nullable = false)
+    @JsonIgnore
     public String getCode() {
         return code;
     }
@@ -46,6 +47,7 @@ public final class Region {
      * @return name of subzone
      */
     @Column(length = 255, updatable = false, nullable = false)
+    @JsonIgnore
     public String getName() {
         return name;
     }
@@ -67,11 +69,6 @@ public final class Region {
         this.geometry = geometry;
     }
 
-    @Transient
-    public String getWKT() {
-        return getGeometry().toText();
-    }
-
     /**
      * Cannot be empty
      *
@@ -83,7 +80,6 @@ public final class Region {
     public List<Place> getPlaces() {
         return places;
     }
-
 
     protected void setPlaces(List<Place> places) {
         this.places = places;
