@@ -3,7 +3,7 @@ version: '2'
 services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:5.2.2
-    container_name: munch-struct-elasticsearch
+    container_name: munch-service-elasticsearch
     environment:
       ES_JAVA_OPTS: "-Xms1g -Xmx1g"
       xpack.security.enabled: "false"
@@ -24,47 +24,64 @@ services:
       - 9200:9200
     networks:
       - struct-network
-  document:
+  search:
+    image: munch-core/munch-service-search:latest
+    container_name: munch-service-search
+    environment:
+      - SEARCH_DATABASE_HOSTNAME=elasticsearch
+    ports:
+      - "8002:8000"
+    links:
+      - elasticsearch
+    networks:
+      - struct-network
+  postgres:
     image: postgres:9-alpine
-    container_name: munch-struct-postgres
+    container_name: munch-service-postgres
     ports:
       - "5444:5432"
     environment:
       - POSTGRES_PASSWORD=K851xsSffyTJP3e1M7rd
     networks:
       - struct-network
-  bridge:
+  data:
+    image: munch-core/munch-service-data:latest
+    container_name: munch-service-data
+    environment:
+      - DOCUMENT_DATABASE_URL=jdbc:postgresql://postgres:5432/postgres
+      - DOCUMENT_DATABASE_USERNAME=postgres
+      - DOCUMENT_DATABASE_PASSWORD=K851xsSffyTJP3e1M7rd
+      - DOCUMENT_DATABASE_AUTO_CREATE=true
+    ports:
+      - "8001:8000"
+    links:
+      - postgres
+    networks:
+      - struct-network
+  catalyst:
     image: munch-core/catalyst-bridge:latest
-    container_name: munch-struct-bridge
+    container_name: munch-catalyst-bridge
     environment:
       - CATALYST_URL=http://catalyst.munch.space:8201
       - CATALYST_USER=catalyst
       - CATALYST_PASSWORD=bq1Enf1p32pTEvqzLz9OrtXtXsEWFhU5cO9Eoww9
 
-      - DOCUMENT_DATABASE_URL=jdbc:postgresql://document:5432/postgres
-      - DOCUMENT_DATABASE_USERNAME=postgres
-      - DOCUMENT_DATABASE_PASSWORD=K851xsSffyTJP3e1M7rd
-      - SEARCH_DATABASE_HOSTNAME=elasticsearch
+      - MUNCH_SERVICE_DATA_URL=http://data:8000
+      - MUNCH_SERVICE_SEARCH_URL=http://search:8000
     links:
-      - document
-      - elasticsearch
+      - data
+      - search
     networks:
       - struct-network
-#  munch-api:
-#    image: munch-core/munch-api:latest
-#    container_name: munch-core-api
-#    environment:
-#      - DOCUMENT_DATABASE_URL=jdbc:postgresql://document:5432/postgres
-#      - DOCUMENT_DATABASE_USERNAME=postgres
-#      - DOCUMENT_DATABASE_PASSWORD=K851xsSffyTJP3e1M7rd
-#      - SEARCH_DATABASE_HOSTNAME=elasticsearch
-#    ports:
-#      - "8088:8088"
-#    links:
-#      - document
-#      - elasticsearch
-#    networks:
-#      - struct-network
+  geocoder:
+    image: munch-core/munch-service-geocoder:latest
+    container_name: munch-service-geocoder
+    environment:
+    ports:
+      - "8003:8000"
+    networks:
+      - struct-network
+
 
 networks:
   struct-network:
