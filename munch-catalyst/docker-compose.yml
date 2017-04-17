@@ -49,7 +49,7 @@ services:
       - DOCUMENT_DATABASE_URL=jdbc:postgresql://postgres:5432/postgres
       - DOCUMENT_DATABASE_USERNAME=postgres
       - DOCUMENT_DATABASE_PASSWORD=K851xsSffyTJP3e1M7rd
-      - DOCUMENT_DATABASE_AUTOCREATE=true
+      - DOCUMENT_DATABASE_AUTO_CREATE=true
     links:
       - postgres
     networks:
@@ -63,7 +63,7 @@ services:
       - CATALYST_PASSWORD=bq1Enf1p32pTEvqzLz9OrtXtXsEWFhU5cO9Eoww9
 
       - MUNCH_SERVICE_DATA_URL=http://data:8000
-      - MUNCH_SERVICE_search_URL=http://search:8000
+      - MUNCH_SERVICE_SEARCH_URL=http://search:8000
     links:
       - data
       - search

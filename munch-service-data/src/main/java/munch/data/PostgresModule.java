@@ -38,7 +38,7 @@ public class PostgresModule extends AbstractModule {
         WaitFor.host(url.substring(5), Duration.ofSeconds(30));
 
         Map<String, String> properties = new HashMap<>();
-        properties.put("hibernate.dialect", "munch.document.hibernate.JsonPostgreSQLDialect");
+        properties.put("hibernate.dialect", "munch.data.hibernate.JsonPostgreSQLDialect");
         properties.put("hibernate.connection.provider_class", "com.zaxxer.hikari.hibernate.HikariConnectionProvider");
 
         properties.put("hibernate.hikari.dataSourceClassName", "org.postgresql.ds.PGSimpleDataSource");

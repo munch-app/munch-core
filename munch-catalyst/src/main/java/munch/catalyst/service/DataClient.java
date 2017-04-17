@@ -39,14 +39,14 @@ public class DataClient extends RestfulClient {
 
     public void put(List<Place> places) {
         if (places.isEmpty()) return;
-        doPut("/places/batch/put")
+        doPost("/places/batch/put")
                 .body(places)
                 .hasMetaCodes(200);
     }
 
     public void delete(List<String> keys) {
         if (keys.isEmpty()) return;
-        doDelete("/places/batch/delete")
+        doPost("/places/batch/delete")
                 .body(keys)
                 .hasMetaCodes(200);
     }

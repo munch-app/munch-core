@@ -114,9 +114,17 @@ public class RestfulResponse {
         throw new StructuredException(code, type, message, detailed);
     }
 
+    /**
+     * @param clazz class of object
+     * @param <T>   type of object
+     * @return object if data node is present
+     * return null if node is null or missing
+     */
     public <T> T asDataObject(Class<T> clazz) {
         try {
-            return mapper.treeToValue(getDataNode(), clazz);
+            JsonNode data = getDataNode();
+            if (data.isNull() || data.isMissingNode()) return null;
+            return mapper.treeToValue(data, clazz);
         } catch (JsonProcessingException e) {
             throw ExceptionParser.handle(e);
         }

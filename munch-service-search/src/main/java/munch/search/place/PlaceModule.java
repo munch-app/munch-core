@@ -2,7 +2,8 @@ package munch.search.place;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
-import munch.search.ElasticModule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -13,6 +14,7 @@ import java.io.IOException;
  * Project: munch-core
  */
 public class PlaceModule extends AbstractModule {
+    private static final Logger logger = LoggerFactory.getLogger(PlaceModule.class);
 
     @Override
     protected void configure() {
@@ -22,6 +24,7 @@ public class PlaceModule extends AbstractModule {
     @Inject
     void configureMapping(PlaceMapping mapping) throws IOException {
         PlaceMapping.Result result = mapping.validate();
+        logger.info("Place mapping validation result: {}", result.name());
         switch (result) {
             case Success:
                 return;
