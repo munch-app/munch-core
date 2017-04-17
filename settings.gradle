@@ -13,3 +13,5 @@ include 'munch-service-data'
 // Library modules
 include 'restful-server'
 include 'restful-client'
+include 'munch-service-object'
+
