@@ -36,7 +36,12 @@ public class RestfulRequest {
         return this;
     }
 
-    public RestfulRequest routeParam(String name, String value) {
+    /**
+     * @param name  name in path put {id}
+     * @param value value for replace in place
+     * @return this
+     */
+    public RestfulRequest path(String name, String value) {
         request.routeParam(name, value);
         return this;
     }
@@ -101,11 +106,19 @@ public class RestfulRequest {
         return this;
     }
 
+    /**
+     * @param body raw bytes body
+     * @return this
+     */
     public RestfulRequest body(byte[] body) {
         request.body(body);
         return this;
     }
 
+    /**
+     * @param object object to convert to json
+     * @return this
+     */
     public RestfulRequest body(Object object) {
         try {
             request.body(mapper.writeValueAsBytes(object));

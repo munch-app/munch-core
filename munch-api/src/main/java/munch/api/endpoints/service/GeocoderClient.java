@@ -3,8 +3,9 @@ package munch.api.endpoints.service;
 import com.typesafe.config.Config;
 import munch.restful.client.RestfulClient;
 import munch.restful.client.exception.StructuredException;
-import org.wololo.geojson.GeoJSON;
+import munch.struct.neighborhood.Neighborhood;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.List;
@@ -23,72 +24,30 @@ public class GeocoderClient extends RestfulClient {
      *
      * @param config config to load geocoder.url
      */
+    @Inject
     public GeocoderClient(@Named("services") Config config) {
         super(config.getString("geocoder.url"));
     }
 
-    public Location reverse(double lat, double lng) throws StructuredException {
+    public Neighborhood reverse(double lat, double lng) throws StructuredException {
         return doGet("/reverse")
                 .queryString("lat", lat)
                 .queryString("lng", lng)
-                .hasMetaCodes(200)
-                .asDataObject(Location.class);
+                .hasMetaCodes(200, 404)
+                .asDataObject(Neighborhood.class);
     }
 
-    public Location geocode(String text) throws StructuredException {
+    public Neighborhood geocode(String text) throws StructuredException {
         return doGet("/geocode")
                 .queryString("text", text)
-                .hasMetaCodes(200)
-                .asDataObject(Location.class);
+                .hasMetaCodes(200, 404)
+                .asDataObject(Neighborhood.class);
     }
 
-    public List<Location> search(String text) throws StructuredException {
+    public List<Neighborhood> search(String text) throws StructuredException {
         return doGet("/search")
                 .queryString("text", text)
                 .hasMetaCodes(200)
-                .asDataList(Location.class);
-    }
-
-    /**
-     * Geocoder service place object
-     * Lat, lng is the center is currently optional
-     */
-    public static class Location {
-        private String name;
-        private Double lat;
-        private Double lng;
-        private GeoJSON geo;
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public Double getLat() {
-            return lat;
-        }
-
-        public void setLat(Double lat) {
-            this.lat = lat;
-        }
-
-        public Double getLng() {
-            return lng;
-        }
-
-        public void setLng(Double lng) {
-            this.lng = lng;
-        }
-
-        public GeoJSON getGeo() {
-            return geo;
-        }
-
-        public void setGeo(GeoJSON geo) {
-            this.geo = geo;
-        }
+                .asDataList(Neighborhood.class);
     }
 }

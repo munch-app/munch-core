@@ -4,13 +4,11 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
-import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import munch.api.endpoints.EndpointsModule;
 import munch.api.endpoints.service.ServicesModule;
-import munch.data.PostgresModule;
 import munch.restful.server.RestfulServer;
 import munch.restful.server.RestfulService;
-import munch.search.ElasticModule;
 
 import java.util.Set;
 
@@ -49,17 +47,12 @@ public final class ApiServer extends RestfulServer {
     public static void main(String[] args) {
         Injector injector = Guice.createInjector(
                 new ApiModule(),
-                new PostgresModule(),
-                new ElasticModule(),
-                new EndpointsModule(),
-                new ServicesModule()
+                new ServicesModule(),
+                new EndpointsModule()
         );
 
-        Config config = injector.getInstance(Config.class);
-        final int port = config.getInt("http.port");
+        // Start api server on port on http.port
         final RestfulServer server = injector.getInstance(ApiServer.class);
-
-        // Start api server on port.
-        server.start(port);
+        server.start(ConfigFactory.load().getInt("http.port"));
     }
 }

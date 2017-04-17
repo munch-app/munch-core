@@ -2,7 +2,7 @@ package munch.catalyst;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
-import munch.struct.Place;
+import munch.struct.place.Place;
 
 import java.util.List;
 

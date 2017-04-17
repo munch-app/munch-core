@@ -25,7 +25,7 @@ public final class Region {
     private Geometry geometry;
 
     // Mapped by places
-    private List<Location> locations;
+    private List<Neighborhood> neighborhoods;
 
     /**
      * Subzone code
@@ -77,12 +77,12 @@ public final class Region {
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "regions")
     @OrderBy("sort ASC")
     @JsonIgnore
-    public List<Location> getLocations() {
-        return locations;
+    public List<Neighborhood> getNeighborhoods() {
+        return neighborhoods;
     }
 
-    protected void setLocations(List<Location> locations) {
-        this.locations = locations;
+    protected void setNeighborhoods(List<Neighborhood> neighborhoods) {
+        this.neighborhoods = neighborhoods;
     }
 
     @Override

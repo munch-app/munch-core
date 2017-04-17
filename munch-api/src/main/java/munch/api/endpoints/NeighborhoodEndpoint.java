@@ -1,10 +1,12 @@
 package munch.api.endpoints;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.endpoints.service.GeocoderClient;
 import munch.restful.server.JsonCall;
+import munch.struct.neighborhood.Neighborhood;
+
+import java.util.List;
 
 /**
  * Created by: Fuxing
@@ -13,40 +15,37 @@ import munch.restful.server.JsonCall;
  * Project: munch-core
  */
 @Singleton
-public class LocationEndpoint extends AbstractEndpoint {
+public class NeighborhoodEndpoint extends AbstractEndpoint {
 
     private final GeocoderClient geocoder;
 
     @Inject
-    public LocationEndpoint(GeocoderClient geocoder) {
+    public NeighborhoodEndpoint(GeocoderClient geocoder) {
         this.geocoder = geocoder;
     }
 
     @Override
     public void route() {
-        PATH("/locations", () -> {
+        PATH("/neighborhood", () -> {
             GET("/search", this::search);
             GET("/geocode", this::geocode);
             GET("/reverse", this::reverse);
         });
     }
 
-    private JsonNode reverse(JsonCall call) {
+    private Neighborhood reverse(JsonCall call) {
         double lat = call.queryDouble("lat");
         double lng = call.queryDouble("lng");
-        // TODO
-        return null;
+        return geocoder.reverse(lat, lng);
     }
 
-    private JsonNode search(JsonCall call) {
+    private List<Neighborhood> search(JsonCall call) {
         String text = call.queryString("text");
-        // TODO
-        return null;
+        return geocoder.search(text);
     }
 
-    private JsonNode geocode(JsonCall call) {
+    private Neighborhood geocode(JsonCall call) {
         String text = call.queryString("text");
-        // TODO
-        return null;
+        return geocoder.geocode(text);
     }
 }

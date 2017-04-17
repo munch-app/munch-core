@@ -1,13 +1,7 @@
 dependencies {
     compile rootProject
-    compile project(':munch-service-data')
-    compile project(':munch-service-search')
-
     compile project(':restful-server')
     compile project(':restful-client')
-
-    // For Geo Json
-    compile group: 'org.wololo', name: 'jts2geojson', version: '0.10.0'
 
     // Injection
     compile group: 'com.google.inject', name: 'guice', version: '4.1.0'

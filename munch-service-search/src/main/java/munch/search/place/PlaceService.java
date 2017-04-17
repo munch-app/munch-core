@@ -6,7 +6,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
-import munch.struct.Place;
+import munch.struct.place.Place;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.IOException;
@@ -60,12 +60,11 @@ public final class PlaceService implements JsonService {
      * }
      * </pre>
      *
-     * @param call json call
+     * @param call    json call
+     * @param request body node
      * @return {data: list of place, total: size of all possible place}
      */
-    private JsonNode search(JsonCall call) throws IOException {
-        JsonNode query = newNode();
-        JsonNode request = call.bodyAsJson();
+    private JsonNode search(JsonCall call, JsonNode request) throws IOException {
         int from = request.path("from").asInt();
         int size = request.path("size").asInt();
 

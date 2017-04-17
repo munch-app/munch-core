@@ -3,7 +3,7 @@ package munch.data.place;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.munch.hibernate.utils.TransactionProvider;
-import munch.struct.Place;
+import munch.struct.place.Place;
 
 import javax.persistence.EntityManager;
 import java.util.Collections;
