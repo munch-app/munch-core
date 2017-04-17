@@ -7,7 +7,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import munch.geocoder.database.DataImporter;
-import munch.geocoder.database.Place;
+import munch.geocoder.database.Location;
 import munch.geocoder.database.Region;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
@@ -77,9 +77,9 @@ public class GeocoderService implements JsonService {
                 .setParameter("point", point)
                 .getResultList())
                 .stream()
-                .map(Region::getPlaces)
+                .map(Region::getLocations)
                 .flatMap(List::stream)
-                .max(Comparator.comparingLong(Place::getSort))
+                .max(Comparator.comparingLong(Location::getSort))
                 .map(this::convert)
                 .orElse(null);
     }
@@ -97,7 +97,7 @@ public class GeocoderService implements JsonService {
     private JsonNode geocode(JsonCall call) {
         String text = call.queryString("text").toLowerCase();
         return provider.optional(em -> em.createQuery("SELECT p FROM Place p " +
-                "WHERE LOWER(p.name) = :name", Place.class)
+                "WHERE LOWER(p.name) = :name", Location.class)
                 .setParameter("name", text)
                 .getSingleResult())
                 .map(this::convert)
@@ -119,40 +119,40 @@ public class GeocoderService implements JsonService {
         String text = call.queryString("text").toLowerCase();
         if (text.length() < 3) return Collections.emptyList();
 
-        List<Place> places = provider.reduce(em -> {
+        List<Location> locations = provider.reduce(em -> {
             FullTextEntityManager fullText = Search.getFullTextEntityManager(em);
 
-            QueryBuilder titleQB = fullText.getSearchFactory().buildQueryBuilder().forEntity(Place.class).get();
+            QueryBuilder titleQB = fullText.getSearchFactory().buildQueryBuilder().forEntity(Location.class).get();
             Query query = titleQB.phrase().withSlop(2).onField("edgeNGramName")
                     .andField("nGramName").boostedTo(5)
                     .sentence(text).createQuery();
 
-            FullTextQuery fullTextQuery = fullText.createFullTextQuery(query, Place.class);
+            FullTextQuery fullTextQuery = fullText.createFullTextQuery(query, Location.class);
             fullTextQuery.setMaxResults(20);
 
             //noinspection unchecked
             return fullTextQuery.getResultList();
         });
-        if (places.isEmpty()) return Collections.emptyList();
+        if (locations.isEmpty()) return Collections.emptyList();
 
-        return places.stream().map(Place::getName).collect(Collectors.toList());
+        return locations.stream().map(Location::getName).collect(Collectors.toList());
     }
 
     /**
      * Convert place to json node
      *
-     * @param place place
+     * @param location place
      * @return converted json node
      */
-    private JsonNode convert(Place place) {
-        if (!placeCache.containsKey(place.getName())) {
+    private JsonNode convert(Location location) {
+        if (!placeCache.containsKey(location.getName())) {
             ObjectNode node = newNode();
             // Put name
-            node.put("name", place.getName());
+            node.put("name", location.getName());
 
             // Put geo json
             GeoJSONWriter writer = new GeoJSONWriter();
-            List<Feature> features = place.getRegions().stream()
+            List<Feature> features = location.getRegions().stream()
                     .map(Region::getGeometry)
                     .map(geo -> new Feature(writer.write(geo), Collections.emptyMap()))
                     .collect(Collectors.toList());
@@ -160,14 +160,14 @@ public class GeocoderService implements JsonService {
             node.set("geo", geoJson);
 
             // If center exist, put a node for it
-            if (place.getCenter() != null) {
+            if (location.getCenter() != null) {
                 ObjectNode center = newNode();
-                center.put("lat", place.getCenter().getY());
-                center.put("lng", place.getCenter().getX());
+                center.put("lat", location.getCenter().getY());
+                center.put("lng", location.getCenter().getX());
                 node.set("center", center);
             }
-            placeCache.put(place.getName(), node);
+            placeCache.put(location.getName(), node);
         }
-        return placeCache.getOrDefault(place.getName(), null);
+        return placeCache.getOrDefault(location.getName(), null);
     }
 }

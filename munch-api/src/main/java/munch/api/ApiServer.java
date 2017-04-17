@@ -10,7 +10,7 @@ import munch.api.endpoints.service.ServicesModule;
 import munch.data.PostgresModule;
 import munch.restful.server.RestfulServer;
 import munch.restful.server.RestfulService;
-import munch.search.elastic.ElasticModule;
+import munch.search.ElasticModule;
 
 import java.util.Set;
 

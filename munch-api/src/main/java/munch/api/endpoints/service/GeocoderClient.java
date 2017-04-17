@@ -27,33 +27,33 @@ public class GeocoderClient extends RestfulClient {
         super(config.getString("geocoder.url"));
     }
 
-    public Place reverse(double lat, double lng) throws StructuredException {
+    public Location reverse(double lat, double lng) throws StructuredException {
         return doGet("/reverse")
                 .queryString("lat", lat)
                 .queryString("lng", lng)
                 .hasMetaCodes(200)
-                .asDataObject(Place.class);
+                .asDataObject(Location.class);
     }
 
-    public Place geocode(String text) throws StructuredException {
+    public Location geocode(String text) throws StructuredException {
         return doGet("/geocode")
                 .queryString("text", text)
                 .hasMetaCodes(200)
-                .asDataObject(Place.class);
+                .asDataObject(Location.class);
     }
 
-    public List<Place> search(String text) throws StructuredException {
+    public List<Location> search(String text) throws StructuredException {
         return doGet("/search")
                 .queryString("text", text)
                 .hasMetaCodes(200)
-                .asDataList(Place.class);
+                .asDataList(Location.class);
     }
 
     /**
      * Geocoder service place object
      * Lat, lng is the center is currently optional
      */
-    public static class Place {
+    public static class Location {
         private String name;
         private Double lat;
         private Double lng;

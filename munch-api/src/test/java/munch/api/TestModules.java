@@ -2,7 +2,7 @@ package munch.api;
 
 import com.google.inject.AbstractModule;
 import munch.data.PostgresModule;
-import munch.search.elastic.ElasticModule;
+import munch.search.ElasticModule;
 
 import java.util.function.Supplier;
 

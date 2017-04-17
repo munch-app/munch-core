@@ -3,7 +3,7 @@ package munch.geocoder;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import munch.geocoder.database.DatabaseModule;
 import munch.restful.server.RestfulServer;
 
@@ -25,15 +25,11 @@ public final class GeocoderApi extends RestfulServer {
 
     public static void main(String[] args) {
         Injector injector = Guice.createInjector(
-                new DatabaseModule(),
-                new GeocoderModule()
+                new DatabaseModule()
         );
 
-        Config config = injector.getInstance(Config.class);
-        final int port = config.getInt("http.port");
-        final RestfulServer server = injector.getInstance(GeocoderApi.class);
-
         // Start server on default port in setting = http.port
-        server.start(port);
+        final RestfulServer server = injector.getInstance(GeocoderApi.class);
+        server.start(ConfigFactory.load().getInt("http.port"));
     }
 }

@@ -1,4 +1,4 @@
-package munch.search.elastic;
+package munch.search.place;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -10,11 +10,11 @@ import munch.struct.Place;
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.nio.entity.NStringEntity;
+import org.apache.http.util.EntityUtils;
 import org.elasticsearch.client.Response;
 import org.elasticsearch.client.ResponseException;
 import org.elasticsearch.client.RestClient;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -25,41 +25,39 @@ import java.util.List;
  * Project: munch-core
  */
 @Singleton
-public class ElasticStore implements SearchStore {
+public class PlaceIndex {
 
     private final RestClient client;
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper;
 
     /**
      * https://www.elastic.co/guide/en/elasticsearch/client/java-api/current/java-docs-index.html
      *
-     * @param client  injected rest client
      * @param mapping mapping validator
+     * @param client  injected rest client
+     * @param mapper
      * @throws RuntimeException if ElasticSearchMapping validation failed
      */
     @Inject
-    public ElasticStore(RestClient client, ElasticMapping mapping) {
+    public PlaceIndex(RestClient client, ObjectMapper mapper) {
         this.client = client;
-        try {
-            if (!mapping.validate())
-                throw new RuntimeException("ElasticSearchMapping for /munch/place index validation failed.");
-        } catch (IOException e) {
-            throw new RuntimeException("ElasticSearchMapping failed", e);
-        }
+        this.mapper = mapper;
     }
 
     /**
+     * This method also consume response entity
+     *
      * @param response response to check if successful
      * @throws RuntimeException if response code is higher
      */
     private void isSuccessful(Response response) throws RuntimeException {
         int code = response.getStatusLine().getStatusCode();
+        EntityUtils.consumeQuietly(response.getEntity());
         if (code > 299) {
             throw new RuntimeException("Response code is higher than 299, code: " + code);
         }
     }
 
-    @Override
     public void put(Place place) throws Exception {
         ObjectNode node = mapper.createObjectNode();
         node.put("name", place.getName());
@@ -72,12 +70,34 @@ public class ElasticStore implements SearchStore {
         String json = mapper.writeValueAsString(node);
         HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
 
-        Response response = client.performRequest(
-                "PUT",
-                "/munch/place/" + place.getId(),
-                Collections.emptyMap(),
-                entity);
+        Response response = client.performRequest("PUT",
+                "/munch/place/" + place.getId(), Collections.emptyMap(), entity);
         isSuccessful(response);
+    }
+
+    public void put(List<Place> places) throws Exception {
+        if (places.isEmpty()) return;
+        for (Place place : places) {
+            put(place);
+        }
+    }
+
+    public void delete(String key) throws Exception {
+        try {
+            Response response = client.performRequest("DELETE",
+                    "/munch/place/" + key, Collections.emptyMap());
+            isSuccessful(response);
+        } catch (ResponseException responseException) {
+            int code = responseException.getResponse().getStatusLine().getStatusCode();
+            if (code != 404) throw responseException;
+        }
+    }
+
+    public void delete(List<String> keys) throws Exception {
+        if (keys.isEmpty()) return;
+        for (String key : keys) {
+            delete(key);
+        }
     }
 
     private ObjectNode locationNode(Location location) {
@@ -102,39 +122,6 @@ public class ElasticStore implements SearchStore {
 
             node.set("geo", geo);
         }
-
         return node;
-    }
-
-    @Override
-    public void put(List<Place> places) throws Exception {
-        if (places.isEmpty()) return;
-        for (Place place : places) {
-            put(place);
-        }
-    }
-
-    @Override
-    public void delete(String key) throws Exception {
-        try {
-            Response response = client.performRequest(
-                    "DELETE",
-                    "/munch/place/" + key,
-                    Collections.emptyMap());
-            isSuccessful(response);
-        } catch (ResponseException responseException) {
-            int code = responseException.getResponse().getStatusLine().getStatusCode();
-            if (code != 404) {
-                throw responseException;
-            }
-        }
-    }
-
-    @Override
-    public void delete(List<String> keys) throws Exception {
-        if (keys.isEmpty()) return;
-        for (String key : keys) {
-            delete(key);
-        }
     }
 }

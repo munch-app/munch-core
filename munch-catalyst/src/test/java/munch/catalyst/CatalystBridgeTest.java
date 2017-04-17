@@ -1,7 +1,7 @@
 package munch.catalyst;
 
 import munch.data.PostgresModule;
-import munch.search.elastic.ElasticModule;
+import munch.search.ElasticModule;
 
 import java.io.IOException;
 

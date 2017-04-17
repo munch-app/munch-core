@@ -41,6 +41,7 @@ public class PlaceService implements JsonService {
      * @return 200 = saved
      */
     private JsonNode put(JsonCall call) {
+        //  String id = call.pathString("id");
         Place place = call.bodyAsObject(Place.class);
         database.put(place);
         return Meta200;

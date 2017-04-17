@@ -25,5 +25,4 @@ public class ServicesModule extends AbstractModule {
     Config provideConfig() {
         return ConfigFactory.load().getConfig("services");
     }
-
 }

@@ -95,11 +95,11 @@ public class DataImporter {
                 em.persist(region);
 
                 // Then save place
-                Place place = new Place();
-                place.setName(name);
-                place.setSort(1);
-                place.setRegions(new HashSet<>(Collections.singleton(region)));
-                em.persist(place);
+                Location location = new Location();
+                location.setName(name);
+                location.setSort(1);
+                location.setRegions(new HashSet<>(Collections.singleton(region)));
+                em.persist(location);
             }
         });
     }
@@ -115,13 +115,13 @@ public class DataImporter {
                         .map(StringUtils::trim).collect(Collectors.toList());
 
                 // Saving place
-                Place place = new Place();
-                place.setName(split[0].trim());
-                place.setSort(0);
+                Location location = new Location();
+                location.setName(split[0].trim());
+                location.setSort(0);
                 List<Region> list = em.createQuery("SELECT r FROM Region r WHERE r.code IN :codes", Region.class)
                         .setParameter("codes", codes).getResultList();
-                place.setRegions(new HashSet<>(list));
-                em.persist(place);
+                location.setRegions(new HashSet<>(list));
+                em.persist(location);
             }
         });
     }

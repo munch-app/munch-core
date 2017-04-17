@@ -2,7 +2,6 @@ package munch.catalyst;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
-import munch.search.elastic.SearchStore;
 import munch.struct.Place;
 
 import java.util.List;

@@ -1,9 +1,11 @@
-package munch.search.elastic;
+package munch.search;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.typesafe.config.Config;
+import munch.restful.server.JsonUtils;
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
 
@@ -17,8 +19,12 @@ public class ElasticModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(SearchStore.class).to(ElasticStore.class);
-        bind(SearchQuery.class).to(ElasticQuery.class);
+    }
+
+    @Provides
+    @Singleton
+    ObjectMapper provideObjectMapper() {
+        return JsonUtils.objectMapper;
     }
 
     @Provides

@@ -23,8 +23,8 @@ import java.util.Set;
  * Time: 3:08 PM
  * Project: munch-core
  */
-@Entity(name = "Place")
-@Indexed(index = "Places")
+@Entity(name = "Location")
+@Indexed(index = "Locations")
 @AnalyzerDefs({
 
         @AnalyzerDef(name = "autocompleteEdgeAnalyzer",
@@ -82,7 +82,7 @@ import java.util.Set;
                                 @Parameter(name = "replace", value = "all")})
                 }) // Def
 })
-public final class Place {
+public final class Location {
 
     private String name;
     private long sort;

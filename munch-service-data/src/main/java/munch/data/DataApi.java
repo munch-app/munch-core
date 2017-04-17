@@ -4,7 +4,7 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
-import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import munch.data.place.PlaceService;
 import munch.restful.server.RestfulServer;
 
@@ -27,9 +27,8 @@ public final class DataApi extends RestfulServer {
                 new PostgresModule()
         );
 
-        Config config = injector.getInstance(Config.class);
-        final int port = config.getInt("http.port");
+        // Start restful server on config port
         final RestfulServer server = injector.getInstance(DataApi.class);
-        server.start(port);
+        server.start(ConfigFactory.load().getInt("http.port"));
     }
 }
