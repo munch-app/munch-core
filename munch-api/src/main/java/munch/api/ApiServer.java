@@ -7,7 +7,7 @@ import com.google.inject.Singleton;
 import com.typesafe.config.Config;
 import munch.api.endpoints.EndpointsModule;
 import munch.api.endpoints.service.ServicesModule;
-import munch.document.PostgresModule;
+import munch.data.PostgresModule;
 import munch.restful.server.RestfulServer;
 import munch.restful.server.RestfulService;
 import munch.search.elastic.ElasticModule;

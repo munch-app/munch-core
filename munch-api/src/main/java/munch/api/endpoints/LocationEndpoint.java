@@ -24,10 +24,10 @@ public class LocationEndpoint extends AbstractEndpoint {
 
     @Override
     public void route() {
-        path("/locations", () -> {
-            get("/search", this::search);
-            get("/geocode", this::geocode);
-            get("/reverse", this::reverse);
+        PATH("/locations", () -> {
+            GET("/search", this::search);
+            GET("/geocode", this::geocode);
+            GET("/reverse", this::reverse);
         });
     }
 

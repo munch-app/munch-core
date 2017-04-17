@@ -1,10 +1,10 @@
 dependencies {
+    compile rootProject
+    compile project(':munch-service-data')
+    compile project(':munch-service-search')
+
     compile project(':restful-server')
     compile project(':restful-client')
-    
-    compile project(':munch-struct')
-    compile project(':munch-document')
-    compile project(':munch-search')
 
     // For Geo Json
     compile group: 'org.wololo', name: 'jts2geojson', version: '0.10.0'

@@ -1,7 +1,6 @@
 package munch.geocoder;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.munch.hibernate.utils.TransactionProvider;
 import com.vividsolutions.jts.geom.Coordinate;
@@ -54,9 +53,9 @@ public class GeocoderService implements JsonService {
 
     @Override
     public void route() {
-        get("/geocode", this::geocode);
-        get("/search", this::search);
-        get("/reverse", this::reverse);
+        GET("/geocode", this::geocode);
+        GET("/search", this::search);
+        GET("/reverse", this::reverse);
     }
 
     /**
@@ -116,9 +115,9 @@ public class GeocoderService implements JsonService {
      * @return code 200: List of places
      * if none found empty data list
      */
-    private JsonNode search(JsonCall call) {
+    private List<String> search(JsonCall call) {
         String text = call.queryString("text").toLowerCase();
-        if (text.length() < 3) return nodes(200, Collections.emptyList());
+        if (text.length() < 3) return Collections.emptyList();
 
         List<Place> places = provider.reduce(em -> {
             FullTextEntityManager fullText = Search.getFullTextEntityManager(em);
@@ -134,11 +133,9 @@ public class GeocoderService implements JsonService {
             //noinspection unchecked
             return fullTextQuery.getResultList();
         });
-        if (places.isEmpty()) return nodes(200, Collections.emptyList());
+        if (places.isEmpty()) return Collections.emptyList();
 
-        ArrayNode nodes = newArrayNode();
-        places.forEach(place -> nodes.add(convert(place)));
-        return nodes(200, nodes);
+        return places.stream().map(Place::getName).collect(Collectors.toList());
     }
 
     /**

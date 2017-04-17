@@ -19,7 +19,7 @@ public abstract class AbstractEndpoint implements JsonService {
     private static final String Version = "/v1";
 
     @Override
-    public void path(String path, RouteGroup routeGroup) {
+    public void PATH(String path, RouteGroup routeGroup) {
         Spark.path(Version + path, routeGroup);
     }
 

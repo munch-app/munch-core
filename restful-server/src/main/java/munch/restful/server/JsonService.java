@@ -47,7 +47,7 @@ public interface JsonService extends RestfulService {
      * @param path       path to add prefix to route
      * @param routeGroup route
      */
-    default void path(String path, RouteGroup routeGroup) {
+    default void PATH(String path, RouteGroup routeGroup) {
         Spark.path(path, routeGroup);
     }
 
@@ -57,7 +57,7 @@ public interface JsonService extends RestfulService {
      * @param path  the path
      * @param route json route
      */
-    default void get(String path, JsonRoute route) {
+    default void GET(String path, JsonRoute route) {
         Spark.get(path, route, toJson);
     }
 
@@ -67,7 +67,7 @@ public interface JsonService extends RestfulService {
      * @param path  the path
      * @param route json route
      */
-    default void post(String path, JsonRoute route) {
+    default void POST(String path, JsonRoute route) {
         Spark.post(path, route, toJson);
     }
 
@@ -77,7 +77,7 @@ public interface JsonService extends RestfulService {
      * @param path  the path
      * @param route json node route
      */
-    default void post(String path, JsonRoute.Node route) {
+    default void POST(String path, JsonRoute.Node route) {
         Spark.post(path, route, toJson);
     }
 
@@ -87,7 +87,7 @@ public interface JsonService extends RestfulService {
      * @param path  the path
      * @param route json route
      */
-    default void put(String path, JsonRoute route) {
+    default void PUT(String path, JsonRoute route) {
         Spark.put(path, route, toJson);
     }
 
@@ -97,7 +97,7 @@ public interface JsonService extends RestfulService {
      * @param path  the path
      * @param route json node route
      */
-    default void put(String path, JsonRoute.Node route) {
+    default void PUT(String path, JsonRoute.Node route) {
         Spark.put(path, route, toJson);
     }
 
@@ -107,7 +107,7 @@ public interface JsonService extends RestfulService {
      * @param path  the path
      * @param route json route
      */
-    default void delete(String path, JsonRoute route) {
+    default void DELETE(String path, JsonRoute route) {
         Spark.delete(path, route, toJson);
     }
 
@@ -117,7 +117,7 @@ public interface JsonService extends RestfulService {
      * @param path  the path
      * @param route json node route
      */
-    default void delete(String path, JsonRoute.Node route) {
+    default void DELETE(String path, JsonRoute.Node route) {
         Spark.delete(path, route, toJson);
     }
 
@@ -127,7 +127,7 @@ public interface JsonService extends RestfulService {
      * @param path  the path
      * @param route json route
      */
-    default void head(String path, JsonRoute route) {
+    default void HEAD(String path, JsonRoute route) {
         Spark.head(path, route, toJson);
     }
 
@@ -137,7 +137,7 @@ public interface JsonService extends RestfulService {
      * @param path  the path
      * @param route json route
      */
-    default void patch(String path, JsonRoute route) {
+    default void PATCH(String path, JsonRoute route) {
         Spark.patch(path, route, toJson);
     }
 

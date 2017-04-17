@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.PlaceRandom;
-import munch.document.DocumentQuery;
 import munch.restful.server.JsonCall;
 import munch.struct.Article;
 import munch.struct.Graphic;
@@ -33,12 +32,12 @@ public class PlaceEndpoint extends AbstractEndpoint {
 
     @Override
     public void route() {
-        path("/places", () -> {
-            post("/search", this::search);
+        PATH("/places", () -> {
+            POST("/search", this::search);
 
             // TODO gallery/articles pagination
-            get("/:placeId/gallery", this::gallery);
-            get("/:placeId/articles", this::articles);
+            GET("/:placeId/gallery", this::gallery);
+            GET("/:placeId/articles", this::articles);
         });
     }
 

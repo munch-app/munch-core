@@ -1,17 +1,16 @@
 rootProject.name = 'munch-core'
 
-include 'munch-struct'
+// Munch api gateway
 include 'munch-api'
+// Munch catalyst task for updating data
 include 'munch-catalyst'
 
 // Service modules
 include 'munch-service-geocoder'
+include 'munch-service-search'
+include 'munch-service-data'
 
 // Library modules
-include 'cache-layers'
 include 'restful-server'
 include 'restful-client'
-include 'munch-document'
-include 'munch-search'
-include 'munch-object'
 
