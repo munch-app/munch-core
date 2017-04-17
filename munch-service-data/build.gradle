@@ -15,3 +15,33 @@ dependencies {
     compile group: 'org.hibernate', name: 'hibernate-hikaricp', version: hibernateVersion
     compile group: 'org.postgresql', name: 'postgresql', version: '9.4.1212.jre7'
 }
+
+apply plugin: 'application'
+apply plugin: 'com.bmuschko.docker-java-application'
+
+mainClassName = 'munch.data.DataApi'
+
+dockerDistTar {
+    runCommand('apk add --update bash && rm -rf /var/cache/apk/*')
+}
+
+ext.dockerTag = 'munch-core/munch-service-data:latest'
+ext.dockerHost = '197547471367.dkr.ecr.ap-southeast-1.amazonaws.com/'
+
+docker {
+    javaApplication {
+        baseImage = 'openjdk:8-jdk-alpine'
+        maintainer = 'Fuxing'
+        ports = [8088]
+        tag = dockerTag
+    }
+}
+
+task publishDocker {
+    dependsOn 'dockerBuildImage'
+
+    doLast {
+        exec { commandLine "docker", "tag", dockerTag, dockerHost + dockerTag }
+        exec { commandLine "docker", "push", dockerHost + dockerTag }
+    }
+}

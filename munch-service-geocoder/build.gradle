@@ -38,7 +38,7 @@ dockerDistTar {
     runCommand('apk add --update bash && rm -rf /var/cache/apk/*')
 }
 
-ext.dockerTag = 'munch-core/munch-geocoder:latest'
+ext.dockerTag = 'munch-core/munch-service-geocoder:latest'
 ext.dockerHost = '197547471367.dkr.ecr.ap-southeast-1.amazonaws.com/'
 
 docker {

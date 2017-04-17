@@ -1,12 +1,39 @@
 dependencies {
     compile rootProject
     compile project(':restful-server')
+    compile group: 'org.elasticsearch.client', name: 'rest', version: '5.2.2'
 
     // Injection
     compile group: 'com.google.inject', name: 'guice', version: '4.1.0'
     compile group: 'com.google.inject.extensions', name: 'guice-multibindings', version: '4.1.0'
+}
 
-    // Core
-    compile group: 'org.wololo', name: 'jts2geojson', version: '0.10.0'
-    compile group: 'org.elasticsearch.client', name: 'rest', version: '5.2.2'
+apply plugin: 'application'
+apply plugin: 'com.bmuschko.docker-java-application'
+
+mainClassName = 'munch.search.SearchApi'
+
+dockerDistTar {
+    runCommand('apk add --update bash && rm -rf /var/cache/apk/*')
+}
+
+ext.dockerTag = 'munch-core/munch-service-search:latest'
+ext.dockerHost = '197547471367.dkr.ecr.ap-southeast-1.amazonaws.com/'
+
+docker {
+    javaApplication {
+        baseImage = 'openjdk:8-jdk-alpine'
+        maintainer = 'Fuxing'
+        ports = [8088]
+        tag = dockerTag
+    }
+}
+
+task publishDocker {
+    dependsOn 'dockerBuildImage'
+
+    doLast {
+        exec { commandLine "docker", "tag", dockerTag, dockerHost + dockerTag }
+        exec { commandLine "docker", "push", dockerHost + dockerTag }
+    }
 }

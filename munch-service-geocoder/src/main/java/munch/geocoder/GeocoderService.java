@@ -37,7 +37,7 @@ public class GeocoderService implements JsonService {
     private final TransactionProvider provider;
     private final GeometryFactory factory = new GeometryFactory();
 
-    private Map<String, JsonNode> placeCache = new HashMap<>();
+    private Map<String, JsonNode> neighorhoodCache = new HashMap<>();
 
     /**
      * @param dataImporter data to import to geocoding services
@@ -92,12 +92,12 @@ public class GeocoderService implements JsonService {
      * geocode search resolver, convert text to latLng
      *
      * @param call json call
-     * @return code 200: Place if exist
+     * @return code 200: Neighborhood if exist
      * code 404: if none found
      */
     private JsonNode geocode(JsonCall call) {
         String text = call.queryString("text").toLowerCase();
-        return provider.optional(em -> em.createQuery("SELECT p FROM Place p " +
+        return provider.optional(em -> em.createQuery("SELECT p FROM Neighborhood p " +
                 "WHERE LOWER(p.name) = :name", Neighborhood.class)
                 .setParameter("name", text)
                 .getSingleResult())
@@ -113,7 +113,7 @@ public class GeocoderService implements JsonService {
      * text must be size of 3 or above or will be rejected
      *
      * @param call json call
-     * @return code 200: List of places
+     * @return code 200: List of neighborhoods
      * if none found empty data list
      */
     private List<String> search(JsonCall call) {
@@ -140,13 +140,13 @@ public class GeocoderService implements JsonService {
     }
 
     /**
-     * Convert place to json node
+     * Convert neighborhood to json node
      *
-     * @param neighborhood place
+     * @param neighborhood Neighborhood
      * @return converted json node
      */
     private JsonNode convert(Neighborhood neighborhood) {
-        if (!placeCache.containsKey(neighborhood.getName())) {
+        if (!neighorhoodCache.containsKey(neighborhood.getName())) {
             ObjectNode node = newNode();
             // Put name
             node.put("name", neighborhood.getName());
@@ -166,8 +166,8 @@ public class GeocoderService implements JsonService {
                 JsonNode center = objectMapper.valueToTree(centerJson);
                 node.set("center", center);
             }
-            placeCache.put(neighborhood.getName(), node);
+            neighorhoodCache.put(neighborhood.getName(), node);
         }
-        return placeCache.getOrDefault(neighborhood.getName(), null);
+        return neighorhoodCache.getOrDefault(neighborhood.getName(), null);
     }
 }

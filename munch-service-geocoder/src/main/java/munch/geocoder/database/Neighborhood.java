@@ -23,6 +23,8 @@ import java.util.Set;
  * Time: 3:08 PM
  * Project: munch-core
  */
+@Entity
+@Indexed
 @AnalyzerDefs({
 
         @AnalyzerDef(name = "autocompleteEdgeAnalyzer",
