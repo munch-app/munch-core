@@ -5,6 +5,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import munch.restful.server.JsonUtils;
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
@@ -25,6 +26,11 @@ public class ElasticModule extends AbstractModule {
     @Singleton
     ObjectMapper provideObjectMapper() {
         return JsonUtils.objectMapper;
+    }
+
+    @Provides
+    Config provideConfig() {
+        return ConfigFactory.load();
     }
 
     @Provides

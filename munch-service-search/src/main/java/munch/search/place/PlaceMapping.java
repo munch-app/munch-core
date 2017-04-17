@@ -25,7 +25,7 @@ public class PlaceMapping {
 
     public static final String TYPE = "geo_shape";
     public static final String TREE = "quadtree";
-    public static final String PRECISION = "10.0m";
+    public static final String PRECISION = "1.0m"; // TODO change to 10.0m
 
     private final RestClient client;
     private final Validator validator;

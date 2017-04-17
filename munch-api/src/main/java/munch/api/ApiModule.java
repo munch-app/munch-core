@@ -5,7 +5,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import munch.restful.server.JsonService;
+import munch.restful.server.JsonUtils;
 
 /**
  * Created by: Fuxing
@@ -21,7 +21,7 @@ public class ApiModule extends AbstractModule {
 
     @Provides
     ObjectMapper provideObjectMapper() {
-        return JsonService.objectMapper;
+        return JsonUtils.objectMapper;
     }
 
     @Provides
