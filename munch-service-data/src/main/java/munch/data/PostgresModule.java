@@ -7,7 +7,9 @@ import com.munch.hibernate.utils.HibernateUtils;
 import com.munch.hibernate.utils.TransactionProvider;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import munch.restful.server.WaitFor;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,17 +29,20 @@ public class PostgresModule extends AbstractModule {
     }
 
     /**
+     * Wait for database to be read before starting postgres module
      * Setup postgres database module
      */
     private void setupDatabase() {
         Config config = ConfigFactory.load().getConfig("postgres");
+        String url = config.getString("url");
+        WaitFor.host(url.substring(5), Duration.ofSeconds(30));
 
         Map<String, String> properties = new HashMap<>();
         properties.put("hibernate.dialect", "munch.document.hibernate.JsonPostgreSQLDialect");
         properties.put("hibernate.connection.provider_class", "com.zaxxer.hikari.hibernate.HikariConnectionProvider");
 
         properties.put("hibernate.hikari.dataSourceClassName", "org.postgresql.ds.PGSimpleDataSource");
-        properties.put("hibernate.hikari.dataSource.url", config.getString("url"));
+        properties.put("hibernate.hikari.dataSource.url", url);
         properties.put("hibernate.hikari.dataSource.user", config.getString("username"));
         properties.put("hibernate.hikari.dataSource.password", config.getString("password"));
 

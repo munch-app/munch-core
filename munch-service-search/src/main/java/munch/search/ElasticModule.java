@@ -7,8 +7,11 @@ import com.google.inject.Singleton;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import munch.restful.server.JsonUtils;
+import munch.restful.server.WaitFor;
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
+
+import java.time.Duration;
 
 /**
  * Created By: Fuxing Loh
@@ -33,10 +36,17 @@ public class ElasticModule extends AbstractModule {
         return ConfigFactory.load();
     }
 
+    /**
+     * Wait for elastic to be started
+     *
+     * @param config config
+     * @return elastic RestClient
+     */
     @Provides
     @Singleton
     RestClient provideClient(Config config) {
         Config elastic = config.getConfig("elastic");
+        WaitFor.host(elastic.getString("hostname"), elastic.getInt("port"), Duration.ofSeconds(30));
 
         return RestClient.builder(new HttpHost(
                 elastic.getString("hostname"),

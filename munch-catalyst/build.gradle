@@ -1,7 +1,6 @@
 dependencies {
     compile rootProject
-    compile project(':munch-service-data')
-    compile project(':munch-service-search')
+    compile project(':restful-client')
 
     compile group: 'com.catalyst', name: 'catalyst-client', version: '0.1.1-SNAPSHOT'
     compile group: 'com.catalyst', name: 'corpus-core', version: '0.1.0'

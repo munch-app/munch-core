@@ -19,10 +19,12 @@ import java.util.List;
 public class PlaceService implements JsonService {
 
     private final PlaceDatabase database;
+    private final PlaceIndex index;
 
     @Inject
-    public PlaceService(PlaceDatabase database) {
+    public PlaceService(PlaceDatabase database, PlaceIndex index) {
         this.database = database;
+        this.index = index;
     }
 
     @Override
@@ -74,10 +76,20 @@ public class PlaceService implements JsonService {
         @Override
         public void route() {
             PATH("/batch", () -> {
+                GET("/latest", this::latest);
+
                 POST("/put", this::put);
                 POST("/get", this::get);
                 POST("/delete", this::delete);
             });
+        }
+
+        /**
+         * @param call json call
+         * @return 200 = latest exist, 404 = don't exist
+         */
+        private PostgresPlace latest(JsonCall call) {
+            return index.latest();
         }
 
         /**

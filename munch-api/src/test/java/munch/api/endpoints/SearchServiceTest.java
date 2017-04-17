@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 class SearchServiceTest extends AbstractEndpointTest {
 
     public SearchServiceTest() {
-        super(SearchService.class, Elastic.get(), Postgres.get());
+        super(AbstractEndpoint.class);
     }
 
     @Test

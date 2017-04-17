@@ -35,9 +35,8 @@ public final class PlaceService implements JsonService {
         PATH("/places", () -> {
             POST("/search", this::search);
 
-            // Index functions
-            PUT("/:id", this::put);
-            DELETE("/:id", this::delete);
+            // Batch index operations
+            new Batch().route();
         });
     }
 
@@ -80,15 +79,37 @@ public final class PlaceService implements JsonService {
         return node;
     }
 
-    private JsonNode put(JsonCall call) throws Exception {
-        // String id = call.pathString("id");
-        index.put(call.bodyAsObject(Place.class));
-        return Meta200;
-    }
+    /**
+     * Batch operations of place
+     */
+    private class Batch implements JsonService {
 
-    private JsonNode delete(JsonCall call) throws Exception {
-        String id = call.pathString("id");
-        index.delete(id);
-        return Meta200;
+        @Override
+        public void route() {
+            PATH("/batch", () -> {
+                POST("/put", this::put);
+                POST("/delete", this::delete);
+            });
+        }
+
+        /**
+         * @param call json call
+         * @return 200 = saved
+         */
+        private JsonNode put(JsonCall call) throws Exception {
+            List<Place> places = call.bodyAsList(Place.class);
+            index.put(places);
+            return Meta200;
+        }
+
+        /**
+         * @param call json call
+         * @return 200 = deleted
+         */
+        private JsonNode delete(JsonCall call) throws Exception {
+            List<String> keys = call.bodyAsList(String.class);
+            index.delete(keys);
+            return Meta200;
+        }
     }
 }

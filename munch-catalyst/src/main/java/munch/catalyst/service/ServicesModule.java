@@ -1,4 +1,4 @@
-package munch.api.endpoints.service;
+package munch.catalyst.service;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
@@ -27,7 +27,6 @@ public class ServicesModule extends AbstractModule {
     void waitFor(@Named("services") Config services) {
         WaitFor.host(services.getString("data.url"), Duration.ofSeconds(45));
         WaitFor.host(services.getString("search.url"), Duration.ofSeconds(45));
-        WaitFor.host(services.getString("geocoder.url"), Duration.ofSeconds(45));
     }
 
     @Named("services")

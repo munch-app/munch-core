@@ -6,6 +6,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import munch.catalyst.service.DataClient;
+import munch.catalyst.service.SearchClient;
 import munch.struct.place.Place;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,24 +27,26 @@ import java.util.stream.Collectors;
 public class MunchPersist {
     private static final Logger logger = LoggerFactory.getLogger(MunchPersist.class);
 
-    private final DocumentStore document;
-    private final SearchStore search;
+    private final DataClient dataClient;
+    private final SearchClient searchClient;
 
     private final Set<String> actives;
     private final Set<String> inActives;
 
     /**
-     * @param document document database
-     * @param search   search database
+     * @param document     document database
+     * @param search       search database
+     * @param dataClient
+     * @param searchClient
      */
     @Inject
-    public MunchPersist(DocumentStore document, SearchStore search) {
-        this.document = document;
-        this.search = search;
+    public MunchPersist(DataClient dataClient, SearchClient searchClient, Config config) {
+        this.dataClient = dataClient;
+        this.searchClient = searchClient;
 
-        Config config = ConfigFactory.load().getConfig("munch.catalyst.consumer.group");
-        this.actives = ImmutableSet.copyOf(config.getStringList("active"));
-        this.inActives = ImmutableSet.copyOf(config.getStringList("inActive"));
+        Config group = config.getConfig("consumer.group");
+        this.actives = ImmutableSet.copyOf(group.getStringList("active"));
+        this.inActives = ImmutableSet.copyOf(group.getStringList("inActive"));
     }
 
     /**
@@ -71,19 +75,19 @@ public class MunchPersist {
         // Delete
         final List<String> deletes = map(list, inActives, GroupObject::getGroupKey);
         logger.info("Deleting {} group to document & search.", deletes.size());
-        search.delete(deletes);
-        document.delete(deletes);
+        searchClient.delete(deletes);
+        dataClient.delete(deletes);
 
         // Persist
         final List<Place> puts = map(list, actives, GroupConverter::create);
         logger.info("Persisting {} group to document & search.", puts.size());
-        document.put(puts);
+        dataClient.put(puts);
         try {
-            search.put(puts);
+            searchClient.put(puts);
         } catch (Exception e) {
             logger.info("Rolling back document update because search put failed. {}", e);
             List<String> keys = puts.stream().map(Place::getId).collect(Collectors.toList());
-            document.delete(keys);
+            dataClient.delete(keys);
             throw e;
         }
     }

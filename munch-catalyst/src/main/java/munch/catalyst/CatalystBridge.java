@@ -5,14 +5,13 @@ import com.catalyst.client.CatalystConsumer;
 import com.corpus.exception.Retriable;
 import com.corpus.exception.SleepRetriable;
 import com.corpus.object.GroupObject;
-import com.google.inject.*;
-import com.google.inject.name.Named;
-import com.munch.hibernate.utils.TransactionProvider;
+import com.google.inject.Guice;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Singleton;
 import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
-import munch.data.PostgresModule;
-import munch.data.place.PostgresPlace;
-import munch.search.ElasticModule;
+import munch.catalyst.service.DataClient;
+import munch.catalyst.service.ServicesModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +34,7 @@ public class CatalystBridge {
     private final Duration sleepDuration;
     private final Retriable retriable;
 
-    private final TransactionProvider provider;
+    private final DataClient dataClient;
     private final MunchPersist persist;
     private final Config config;
 
@@ -44,18 +43,19 @@ public class CatalystBridge {
     /**
      * Munch catalyst consumer, prepared from application.conf
      *
-     * @param provider core munch database transaction provider
-     * @param persist  munch persist
+     * @param dataClient data client from munch-service-data
+     * @param persist    munch persist
+     * @param config     catalyst config
      */
     @Inject
-    public CatalystBridge(@Named("struct") TransactionProvider provider, MunchPersist persist) {
-        this.config = ConfigFactory.load().getConfig("munch.catalyst");
-        this.provider = provider;
+    public CatalystBridge(DataClient dataClient, MunchPersist persist, Config config) {
+        this.dataClient = dataClient;
         this.persist = persist;
+        this.config = config;
 
         // Max retry for 2 days interval of 15 minutes before timeout
         this.retriable = new SleepRetriable(2 * 24 * 4, Duration.ofMinutes(15));
-        this.sleepDuration = config.getDuration("consumer.sleep");
+        this.sleepDuration = this.config.getDuration("consumer.sleep");
     }
 
     /**
@@ -64,9 +64,7 @@ public class CatalystBridge {
      * @throws IOException from consumer
      */
     public void initialize() throws IOException {
-        PostgresPlace lastPlace = provider.optional(em -> em.createQuery("SELECT p FROM PostgresPlace p " +
-                "ORDER BY p.updatedDate DESC, p.id DESC", PostgresPlace.class)
-                .setMaxResults(1).getSingleResult()).orElse(null);
+        DataClient.PostgresPlace lastPlace = dataClient.latest();
 
         // Prepare consumer from config
         this.consumer = new CatalystConsumer(
@@ -111,22 +109,6 @@ public class CatalystBridge {
     }
 
     /**
-     * @param modules guice modules for bridge system
-     */
-    public static void start(Module... modules) throws IOException {
-        Injector injector = Guice.createInjector(modules);
-        CatalystBridge bridge = injector.getInstance(CatalystBridge.class);
-        bridge.initialize();
-        bridge.connect();
-    }
-
-    public static void main(String[] args) throws IOException, InterruptedException {
-        logger.info("Starting in 15 seconds.");
-        Thread.sleep(15000);
-        start(new PostgresModule(), new ElasticModule());
-    }
-
-    /**
      * @param config consumer config
      * @return Create Catalyst Client
      */
@@ -139,5 +121,15 @@ public class CatalystBridge {
         } else {
             return new CatalystClient(catalystUrl);
         }
+    }
+
+    public static void main(String[] args) throws IOException, InterruptedException {
+        logger.info("Starting in 15 seconds.");
+        Thread.sleep(15000);
+
+        Injector injector = Guice.createInjector(new CatalystModule(), new ServicesModule());
+        CatalystBridge bridge = injector.getInstance(CatalystBridge.class);
+        bridge.initialize();
+        bridge.connect();
     }
 }

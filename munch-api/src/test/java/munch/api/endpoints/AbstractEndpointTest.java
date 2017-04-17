@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.AbstractModule;
 import munch.api.ApiTestServer;
-import munch.api.TestModules;
 import munch.restful.client.RestfulClient;
 
 /**
@@ -15,7 +14,7 @@ import munch.restful.client.RestfulClient;
  * Project: munch-core
  */
 public abstract class AbstractEndpointTest extends RestfulClient
-        implements ApiTestServer, TestModules {
+        implements ApiTestServer {
 
     protected static final ObjectMapper mapper = new ObjectMapper();
 
