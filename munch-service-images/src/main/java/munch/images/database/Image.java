@@ -16,20 +16,19 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class Image {
-    // TODO origin id
 
-    private String id;
+    private String key;
     private List<Type> types;
 
     /**
      * @return unique id of the image
      */
-    public String getId() {
-        return id;
+    public String getKey() {
+        return key;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setKey(String key) {
+        this.key = key;
     }
 
     /**
@@ -41,6 +40,14 @@ public final class Image {
 
     public void setTypes(List<Type> types) {
         this.types = types;
+    }
+
+    @Override
+    public String toString() {
+        return "Image{" +
+                "id='" + key + '\'' +
+                ", types=" + types +
+                '}';
     }
 
     /**
@@ -87,6 +94,15 @@ public final class Image {
 
         public void setKey(String key) {
             this.key = key;
+        }
+
+        @Override
+        public String toString() {
+            return "Type{" +
+                    "type=" + type +
+                    ", url='" + url + '\'' +
+                    ", key='" + key + '\'' +
+                    '}';
         }
     }
 

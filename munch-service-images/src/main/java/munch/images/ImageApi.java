@@ -6,6 +6,9 @@ import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.typesafe.config.ConfigFactory;
 import munch.restful.server.RestfulServer;
+import munch.restful.server.RestfulService;
+
+import java.util.Set;
 
 /**
  * Created by: Fuxing
@@ -16,12 +19,9 @@ import munch.restful.server.RestfulServer;
 @Singleton
 public class ImageApi extends RestfulServer {
 
-    /**
-     * This is a high level object service api for storing object data
-     */
     @Inject
-    public ImageApi(ImageService service) {
-        super(service);
+    public ImageApi(Set<RestfulService> services) {
+        super(services);
     }
 
     public static void main(String[] args) {
