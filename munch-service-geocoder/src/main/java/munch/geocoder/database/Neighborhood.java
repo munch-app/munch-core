@@ -26,7 +26,6 @@ import java.util.Set;
 @Entity
 @Indexed
 @AnalyzerDefs({
-
         @AnalyzerDef(name = "autocompleteEdgeAnalyzer",
 
 // Split input into tokens according to tokenizer

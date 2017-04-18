@@ -4,7 +4,8 @@ allprojects {
     apply plugin: "com.jfrog.artifactory"
     apply plugin: 'maven-publish'
 
-    group 'munch'
+    group 'munch.core'
+    version '1.0.0-SNAPSHOT'
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
@@ -63,22 +64,40 @@ dependencies {
 }
 
 configure(subprojects.findAll { it.name.matches("munch-(.+)") }) {
-    group 'munch.core'
-    version '1.0.0-SNAPSHOT'
+    apply plugin: 'application'
+    apply plugin: 'com.bmuschko.docker-java-application'
 
-    dependencies {
-        compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.1.7'
-        compile group: 'com.typesafe', name: 'config', version: '1.3.1'
+    ext.dockerTag = 'munch-core/' + project.name + ':latest'
+    ext.dockerHost = '197547471367.dkr.ecr.ap-southeast-1.amazonaws.com/' + dockerTag
+
+    dockerDistTar {
+        runCommand('apk add --update bash && rm -rf /var/cache/apk/*')
+    }
+
+    docker {
+        javaApplication {
+            baseImage = 'openjdk:8-jdk-alpine'
+            maintainer = 'Fuxing'
+            ports = [8000]
+            tag = dockerTag
+        }
+    }
+
+    task publishDocker {
+        dependsOn 'clean'
+        dependsOn 'dockerBuildImage'
+        tasks.findByName('dockerBuildImage').mustRunAfter 'clean'
+
+        doLast {
+            exec { commandLine "docker", "tag", dockerTag, dockerHost }
+            exec { commandLine "docker", "push", dockerHost}
+        }
     }
 }
 
 configure(subprojects.findAll { it.name.matches("restful-(.+)") }) {
     group 'munch'
-    version '0.6.0'
-
-    dependencies {
-
-    }
+    version '0.7.0-SNAPSHOT'
 
     task publishLib {
         dependsOn 'build'

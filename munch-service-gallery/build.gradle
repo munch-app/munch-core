@@ -6,32 +6,4 @@ dependencies {
     compile group: 'com.google.inject', name: 'guice', version: '4.1.0'
 }
 
-apply plugin: 'application'
-apply plugin: 'com.bmuschko.docker-java-application'
-
 mainClassName = 'munch.gallery.GalleryApi'
-
-dockerDistTar {
-    runCommand('apk add --update bash && rm -rf /var/cache/apk/*')
-}
-
-ext.dockerTag = 'munch-core/munch-service-gallery:latest'
-ext.dockerHost = '197547471367.dkr.ecr.ap-southeast-1.amazonaws.com/'
-
-docker {
-    javaApplication {
-        baseImage = 'openjdk:8-jdk-alpine'
-        maintainer = 'Fuxing'
-        ports = [8088]
-        tag = dockerTag
-    }
-}
-
-task publishDocker {
-    dependsOn 'dockerBuildImage'
-
-    doLast {
-        exec { commandLine "docker", "tag", dockerTag, dockerHost + dockerTag }
-        exec { commandLine "docker", "push", dockerHost + dockerTag }
-    }
-}

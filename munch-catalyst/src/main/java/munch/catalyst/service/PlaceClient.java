@@ -26,7 +26,7 @@ public class PlaceClient extends RestfulClient {
      */
     @Inject
     public PlaceClient(@Named("services") Config config) {
-        super(config.getString("place.url"));
+        super(config.getString("places.url"));
     }
 
     @Nullable

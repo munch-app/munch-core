@@ -25,8 +25,7 @@ public class ServicesModule extends AbstractModule {
 
     @Inject
     void waitFor(@Named("services") Config services) {
-        WaitFor.host(services.getString("data.url"), Duration.ofSeconds(45));
-        WaitFor.host(services.getString("search.url"), Duration.ofSeconds(45));
+        WaitFor.host(services.getString("places.url"), Duration.ofSeconds(45));
     }
 
     @Named("services")

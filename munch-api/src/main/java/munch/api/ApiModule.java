@@ -26,6 +26,6 @@ public class ApiModule extends AbstractModule {
 
     @Provides
     Config provideConfig() {
-        return ConfigFactory.load().getConfig("munch.api");
+        return ConfigFactory.load().getConfig("api");
     }
 }

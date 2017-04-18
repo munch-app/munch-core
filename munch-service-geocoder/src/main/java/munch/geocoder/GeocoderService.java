@@ -37,7 +37,7 @@ public class GeocoderService implements JsonService {
     private final TransactionProvider provider;
     private final GeometryFactory factory = new GeometryFactory();
 
-    private Map<String, JsonNode> neighorhoodCache = new HashMap<>();
+    private Map<String, JsonNode> cache = new HashMap<>();
 
     /**
      * @param dataImporter data to import to geocoding services
@@ -146,7 +146,7 @@ public class GeocoderService implements JsonService {
      * @return converted json node
      */
     private JsonNode convert(Neighborhood neighborhood) {
-        if (!neighorhoodCache.containsKey(neighborhood.getName())) {
+        if (!cache.containsKey(neighborhood.getName())) {
             ObjectNode node = newNode();
             // Put name
             node.put("name", neighborhood.getName());
@@ -166,8 +166,8 @@ public class GeocoderService implements JsonService {
                 JsonNode center = objectMapper.valueToTree(centerJson);
                 node.set("center", center);
             }
-            neighorhoodCache.put(neighborhood.getName(), node);
+            cache.put(neighborhood.getName(), node);
         }
-        return neighorhoodCache.getOrDefault(neighborhood.getName(), null);
+        return cache.getOrDefault(neighborhood.getName(), null);
     }
 }

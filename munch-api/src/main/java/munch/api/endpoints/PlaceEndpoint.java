@@ -6,8 +6,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.thedeanda.lorem.Lorem;
 import com.thedeanda.lorem.LoremIpsum;
-import munch.api.endpoints.service.DataClient;
-import munch.api.endpoints.service.SearchClient;
+import munch.api.endpoints.service.PlaceClient;
 import munch.restful.server.JsonCall;
 import munch.struct.place.*;
 import org.apache.commons.lang3.RandomUtils;
@@ -23,14 +22,12 @@ import java.util.*;
 @Singleton
 public class PlaceEndpoint extends AbstractEndpoint {
 
-    private final DataClient dataClient;
-    private final SearchClient searchClient;
+    private final PlaceClient placeClient;
     private final PlaceRandom placeRandom;
 
     @Inject
-    public PlaceEndpoint(DataClient dataClient, SearchClient searchClient, PlaceRandom placeRandom) {
-        this.dataClient = dataClient;
-        this.searchClient = searchClient;
+    public PlaceEndpoint(PlaceClient placeClient, PlaceRandom placeRandom) {
+        this.placeClient = placeClient;
         this.placeRandom = placeRandom;
     }
 
@@ -60,12 +57,12 @@ public class PlaceEndpoint extends AbstractEndpoint {
         if (request.has("geometry")) {
             geometry = request.path("geometry");
         }
-        return searchClient.search(from, size, geometry);
+        return placeClient.search(from, size, geometry);
     }
 
     private Place get(JsonCall call) {
         String placeId = call.pathString("placeId");
-        return dataClient.get(placeId);
+        return placeClient.get(placeId);
     }
 
     private List<Graphic> gallery(JsonCall call) {

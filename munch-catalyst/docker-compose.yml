@@ -47,21 +47,20 @@ services:
       - "8001:8000"
     links:
       - postgres
+      - elasticsearch
     networks:
       - struct-network
   catalyst:
-    image: munch-core/catalyst-bridge:latest
-    container_name: munch-catalyst-bridge
+    image: munch-core/munch-catalyst:latest
+    container_name: munch-catalyst
     environment:
       - CATALYST_URL=http://catalyst.munch.space:8201
       - CATALYST_USER=catalyst
       - CATALYST_PASSWORD=bq1Enf1p32pTEvqzLz9OrtXtXsEWFhU5cO9Eoww9
 
-      - MUNCH_SERVICE_DATA_URL=http://data:8000
-      - MUNCH_SERVICE_SEARCH_URL=http://search:8000
+      - MUNCH_SERVICE_PLACES_URL=http://places:8000
     links:
-      - data
-      - search
+      - places
     networks:
       - struct-network
 

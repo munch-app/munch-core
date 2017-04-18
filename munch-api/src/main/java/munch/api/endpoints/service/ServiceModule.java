@@ -16,7 +16,7 @@ import java.time.Duration;
  * Time: 3:44 AM
  * Project: munch-core
  */
-public class ServicesModule extends AbstractModule {
+public class ServiceModule extends AbstractModule {
 
     @Override
     protected void configure() {
@@ -25,8 +25,7 @@ public class ServicesModule extends AbstractModule {
 
     @Inject
     void waitFor(@Named("services") Config services) {
-        WaitFor.host(services.getString("data.url"), Duration.ofSeconds(45));
-        WaitFor.host(services.getString("search.url"), Duration.ofSeconds(45));
+        WaitFor.host(services.getString("places.url"), Duration.ofSeconds(45));
         WaitFor.host(services.getString("geocoder.url"), Duration.ofSeconds(45));
     }
 

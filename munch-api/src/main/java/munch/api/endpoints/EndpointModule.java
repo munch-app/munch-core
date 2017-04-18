@@ -10,7 +10,7 @@ import munch.restful.server.RestfulService;
  * Time: 10:46 PM
  * Project: munch-core
  */
-public class EndpointsModule extends AbstractModule {
+public class EndpointModule extends AbstractModule {
 
     @Override
     protected void configure() {
