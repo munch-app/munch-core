@@ -10,7 +10,8 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.typesafe.config.Config;
-import munch.catalyst.service.DataClient;
+import munch.catalyst.service.PlaceClient;
+import munch.catalyst.service.PostgresPlace;
 import munch.catalyst.service.ServicesModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +35,7 @@ public class CatalystBridge {
     private final Duration sleepDuration;
     private final Retriable retriable;
 
-    private final DataClient dataClient;
+    private final PlaceClient placeClient;
     private final MunchPersist persist;
     private final Config config;
 
@@ -43,13 +44,13 @@ public class CatalystBridge {
     /**
      * Munch catalyst consumer, prepared from application.conf
      *
-     * @param dataClient data client from munch-service-data
+     * @param placeClient data client from munch-service-data
      * @param persist    munch persist
      * @param config     catalyst config
      */
     @Inject
-    public CatalystBridge(DataClient dataClient, MunchPersist persist, Config config) {
-        this.dataClient = dataClient;
+    public CatalystBridge(PlaceClient placeClient, MunchPersist persist, Config config) {
+        this.placeClient = placeClient;
         this.persist = persist;
         this.config = config;
 
@@ -64,7 +65,7 @@ public class CatalystBridge {
      * @throws IOException from consumer
      */
     public void initialize() throws IOException {
-        DataClient.PostgresPlace lastPlace = dataClient.latest();
+        PostgresPlace lastPlace = placeClient.latest();
 
         // Prepare consumer from config
         this.consumer = new CatalystConsumer(

@@ -24,17 +24,6 @@ services:
       - 9200:9200
     networks:
       - struct-network
-  search:
-    image: munch-core/munch-service-search:latest
-    container_name: munch-service-search
-    environment:
-      - SEARCH_DATABASE_HOSTNAME=elasticsearch
-    ports:
-      - "8002:8000"
-    links:
-      - elasticsearch
-    networks:
-      - struct-network
   postgres:
     image: postgres:9-alpine
     container_name: munch-service-postgres
@@ -44,33 +33,20 @@ services:
       - POSTGRES_PASSWORD=K851xsSffyTJP3e1M7rd
     networks:
       - struct-network
-  data:
-    image: munch-core/munch-service-data:latest
-    container_name: munch-service-data
+  places:
+    image: munch-core/munch-service-places:latest
+    container_name: munch-service-places
     environment:
       - DOCUMENT_DATABASE_URL=jdbc:postgresql://postgres:5432/postgres
       - DOCUMENT_DATABASE_USERNAME=postgres
       - DOCUMENT_DATABASE_PASSWORD=K851xsSffyTJP3e1M7rd
       - DOCUMENT_DATABASE_AUTO_CREATE=true
+
+      - SEARCH_DATABASE_HOSTNAME=elasticsearch
     ports:
       - "8001:8000"
     links:
       - postgres
-    networks:
-      - struct-network
-  catalyst:
-    image: munch-core/catalyst-bridge:latest
-    container_name: munch-catalyst-bridge
-    environment:
-      - CATALYST_URL=http://catalyst.munch.space:8201
-      - CATALYST_USER=catalyst
-      - CATALYST_PASSWORD=bq1Enf1p32pTEvqzLz9OrtXtXsEWFhU5cO9Eoww9
-
-      - MUNCH_SERVICE_DATA_URL=http://data:8000
-      - MUNCH_SERVICE_SEARCH_URL=http://search:8000
-    links:
-      - data
-      - search
     networks:
       - struct-network
   catalyst:

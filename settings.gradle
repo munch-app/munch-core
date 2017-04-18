@@ -7,11 +7,15 @@ include 'munch-catalyst'
 
 // Service modules
 include 'munch-service-geocoder'
-include 'munch-service-search'
-include 'munch-service-data'
+include 'munch-service-places'
+include 'munch-service-articles'
+include 'munch-service-gallery'
+
+// High level service modules
+include 'munch-service-object'
 
 // Library modules
 include 'restful-server'
 include 'restful-client'
-include 'munch-service-object'
+
 

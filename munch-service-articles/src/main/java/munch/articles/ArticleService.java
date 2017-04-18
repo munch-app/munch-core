@@ -1,4 +1,4 @@
-package munch.object;
+package munch.articles;
 
 import com.google.inject.Singleton;
 import munch.restful.server.JsonService;
@@ -10,11 +10,12 @@ import munch.restful.server.JsonService;
  * Project: munch-core
  */
 @Singleton
-public class ObjectService implements JsonService {
+public class ArticleService implements JsonService {
 
     @Override
     public void route() {
-        PATH("/object", () -> {
+        PATH("/articles", () -> {
+
         });
     }
 
