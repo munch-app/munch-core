@@ -56,7 +56,6 @@ public final class Image {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Type {
-        // TODO Allow dynamic image generation?
         private TypeDescription type;
         private String url;
         private String key;

@@ -68,7 +68,8 @@ public class ImageMapper {
     }
 
     /**
-     * @param image
+     * TODO doc
+     * @param image image object
      */
     public void put(Image image) throws IOException, ContentTypeError, MimeTypeException {
         //noinspection ConstantConditions, because it must exist for all put operations

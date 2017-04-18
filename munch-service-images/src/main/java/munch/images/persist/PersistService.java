@@ -7,11 +7,13 @@ import com.munch.utils.file.ContentTypeError;
 import munch.images.ResolveService;
 import munch.images.database.Image;
 import munch.images.database.ImageMapper;
+import munch.images.database.TypeDescription;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
 import org.apache.tika.mime.MimeTypeException;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Set;
 
 /**
@@ -45,19 +47,37 @@ public class PersistService implements JsonService {
      * Add image type to image group
      *
      * @param call json call
-     * @return TODO
+     * @return updated Image
      */
-    public Image add(JsonCall call) {
+    public Image add(JsonCall call) throws ContentTypeError, IOException, MimeTypeException {
+        String key = call.pathString("key");
         String[] types = call.pathString("types").split(",");
-        // TODO
-        return null;
+
+        // Generate description if not already exist
+        Image image = mapper.get(key);
+        Arrays.stream(types).map(TypeDescription::forValue).forEach(description -> {
+            if (image.getTypes().stream().noneMatch(type -> type.getType() == description)) {
+                Image.Type type = new Image.Type();
+                type.setType(description);
+                image.getTypes().add(type);
+            }
+        });
+
+        mapper.put(image);
+        return image;
     }
 
-    public Image put(JsonCall call) {
-        String key = call.pathString("key");
+    public Image put(JsonCall call) throws IOException, ContentTypeError, MimeTypeException {
         Set<String> types = ResolveService.mapTypes(call);
-        // TODO
-        return null;
+
+        // Create image and save it
+        if (types == null) {
+            // TODO
+            return mapper.create("", "", null);
+        } else {
+            TypeDescription[] descriptions = types.stream().map(TypeDescription::forValue).toArray(TypeDescription[]::new);
+            return mapper.create("", "", null, descriptions);
+        }
     }
 
     public JsonNode delete(JsonCall call) throws ContentTypeError, IOException, MimeTypeException {
