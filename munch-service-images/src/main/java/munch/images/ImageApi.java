@@ -1,4 +1,4 @@
-package munch.object;
+package munch.images;
 
 import com.google.inject.Guice;
 import com.google.inject.Inject;
@@ -14,20 +14,23 @@ import munch.restful.server.RestfulServer;
  * Project: munch-core
  */
 @Singleton
-public class ObjectApi extends RestfulServer {
+public class ImageApi extends RestfulServer {
 
+    /**
+     * This is a high level object service api for storing object data
+     */
     @Inject
-    public ObjectApi(ObjectService service) {
+    public ImageApi(ImageService service) {
         super(service);
     }
 
     public static void main(String[] args) {
         Injector injector = Guice.createInjector(
-                new ObjectModule()
+                new ImageModule()
         );
 
         // Start server on default port in setting = http.port
-        final RestfulServer server = injector.getInstance(ObjectApi.class);
+        final RestfulServer server = injector.getInstance(ImageApi.class);
         server.start(ConfigFactory.load().getInt("http.port"));
     }
 }

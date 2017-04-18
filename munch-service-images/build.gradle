@@ -1,10 +1,10 @@
 dependencies {
     compile rootProject
     compile project(':restful-server')
+    compile group: 'com.munch', name: 'munch-block-aws', version: '1.0.3'
 
     // Injection
     compile group: 'com.google.inject', name: 'guice', version: '4.1.0'
-    compile group: 'com.google.inject.extensions', name: 'guice-multibindings', version: '4.1.0'
 }
 
-mainClassName = 'munch.object.ObjectApi'
+mainClassName = 'munch.images.ImageApi'

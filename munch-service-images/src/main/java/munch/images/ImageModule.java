@@ -1,4 +1,4 @@
-package munch.object;
+package munch.images;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
@@ -11,7 +11,7 @@ import com.typesafe.config.ConfigFactory;
  * Time: 2:22 AM
  * Project: munch-core
  */
-public class ObjectModule extends AbstractModule {
+public class ImageModule extends AbstractModule {
 
     @Override
     protected void configure() {

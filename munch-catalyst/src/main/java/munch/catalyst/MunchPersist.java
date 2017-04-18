@@ -6,7 +6,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.typesafe.config.Config;
 import munch.catalyst.service.PlaceClient;
-import munch.struct.place.Place;
+import munch.struct.places.Place;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

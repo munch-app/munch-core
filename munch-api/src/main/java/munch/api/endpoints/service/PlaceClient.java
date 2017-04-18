@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.typesafe.config.Config;
 import munch.restful.client.RestfulClient;
-import munch.struct.place.Place;
+import munch.struct.places.Place;
 
 import javax.inject.Inject;
 import javax.inject.Named;

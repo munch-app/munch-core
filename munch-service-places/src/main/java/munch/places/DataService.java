@@ -7,7 +7,7 @@ import munch.places.data.PlaceDatabase;
 import munch.places.search.SearchIndex;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
-import munch.struct.place.Place;
+import munch.struct.places.Place;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,4 +1,7 @@
-package munch.struct.place;
+package munch.struct.gallery;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 /**
  * Created by: Fuxing
@@ -6,7 +9,9 @@ package munch.struct.place;
  * Time: 7:16 PM
  * Project: munch-core
  */
-public class Graphic {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
+public final class Graphic {
 
     // Internal munch id
     private String id;

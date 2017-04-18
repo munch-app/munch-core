@@ -1,4 +1,7 @@
-package munch.struct.place;
+package munch.struct.articles;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 /**
  * Created by: Fuxing
@@ -6,9 +9,12 @@ package munch.struct.place;
  * Time: 5:04 PM
  * Project: munch-core
  */
-public class Article {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
+public final class Article {
 
-    private String id;
+    private String placeId;
+    private String articleId;
 
     private String author;
     private String summary;
@@ -17,14 +23,14 @@ public class Article {
     private String url;
 
     /**
-     * @return unique id of article in munch
+     * @return unique articleId of article in munch
      */
-    public String getId() {
-        return id;
+    public String getArticleId() {
+        return articleId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setArticleId(String articleId) {
+        this.articleId = articleId;
     }
 
     /**

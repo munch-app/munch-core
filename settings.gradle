@@ -1,21 +1,21 @@
 rootProject.name = 'munch-core'
 
-// Munch api gateway
+// Tier 0 Service Api Gateway
 include 'munch-api'
-// Munch catalyst task for updating data
-include 'munch-catalyst'
 
-// Service modules
+// Tier 1 Service Api
 include 'munch-service-geocoder'
 include 'munch-service-places'
 include 'munch-service-articles'
 include 'munch-service-gallery'
 
-// High level service modules
-include 'munch-service-object'
+// Tier 2 Service Api
+include 'munch-service-images'
+
+// Munch catalyst task for updating munch data
+include 'munch-catalyst'
 
 // Library modules
 include 'restful-server'
 include 'restful-client'
-
 

@@ -13,7 +13,7 @@ import org.wololo.geojson.Point;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Neighborhood {
+public final class Neighborhood {
 
     private String id;
     private String name;

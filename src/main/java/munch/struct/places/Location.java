@@ -1,4 +1,4 @@
-package munch.struct.place;
+package munch.struct.places;
 
 /**
  * Created by: Fuxing

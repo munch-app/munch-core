@@ -8,7 +8,9 @@ import com.thedeanda.lorem.Lorem;
 import com.thedeanda.lorem.LoremIpsum;
 import munch.api.endpoints.service.PlaceClient;
 import munch.restful.server.JsonCall;
-import munch.struct.place.*;
+import munch.struct.articles.Article;
+import munch.struct.gallery.Graphic;
+import munch.struct.places.*;
 import org.apache.commons.lang3.RandomUtils;
 
 import java.util.*;
@@ -155,7 +157,7 @@ public class PlaceEndpoint extends AbstractEndpoint {
             List<Article> list = new ArrayList<>();
             for (int i = 0; i < size; i++) {
                 Article article = new Article();
-                article.setId(UUID.randomUUID().toString());
+                article.setArticleId(UUID.randomUUID().toString());
                 article.setAuthor(lorem.getFirstName());
                 article.setSummary(lorem.getParagraphs(3, 5));
                 article.setImageUrl(random(images));

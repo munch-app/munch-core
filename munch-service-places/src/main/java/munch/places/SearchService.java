@@ -7,7 +7,7 @@ import com.google.inject.Singleton;
 import munch.places.search.SearchQuery;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
-import munch.struct.place.Place;
+import munch.struct.places.Place;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.IOException;

@@ -1,6 +1,6 @@
 package munch.catalyst.service;
 
-import munch.struct.place.Place;
+import munch.struct.places.Place;
 
 import java.util.Date;
 

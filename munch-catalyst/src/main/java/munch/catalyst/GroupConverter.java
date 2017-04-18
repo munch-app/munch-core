@@ -3,9 +3,9 @@ package munch.catalyst;
 import com.corpus.object.GroupField;
 import com.corpus.object.GroupObject;
 import com.corpus.object.ObjectUtils;
-import munch.struct.place.Hour;
-import munch.struct.place.Location;
-import munch.struct.place.Place;
+import munch.struct.places.Hour;
+import munch.struct.places.Location;
+import munch.struct.places.Place;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

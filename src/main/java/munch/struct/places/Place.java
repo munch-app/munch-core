@@ -1,4 +1,4 @@
-package munch.struct.place;
+package munch.struct.places;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -17,7 +17,7 @@ import java.util.Set;
 public final class Place {
 
     private String id;
-    // TODO version number?
+    private String version;
 
     // Basic
     private String name;
@@ -49,6 +49,17 @@ public final class Place {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    /**
+     * @return version of Place object
+     */
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 
     /**

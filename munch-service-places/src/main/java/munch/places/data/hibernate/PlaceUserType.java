@@ -1,6 +1,6 @@
 package munch.places.data.hibernate;
 
-import munch.struct.place.Place;
+import munch.struct.places.Place;
 
 /**
  * Created By: Fuxing Loh

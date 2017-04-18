@@ -2,7 +2,7 @@ package munch.catalyst.service;
 
 import com.typesafe.config.Config;
 import munch.restful.client.RestfulClient;
-import munch.struct.place.Place;
+import munch.struct.places.Place;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
