@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import munch.places.search.Filters;
 import munch.places.search.SearchQuery;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
@@ -58,6 +59,12 @@ public final class SearchService implements JsonService {
      *     }
      * }
      * </pre>
+     * <p>
+     * query: String = is for place name search
+     * filter: Filters = apply filter for bounding search
+     * geometry: GeoJson = apply spatial filter for bounding search
+     * from: Int = start from
+     * size: Int = size of query
      *
      * @param call    json call
      * @param request body node
@@ -68,8 +75,10 @@ public final class SearchService implements JsonService {
         int size = request.path("size").asInt();
         String query = request.path("query").asText(null);
         JsonNode geometry = request.get("geometry");
+        Filters filters = request.has("filters") ?
+                readObject(request.get("filters"), Filters.class) : null;
 
-        Pair<List<Place>, Integer> result = search.query(from, size, geometry, query);
+        Pair<List<Place>, Integer> result = search.query(from, size, geometry, query, filters);
         ObjectNode node = nodes(200, result.getLeft());
         node.put("total", result.getRight());
         return node;

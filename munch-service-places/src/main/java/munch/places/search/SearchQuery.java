@@ -56,7 +56,7 @@ public class SearchQuery extends SearchFilter {
      * @throws IOException exception
      */
     public Pair<List<Place>, Integer> query(int from, int size, @Nullable JsonNode geometry,
-                                            @Nullable String query) throws IOException {
+                                            @Nullable String query, @Nullable Filters filters) throws IOException {
         ObjectNode root = mapper.createObjectNode();
         root.put("from", from);
         root.put("size", size);
@@ -65,9 +65,17 @@ public class SearchQuery extends SearchFilter {
         ObjectNode bool = mapper.createObjectNode();
         bool.set("must", mapper.createObjectNode().set("match_all", mapper.createObjectNode()));
 
+        if (query != null) {
+            // TODO name search first
+        }
+
         // Create geometry filter if is not null or missing
         if (geometry != null && !geometry.isNull() && !geometry.isMissingNode()) {
             bool.set("filter", createGeometryFilter(geometry));
+        }
+
+        if (filters != null) {
+            // TODO filter search
         }
 
         root.set("query", mapper.createObjectNode().set("bool", bool));
