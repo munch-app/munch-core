@@ -87,10 +87,9 @@ public class PlaceEndpoint extends AbstractEndpoint {
     static class PlaceRandom {
 
         private final Lorem lorem = LoremIpsum.getInstance();
-        private final List<String> establishments = ImmutableList.of(
+        private final List<String> tags = ImmutableList.of(
                 "Restaurant", "Bars & Pubs", "Cafe",
-                "Buffet", "BBQ", "Hawker", "Steamboat", "Desserts");
-        private final List<String> amenities = ImmutableList.of(
+                "Buffet", "BBQ", "Hawker", "Steamboat", "Desserts",
                 "Halal", "Healthy", "Vegetarian", "Pet Friendly");
 
         private final List<String> images = ImmutableList.of(
@@ -133,10 +132,8 @@ public class PlaceEndpoint extends AbstractEndpoint {
             place.setWebsite("www.munchapp.co");
             place.setDescription(lorem.getParagraphs(2, 2));
 
-            place.setEstablishments(Collections.singleton(random(establishments)));
-            place.setAmenities(Collections.singleton(random(amenities)));
+            place.setTags(Collections.singleton(random(tags)));
 
-            place.setImages(randomImages());
             place.setMenus(randomMenus());
             place.setHours(randomHours());
         }
@@ -145,7 +142,7 @@ public class PlaceEndpoint extends AbstractEndpoint {
             List<Graphic> list = new ArrayList<>();
             for (int i = 0; i < size; i++) {
                 Graphic graphic = new Graphic();
-                graphic.setId(UUID.randomUUID().toString());
+                graphic.setGraphicId(UUID.randomUUID().toString());
                 graphic.setMediaId(UUID.randomUUID().toString());
                 graphic.setImageUrl(random(this.images));
                 list.add(graphic);
@@ -160,7 +157,7 @@ public class PlaceEndpoint extends AbstractEndpoint {
                 article.setArticleId(UUID.randomUUID().toString());
                 article.setAuthor(lorem.getFirstName());
                 article.setSummary(lorem.getParagraphs(3, 5));
-                article.setImageUrl(random(images));
+                article.setImageKey(random(images));
                 article.setUrl("http://www.ladyironchef.com/2010/04/best-buffet-singapore/");
                 list.add(article);
             }

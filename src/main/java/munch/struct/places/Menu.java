@@ -7,7 +7,8 @@ package munch.struct.places;
  * Project: munch-core
  */
 public final class Menu {
-
+    // TODO file storage for menu
+    // TODO larger image service for menu to use?
     public static final int TYPE_WEBSITE = 10;
     public static final int TYPE_IMAGE = 20;
     public static final int TYPE_PDF = 30;

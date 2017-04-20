@@ -30,11 +30,9 @@ public final class Place {
     private Location location;
 
     // Many
-    private Set<String> establishments;
-    private Set<String> amenities;
-    private Set<Image> images;
-    private Set<Menu> menus;
+    private Set<String> tags;
     private Set<Hour> hours;
+    private Set<Menu> menus;
 
     // Dates
     private Date createdDate;
@@ -115,6 +113,14 @@ public final class Place {
         this.description = description;
     }
 
+    public Set<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<String> tags) {
+        this.tags = tags;
+    }
+
     /**
      * @return opening hours of place
      */
@@ -134,21 +140,6 @@ public final class Place {
         this.price = price;
     }
 
-    public Set<String> getEstablishments() {
-        return establishments;
-    }
-
-    public void setEstablishments(Set<String> establishments) {
-        this.establishments = establishments;
-    }
-
-    public Set<Image> getImages() {
-        return images;
-    }
-
-    public void setImages(Set<Image> images) {
-        this.images = images;
-    }
 
     public Set<Menu> getMenus() {
         return menus;
@@ -167,17 +158,6 @@ public final class Place {
 
     public void setLocation(Location location) {
         this.location = location;
-    }
-
-    /**
-     * @return amenities or type about a place
-     */
-    public Set<String> getAmenities() {
-        return amenities;
-    }
-
-    public void setAmenities(Set<String> amenities) {
-        this.amenities = amenities;
     }
 
     /**

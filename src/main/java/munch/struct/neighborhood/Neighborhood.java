@@ -22,7 +22,7 @@ public final class Neighborhood {
     private GeoJSON geometry;
 
     /**
-     * TODO: not completed yet
+     * TODO: id not implemented yet
      *
      * @return unique id of neighborhood
      */

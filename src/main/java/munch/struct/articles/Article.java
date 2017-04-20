@@ -19,8 +19,19 @@ public final class Article {
     private String author;
     private String summary;
 
-    private String imageUrl;
+    private String imageKey;
     private String url;
+
+    /**
+     * @return place that is linked to the article
+     */
+    public String getPlaceId() {
+        return placeId;
+    }
+
+    public void setPlaceId(String placeId) {
+        this.placeId = placeId;
+    }
 
     /**
      * @return unique articleId of article in munch
@@ -56,14 +67,16 @@ public final class Article {
     }
 
     /**
-     * @return url of image representing the article
+     * Image is stored in munch-service-images
+     *
+     * @return image key
      */
-    public String getImageUrl() {
-        return imageUrl;
+    public String getImageKey() {
+        return imageKey;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setImageKey(String imageKey) {
+        this.imageKey = imageKey;
     }
 
     /**

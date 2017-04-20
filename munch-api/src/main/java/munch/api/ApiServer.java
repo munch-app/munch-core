@@ -13,6 +13,8 @@ import munch.restful.server.RestfulService;
 import java.util.Set;
 
 /**
+ * FYI: For error handling use Structured Error
+ * <p>
  * Created by: Fuxing
  * Date: 7/3/2017
  * Time: 3:18 AM
@@ -29,14 +31,6 @@ public final class ApiServer extends RestfulServer {
     @Override
     public void start(int port) {
         super.start(port);
-        handleException();
-    }
-
-    /**
-     * Handle exceptions
-     */
-    private void handleException() {
-        // TODO handle exceptions
     }
 
     /**

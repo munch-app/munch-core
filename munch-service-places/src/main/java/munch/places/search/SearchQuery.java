@@ -50,10 +50,11 @@ public class SearchQuery extends SearchFilter {
      * @param from     start from: pagination
      * @param size     size for: pagination
      * @param geometry geometry for within function
-     * @param query    text query string TODO not working yet
-     *                 // TODO param filters in future
+     * @param query    text query string on name
+     * @param filters  tags, price, ratings and hours filters
      * @return list of Place, total results
      * @throws IOException exception
+     * @see Filters
      */
     public Pair<List<Place>, Integer> query(int from, int size, @Nullable JsonNode geometry,
                                             @Nullable String query, @Nullable Filters filters) throws IOException {
@@ -65,6 +66,7 @@ public class SearchQuery extends SearchFilter {
         ObjectNode bool = mapper.createObjectNode();
         bool.set("must", mapper.createObjectNode().set("match_all", mapper.createObjectNode()));
 
+        // Search with text on name
         if (query != null) {
             // TODO name search first
         }
@@ -74,8 +76,10 @@ public class SearchQuery extends SearchFilter {
             bool.set("filter", createGeometryFilter(geometry));
         }
 
+        // Only filter tags search works now
+        // TODO price/ratings/hours
         if (filters != null) {
-            // TODO filter search
+            // TODO filter tags search
         }
 
         root.set("query", mapper.createObjectNode().set("bool", bool));

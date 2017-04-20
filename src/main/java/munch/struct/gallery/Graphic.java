@@ -12,9 +12,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class Graphic {
-
-    // Internal munch id
-    private String id;
+    // TODO how to store this data
+    private String placeId;
+    private String graphicId;
 
     // Instagram media id
     private String mediaId;
@@ -23,12 +23,12 @@ public final class Graphic {
     /**
      * @return unique id of graphic in munch
      */
-    public String getId() {
-        return id;
+    public String getGraphicId() {
+        return graphicId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setGraphicId(String graphicId) {
+        this.graphicId = graphicId;
     }
 
     /**
