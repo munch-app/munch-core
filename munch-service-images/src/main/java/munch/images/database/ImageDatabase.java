@@ -8,6 +8,7 @@ import com.google.inject.Singleton;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -32,10 +33,12 @@ public class ImageDatabase {
     public Image get(String key) {
         GetItemSpec spec = new GetItemSpec().withPrimaryKey("k", key);
         Item item = table.getItem(spec);
+        // Don't exist
+        if (item == null) return null;
 
         Image image = new Image();
         image.setKey(item.getString("k"));
-        image.setTypes(toTypes(item.getList("t")));
+        image.setKinds(mapToSet(item.getList("t")));
         return image;
     }
 
@@ -47,7 +50,7 @@ public class ImageDatabase {
                 .map(item -> {
                     Image image = new Image();
                     image.setKey(item.getString("k"));
-                    image.setTypes(toTypes(item.getList("t")));
+                    image.setKinds(mapToSet(item.getList("t")));
                     return image;
                 }).collect(Collectors.toList());
     }
@@ -55,7 +58,7 @@ public class ImageDatabase {
     public void put(Image image) {
         table.putItem(new Item()
                 .withPrimaryKey("k", image.getKey())
-                .withList("t", toMaps(image.getTypes())));
+                .withList("t", setToMaps(image.getKinds())));
     }
 
     public void delete(String key) {
@@ -71,15 +74,15 @@ public class ImageDatabase {
      *     }
      * </pre>
      *
-     * @param types list of Type
+     * @param kinds list of Type
      * @return List of Type in Map structure
      */
-    private static List<Map<String, String>> toMaps(List<Image.Type> types) {
-        return types.stream()
-                .map(type -> {
+    private static List<Map<String, String>> setToMaps(Set<Image.Kind> kinds) {
+        return kinds.stream()
+                .map(kind -> {
                     Map<String, String> map = new HashMap<>();
-                    map.put("t", TypeDescription.toValue(type.getType()));
-                    map.put("k", type.getKey());
+                    map.put("t", ImageKind.toValue(kind.getKind()));
+                    map.put("k", kind.getKey());
                     return map;
                 }).collect(Collectors.toList());
     }
@@ -90,15 +93,15 @@ public class ImageDatabase {
      *
      * @param maps list of map
      * @return List of Type in bean
-     * @see ImageDatabase#toMaps(List)
+     * @see ImageDatabase#setToMaps(Set) (List)
      */
-    private static List<Image.Type> toTypes(List<Map<String, String>> maps) {
+    private static Set<Image.Kind> mapToSet(List<Map<String, String>> maps) {
         return maps.stream()
                 .map(map -> {
-                    Image.Type type = new Image.Type();
-                    type.setType(TypeDescription.forValue(map.get("t")));
-                    type.setKey(map.get("k"));
-                    return type;
-                }).collect(Collectors.toList());
+                    Image.Kind kind = new Image.Kind();
+                    kind.setKind(ImageKind.forValue(map.get("t")));
+                    kind.setKey(map.get("k"));
+                    return kind;
+                }).collect(Collectors.toSet());
     }
 }

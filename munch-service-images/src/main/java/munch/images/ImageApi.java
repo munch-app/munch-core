@@ -26,6 +26,7 @@ public class ImageApi extends RestfulServer {
 
     public static void main(String[] args) {
         Injector injector = Guice.createInjector(
+                new AWSModule(),
                 new ImageModule()
         );
 

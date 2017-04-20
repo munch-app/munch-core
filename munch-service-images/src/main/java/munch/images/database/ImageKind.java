@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * Time: 11:07 PM
  * Project: munch-core
  */
-public enum TypeDescription {
+public enum ImageKind {
     Original("original", 0, 0),
     Thumbnail("thumbnail", 0, 0);
 
@@ -17,7 +17,7 @@ public enum TypeDescription {
     private final int width;
     private final int height;
 
-    TypeDescription(String name, int width, int height) {
+    ImageKind(String name, int width, int height) {
         this.name = name;
         this.width = width;
         this.height = height;
@@ -52,7 +52,7 @@ public enum TypeDescription {
      * @throws IllegalArgumentException if not found
      */
     @JsonCreator
-    public static TypeDescription forValue(String value) {
+    public static ImageKind forValue(String value) {
         if (Original.getName().equals(value))
             return Original;
         if (Thumbnail.getName().equals(value))
@@ -67,7 +67,7 @@ public enum TypeDescription {
      * @return value
      */
     @JsonValue
-    public static String toValue(TypeDescription type) {
+    public static String toValue(ImageKind type) {
         return type.getName();
     }
 }

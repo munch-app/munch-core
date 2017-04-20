@@ -4,14 +4,16 @@ import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.images.database.Image;
+import munch.images.database.ImageKind;
 import munch.images.database.ImageMapper;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
 
-import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by: Fuxing
@@ -42,36 +44,24 @@ public class ResolveService implements JsonService {
 
     public Image get(JsonCall call) {
         String key = call.pathString("key");
-        Set<String> types = mapTypes(call);
-
-        Image image = mapper.get(key);
-        if (types != null)
-            image.getTypes().removeIf(type -> !types.contains(type.getType().getName()));
-        return image;
+        Set<ImageKind> kinds = queryKinds(call);
+        return mapper.get(key, kinds);
     }
 
     public List<Image> batch(JsonCall call) {
         List<String> keys = call.bodyAsList(String.class);
-        Set<String> types = mapTypes(call);
+        Set<ImageKind> kinds = queryKinds(call);
 
-        List<Image> images = mapper.get(keys);
-        if (types != null) {
-            for (Image image : images) {
-                image.getTypes().removeIf(type -> !types.contains(type.getType().getName()));
-            }
-        }
-        return images;
+        return mapper.get(keys, kinds);
     }
 
     /**
      * @param call json call
      * @return types in String array
      */
-    @Nullable
-    public static Set<String> mapTypes(JsonCall call) {
-        return Optional.of(call.request().queryParams("types"))
-                .map(s -> s.split(","))
-                .map(ImmutableSet::copyOf)
-                .orElse(null);
+    public static Set<ImageKind> queryKinds(JsonCall call) {
+        return Optional.ofNullable(call.request().queryParams("kinds"))
+                .map(s -> Arrays.stream(s.split(",")).map(ImageKind::forValue).collect(Collectors.toSet()))
+                .orElse(ImmutableSet.of());
     }
 }

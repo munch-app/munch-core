@@ -3,7 +3,7 @@ package munch.images.database;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * This is like a image group, a single image group has multiple types of same images
@@ -18,7 +18,7 @@ import java.util.List;
 public final class Image {
 
     private String key;
-    private List<Type> types;
+    private Set<Kind> kinds;
 
     /**
      * @return unique id of the image
@@ -34,19 +34,19 @@ public final class Image {
     /**
      * @return types of image
      */
-    public List<Type> getTypes() {
-        return types;
+    public Set<Kind> getKinds() {
+        return kinds;
     }
 
-    public void setTypes(List<Type> types) {
-        this.types = types;
+    public void setKinds(Set<Kind> kinds) {
+        this.kinds = kinds;
     }
 
     @Override
     public String toString() {
         return "Image{" +
                 "id='" + key + '\'' +
-                ", types=" + types +
+                ", types=" + kinds +
                 '}';
     }
 
@@ -55,10 +55,20 @@ public final class Image {
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class Type {
-        private TypeDescription type;
+    public static class Kind {
+        private ImageKind kind;
         private String url;
         private String key;
+
+        public Kind() {
+        }
+
+        /**
+         * @param kind kind
+         */
+        public Kind(ImageKind kind) {
+            this.kind = kind;
+        }
 
         /**
          * @return public url of image content
@@ -74,12 +84,12 @@ public final class Image {
         /**
          * @return type of image
          */
-        public TypeDescription getType() {
-            return type;
+        public ImageKind getKind() {
+            return kind;
         }
 
-        public void setType(TypeDescription type) {
-            this.type = type;
+        public void setKind(ImageKind kind) {
+            this.kind = kind;
         }
 
         /**
@@ -98,7 +108,7 @@ public final class Image {
         @Override
         public String toString() {
             return "Type{" +
-                    "type=" + type +
+                    "type=" + kind +
                     ", url='" + url + '\'' +
                     ", key='" + key + '\'' +
                     '}';

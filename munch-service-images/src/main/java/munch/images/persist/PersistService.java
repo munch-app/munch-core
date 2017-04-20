@@ -6,14 +6,19 @@ import com.google.inject.Singleton;
 import com.munch.utils.file.ContentTypeError;
 import munch.images.ResolveService;
 import munch.images.database.Image;
+import munch.images.database.ImageKind;
 import munch.images.database.ImageMapper;
-import munch.images.database.TypeDescription;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
-import org.apache.tika.mime.MimeTypeException;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 
+import javax.servlet.MultipartConfigElement;
+import javax.servlet.ServletException;
+import javax.servlet.http.Part;
+import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
+import java.io.InputStream;
 import java.util.Set;
 
 /**
@@ -26,16 +31,18 @@ import java.util.Set;
 public class PersistService implements JsonService {
 
     private final ImageMapper mapper;
+    private final MultipartConfigElement multipartConfig;
 
     @Inject
     public PersistService(ImageMapper mapper) {
         this.mapper = mapper;
+        this.multipartConfig = new MultipartConfigElement("/temp");
     }
 
     @Override
     public void route() {
         PATH("/images", () -> {
-            PUT("/:key/type", this::add);
+            PUT("/:key/resize", this::resize);
             // Future: Delete types
 
             PUT("", this::put);
@@ -44,43 +51,47 @@ public class PersistService implements JsonService {
     }
 
     /**
-     * Add image type to image group
+     * Add image kinds to image group
      *
      * @param call json call
-     * @return updated Image
+     * @return null of image don't exist, or updated images
      */
-    public Image add(JsonCall call) throws ContentTypeError, IOException, MimeTypeException {
+    public Image resize(JsonCall call) throws ContentTypeError, IOException {
         String key = call.pathString("key");
-        String[] types = call.pathString("types").split(",");
-
-        // Generate description if not already exist
-        Image image = mapper.get(key);
-        Arrays.stream(types).map(TypeDescription::forValue).forEach(description -> {
-            if (image.getTypes().stream().noneMatch(type -> type.getType() == description)) {
-                Image.Type type = new Image.Type();
-                type.setType(description);
-                image.getTypes().add(type);
-            }
-        });
-
-        mapper.put(image);
-        return image;
+        Set<ImageKind> kinds = ResolveService.queryKinds(call);
+        return mapper.resize(key, kinds);
     }
 
-    public Image put(JsonCall call) throws IOException, ContentTypeError, MimeTypeException {
-        Set<String> types = ResolveService.mapTypes(call);
+    /**
+     * Create new image
+     *
+     * @param call json call
+     * @return newly create image
+     * @throws IOException      network error
+     * @throws ContentTypeError content error
+     */
+    public Image put(JsonCall call) throws IOException, ContentTypeError, ServletException {
+        Set<ImageKind> kinds = ResolveService.queryKinds(call);
 
-        // Create image and save it
-        if (types == null) {
-            // TODO
-            return mapper.create("", "", null);
-        } else {
-            TypeDescription[] descriptions = types.stream().map(TypeDescription::forValue).toArray(TypeDescription[]::new);
-            return mapper.create("", "", null, descriptions);
+        call.request().attribute("org.eclipse.jetty.multipartConfig", multipartConfig);
+        Part part = call.request().raw().getPart("file");
+        String fileName = part.getSubmittedFileName();
+
+        try (InputStream inputStream = part.getInputStream()) {
+            File file = File.createTempFile(RandomStringUtils.random(20), "");
+            FileUtils.copyInputStreamToFile(inputStream, file);
+            // Upload the image
+            return mapper.upload(fileName, file, kinds);
         }
     }
 
-    public JsonNode delete(JsonCall call) throws ContentTypeError, IOException, MimeTypeException {
+    /**
+     * @param call json call
+     * @return 200 = success, else 500 for error
+     * @throws ContentTypeError content parsing error
+     * @throws IOException      network error
+     */
+    public JsonNode delete(JsonCall call) throws ContentTypeError, IOException {
         String key = call.pathString("key");
         mapper.delete(key);
         return Meta200;
