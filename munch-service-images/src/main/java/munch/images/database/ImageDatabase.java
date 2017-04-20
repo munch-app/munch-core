@@ -5,10 +5,7 @@ import com.amazonaws.services.dynamodbv2.document.spec.GetItemSpec;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -19,7 +16,7 @@ import java.util.stream.Collectors;
  */
 @Singleton
 public class ImageDatabase {
-    private static final String TableName = "munch-service-images.Image";
+    public static final String TableName = "munch-images.Image";
 
     private final DynamoDB dynamoDB;
     private final Table table;
@@ -38,7 +35,9 @@ public class ImageDatabase {
 
         Image image = new Image();
         image.setKey(item.getString("k"));
-        image.setKinds(mapToSet(item.getList("t")));
+        image.setContentType(item.getString("c"));
+        image.setCreated(new Date(item.getLong("t")));
+        image.setKinds(mapToSet(item.getList("s")));
         return image;
     }
 
@@ -50,7 +49,9 @@ public class ImageDatabase {
                 .map(item -> {
                     Image image = new Image();
                     image.setKey(item.getString("k"));
-                    image.setKinds(mapToSet(item.getList("t")));
+                    image.setContentType(item.getString("c"));
+                    image.setCreated(new Date(item.getLong("t")));
+                    image.setKinds(mapToSet(item.getList("s")));
                     return image;
                 }).collect(Collectors.toList());
     }
@@ -58,7 +59,9 @@ public class ImageDatabase {
     public void put(Image image) {
         table.putItem(new Item()
                 .withPrimaryKey("k", image.getKey())
-                .withList("t", setToMaps(image.getKinds())));
+                .withString("c", image.getContentType())
+                .withLong("t", image.getCreated().getTime())
+                .withList("s", setToMaps(image.getKinds())));
     }
 
     public void delete(String key) {
@@ -81,7 +84,7 @@ public class ImageDatabase {
         return kinds.stream()
                 .map(kind -> {
                     Map<String, String> map = new HashMap<>();
-                    map.put("t", ImageKind.toValue(kind.getKind()));
+                    map.put("t", kind.getKind().getName());
                     map.put("k", kind.getKey());
                     return map;
                 }).collect(Collectors.toList());

@@ -1,22 +1,21 @@
-package munch.images.persist;
+package munch.images;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.munch.utils.file.ContentTypeError;
-import munch.images.ResolveService;
 import munch.images.database.Image;
 import munch.images.database.ImageKind;
 import munch.images.database.ImageMapper;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.RandomStringUtils;
+import spark.Request;
+import spark.Response;
+import spark.Spark;
 
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletException;
 import javax.servlet.http.Part;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Set;
@@ -45,7 +44,7 @@ public class PersistService implements JsonService {
             PUT("/:key/resize", this::resize);
             // Future: Delete types
 
-            PUT("", this::put);
+            Spark.put("", "multipart/form-data", this::put, toJson);
             DELETE("/:key", this::delete);
         });
     }
@@ -58,30 +57,30 @@ public class PersistService implements JsonService {
      */
     public Image resize(JsonCall call) throws ContentTypeError, IOException {
         String key = call.pathString("key");
-        Set<ImageKind> kinds = ResolveService.queryKinds(call);
+        Set<ImageKind> kinds = ImageKind.resolveKinds(call.request().queryParams("kinds"));
         return mapper.resize(key, kinds);
     }
 
     /**
      * Create new image
+     * multipart= file:
      *
-     * @param call json call
+     * @param request  Spark request
+     * @param response Spark response
      * @return newly create image
      * @throws IOException      network error
      * @throws ContentTypeError content error
      */
-    public Image put(JsonCall call) throws IOException, ContentTypeError, ServletException {
-        Set<ImageKind> kinds = ResolveService.queryKinds(call);
+    public Image put(Request request, Response response) throws IOException, ContentTypeError, ServletException {
+        Set<ImageKind> kinds = ImageKind.resolveKinds(request.queryParams("kinds"));
+        request.attribute("org.eclipse.jetty.multipartConfig", multipartConfig);
+        Part part = request.raw().getPart("file");
 
-        call.request().attribute("org.eclipse.jetty.multipartConfig", multipartConfig);
-        Part part = call.request().raw().getPart("file");
-        String fileName = part.getSubmittedFileName();
-
+        // Upload the image
         try (InputStream inputStream = part.getInputStream()) {
-            File file = File.createTempFile(RandomStringUtils.random(20), "");
-            FileUtils.copyInputStreamToFile(inputStream, file);
-            // Upload the image
-            return mapper.upload(fileName, file, kinds);
+            long length = part.getSize();
+            String contentType = part.getContentType();
+            return mapper.upload(inputStream, length, contentType, kinds);
         }
     }
 

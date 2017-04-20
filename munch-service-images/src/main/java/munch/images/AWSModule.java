@@ -26,7 +26,6 @@ public class AWSModule extends AbstractModule {
 
     @Override
     protected void configure() {
-
     }
 
     @Provides
@@ -53,12 +52,18 @@ public class AWSModule extends AbstractModule {
 
     @Provides
     @Singleton
-    FileMapper provideFileMapper(AWSCredentialsProvider credentials, Regions regions, Config config) {
-        String bucket = config.getString("aws.bucket");
+    FileMapper provideFileMapper(AWSCredentialsProvider credentials, Regions regions, AwsFileEndpoint fileEndpoint) {
         AmazonS3 amazonS3 = AmazonS3Client.builder()
                 .withCredentials(credentials)
                 .withRegion(regions)
                 .build();
-        return new AwsFileMapper(amazonS3, new AwsFileEndpoint(regions.getName(), bucket));
+        return new AwsFileMapper(amazonS3, fileEndpoint);
+    }
+
+    @Provides
+    @Singleton
+    AwsFileEndpoint provideFileEndpoint(Regions regions, Config config) {
+        String bucket = config.getString("aws.bucket");
+        return new AwsFileEndpoint(regions, bucket);
     }
 }

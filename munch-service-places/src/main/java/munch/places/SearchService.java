@@ -44,6 +44,7 @@ public final class SearchService implements JsonService {
      * {
      *     from: 0,
      *     size: 20,
+     *     query: "", // Optional
      *     geometry: { // Optional
      *         "type": "multipolygon", // circle, polygon, multipolygon, geometrycollection are all supported
      *         "coordinates": [
@@ -51,6 +52,9 @@ public final class SearchService implements JsonService {
      *              [[[100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0]],
      *              [[100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2]]]
      *           ]
+     *     },
+     *     filters: { // Optional
+     *
      *     }
      * }
      * </pre>
@@ -62,9 +66,10 @@ public final class SearchService implements JsonService {
     private JsonNode search(JsonCall call, JsonNode request) throws IOException {
         int from = request.path("from").asInt();
         int size = request.path("size").asInt();
+        String query = request.path("query").asText(null);
         JsonNode geometry = request.get("geometry");
 
-        Pair<List<Place>, Integer> result = search.query(from, size, geometry, null);
+        Pair<List<Place>, Integer> result = search.query(from, size, geometry, query);
         ObjectNode node = nodes(200, result.getLeft());
         node.put("total", result.getRight());
         return node;

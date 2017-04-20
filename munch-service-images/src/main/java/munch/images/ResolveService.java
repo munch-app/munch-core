@@ -1,6 +1,5 @@
 package munch.images;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.images.database.Image;
@@ -9,11 +8,8 @@ import munch.images.database.ImageMapper;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Created by: Fuxing
@@ -44,24 +40,13 @@ public class ResolveService implements JsonService {
 
     public Image get(JsonCall call) {
         String key = call.pathString("key");
-        Set<ImageKind> kinds = queryKinds(call);
+        Set<ImageKind> kinds = ImageKind.resolveKinds(call.request().queryParams("kinds"));
         return mapper.get(key, kinds);
     }
 
     public List<Image> batch(JsonCall call) {
         List<String> keys = call.bodyAsList(String.class);
-        Set<ImageKind> kinds = queryKinds(call);
-
+        Set<ImageKind> kinds = ImageKind.resolveKinds(call.request().queryParams("kinds"));
         return mapper.get(keys, kinds);
-    }
-
-    /**
-     * @param call json call
-     * @return types in String array
-     */
-    public static Set<ImageKind> queryKinds(JsonCall call) {
-        return Optional.ofNullable(call.request().queryParams("kinds"))
-                .map(s -> Arrays.stream(s.split(",")).map(ImageKind::forValue).collect(Collectors.toSet()))
-                .orElse(ImmutableSet.of());
     }
 }

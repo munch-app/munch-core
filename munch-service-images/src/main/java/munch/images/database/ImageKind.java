@@ -1,7 +1,12 @@
 package munch.images.database;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.collect.ImmutableSet;
+
+import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by: Fuxing
@@ -10,8 +15,20 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * Project: munch-core
  */
 public enum ImageKind {
+    @JsonProperty("original")
     Original("original", 0, 0),
-    Thumbnail("thumbnail", 0, 0);
+
+    @JsonProperty("150x150")
+    X150("150x150", 150, 150),
+
+    @JsonProperty("320x320")
+    X320("320x320", 320, 320),
+
+    @JsonProperty("640x640")
+    X640("640x640", 640, 640),
+
+    @JsonProperty("1080x1080")
+    X1080("1080x1080", 1080, 1080);
 
     private final String name;
     private final int width;
@@ -45,29 +62,53 @@ public enum ImageKind {
     }
 
     /**
-     * Parse value to enum
+     * By default form original image this method is not to be used
+     * original should be without kind name e.g. = qN0RpD6Tli2g63jzePOxGMR6m936OOov.jpg
      *
-     * @param value value/name
-     * @return parsed TypeDescription
-     * @throws IllegalArgumentException if not found
+     * @param imageKey  image key
+     * @param extension including period
+     * @return imageKey_original.jpg
+     * e.g. qN0RpD6Tli2g63jzePOxGMR6m936OOov_150x150.jpg
+     * e.g. qN0RpD6Tli2g63jzePOxGMR6m936OOov_1080x1080.jpg
      */
-    @JsonCreator
-    public static ImageKind forValue(String value) {
-        if (Original.getName().equals(value))
-            return Original;
-        if (Thumbnail.getName().equals(value))
-            return Thumbnail;
-        throw new IllegalArgumentException("Type description not found.");
+    public String makeKey(String imageKey, String extension) {
+        return imageKey + "_" + name + extension;
     }
 
     /**
-     * Parse enum to value
+     * Parse value to enum
+     * Json mapping for string value too
      *
-     * @param type enum
-     * @return value
+     * @param value value/name
+     * @return parsed TypeDescription
+     * @throws ImageKindNotFound if given kind is not found,
+     *                           restful server knows how to handle this
      */
-    @JsonValue
-    public static String toValue(ImageKind type) {
-        return type.getName();
+    public static ImageKind forValue(String value) {
+        switch (value) {
+            case "original":
+                return Original;
+            case "150x150":
+                return X150;
+            case "320x320":
+                return X320;
+            case "640x640":
+                return X640;
+            case "1080x1080":
+                return X1080;
+            default:
+                throw new ImageKindNotFound(value);
+        }
+    }
+
+    /**
+     * @param queryString query string of kinds
+     * @return Set of ImageKind
+     */
+    public static Set<ImageKind> resolveKinds(@Nullable String queryString) {
+        if (queryString == null) return ImmutableSet.of();
+        return Arrays.stream(queryString.split(" *, *"))
+                .map(ImageKind::forValue)
+                .collect(Collectors.toSet());
     }
 }

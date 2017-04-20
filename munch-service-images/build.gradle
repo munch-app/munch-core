@@ -6,7 +6,9 @@ dependencies {
     compile group: 'com.google.inject', name: 'guice', version: '4.1.0'
     compile group: 'com.google.inject.extensions', name: 'guice-multibindings', version: '4.1.0'
 
-    compile group: 'com.munch', name: 'munch-block-aws', version: '1.0.3'
+    // Persist
+    compile group: 'com.munch', name: 'munch-block-aws', version: '1.0.5'
+    compile group: 'com.munch', name: 'munch-block-fakes3', version: '1.0.5'
     compile group: 'com.amazonaws', name: 'aws-java-sdk-dynamodb', version: '1.11.119'
 
     // Resizer

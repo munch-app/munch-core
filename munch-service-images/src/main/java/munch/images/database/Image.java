@@ -3,6 +3,7 @@ package munch.images.database;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import java.util.Date;
 import java.util.Set;
 
 /**
@@ -18,6 +19,9 @@ import java.util.Set;
 public final class Image {
 
     private String key;
+    private String contentType;
+    private Date created;
+
     private Set<Kind> kinds;
 
     /**
@@ -29,6 +33,22 @@ public final class Image {
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
     }
 
     /**

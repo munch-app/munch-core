@@ -1,0 +1,26 @@
+version: '2'
+
+services:
+  thumbor:
+    image: apsl/thumbor
+  fake-dynamodb:
+    image: peopleperhour/dynamodb
+  fake-s3:
+    image: lphoward/fake-s3
+    ports:
+      - "4569:4569"
+  images:
+    image: munch-core/munch-service-images
+    environment:
+      - IMAGE_PERSIST_PROVIDER=fake
+
+      - IMAGE_THUMBOR_ENDPOINT=http://thumbor:8000
+      - IMAGE_FAKE_S3_ENDPOINT=http://fake-s3:4569
+      - IMAGE_FAKE_S3_PUBLIC_ENDPOINT=http://localhost:4569
+      - IMAGE_FAKE_DYNAMODB_ENDPOINT=http://fake-dynamodb:8000
+    ports:
+      - "8003:8000"
+    links:
+      - thumbor
+      - fake-s3
+      - fake-dynamodb

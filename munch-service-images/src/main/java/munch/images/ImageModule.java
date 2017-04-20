@@ -7,7 +7,6 @@ import com.google.inject.multibindings.Multibinder;
 import com.squareup.pollexor.Thumbor;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import munch.images.persist.PersistService;
 import munch.restful.server.RestfulService;
 
 /**
