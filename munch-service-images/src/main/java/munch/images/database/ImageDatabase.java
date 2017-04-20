@@ -28,44 +28,44 @@ public class ImageDatabase {
     }
 
     public Image get(String key) {
-        GetItemSpec spec = new GetItemSpec().withPrimaryKey("k", key);
+        GetItemSpec spec = new GetItemSpec().withPrimaryKey(Scheme.Key, key);
         Item item = table.getItem(spec);
         // Don't exist
         if (item == null) return null;
 
         Image image = new Image();
-        image.setKey(item.getString("k"));
-        image.setContentType(item.getString("c"));
-        image.setCreated(new Date(item.getLong("t")));
-        image.setKinds(mapToSet(item.getList("s")));
+        image.setKey(item.getString(Scheme.Key));
+        image.setContentType(item.getString(Scheme.ContentType));
+        image.setCreated(new Date(item.getLong(Scheme.Created)));
+        image.setKinds(mapToSet(item.getList(Scheme.Kinds)));
         return image;
     }
 
     public List<Image> get(List<String> keys) {
         TableKeysAndAttributes attributes = new TableKeysAndAttributes(TableName);
-        keys.forEach(key -> attributes.addHashOnlyPrimaryKey("k", key));
+        keys.forEach(key -> attributes.addHashOnlyPrimaryKey(Scheme.Key, key));
         BatchGetItemOutcome outcome = dynamoDB.batchGetItem(attributes);
         return outcome.getTableItems().get(TableName).stream()
                 .map(item -> {
                     Image image = new Image();
-                    image.setKey(item.getString("k"));
-                    image.setContentType(item.getString("c"));
-                    image.setCreated(new Date(item.getLong("t")));
-                    image.setKinds(mapToSet(item.getList("s")));
+                    image.setKey(item.getString(Scheme.Key));
+                    image.setContentType(item.getString(Scheme.ContentType));
+                    image.setCreated(new Date(item.getLong(Scheme.Created)));
+                    image.setKinds(mapToSet(item.getList(Scheme.Kinds)));
                     return image;
                 }).collect(Collectors.toList());
     }
 
     public void put(Image image) {
         table.putItem(new Item()
-                .withPrimaryKey("k", image.getKey())
-                .withString("c", image.getContentType())
-                .withLong("t", image.getCreated().getTime())
-                .withList("s", setToMaps(image.getKinds())));
+                .withPrimaryKey(Scheme.Key, image.getKey())
+                .withString(Scheme.ContentType, image.getContentType())
+                .withLong(Scheme.Created, image.getCreated().getTime())
+                .withList(Scheme.Kinds, setToMaps(image.getKinds())));
     }
 
     public void delete(String key) {
-        table.deleteItem("k", key);
+        table.deleteItem(Scheme.Key, key);
     }
 
     /**
@@ -73,7 +73,7 @@ public class ImageDatabase {
      * <pre>
      *     {
      *         "t": "thumbnail",
-     *         "k": "key"
+     *         "k": Scheme.Key
      *     }
      * </pre>
      *
@@ -84,8 +84,8 @@ public class ImageDatabase {
         return kinds.stream()
                 .map(kind -> {
                     Map<String, String> map = new HashMap<>();
-                    map.put("t", kind.getKind().getName());
-                    map.put("k", kind.getKey());
+                    map.put(Scheme.Kind.Kind, kind.getKind().getName());
+                    map.put(Scheme.Kind.Key, kind.getKey());
                     return map;
                 }).collect(Collectors.toList());
     }
@@ -102,9 +102,25 @@ public class ImageDatabase {
         return maps.stream()
                 .map(map -> {
                     Image.Kind kind = new Image.Kind();
-                    kind.setKind(ImageKind.forValue(map.get("t")));
-                    kind.setKey(map.get("k"));
+                    kind.setKind(ImageKind.forValue(map.get(Scheme.Kind.Kind)));
+                    kind.setKey(map.get(Scheme.Kind.Key));
                     return kind;
                 }).collect(Collectors.toSet());
+    }
+
+    /**
+     * Scheme for image to be stored in dynamo db
+     */
+    private static final class Scheme {
+        private static final String Key = "key";
+
+        private static final String ContentType = "contentType";
+        private static final String Created = "created";
+        private static final String Kinds = "kinds";
+
+        private static final class Kind {
+            private static final String Key = "key";
+            private static final String Kind = "kind";
+        }
     }
 }
