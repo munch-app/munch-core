@@ -5,8 +5,8 @@ import munch.restful.server.exceptions.ParamException;
 import spark.Request;
 import spark.Response;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * Created by: Fuxing
@@ -62,12 +62,16 @@ public class JsonCall {
      * @return List as type
      */
     public <T> List<T> bodyAsList(Class<T> clazz) {
-        JsonNode nodes = bodyAsJson();
-        List<T> list = new ArrayList<>();
-        for (JsonNode node : nodes) {
-            list.add(JsonUtils.readJson(node, clazz));
-        }
-        return list;
+        return JsonUtils.readJsonArray(bodyAsJson(), clazz);
+    }
+
+    /**
+     * @param mapper json mapper
+     * @param <T>    Type
+     * @return List as type
+     */
+    public <T> List<T> bodyAsList(Function<JsonNode, T> mapper) {
+        return JsonUtils.readJsonArray(bodyAsJson(), mapper);
     }
 
     /**

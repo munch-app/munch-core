@@ -28,12 +28,12 @@ public class MenuService implements JsonService {
     @Override
     public void route() {
         PATH("/places/:placeId/menu", () -> {
-            GET("", this::query);
+            GET("", this::list);
             GET("/:menuId", this::get);
         });
     }
 
-    private List<Menu> query(JsonCall call) {
+    private List<Menu> list(JsonCall call) {
         String placeId = call.pathString("placeId");
         int from = call.queryInt("from");
         int size = call.queryInt("size");

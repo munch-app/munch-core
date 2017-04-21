@@ -8,7 +8,6 @@ import munch.places.data.ImageLinkDatabase;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -35,35 +34,49 @@ public class ImageLinkService implements JsonService {
     @Override
     public void route() {
         PATH("/places/:placeId", () -> {
-            GET("", this::get);
+            GET("", this::list);
 
-            PATH("/:imageKey", () -> {
+            PATH("/batch", () -> {
                 PUT("", this::put);
                 DELETE("", this::delete);
             });
         });
     }
 
-    private List<ImageLink> get(JsonCall call) {
+    /**
+     * @param call json call
+     * @return List of ImageLink
+     */
+    private List<ImageLink> list(JsonCall call) {
         String placeId = call.pathString("placeId");
         int from = call.queryInt("from");
         int size = call.queryInt("size");
         return database.query(placeId, from, size);
     }
 
+    /**
+     * @param call    json call
+     * @param request json data
+     * @return 200 = ok, else error
+     */
     private JsonNode put(JsonCall call, JsonNode request) {
         String placeId = call.pathString("placeId");
-        String imageKey = call.pathString("imageKey");
-        String sourceName = request.get("sourceName").asText();
-        String sourceId = request.get("sourceId").asText();
-        database.put(placeId, imageKey, sourceName, sourceId);
+        for (JsonNode node : request) {
+            String imageKey = node.get("imageKey").asText();
+            String sourceName = node.get("sourceName").asText();
+            String sourceId = node.get("sourceId").asText();
+            database.put(placeId, imageKey, sourceName, sourceId);
+        }
         return Meta200;
     }
 
+    /**
+     * @param call json call
+     * @return 200 = ok, else error
+     */
     private JsonNode delete(JsonCall call) {
-        // String placeId = call.pathString("placeId");
-        String imageKey = call.pathString("imageKey");
-        database.delete(Collections.singletonList(imageKey));
+        List<String> keys = call.bodyAsList(node -> node.get("imageKey").asText());
+        database.delete(keys);
         return Meta200;
     }
 }

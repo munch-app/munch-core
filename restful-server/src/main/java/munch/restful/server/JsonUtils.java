@@ -9,6 +9,9 @@ import munch.restful.server.exceptions.JsonException;
 import spark.Request;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
 
 /**
  * Created by: Fuxing
@@ -168,5 +171,35 @@ public final class JsonUtils {
         } catch (JsonProcessingException e) {
             throw new JsonException(e);
         }
+    }
+
+    /**
+     * Map json node to List of POJO Bean
+     *
+     * @param nodes  array node
+     * @param mapper json mapper
+     * @param <T>    Return Class Type
+     * @return json body as @code{<T>}
+     * @throws JsonException json exception
+     */
+    public static <T> List<T> readJsonArray(JsonNode nodes, Function<JsonNode, T> mapper) throws JsonException {
+        List<T> list = new ArrayList<>();
+        for (JsonNode node : nodes) {
+            list.add(mapper.apply(node));
+        }
+        return list;
+    }
+
+    /**
+     * Map json node to List of POJO Bean
+     *
+     * @param nodes array node
+     * @param clazz Class Type to return
+     * @param <T>   Return Class Type
+     * @return json body as @code{<T>}
+     * @throws JsonException json exception
+     */
+    public static <T> List<T> readJsonArray(JsonNode nodes, Class<T> clazz) throws JsonException {
+        return readJsonArray(nodes, node -> readJson(node, clazz));
     }
 }
