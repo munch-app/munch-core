@@ -8,7 +8,7 @@ package munch.struct;
  */
 public final class LinkedImage {
     // TODO Service by itself
-//    public static final String FROM_RESTAURANT = "restaurant"; // Removed Due to confusion
+    // public static final String FROM_RESTAURANT = "restaurant"; // Removed Due to confusion
     public static final String FROM_GALLERY = "gallery";
     public static final String FROM_ARTICLE = "article";
     public static final String FROM_REVIEW = "review";

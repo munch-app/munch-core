@@ -1,6 +1,7 @@
 package munch.images;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.munch.utils.file.ContentTypeError;
@@ -31,11 +32,13 @@ public class PersistService implements JsonService {
 
     private final ImageMapper mapper;
     private final MultipartConfigElement multipartConfig;
+    private final Set<String> contentTypes;
 
     @Inject
     public PersistService(ImageMapper mapper) {
         this.mapper = mapper;
         this.multipartConfig = new MultipartConfigElement("/temp");
+        this.contentTypes = ImmutableSet.of("image/jpeg", "image/png");
     }
 
     @Override
@@ -78,8 +81,9 @@ public class PersistService implements JsonService {
 
         // Upload the image
         try (InputStream inputStream = part.getInputStream()) {
-            long length = part.getSize();
             String contentType = part.getContentType();
+            if (!contentTypes.contains(contentType)) throw new ContentTypeNotImage(contentType);
+            long length = part.getSize();
             return mapper.upload(inputStream, length, contentType, kinds);
         }
     }
