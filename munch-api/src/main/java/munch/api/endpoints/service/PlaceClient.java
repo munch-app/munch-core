@@ -3,8 +3,8 @@ package munch.api.endpoints.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.typesafe.config.Config;
+import munch.api.struct.Place;
 import munch.restful.client.RestfulClient;
-import munch.struct.places.Place;
 
 import javax.inject.Inject;
 import javax.inject.Named;

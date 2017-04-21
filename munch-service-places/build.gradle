@@ -1,7 +1,6 @@
 ext.hibernateVersion = '5.0.11.Final'
 
 dependencies {
-    compile rootProject
     compile project(':restful-server')
 
     // Injection
@@ -16,6 +15,7 @@ dependencies {
 
     // Search
     compile group: 'org.elasticsearch.client', name: 'rest', version: '5.2.2'
+    compile group: 'org.wololo', name: 'jts2geojson', version: '0.10.0'
 }
 
 mainClassName = 'munch.places.PlaceApi'

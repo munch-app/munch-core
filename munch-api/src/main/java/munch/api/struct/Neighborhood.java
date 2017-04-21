@@ -1,4 +1,4 @@
-package munch.struct.neighborhood;
+package munch.api.struct;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;

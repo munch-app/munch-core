@@ -5,8 +5,8 @@ import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.typesafe.config.Config;
+import munch.catalyst.service.Place;
 import munch.catalyst.service.PlaceClient;
-import munch.struct.places.Place;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,10 +31,7 @@ public class MunchPersist {
     private final Set<String> inActives;
 
     /**
-     * @param document     document database
-     * @param search       search database
-     * @param placeClient
-     * @param searchClient
+     * @param placeClient for persisting data
      */
     @Inject
     public MunchPersist(PlaceClient placeClient, Config config) {

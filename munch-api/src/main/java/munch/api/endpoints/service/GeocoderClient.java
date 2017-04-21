@@ -1,9 +1,9 @@
 package munch.api.endpoints.service;
 
 import com.typesafe.config.Config;
+import munch.api.struct.Neighborhood;
 import munch.restful.client.RestfulClient;
 import munch.restful.client.exception.StructuredException;
-import munch.struct.neighborhood.Neighborhood;
 
 import javax.inject.Inject;
 import javax.inject.Named;

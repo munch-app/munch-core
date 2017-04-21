@@ -28,8 +28,8 @@ public class ServicesModule extends AbstractModule {
         WaitFor.host(services.getString("places.url"), Duration.ofSeconds(45));
     }
 
-    @Named("services")
     @Provides
+    @Named("services")
     Config provideConfig() {
         return ConfigFactory.load().getConfig("services");
     }

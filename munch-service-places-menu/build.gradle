@@ -1,8 +1,9 @@
 dependencies {
+    compile rootProject
     compile project(':restful-server')
 
     // Injection
     compile group: 'com.google.inject', name: 'guice', version: '4.1.0'
 }
 
-mainClassName = 'munch.articles.ArticleApi'
+mainClassName = 'munch.places.MenuApi'

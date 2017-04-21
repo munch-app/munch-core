@@ -1,4 +1,4 @@
-package munch.struct;
+package munch.places.data.struct;
 
 /**
  * Created by: Fuxing
@@ -6,8 +6,8 @@ package munch.struct;
  * Time: 1:47 AM
  * Project: munch-core
  */
-public final class LinkedImage {
-    // TODO Service by itself
+public final class PlaceImage {
+    // TODO place image
     // public static final String FROM_RESTAURANT = "restaurant"; // Removed Due to confusion
     public static final String FROM_GALLERY = "gallery";
     public static final String FROM_ARTICLE = "article";

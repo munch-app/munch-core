@@ -22,11 +22,11 @@
         <appender-ref ref="ASYNC_STDOUT"/>
     </logger>
 
-    <logger name="munch" level="INFO" additivity="false">
+    <logger name="com.corpus" level="INFO" additivity="false">
         <appender-ref ref="ASYNC_STDOUT"/>
     </logger>
 
-    <logger name="com.corpus" level="INFO" additivity="false">
+    <logger name="munch" level="INFO" additivity="false">
         <appender-ref ref="ASYNC_STDOUT"/>
     </logger>
 

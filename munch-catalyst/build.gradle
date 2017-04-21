@@ -1,5 +1,4 @@
 dependencies {
-    compile rootProject
     compile project(':restful-client')
 
     compile group: 'com.catalyst', name: 'catalyst-client', version: '0.1.1-SNAPSHOT'

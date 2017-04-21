@@ -1,4 +1,4 @@
-package munch.struct.gallery;
+package munch.gallery;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;

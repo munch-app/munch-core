@@ -3,7 +3,6 @@ version: '2'
 services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:5.2.2
-    container_name: munch-service-elasticsearch
     environment:
       ES_JAVA_OPTS: "-Xms1g -Xmx1g"
       xpack.security.enabled: "false"
@@ -22,20 +21,12 @@ services:
       - IPC_LOCK
     ports:
       - 9200:9200
-    networks:
-      - struct-network
   postgres:
     image: postgres:9-alpine
-    container_name: munch-service-postgres
-    ports:
-      - "5444:5432"
     environment:
       - POSTGRES_PASSWORD=K851xsSffyTJP3e1M7rd
-    networks:
-      - struct-network
   places:
     image: munch-core/munch-service-places:latest
-    container_name: munch-service-places
     environment:
       - DOCUMENT_DATABASE_URL=jdbc:postgresql://postgres:5432/postgres
       - DOCUMENT_DATABASE_USERNAME=postgres
@@ -43,16 +34,11 @@ services:
       - DOCUMENT_DATABASE_AUTO_CREATE=true
 
       - SEARCH_DATABASE_HOSTNAME=elasticsearch
-    ports:
-      - "8001:8000"
     links:
       - postgres
       - elasticsearch
-    networks:
-      - struct-network
   catalyst:
     image: munch-core/munch-catalyst:latest
-    container_name: munch-catalyst
     environment:
       - CATALYST_URL=http://catalyst.munch.space:8201
       - CATALYST_USER=catalyst
@@ -61,9 +47,3 @@ services:
       - MUNCH_SERVICE_PLACES_URL=http://places:8000
     links:
       - places
-    networks:
-      - struct-network
-
-networks:
-  struct-network:
-    driver: bridge

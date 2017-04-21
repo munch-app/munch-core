@@ -6,6 +6,7 @@ include 'munch-api'
 // Tier 1 Service Api
 include 'munch-service-geocoder'
 include 'munch-service-places'
+include 'munch-service-places-menu'
 include 'munch-service-articles'
 include 'munch-service-gallery'
 

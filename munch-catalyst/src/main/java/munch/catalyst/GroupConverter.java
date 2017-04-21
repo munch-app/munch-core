@@ -3,9 +3,7 @@ package munch.catalyst;
 import com.corpus.object.GroupField;
 import com.corpus.object.GroupObject;
 import com.corpus.object.ObjectUtils;
-import munch.struct.places.Hour;
-import munch.struct.places.Location;
-import munch.struct.places.Place;
+import munch.catalyst.service.Place;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,14 +36,15 @@ public class GroupConverter {
         place.setDescription(getString(group, "description"));
 
         // Set other entity
+        place.setPrice(createPrice(group));
         place.setLocation(createLocation(group));
+
+        place.setTags(createTags(group));
         place.setHours(createHours(group));
-        place.setAmenities(createLabels(group));
 
         // Set tracking dates
         place.setCreatedDate(group.getCreatedDate());
         place.setUpdatedDate(group.getUpdatedDate());
-
         return place;
     }
 
@@ -53,8 +52,8 @@ public class GroupConverter {
      * @param group group object
      * @return Location created from group
      */
-    public static Location createLocation(GroupObject group) {
-        Location location = new Location();
+    public static Place.Location createLocation(GroupObject group) {
+        Place.Location location = new Place.Location();
         location.setAddress(getString(group, "Location.address"));
         location.setUnitNumber(getString(group, "Location.unitNumber"));
 
@@ -67,13 +66,17 @@ public class GroupConverter {
         return location;
     }
 
+    public static Place.Price createPrice(GroupObject group) {
+        return null;
+    }
+
     /**
      * Create opening hours from group
      *
      * @param group group object
      * @return set of opening hours created
      */
-    public static Set<Hour> createHours(GroupObject group) {
+    public static Set<Place.Hour> createHours(GroupObject group) {
         return Collections.emptySet();
     }
 
@@ -81,7 +84,7 @@ public class GroupConverter {
      * @param group group object
      * @return set of PlaceType labels of place
      */
-    public static Set<String> createLabels(GroupObject group) {
+    public static Set<String> createTags(GroupObject group) {
         List<GroupField> fields = ObjectUtils.getAllField(group.getValues(), "PlaceType.others");
         return fields.stream().map(GroupField::getValue).collect(Collectors.toSet());
     }

@@ -1,5 +1,4 @@
 dependencies {
-    compile rootProject
     compile project(':restful-server')
 
     // Injection
@@ -13,6 +12,7 @@ dependencies {
 
     // Geo
     compile group: 'org.opengeo', name: 'geodb', version: '0.8'
+    compile group: 'org.wololo', name: 'jts2geojson', version: '0.10.0'
     compile group: 'org.hibernate', name: 'hibernate-spatial', version: '5.0.11.Final'
 }
 

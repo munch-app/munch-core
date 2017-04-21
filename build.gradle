@@ -58,11 +58,6 @@ allprojects {
     }
 }
 
-dependencies {
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.8.7'
-    compile group: 'org.wololo', name: 'jts2geojson', version: '0.10.0'
-}
-
 configure(subprojects.findAll { it.name.matches("munch-(.+)") }) {
     apply plugin: 'application'
     apply plugin: 'com.bmuschko.docker-java-application'
