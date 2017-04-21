@@ -1,7 +1,6 @@
 package munch.places.data;
 
 import munch.places.data.hibernate.PlaceUserType;
-import munch.places.data.struct.Place;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 

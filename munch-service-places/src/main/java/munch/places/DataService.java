@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.places.data.PlaceDatabase;
-import munch.places.data.struct.Place;
+import munch.places.data.Place;
 import munch.places.search.SearchIndex;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;

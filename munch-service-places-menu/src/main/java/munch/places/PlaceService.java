@@ -3,7 +3,6 @@ package munch.places;
 import com.google.inject.Singleton;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
-import munch.struct.Menu;
 
 import java.util.List;
 
