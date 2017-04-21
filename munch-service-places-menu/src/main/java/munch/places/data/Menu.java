@@ -1,4 +1,4 @@
-package munch.places;
+package munch.places.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;

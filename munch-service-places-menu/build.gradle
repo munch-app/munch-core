@@ -1,5 +1,4 @@
 dependencies {
-    compile rootProject
     compile project(':restful-server')
 
     // Injection
