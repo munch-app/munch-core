@@ -29,17 +29,19 @@ import java.util.List;
  * Project: munch-core
  */
 @Singleton
-public class SearchQuery extends SearchFilter {
+public class SearchQuery {
 
     private final RestClient client;
     private final ObjectMapper mapper;
 
     private final ArrayNode sources;
+    private final BoolQuery boolQuery;
 
     @Inject
-    public SearchQuery(RestClient client, ObjectMapper mapper) {
+    public SearchQuery(RestClient client, ObjectMapper mapper, BoolQuery boolQuery) {
         this.client = client;
         this.mapper = mapper;
+        this.boolQuery = boolQuery;
 
         // Sources of data to return
         this.sources = mapper.createArrayNode();
@@ -52,7 +54,7 @@ public class SearchQuery extends SearchFilter {
      * @param geometry geometry for within function
      * @param query    text query string on name
      * @param filters  tags, price, ratings and hours filters
-     * @return list of Place, total results
+     * @return pair = (list of Place, total results)
      * @throws IOException exception
      * @see Filters
      */
@@ -62,37 +64,13 @@ public class SearchQuery extends SearchFilter {
         root.put("from", from);
         root.put("size", size);
         root.set("_source", sources);
+        root.set("query", mapper.createObjectNode().set("bool",
+                boolQuery.make(geometry, query, filters)));
 
-        ObjectNode bool = mapper.createObjectNode();
-        bool.set("must", mapper.createObjectNode().set("match_all", mapper.createObjectNode()));
-
-        // Search with text on name
-        if (query != null) {
-            // TODO name search first
-        }
-
-        // Create geometry filter if is not null or missing
-        if (geometry != null && !geometry.isNull() && !geometry.isMissingNode()) {
-            bool.set("filter", createGeometryFilter(geometry));
-        }
-
-        // Only filter tags search works now
-        // TODO price/ratings/hours
-        if (filters != null) {
-            // TODO filter tags search
-        }
-
-        root.set("query", mapper.createObjectNode().set("bool", bool));
-        return query(root);
-    }
-
-    private Pair<List<Place>, Integer> query(JsonNode node) throws IOException {
-        JsonNode hits = search(node).path("hits");
-
-        // Create places list
+        // Query and parse
+        JsonNode hits = postSearch(root).path("hits");
         List<Place> places = new ArrayList<>();
         for (JsonNode hit : hits.path("hits")) places.add(parse(hit));
-
         return Pair.of(places, hits.path("total").asInt());
     }
 
@@ -100,13 +78,13 @@ public class SearchQuery extends SearchFilter {
      * @param node search node
      * @return root node
      */
-    private JsonNode search(JsonNode node) throws IOException {
+    private JsonNode postSearch(JsonNode node) throws IOException {
         HttpEntity jsonEntity = new NStringEntity(mapper.writeValueAsString(node), ContentType.APPLICATION_JSON);
         Response response = client.performRequest("POST", "/munch/place/_search", Collections.emptyMap(), jsonEntity);
-
         HttpEntity entity = response.getEntity();
-        InputStream input = entity.getContent();
+
         try {
+            InputStream input = entity.getContent();
             return mapper.readTree(input);
         } finally {
             EntityUtils.consumeQuietly(entity);
