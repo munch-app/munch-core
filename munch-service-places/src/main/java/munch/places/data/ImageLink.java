@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * Created by: Fuxing
@@ -18,10 +19,10 @@ import javax.persistence.*;
                 name = ImageLink.UNIQUE_CONSTRAINT_IMAGE_KEY
         )
 }, indexes = {
-        @Index(name = "INDEX_PLACE_IMAGE_LINK_PLACE_ID", columnList = "placeId, sourceName")
+        @Index(name = "index_place_image_link_place_id", columnList = "placeId, sourceName")
 })
 public final class ImageLink {
-    public static final String UNIQUE_CONSTRAINT_IMAGE_KEY = "UK_PLACE_IMAGE_LINK_IMAGE_KEY";
+    public static final String UNIQUE_CONSTRAINT_IMAGE_KEY = "uk_place_image_link_image_key";
 
     private String id;
     private String imageKey;
@@ -29,6 +30,8 @@ public final class ImageLink {
     private String placeId;
     private String sourceName;
     private String sourceId;
+
+    private Date createdDate;
 
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "org.hibernate.id.UUIDGenerator")
@@ -77,5 +80,14 @@ public final class ImageLink {
 
     public void setSourceId(String sourceId) {
         this.sourceId = sourceId;
+    }
+
+    @Column(nullable = false, updatable = false)
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
     }
 }

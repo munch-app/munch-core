@@ -22,10 +22,10 @@ import java.util.Date;
                 name = PostgresMenu.UNIQUE_CONSTRAINT_MENU_ID
         )
 }, indexes = {
-        @Index(name = "INDEX_MENU_PLACE_MENU_CREATED", columnList = "placeId, menuId, createdDate")
+        @Index(name = "index_menu_place_menu_created", columnList = "placeId, menuId, createdDate")
 })
 public final class PostgresMenu {
-    public static final String UNIQUE_CONSTRAINT_MENU_ID = "UK_PLACE_MENU_MENU_ID";
+    public static final String UNIQUE_CONSTRAINT_MENU_ID = "uk_place_menu_menu_id";
 
     private String id;
     private String placeId;

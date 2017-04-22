@@ -3,10 +3,11 @@ package munch.places.menu.data;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.munch.hibernate.utils.TransactionProvider;
-import munch.restful.server.exceptions.StructuredException;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.hibernate.exception.ConstraintViolationException;
 
 import javax.annotation.Nullable;
+import javax.persistence.RollbackException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,9 +27,15 @@ public class MenuDatabase {
         this.provider = provider;
     }
 
+    /**
+     * @param placeId place id for each to list all menu
+     * @param from    start from
+     * @param size    size of each
+     * @return List of Menu
+     */
     public List<Menu> list(String placeId, int from, int size) {
         return provider.reduce(em -> em
-                .createQuery("FROM PostgresMenu WHERE placeId = :placeId", PostgresMenu.class)
+                .createQuery("FROM PostgresMenu WHERE placeId = :placeId ORDER BY createdDate DESC", PostgresMenu.class)
                 .setParameter("placeId", placeId)
                 .setFirstResult(from)
                 .setMaxResults(size)
@@ -38,6 +45,9 @@ public class MenuDatabase {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * @param menu menu to put
+     */
     public void put(Menu menu) {
         PostgresMenu data = new PostgresMenu();
         data.setPlaceId(menu.getPlaceId());
@@ -47,13 +57,23 @@ public class MenuDatabase {
 
         try {
             provider.with(em -> em.persist(data));
-        } catch (ConstraintViolationException e) {
-            if (e.getConstraintName().equals(PostgresMenu.UNIQUE_CONSTRAINT_MENU_ID))
-                throw new AlreadyExistException();
-            throw e;
+        } catch (RollbackException e) {
+            ExceptionUtils.getThrowableList(e).stream()
+                    .filter(t -> t instanceof ConstraintViolationException)
+                    .map(t -> (ConstraintViolationException) t)
+                    .filter(c -> c.getConstraintName().equals(PostgresMenu.UNIQUE_CONSTRAINT_MENU_ID))
+                    .findAny()
+                    .orElseThrow(() -> e);
+
+            // If reach here means menu already exist in database
+            throw new MenuExistException();
         }
     }
 
+    /**
+     * @param menuId id of menu to get
+     * @return Menu or null
+     */
     @Nullable
     public Menu get(String menuId) {
         return provider.optional(em -> em
@@ -64,6 +84,9 @@ public class MenuDatabase {
                 .orElse(null);
     }
 
+    /**
+     * @param menuId id of menu to delete
+     */
     public void delete(String menuId) {
         provider.with(em -> em
                 .createQuery("DELETE FROM PostgresMenu WHERE menuId = :menuId")
@@ -71,9 +94,4 @@ public class MenuDatabase {
                 .executeUpdate());
     }
 
-    public static class AlreadyExistException extends StructuredException {
-        protected AlreadyExistException() {
-            super("MenuAlreadyExistException", "Menu already exist in the database.", 400);
-        }
-    }
 }

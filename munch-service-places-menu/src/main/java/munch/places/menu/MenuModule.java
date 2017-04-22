@@ -5,6 +5,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.multibindings.Multibinder;
+import com.squareup.pollexor.Thumbor;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import munch.restful.server.JsonUtils;
@@ -37,5 +38,11 @@ public class MenuModule extends AbstractModule {
     @Singleton
     ObjectMapper provideObjectMapper() {
         return JsonUtils.objectMapper;
+    }
+
+    @Provides
+    @Singleton
+    Thumbor provideThumbor(Config config) {
+        return Thumbor.create(config.getString("menu.thumbor.url"));
     }
 }

@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -83,7 +84,7 @@ public class ImageMapper {
         Image image = new Image();
         image.setKey(newKey);
         image.setContentType(contentType);
-        image.setCreated(new Date());
+        image.setCreated(new Timestamp(System.currentTimeMillis()));
         image.setKinds(new HashSet<>());
 
         // Add original image kind

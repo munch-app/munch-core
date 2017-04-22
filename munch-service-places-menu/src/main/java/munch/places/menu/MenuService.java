@@ -60,7 +60,11 @@ public class MenuService implements JsonService {
         return menu;
     }
 
+    /**
+     * @param menu menu if null is ignored
+     */
     public void resolveUrl(Menu menu) {
+        if (menu == null) return;
         if (menu.getImage() != null) {
             for (Menu.ImageType type : menu.getImage().getKinds()) {
                 type.setUrl(endpoint.getUrl(type.getKey()));

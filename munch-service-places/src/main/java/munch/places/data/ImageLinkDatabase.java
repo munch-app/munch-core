@@ -3,8 +3,11 @@ package munch.places.data;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.munch.hibernate.utils.TransactionProvider;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.hibernate.exception.ConstraintViolationException;
 
+import javax.persistence.RollbackException;
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
 
@@ -32,7 +35,7 @@ public class ImageLinkDatabase {
      */
     public List<ImageLink> list(String placeId, int from, int size) {
         return provider.reduce(em -> em.createQuery("FROM ImageLink WHERE " +
-                "placeId = :placeId", ImageLink.class)
+                "placeId = :placeId ORDER BY createdDate DESC", ImageLink.class)
                 .setParameter("placeId", placeId)
                 .setFirstResult(from)
                 .setMaxResults(size)
@@ -49,13 +52,20 @@ public class ImageLinkDatabase {
         ImageLink link = new ImageLink();
         link.setPlaceId(placeId);
         link.setImageKey(imageKey);
+
         link.setSourceName(sourceName);
         link.setSourceId(sourceId);
+        link.setCreatedDate(new Timestamp(System.currentTimeMillis()));
 
         try {
             provider.with(em -> em.persist(link));
-        } catch (ConstraintViolationException e) {
-            if (!e.getConstraintName().equals(ImageLink.UNIQUE_CONSTRAINT_IMAGE_KEY)) throw e;
+        } catch (RollbackException e) {
+            ExceptionUtils.getThrowableList(e).stream()
+                    .filter(t -> t instanceof ConstraintViolationException)
+                    .map(t -> (ConstraintViolationException) t)
+                    .filter(c -> c.getConstraintName().equals(ImageLink.UNIQUE_CONSTRAINT_IMAGE_KEY))
+                    .findAny()
+                    .orElseThrow(() -> e);
         }
     }
 

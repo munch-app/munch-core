@@ -16,7 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Date;
+import java.sql.Timestamp;
 import java.util.HashSet;
 
 /**
@@ -42,13 +42,20 @@ public class MenuMapper {
         this.tika = TikaConfig.getDefaultConfig();
     }
 
-    // TODO menu mapper
-
+    /**
+     * @param placeId     place id from catalyst
+     * @param menuId      menu id from catalyst
+     * @param inputStream image data stream
+     * @param length      image data length
+     * @param contentType image content type = image/jpeg or image/png
+     */
     public void putImage(String placeId, String menuId, InputStream inputStream, long length, String contentType) throws IOException, ContentTypeError {
+        if (database.get(menuId) != null) throw new MenuExistException();
+
         Menu menu = new Menu();
         menu.setPlaceId(placeId);
         menu.setMenuId(menuId);
-        menu.setCreatedDate(new Date());
+        menu.setCreatedDate(new Timestamp(System.currentTimeMillis()));
 
         Menu.Image image = new Menu.Image();
         image.setKinds(new HashSet<>());
@@ -77,11 +84,20 @@ public class MenuMapper {
         database.put(menu);
     }
 
+    /**
+     * @param placeId     place id from catalyst
+     * @param menuId      menu id from catalyst
+     * @param inputStream pdf data stream
+     * @param length      pdf data length
+     * @param contentType pdf content type = application/pdf
+     */
     public void putPdf(String placeId, String menuId, InputStream inputStream, long length, String contentType) {
+        if (database.get(menuId) != null) throw new MenuExistException();
+
         Menu menu = new Menu();
         menu.setPlaceId(placeId);
         menu.setMenuId(menuId);
-        menu.setCreatedDate(new Date());
+        menu.setCreatedDate(new Timestamp(System.currentTimeMillis()));
 
         Menu.Pdf pdf = new Menu.Pdf();
         pdf.setKey(menuId + getExtension(contentType));
@@ -91,11 +107,18 @@ public class MenuMapper {
         database.put(menu);
     }
 
+    /**
+     * @param placeId    place id from catalyst
+     * @param menuId     menu id from catalyst
+     * @param websiteUrl website url
+     */
     public void putWebsite(String placeId, String menuId, String websiteUrl) {
+        if (database.get(menuId) != null) throw new MenuExistException();
+
         Menu menu = new Menu();
         menu.setPlaceId(placeId);
         menu.setMenuId(menuId);
-        menu.setCreatedDate(new Date());
+        menu.setCreatedDate(new Timestamp(System.currentTimeMillis()));
 
         Menu.Website website = new Menu.Website();
         website.setUrl(websiteUrl);
@@ -103,6 +126,9 @@ public class MenuMapper {
         database.put(menu);
     }
 
+    /**
+     * @param menuId menuId for which to delete it resource and entry
+     */
     public void delete(String menuId) {
         Menu menu = database.get(menuId);
         if (menu == null) return;
@@ -125,7 +151,6 @@ public class MenuMapper {
         try {
             String extension = tika.getMimeRepository().forName(contentType).getExtension();
             if (StringUtils.isNotEmpty(extension)) return extension;
-
             throw new RuntimeException("Extension cannot be empty.");
         } catch (MimeTypeException e) {
             throw new RuntimeException(e);
