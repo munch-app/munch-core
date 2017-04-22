@@ -15,12 +15,13 @@ import javax.persistence.*;
 @Table(uniqueConstraints = {
         @UniqueConstraint(
                 columnNames = {"imageKey"},
-                name = "UK_PLACE_IMAGE_LINK_IMAGE_KEY"
+                name = ImageLink.UNIQUE_CONSTRAINT_IMAGE_KEY
         )
 }, indexes = {
         @Index(name = "INDEX_PLACE_IMAGE_LINK_PLACE_ID", columnList = "placeId, sourceName")
 })
 public final class ImageLink {
+    public static final String UNIQUE_CONSTRAINT_IMAGE_KEY = "UK_PLACE_IMAGE_LINK_IMAGE_KEY";
 
     private String id;
     private String imageKey;

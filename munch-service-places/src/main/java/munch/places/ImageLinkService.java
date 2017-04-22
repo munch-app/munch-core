@@ -34,11 +34,11 @@ public class ImageLinkService implements JsonService {
     @Override
     public void route() {
         PATH("/places/:placeId", () -> {
-            GET("", this::list);
+            GET("/list", this::list);
 
             PATH("/batch", () -> {
-                PUT("", this::put);
-                DELETE("", this::delete);
+                POST("/put", this::put);
+                POST("/delete", this::delete);
             });
         });
     }
@@ -51,7 +51,7 @@ public class ImageLinkService implements JsonService {
         String placeId = call.pathString("placeId");
         int from = call.queryInt("from");
         int size = call.queryInt("size");
-        return database.query(placeId, from, size);
+        return database.list(placeId, from, size);
     }
 
     /**

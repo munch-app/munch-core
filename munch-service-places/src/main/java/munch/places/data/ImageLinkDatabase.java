@@ -30,7 +30,7 @@ public class ImageLinkDatabase {
      * @param size    size of list
      * @return List of ImageLink
      */
-    public List<ImageLink> query(String placeId, int from, int size) {
+    public List<ImageLink> list(String placeId, int from, int size) {
         return provider.reduce(em -> em.createQuery("FROM ImageLink WHERE " +
                 "placeId = :placeId", ImageLink.class)
                 .setParameter("placeId", placeId)
@@ -55,7 +55,7 @@ public class ImageLinkDatabase {
         try {
             provider.with(em -> em.persist(link));
         } catch (ConstraintViolationException e) {
-            if (!e.getConstraintName().equals("UK_PLACE_IMAGE_LINK_IMAGE_KEY")) throw e;
+            if (!e.getConstraintName().equals(ImageLink.UNIQUE_CONSTRAINT_IMAGE_KEY)) throw e;
         }
     }
 

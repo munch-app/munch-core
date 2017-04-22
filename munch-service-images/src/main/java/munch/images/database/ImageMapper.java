@@ -238,7 +238,7 @@ public class ImageMapper {
             String extension = mimeType.getExtension();
             if (StringUtils.isEmpty(extension))
                 throw new RuntimeException("Extension cannot be empty.");
-            return mimeType.getExtension();
+            return extension;
         } catch (MimeTypeException e) {
             throw new RuntimeException(e);
         }

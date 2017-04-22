@@ -10,6 +10,7 @@ import munch.images.database.ImageKind;
 import munch.images.database.ImageMapper;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
+import munch.restful.server.exceptions.StructuredException;
 import spark.Request;
 import spark.Response;
 import spark.Spark;
@@ -82,7 +83,7 @@ public class PersistService implements JsonService {
         // Upload the image
         try (InputStream inputStream = part.getInputStream()) {
             String contentType = part.getContentType();
-            if (!contentTypes.contains(contentType)) throw new ContentTypeNotImage(contentType);
+            if (!contentTypes.contains(contentType)) throw new NotImageException(contentType);
             long length = part.getSize();
             return mapper.upload(inputStream, length, contentType, kinds);
         }
@@ -98,5 +99,14 @@ public class PersistService implements JsonService {
         String key = call.pathString("key");
         mapper.delete(key);
         return Meta200;
+    }
+
+    /**
+     * Content type not image exception
+     */
+    public static class NotImageException extends StructuredException {
+        protected NotImageException(String contentType) {
+            super("NotImageException", "Uploaded content type must be image. (" + contentType + ")", 400);
+        }
     }
 }

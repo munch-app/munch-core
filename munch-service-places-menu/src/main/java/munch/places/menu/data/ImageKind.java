@@ -1,8 +1,7 @@
-package munch.images.database;
+package munch.places.menu.data;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.ImmutableSet;
-import munch.restful.server.exceptions.StructuredException;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -19,17 +18,8 @@ public enum ImageKind {
     @JsonProperty("original")
     Original("original", 0, 0),
 
-    @JsonProperty("150x150")
-    X150("150x150", 150, 150),
-
-    @JsonProperty("320x320")
-    X320("320x320", 320, 320),
-
-    @JsonProperty("640x640")
-    X640("640x640", 640, 640),
-
-    @JsonProperty("1080x1080")
-    X1080("1080x1080", 1080, 1080);
+    @JsonProperty("200x200")
+    X200("200x200", 200, 200);
 
     private final String name;
     private final int width;
@@ -82,23 +72,15 @@ public enum ImageKind {
      *
      * @param value value/name
      * @return parsed TypeDescription
-     * @throws NotFoundException if given kind is not found,
-     *                                    restful server knows how to handle this
      */
     public static ImageKind forValue(String value) {
         switch (value) {
             case "original":
                 return Original;
-            case "150x150":
-                return X150;
-            case "320x320":
-                return X320;
-            case "640x640":
-                return X640;
-            case "1080x1080":
-                return X1080;
+            case "200x200":
+                return X200;
             default:
-                throw new NotFoundException(value);
+                throw new IllegalArgumentException(value);
         }
     }
 
@@ -111,17 +93,5 @@ public enum ImageKind {
         return Arrays.stream(queryString.split(" *, *"))
                 .map(ImageKind::forValue)
                 .collect(Collectors.toSet());
-    }
-
-    public static class NotFoundException extends StructuredException {
-
-        /**
-         * Image kind not found
-         *
-         * @see ImageKind for all the options available
-         */
-        protected NotFoundException(String kind) {
-            super("ImageKindNotFoundException", "ImageKind: " + kind + " not found.", 400);
-        }
     }
 }

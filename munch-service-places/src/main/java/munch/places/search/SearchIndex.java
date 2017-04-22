@@ -99,7 +99,7 @@ public class SearchIndex {
         }
     }
 
-    private ObjectNode locationNode(Location location) {
+    private ObjectNode locationNode(Place.Location location) {
         // location node
         ObjectNode node = mapper.createObjectNode();
         node.put("address", location.getAddress());
