@@ -9,6 +9,7 @@ import munch.places.menu.data.MenuMapper;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
 import munch.restful.server.RestfulUtils;
+import munch.restful.server.exceptions.StructuredException;
 import spark.Request;
 import spark.Response;
 import spark.Spark;
@@ -63,7 +64,7 @@ public class UploadService implements JsonService {
         // Upload image
         try (InputStream inputStream = part.getInputStream()) {
             String contentType = part.getContentType();
-            if (!imageTypes.contains(contentType)) throw new ContentTypeNotMatchException(contentType);
+            if (!imageTypes.contains(contentType)) throw new NotMatchException(contentType);
             long length = part.getSize();
             mapper.putImage(placeId, menuId, inputStream, length, contentType);
         }
@@ -79,7 +80,7 @@ public class UploadService implements JsonService {
         // Upload pdf
         try (InputStream inputStream = part.getInputStream()) {
             String contentType = part.getContentType();
-            if (!pdfTypes.contains(contentType)) throw new ContentTypeNotMatchException(contentType);
+            if (!pdfTypes.contains(contentType)) throw new NotMatchException(contentType);
             long length = part.getSize();
             mapper.putPdf(placeId, menuId, inputStream, length, contentType);
         }
@@ -98,5 +99,11 @@ public class UploadService implements JsonService {
         String menuId = call.pathString("menuId");
         mapper.delete(menuId);
         return Meta200;
+    }
+
+    public static class NotMatchException extends StructuredException {
+        protected NotMatchException(String contentType) {
+            super("ContentTypeNotMatchException", "Uploaded content type must be image. (" + contentType + ")", 400);
+        }
     }
 }

@@ -3,6 +3,7 @@ package munch.places.menu.data;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.munch.hibernate.utils.TransactionProvider;
+import munch.restful.server.exceptions.StructuredException;
 import org.hibernate.exception.ConstraintViolationException;
 
 import javax.annotation.Nullable;
@@ -48,7 +49,7 @@ public class MenuDatabase {
             provider.with(em -> em.persist(data));
         } catch (ConstraintViolationException e) {
             if (e.getConstraintName().equals(PostgresMenu.UNIQUE_CONSTRAINT_MENU_ID))
-                throw new MenuAlreadyExistException();
+                throw new AlreadyExistException();
             throw e;
         }
     }
@@ -68,5 +69,11 @@ public class MenuDatabase {
                 .createQuery("DELETE FROM PostgresMenu WHERE menuId = :menuId")
                 .setParameter("menuId", menuId)
                 .executeUpdate());
+    }
+
+    public static class AlreadyExistException extends StructuredException {
+        protected AlreadyExistException() {
+            super("MenuAlreadyExistException", "Menu already exist in the database.", 400);
+        }
     }
 }
