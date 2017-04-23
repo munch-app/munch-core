@@ -1,8 +1,8 @@
-package munch.api.endpoints;
+package munch.api.services;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import munch.api.services.GeocoderClient;
+import munch.api.clients.GeocoderClient;
 import munch.api.struct.Neighborhood;
 import munch.restful.server.JsonCall;
 
@@ -15,12 +15,12 @@ import java.util.List;
  * Project: munch-core
  */
 @Singleton
-public class NeighborhoodEndpoint extends AbstractEndpoint {
+public class NeighborhoodService extends AbstractService {
 
     private final GeocoderClient geocoder;
 
     @Inject
-    public NeighborhoodEndpoint(GeocoderClient geocoder) {
+    public NeighborhoodService(GeocoderClient geocoder) {
         this.geocoder = geocoder;
     }
 

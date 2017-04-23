@@ -1,4 +1,4 @@
-package munch.api.services;
+package munch.api.clients;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;

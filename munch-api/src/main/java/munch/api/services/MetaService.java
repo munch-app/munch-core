@@ -1,4 +1,4 @@
-package munch.api.endpoints;
+package munch.api.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Singleton;
@@ -11,7 +11,7 @@ import munch.restful.server.JsonCall;
  * Project: munch-core
  */
 @Singleton
-public class MetaEndpoint extends AbstractEndpoint {
+public class MetaService extends AbstractService {
 
     @Override
     public void route() {

@@ -1,9 +1,10 @@
-package munch.api.endpoints;
+package munch.api.services.places;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import munch.api.services.PlaceClient;
+import munch.api.clients.PlaceClient;
+import munch.api.services.AbstractService;
 import munch.api.struct.Article;
 import munch.api.struct.Graphic;
 import munch.api.struct.Place;
@@ -19,12 +20,12 @@ import java.util.List;
  * Project: munch-core
  */
 @Singleton
-public class PlaceEndpoint extends AbstractEndpoint {
+public class PlaceService extends AbstractService {
 
     private final PlaceClient placeClient;
 
     @Inject
-    public PlaceEndpoint(PlaceClient placeClient) {
+    public PlaceService(PlaceClient placeClient) {
         this.placeClient = placeClient;
     }
 
@@ -33,10 +34,13 @@ public class PlaceEndpoint extends AbstractEndpoint {
         PATH("/places", () -> {
             POST("/search", this::search);
 
-            GET("/:placeId", this::get);
+            PATH("/:placeId", () -> {
+                GET("", this::get);
 
-            GET("/:placeId/gallery", this::gallery);
-            GET("/:placeId/articles", this::articles);
+                GET("/gallery", this::gallery);
+                GET("/articles", this::articles);
+                GET("/reviews", this::reviews);
+            });
         });
     }
 
@@ -61,6 +65,11 @@ public class PlaceEndpoint extends AbstractEndpoint {
     }
 
     private List<Article> articles(JsonCall call) {
+        String placeId = call.pathString("placeId");
+        return Collections.emptyList();
+    }
+
+    private List<String> reviews(JsonCall call) {
         String placeId = call.pathString("placeId");
         return Collections.emptyList();
     }

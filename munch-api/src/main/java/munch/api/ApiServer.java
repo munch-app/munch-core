@@ -5,8 +5,8 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.typesafe.config.ConfigFactory;
-import munch.api.endpoints.EndpointModule;
 import munch.api.services.ServiceModule;
+import munch.api.clients.ClientModule;
 import munch.restful.server.RestfulServer;
 import munch.restful.server.RestfulService;
 
@@ -41,8 +41,8 @@ public final class ApiServer extends RestfulServer {
     public static void main(String[] args) {
         Injector injector = Guice.createInjector(
                 new ApiModule(),
-                new ServiceModule(),
-                new EndpointModule()
+                new ClientModule(),
+                new ServiceModule()
         );
 
         // Start api server on port on http.port

@@ -1,4 +1,4 @@
-package munch.api.endpoints;
+package munch.api.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 class SearchServiceTest extends AbstractEndpointTest {
 
     public SearchServiceTest() {
-        super(AbstractEndpoint.class);
+        super(AbstractService.class);
     }
 
     @Test

@@ -1,4 +1,4 @@
-package munch.api.services;
+package munch.api.clients;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -14,11 +14,11 @@ import javax.inject.Named;
  * Project: munch-core
  */
 @Singleton
-public class MenuClient extends RestfulClient {
+public class ImageClient extends RestfulClient {
 
     @Inject
-    public MenuClient(@Named("services") Config config) {
-        super(config.getString("places-menu.url"));
+    public ImageClient(@Named("services") Config config) {
+        super(config.getString("images.url"));
     }
 
 }

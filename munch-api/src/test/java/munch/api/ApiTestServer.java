@@ -3,7 +3,7 @@ package munch.api;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import munch.api.endpoints.AbstractEndpoint;
+import munch.api.services.AbstractEndpoint;
 import org.fest.util.Collections;
 
 /**

@@ -1,4 +1,4 @@
-package munch.api.endpoints;
+package munch.api.services;
 
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
@@ -14,7 +14,7 @@ import java.util.Optional;
  * Time: 5:04 PM
  * Project: munch-core
  */
-abstract class AbstractEndpoint implements JsonService {
+public abstract class AbstractService implements JsonService {
 
     private static final String Version = "/v1";
 

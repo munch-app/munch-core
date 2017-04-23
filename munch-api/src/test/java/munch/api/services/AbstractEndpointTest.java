@@ -1,4 +1,4 @@
-package munch.api.endpoints;
+package munch.api.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,7 +18,7 @@ public abstract class AbstractEndpointTest extends RestfulClient
 
     protected static final ObjectMapper mapper = new ObjectMapper();
 
-    public <T extends AbstractEndpoint> AbstractEndpointTest(Class<T> type, AbstractModule... modules) {
+    public <T extends AbstractService> AbstractEndpointTest(Class<T> type, AbstractModule... modules) {
         super("http://localhost:" + DEFAULT_PORT + "/v1");
         ApiTestServer.start(type, modules);
     }

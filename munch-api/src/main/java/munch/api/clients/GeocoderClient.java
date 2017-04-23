@@ -1,4 +1,4 @@
-package munch.api.services;
+package munch.api.clients;
 
 import com.typesafe.config.Config;
 import munch.api.struct.Neighborhood;

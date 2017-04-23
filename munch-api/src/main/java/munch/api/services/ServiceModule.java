@@ -1,37 +1,24 @@
 package munch.api.services;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
-import munch.restful.client.WaitFor;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.time.Duration;
+import com.google.inject.multibindings.Multibinder;
+import munch.api.services.places.PlaceService;
+import munch.restful.server.RestfulService;
 
 /**
- * Created by: Fuxing
- * Date: 15/4/2017
- * Time: 3:44 AM
+ * Created By: Fuxing Loh
+ * Date: 22/3/2017
+ * Time: 10:46 PM
  * Project: munch-core
  */
 public class ServiceModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        requestInjection(this);
+        Multibinder<RestfulService> routerBinder = Multibinder.newSetBinder(binder(), RestfulService.class);
+        routerBinder.addBinding().to(MetaService.class);
+        routerBinder.addBinding().to(PlaceService.class);
+        routerBinder.addBinding().to(NeighborhoodService.class);
     }
 
-    @Inject
-    void waitFor(@Named("services") Config services) {
-        WaitFor.host(services.getString("places.url"), Duration.ofSeconds(45));
-        WaitFor.host(services.getString("geocoder.url"), Duration.ofSeconds(45));
-    }
-
-    @Provides
-    @Named("services")
-    Config provideConfig() {
-        return ConfigFactory.load().getConfig("services");
-    }
 }
