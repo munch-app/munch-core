@@ -2,8 +2,8 @@ package munch.api.struct;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.wololo.geojson.GeoJSON;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -17,7 +17,7 @@ import java.util.List;
 public class PlaceCollection {
 
     private String name;
-    private Logic logic;
+    private Filter filter;
     private List<Place> places;
 
     /**
@@ -39,14 +39,14 @@ public class PlaceCollection {
 
     /**
      * @return logic to apply to search to get same results
-     * @see Logic
+     * @see Filter
      */
-    public Logic getLogic() {
-        return logic;
+    public Filter getFilter() {
+        return filter;
     }
 
-    public void setLogic(Logic logic) {
-        this.logic = logic;
+    public void setFilter(Filter filter) {
+        this.filter = filter;
     }
 
     /**
@@ -64,20 +64,9 @@ public class PlaceCollection {
      * Logic for which can be passed to search
      * to get same result as collection
      */
-    public static class Logic {
-        private GeoJSON geometry;
+    public static class Filter {
+
         private Place.Filters filters;
-
-        /**
-         * @return geometry of area where search logic is applied
-         */
-        public GeoJSON getGeometry() {
-            return geometry;
-        }
-
-        public void setGeometry(GeoJSON geometry) {
-            this.geometry = geometry;
-        }
 
         /**
          * The filter can be used to do a search with place client
@@ -91,6 +80,16 @@ public class PlaceCollection {
 
         public void setFilters(Place.Filters filters) {
             this.filters = filters;
+        }
+
+        public static Filter createTag(String text) {
+            Filter filter = new Filter();
+            filter.filters = new Place.Filters();
+            Place.Filters.Tag tag = new Place.Filters.Tag();
+            tag.setPositive(true);
+            tag.setText(text);
+            filter.filters.setTags(Collections.singleton(tag));
+            return filter;
         }
     }
 }

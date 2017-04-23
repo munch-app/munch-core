@@ -83,7 +83,7 @@ public class BoolQuery {
         // Must not filters
         for (Filters.Tag tag : filters.getTags()) {
             if (!tag.isPositive()) {
-                notArray.add(filterTerm("tag", tag.getTag()));
+                notArray.add(filterTerm("tag", tag.getText()));
             }
         }
         return notArray;
@@ -105,7 +105,7 @@ public class BoolQuery {
         // Filter to positive tags
         for (Filters.Tag tag : filters.getTags()) {
             if (tag.isPositive()) {
-                filterArray.add(filterTerm("tag", tag.getTag()));
+                filterArray.add(filterTerm("tag", tag.getText()));
             }
         }
 

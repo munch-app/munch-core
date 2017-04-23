@@ -73,11 +73,12 @@ public class PlaceService extends AbstractService {
      * @return list of Place result
      */
     private List<PlaceCollection> search(JsonCall call) {
+        // TODO tag search
         ObjectNode node = call.bodyAsJson().deepCopy();
         node.put("size", 40);
         List<Place> places = placeClient.search(node);
         placeResolver.resolve(places, call);
-        return placeGrouping.parse(places, 1, 1, 1);
+        return placeGrouping.parse(places);
     }
 
     /**

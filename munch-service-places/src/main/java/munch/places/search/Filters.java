@@ -76,15 +76,15 @@ public final class Filters {
 
     @JsonIgnoreProperties(ignoreUnknown = false)
     public static class Tag {
-        private String tag;
+        private String text;
         private boolean positive;
 
-        public String getTag() {
-            return tag;
+        public String getText() {
+            return text;
         }
 
-        public void setTag(String tag) {
-            this.tag = tag;
+        public void setText(String text) {
+            this.text = text;
         }
 
         public boolean isPositive() {
