@@ -19,7 +19,7 @@ import munch.restful.server.RestfulServer;
 public final class PlaceApi extends RestfulServer {
 
     @Inject
-    public PlaceApi(DataService data, SearchService search, ImageLinkService image, MetaService meta) {
+    public PlaceApi(DataService data, SearchService search, LinkedService image, MetaService meta) {
         super(data, search, image, meta);
     }
 

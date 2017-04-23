@@ -17,12 +17,12 @@ import java.util.List;
  * Project: munch-core
  */
 @Singleton
-public class ImageLinkService implements JsonService {
+public class LinkedService implements JsonService {
 
     private final ImageLinkDatabase database;
 
     @Inject
-    public ImageLinkService(ImageLinkDatabase database) {
+    public LinkedService(ImageLinkDatabase database) {
         this.database = database;
     }
 
@@ -33,7 +33,7 @@ public class ImageLinkService implements JsonService {
      */
     @Override
     public void route() {
-        PATH("/places/:placeId", () -> {
+        PATH("/places/:placeId/images", () -> {
             GET("/list", this::list);
 
             PATH("/batch", () -> {

@@ -9,7 +9,9 @@ import org.hibernate.exception.ConstraintViolationException;
 import javax.persistence.RollbackException;
 import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by: Fuxing
@@ -25,6 +27,26 @@ public class ImageLinkDatabase {
     @Inject
     public ImageLinkDatabase(TransactionProvider provider) {
         this.provider = provider;
+    }
+
+    /**
+     * @param keys multiple keys to query
+     * @param size size of each list of image link
+     * @return map of key > list of image link
+     */
+    public Map<String, List<ImageLink>> resolve(List<String> keys, int size) {
+        Map<String, List<ImageLink>> map = new HashMap<>();
+        provider.with(em -> {
+            for (String key : keys) {
+                List<ImageLink> links = em.createQuery("FROM ImageLink WHERE " +
+                        "placeId = :placeId ORDER BY createdDate DESC", ImageLink.class)
+                        .setParameter("placeId", key)
+                        .setMaxResults(size)
+                        .getResultList();
+                map.put(key, links);
+            }
+        });
+        return map;
     }
 
     /**

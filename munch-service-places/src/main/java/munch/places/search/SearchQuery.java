@@ -45,7 +45,6 @@ public class SearchQuery {
 
         // Sources of data to return
         this.sources = mapper.createArrayNode();
-        sources.add("name");
     }
 
     /**

@@ -7,6 +7,7 @@ import com.munch.hibernate.utils.TransactionProvider;
 import javax.persistence.EntityManager;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -39,15 +40,18 @@ public class PlaceDatabase {
 
     /**
      * @param keys list of key to query of a place
-     * @return List of Place, non null values
+     * @return List of Place in order of the keys,
+     * if place is null means not found in database
      */
     public List<Place> get(List<String> keys) {
         if (keys.isEmpty()) return Collections.emptyList();
-        List<PostgresPlace> list = provider.reduce(em -> em.createQuery("SELECT e FROM PostgresPlace e " +
+        Map<String, Place> placeMap = provider.reduce(em -> em.createQuery("SELECT e FROM PostgresPlace e " +
                 "WHERE e.id IN (:keys)", PostgresPlace.class)
                 .setParameter("keys", keys)
-                .getResultList());
-        return list.stream().map(PostgresPlace::getPlace).collect(Collectors.toList());
+                .getResultList())
+                .stream()
+                .collect(Collectors.toMap(p -> p.getPlace().getId(), PostgresPlace::getPlace));
+        return keys.stream().map(placeMap::get).collect(Collectors.toList());
     }
 
     /**

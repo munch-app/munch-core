@@ -1,10 +1,10 @@
 package munch.places;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.places.data.Place;
+import munch.places.data.PlaceDatabase;
 import munch.places.search.Filters;
 import munch.places.search.SearchQuery;
 import munch.restful.server.JsonCall;
@@ -13,6 +13,8 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Created By: Fuxing Loh
@@ -23,11 +25,21 @@ import java.util.List;
 @Singleton
 public final class SearchService implements JsonService {
 
+    private final PlaceDatabase database;
     private final SearchQuery search;
 
+    private final LinkedMapper linkedMapper;
+
+    /**
+     * @param database     place database service
+     * @param search       place search service
+     * @param linkedMapper place linked resources mapper for hot loading of content
+     */
     @Inject
-    public SearchService(SearchQuery search) {
+    public SearchService(PlaceDatabase database, SearchQuery search, LinkedMapper linkedMapper) {
+        this.database = database;
         this.search = search;
+        this.linkedMapper = linkedMapper;
     }
 
     @Override
@@ -79,8 +91,12 @@ public final class SearchService implements JsonService {
                 readObject(request.get("filters"), Filters.class) : null;
 
         Pair<List<Place>, Integer> result = search.query(from, size, geometry, query, filters);
-        ObjectNode node = nodes(200, result.getLeft());
-        node.put("total", result.getRight());
-        return node;
+        // Get data from database, remove the place if it is null
+        List<Place> places = database.get(result.getLeft().stream().map(Place::getId).collect(Collectors.toList()));
+        places.removeIf(Objects::isNull);
+
+        // Return data: [] with total: Integer
+        return nodes(200, linkedMapper.fill(call, places))
+                .put("total", result.getRight());
     }
 }
