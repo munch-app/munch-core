@@ -1,6 +1,7 @@
-package munch.catalyst.service;
+package munch.catalyst.clients;
 
 import com.typesafe.config.Config;
+import munch.catalyst.data.PlaceConsumer;
 import munch.restful.client.RestfulClient;
 
 import javax.annotation.Nullable;
@@ -29,13 +30,13 @@ public class PlaceClient extends RestfulClient {
     }
 
     @Nullable
-    public Place latest() {
+    public PlaceConsumer.Place latest() {
         return doGet("/places/meta/last")
                 .hasMetaCodes(200, 404)
-                .asDataObject(Place.class);
+                .asDataObject(PlaceConsumer.Place.class);
     }
 
-    public void put(List<Place> places) {
+    public void put(List<PlaceConsumer.Place> places) {
         if (places.isEmpty()) return;
         doPost("/places/batch/put")
                 .body(places)

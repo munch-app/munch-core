@@ -1,6 +1,5 @@
 package munch.catalyst;
 
-import com.catalyst.client.CatalystClient;
 import com.catalyst.client.CatalystConsumer;
 import com.corpus.exception.Retriable;
 import com.corpus.exception.SleepRetriable;
@@ -10,17 +9,15 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.typesafe.config.Config;
-import munch.catalyst.service.Place;
-import munch.catalyst.service.PlaceClient;
-import munch.catalyst.service.ServicesModule;
+import munch.catalyst.clients.ServiceModule;
+import munch.catalyst.data.DataModule;
+import munch.catalyst.data.MultiConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.time.Duration;
-import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Created by: Fuxing
@@ -32,72 +29,46 @@ import java.util.Objects;
 public class CatalystBridge {
     private static final Logger logger = LoggerFactory.getLogger(CatalystBridge.class);
 
+    // Max retry for 2 days interval of 15 minutes before timeout
+    private final Retriable retriable = new SleepRetriable(2 * 24 * 4, Duration.ofMinutes(15));
+
+    private final CatalystConsumer catalyst;
+    private final MultiConsumer dataConsumer;
+
     private final Duration sleepDuration;
-    private final Retriable retriable;
-
-    private final PlaceClient placeClient;
-    private final MunchPersist persist;
-    private final Config config;
-
-    private CatalystConsumer consumer;
 
     /**
      * Munch catalyst consumer, prepared from application.conf
      *
      * @param placeClient data client from munch-service-data
-     * @param persist    munch persist
-     * @param config     catalyst config
+     * @param persist     munch persist
+     * @param consumer
+     * @param config      catalyst config
+     * @param catalyst
      */
     @Inject
-    public CatalystBridge(PlaceClient placeClient, MunchPersist persist, Config config) {
-        this.placeClient = placeClient;
-        this.persist = persist;
-        this.config = config;
+    public CatalystBridge(CatalystConsumer catalyst, MultiConsumer consumer, Config config) {
+        this.catalyst = catalyst;
+        this.dataConsumer = consumer;
 
-        // Max retry for 2 days interval of 15 minutes before timeout
-        this.retriable = new SleepRetriable(2 * 24 * 4, Duration.ofMinutes(15));
-        this.sleepDuration = this.config.getDuration("consumer.sleep");
+        this.sleepDuration = config.getDuration("catalyst.sleep");
     }
 
-    /**
-     * Start consumer by checking existing last place
-     *
-     * @throws IOException from consumer
-     */
-    public void initialize() throws IOException {
-        Place lastPlace = placeClient.latest();
-
-        // Prepare consumer from config
-        this.consumer = new CatalystConsumer(
-                createClient(config.getConfig("consumer")),
-                config.getInt("consumer.size"),
-                lastPlace != null ? lastPlace.getUpdatedDate() : new Date(0),
-                lastPlace != null ? lastPlace.getId() : null
-        );
-
-        if (lastPlace != null) {
-            logger.info("Started munch catalyst consumer with existing data. last id: {}", lastPlace.getId());
-        } else {
-            logger.info("Started munch catalyst consumer fresh with no existing data.");
-        }
-    }
 
     /**
      * Start running
      * Main interface
      */
     public void connect() {
-        Objects.requireNonNull(consumer, "Catalyst bridge needs to be initialized.");
-
         while (!Thread.currentThread().isInterrupted()) {
             // Retry loop catalyst consumer
-            List<GroupObject> groups = retriable.loop(consumer::next);
+            List<GroupObject> groups = retriable.loop(catalyst::next);
 
-            // Retry loop munch persist
-            retriable.loop(() -> persist.persist(groups));
+            // Retry loop data consumer; persist
+            retriable.loop(() -> dataConsumer.consume(groups));
 
             // Check if has next, if no has next go sleep for awhile
-            if (!consumer.hasNext()) {
+            if (!catalyst.hasNext()) {
                 try {
                     logger.info("Sleeping for {} as there is no next", sleepDuration);
                     Thread.sleep(sleepDuration.toMillis());
@@ -106,31 +77,21 @@ public class CatalystBridge {
                 }
             }
         }
-        logger.info("Munch catalyst stopped");
-    }
 
-    /**
-     * @param config consumer config
-     * @return Create Catalyst Client
-     */
-    private static CatalystClient createClient(Config config) {
-        String catalystUrl = config.getString("url");
-        if (config.hasPath("user")) {
-            String user = config.getString("user");
-            String password = config.getString("password");
-            return new CatalystClient(catalystUrl, user, password);
-        } else {
-            return new CatalystClient(catalystUrl);
-        }
+        logger.info("Munch catalyst stopped");
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
         logger.info("Starting in 15 seconds.");
         Thread.sleep(15000);
 
-        Injector injector = Guice.createInjector(new CatalystModule(), new ServicesModule());
-        CatalystBridge bridge = injector.getInstance(CatalystBridge.class);
-        bridge.initialize();
-        bridge.connect();
+        Injector injector = Guice.createInjector(
+                new DataModule(),
+                new CatalystModule(),
+                new ServiceModule()
+        );
+
+        // Connect and start!
+        injector.getInstance(CatalystBridge.class).connect();
     }
 }
