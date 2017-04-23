@@ -2,8 +2,10 @@ package munch.api.services.places;
 
 import com.google.inject.Singleton;
 import munch.api.struct.Place;
+import munch.api.struct.PlaceCollection;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by: Fuxing
@@ -14,13 +16,16 @@ import java.util.Collection;
 @Singleton
 public class PlaceGrouping {
 
-    /*
-    Pass list, min and max, min col size
-It will then decide how to generate the list
+    /**
+     * @param places    places to parse to group
+     * @param groupSize average group size
+     * @param minGroups min number of group
+     * @param maxGroups max number of group
+     * @return List of PlaceCollection (Groups)
      */
-
-    public void parse(Collection<Place> places, int groupSize, int minGroups, int maxGroups) {
-
+    public List<PlaceCollection> parse(Collection<Place> places, int groupSize, int minGroups, int maxGroups) {
+        // TODO parse
+        return null;
     }
 
 }

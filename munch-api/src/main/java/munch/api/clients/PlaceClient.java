@@ -9,6 +9,7 @@ import munch.restful.client.RestfulClient;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -49,7 +50,7 @@ public class PlaceClient extends RestfulClient {
 
     /**
      * @param from     list from size
-     * @param size     size per size
+     * @param size     size per list
      * @param geometry geometry to filter
      * @param query    text query
      * @param filters  Place filters
@@ -75,6 +76,16 @@ public class PlaceClient extends RestfulClient {
                 .body(node)
                 .hasMetaCodes(200)
                 .asDataList(Place.class);
+    }
+
+    /**
+     * @param size  size per list
+     * @param query text query
+     * @return List of Place results
+     */
+    public List<Place> suggest(int size, String query) {
+        // TODO new feature
+        return Collections.emptyList();
     }
 
 }

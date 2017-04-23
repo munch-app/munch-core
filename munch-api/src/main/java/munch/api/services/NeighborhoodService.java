@@ -24,6 +24,9 @@ public class NeighborhoodService extends AbstractService {
         this.geocoder = geocoder;
     }
 
+    /**
+     * Endpoint: /v/neighborhood/*
+     */
     @Override
     public void route() {
         PATH("/neighborhood", () -> {
@@ -33,17 +36,38 @@ public class NeighborhoodService extends AbstractService {
         });
     }
 
+    /**
+     * ?lat={Double}&lng={Double}
+     *
+     * @param call json call
+     * @return Neighborhood or NULL
+     * code: 200 = ok
+     */
     private Neighborhood reverse(JsonCall call) {
         double lat = call.queryDouble("lat");
         double lng = call.queryDouble("lng");
         return geocoder.reverse(lat, lng);
     }
 
+    /**
+     * ?text={String}
+     *
+     * @param call json call
+     * @return List of Neighborhood or empty
+     * code: 200 = ok
+     */
     private List<Neighborhood> search(JsonCall call) {
         String text = call.queryString("text");
         return geocoder.search(text);
     }
 
+    /**
+     * ?text={String}
+     *
+     * @param call json call
+     * @return Neighborhood or NULL
+     * code: 200 = ok
+     */
     private Neighborhood geocode(JsonCall call) {
         String text = call.queryString("text");
         return geocoder.geocode(text);

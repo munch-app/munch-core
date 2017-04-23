@@ -7,4 +7,5 @@ package munch.api.struct;
  * Project: munch-core
  */
 public class Graphic {
+    // TODO
 }

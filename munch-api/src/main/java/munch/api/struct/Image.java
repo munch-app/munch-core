@@ -13,8 +13,16 @@ import java.util.Set;
  */
 @JsonIgnoreProperties(ignoreUnknown = false)
 public class Image {
-
+    private String key;
     private Set<Kind> kinds;
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
 
     public Set<Kind> getKinds() {
         return kinds;

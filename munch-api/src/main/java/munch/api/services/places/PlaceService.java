@@ -3,11 +3,13 @@ package munch.api.services.places;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import munch.api.clients.ImageClient;
 import munch.api.clients.PlaceClient;
 import munch.api.services.AbstractService;
 import munch.api.struct.Article;
 import munch.api.struct.Graphic;
 import munch.api.struct.Place;
+import munch.api.struct.PlaceCollection;
 import munch.restful.server.JsonCall;
 
 import java.util.Collections;
@@ -23,17 +25,28 @@ import java.util.List;
 public class PlaceService extends AbstractService {
 
     private final PlaceClient placeClient;
+    private final ImageClient imageClient;
+
+    private final PlaceGrouping placeGrouping;
 
     @Inject
-    public PlaceService(PlaceClient placeClient) {
+    public PlaceService(PlaceClient placeClient, ImageClient imageClient, PlaceGrouping placeGrouping) {
         this.placeClient = placeClient;
+        this.imageClient = imageClient;
+        this.placeGrouping = placeGrouping;
     }
 
+    /**
+     * Endpoint: /v/places/*
+     * Endpoint: /v/places/:placeId/*
+     */
     @Override
     public void route() {
         PATH("/places", () -> {
+            GET("/suggest", this::suggest);
             POST("/search", this::search);
 
+            // Single place endpoint
             PATH("/:placeId", () -> {
                 GET("", this::get);
 
@@ -45,15 +58,34 @@ public class PlaceService extends AbstractService {
     }
 
     /**
-     * @param call    json call
-     * @return list of place result
+     * ?text={String}&size={Int}
+     *
+     * @param call json call
+     * @return list of Place result
      */
-    private List<Place> search(JsonCall call) {
-        ObjectNode node = call.bodyAsJson().deepCopy();
-        node.put("size", 40);
-        return placeClient.search(node);
+    private List<Place> suggest(JsonCall call) {
+        int size = call.queryInt("size");
+        String text = call.queryString("text");
+        return placeClient.suggest(size, text);
     }
 
+    /**
+     * @param call json call
+     * @return list of Place result
+     */
+    private List<PlaceCollection> search(JsonCall call) {
+        ObjectNode node = call.bodyAsJson().deepCopy();
+        node.put("size", 40);
+        List<Place> places = placeClient.search(node);
+        return placeGrouping.parse(places, 1, 1, 1);
+    }
+
+    /**
+     * GET = /:placeId
+     *
+     * @param call json call
+     * @return Place or Null
+     */
     private Place get(JsonCall call) {
         String placeId = call.pathString("placeId");
         return placeClient.get(placeId);
