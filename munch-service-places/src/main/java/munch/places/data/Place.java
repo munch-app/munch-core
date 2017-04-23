@@ -3,9 +3,18 @@ package munch.places.data;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import munch.places.data.hibernate.HoursUserType;
+import munch.places.data.hibernate.LocationUserType;
+import munch.places.data.hibernate.PriceUserType;
+import munch.places.data.hibernate.TagsUserType;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 
+import javax.persistence.*;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 /**
  * Created by: Fuxing
@@ -15,10 +24,16 @@ import java.util.Set;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Entity
+@TypeDefs(value = {
+        @TypeDef(name = "price", typeClass = PriceUserType.class),
+        @TypeDef(name = "location", typeClass = LocationUserType.class),
+        @TypeDef(name = "tags", typeClass = TagsUserType.class),
+        @TypeDef(name = "hours", typeClass = HoursUserType.class)
+})
 public final class Place {
 
     private String id;
-    private String version;
 
     // Basic
     private String name;
@@ -31,8 +46,11 @@ public final class Place {
     private Location location;
 
     // Many
-    private Set<String> tags;
-    private Set<Hour> hours;
+    private String[] tags;
+    private Hour[] hours;
+
+    // Linked data, not stored in Place
+    private List<LinkedImage> linkedImages;
 
     // Dates
     private Date createdDate;
@@ -41,6 +59,8 @@ public final class Place {
     /**
      * @return place id, provided by catalyst groupId
      */
+    @Id
+    @Column(columnDefinition = "CHAR(36)", nullable = false, updatable = false)
     public String getId() {
         return id;
     }
@@ -50,19 +70,9 @@ public final class Place {
     }
 
     /**
-     * @return version of Place object
-     */
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-    /**
      * @return name of the place, trim if over
      */
+    @Column(nullable = false, length = 255)
     public String getName() {
         return name;
     }
@@ -76,6 +86,7 @@ public final class Place {
      *
      * @return phone number of the place
      */
+    @Column(nullable = false, length = 255)
     public String getPhone() {
         return phone;
     }
@@ -91,6 +102,7 @@ public final class Place {
      *
      * @return website url of place
      */
+    @Column(nullable = false, length = 500)
     public String getWebsite() {
         return website;
     }
@@ -105,6 +117,7 @@ public final class Place {
      *
      * @return description of place
      */
+    @Column(nullable = false, length = 2000)
     public String getDescription() {
         return description;
     }
@@ -113,25 +126,8 @@ public final class Place {
         this.description = description;
     }
 
-    public Set<String> getTags() {
-        return tags;
-    }
-
-    public void setTags(Set<String> tags) {
-        this.tags = tags;
-    }
-
-    /**
-     * @return opening hours of place
-     */
-    public Set<Hour> getHours() {
-        return hours;
-    }
-
-    public void setHours(Set<Hour> hours) {
-        this.hours = hours;
-    }
-
+    @Type(type = "price")
+    @Column(nullable = true)
     public Price getPrice() {
         return price;
     }
@@ -140,9 +136,8 @@ public final class Place {
         this.price = price;
     }
 
-    /**
-     * @return location of place
-     */
+    @Type(type = "location")
+    @Column(nullable = false)
     public Location getLocation() {
         return location;
     }
@@ -151,9 +146,38 @@ public final class Place {
         this.location = location;
     }
 
-    /**
-     * @return created date from catalyst group
-     */
+    @Type(type = "tags")
+    @Column(nullable = true)
+    public String[] getTags() {
+        return tags;
+    }
+
+    public void setTags(String[] tags) {
+        this.tags = tags;
+    }
+
+    @Type(type = "hours")
+    @Column(nullable = true)
+    public Hour[] getHours() {
+        return hours;
+    }
+
+    public void setHours(Hour[] hours) {
+        this.hours = hours;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "place")
+    @OrderBy("createdDate DESC")
+    @BatchSize(size = 10)
+    public List<LinkedImage> getLinkedImages() {
+        return linkedImages;
+    }
+
+    public void setLinkedImages(List<LinkedImage> linkedImages) {
+        this.linkedImages = linkedImages;
+    }
+
+    @Column(nullable = false)
     public Date getCreatedDate() {
         return createdDate;
     }
@@ -162,9 +186,7 @@ public final class Place {
         this.createdDate = createdDate;
     }
 
-    /**
-     * @return updated date from catalyst group
-     */
+    @Column(nullable = false)
     public Date getUpdatedDate() {
         return updatedDate;
     }

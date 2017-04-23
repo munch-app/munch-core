@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -84,8 +85,59 @@ public class PlaceClient extends RestfulClient {
      * @return List of Place results
      */
     public List<Place> suggest(int size, String query) {
-        // TODO new feature
+        // TODO NEW: /v/places/suggest
         return Collections.emptyList();
     }
 
+    /**
+     * Place Results
+     * with linked data
+     */
+    public static class Result {
+        private List<Place> data;
+        private List<ImageLink> images;
+        private long total;
+
+        public List<Place> getData() {
+            return data;
+        }
+
+        public List<ImageLink> getImages() {
+            return images;
+        }
+
+        public long getTotal() {
+            return total;
+        }
+    }
+
+    public static class ImageLink {
+        private String imageKey;
+
+        private String placeId;
+        private String sourceName;
+        private String sourceId;
+
+        private Date createdDate;
+
+        public String getImageKey() {
+            return imageKey;
+        }
+
+        public String getPlaceId() {
+            return placeId;
+        }
+
+        public String getSourceName() {
+            return sourceName;
+        }
+
+        public String getSourceId() {
+            return sourceId;
+        }
+
+        public Date getCreatedDate() {
+            return createdDate;
+        }
+    }
 }

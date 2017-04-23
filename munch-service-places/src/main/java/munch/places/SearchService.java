@@ -28,18 +28,14 @@ public final class SearchService implements JsonService {
     private final PlaceDatabase database;
     private final SearchQuery search;
 
-    private final LinkedMapper linkedMapper;
-
     /**
-     * @param database     place database service
-     * @param search       place search service
-     * @param linkedMapper place linked resources mapper for hot loading of content
+     * @param database place database service
+     * @param search   place search service
      */
     @Inject
-    public SearchService(PlaceDatabase database, SearchQuery search, LinkedMapper linkedMapper) {
+    public SearchService(PlaceDatabase database, SearchQuery search) {
         this.database = database;
         this.search = search;
-        this.linkedMapper = linkedMapper;
     }
 
     @Override
@@ -95,8 +91,7 @@ public final class SearchService implements JsonService {
         List<Place> places = database.get(result.getLeft().stream().map(Place::getId).collect(Collectors.toList()));
         places.removeIf(Objects::isNull);
 
-        // Return data: [] with total: Integer
-        return nodes(200, linkedMapper.fill(call, places))
-                .put("total", result.getRight());
+        // Return data: [] with total: Integer & linked: {} object
+        return nodes(200, places).put("total", result.getRight());
     }
 }

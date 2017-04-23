@@ -6,6 +6,7 @@ import com.typesafe.config.Config;
 import munch.api.struct.Image;
 import munch.restful.client.RestfulClient;
 
+import javax.annotation.Nullable;
 import javax.inject.Named;
 import java.util.Collection;
 import java.util.List;
@@ -28,8 +29,9 @@ public class ImageClient extends RestfulClient {
      * @param keys collection of keys
      * @return list of Image matching the keys
      */
-    public List<Image> batch(Collection<String> keys) {
+    public List<Image> batch(Collection<String> keys, @Nullable String kinds) {
         return doPost("/images/batch/get")
+                .queryString("kinds", kinds)
                 .body(keys)
                 .hasMetaCodes(200)
                 .asDataList(Image.class);

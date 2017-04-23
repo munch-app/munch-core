@@ -10,8 +10,8 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.typesafe.config.Config;
+import munch.catalyst.service.Place;
 import munch.catalyst.service.PlaceClient;
-import munch.catalyst.service.PostgresPlace;
 import munch.catalyst.service.ServicesModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,7 +65,7 @@ public class CatalystBridge {
      * @throws IOException from consumer
      */
     public void initialize() throws IOException {
-        PostgresPlace lastPlace = placeClient.latest();
+        Place lastPlace = placeClient.latest();
 
         // Prepare consumer from config
         this.consumer = new CatalystConsumer(

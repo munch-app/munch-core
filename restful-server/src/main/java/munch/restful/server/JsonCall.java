@@ -110,6 +110,13 @@ public class JsonCall {
     }
 
     /**
+     * {@link RestfulUtils#queryString(Request, String, String)}
+     */
+    public String queryString(String name, String defaultValue) throws ParamException {
+        return RestfulUtils.queryString(request, name, defaultValue);
+    }
+
+    /**
      * {@link RestfulUtils#pathLong(Request, String)}
      */
     public long pathLong(String name) throws ParamException {

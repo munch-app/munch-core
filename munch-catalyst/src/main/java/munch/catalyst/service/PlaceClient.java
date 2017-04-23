@@ -29,10 +29,10 @@ public class PlaceClient extends RestfulClient {
     }
 
     @Nullable
-    public PostgresPlace latest() {
+    public Place latest() {
         return doGet("/places/meta/last")
                 .hasMetaCodes(200, 404)
-                .asDataObject(PostgresPlace.class);
+                .asDataObject(Place.class);
     }
 
     public void put(List<Place> places) {

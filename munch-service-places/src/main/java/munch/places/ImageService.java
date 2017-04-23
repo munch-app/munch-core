@@ -3,8 +3,8 @@ package munch.places;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import munch.places.data.ImageLink;
-import munch.places.data.ImageLinkDatabase;
+import munch.places.data.LinkedImage;
+import munch.places.data.ImageDatabase;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
 
@@ -17,12 +17,12 @@ import java.util.List;
  * Project: munch-core
  */
 @Singleton
-public class LinkedService implements JsonService {
+public class ImageService implements JsonService {
 
-    private final ImageLinkDatabase database;
+    private final ImageDatabase database;
 
     @Inject
-    public LinkedService(ImageLinkDatabase database) {
+    public ImageService(ImageDatabase database) {
         this.database = database;
     }
 
@@ -47,7 +47,7 @@ public class LinkedService implements JsonService {
      * @param call json call
      * @return List of ImageLink
      */
-    private List<ImageLink> list(JsonCall call) {
+    private List<LinkedImage> list(JsonCall call) {
         String placeId = call.pathString("placeId");
         int from = call.queryInt("from");
         int size = call.queryInt("size");

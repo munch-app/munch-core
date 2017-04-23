@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -32,9 +33,7 @@ public class PlaceDatabase {
      * @return Place with they key, nullable
      */
     public Place get(String key) {
-        return provider.optional(em -> em
-                .find(PostgresPlace.class, key))
-                .map(PostgresPlace::getPlace)
+        return provider.optional(em -> em.find(Place.class, key))
                 .orElse(null);
     }
 
@@ -45,12 +44,12 @@ public class PlaceDatabase {
      */
     public List<Place> get(List<String> keys) {
         if (keys.isEmpty()) return Collections.emptyList();
-        Map<String, Place> placeMap = provider.reduce(em -> em.createQuery("SELECT e FROM PostgresPlace e " +
-                "WHERE e.id IN (:keys)", PostgresPlace.class)
+        Map<String, Place> placeMap = provider.reduce(em -> em.createQuery("SELECT e FROM Place e " +
+                "WHERE e.id IN (:keys)", Place.class)
                 .setParameter("keys", keys)
                 .getResultList())
                 .stream()
-                .collect(Collectors.toMap(p -> p.getPlace().getId(), PostgresPlace::getPlace));
+                .collect(Collectors.toMap(Place::getId, Function.identity()));
         return keys.stream().map(placeMap::get).collect(Collectors.toList());
     }
 
@@ -74,7 +73,7 @@ public class PlaceDatabase {
      */
     public boolean delete(String key) {
         return provider.reduce(em -> em
-                .createQuery("DELETE FROM PostgresPlace WHERE id = :id")
+                .createQuery("DELETE FROM Place WHERE id = :id")
                 .setParameter("id", key)
                 .executeUpdate()
         ) != 0;
@@ -86,7 +85,7 @@ public class PlaceDatabase {
     public boolean delete(List<String> keys) {
         if (keys.isEmpty()) return true;
         return provider.reduce(em -> em
-                .createQuery("DELETE FROM PostgresPlace WHERE id IN (:keys)")
+                .createQuery("DELETE FROM Place WHERE id IN (:keys)")
                 .setParameter("keys", keys)
                 .executeUpdate()
         ) != 0;
@@ -100,12 +99,11 @@ public class PlaceDatabase {
     private static void persist(EntityManager em, Place place) {
         String key = Objects.requireNonNull(place.getId(), "Place id cannot be null");
 
-        PostgresPlace entity = em.find(PostgresPlace.class, key);
-        if (entity == null) entity = new PostgresPlace(key);
-
-        entity.setPlace(place);
-        entity.setCreatedDate(place.getCreatedDate());
-        entity.setUpdatedDate(place.getUpdatedDate());
-        em.persist(entity);
+        Place entity = em.find(Place.class, key);
+        if (entity == null) {
+            em.persist(place);
+        } else {
+            em.merge(entity);
+        }
     }
 }

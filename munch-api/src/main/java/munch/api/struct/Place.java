@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -15,10 +16,9 @@ import java.util.Set;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class Place {
+public class Place {
 
     private String id;
-    private String version;
 
     // Basic
     private String name;
@@ -34,6 +34,12 @@ public final class Place {
     private Set<String> tags;
     private Set<Hour> hours;
 
+    // Data linked to place
+    private List<LinkedImage> linkedImages;
+
+    // External resolved data
+    private List<Image> images;
+
     // Dates
     private Date createdDate;
     private Date updatedDate;
@@ -47,17 +53,6 @@ public final class Place {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    /**
-     * @return version of Place object
-     */
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
     }
 
     /**
@@ -149,6 +144,30 @@ public final class Place {
 
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    /**
+     * For egress, set this to null before sending it out
+     *
+     * @return images linked to the place
+     */
+    public List<LinkedImage> getLinkedImages() {
+        return linkedImages;
+    }
+
+    public void setLinkedImages(List<LinkedImage> linkedImages) {
+        this.linkedImages = linkedImages;
+    }
+
+    /**
+     * @return external resources, to be resolved
+     */
+    public List<Image> getImages() {
+        return images;
+    }
+
+    public void setImages(List<Image> images) {
+        this.images = images;
     }
 
     /**
@@ -350,6 +369,61 @@ public final class Place {
 
         public void setClose(String close) {
             this.close = close;
+        }
+    }
+
+    /**
+     * Image linked to the place
+     */
+    public static final class LinkedImage {
+        private String imageKey;
+        private Date createdDate;
+
+        private String sourceName;
+        private String sourceId;
+
+        /**
+         * @return imageKey stored in munch-images service
+         */
+        public String getImageKey() {
+            return imageKey;
+        }
+
+        public void setImageKey(String imageKey) {
+            this.imageKey = imageKey;
+        }
+
+        /**
+         * @return date for which linked image is created
+         */
+        public Date getCreatedDate() {
+            return createdDate;
+        }
+
+        public void setCreatedDate(Date createdDate) {
+            this.createdDate = createdDate;
+        }
+
+        /**
+         * @return source provider name for the image
+         */
+        public String getSourceName() {
+            return sourceName;
+        }
+
+        public void setSourceName(String sourceName) {
+            this.sourceName = sourceName;
+        }
+
+        /**
+         * @return source provider id for the image
+         */
+        public String getSourceId() {
+            return sourceId;
+        }
+
+        public void setSourceId(String sourceId) {
+            this.sourceId = sourceId;
         }
     }
 

@@ -9,10 +9,10 @@ import munch.places.data.Place;
  * Time: 2:30 PM
  * Project: munch-core
  */
-public class PlaceUserType extends PojoUserType<Place> {
+public class LocationUserType extends PojoUserType<Place.Location> {
 
-    public PlaceUserType() {
-        super(Place.class);
+    public LocationUserType() {
+        super(Place.Location.class);
     }
 
 }

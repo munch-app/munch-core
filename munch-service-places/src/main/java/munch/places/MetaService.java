@@ -3,7 +3,7 @@ package munch.places;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.munch.hibernate.utils.TransactionProvider;
-import munch.places.data.PostgresPlace;
+import munch.places.data.Place;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
 
@@ -34,10 +34,9 @@ public class MetaService implements JsonService {
      * @param call json call
      * @return postgres place data
      */
-    private PostgresPlace last(JsonCall call) {
+    private Place last(JsonCall call) {
         return provider.optional(em -> em
-                .createQuery("FROM PostgresPlace p ORDER BY updatedDate DESC, id DESC",
-                        PostgresPlace.class)
+                .createQuery("FROM Place p ORDER BY updatedDate DESC, id DESC", Place.class)
                 .setMaxResults(1)
                 .getSingleResult()
         ).orElse(null);

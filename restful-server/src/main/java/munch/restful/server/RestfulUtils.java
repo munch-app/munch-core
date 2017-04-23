@@ -117,6 +117,20 @@ public final class RestfulUtils {
     }
 
     /**
+     * @param request      spark request
+     * @param name         name of query string
+     * @param defaultValue default String value
+     * @return String value
+     */
+    public static String queryString(Request request, String name, String defaultValue) throws ParamException {
+        String value = request.queryParams(name);
+        if (StringUtils.isNotBlank(value)) {
+            return value;
+        }
+        return defaultValue;
+    }
+
+    /**
      * @param request spark request
      * @param name    name of query string
      * @return String value

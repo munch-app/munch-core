@@ -18,7 +18,6 @@ import java.util.Set;
 public final class Place {
 
     private String id;
-    private String version = "1";
 
     // Basic
     private String name;
@@ -47,17 +46,6 @@ public final class Place {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    /**
-     * @return version of Place object
-     */
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
     }
 
     /**

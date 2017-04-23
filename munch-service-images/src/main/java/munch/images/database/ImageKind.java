@@ -3,6 +3,7 @@ package munch.images.database;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.ImmutableSet;
 import munch.restful.server.exceptions.StructuredException;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -107,7 +108,7 @@ public enum ImageKind {
      * @return Set of ImageKind
      */
     public static Set<ImageKind> resolveKinds(@Nullable String queryString) {
-        if (queryString == null) return ImmutableSet.of();
+        if (StringUtils.isBlank(queryString)) return ImmutableSet.of();
         return Arrays.stream(queryString.split(" *, *"))
                 .map(ImageKind::forValue)
                 .collect(Collectors.toSet());

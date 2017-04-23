@@ -5,8 +5,8 @@
     <persistence-unit name="munchPersistenceUnit">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-        <class>munch.places.data.PostgresPlace</class>
-        <class>munch.places.data.ImageLink</class>
+        <class>munch.places.data.Place</class>
+        <class>munch.places.data.LinkedImage</class>
 
         <properties>
             <property name="hibernate.dialect" value="munch.places.data.hibernate.JsonPostgresDialect"/>
