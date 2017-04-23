@@ -6,7 +6,7 @@ import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.typesafe.config.ConfigFactory;
 import munch.api.endpoints.EndpointModule;
-import munch.api.endpoints.service.ServiceModule;
+import munch.api.services.ServiceModule;
 import munch.restful.server.RestfulServer;
 import munch.restful.server.RestfulService;
 

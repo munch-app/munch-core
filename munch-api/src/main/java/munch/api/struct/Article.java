@@ -1,4 +1,4 @@
-package munch.api.endpoints.service;
+package munch.api.struct;
 
 /**
  * Created by: Fuxing

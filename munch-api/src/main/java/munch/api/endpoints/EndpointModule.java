@@ -15,6 +15,7 @@ public class EndpointModule extends AbstractModule {
     @Override
     protected void configure() {
         Multibinder<RestfulService> routerBinder = Multibinder.newSetBinder(binder(), RestfulService.class);
+        routerBinder.addBinding().to(MetaEndpoint.class);
         routerBinder.addBinding().to(PlaceEndpoint.class);
         routerBinder.addBinding().to(NeighborhoodEndpoint.class);
     }

@@ -1,4 +1,4 @@
-package munch.api.endpoints.service;
+package munch.api.services;
 
 import com.typesafe.config.Config;
 import munch.api.struct.Neighborhood;
@@ -19,11 +19,6 @@ import java.util.List;
 @Singleton
 public class GeocoderClient extends RestfulClient {
 
-    /**
-     * Look at Geocoder service package to api service settings
-     *
-     * @param config config to load geocoder.url
-     */
     @Inject
     public GeocoderClient(@Named("services") Config config) {
         super(config.getString("geocoder.url"));

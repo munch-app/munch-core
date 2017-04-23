@@ -2,7 +2,7 @@ package munch.api.endpoints;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import munch.api.endpoints.service.GeocoderClient;
+import munch.api.services.GeocoderClient;
 import munch.api.struct.Neighborhood;
 import munch.restful.server.JsonCall;
 

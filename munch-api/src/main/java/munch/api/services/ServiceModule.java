@@ -1,4 +1,4 @@
-package munch.api.endpoints.service;
+package munch.api.services;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
@@ -29,8 +29,8 @@ public class ServiceModule extends AbstractModule {
         WaitFor.host(services.getString("geocoder.url"), Duration.ofSeconds(45));
     }
 
-    @Named("services")
     @Provides
+    @Named("services")
     Config provideConfig() {
         return ConfigFactory.load().getConfig("services");
     }

@@ -1,4 +1,4 @@
-package munch.api.endpoints.service;
+package munch.api.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -20,16 +20,15 @@ import java.util.List;
 @Singleton
 public class PlaceClient extends RestfulClient {
 
-    /**
-     * Look at data service package to api service settings
-     *
-     * @param config config to load data.url
-     */
     @Inject
     public PlaceClient(@Named("services") Config config) {
         super(config.getString("places.url"));
     }
 
+    /**
+     * @param key key of place
+     * @return single Place
+     */
     public Place get(String key) {
         return doGet("/places/{key}")
                 .path("key", key)
@@ -37,6 +36,10 @@ public class PlaceClient extends RestfulClient {
                 .asDataObject(Place.class);
     }
 
+    /**
+     * @param keys list of keys for place
+     * @return list of Place
+     */
     public List<Place> get(List<String> keys) {
         return doGet("/places/batch/get")
                 .body(keys)
@@ -44,14 +47,34 @@ public class PlaceClient extends RestfulClient {
                 .asDataList(Place.class);
     }
 
-    public List<Place> search(int from, int size, JsonNode geometry) {
-        ObjectNode query = mapper.createObjectNode();
-        query.put("from", from);
-        query.put("size", size);
-        query.set("geometry", geometry);
+    /**
+     * @param from     list from size
+     * @param size     size per size
+     * @param geometry geometry to filter
+     * @param query    text query
+     * @param filters  Place filters
+     * @return List of Place results
+     */
+    public List<Place> search(int from, int size, JsonNode geometry, String query, Place.Filters filters) {
+        ObjectNode node = mapper.createObjectNode();
+        node.put("from", from);
+        node.put("size", size);
+        node.set("geometry", geometry);
+        node.put("query", query);
+        node.set("filters", mapper.valueToTree(filters));
+        return search(node);
+    }
+
+    /**
+     * @param node node
+     * @return List of Place results
+     * @see PlaceClient#search(int, int, JsonNode, String, Place.Filters)
+     */
+    public List<Place> search(JsonNode node) {
         return doPost("/places/search")
-                .body(query)
+                .body(node)
                 .hasMetaCodes(200)
                 .asDataList(Place.class);
     }
+
 }

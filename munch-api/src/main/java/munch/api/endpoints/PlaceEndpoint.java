@@ -1,11 +1,11 @@
 package munch.api.endpoints;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import munch.api.endpoints.service.Article;
-import munch.api.endpoints.service.Graphic;
-import munch.api.endpoints.service.PlaceClient;
+import munch.api.services.PlaceClient;
+import munch.api.struct.Article;
+import munch.api.struct.Graphic;
 import munch.api.struct.Place;
 import munch.restful.server.JsonCall;
 
@@ -42,19 +42,12 @@ public class PlaceEndpoint extends AbstractEndpoint {
 
     /**
      * @param call    json call
-     * @param request body node
      * @return list of place result
      */
-    private List<Place> search(JsonCall call, JsonNode request) {
-        int from = request.path("from").asInt();
-        int size = request.path("size").asInt();
-
-        // Check geometry node exist
-        JsonNode geometry = null;
-        if (request.has("geometry")) {
-            geometry = request.path("geometry");
-        }
-        return placeClient.search(from, size, geometry);
+    private List<Place> search(JsonCall call) {
+        ObjectNode node = call.bodyAsJson().deepCopy();
+        node.put("size", 40);
+        return placeClient.search(node);
     }
 
     private Place get(JsonCall call) {

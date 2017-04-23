@@ -14,7 +14,7 @@ import java.util.Optional;
  * Time: 5:04 PM
  * Project: munch-core
  */
-public abstract class AbstractEndpoint implements JsonService {
+abstract class AbstractEndpoint implements JsonService {
 
     private static final String Version = "/v1";
 
