@@ -46,6 +46,36 @@ public class RestfulRequest {
         return this;
     }
 
+    /**
+     * @param name  name in path put {id}
+     * @param value value for replace in place
+     * @return this
+     */
+    public RestfulRequest path(String name, int value) {
+        request.routeParam(name, Integer.toString(value));
+        return this;
+    }
+
+    /**
+     * @param name  name in path put {id}
+     * @param value value for replace in place
+     * @return this
+     */
+    public RestfulRequest path(String name, long value) {
+        request.routeParam(name, Long.toString(value));
+        return this;
+    }
+
+    /**
+     * @param name  name in path put {id}
+     * @param value value for replace in place
+     * @return this
+     */
+    public RestfulRequest path(String name, Object value) {
+        request.routeParam(name, value.toString());
+        return this;
+    }
+
     public RestfulRequest header(String name, String value) {
         request.header(name, value);
         return this;
