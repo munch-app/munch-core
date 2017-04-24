@@ -58,7 +58,7 @@ allprojects {
     }
 }
 
-configure(subprojects.findAll { it.name.matches("munch-(.+)") }) {
+configure(subprojects.findAll { it.name.matches("(.+)-service-(.+)") }) {
     apply plugin: 'application'
     apply plugin: 'com.bmuschko.docker-java-application'
 
