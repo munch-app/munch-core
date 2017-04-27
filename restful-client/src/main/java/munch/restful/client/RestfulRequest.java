@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.HttpMethod;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.HttpRequestWithBody;
+import com.mashape.unirest.request.body.MultipartBody;
 import munch.restful.client.exception.ExceptionParser;
 import munch.restful.client.exception.StructuredException;
 import org.apache.http.entity.ContentType;
@@ -26,6 +27,7 @@ public class RestfulRequest {
     protected static final ObjectMapper mapper = RestfulClient.mapper;
 
     protected final HttpRequestWithBody request;
+    protected MultipartBody multipartBody;
 
     public RestfulRequest(HttpMethod method, String url) {
         this.request = new HttpRequestWithBody(method, url);
@@ -97,42 +99,43 @@ public class RestfulRequest {
     }
 
     public RestfulRequest field(String name, Collection<?> value) {
-        request.field(name, value);
+        if (multipartBody == null) multipartBody = request.field(name, value);
+        else multipartBody.field(name, value);
         return this;
     }
 
     public RestfulRequest field(String name, Object value) {
-        request.field(name, value);
+        if (multipartBody == null) multipartBody = request.field(name, value);
+        else multipartBody.field(name, value);
         return this;
     }
 
     public RestfulRequest field(String name, File file) {
-        request.field(name, file);
-        return this;
-    }
-
-    public RestfulRequest field(String name, Object value, String contentType) {
-        request.field(name, value, contentType);
+        if (multipartBody == null) multipartBody = request.field(name, file);
+        else multipartBody.field(name, file);
         return this;
     }
 
     public RestfulRequest field(String name, File file, String contentType) {
-        request.field(name, file, contentType);
+        if (multipartBody == null) multipartBody = request.field(name, file, contentType);
+        else multipartBody.field(name, file, contentType);
         return this;
     }
 
     public RestfulRequest fields(Map<String, Object> parameters) {
-        request.fields(parameters);
+        if (multipartBody == null) multipartBody = request.fields(parameters);
         return this;
     }
 
     public RestfulRequest field(String name, InputStream stream, ContentType contentType, String fileName) {
-        request.field(name, stream, contentType, fileName);
+        if (multipartBody == null) multipartBody = request.field(name, stream, contentType, fileName);
+        else multipartBody.field(name, stream, contentType, fileName);
         return this;
     }
 
     public RestfulRequest field(String name, InputStream stream, String fileName) {
-        request.field(name, stream, fileName);
+        if (multipartBody == null) multipartBody = request.field(name, stream, fileName);
+        else multipartBody.field(name, stream, fileName);
         return this;
     }
 
