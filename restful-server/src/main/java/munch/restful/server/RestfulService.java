@@ -27,4 +27,11 @@ public interface RestfulService {
     default void throwError(String type, String message) {
         RestfulUtils.throwError(type, message);
     }
+
+    /**
+     * {@link RestfulUtils#throwError(String, String, int)}
+     */
+    default void throwError(String type, String message, int code) {
+        RestfulUtils.throwError(type, message, code);
+    }
 }

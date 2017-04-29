@@ -26,7 +26,7 @@ public class StructuredException extends RuntimeException {
      * @param code    integer code code to response, default to 400
      *                Integer should follow Http Status Codes
      */
-    protected StructuredException(String type, String message, int code) {
+    public StructuredException(String type, String message, int code) {
         this.type = type;
         this.errorMessage = message;
         this.code = code;

@@ -39,6 +39,30 @@ public final class RestfulUtils {
     }
 
     /**
+     * Construct a error to throw.
+     * Spark Server will catch this error and present the error in meta.
+     * E.g.
+     * <pre>
+     * {
+     *     meta: {
+     *         code: Integer,
+     *         type: "PascalCase"
+     *         message: "English sentence."
+     *     }
+     * }
+     * </pre>
+     *
+     * @param type    error type, short hand for consumer to identify and present their own response
+     *                String should be formatted in PascalCase
+     * @param message error message, in full readable english sentence for consumer to present
+     *                String should be formatted in structured english.
+     * @param code    status code to return
+     */
+    public static void throwError(String type, String message, int code) {
+        throw new StructuredException(type, message, code);
+    }
+
+    /**
      * @param params list of param that is not available
      * @throws ParamException param exception
      */
