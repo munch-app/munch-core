@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * Created By: Fuxing Loh
@@ -200,6 +201,14 @@ public class RestfulRequest {
         });
     }
 
+    /**
+     * Handle response, both exception and response
+     *
+     * @param handler response handler
+     * @param <E>     Exception
+     * @return RestfulResponse
+     * @throws E exception
+     */
     public <E extends Exception> RestfulResponse asResponse(ResponseHandler<E> handler) throws E {
         try {
             RestfulResponse response = new RestfulResponse(request.asBinary());
@@ -209,5 +218,18 @@ public class RestfulRequest {
             handler.handle((Exception) e.getCause(), null);
             return null;
         }
+    }
+
+    /**
+     * Handle response with default exception handler
+     *
+     * @param handler response handler
+     * @return RestfulResponse
+     */
+    public RestfulResponse asResponse(Consumer<RestfulResponse> handler) {
+        return asResponse((exception, response) -> {
+            if (exception != null) throw ExceptionParser.handle(exception);
+            handler.accept(response);
+        });
     }
 }
