@@ -8,6 +8,7 @@ import munch.restful.server.exceptions.StructuredException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import spark.Response;
 import spark.Spark;
 
 import java.util.Set;
@@ -117,21 +118,31 @@ public class RestfulServer {
         Spark.exception(Exception.class, (exception, request, response) -> {
             logger.error("Unknown exception thrown", exception);
 
-            ObjectNode metaNode = objectMapper.createObjectNode();
-            metaNode.put("code", 500);
-            metaNode.put("errorType", "UnknownException");
-            metaNode.put("errorMessage", exception.getMessage());
-            metaNode.put("errorDetailed", ExceptionUtils.getStackTrace(exception));
-
-            try {
-                response.status(500);
-                JsonNode node = objectMapper.createObjectNode().set("meta", metaNode);
-                response.body(objectMapper.writeValueAsString(node));
-                response.type(JsonService.APP_JSON);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
+            handleUnknownException(exception, response);
         });
+    }
+
+    /**
+     * Handle unknown exception
+     *
+     * @param exception unknown exception
+     * @param response  response to write to
+     */
+    protected void handleUnknownException(Exception exception, Response response) {
+        ObjectNode metaNode = objectMapper.createObjectNode();
+        metaNode.put("code", 500);
+        metaNode.put("errorType", "UnknownException");
+        metaNode.put("errorMessage", exception.getMessage());
+        metaNode.put("errorDetailed", ExceptionUtils.getStackTrace(exception));
+
+        try {
+            response.status(500);
+            JsonNode node = objectMapper.createObjectNode().set("meta", metaNode);
+            response.body(objectMapper.writeValueAsString(node));
+            response.type(JsonService.APP_JSON);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
