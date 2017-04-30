@@ -92,7 +92,7 @@ public class RestfulServer {
      * 400: structured error
      * 500: unknown error
      */
-    void handleException() {
+    protected void handleException() {
         logger.info("Adding exception handling for StructuredError.");
         Spark.exception(StructuredException.class, (exception, request, response) -> {
             logger.warn("Structured exception thrown", exception);
