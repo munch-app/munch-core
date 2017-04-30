@@ -98,28 +98,36 @@ public class RestfulServer {
         Spark.exception(StructuredException.class, (exception, request, response) -> {
             logger.warn("Structured exception thrown", exception);
             StructuredException error = (StructuredException) exception;
-
-            ObjectNode metaNode = objectMapper.createObjectNode();
-            metaNode.put("code", error.getCode());
-            metaNode.put("errorType", error.getType());
-            metaNode.put("errorMessage", error.getMessage());
-
-            try {
-                response.status(error.getCode());
-                JsonNode node = objectMapper.createObjectNode().set("meta", metaNode);
-                response.body(objectMapper.writeValueAsString(node));
-                response.type(JsonService.APP_JSON);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
+            handleException(response, error.getCode(), error.getType(), error.getMessage());
         });
 
         logger.info("Adding exception handling for all Exception.");
         Spark.exception(Exception.class, (exception, request, response) -> {
             logger.error("Unknown exception thrown", exception);
-
             handleUnknownException(exception, response);
         });
+    }
+
+    /**
+     * @param response     response to write to
+     * @param code         int status code
+     * @param errorType    error type
+     * @param errorMessage error message
+     */
+    protected void handleException(Response response, int code, String errorType, String errorMessage) {
+        ObjectNode metaNode = objectMapper.createObjectNode();
+        metaNode.put("code", code);
+        metaNode.put("errorType", errorType);
+        metaNode.put("errorMessage", errorMessage);
+
+        try {
+            response.status(code);
+            JsonNode node = objectMapper.createObjectNode().set("meta", metaNode);
+            response.body(objectMapper.writeValueAsString(node));
+            response.type(JsonService.APP_JSON);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
