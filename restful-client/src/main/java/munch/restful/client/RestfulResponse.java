@@ -79,11 +79,19 @@ public class RestfulResponse {
     }
 
     /**
-     * @param type error type
-     * @return true if has error type and is equal to given type
+     * If no error type found, will always return false
+     *
+     * @param types array of error type
+     * @return true if contain a error type and is equal to given type
      */
-    public boolean hasErrorType(String type) {
-        return getErrorType() != null && getErrorType().equals(type);
+    public boolean hasErrorType(String... types) {
+        String errorType = getErrorType();
+        if (errorType == null) return false;
+
+        for (String type : types) {
+            if (errorType.equals(type)) return true;
+        }
+        return false;
     }
 
     /**
