@@ -221,15 +221,12 @@ public class RestfulRequest {
     }
 
     /**
-     * Handle response with default exception handler
+     * Handle response for anything
      *
      * @param handler response handler
      * @return RestfulResponse
      */
-    public RestfulResponse asResponse(Consumer<RestfulResponse> handler) {
-        return asResponse((exception, response) -> {
-            if (exception != null) throw ExceptionParser.handle(exception);
-            handler.accept(response);
-        });
+    public RestfulResponse handle(Consumer<RestfulResponse> handler) {
+        return asResponse().handle(handler);
     }
 }

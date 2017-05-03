@@ -14,6 +14,7 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Created By: Fuxing Loh
@@ -112,6 +113,17 @@ public class RestfulResponse {
         String message = meta.path("errorMessage").asText(null);
         String detailed = meta.path("errorDetailed").asText(null);
         throw new StructuredException(code, type, message, detailed);
+    }
+
+    /**
+     * Handle response for anything
+     *
+     * @param handler response handler
+     * @return RestfulResponse
+     */
+    public RestfulResponse handle(Consumer<RestfulResponse> handler) {
+        handler.accept(this);
+        return this;
     }
 
     /**
