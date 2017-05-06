@@ -1,5 +1,8 @@
 package munch.restful.server;
 
+import munch.restful.server.exceptions.ParamException;
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * Created By: Fuxing Loh
  * Date: 8/2/2017
@@ -33,5 +36,23 @@ public interface RestfulService {
      */
     default void throwError(String type, String message, int code) {
         RestfulUtils.throwError(type, message, code);
+    }
+
+    /**
+     * @param key   key to param
+     * @param value value that is required non null
+     * @throws ParamException if null
+     */
+    default void requireNonNull(String key, Object value) throws ParamException {
+        if (value == null) throw new ParamException(key);
+    }
+
+    /**
+     * @param key   key to param
+     * @param value value that is required non blank
+     * @throws ParamException if blank
+     */
+    default void requireNonBlank(String key, CharSequence value) throws ParamException {
+        if (StringUtils.isBlank(value)) throw new ParamException(key);
     }
 }
