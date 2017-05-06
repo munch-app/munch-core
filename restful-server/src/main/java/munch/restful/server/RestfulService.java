@@ -41,18 +41,22 @@ public interface RestfulService {
     /**
      * @param key   key to param
      * @param value value that is required non null
+     * @return same value
      * @throws ParamException if null
      */
-    default void requireNonNull(String key, Object value) throws ParamException {
+    default <T> T requireNonNull(String key, T value) throws ParamException {
         if (value == null) throw new ParamException(key);
+        return value;
     }
 
     /**
      * @param key   key to param
      * @param value value that is required non blank
+     * @return same value
      * @throws ParamException if blank
      */
-    default void requireNonBlank(String key, CharSequence value) throws ParamException {
+    default <T extends CharSequence> T requireNonBlank(String key, T value) throws ParamException {
         if (StringUtils.isBlank(value)) throw new ParamException(key);
+        return value;
     }
 }

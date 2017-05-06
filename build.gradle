@@ -92,7 +92,7 @@ configure(subprojects.findAll { it.name.matches("(.+)-service-(.+)") }) {
 
 configure(subprojects.findAll { it.name.matches("restful-(.+)") }) {
     group 'munch'
-    version '0.7.9'
+    version '0.7.10'
 
     task publishLib {
         dependsOn 'build'
