@@ -3,8 +3,8 @@ package munch.places;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import munch.places.data.PlaceDatabase;
 import munch.places.data.Place;
+import munch.places.data.PlaceDatabase;
 import munch.places.search.SearchIndex;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
@@ -38,7 +38,12 @@ public class DataService implements JsonService {
         PATH("/places", () -> {
             GET("/:id", this::get);
 
-            new Batch().route();
+            PATH("/batch", () -> {
+                final Batch batch = new Batch();
+                POST("/get", batch::get);
+                POST("/put", batch::put);
+                POST("/delete", batch::delete);
+            });
         });
     }
 
@@ -54,16 +59,7 @@ public class DataService implements JsonService {
     /**
      * Batch request for place services
      */
-    private class Batch implements JsonService {
-
-        @Override
-        public void route() {
-            PATH("/batch", () -> {
-                POST("/get", this::get);
-                POST("/put", this::put);
-                POST("/delete", this::delete);
-            });
-        }
+    private class Batch {
 
         /**
          * For this method, check for keys values
