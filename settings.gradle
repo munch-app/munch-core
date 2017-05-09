@@ -4,17 +4,17 @@ rootProject.name = 'munch-core'
 include 'munch-api'
 
 // Tier 1 Service Api
-include 'munch-service-geocoder'
-include 'munch-service-places'
-include 'munch-service-places-menu'
-include 'munch-service-articles'
-include 'munch-service-gallery'
+include 'service-geocoder'
+include 'service-places'
+include 'service-places-menu'
+include 'service-articles'
+include 'service-gallery'
 
 // Tier 2 Service Api
-include 'munch-service-images'
+include 'service-images'
 
 // Munch catalyst task for updating munch data
-include 'munch-catalyst'
+include 'catalyst-munch'
 
 // Library modules
 include 'restful-server'
