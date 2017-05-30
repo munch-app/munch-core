@@ -6,6 +6,7 @@ allprojects {
 
     group 'munch.core'
     version '1.0.0-SNAPSHOT'
+    ext.ccVersion = '1.0.0-SNAPSHOT'
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
@@ -58,7 +59,7 @@ allprojects {
     }
 }
 
-configure(subprojects.findAll { it.name.matches("service-(.+)") }) {
+configure(subprojects.findAll { it.name.matches("munch-api|catalyst-munch|service-(.+)") }) {
     apply plugin: 'application'
     apply plugin: 'com.bmuschko.docker-java-application'
 

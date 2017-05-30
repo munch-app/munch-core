@@ -1,14 +1,11 @@
 package munch.catalyst.clients;
 
 import com.typesafe.config.Config;
-import munch.catalyst.data.PlaceConsumer;
 import munch.restful.client.RestfulClient;
 
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import java.util.List;
 
 /**
  * Created By: Fuxing Loh
@@ -29,25 +26,13 @@ public class PlaceClient extends RestfulClient {
         super(config.getString("places.url"));
     }
 
-    @Nullable
-    public PlaceConsumer.Place latest() {
-        return doGet("/places/meta/last")
-                .hasMetaCodes(200, 404)
-                .asDataObject(PlaceConsumer.Place.class);
+    public void put(Place place) {
+        // TODO restful
     }
 
-    public void put(List<PlaceConsumer.Place> places) {
-        if (places.isEmpty()) return;
-        doPost("/places/batch/put")
-                .body(places)
-                .hasMetaCodes(200);
-    }
+    public static class Place {
+        private String id;
 
-    public void delete(List<String> keys) {
-        if (keys.isEmpty()) return;
-        doPost("/places/batch/delete")
-                .body(keys)
-                .hasMetaCodes(200);
+        // TODO data
     }
-
 }

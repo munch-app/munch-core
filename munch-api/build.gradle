@@ -13,34 +13,4 @@ dependencies {
     compile group: 'com.thedeanda', name: 'lorem', version: '2.1'
 }
 
-apply plugin: 'application'
-apply plugin: 'com.bmuschko.docker-java-application'
-
 mainClassName = 'munch.api.ApiServer'
-
-ext.dockerTag = 'munch-core/' + project.name + ':latest'
-ext.dockerHost = '197547471367.dkr.ecr.ap-southeast-1.amazonaws.com/' + dockerTag
-
-dockerDistTar {
-    runCommand('apk add --update bash && rm -rf /var/cache/apk/*')
-}
-
-docker {
-    javaApplication {
-        baseImage = 'openjdk:8-jdk-alpine'
-        maintainer = 'Fuxing'
-        ports = [8000]
-        tag = dockerTag
-    }
-}
-
-task publishDocker {
-    dependsOn 'clean'
-    dependsOn 'dockerBuildImage'
-    tasks.findByName('dockerBuildImage').mustRunAfter 'clean'
-
-    doLast {
-        exec { commandLine "docker", "tag", dockerTag, dockerHost }
-        exec { commandLine "docker", "push", dockerHost}
-    }
-}
