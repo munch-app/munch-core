@@ -1,7 +1,7 @@
 package munch.images;
 
-import com.google.inject.*;
-import com.typesafe.config.ConfigFactory;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import munch.restful.server.RestfulServer;
 import munch.restful.server.RestfulService;
 
@@ -21,28 +21,4 @@ public class ImageApi extends RestfulServer {
         super(services);
     }
 
-    public static void main(String[] args) {
-        Injector injector = Guice.createInjector(
-                getPersistModule(),
-                new ImageModule()
-        );
-
-        // Start server on default port in setting = http.port
-        final RestfulServer server = injector.getInstance(ImageApi.class);
-        server.start(ConfigFactory.load().getInt("http.port"));
-    }
-
-    /**
-     * Aws or Fake
-     *
-     * @return Persist module to use
-     */
-    private static Module getPersistModule() {
-        switch (ConfigFactory.load().getString("image.persist")) {
-            case "aws":
-                return new AWSModule();
-            default:
-                return new FakeModule();
-        }
-    }
 }

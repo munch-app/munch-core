@@ -1,6 +1,5 @@
 package munch.images;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -8,7 +7,6 @@ import com.munch.utils.file.ContentTypeError;
 import munch.images.database.Image;
 import munch.images.database.ImageKind;
 import munch.images.database.ImageMapper;
-import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
 import munch.restful.server.exceptions.StructuredException;
 import spark.Request;
@@ -29,14 +27,14 @@ import java.util.Set;
  * Project: munch-core
  */
 @Singleton
-public class PersistService implements JsonService {
+public class PutService implements JsonService {
 
     private final ImageMapper mapper;
     private final MultipartConfigElement multipartConfig;
     private final Set<String> contentTypes;
 
     @Inject
-    public PersistService(ImageMapper mapper) {
+    public PutService(ImageMapper mapper) {
         this.mapper = mapper;
         this.multipartConfig = new MultipartConfigElement("/temp");
         this.contentTypes = ImmutableSet.of("image/jpeg", "image/png");
@@ -45,29 +43,13 @@ public class PersistService implements JsonService {
     @Override
     public void route() {
         PATH("/images", () -> {
-            PUT("/:key/resize", this::resize);
-            // Future: Delete types
-
             Spark.put("", "multipart/form-data", this::put, toJson);
-            DELETE("/:key", this::delete);
         });
     }
 
     /**
-     * Add image kinds to image group
-     *
-     * @param call json call
-     * @return null of image don't exist, or updated images
-     */
-    public Image resize(JsonCall call) throws ContentTypeError, IOException {
-        String key = call.pathString("key");
-        Set<ImageKind> kinds = ImageKind.resolveKinds(call.request().queryParams("kinds"));
-        return mapper.resize(key, kinds);
-    }
-
-    /**
      * Create new image
-     * multipart= file:
+     * multipart = file
      *
      * @param request  Spark request
      * @param response Spark response
@@ -75,8 +57,11 @@ public class PersistService implements JsonService {
      * @throws IOException      network error
      * @throws ContentTypeError content error
      */
-    public Image put(Request request, Response response) throws IOException, ContentTypeError, ServletException {
+    private Image put(Request request, Response response) throws IOException, ContentTypeError, ServletException {
         Set<ImageKind> kinds = ImageKind.resolveKinds(request.queryParams("kinds"));
+        if (kinds == null) kinds = ImageKind.DEFAULT_KINDS;
+
+        // Get file part
         request.attribute("org.eclipse.jetty.multipartConfig", multipartConfig);
         Part part = request.raw().getPart("file");
 
@@ -90,22 +75,10 @@ public class PersistService implements JsonService {
     }
 
     /**
-     * @param call json call
-     * @return 200 = success, else 500 for error
-     * @throws ContentTypeError content parsing error
-     * @throws IOException      network error
-     */
-    public JsonNode delete(JsonCall call) throws ContentTypeError, IOException {
-        String key = call.pathString("key");
-        mapper.delete(key);
-        return Meta200;
-    }
-
-    /**
      * Content type not image exception
      */
-    public static class NotImageException extends StructuredException {
-        protected NotImageException(String contentType) {
+    private static class NotImageException extends StructuredException {
+        private NotImageException(String contentType) {
             super("NotImageException", "Uploaded content type must be image. (" + contentType + ")", 400);
         }
     }

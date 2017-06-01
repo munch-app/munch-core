@@ -32,10 +32,17 @@ public enum ImageKind {
     @JsonProperty("1080x1080")
     X1080("1080x1080", 1080, 1080);
 
+    public static final Set<ImageKind> DEFAULT_KINDS = ImmutableSet.of(X150, X320, X640, X1080);
+
     private final String name;
     private final int width;
     private final int height;
 
+    /**
+     * @param name   json name
+     * @param width  width of image kind
+     * @param height height of image kind
+     */
     ImageKind(String name, int width, int height) {
         this.name = name;
         this.width = width;
@@ -84,7 +91,7 @@ public enum ImageKind {
      * @param value value/name
      * @return parsed TypeDescription
      * @throws NotFoundException if given kind is not found,
-     *                                    restful server knows how to handle this
+     *                           restful server knows how to handle this
      */
     public static ImageKind forValue(String value) {
         switch (value) {

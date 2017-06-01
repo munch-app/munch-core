@@ -8,6 +8,7 @@ import com.munch.utils.file.FileEndpoint;
 import com.munch.utils.file.FileMapper;
 import com.squareup.pollexor.Thumbor;
 import com.squareup.pollexor.ThumborUrlBuilder;
+import munch.restful.server.exceptions.StructuredException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -39,12 +40,18 @@ public class ImageMapper {
     private static final Logger logger = LoggerFactory.getLogger(ImageMapper.class);
 
     private final FileMapper fileMapper;
-    private final FileEndpoint fileEndpoint; // For different endpoint configure then default
+    private final FileEndpoint fileEndpoint;
     private final ImageDatabase database;
 
     private final Thumbor thumbor;
     private final TikaConfig tika;
 
+    /**
+     * @param fileMapper   file where actual object is stored
+     * @param fileEndpoint For different endpoint configure then default
+     * @param database     database for image store
+     * @param thumbor      thumbor instance for resize
+     */
     @Inject
     public ImageMapper(FileMapper fileMapper, FileEndpoint fileEndpoint, ImageDatabase database, Thumbor thumbor) {
         this.fileMapper = fileMapper;
@@ -55,29 +62,19 @@ public class ImageMapper {
     }
 
     /**
-     * Helper method for Set of ImageKind
-     *
-     * @see ImageMapper#upload(InputStream, long, String, ImageKind...)
-     */
-    public Image upload(InputStream inputStream, long length, String contentType,
-                        Set<ImageKind> kinds) throws ContentTypeError, IOException {
-        return upload(inputStream, length, contentType, kinds.toArray(new ImageKind[kinds.size()]));
-    }
-
-
-    /**
      * Note: key for image will be generated; currently length is 32
      *
      * @param inputStream input stream of file
      * @param length      length of stream
      * @param contentType content type of file
-     * @param kinds       types
+     * @param kinds       types of image
      * @return newly created Image object
      * @throws ContentTypeError content type cannot be parsed
      * @throws IOException      network error
      */
     public Image upload(InputStream inputStream, long length, String contentType,
-                        ImageKind... kinds) throws ContentTypeError, IOException {
+                        Set<ImageKind> kinds) throws ContentTypeError, IOException {
+        if (kinds.isEmpty()) throw new ImageKindsEmptyException();
         String newKey = RandomStringUtils.randomAlphanumeric(32);
 
         // Create new empty image object
@@ -95,57 +92,59 @@ public class ImageMapper {
 
         // Persist Original Size
         fileMapper.put(original.getKey(), inputStream, length, contentType, AccessControl.PublicRead);
+
+        // Persist resize kinds of images
+        resize(image, kinds);
+
+        // Delete Original image (image, storage)
+        if (!kinds.contains(ImageKind.Original)) {
+            image.getKinds().removeIf(kind -> kind.getKind() == ImageKind.Original);
+            fileMapper.remove(original.getKey());
+        }
+
+        // Finally persist image object to data store
         database.put(image);
-
-        // Appends new kinds of images
-        return resize(newKey, kinds);
-    }
-
-    /**
-     * Helper method for Set of ImageKind
-     *
-     * @see ImageMapper#resize(String, ImageKind...)
-     */
-    public Image resize(String key, Set<ImageKind> kinds) throws ContentTypeError, IOException {
-        return resize(key, kinds.toArray(new ImageKind[kinds.size()]));
+        return image;
     }
 
     /**
      * Need thumbor instance for resizing operations
+     * If kind already exist, it won't be generated
+     * Image resize is done with the original image, if original image is deleted, it cannot be done again
+     * <p>
+     * All resizing will be done on object passed in
      *
-     * @param key   key of image to append kinds to
+     * @param image image object to resize
      * @param kinds kinds to append
-     * @return kind, null if cannot be found
      * @throws ContentTypeError content type error for resizing image kinds; should never happen
      * @throws IOException      network error
      */
-    public Image resize(String key, ImageKind... kinds) throws ContentTypeError, IOException {
-        Image image = database.get(key);
-        if (image == null) return null;
-
+    private void resize(Image image, Set<ImageKind> kinds) throws ContentTypeError, IOException {
         // No kinds to add; exit
-        if (kinds.length == 0) return image;
+        if (kinds.isEmpty()) return;
 
         // Generate kinds to append
         Set<ImageKind> existingKinds = image.getKinds().stream()
                 .map(Image.Kind::getKind)
                 .collect(Collectors.toSet());
-        Set<ImageKind> appendKinds = Arrays.stream(kinds)
+        Set<ImageKind> appendKinds = kinds.stream()
                 .filter(kind -> !existingKinds.contains(kind))
                 .collect(Collectors.toSet());
 
         // No kinds to append; exit
-        if (appendKinds.isEmpty()) return image;
+        if (appendKinds.isEmpty()) return;
 
-        // Extract original for resizing operations
-        @SuppressWarnings("ConstantConditions") Image.Kind original = image.getKinds().stream()
-                .filter(kind -> kind.getKind() == ImageKind.Original).findFirst().get();
-        String originalUrl = fileMapper.getUrl(original.getKey());
+        // Extract original url for resizing operations
+        String originalUrl = image.getKinds().stream()
+                .filter(kind -> kind.getKind() == ImageKind.Original)
+                .findAny()
+                .map(o -> fileMapper.getUrl(o.getKey()))
+                .orElseThrow(OriginalDeletedException::new);
 
         // Iterate and save all image kind
         for (ImageKind appendKind : appendKinds) {
             Image.Kind kind = new Image.Kind(appendKind);
-            String appendKey = appendKind.makeKey(key, getExtension(image.getContentType()));
+            String appendKey = appendKind.makeKey(image.getKey(), getExtension(image.getContentType()));
             String appendUrl = thumbor.buildImage(originalUrl)
                     .resize(appendKind.getWidth(), appendKind.getHeight())
                     .fitIn(ThumborUrlBuilder.FitInStyle.FULL).toUrl();
@@ -159,10 +158,6 @@ public class ImageMapper {
             kind.setKey(appendKey);
             image.getKinds().add(kind);
         }
-
-        // Finally save image object
-        database.put(image);
-        return image;
     }
 
     /**
@@ -208,7 +203,7 @@ public class ImageMapper {
 
     /**
      * Delete all version of the image first
-     * If operation incomplete, half the image deletion will be processed
+     * If operation incomplete, processed image will still be deleted
      *
      * @param key image group key
      */
@@ -242,6 +237,18 @@ public class ImageMapper {
             return extension;
         } catch (MimeTypeException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private static class OriginalDeletedException extends StructuredException {
+        private OriginalDeletedException() {
+            super("OriginalImageDeletedException", "Required original image deleted.", 500);
+        }
+    }
+
+    private static class ImageKindsEmptyException extends StructuredException {
+        private ImageKindsEmptyException() {
+            super("ImageKindsEmptyException", "Image kinds is not given before upload. Server error.", 500);
         }
     }
 }
