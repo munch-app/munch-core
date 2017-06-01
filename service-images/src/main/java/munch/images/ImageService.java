@@ -1,7 +1,6 @@
 package munch.images;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.munch.utils.file.ContentTypeError;
@@ -11,7 +10,6 @@ import munch.images.database.ImageMapper;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
 
-import javax.servlet.MultipartConfigElement;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
@@ -26,14 +24,10 @@ import java.util.Set;
 public class ImageService implements JsonService {
 
     private final ImageMapper mapper;
-    private final MultipartConfigElement multipartConfig;
-    private final Set<String> contentTypes;
 
     @Inject
     public ImageService(ImageMapper mapper) {
         this.mapper = mapper;
-        this.multipartConfig = new MultipartConfigElement("/temp");
-        this.contentTypes = ImmutableSet.of("image/jpeg", "image/png");
     }
 
     @Override

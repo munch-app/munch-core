@@ -5,6 +5,7 @@ import com.amazonaws.services.dynamodbv2.document.spec.GetItemSpec;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import javax.inject.Named;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -16,15 +17,16 @@ import java.util.stream.Collectors;
  */
 @Singleton
 public class ImageDatabase {
-    public static final String TableName = "munch-images.Image";
 
+    private final String tableName;
     private final DynamoDB dynamoDB;
     private final Table table;
 
     @Inject
-    public ImageDatabase(DynamoDB dynamoDB) {
+    public ImageDatabase(DynamoDB dynamoDB, @Named("tableName") String tableName) {
+        this.tableName = tableName;
         this.dynamoDB = dynamoDB;
-        this.table = dynamoDB.getTable(TableName);
+        this.table = dynamoDB.getTable(tableName);
     }
 
     public Image get(String key) {
@@ -42,10 +44,10 @@ public class ImageDatabase {
     }
 
     public List<Image> get(List<String> keys) {
-        TableKeysAndAttributes attributes = new TableKeysAndAttributes(TableName);
+        TableKeysAndAttributes attributes = new TableKeysAndAttributes(tableName);
         keys.forEach(key -> attributes.addHashOnlyPrimaryKey(Scheme.Key, key));
         BatchGetItemOutcome outcome = dynamoDB.batchGetItem(attributes);
-        return outcome.getTableItems().get(TableName).stream()
+        return outcome.getTableItems().get(tableName).stream()
                 .map(item -> {
                     Image image = new Image();
                     image.setKey(item.getString(Scheme.Key));

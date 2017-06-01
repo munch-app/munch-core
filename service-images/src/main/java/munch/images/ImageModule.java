@@ -8,6 +8,8 @@ import com.typesafe.config.ConfigFactory;
 import munch.restful.server.RestfulServer;
 import munch.restful.server.RestfulService;
 
+import javax.inject.Named;
+
 /**
  * Created by: Fuxing
  * Date: 18/4/2017
@@ -36,6 +38,13 @@ public class ImageModule extends AbstractModule {
     @Provides
     Config provideConfig() {
         return ConfigFactory.load();
+    }
+
+    @Provides
+    @Singleton
+    @Named("tableName")
+    String provideTableName(Config config) {
+        return config.getString("image.tableName");
     }
 
     @Provides

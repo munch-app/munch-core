@@ -12,10 +12,12 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import com.munch.utils.file.*;
+import com.munch.utils.file.FakeS3Mapper;
+import com.munch.utils.file.FileEndpoint;
+import com.munch.utils.file.FileMapper;
 import com.typesafe.config.Config;
-import munch.images.database.ImageDatabase;
 
+import javax.inject.Named;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -33,7 +35,7 @@ public class FakeModule extends AbstractModule {
     }
 
     @Inject
-    void trySetupDynamo(AmazonDynamoDB dynamoDB) throws InterruptedException {
+    void trySetupDynamo(AmazonDynamoDB dynamoDB, @Named("tableName") String tableName) throws InterruptedException {
         Collection<KeySchemaElement> keySchema = Collections.singleton(new KeySchemaElement()
                 .withAttributeName("k")
                 .withKeyType(KeyType.HASH));
@@ -43,14 +45,14 @@ public class FakeModule extends AbstractModule {
                 .withAttributeType("S"));
 
         CreateTableRequest request = new CreateTableRequest()
-                .withTableName(ImageDatabase.TableName)
+                .withTableName(tableName)
                 .withKeySchema(keySchema)
                 .withAttributeDefinitions(attributeDefinitions)
                 .withProvisionedThroughput(
                         new ProvisionedThroughput().withReadCapacityUnits(1L).withWriteCapacityUnits(1L));
 
         TableUtils.createTableIfNotExists(dynamoDB, request);
-        TableUtils.waitUntilActive(dynamoDB, ImageDatabase.TableName);
+        TableUtils.waitUntilActive(dynamoDB, tableName);
     }
 
     @Provides
