@@ -31,6 +31,10 @@ public class ArticleClient extends RestfulClient {
         // TODO restful
     }
 
+    public void delete(String catalystId) {
+        // TODO delete all place with catalystId
+    }
+
     public static class Article {
         private String placeId;
 

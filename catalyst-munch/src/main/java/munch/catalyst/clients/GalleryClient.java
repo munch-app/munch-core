@@ -31,6 +31,10 @@ public class GalleryClient extends RestfulClient {
         // TODO restful
     }
 
+    public void delete(String catalystId) {
+        // TODO delete all place with catalystId
+    }
+
     public static class Graphic {
         private String placeId;
 

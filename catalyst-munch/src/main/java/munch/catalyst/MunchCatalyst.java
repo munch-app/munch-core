@@ -12,7 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -42,19 +44,41 @@ public class MunchCatalyst extends CatalystEngine {
 
     @Override
     protected void process(String catalystId) {
+        List<CatalystLink> collected = new ArrayList<>();
+        dataClient.getLinks(catalystId).forEachRemaining(collected::add);
+
+        // Failed validation: will be deleted at postCycle
+        if (!validate(collected)) return;
+
+        // Else validate = success: put new place
         PlaceBuilder builder = new PlaceBuilder();
         Date updatedDate = new Timestamp(System.currentTimeMillis());
 
-        dataClient.getLinks(catalystId).forEachRemaining(link -> {
+        // Consume for Article & Gallery and Place builder
+        for (CatalystLink link : collected) {
             consume(link, updatedDate);
             builder.consume(link);
-        });
+        }
 
         // Put place data to place services
         placeClient.put(builder.build());
+
         // Delete data that is not updated
         articleClient.deleteBefore(catalystId, updatedDate);
         galleryClient.deleteBefore(catalystId, updatedDate);
+    }
+
+    /**
+     * Validate a collection of links to make sure it can be a munch place
+     *
+     * @param links links
+     * @return true = validated, false = cannot be a munch place
+     */
+    private boolean validate(List<CatalystLink> links) {
+        // TODO validate place with
+        // 1. NEA Licence
+        // 2. Blogger mentions
+        return false;
     }
 
     /**
@@ -70,5 +94,13 @@ public class MunchCatalyst extends CatalystEngine {
         } else if (ArticleCorpusName.matcher(name).matches()) {
             articleClient.put(link, updatedDate);
         }
+    }
+
+    @Override
+    protected void postCycle() {
+        // TODO: delete data that is not updated
+        // placeClient.delete(catalystId);
+        // articleClient.delete(catalystId);
+        // galleryClient.delete(catalystId);
     }
 }

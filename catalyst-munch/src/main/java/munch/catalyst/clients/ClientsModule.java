@@ -11,6 +11,8 @@ import javax.inject.Named;
 import java.time.Duration;
 
 /**
+ * In theses clients: catalystId is also know also placeId
+ * <p>
  * Created by: Fuxing
  * Date: 15/4/2017
  * Time: 3:44 AM
