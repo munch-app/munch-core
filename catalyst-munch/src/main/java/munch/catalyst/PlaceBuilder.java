@@ -56,12 +56,11 @@ public final class PlaceBuilder {
 
     private void addValues(String key, String value) {
         // TODO values adder
-        keyValueCount.computeIfAbsent(key, s -> {
-            new HashMap<>();
-        })
-        keyValueCount.compute(key, (v, count) -> {
-
-        });
+//        keyValueCount.computeIfAbsent(key, s -> {
+//            new HashMap<>();
+//        })
+//        keyValueCount.compute(key, (v, count) -> {
+//        });
     }
 
     public PlaceClient.Place build() {
