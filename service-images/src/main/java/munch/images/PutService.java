@@ -4,8 +4,9 @@ import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.munch.utils.file.ContentTypeError;
-import munch.images.database.Image;
+import com.typesafe.config.Config;
 import munch.images.database.ImageKind;
+import munch.images.database.ImageMeta;
 import munch.images.database.ImageMapper;
 import munch.restful.server.JsonService;
 import munch.restful.server.exceptions.StructuredException;
@@ -29,12 +30,15 @@ import java.util.Set;
 @Singleton
 public class PutService implements JsonService {
 
+    private final Config config;
+
     private final ImageMapper mapper;
     private final MultipartConfigElement multipartConfig;
     private final Set<String> contentTypes;
 
     @Inject
-    public PutService(ImageMapper mapper) {
+    public PutService(Config config, ImageMapper mapper) {
+        this.config = config;
         this.mapper = mapper;
         this.multipartConfig = new MultipartConfigElement("/temp");
         this.contentTypes = ImmutableSet.of("image/jpeg", "image/png");
@@ -43,7 +47,15 @@ public class PutService implements JsonService {
     @Override
     public void route() {
         PATH("/images", () -> {
-            Spark.put("", "multipart/form-data", this::put, toJson);
+            // Check if thumbor exists
+            if (config.hasPath("image.thumbor.url")) {
+                Spark.put("", "multipart/form-data", this::put, toJson);
+            } else {
+                Spark.put("", "multipart/form-data", (req, res) -> {
+                    throwError("ThumborNotAvailable", "Required thumbor instance not available.", 501);
+                    return null;
+                }, toJson);
+            }
         });
     }
 
@@ -57,7 +69,7 @@ public class PutService implements JsonService {
      * @throws IOException      network error
      * @throws ContentTypeError content error
      */
-    private Image put(Request request, Response response) throws IOException, ContentTypeError, ServletException {
+    private ImageMeta put(Request request, Response response) throws IOException, ContentTypeError, ServletException {
         Set<ImageKind> kinds = ImageKind.resolveKinds(request.queryParams("kinds"));
         if (kinds == null) kinds = ImageKind.DEFAULT_KINDS;
 

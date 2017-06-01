@@ -16,13 +16,13 @@ import java.util.Set;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class Image {
+public final class ImageMeta {
 
     private String key;
     private String contentType;
-    private Date created;
 
     private Set<Kind> kinds;
+    private Date created;
 
     /**
      * @return unique id of the image
@@ -75,7 +75,7 @@ public final class Image {
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class Kind {
+    public final static class Kind {
         private ImageKind kind;
         private String url;
         private String key;

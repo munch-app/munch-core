@@ -4,15 +4,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.munch.utils.file.ContentTypeError;
-import munch.images.database.Image;
-import munch.images.database.ImageKind;
+import munch.images.database.ImageMeta;
 import munch.images.database.ImageMapper;
+import munch.images.database.MetaDatabase;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by: Fuxing
@@ -23,10 +22,12 @@ import java.util.Set;
 @Singleton
 public class ImageService implements JsonService {
 
+    private final MetaDatabase database;
     private final ImageMapper mapper;
 
     @Inject
-    public ImageService(ImageMapper mapper) {
+    public ImageService(MetaDatabase database, ImageMapper mapper) {
+        this.database = database;
         this.mapper = mapper;
     }
 
@@ -48,10 +49,8 @@ public class ImageService implements JsonService {
      * @param call json call
      * @return Collection of Images
      */
-    private List<Image> batchGet(JsonCall call) {
-        List<String> keys = call.bodyAsList(String.class);
-        Set<ImageKind> kinds = ImageKind.resolveKinds(call.queryString("kinds", null));
-        return mapper.get(keys, kinds);
+    private List<ImageMeta> batchGet(JsonCall call) {
+        return database.get(call.bodyAsList(String.class));
     }
 
     /**
@@ -60,10 +59,8 @@ public class ImageService implements JsonService {
      * @param call json call
      * @return 200 = Image, 404 = not found
      */
-    private Image get(JsonCall call) {
-        String key = call.pathString("key");
-        Set<ImageKind> kinds = ImageKind.resolveKinds(call.queryString("kinds", null));
-        return mapper.get(key, kinds);
+    private ImageMeta get(JsonCall call) {
+        return database.get(call.pathString("key"));
     }
 
     /**
@@ -73,8 +70,7 @@ public class ImageService implements JsonService {
      * @throws IOException      network error
      */
     private JsonNode delete(JsonCall call) throws ContentTypeError, IOException {
-        String key = call.pathString("key");
-        mapper.delete(key);
+        mapper.delete(call.pathString("key"));
         return Meta200;
     }
 }
