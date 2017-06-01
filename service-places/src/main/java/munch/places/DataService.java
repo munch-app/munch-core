@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created By: Fuxing Loh
@@ -36,15 +35,23 @@ public class DataService implements JsonService {
     @Override
     public void route() {
         PATH("/places", () -> {
-            GET("/:id", this::get);
+            POST("/get", this::batchGet);
 
-            PATH("/batch", () -> {
-                final Batch batch = new Batch();
-                POST("/get", batch::get);
-                POST("/put", batch::put);
-                POST("/delete", batch::delete);
-            });
+            GET("/:id", this::get);
+            PUT("/:id", this::put);
+            DELETE("/:id", this::delete);
         });
+    }
+
+    /**
+     * For this method, check for keys values
+     *
+     * @param call json call
+     * @return empty body = none found
+     */
+    private List<Place> batchGet(JsonCall call) {
+        List<String> keys = call.bodyAsList(String.class);
+        return database.get(keys);
     }
 
     /**
@@ -57,49 +64,24 @@ public class DataService implements JsonService {
     }
 
     /**
-     * Batch request for place services
+     * @param call json call
+     * @return 200 = saved
      */
-    private class Batch {
+    private JsonNode put(JsonCall call) throws Exception {
+        Place place = call.bodyAsObject(Place.class);
+        database.put(place);
+        index.put(place);
+        return Meta200;
+    }
 
-        /**
-         * For this method, check for keys values
-         *
-         * @param call json call
-         * @return empty body = none found
-         */
-        private List<Place> get(JsonCall call) {
-            List<String> keys = call.bodyAsList(String.class);
-            return database.get(keys);
-        }
-
-        /**
-         * @param call json call
-         * @return 200 = saved
-         */
-        private JsonNode put(JsonCall call) throws Exception {
-            List<Place> places = call.bodyAsList(Place.class);
-            try {
-                database.put(places);
-                index.put(places);
-            } catch (Exception e) {
-                // If any error, delete all from both database and index
-                List<String> keys = places.stream().map(Place::getId).collect(Collectors.toList());
-                logger.info("Data service put error: {}", keys);
-                index.delete(keys);
-                database.delete(keys);
-            }
-            return Meta200;
-        }
-
-        /**
-         * @param call json call
-         * @return 200 = deleted
-         */
-        private JsonNode delete(JsonCall call) throws Exception {
-            List<String> keys = call.bodyAsList(String.class);
-            index.delete(keys);
-            database.delete(keys);
-            return Meta200;
-        }
+    /**
+     * @param call json call
+     * @return 200 = deleted
+     */
+    private JsonNode delete(JsonCall call) throws Exception {
+        String id = call.pathString("id");
+        index.delete(id);
+        database.delete(id);
+        return Meta200;
     }
 }

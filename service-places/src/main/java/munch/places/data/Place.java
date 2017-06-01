@@ -7,14 +7,14 @@ import munch.places.data.hibernate.HoursUserType;
 import munch.places.data.hibernate.LocationUserType;
 import munch.places.data.hibernate.PriceUserType;
 import munch.places.data.hibernate.TagsUserType;
-import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by: Fuxing
@@ -48,9 +48,6 @@ public final class Place {
     // Many
     private String[] tags;
     private Hour[] hours;
-
-    // Linked data, not stored in Place
-    private List<LinkedImage> linkedImages;
 
     // Dates
     private Date createdDate;
@@ -166,17 +163,6 @@ public final class Place {
         this.hours = hours;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "place")
-    @OrderBy("createdDate DESC")
-    @BatchSize(size = 10)
-    public List<LinkedImage> getLinkedImages() {
-        return linkedImages;
-    }
-
-    public void setLinkedImages(List<LinkedImage> linkedImages) {
-        this.linkedImages = linkedImages;
-    }
-
     @Column(nullable = false)
     public Date getCreatedDate() {
         return createdDate;
@@ -199,7 +185,6 @@ public final class Place {
      * Location data of the place
      */
     public static final class Location {
-
         private String address;
         private String unitNumber;
 
@@ -271,7 +256,6 @@ public final class Place {
      * Price data of the place
      */
     public static final class Price {
-
         private Double lowest;
         private Double highest;
 
