@@ -1,9 +1,9 @@
 package munch.articles;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
+import com.google.inject.*;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import munch.restful.server.RestfulServer;
 
 /**
  * Created by: Fuxing
@@ -21,5 +21,20 @@ public class ArticleModule extends AbstractModule {
     @Provides
     Config provideConfig() {
         return ConfigFactory.load();
+    }
+
+    @Singleton
+    public static class Server extends RestfulServer {
+        @Inject
+        public Server(ArticleService service) {
+            super(service);
+        }
+    }
+
+    public static void main(String[] args) {
+        Injector injector = Guice.createInjector(new ArticleModule());
+        // Start server on default port in setting = http.port
+        final RestfulServer server = injector.getInstance(Server.class);
+        server.start(ConfigFactory.load().getInt("http.port"));
     }
 }

@@ -1,9 +1,9 @@
 package munch.gallery;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
+import com.google.inject.*;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import munch.restful.server.RestfulServer;
 
 /**
  * Created by: Fuxing
@@ -11,7 +11,7 @@ import com.typesafe.config.ConfigFactory;
  * Time: 6:59 PM
  * Project: munch-core
  */
-public class GalleryModule extends AbstractModule {
+public final class GalleryModule extends AbstractModule {
 
     @Override
     protected void configure() {
@@ -21,5 +21,20 @@ public class GalleryModule extends AbstractModule {
     @Provides
     Config provideConfig() {
         return ConfigFactory.load();
+    }
+
+    @Singleton
+    private static final class Server extends RestfulServer {
+        @Inject
+        public Server(GalleryService service) {
+            super(service);
+        }
+    }
+
+    public static void main(String[] args) {
+        Injector injector = Guice.createInjector(new GalleryModule());
+        // Start server on default port in setting = http.port
+        final RestfulServer server = injector.getInstance(Server.class);
+        server.start(ConfigFactory.load().getInt("http.port"));
     }
 }
