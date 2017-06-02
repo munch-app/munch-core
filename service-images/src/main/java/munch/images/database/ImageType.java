@@ -106,6 +106,7 @@ public enum ImageType {
             case "1080x1080":
                 return X1080;
             default:
+                // Must have backward compatibility
                 throw new NotFoundException(value);
         }
     }
@@ -121,14 +122,13 @@ public enum ImageType {
                 .collect(Collectors.toSet());
     }
 
+    /**
+     * Image kind not found
+     *
+     * @see ImageType for all the options available
+     */
     public static class NotFoundException extends StructuredException {
-
-        /**
-         * Image kind not found
-         *
-         * @see ImageType for all the options available
-         */
-        protected NotFoundException(String kind) {
+        NotFoundException(String kind) {
             super("ImageKindNotFoundException", "ImageKind: " + kind + " not found.", 400);
         }
     }

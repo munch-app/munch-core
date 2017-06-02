@@ -11,6 +11,10 @@ import com.squareup.pollexor.ThumborUrlBuilder;
 import munch.restful.server.exceptions.StructuredException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.tika.config.TikaConfig;
+import org.apache.tika.mime.MimeType;
+import org.apache.tika.mime.MimeTypeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +23,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.sql.Timestamp;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -33,6 +38,7 @@ import java.util.stream.Collectors;
  */
 @Singleton
 public class ImageMapper {
+    private static final TikaConfig TIKA = TikaConfig.getDefaultConfig();
     private static final Logger logger = LoggerFactory.getLogger(ImageMapper.class);
 
     private final FileMapper fileMapper;
@@ -75,16 +81,14 @@ public class ImageMapper {
         ImageMeta imageMeta = new ImageMeta();
         imageMeta.setKey(newKey);
         imageMeta.setContentType(contentType);
+        imageMeta.setImages(new HashMap<>());
         imageMeta.setCreated(new Timestamp(System.currentTimeMillis()));
-        imageMeta.setTypes(new HashSet<>());
 
         // Add original image kind
-        ImageMeta.Type original = new ImageMeta.Type(ImageType.Original);
-        original.setKey(newKey + ImageUtils.getExtension(contentType));
+        ImageMeta.Type original = new ImageMeta.Type();
+        original.setKey(newKey + getExtension(contentType));
         original.setUrl(fileEndpoint.getUrl(original.getKey()));
-        imageMeta.getTypes().add(original);
-
-        // Persist Original Size
+        imageMeta.getImages().put(ImageType.Original, original);
         fileMapper.put(original.getKey(), inputStream, length, contentType, AccessControl.PublicRead);
 
         // Persist resize different kinds of images
@@ -92,7 +96,7 @@ public class ImageMapper {
 
         // Delete Original image if need to (image, storage)
         if (!kinds.contains(ImageType.Original)) {
-            imageMeta.getTypes().removeIf(type -> type.getType() == ImageType.Original);
+            imageMeta.getImages().remove(ImageType.Original);
             fileMapper.remove(original.getKey());
         }
 
@@ -119,40 +123,35 @@ public class ImageMapper {
         if (kinds.isEmpty()) return;
 
         // Generate kinds to append
-        Set<ImageType> existingKinds = imageMeta.getTypes().stream()
-                .map(ImageMeta.Type::getType)
-                .collect(Collectors.toSet());
         Set<ImageType> appendKinds = kinds.stream()
-                .filter(kind -> !existingKinds.contains(kind))
+                .filter(kind -> !imageMeta.getImages().containsKey(kind))
                 .collect(Collectors.toSet());
 
         // No kinds to append; exit
         if (appendKinds.isEmpty()) return;
 
         // Extract original url for resizing operations
-        String originalUrl = imageMeta.getTypes().stream()
-                .filter(type -> type.getType() == ImageType.Original)
-                .findAny()
+        String originalUrl = Optional.ofNullable(imageMeta.getImages().get(ImageType.Original))
                 .map(o -> fileMapper.getUrl(o.getKey()))
                 .orElseThrow(OriginalNotFoundException::new);
 
         // Iterate and save all image kind
         for (ImageType appendKind : appendKinds) {
-            String appendKey = appendKind.makeKey(imageMeta.getKey(), ImageUtils.getExtension(imageMeta.getContentType()));
+            String appendKey = appendKind.makeKey(imageMeta.getKey(), getExtension(imageMeta.getContentType()));
             String appendUrl = thumbor.buildImage(originalUrl)
                     .resize(appendKind.getWidth(), appendKind.getHeight())
                     .fitIn(ThumborUrlBuilder.FitInStyle.FULL).toUrl();
 
-            // Save to file mapper
+            // Download new size
             File appendFile = File.createTempFile(appendKey, "");
             FileUtils.copyURLToFile(new URL(appendUrl), appendFile);
-            fileMapper.put(appendKey, appendFile, imageMeta.getContentType(), AccessControl.PublicRead);
 
-            // Save image to set
-            ImageMeta.Type type = new ImageMeta.Type(appendKind);
+            // Save image to meta
+            ImageMeta.Type type = new ImageMeta.Type();
             type.setKey(appendKey);
             type.setUrl(fileEndpoint.getUrl(type.getKey()));
-            imageMeta.getTypes().add(type);
+            imageMeta.getImages().put(appendKind, type);
+            fileMapper.put(appendKey, appendFile, imageMeta.getContentType(), AccessControl.PublicRead);
         }
     }
 
@@ -168,10 +167,10 @@ public class ImageMapper {
         if (imageMeta == null) return;
 
         // Iterate through all type and delete image
-        for (ImageMeta.Type type : imageMeta.getTypes()) {
-            fileMapper.remove(type.getKey());
-            imageMeta.getTypes().remove(type);
-        }
+        imageMeta.getImages().forEach((type, image) -> {
+            fileMapper.remove(image.getKey());
+            imageMeta.getImages().remove(type);
+        });
         database.delete(key);
     }
 
@@ -184,6 +183,21 @@ public class ImageMapper {
     private static class ImageKindsEmptyException extends StructuredException {
         private ImageKindsEmptyException() {
             super("ImageKindsEmptyException", "Image kinds is not given before upload. Server error.", 500);
+        }
+    }
+
+    /**
+     * @param contentType Content-Type
+     * @return to extension; e.g. png/jpg
+     */
+    private static String getExtension(String contentType) {
+        try {
+            MimeType mimeType = TIKA.getMimeRepository().forName(contentType);
+            String extension = mimeType.getExtension();
+            if (StringUtils.isEmpty(extension)) throw new RuntimeException("Extension cannot be empty.");
+            return extension;
+        } catch (MimeTypeException e) {
+            throw new RuntimeException(e);
         }
     }
 }

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.Date;
-import java.util.Set;
+import java.util.Map;
 
 /**
  * This is like a image group, a single image group has multiple types of same images
@@ -20,7 +20,7 @@ public final class ImageMeta {
     private String key;
     private String contentType;
 
-    private Set<Type> types;
+    private Map<ImageType, Type> images;
     private Date created;
 
     /**
@@ -51,21 +51,23 @@ public final class ImageMeta {
     }
 
     /**
-     * @return types of image
+     * @return different types of images
      */
-    public Set<Type> getTypes() {
-        return types;
+    public Map<ImageType, Type> getImages() {
+        return images;
     }
 
-    public void setTypes(Set<Type> types) {
-        this.types = types;
+    public void setImages(Map<ImageType, Type> images) {
+        this.images = images;
     }
 
     @Override
     public String toString() {
-        return "Image{" +
-                "id='" + key + '\'' +
-                ", types=" + types +
+        return "ImageMeta{" +
+                "key='" + key + '\'' +
+                ", contentType='" + contentType + '\'' +
+                ", images=" + images +
+                ", created=" + created +
                 '}';
     }
 
@@ -75,41 +77,8 @@ public final class ImageMeta {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonIgnoreProperties(ignoreUnknown = true)
     public final static class Type {
-        private ImageType type;
-        private String url;
         private String key;
-
-        public Type() {
-        }
-
-        /**
-         * @param type type
-         */
-        public Type(ImageType type) {
-            this.type = type;
-        }
-
-        /**
-         * @return public url of image content
-         */
-        public String getUrl() {
-            return url;
-        }
-
-        public void setUrl(String url) {
-            this.url = url;
-        }
-
-        /**
-         * @return type of image
-         */
-        public ImageType getType() {
-            return type;
-        }
-
-        public void setType(ImageType type) {
-            this.type = type;
-        }
+        private String url;
 
         /**
          * User don't need to know this
@@ -124,12 +93,22 @@ public final class ImageMeta {
             this.key = key;
         }
 
+        /**
+         * @return public url of image content
+         */
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
         @Override
         public String toString() {
             return "Type{" +
-                    "type=" + type +
+                    "key='" + key + '\'' +
                     ", url='" + url + '\'' +
-                    ", key='" + key + '\'' +
                     '}';
         }
     }
