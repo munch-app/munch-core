@@ -35,9 +35,9 @@ public class ImageClient extends RestfulClient {
                 .asDataObject(ImageMeta.class);
     }
 
-    public ImageMeta put(File file) {
+    public ImageMeta put(File file, ContentType contentType) {
         return doPut("/images")
-                .field("file", file)
+                .field("file", file, contentType.getMimeType())
                 .hasMetaCodes(200)
                 .asDataObject(ImageMeta.class);
     }

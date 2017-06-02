@@ -15,7 +15,7 @@ import java.util.Set;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class ImageMeta {
     private String key;
-    private Set<Kind> kinds;
+    private Set<Type> types;
 
     public String getKey() {
         return key;
@@ -25,24 +25,24 @@ public final class ImageMeta {
         this.key = key;
     }
 
-    public Set<Kind> getKinds() {
-        return kinds;
+    public Set<Type> getTypes() {
+        return types;
     }
 
-    public void setKinds(Set<Kind> kinds) {
-        this.kinds = kinds;
+    public void setTypes(Set<Type> types) {
+        this.types = types;
     }
 
-    public final static class Kind {
-        private String kind;
+    public final static class Type {
+        private String type;
         private String url;
 
-        public String getKind() {
-            return kind;
+        public String getType() {
+            return type;
         }
 
-        public void setKind(String kind) {
-            this.kind = kind;
+        public void setType(String type) {
+            this.type = type;
         }
 
         public String getUrl() {

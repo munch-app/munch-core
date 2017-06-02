@@ -17,11 +17,10 @@ import java.util.Set;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class ImageMeta {
-
     private String key;
     private String contentType;
 
-    private Set<Kind> kinds;
+    private Set<Type> types;
     private Date created;
 
     /**
@@ -54,19 +53,19 @@ public final class ImageMeta {
     /**
      * @return types of image
      */
-    public Set<Kind> getKinds() {
-        return kinds;
+    public Set<Type> getTypes() {
+        return types;
     }
 
-    public void setKinds(Set<Kind> kinds) {
-        this.kinds = kinds;
+    public void setTypes(Set<Type> types) {
+        this.types = types;
     }
 
     @Override
     public String toString() {
         return "Image{" +
                 "id='" + key + '\'' +
-                ", types=" + kinds +
+                ", types=" + types +
                 '}';
     }
 
@@ -75,19 +74,19 @@ public final class ImageMeta {
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public final static class Kind {
-        private ImageKind kind;
+    public final static class Type {
+        private ImageType type;
         private String url;
         private String key;
 
-        public Kind() {
+        public Type() {
         }
 
         /**
-         * @param kind kind
+         * @param type type
          */
-        public Kind(ImageKind kind) {
-            this.kind = kind;
+        public Type(ImageType type) {
+            this.type = type;
         }
 
         /**
@@ -104,12 +103,12 @@ public final class ImageMeta {
         /**
          * @return type of image
          */
-        public ImageKind getKind() {
-            return kind;
+        public ImageType getType() {
+            return type;
         }
 
-        public void setKind(ImageKind kind) {
-            this.kind = kind;
+        public void setType(ImageType type) {
+            this.type = type;
         }
 
         /**
@@ -128,7 +127,7 @@ public final class ImageMeta {
         @Override
         public String toString() {
             return "Type{" +
-                    "type=" + kind +
+                    "type=" + type +
                     ", url='" + url + '\'' +
                     ", key='" + key + '\'' +
                     '}';

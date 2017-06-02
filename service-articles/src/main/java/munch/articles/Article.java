@@ -2,15 +2,12 @@ package munch.articles;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import munch.articles.hibernate.ImagesUserType;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
+import munch.articles.hibernate.PojoUserType;
+import munch.clients.ImageMeta;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
+import java.util.Set;
 
 /**
  * Created by: Fuxing
@@ -21,9 +18,6 @@ import java.util.Date;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
-@TypeDefs(value = {
-        @TypeDef(name = "images", typeClass = ImagesUserType.class)
-})
 public final class Article {
     private String placeId;
     private String articleId;
@@ -33,7 +27,7 @@ public final class Article {
 
     private String title;
     private String summary;
-    private Image[] images;
+    private Set<ArticleImage> images;
 
     private Date updatedDate;
 
@@ -98,13 +92,12 @@ public final class Article {
         this.summary = summary;
     }
 
-    @Type(type = "images")
-    @Column(nullable = false)
-    public Image[] getImages() {
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "article")
+    public Set<ArticleImage> getImages() {
         return images;
     }
 
-    public void setImages(Image[] images) {
+    public void setImages(Set<ArticleImage> images) {
         this.images = images;
     }
 
@@ -118,35 +111,19 @@ public final class Article {
     }
 
     /**
-     * Image of Article
+     * User type for Article entity
      */
-    public static final class Image {
-        private String key;
-        private String type;
-        private String url;
-
-        public String getKey() {
-            return key;
+    static class UserType {
+        static class ImageUrls extends PojoUserType<String[]> {
+            ImageUrls() {
+                super(String[].class);
+            }
         }
 
-        public void setKey(String key) {
-            this.key = key;
-        }
-
-        public String getType() {
-            return type;
-        }
-
-        public void setType(String type) {
-            this.type = type;
-        }
-
-        public String getUrl() {
-            return url;
-        }
-
-        public void setUrl(String url) {
-            this.url = url;
+        static class Images extends PojoUserType<ImageMeta[]> {
+            Images() {
+                super(ImageMeta[].class);
+            }
         }
     }
 }

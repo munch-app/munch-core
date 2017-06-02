@@ -65,7 +65,8 @@ public final class ArticleService implements JsonService {
 
     private JsonNode delete(JsonCall call, JsonNode request) {
         String articleId = request.get("articleId").asText();
-        mapper.delete(articleId);
+        Article article = provider.reduce(em -> em.find(Article.class, articleId));
+        mapper.delete(article);
         return Meta200;
     }
 
@@ -75,4 +76,5 @@ public final class ArticleService implements JsonService {
         mapper.deleteBefore(placeId, before);
         return Meta200;
     }
+
 }

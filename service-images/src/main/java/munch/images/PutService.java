@@ -5,9 +5,9 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.munch.utils.file.ContentTypeError;
 import com.typesafe.config.Config;
-import munch.images.database.ImageKind;
-import munch.images.database.ImageMeta;
 import munch.images.database.ImageMapper;
+import munch.images.database.ImageMeta;
+import munch.images.database.ImageType;
 import munch.restful.server.JsonService;
 import munch.restful.server.exceptions.StructuredException;
 import spark.Request;
@@ -70,8 +70,8 @@ public class PutService implements JsonService {
      * @throws ContentTypeError content error
      */
     private ImageMeta put(Request request, Response response) throws IOException, ContentTypeError, ServletException {
-        Set<ImageKind> kinds = ImageKind.resolveKinds(request.queryParams("kinds"));
-        if (kinds == null) kinds = ImageKind.DEFAULT_KINDS;
+        Set<ImageType> kinds = ImageType.resolveKinds(request.queryParams("kinds"));
+        if (kinds == null) kinds = ImageType.DEFAULT_KINDS;
 
         // Get file part
         request.attribute("org.eclipse.jetty.multipartConfig", multipartConfig);

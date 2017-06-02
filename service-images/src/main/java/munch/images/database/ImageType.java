@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  * Time: 11:07 PM
  * Project: munch-core
  */
-public enum ImageKind {
+public enum ImageType {
     @JsonProperty("original")
     Original("original", 0, 0),
 
@@ -32,7 +32,7 @@ public enum ImageKind {
     @JsonProperty("1080x1080")
     X1080("1080x1080", 1080, 1080);
 
-    public static final Set<ImageKind> DEFAULT_KINDS = ImmutableSet.of(X150, X320, X640, X1080);
+    public static final Set<ImageType> DEFAULT_KINDS = ImmutableSet.of(X150, X320, X640, X1080);
 
     private final String name;
     private final int width;
@@ -43,7 +43,7 @@ public enum ImageKind {
      * @param width  width of image kind
      * @param height height of image kind
      */
-    ImageKind(String name, int width, int height) {
+    ImageType(String name, int width, int height) {
         this.name = name;
         this.width = width;
         this.height = height;
@@ -93,7 +93,7 @@ public enum ImageKind {
      * @throws NotFoundException if given kind is not found,
      *                           restful server knows how to handle this
      */
-    public static ImageKind forValue(String value) {
+    public static ImageType forValue(String value) {
         switch (value) {
             case "original":
                 return Original;
@@ -114,10 +114,10 @@ public enum ImageKind {
      * @param queryString query string of kinds
      * @return Set of ImageKind
      */
-    public static Set<ImageKind> resolveKinds(@Nullable String queryString) {
+    public static Set<ImageType> resolveKinds(@Nullable String queryString) {
         if (StringUtils.isBlank(queryString)) return ImmutableSet.of();
         return Arrays.stream(queryString.split(" *, *"))
-                .map(ImageKind::forValue)
+                .map(ImageType::forValue)
                 .collect(Collectors.toSet());
     }
 
@@ -126,7 +126,7 @@ public enum ImageKind {
         /**
          * Image kind not found
          *
-         * @see ImageKind for all the options available
+         * @see ImageType for all the options available
          */
         protected NotFoundException(String kind) {
             super("ImageKindNotFoundException", "ImageKind: " + kind + " not found.", 400);

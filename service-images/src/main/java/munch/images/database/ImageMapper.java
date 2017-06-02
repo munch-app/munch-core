@@ -67,7 +67,7 @@ public class ImageMapper {
      * @throws IOException      network error
      */
     public ImageMeta upload(InputStream inputStream, long length, String contentType,
-                            Set<ImageKind> kinds) throws ContentTypeError, IOException {
+                            Set<ImageType> kinds) throws ContentTypeError, IOException {
         if (kinds.isEmpty()) throw new ImageKindsEmptyException();
         String newKey = RandomStringUtils.randomAlphanumeric(32);
 
@@ -76,13 +76,13 @@ public class ImageMapper {
         imageMeta.setKey(newKey);
         imageMeta.setContentType(contentType);
         imageMeta.setCreated(new Timestamp(System.currentTimeMillis()));
-        imageMeta.setKinds(new HashSet<>());
+        imageMeta.setTypes(new HashSet<>());
 
         // Add original image kind
-        ImageMeta.Kind original = new ImageMeta.Kind(ImageKind.Original);
+        ImageMeta.Type original = new ImageMeta.Type(ImageType.Original);
         original.setKey(newKey + ImageUtils.getExtension(contentType));
         original.setUrl(fileEndpoint.getUrl(original.getKey()));
-        imageMeta.getKinds().add(original);
+        imageMeta.getTypes().add(original);
 
         // Persist Original Size
         fileMapper.put(original.getKey(), inputStream, length, contentType, AccessControl.PublicRead);
@@ -91,8 +91,8 @@ public class ImageMapper {
         resize(imageMeta, kinds);
 
         // Delete Original image if need to (image, storage)
-        if (!kinds.contains(ImageKind.Original)) {
-            imageMeta.getKinds().removeIf(kind -> kind.getKind() == ImageKind.Original);
+        if (!kinds.contains(ImageType.Original)) {
+            imageMeta.getTypes().removeIf(type -> type.getType() == ImageType.Original);
             fileMapper.remove(original.getKey());
         }
 
@@ -114,15 +114,15 @@ public class ImageMapper {
      * @throws ContentTypeError content type error for resizing image kinds; should never happen
      * @throws IOException      network error
      */
-    private void resize(ImageMeta imageMeta, Set<ImageKind> kinds) throws ContentTypeError, IOException {
+    private void resize(ImageMeta imageMeta, Set<ImageType> kinds) throws ContentTypeError, IOException {
         // No kinds to add; exit
         if (kinds.isEmpty()) return;
 
         // Generate kinds to append
-        Set<ImageKind> existingKinds = imageMeta.getKinds().stream()
-                .map(ImageMeta.Kind::getKind)
+        Set<ImageType> existingKinds = imageMeta.getTypes().stream()
+                .map(ImageMeta.Type::getType)
                 .collect(Collectors.toSet());
-        Set<ImageKind> appendKinds = kinds.stream()
+        Set<ImageType> appendKinds = kinds.stream()
                 .filter(kind -> !existingKinds.contains(kind))
                 .collect(Collectors.toSet());
 
@@ -130,14 +130,14 @@ public class ImageMapper {
         if (appendKinds.isEmpty()) return;
 
         // Extract original url for resizing operations
-        String originalUrl = imageMeta.getKinds().stream()
-                .filter(kind -> kind.getKind() == ImageKind.Original)
+        String originalUrl = imageMeta.getTypes().stream()
+                .filter(type -> type.getType() == ImageType.Original)
                 .findAny()
                 .map(o -> fileMapper.getUrl(o.getKey()))
                 .orElseThrow(OriginalNotFoundException::new);
 
         // Iterate and save all image kind
-        for (ImageKind appendKind : appendKinds) {
+        for (ImageType appendKind : appendKinds) {
             String appendKey = appendKind.makeKey(imageMeta.getKey(), ImageUtils.getExtension(imageMeta.getContentType()));
             String appendUrl = thumbor.buildImage(originalUrl)
                     .resize(appendKind.getWidth(), appendKind.getHeight())
@@ -149,10 +149,10 @@ public class ImageMapper {
             fileMapper.put(appendKey, appendFile, imageMeta.getContentType(), AccessControl.PublicRead);
 
             // Save image to set
-            ImageMeta.Kind kind = new ImageMeta.Kind(appendKind);
-            kind.setKey(appendKey);
-            kind.setUrl(fileEndpoint.getUrl(kind.getKey()));
-            imageMeta.getKinds().add(kind);
+            ImageMeta.Type type = new ImageMeta.Type(appendKind);
+            type.setKey(appendKey);
+            type.setUrl(fileEndpoint.getUrl(type.getKey()));
+            imageMeta.getTypes().add(type);
         }
     }
 
@@ -168,9 +168,9 @@ public class ImageMapper {
         if (imageMeta == null) return;
 
         // Iterate through all type and delete image
-        for (ImageMeta.Kind kind : imageMeta.getKinds()) {
-            fileMapper.remove(kind.getKey());
-            imageMeta.getKinds().remove(kind);
+        for (ImageMeta.Type type : imageMeta.getTypes()) {
+            fileMapper.remove(type.getKey());
+            imageMeta.getTypes().remove(type);
         }
         database.delete(key);
     }
