@@ -2,6 +2,15 @@ package munch.articles;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import munch.articles.hibernate.ImagesUserType;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import java.util.Date;
 
 /**
  * Created by: Fuxing
@@ -11,20 +20,27 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Entity
+@TypeDefs(value = {
+        @TypeDef(name = "images", typeClass = ImagesUserType.class)
+})
 public final class Article {
-
     private String placeId;
     private String articleId;
 
-    private String author;
-    private String summary;
-
-    private String imageKey;
+    private String brand;
     private String url;
+
+    private String title;
+    private String summary;
+    private Image[] images;
+
+    private Date updatedDate;
 
     /**
      * @return place that is linked to the article
      */
+    @Column(columnDefinition = "CHAR(36)", nullable = false, updatable = false)
     public String getPlaceId() {
         return placeId;
     }
@@ -36,6 +52,8 @@ public final class Article {
     /**
      * @return unique articleId of article in munch
      */
+    @Id
+    @Column(nullable = false, length = 2048)
     public String getArticleId() {
         return articleId;
     }
@@ -44,20 +62,34 @@ public final class Article {
         this.articleId = articleId;
     }
 
-    /**
-     * @return author name of article
-     */
-    public String getAuthor() {
-        return author;
+    @Column(nullable = false, length = 255)
+    public String getBrand() {
+        return brand;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
+    public void setBrand(String brand) {
+        this.brand = brand;
     }
 
-    /**
-     * @return summary of the article
-     */
+    @Column(nullable = false, length = 2048)
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    @Column(nullable = false, length = 255)
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    @Column(nullable = false, length = 1000)
     public String getSummary() {
         return summary;
     }
@@ -66,27 +98,55 @@ public final class Article {
         this.summary = summary;
     }
 
+    @Type(type = "images")
+    @Column(nullable = false)
+    public Image[] getImages() {
+        return images;
+    }
+
+    public void setImages(Image[] images) {
+        this.images = images;
+    }
+
+    @Column(nullable = false)
+    public Date getUpdatedDate() {
+        return updatedDate;
+    }
+
+    public void setUpdatedDate(Date updatedDate) {
+        this.updatedDate = updatedDate;
+    }
+
     /**
-     * Image is stored in munch-service-images
-     *
-     * @return image key
+     * Image of Article
      */
-    public String getImageKey() {
-        return imageKey;
-    }
+    public static final class Image {
+        private String key;
+        private String type;
+        private String url;
 
-    public void setImageKey(String imageKey) {
-        this.imageKey = imageKey;
-    }
+        public String getKey() {
+            return key;
+        }
 
-    /**
-     * @return url that lead directly to the article
-     */
-    public String getUrl() {
-        return url;
-    }
+        public void setKey(String key) {
+            this.key = key;
+        }
 
-    public void setUrl(String url) {
-        this.url = url;
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
     }
 }
