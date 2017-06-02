@@ -15,7 +15,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by: Fuxing
@@ -26,8 +27,6 @@ import java.util.Objects;
 @Singleton
 public final class PersistMapper {
     private static final Logger logger = LoggerFactory.getLogger(PersistMapper.class);
-
-    // TODO persist mapping
 
     private final ImageClient imageClient;
     private final TransactionProvider provider;
@@ -41,38 +40,55 @@ public final class PersistMapper {
     public void put(Article article) {
         Article saved = provider.reduce(em -> em.find(Article.class, article.getArticleId()));
 
-        // Delete existing images if size different
-
-        if (saved != null && saved.getImages()) delete(saved);
-
         if (saved == null) {
             // Persist new entry of Article
-            ImageMeta[] images = Arrays.stream(article.getImageUrls())
-                    .map(this::putImage)
-                    .filter(Objects::nonNull)
-                    .toArray(ImageMeta[]::new);
-            article.setImages(images);
+            for (Article.ArticleImage image : article.getImages()) {
+                ImageMeta meta = putImage(image.getUrl());
+                if (meta == null) continue;
+                image.setKey(meta.getKey());
+                image.setImages(meta.getImages());
+            }
             provider.with(em -> em.persist(article));
         } else {
             // Persist existing entry of Article
+            saved.setPlaceId(article.getPlaceId());
+            saved.setBrand(article.getBrand());
+            saved.setUrl(article.getUrl());
+            saved.setTitle(article.getTitle());
+            saved.setDescription(article.getDescription());
+            saved.setUpdatedDate(article.getUpdatedDate());
 
-            delete(saved);
-            ImageMeta[] images = Arrays.stream(article.getImageUrls())
-                    .map(this::putImage)
-                    .filter(Objects::nonNull)
-                    .toArray(ImageMeta[]::new);
-            for (String urlString : request.getImageUrls()) {
-//                reduced.getImages()
-                putImage(urlString);
-            }
+            // Filter images to add and delete
+            Set<String> existingUrls = Arrays.stream(saved.getImages())
+                    .map(Article.ArticleImage::getUrl)
+                    .collect(Collectors.toSet());
+            Set<String> newUrls = Arrays.stream(article.getImages())
+                    .map(Article.ArticleImage::getUrl)
+                    .collect(Collectors.toSet());
 
-            PutRequest.merge(saved, request);
-            saved.getImages()
-            saved.get
-            // Update existing entry
-            // Update Article data
-            // Update appended images
-            // Delete difference images
+            // Remove and add into to Set
+            Set<Article.ArticleImage> images = Arrays.stream(saved.getImages()).collect(Collectors.toSet());
+
+            // Urls to remove
+            images.stream().filter(i -> !newUrls.contains(i.getUrl())).forEach(image -> {
+                images.remove(image);
+                imageClient.delete(image.getKey());
+            });
+
+            // Urls to add
+            newUrls.stream().filter(url -> !existingUrls.contains(url)).forEach(url -> {
+                ImageMeta meta = putImage(url);
+                if (meta != null) {
+                    Article.ArticleImage image = new Article.ArticleImage();
+                    image.setUrl(url);
+                    image.setKey(meta.getKey());
+                    image.setImages(meta.getImages());
+                    images.add(image);
+                }
+            });
+
+            // Persist changes
+            saved.setImages(images.toArray(new Article.ArticleImage[images.size()]));
             provider.with(em -> em.persist(article));
         }
     }
@@ -97,8 +113,8 @@ public final class PersistMapper {
      */
     public void delete(Article article) {
         // Delete all the images in article
-        for (ImageMeta meta : article.getImages()) {
-            imageClient.delete(meta.getKey());
+        for (Article.ArticleImage image : article.getImages()) {
+            imageClient.delete(image.getKey());
         }
 
         // Remove Article from Database
@@ -121,7 +137,7 @@ public final class PersistMapper {
                 return imageClient.put(inputStream, ContentType.create(contentType), url.getPath());
             }
         } catch (IOException ioe) {
-            logger.error("Skip: Failed to put image for url: {}", urlString, new ImagePutException(urlString));
+            logger.error("Skip: Failed to put image for url: {}", urlString, ioe);
             return null;
         }
     }

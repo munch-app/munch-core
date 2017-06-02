@@ -18,7 +18,7 @@ import java.time.Duration;
  * Time: 3:44 AM
  * Project: munch-core
  */
-public class ClientsModule extends AbstractModule {
+public class ClientModule extends AbstractModule {
 
     @Override
     protected void configure() {

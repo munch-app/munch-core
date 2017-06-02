@@ -4,10 +4,14 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import munch.articles.hibernate.PojoUserType;
 import munch.clients.ImageMeta;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.Date;
-import java.util.Set;
 
 /**
  * Created by: Fuxing
@@ -18,6 +22,9 @@ import java.util.Set;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
+@TypeDefs(value = {
+        @TypeDef(name = "types", typeClass = Article.UserType.Images.class)
+})
 public final class Article {
     private String placeId;
     private String articleId;
@@ -26,8 +33,8 @@ public final class Article {
     private String url;
 
     private String title;
-    private String summary;
-    private Set<ArticleImage> images;
+    private String description;
+    private ArticleImage[] images;
 
     private Date updatedDate;
 
@@ -84,20 +91,21 @@ public final class Article {
     }
 
     @Column(nullable = false, length = 1000)
-    public String getSummary() {
-        return summary;
+    public String getDescription() {
+        return description;
     }
 
-    public void setSummary(String summary) {
-        this.summary = summary;
+    public void setDescription(String summary) {
+        this.description = summary;
     }
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "article")
-    public Set<ArticleImage> getImages() {
+    @Column(nullable = false)
+    @Type(type = "images")
+    public ArticleImage[] getImages() {
         return images;
     }
 
-    public void setImages(Set<ArticleImage> images) {
+    public void setImages(ArticleImage[] images) {
         this.images = images;
     }
 
@@ -111,18 +119,27 @@ public final class Article {
     }
 
     /**
-     * User type for Article entity
+     * This extends ImageMeta
+     * Article version requires url to be saved
      */
-    static class UserType {
-        static class ImageUrls extends PojoUserType<String[]> {
-            ImageUrls() {
-                super(String[].class);
-            }
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static final class ArticleImage extends ImageMeta {
+        private String url;
+
+        public String getUrl() {
+            return url;
         }
 
-        static class Images extends PojoUserType<ImageMeta[]> {
+        public void setUrl(String url) {
+            this.url = url;
+        }
+    }
+
+    static class UserType {
+        static class Images extends PojoUserType<ArticleImage[]> {
             Images() {
-                super(ImageMeta[].class);
+                super(ArticleImage[].class);
             }
         }
     }

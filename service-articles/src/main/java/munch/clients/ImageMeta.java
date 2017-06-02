@@ -3,7 +3,7 @@ package munch.clients;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import java.util.Set;
+import java.util.Map;
 
 /**
  * Created by: Fuxing
@@ -13,9 +13,9 @@ import java.util.Set;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class ImageMeta {
+public class ImageMeta {
     private String key;
-    private Set<Type> types;
+    private Map<String, Type> images;
 
     public String getKey() {
         return key;
@@ -25,12 +25,12 @@ public final class ImageMeta {
         this.key = key;
     }
 
-    public Set<Type> getTypes() {
-        return types;
+    public Map<String, Type> getImages() {
+        return images;
     }
 
-    public void setTypes(Set<Type> types) {
-        this.types = types;
+    public void setImages(Map<String, Type> images) {
+        this.images = images;
     }
 
     public final static class Type {

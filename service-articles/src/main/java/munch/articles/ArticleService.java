@@ -76,5 +76,4 @@ public final class ArticleService implements JsonService {
         mapper.deleteBefore(placeId, before);
         return Meta200;
     }
-
 }
