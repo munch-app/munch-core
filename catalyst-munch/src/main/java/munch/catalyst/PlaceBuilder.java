@@ -3,7 +3,7 @@ package munch.catalyst;
 import catalyst.data.CatalystLink;
 import catalyst.data.CorpusData;
 import com.google.common.collect.ImmutableSet;
-import munch.catalyst.clients.PlaceClient;
+import munch.catalyst.clients.Place;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -63,8 +63,8 @@ public final class PlaceBuilder {
 //        });
     }
 
-    public PlaceClient.Place build() {
-        PlaceClient.Place place = new PlaceClient.Place();
+    public Place build() {
+        Place place = new Place();
         // TODO build place with: keyValueCount
         return place;
     }

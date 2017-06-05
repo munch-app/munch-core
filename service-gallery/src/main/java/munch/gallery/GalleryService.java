@@ -34,8 +34,8 @@ public class GalleryService implements JsonService {
 
             // Management
             PUT("/:mediaId", this::put);
-            DELETE("/:mediaId", this::delete);
             DELETE("/before/:timestamp", this::deleteBefore);
+            DELETE("/:mediaId", this::delete);
         });
     }
 
@@ -79,9 +79,8 @@ public class GalleryService implements JsonService {
     private JsonNode deleteBefore(JsonCall call) {
         String placeId = call.pathString("placeId");
         Date before = new Date(call.pathLong("timestamp"));
-        provider.with(em -> em.createQuery("DELETE FROM Media " +
-                "WHERE placeId = :placeId AND putDate < :before")
-                .setParameter("placeId", placeId)
+        provider.with(em -> em.createQuery("DELETE FROM Media WHERE placeId = :id AND updatedDate < :before")
+                .setParameter("id", placeId)
                 .setParameter("before", before)
                 .executeUpdate());
         return Meta200;

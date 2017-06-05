@@ -24,20 +24,27 @@ public class GalleryClient extends RestfulClient {
     }
 
     public void put(CatalystLink link, Date updatedDate) {
-        // TODO restful
+        Media media = create(link, updatedDate);
+        doPut("/places/{placeId}/gallery/{mediaId}")
+                .path("placeId", media.getPlaceId())
+                .path("mediaId", media.getMediaId())
+                .body(media)
+                .hasMetaCodes(200);
+    }
+
+    private Media create(CatalystLink link, Date updatedDate) {
+        Media media = new Media();
+        media.setPlaceId(link.getCatalystId());
+        media.setUpdatedDate(updatedDate);
+
+        // TODO media creation
+        return media;
     }
 
     public void deleteBefore(String catalystId, Date updatedDate) {
-        // TODO restful
-    }
-
-    public void delete(String catalystId) {
-        // TODO delete all place with catalystId
-    }
-
-    public static class Graphic {
-        private String placeId;
-
-        // TODO data structure
+        doDelete("/places/{placeId}/gallery/before/{timestamp}")
+                .path("placeId", catalystId)
+                .path("timestamp", updatedDate.getTime())
+                .hasMetaCodes(200);
     }
 }

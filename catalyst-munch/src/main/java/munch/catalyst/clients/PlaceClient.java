@@ -6,6 +6,7 @@ import munch.restful.client.RestfulClient;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
+import java.util.Date;
 
 /**
  * Created By: Fuxing Loh
@@ -27,16 +28,15 @@ public class PlaceClient extends RestfulClient {
     }
 
     public void put(Place place) {
-        // TODO restful
+        doPut("/places/:id")
+                .path("id", place.getId())
+                .body(place)
+                .hasMetaCodes(200);
     }
 
-    public void delete(String catalystId) {
-        // TODO delete all place with catalystId
-    }
-
-    public static class Place {
-        private String id;
-
-        // TODO data
+    public void deleteBefore(Date updatedDate) {
+        doDelete("/places/before/{timestamp}")
+                .path("timestamp", updatedDate.getTime())
+                .hasMetaCodes(200);
     }
 }

@@ -24,20 +24,22 @@ public class ArticleClient extends RestfulClient {
     }
 
     public void put(CatalystLink link, Date updatedDate) {
-        // TODO restful
+        Article article = create(link, updatedDate);
+        doPut("/places/{placeId}/articles/put")
+                .path("placeId", article.getPlaceId())
+                .body(article)
+                .hasMetaCodes(200);
+    }
+
+    private Article create(CatalystLink link, Date updatedDate) {
+        // TODO Article creation
+        return null;
     }
 
     public void deleteBefore(String catalystId, Date updatedDate) {
-        // TODO restful
-    }
-
-    public void delete(String catalystId) {
-        // TODO delete all place with catalystId
-    }
-
-    public static class Article {
-        private String placeId;
-
-        // TODO data structure
+        doDelete("/places/{placeId}/articles/before/{timestamp}")
+                .path("placeId", catalystId)
+                .path("timestamp", updatedDate.getTime())
+                .hasMetaCodes(200);
     }
 }

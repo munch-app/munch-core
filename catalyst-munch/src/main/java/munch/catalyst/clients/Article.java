@@ -1,17 +1,10 @@
-package munch.articles;
+package munch.catalyst.clients;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import munch.articles.hibernate.PojoUserType;
-import munch.clients.ImageMeta;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by: Fuxing
@@ -21,10 +14,6 @@ import java.util.Date;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Entity
-@TypeDefs(value = {
-        @TypeDef(name = "types", typeClass = Article.UserType.Images.class)
-})
 public final class Article {
     private String placeId;
     private String articleId;
@@ -34,7 +23,7 @@ public final class Article {
 
     private String title;
     private String description;
-    private ArticleImage[] images;
+    private List<ArticleImage> images;
 
     private Date createdDate;
     private Date updatedDate;
@@ -42,7 +31,6 @@ public final class Article {
     /**
      * @return place that is linked to the article
      */
-    @Column(columnDefinition = "CHAR(36)", nullable = false, updatable = false)
     public String getPlaceId() {
         return placeId;
     }
@@ -54,8 +42,6 @@ public final class Article {
     /**
      * @return unique articleId of article in munch
      */
-    @Id
-    @Column(nullable = false, length = 2048)
     public String getArticleId() {
         return articleId;
     }
@@ -64,7 +50,6 @@ public final class Article {
         this.articleId = articleId;
     }
 
-    @Column(nullable = false, length = 255)
     public String getBrand() {
         return brand;
     }
@@ -73,7 +58,6 @@ public final class Article {
         this.brand = brand;
     }
 
-    @Column(nullable = false, length = 2048)
     public String getUrl() {
         return url;
     }
@@ -82,7 +66,6 @@ public final class Article {
         this.url = url;
     }
 
-    @Column(nullable = false, length = 255)
     public String getTitle() {
         return title;
     }
@@ -91,7 +74,6 @@ public final class Article {
         this.title = title;
     }
 
-    @Column(nullable = false, length = 1000)
     public String getDescription() {
         return description;
     }
@@ -100,17 +82,14 @@ public final class Article {
         this.description = summary;
     }
 
-    @Column(nullable = false)
-    @Type(type = "images")
-    public ArticleImage[] getImages() {
+    public List<ArticleImage> getImages() {
         return images;
     }
 
-    public void setImages(ArticleImage[] images) {
+    public void setImages(List<ArticleImage> images) {
         this.images = images;
     }
 
-    @Column(nullable = false)
     public Date getCreatedDate() {
         return createdDate;
     }
@@ -119,7 +98,6 @@ public final class Article {
         this.createdDate = createdDate;
     }
 
-    @Column(nullable = false)
     public Date getUpdatedDate() {
         return updatedDate;
     }
@@ -129,10 +107,10 @@ public final class Article {
     }
 
     /**
-     * This extends ImageMeta
+     * This extends ImageMeta, but not at catalyst
      * Article version requires url to be saved
      */
-    public static final class ArticleImage extends ImageMeta {
+    public static final class ArticleImage {
         private String url;
 
         public String getUrl() {
@@ -141,14 +119,6 @@ public final class Article {
 
         public void setUrl(String url) {
             this.url = url;
-        }
-    }
-
-    static class UserType {
-        static class Images extends PojoUserType<ArticleImage[]> {
-            Images() {
-                super(ArticleImage[].class);
-            }
         }
     }
 }

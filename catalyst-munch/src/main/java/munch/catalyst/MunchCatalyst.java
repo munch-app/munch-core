@@ -33,6 +33,8 @@ public class MunchCatalyst extends CatalystEngine {
     private final ArticleClient articleClient;
     private final GalleryClient galleryClient;
 
+    private Date updatedDate;
+
     @Inject
     public MunchCatalyst(DataClient dataClient, CatalystClient catalystClient,
                          PlaceClient placeClient, ArticleClient articleClient, GalleryClient galleryClient) {
@@ -40,6 +42,12 @@ public class MunchCatalyst extends CatalystEngine {
         this.placeClient = placeClient;
         this.articleClient = articleClient;
         this.galleryClient = galleryClient;
+    }
+
+    @Override
+    protected void preStart() {
+        super.preStart();
+        this.updatedDate = new Date();
     }
 
     @Override
@@ -98,9 +106,6 @@ public class MunchCatalyst extends CatalystEngine {
 
     @Override
     protected void postCycle() {
-        // TODO: delete data that is not updated
-        // placeClient.delete(catalystId);
-        // articleClient.delete(catalystId);
-        // galleryClient.delete(catalystId);
+        placeClient.deleteBefore(updatedDate);
     }
 }

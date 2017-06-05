@@ -7,7 +7,7 @@ import catalyst.data.DataModule;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import munch.catalyst.clients.ClientsModule;
+import munch.catalyst.clients.ClientModule;
 
 /**
  * Created By: Fuxing Loh
@@ -21,7 +21,7 @@ public class MunchModule extends AbstractModule {
     protected void configure() {
         install(new CatalystModule());
         install(new DataModule());
-        install(new ClientsModule());
+        install(new ClientModule());
         bind(CatalystEngine.class).to(MunchCatalyst.class);
     }
 

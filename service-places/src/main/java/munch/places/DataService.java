@@ -3,14 +3,14 @@ package munch.places;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.munch.hibernate.utils.TransactionProvider;
 import munch.places.data.Place;
 import munch.places.data.PlaceDatabase;
 import munch.places.search.SearchIndex;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -21,13 +21,14 @@ import java.util.List;
  */
 @Singleton
 public class DataService implements JsonService {
-    private static final Logger logger = LoggerFactory.getLogger(DataService.class);
 
+    private final TransactionProvider provider;
     private final PlaceDatabase database;
     private final SearchIndex index;
 
     @Inject
-    public DataService(PlaceDatabase database, SearchIndex index) {
+    public DataService(TransactionProvider provider, PlaceDatabase database, SearchIndex index) {
+        this.provider = provider;
         this.database = database;
         this.index = index;
     }
@@ -39,6 +40,7 @@ public class DataService implements JsonService {
 
             GET("/:id", this::get);
             PUT("/:id", this::put);
+            DELETE("/before/:timestamp", this::deleteBefore);
             DELETE("/:id", this::delete);
         });
     }
@@ -82,6 +84,14 @@ public class DataService implements JsonService {
         String id = call.pathString("id");
         index.delete(id);
         database.delete(id);
+        return Meta200;
+    }
+
+    private JsonNode deleteBefore(JsonCall call) {
+        Date before = new Date(call.pathLong("timestamp"));
+        provider.with(em -> em.createQuery("DELETE FROM Place WHERE updatedDate < :before")
+                .setParameter("before", before)
+                .executeUpdate());
         return Meta200;
     }
 }
