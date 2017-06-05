@@ -56,7 +56,7 @@ public final class PersistMapper {
             saved.setUrl(article.getUrl());
             saved.setTitle(article.getTitle());
             saved.setDescription(article.getDescription());
-            saved.setUpdatedDate(article.getUpdatedDate());
+            saved.setPutDate(article.getPutDate());
 
             // Filter images to add and delete
             Set<String> existingUrls = Arrays.stream(saved.getImages())
@@ -101,7 +101,7 @@ public final class PersistMapper {
      */
     public void deleteBefore(String placeId, Date before) {
         provider.reduce(em -> em.createQuery("FROM Article " +
-                "WHERE placeId = :placeId AND updatedDate < :before", Article.class)
+                "WHERE placeId = :placeId AND putDate < :before", Article.class)
                 .setParameter("placeId", placeId)
                 .setParameter("before", before)
                 .getResultList())

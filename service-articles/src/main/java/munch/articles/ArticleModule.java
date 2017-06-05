@@ -3,6 +3,7 @@ package munch.articles;
 import com.google.inject.*;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import munch.articles.hibernate.PostgresModule;
 import munch.clients.ClientModule;
 import munch.restful.server.RestfulServer;
 
@@ -16,6 +17,7 @@ public class ArticleModule extends AbstractModule {
 
     @Override
     protected void configure() {
+        install(new PostgresModule());
         install(new ClientModule());
     }
 

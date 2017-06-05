@@ -1,11 +1,14 @@
 package munch.gallery;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.munch.hibernate.utils.TransactionProvider;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by: Fuxing
@@ -16,47 +19,71 @@ import java.util.Date;
 @Singleton
 public class GalleryService implements JsonService {
 
+    private final TransactionProvider provider;
+
+    @Inject
+    public GalleryService(TransactionProvider provider) {
+        this.provider = provider;
+    }
+
     @Override
     public void route() {
         PATH("/places/:placeId/gallery", () -> {
             GET("/list", this::list);
-            GET("/:graphicId", this::get);
+            GET("/:mediaId", this::get);
 
             // Management
-            PUT("/:graphicId", this::put);
-            DELETE("/:graphicId", this::delete);
+            PUT("/:mediaId", this::put);
+            DELETE("/:mediaId", this::delete);
             DELETE("/before/:timestamp", this::deleteBefore);
         });
     }
 
-    private JsonNode list(JsonCall call) {
+    private List<Media> list(JsonCall call) {
         String placeId = call.pathString("placeId");
         int from = call.queryInt("from");
         int size = call.queryInt("size");
-        return null;
+        return provider.reduce(em -> em.createQuery("FROM Media WHERE placeId = :placeId", Media.class)
+                .setParameter("placeId", placeId)
+                .setFirstResult(from)
+                .setMaxResults(size)
+                .getResultList());
     }
 
-    private JsonNode get(JsonCall call) {
-        String placeId = call.pathString("placeId");
-        String graphicId = call.pathString("graphicId");
-        return null;
+    private Media get(JsonCall call) {
+        String mediaId = call.pathString("mediaId");
+        return provider.reduce(em -> em.find(Media.class, mediaId));
     }
 
     private JsonNode put(JsonCall call) {
-        String placeId = call.pathString("placeId");
-        String graphicId = call.pathString("graphicId");
-        return null;
+        Media media = call.bodyAsObject(Media.class);
+        provider.with(em -> {
+            // TODO check if it works
+            if (em.find(Media.class, media.getMediaId()) == null) {
+                em.persist(media);
+            } else {
+                em.merge(media);
+            }
+        });
+        return Meta200;
     }
 
     private JsonNode delete(JsonCall call) {
-        String placeId = call.pathString("placeId");
-        String graphicId = call.pathString("graphicId");
-        return null;
+        String mediaId = call.pathString("mediaId");
+        provider.with(em -> em.createQuery("DELETE FROM Media WHERE mediaId = :mediaId")
+                .setParameter("mediaId", mediaId)
+                .executeUpdate());
+        return Meta200;
     }
 
     private JsonNode deleteBefore(JsonCall call) {
         String placeId = call.pathString("placeId");
         Date before = new Date(call.pathLong("timestamp"));
-        return null;
+        provider.with(em -> em.createQuery("DELETE FROM Media " +
+                "WHERE placeId = :placeId AND putDate < :before")
+                .setParameter("placeId", placeId)
+                .setParameter("before", before)
+                .executeUpdate());
+        return Meta200;
     }
 }

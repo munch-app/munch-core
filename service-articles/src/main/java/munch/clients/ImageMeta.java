@@ -34,16 +34,7 @@ public class ImageMeta {
     }
 
     public final static class Type {
-        private String type;
         private String url;
-
-        public String getType() {
-            return type;
-        }
-
-        public void setType(String type) {
-            this.type = type;
-        }
 
         public String getUrl() {
             return url;

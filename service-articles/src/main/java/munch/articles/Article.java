@@ -36,7 +36,7 @@ public final class Article {
     private String description;
     private ArticleImage[] images;
 
-    private Date updatedDate;
+    private Date putDate;
 
     /**
      * @return place that is linked to the article
@@ -110,20 +110,18 @@ public final class Article {
     }
 
     @Column(nullable = false)
-    public Date getUpdatedDate() {
-        return updatedDate;
+    public Date getPutDate() {
+        return putDate;
     }
 
-    public void setUpdatedDate(Date updatedDate) {
-        this.updatedDate = updatedDate;
+    public void setPutDate(Date updatedDate) {
+        this.putDate = updatedDate;
     }
 
     /**
      * This extends ImageMeta
      * Article version requires url to be saved
      */
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class ArticleImage extends ImageMeta {
         private String url;
 

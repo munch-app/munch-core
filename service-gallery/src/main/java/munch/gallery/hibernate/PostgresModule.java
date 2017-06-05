@@ -1,4 +1,4 @@
-package munch.places.data;
+package munch.gallery.hibernate;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
@@ -21,7 +21,7 @@ import java.util.Map;
  */
 public class PostgresModule extends AbstractModule {
 
-    private static final String UnitName = "placesPersistenceUnit";
+    private static final String UnitName = "galleryPersistenceUnit";
 
     @Override
     protected void configure() {
@@ -38,7 +38,7 @@ public class PostgresModule extends AbstractModule {
 
         // Wait for url to be ready
         String url = postgres.getString("url");
-        WaitFor.host(url.substring(5), Duration.ofSeconds(30));
+        WaitFor.host(url.substring(5), Duration.ofSeconds(61));
 
         Map<String, String> properties = new HashMap<>();
         properties.put("hibernate.hikari.dataSource.url", url);
