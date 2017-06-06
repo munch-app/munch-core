@@ -113,6 +113,13 @@ public final class Article {
     public static final class ArticleImage {
         private String url;
 
+        public ArticleImage() {
+        }
+
+        public ArticleImage(String url) {
+            this.url = url;
+        }
+
         public String getUrl() {
             return url;
         }

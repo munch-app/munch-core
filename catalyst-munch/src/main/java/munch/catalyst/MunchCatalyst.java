@@ -78,15 +78,21 @@ public class MunchCatalyst extends CatalystEngine {
 
     /**
      * Validate a collection of links to make sure it can be a munch place
+     * Validated with conditions:
+     * 1. NEA Licence
+     * 2. Blogger mentions
      *
      * @param links links
      * @return true = validated, false = cannot be a munch place
      */
     private boolean validate(List<CatalystLink> links) {
-        // TODO validate place with
-        // 1. NEA Licence
-        // 2. Blogger mentions
-        return false;
+        // Validate has at least 1 Article written about place
+        boolean hasArticle = links.stream().anyMatch(link ->
+                ArticleCorpusName.matcher(link.getData().getCorpusName()).matches());
+        if (!hasArticle) return false;
+
+        // Validate has NeaRecord
+        return links.stream().anyMatch(l -> l.getData().getCorpusName().equals("Sg.Nea.TrackRecord"));
     }
 
     /**
