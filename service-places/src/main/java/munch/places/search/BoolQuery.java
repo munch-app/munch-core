@@ -109,7 +109,7 @@ public class BoolQuery {
             }
         }
 
-        // TODO price/ratings/hours
+        // Future TODO logic for price, ratings and hours
         return filterArray;
     }
 

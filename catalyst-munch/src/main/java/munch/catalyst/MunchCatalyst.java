@@ -7,6 +7,7 @@ import catalyst.data.DataClient;
 import com.google.inject.Inject;
 import munch.catalyst.clients.ArticleClient;
 import munch.catalyst.clients.GalleryClient;
+import munch.catalyst.clients.Place;
 import munch.catalyst.clients.PlaceClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,7 +70,8 @@ public class MunchCatalyst extends CatalystEngine {
         }
 
         // Put place data to place services
-        placeClient.put(builder.build());
+        Place place = builder.build(updatedDate);
+        if (place != null) placeClient.put(place);
 
         // Delete data that is not updated
         articleClient.deleteBefore(catalystId, updatedDate);

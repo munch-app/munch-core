@@ -265,7 +265,8 @@ public final class Place {
             @JsonProperty("fri")Fri,
             @JsonProperty("sat")Sat,
             @JsonProperty("sun")Sun,
-            @JsonProperty("ph")Ph
+            @JsonProperty("ph")Ph,
+            @JsonProperty("evePh")EvePh,
         }
 
         private Day day;
@@ -322,6 +323,26 @@ public final class Place {
 
         public void setClose(String close) {
             this.close = close;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Hour hour = (Hour) o;
+
+            if (day != hour.day) return false;
+            if (!open.equals(hour.open)) return false;
+            return close.equals(hour.close);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = day.hashCode();
+            result = 31 * result + open.hashCode();
+            result = 31 * result + close.hashCode();
+            return result;
         }
     }
 }

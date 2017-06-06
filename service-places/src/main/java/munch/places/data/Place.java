@@ -299,7 +299,8 @@ public final class Place {
             @JsonProperty("fri")Fri,
             @JsonProperty("sat")Sat,
             @JsonProperty("sun")Sun,
-            @JsonProperty("ph")Ph
+            @JsonProperty("ph")Ph,
+            @JsonProperty("evePh")EvePh,
         }
 
         private Day day;
