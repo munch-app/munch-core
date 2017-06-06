@@ -2,7 +2,6 @@ package munch.catalyst;
 
 import catalyst.data.CatalystLink;
 import catalyst.data.CorpusData;
-import com.google.common.collect.ImmutableSet;
 import munch.catalyst.clients.Place;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,19 +24,25 @@ public final class PlaceBuilder {
 
     private final PriceBuilder priceBuilder;
     private final HourBuilder hourBuilder;
+    private final ValueBuilder valueBuilder;
 
     private String id;
-    private Map<String, Map<String, Integer>> keyValueCount = new HashMap<>();
+    private Date earliestDate = new Date();
 
     public PlaceBuilder() {
         this.priceBuilder = new PriceBuilder();
         this.hourBuilder = new HourBuilder();
+        this.valueBuilder = new ValueBuilder();
     }
 
     public void consume(CatalystLink link) {
         if (id == null) id = link.getCatalystId();
         if (!id.equals(link.getCatalystId()))
             throw new IllegalArgumentException("CatalystLink catalystId is different, unable to build Place.");
+
+        // Find earliest date
+        Date createdDate = link.getData().getCreatedDate();
+        if (createdDate.compareTo(earliestDate) < 0) earliestDate = createdDate;
 
         for (CorpusData.Field field : link.getData().getFields()) {
             String key = field.getKey();
@@ -49,7 +54,7 @@ public final class PlaceBuilder {
             } else if (HourKeysPattern.matcher(key).matches()) {
                 hourBuilder.addHours(link, key, value);
             } else {
-                addValue(key, value);
+                valueBuilder.addValue(key, value);
             }
         }
     }
@@ -58,25 +63,32 @@ public final class PlaceBuilder {
      * @return created Place value with consumed links
      */
     @Nullable
-    public Place build(Date updatedDate) {
+    public Place collect(Date updatedDate) {
         Place place = new Place();
         place.setId(id);
 
-        // TODO build single values
-        // Get value with highest
-        // TODO move to single class
+        place.setName(valueBuilder.collectMax("Place.name"));
+        place.setPhone(valueBuilder.collectMax("Place.phone"));
+        place.setWebsite(valueBuilder.collectMax("Place.website"));
+        place.setDescription(valueBuilder.collectMax("Place.description"));
 
-        place.setPrice(priceBuilder.build());
-        // TODO location
+        place.setPrice(priceBuilder.collect());
+        Place.Location location = new Place.Location();
+        location.setAddress(valueBuilder.collectMax("Place.Location.address"));
+        // TODO location building
+        place.setLocation(location);
 
         List<String> tags = new ArrayList<>();
-        tags.addAll(keyValueCount.getOrDefault("Place.tag", Collections.emptyMap()).keySet());
-        tags.addAll(keyValueCount.getOrDefault("Place.type", Collections.emptyMap()).keySet());
+        tags.addAll(valueBuilder.collect("Place.tag"));
+        tags.addAll(valueBuilder.collect("Place.type"));
         place.setTags(tags);
-        place.setHours(hourBuilder.build());
+        place.setHours(hourBuilder.collect());
 
-        // TODO find earliest createdDate
+        place.setCreatedDate(earliestDate);
         place.setUpdatedDate(updatedDate);
+
+        // Return null if validation failed
+        if (!validate(place)) return null;
         return place;
     }
 
@@ -85,15 +97,36 @@ public final class PlaceBuilder {
         return true;
     }
 
-    /**
-     * Put key value in multiKeyValue map
-     *
-     * @param key   key
-     * @param value value
-     */
-    private void addValue(String key, String value) {
-        Map<String, Integer> values = keyValueCount.computeIfAbsent(key, v -> new HashMap<>());
-        values.compute(value, (v, c) -> c == null ? 1 : c + 1);
+    private class ValueBuilder {
+        private Map<String, Map<String, Integer>> keyValueCount = new HashMap<>();
+
+        /**
+         * Put key value in multiKeyValue map
+         *
+         * @param key   key
+         * @param value value
+         */
+        private void addValue(String key, String value) {
+            Map<String, Integer> values = keyValueCount.computeIfAbsent(key, v -> new HashMap<>());
+            values.compute(value, (v, c) -> c == null ? 1 : c + 1);
+        }
+
+        private Set<String> collect(String key) {
+            return keyValueCount.getOrDefault(key, Collections.emptyMap()).keySet();
+        }
+
+        /**
+         * @param key key to find
+         * @return null if no values found for key
+         */
+        @Nullable
+        private String collectMax(String key) {
+            Map<String, Integer> values = keyValueCount.getOrDefault(key, Collections.emptyMap());
+            return values.entrySet().stream()
+                    .max(Comparator.comparingInt(Map.Entry::getValue))
+                    .map(Map.Entry::getKey)
+                    .orElse(null);
+        }
     }
 
     private class PriceBuilder {
@@ -114,7 +147,7 @@ public final class PlaceBuilder {
 
         @Nullable
         @SuppressWarnings("ConstantConditions")
-        private Place.Price build() {
+        private Place.Price collect() {
             if (prices.isEmpty()) return null;
             double low = prices.stream().mapToDouble(Double::doubleValue).min().getAsDouble();
             double high = prices.stream().mapToDouble(Double::doubleValue).max().getAsDouble();
@@ -148,7 +181,7 @@ public final class PlaceBuilder {
             }
         }
 
-        private List<Place.Hour> build() {
+        private List<Place.Hour> collect() {
             // TODO build based on most grouped appearance
             return null;
         }

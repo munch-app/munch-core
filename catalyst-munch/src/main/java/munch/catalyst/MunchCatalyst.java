@@ -70,7 +70,7 @@ public class MunchCatalyst extends CatalystEngine {
         }
 
         // Put place data to place services
-        Place place = builder.build(updatedDate);
+        Place place = builder.collect(updatedDate);
         if (place != null) placeClient.put(place);
 
         // Delete data that is not updated
