@@ -83,7 +83,7 @@ public final class Place {
      *
      * @return phone number of the place
      */
-    @Column(nullable = false, length = 255)
+    @Column(nullable = true, length = 255)
     public String getPhone() {
         return phone;
     }
@@ -99,7 +99,7 @@ public final class Place {
      *
      * @return website url of place
      */
-    @Column(nullable = false, length = 500)
+    @Column(nullable = true, length = 500)
     public String getWebsite() {
         return website;
     }
@@ -114,7 +114,7 @@ public final class Place {
      *
      * @return description of place
      */
-    @Column(nullable = false, length = 2000)
+    @Column(nullable = true, length = 2000)
     public String getDescription() {
         return description;
     }

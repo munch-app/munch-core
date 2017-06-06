@@ -3,12 +3,14 @@ package munch.catalyst;
 import catalyst.data.CatalystLink;
 import catalyst.data.CorpusData;
 import munch.catalyst.clients.Place;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Created by: Fuxing
@@ -75,14 +77,25 @@ public final class PlaceBuilder {
         place.setPrice(priceBuilder.collect());
         Place.Location location = new Place.Location();
         location.setAddress(valueBuilder.collectMax("Place.Location.address"));
-        // TODO location building
+        location.setUnitNumber(valueBuilder.collectMax("Place.Location.unitNumber"));
+
+        location.setCity(valueBuilder.collectMax("Place.Location.city"));
+        location.setCountry(valueBuilder.collectMax("Place.Location.country"));
+
+        location.setPostal(valueBuilder.collectMax("Place.Location.postal"));
+        String latLng = valueBuilder.collectMax("Place.Location.latLng");
+        if (latLng != null) {
+            String[] split = latLng.split(",");
+            location.setLat(Double.parseDouble(split[0].trim()));
+            location.setLng(Double.parseDouble(split[1].trim()));
+        }
         place.setLocation(location);
 
         List<String> tags = new ArrayList<>();
         tags.addAll(valueBuilder.collect("Place.tag"));
         tags.addAll(valueBuilder.collect("Place.type"));
         place.setTags(tags);
-        place.setHours(hourBuilder.collect());
+        place.setHours(new ArrayList<>(hourBuilder.collect()));
 
         place.setCreatedDate(earliestDate);
         place.setUpdatedDate(updatedDate);
@@ -92,8 +105,35 @@ public final class PlaceBuilder {
         return place;
     }
 
+    /**
+     * Theses fields must not be blank:
+     * <p>
+     * place.id
+     * place.name
+     * <p>
+     * place.location.postal
+     * place.location.country
+     * place.location.lat
+     * place.location.lng
+     * <p>
+     * place.location.createdDate
+     * place.location.updatedDate
+     *
+     * @param place place to validate
+     * @return true = success
+     */
     private boolean validate(Place place) {
-        // TODO make sure has correct values
+        if (StringUtils.isBlank(place.getId())) return false;
+        if (StringUtils.isBlank(place.getName())) return false;
+
+        if (place.getLocation() == null) return false;
+        if (StringUtils.isBlank(place.getLocation().getPostal())) return false;
+        if (StringUtils.isBlank(place.getLocation().getCountry())) return false;
+        if (place.getLocation().getLat() == null) return false;
+        if (place.getLocation().getLng() == null) return false;
+
+        if (place.getCreatedDate() == null) return false;
+        if (place.getUpdatedDate() == null) return false;
         return true;
     }
 
@@ -159,7 +199,7 @@ public final class PlaceBuilder {
     }
 
     private class HourBuilder {
-        private Map<String, List<Place.Hour>> map = new HashMap<>();
+        private Map<String, Set<Place.Hour>> map = new HashMap<>();
 
         /**
          * Place.Hour.mon-sun, ph, evePh, raw
@@ -169,7 +209,7 @@ public final class PlaceBuilder {
          * @param value value is time range
          */
         private void addHours(CatalystLink link, String key, String value) {
-            List<Place.Hour> hours = map.computeIfAbsent(link.getData().getCorpusKey(), s -> new ArrayList<>());
+            Set<Place.Hour> hours = map.computeIfAbsent(link.getData().getCorpusKey(), s -> new HashSet<>());
             Place.Hour.Day day = parseDay(key);
             if (day != null) {
                 String[] range = value.split("-");
@@ -181,9 +221,31 @@ public final class PlaceBuilder {
             }
         }
 
-        private List<Place.Hour> collect() {
-            // TODO build based on most grouped appearance
-            return null;
+        /**
+         * Future: remove evePh and ph for better comparision
+         *
+         * @return get most appearance hour list
+         */
+        private Collection<Place.Hour> collect() {
+            if (map.isEmpty()) return Collections.emptyList();
+            Map<Set<Place.Hour>, Integer> values = new HashMap<>();
+            for (Set<Place.Hour> hours : map.values()) {
+                values.compute(hours, (h, i) -> i == null ? 1 : i + 1);
+            }
+            return values.entrySet().stream()
+                    .max(Comparator.comparingInt(Map.Entry::getValue))
+                    .map(Map.Entry::getKey)
+                    .orElse(null);
+        }
+
+        private boolean equals(Set<Place.Hour> left, Set<Place.Hour> right) {
+            left = left.stream().filter(hour -> isMonToSun(hour.getDay()))
+                    .collect(Collectors.toSet());
+
+            right = right.stream().filter(hour -> isMonToSun(hour.getDay()))
+                    .collect(Collectors.toSet());
+
+            return left.equals(right);
         }
 
         @Nullable
@@ -211,6 +273,27 @@ public final class PlaceBuilder {
                     logger.warn("Unable to parse day: {}", key);
                 case "Place.Hour.raw":
                     return null;
+            }
+        }
+
+        /**
+         * Check if day is mon - fri
+         *
+         * @param day day to check
+         * @return true if is
+         */
+        private boolean isMonToSun(Place.Hour.Day day) {
+            switch (day) {
+                case Mon:
+                case Tue:
+                case Wed:
+                case Thu:
+                case Fri:
+                case Sat:
+                case Sun:
+                    return true;
+                default:
+                    return false;
             }
         }
     }

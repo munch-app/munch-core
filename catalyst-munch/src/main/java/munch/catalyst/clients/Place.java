@@ -148,6 +148,23 @@ public final class Place {
         this.updatedDate = updatedDate;
     }
 
+    @Override
+    public String toString() {
+        return "Place{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                ", website='" + website + '\'' +
+                ", description='" + description + '\'' +
+                ", price=" + price +
+                ", location=" + location +
+                ", tags=" + tags +
+                ", hours=" + hours +
+                ", createdDate=" + createdDate +
+                ", updatedDate=" + updatedDate +
+                '}';
+    }
+
     /**
      * Location data of the place
      */
@@ -217,6 +234,19 @@ public final class Place {
         public void setLng(Double lng) {
             this.lng = lng;
         }
+
+        @Override
+        public String toString() {
+            return "Location{" +
+                    "address='" + address + '\'' +
+                    ", unitNumber='" + unitNumber + '\'' +
+                    ", city='" + city + '\'' +
+                    ", country='" + country + '\'' +
+                    ", postal='" + postal + '\'' +
+                    ", lat=" + lat +
+                    ", lng=" + lng +
+                    '}';
+        }
     }
 
     /**
@@ -250,6 +280,14 @@ public final class Place {
 
         public void setHighest(Double highest) {
             this.highest = highest;
+        }
+
+        @Override
+        public String toString() {
+            return "Price{" +
+                    "lowest=" + lowest +
+                    ", highest=" + highest +
+                    '}';
         }
     }
 
@@ -343,6 +381,15 @@ public final class Place {
             result = 31 * result + open.hashCode();
             result = 31 * result + close.hashCode();
             return result;
+        }
+
+        @Override
+        public String toString() {
+            return "Hour{" +
+                    "day=" + day +
+                    ", open='" + open + '\'' +
+                    ", close='" + close + '\'' +
+                    '}';
         }
     }
 }
