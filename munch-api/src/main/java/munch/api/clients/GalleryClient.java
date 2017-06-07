@@ -2,10 +2,12 @@ package munch.api.clients;
 
 import com.google.inject.Singleton;
 import com.typesafe.config.Config;
+import munch.api.data.Media;
 import munch.restful.client.RestfulClient;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.List;
 
 /**
  * Created by: Fuxing
@@ -21,5 +23,20 @@ public class GalleryClient extends RestfulClient {
         super(config.getString("gallery.url"));
     }
 
-    // TODO get and list method
+    /**
+     * Query Medias that belong to place id
+     *
+     * @param placeId place id
+     * @param from    from
+     * @param size    size
+     * @return List of Media
+     */
+    public List<Media> list(String placeId, int from, int size) {
+        return doGet("/places/{placeId}/gallery/list")
+                .path("placeId", placeId)
+                .queryString("from", from)
+                .queryString("size", size)
+                .hasMetaCodes(200)
+                .asDataList(Media.class);
+    }
 }

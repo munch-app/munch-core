@@ -45,7 +45,8 @@ public final class ArticleService implements JsonService {
         String placeId = call.pathString("placeId");
         int from = call.queryInt("from");
         int size = call.queryInt("size");
-        return provider.reduce(em -> em.createQuery("FROM Article WHERE placeId = :placeId", Article.class)
+        return provider.reduce(em -> em.createQuery("FROM Article WHERE " +
+                "placeId = :placeId ORDER BY createdDate desc", Article.class)
                 .setParameter("placeId", placeId)
                 .setFirstResult(from)
                 .setMaxResults(size)

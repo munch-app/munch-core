@@ -16,7 +16,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PlaceCollection {
 
-    // TODO better version of this?
+    // TODO better version of this?, what is this?
 
     private String name;
     private Filter filter;

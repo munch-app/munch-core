@@ -4,15 +4,13 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import munch.api.clients.ArticleClient;
+import munch.api.clients.GalleryClient;
 import munch.api.clients.PlaceClient;
-import munch.api.data.Media;
-import munch.api.data.Article;
-import munch.api.data.Place;
-import munch.api.data.PlaceCollection;
+import munch.api.data.*;
 import munch.restful.server.JsonCall;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -26,12 +24,16 @@ import java.util.function.Predicate;
 public class PlaceService extends AbstractService {
 
     private final PlaceClient placeClient;
+    private final ArticleClient articleClient;
+    private final GalleryClient galleryClient;
 
     private final Grouper grouper;
 
     @Inject
-    public PlaceService(PlaceClient placeClient, Grouper grouper) {
+    public PlaceService(PlaceClient placeClient, ArticleClient articleClient, GalleryClient galleryClient, Grouper grouper) {
         this.placeClient = placeClient;
+        this.articleClient = articleClient;
+        this.galleryClient = galleryClient;
         this.grouper = grouper;
     }
 
@@ -42,7 +44,6 @@ public class PlaceService extends AbstractService {
     @Override
     public void route() {
         PATH("/places", () -> {
-            // TODO plan the services
             GET("/suggest", this::suggest);
             POST("/search", this::search);
 
@@ -73,7 +74,6 @@ public class PlaceService extends AbstractService {
      * @return list of Place result
      */
     private List<PlaceCollection> search(JsonCall call) {
-        // TODO tag search
         ObjectNode node = call.bodyAsJson().deepCopy();
         node.put("size", 40);
         List<Place> places = placeClient.search(node);
@@ -86,20 +86,31 @@ public class PlaceService extends AbstractService {
      * @param call json call
      * @return Place or Null
      */
-    private Place get(JsonCall call) {
+    private PlaceDetail get(JsonCall call) {
         String placeId = call.pathString("placeId");
-        // TODO gallery & article included
-        return placeClient.get(placeId);
+        Place place = placeClient.get(placeId);
+        if (place == null) return null;
+
+        // PlaceDetail: query 10 articles and medias
+        PlaceDetail detail = new PlaceDetail();
+        detail.setPlace(place);
+        detail.setMedias(galleryClient.list(placeId, 0, 10));
+        detail.setArticles(articleClient.list(placeId, 0, 10));
+        return detail;
     }
 
     private List<Media> gallery(JsonCall call) {
         String placeId = call.pathString("placeId");
-        return Collections.emptyList();
+        int from = call.queryInt("from");
+        int size = call.queryInt("size");
+        return galleryClient.list(placeId, from, size);
     }
 
     private List<Article> articles(JsonCall call) {
         String placeId = call.pathString("placeId");
-        return Collections.emptyList();
+        int from = call.queryInt("from");
+        int size = call.queryInt("size");
+        return articleClient.list(placeId, from, size);
     }
 
     /**

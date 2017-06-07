@@ -43,7 +43,8 @@ public class GalleryService implements JsonService {
         String placeId = call.pathString("placeId");
         int from = call.queryInt("from");
         int size = call.queryInt("size");
-        return provider.reduce(em -> em.createQuery("FROM Media WHERE placeId = :placeId", Media.class)
+        return provider.reduce(em -> em.createQuery("FROM Media WHERE " +
+                "placeId = :placeId ORDER BY createdDate desc", Media.class)
                 .setParameter("placeId", placeId)
                 .setFirstResult(from)
                 .setMaxResults(size)
