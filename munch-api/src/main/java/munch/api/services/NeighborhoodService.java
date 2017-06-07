@@ -3,7 +3,7 @@ package munch.api.services;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.clients.GeocoderClient;
-import munch.api.struct.Neighborhood;
+import munch.api.data.Neighborhood;
 import munch.restful.server.JsonCall;
 
 import java.util.List;

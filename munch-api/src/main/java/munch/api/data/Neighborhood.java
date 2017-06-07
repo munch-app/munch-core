@@ -1,4 +1,4 @@
-package munch.api.struct;
+package munch.api.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -14,7 +14,6 @@ import org.wololo.geojson.Point;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class Neighborhood {
-
     private String id;
     private String name;
 

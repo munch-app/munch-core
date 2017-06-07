@@ -2,7 +2,7 @@ package munch.catalyst;
 
 import catalyst.data.CatalystLink;
 import catalyst.data.CorpusData;
-import munch.catalyst.clients.Place;
+import munch.catalyst.data.Place;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

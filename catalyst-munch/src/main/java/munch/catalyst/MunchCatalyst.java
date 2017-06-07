@@ -7,7 +7,7 @@ import catalyst.data.DataClient;
 import com.google.inject.Inject;
 import munch.catalyst.clients.ArticleClient;
 import munch.catalyst.clients.GalleryClient;
-import munch.catalyst.clients.Place;
+import munch.catalyst.data.Place;
 import munch.catalyst.clients.PlaceClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

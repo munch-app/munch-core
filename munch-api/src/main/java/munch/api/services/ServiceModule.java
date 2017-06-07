@@ -2,7 +2,6 @@ package munch.api.services;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.multibindings.Multibinder;
-import munch.api.services.places.PlaceService;
 import munch.restful.server.RestfulService;
 
 /**

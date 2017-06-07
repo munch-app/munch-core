@@ -1,6 +1,7 @@
 package munch.catalyst.clients;
 
 import com.typesafe.config.Config;
+import munch.catalyst.data.Place;
 import munch.restful.client.RestfulClient;
 
 import javax.inject.Inject;

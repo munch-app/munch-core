@@ -1,4 +1,4 @@
-package munch.catalyst.clients;
+package munch.api.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;

@@ -13,4 +13,4 @@ dependencies {
     compile group: 'com.thedeanda', name: 'lorem', version: '2.1'
 }
 
-mainClassName = 'munch.api.ApiServer'
+mainClassName = 'munch.api.ApiModule'

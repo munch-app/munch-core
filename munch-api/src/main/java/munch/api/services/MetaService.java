@@ -1,8 +1,6 @@
 package munch.api.services;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Singleton;
-import munch.restful.server.JsonCall;
 
 /**
  * Created by: Fuxing
@@ -16,11 +14,8 @@ public class MetaService extends AbstractService {
     @Override
     public void route() {
         PATH("/meta", () -> {
-            GET("/version", this::version);
+            // TODO for use for alpha/beta channel testing
         });
     }
 
-    public JsonNode version(JsonCall call) {
-        return null;
-    }
 }

@@ -1,7 +1,7 @@
 package munch.api.clients;
 
 import com.typesafe.config.Config;
-import munch.api.struct.Neighborhood;
+import munch.api.data.Neighborhood;
 import munch.restful.client.RestfulClient;
 import munch.restful.client.exception.StructuredException;
 

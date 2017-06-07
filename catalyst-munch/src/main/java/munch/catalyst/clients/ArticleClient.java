@@ -5,6 +5,7 @@ import catalyst.data.CorpusData;
 import catalyst.utils.FieldWrapper;
 import com.google.inject.Singleton;
 import com.typesafe.config.Config;
+import munch.catalyst.data.Article;
 import munch.restful.client.RestfulClient;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

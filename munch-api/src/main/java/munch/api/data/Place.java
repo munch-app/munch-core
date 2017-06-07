@@ -1,4 +1,4 @@
-package munch.api.struct;
+package munch.api.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -17,7 +17,6 @@ import java.util.Set;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Place {
-
     private String id;
 
     // Basic
@@ -31,14 +30,8 @@ public class Place {
     private Location location;
 
     // Many
-    private Set<String> tags;
-    private Set<Hour> hours;
-
-    // Data linked to place
-    private List<LinkedImage> linkedImages;
-
-    // External resolved data
-    private List<Image> images;
+    private List<String> tags;
+    private List<Hour> hours;
 
     // Dates
     private Date createdDate;
@@ -108,25 +101,6 @@ public class Place {
         this.description = description;
     }
 
-    public Set<String> getTags() {
-        return tags;
-    }
-
-    public void setTags(Set<String> tags) {
-        this.tags = tags;
-    }
-
-    /**
-     * @return opening hours of place
-     */
-    public Set<Hour> getHours() {
-        return hours;
-    }
-
-    public void setHours(Set<Hour> hours) {
-        this.hours = hours;
-    }
-
     public Price getPrice() {
         return price;
     }
@@ -135,9 +109,6 @@ public class Place {
         this.price = price;
     }
 
-    /**
-     * @return location of place
-     */
     public Location getLocation() {
         return location;
     }
@@ -146,33 +117,22 @@ public class Place {
         this.location = location;
     }
 
-    /**
-     * For egress, set this to null before sending it out
-     *
-     * @return images linked to the place
-     */
-    public List<LinkedImage> getLinkedImages() {
-        return linkedImages;
+    public List<String> getTags() {
+        return tags;
     }
 
-    public void setLinkedImages(List<LinkedImage> linkedImages) {
-        this.linkedImages = linkedImages;
+    public void setTags(List<String> tags) {
+        this.tags = tags;
     }
 
-    /**
-     * @return external resources, to be resolved
-     */
-    public List<Image> getImages() {
-        return images;
+    public List<Hour> getHours() {
+        return hours;
     }
 
-    public void setImages(List<Image> images) {
-        this.images = images;
+    public void setHours(List<Hour> hours) {
+        this.hours = hours;
     }
 
-    /**
-     * @return created date from catalyst group
-     */
     public Date getCreatedDate() {
         return createdDate;
     }
@@ -181,9 +141,6 @@ public class Place {
         this.createdDate = createdDate;
     }
 
-    /**
-     * @return updated date from catalyst group
-     */
     public Date getUpdatedDate() {
         return updatedDate;
     }
@@ -192,11 +149,27 @@ public class Place {
         this.updatedDate = updatedDate;
     }
 
+    @Override
+    public String toString() {
+        return "Place{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                ", website='" + website + '\'' +
+                ", description='" + description + '\'' +
+                ", price=" + price +
+                ", location=" + location +
+                ", tags=" + tags +
+                ", hours=" + hours +
+                ", createdDate=" + createdDate +
+                ", updatedDate=" + updatedDate +
+                '}';
+    }
+
     /**
      * Location data of the place
      */
     public static final class Location {
-
         private String address;
         private String unitNumber;
 
@@ -262,13 +235,25 @@ public class Place {
         public void setLng(Double lng) {
             this.lng = lng;
         }
+
+        @Override
+        public String toString() {
+            return "Location{" +
+                    "address='" + address + '\'' +
+                    ", unitNumber='" + unitNumber + '\'' +
+                    ", city='" + city + '\'' +
+                    ", country='" + country + '\'' +
+                    ", postal='" + postal + '\'' +
+                    ", lat=" + lat +
+                    ", lng=" + lng +
+                    '}';
+        }
     }
 
     /**
      * Price data of the place
      */
     public static final class Price {
-
         private Double lowest;
         private Double highest;
 
@@ -297,13 +282,20 @@ public class Place {
         public void setHighest(Double highest) {
             this.highest = highest;
         }
+
+        @Override
+        public String toString() {
+            return "Price{" +
+                    "lowest=" + lowest +
+                    ", highest=" + highest +
+                    '}';
+        }
     }
 
     /**
      * Opening hour of the place
      */
     public static final class Hour {
-
         public enum Day {
             @JsonProperty("mon")Mon,
             @JsonProperty("tue")Tue,
@@ -312,7 +304,8 @@ public class Place {
             @JsonProperty("fri")Fri,
             @JsonProperty("sat")Sat,
             @JsonProperty("sun")Sun,
-            @JsonProperty("ph")Ph
+            @JsonProperty("ph")Ph,
+            @JsonProperty("evePh")EvePh,
         }
 
         private Day day;
@@ -370,60 +363,34 @@ public class Place {
         public void setClose(String close) {
             this.close = close;
         }
-    }
 
-    /**
-     * Image linked to the place
-     */
-    public static final class LinkedImage {
-        private String imageKey;
-        private Date createdDate;
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
 
-        private String sourceName;
-        private String sourceId;
+            Hour hour = (Hour) o;
 
-        /**
-         * @return imageKey stored in munch-images service
-         */
-        public String getImageKey() {
-            return imageKey;
+            if (day != hour.day) return false;
+            if (!open.equals(hour.open)) return false;
+            return close.equals(hour.close);
         }
 
-        public void setImageKey(String imageKey) {
-            this.imageKey = imageKey;
+        @Override
+        public int hashCode() {
+            int result = day.hashCode();
+            result = 31 * result + open.hashCode();
+            result = 31 * result + close.hashCode();
+            return result;
         }
 
-        /**
-         * @return date for which linked image is created
-         */
-        public Date getCreatedDate() {
-            return createdDate;
-        }
-
-        public void setCreatedDate(Date createdDate) {
-            this.createdDate = createdDate;
-        }
-
-        /**
-         * @return source provider name for the image
-         */
-        public String getSourceName() {
-            return sourceName;
-        }
-
-        public void setSourceName(String sourceName) {
-            this.sourceName = sourceName;
-        }
-
-        /**
-         * @return source provider id for the image
-         */
-        public String getSourceId() {
-            return sourceId;
-        }
-
-        public void setSourceId(String sourceId) {
-            this.sourceId = sourceId;
+        @Override
+        public String toString() {
+            return "Hour{" +
+                    "day=" + day +
+                    ", open='" + open + '\'' +
+                    ", close='" + close + '\'' +
+                    '}';
         }
     }
 
