@@ -1,6 +1,5 @@
 package munch.catalyst.clients;
 
-import catalyst.data.CatalystLink;
 import catalyst.data.CorpusData;
 import catalyst.utils.FieldWrapper;
 import com.google.inject.Singleton;
@@ -34,9 +33,9 @@ public class ArticleClient extends RestfulClient {
         super(config.getString("articles.url"));
     }
 
-    public void put(CatalystLink link, Date updatedDate) {
+    public void put(CorpusData data, Date updatedDate) {
         try {
-            Article article = create(link, updatedDate);
+            Article article = create(data, updatedDate);
             doPut("/places/{placeId}/articles/put")
                     .path("placeId", article.getPlaceId())
                     .body(article)
@@ -46,12 +45,12 @@ public class ArticleClient extends RestfulClient {
         }
     }
 
-    private Article create(CatalystLink link, Date updatedDate) {
-        FieldWrapper wrapper = new FieldWrapper(link);
+    private Article create(CorpusData data, Date updatedDate) {
+        FieldWrapper wrapper = new FieldWrapper(data);
 
         Article article = new Article();
-        article.setPlaceId(link.getCatalystId());
-        article.setArticleId(link.getData().getCorpusKey());
+        article.setPlaceId(data.getCatalystId());
+        article.setArticleId(data.getCorpusKey());
 
         article.setBrand(wrapper.getValue("Article.brand", NullSupplier));
         article.setUrl(wrapper.getValue("Article.url", NullSupplier));
@@ -67,7 +66,7 @@ public class ArticleClient extends RestfulClient {
                 .collect(Collectors.toList());
         article.setImages(images);
 
-        article.setCreatedDate(link.getData().getCreatedDate());
+        article.setCreatedDate(data.getCreatedDate());
         article.setUpdatedDate(updatedDate);
         return article;
     }

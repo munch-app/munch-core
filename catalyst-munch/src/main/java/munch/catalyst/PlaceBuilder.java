@@ -1,6 +1,5 @@
 package munch.catalyst;
 
-import catalyst.data.CatalystLink;
 import catalyst.data.CorpusData;
 import munch.catalyst.data.Place;
 import org.apache.commons.lang3.StringUtils;
@@ -37,16 +36,16 @@ public final class PlaceBuilder {
         this.valueBuilder = new ValueBuilder();
     }
 
-    public void consume(CatalystLink link) {
-        if (id == null) id = link.getCatalystId();
-        if (!id.equals(link.getCatalystId()))
+    public void consume(CorpusData data) {
+        if (id == null) id = data.getCatalystId();
+        if (!id.equals(data.getCatalystId()))
             throw new IllegalArgumentException("CatalystLink catalystId is different, unable to build Place.");
 
         // Find earliest date
-        Date createdDate = link.getData().getCreatedDate();
+        Date createdDate = data.getCreatedDate();
         if (createdDate.compareTo(earliestDate) < 0) earliestDate = createdDate;
 
-        for (CorpusData.Field field : link.getData().getFields()) {
+        for (CorpusData.Field field : data.getFields()) {
             String key = field.getKey();
             String value = field.getValue();
 
@@ -54,7 +53,7 @@ public final class PlaceBuilder {
             if (PriceKey.equals(key)) {
                 priceBuilder.addPrices(value);
             } else if (HourKeysPattern.matcher(key).matches()) {
-                hourBuilder.addHours(link, key, value);
+                hourBuilder.addHours(data, key, value);
             } else {
                 valueBuilder.addValue(key, value);
             }
@@ -204,12 +203,12 @@ public final class PlaceBuilder {
         /**
          * Place.Hour.mon-sun, ph, evePh, raw
          *
-         * @param link  link that provided hour data
+         * @param data  link that provided hour data
          * @param key   key is day of hour
          * @param value value is time range
          */
-        private void addHours(CatalystLink link, String key, String value) {
-            Set<Place.Hour> hours = map.computeIfAbsent(link.getData().getCorpusKey(), s -> new HashSet<>());
+        private void addHours(CorpusData data, String key, String value) {
+            Set<Place.Hour> hours = map.computeIfAbsent(data.getCorpusKey(), s -> new HashSet<>());
             Place.Hour.Day day = parseDay(key);
             if (day != null) {
                 String[] range = value.split("-");

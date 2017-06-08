@@ -2,13 +2,13 @@ package munch.catalyst;
 
 import catalyst.CatalystEngine;
 import catalyst.data.CatalystClient;
-import catalyst.data.CatalystLink;
+import catalyst.data.CorpusData;
 import catalyst.data.DataClient;
 import com.google.inject.Inject;
 import munch.catalyst.clients.ArticleClient;
 import munch.catalyst.clients.GalleryClient;
-import munch.catalyst.data.Place;
 import munch.catalyst.clients.PlaceClient;
+import munch.catalyst.data.Place;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,8 +53,8 @@ public class MunchCatalyst extends CatalystEngine {
 
     @Override
     protected void process(String catalystId) {
-        List<CatalystLink> collected = new ArrayList<>();
-        dataClient.getLinks(catalystId).forEachRemaining(collected::add);
+        List<CorpusData> collected = new ArrayList<>();
+        dataClient.getLinked(catalystId).forEachRemaining(collected::add);
 
         // Failed validation: will be deleted at postCycle
         if (!validate(collected)) return;
@@ -64,15 +64,15 @@ public class MunchCatalyst extends CatalystEngine {
         Date updatedDate = new Timestamp(System.currentTimeMillis());
 
         // Consume for Article & Gallery and Place builder
-        for (CatalystLink link : collected) {
-            consume(link, updatedDate);
-            builder.consume(link);
+        for (CorpusData data : collected) {
+            consume(data, updatedDate);
+            builder.consume(data);
         }
 
         // Put place data to place services
         Place place = builder.collect(updatedDate);
         if (place != null) placeClient.put(place);
-        else logger.warn("Place unable to put due to incomplete: {}", place);
+        else logger.warn("Place unable to put due to incomplete corpus data: {}", collected);
 
         // Delete data that is not updated
         articleClient.deleteBefore(catalystId, updatedDate);
@@ -88,28 +88,28 @@ public class MunchCatalyst extends CatalystEngine {
      * @param links links
      * @return true = validated, false = cannot be a munch place
      */
-    private boolean validate(List<CatalystLink> links) {
+    private boolean validate(List<CorpusData> links) {
         // Validate has at least 1 Article written about place
-        boolean hasArticle = links.stream().anyMatch(link ->
-                ArticleCorpusName.matcher(link.getData().getCorpusName()).matches());
+        boolean hasArticle = links.stream().anyMatch(data ->
+                ArticleCorpusName.matcher(data.getCorpusName()).matches());
         if (!hasArticle) return false;
 
         // Validate has NeaRecord
-        return links.stream().anyMatch(l -> l.getData().getCorpusName().equals("Sg.Nea.TrackRecord"));
+        return links.stream().anyMatch(l -> l.getCorpusName().equals("Sg.Nea.TrackRecord"));
     }
 
     /**
      * Consume special catalyst link
      * Client will be in charge of structuring data for service.
      *
-     * @param link link
+     * @param data link
      */
-    private void consume(CatalystLink link, Date updatedDate) {
-        String name = link.getData().getCorpusName();
+    private void consume(CorpusData data, Date updatedDate) {
+        String name = data.getCorpusName();
         if (GalleryCorpusName.equals(name)) {
-            galleryClient.put(link, updatedDate);
+            galleryClient.put(data, updatedDate);
         } else if (ArticleCorpusName.matcher(name).matches()) {
-            articleClient.put(link, updatedDate);
+            articleClient.put(data, updatedDate);
         }
     }
 

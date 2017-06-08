@@ -1,6 +1,5 @@
 package munch.catalyst.clients;
 
-import catalyst.data.CatalystLink;
 import catalyst.data.CorpusData;
 import catalyst.utils.FieldWrapper;
 import com.google.inject.Singleton;
@@ -34,9 +33,9 @@ public class GalleryClient extends RestfulClient {
         super(config.getString("gallery.url"));
     }
 
-    public void put(CatalystLink link, Date updatedDate) {
+    public void put(CorpusData data, Date updatedDate) {
         try {
-            Media media = create(link, updatedDate);
+            Media media = create(data, updatedDate);
             doPut("/places/{placeId}/gallery/{mediaId}")
                     .path("placeId", media.getPlaceId())
                     .path("mediaId", media.getMediaId())
@@ -47,11 +46,11 @@ public class GalleryClient extends RestfulClient {
         }
     }
 
-    private Media create(CatalystLink link, Date updatedDate) {
-        FieldWrapper wrapper = new FieldWrapper(link);
+    private Media create(CorpusData data, Date updatedDate) {
+        FieldWrapper wrapper = new FieldWrapper(data);
 
         Media media = new Media();
-        media.setPlaceId(link.getCatalystId());
+        media.setPlaceId(data.getCatalystId());
         media.setMediaId(wrapper.getValue("Instagram.Media.mediaId", NullSupplier));
         media.setCaption(wrapper.getValue("Instagram.Media.caption", NullSupplier));
 
@@ -72,7 +71,7 @@ public class GalleryClient extends RestfulClient {
         media.setImages(images);
         if (images.size() < 3) throw new NullPointerException("Images not all found.");
 
-        media.setCreatedDate(link.getData().getCreatedDate());
+        media.setCreatedDate(data.getCreatedDate());
         media.setUpdatedDate(updatedDate);
         return media;
     }
