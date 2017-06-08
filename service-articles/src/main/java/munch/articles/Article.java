@@ -144,9 +144,9 @@ public final class Article {
         }
     }
 
-    static class UserType {
-        static class Images extends PojoUserType<ArticleImage[]> {
-            Images() {
+    public static class UserType {
+        public static class Images extends PojoUserType<ArticleImage[]> {
+            public Images() {
                 super(ArticleImage[].class);
             }
         }

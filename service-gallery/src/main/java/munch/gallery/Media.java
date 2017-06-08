@@ -175,18 +175,18 @@ public final class Media {
     /**
      * Blueprint of Media object
      */
-    static class UserType {
-        static class User extends PojoUserType<User> {
-            User() {
+    public static class UserType {
+        public static class User extends PojoUserType<User> {
+            public User() {
                 super(User.class);
             }
         }
 
-        static class ImageMap extends HashMap<String, Image> {
+        public static class ImageMap extends HashMap<String, Image> {
         }
 
-        static class Images extends PojoUserType<ImageMap> {
-            Images() {
+        public static class Images extends PojoUserType<ImageMap> {
+            public Images() {
                 super(ImageMap.class);
             }
         }
