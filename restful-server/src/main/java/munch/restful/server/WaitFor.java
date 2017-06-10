@@ -1,6 +1,7 @@
 package munch.restful.server;
 
-import org.apache.commons.lang3.time.StopWatch;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -14,7 +15,8 @@ import java.time.Duration;
  * Time: 10:55 PM
  * Project: munch-core
  */
-public class WaitFor {
+public final class WaitFor {
+    private static final Logger logger = LoggerFactory.getLogger(WaitFor.class);
 
     /**
      * Wait for host until given timeout
@@ -24,6 +26,7 @@ public class WaitFor {
      * @param timeout timeout in duration
      */
     public static void host(String host, int port, Duration timeout) {
+        logger.info("Waiting for {}:{} with timeout duration of {}", host, port, timeout);
         try {
             if (!ping(host, port, (int) timeout.toMillis())) {
                 throw new RuntimeException(host + ":" + port + " is unreachable.");
@@ -40,6 +43,7 @@ public class WaitFor {
      * @param timeout timeout in duration
      */
     public static void host(String url, Duration timeout) {
+        logger.info("Waiting for {} with timeout duration of {}", url, timeout);
         try {
             URI uri = new URI(url);
             if (!ping(uri.getHost(), uri.getPort(), (int) timeout.toMillis())) {
