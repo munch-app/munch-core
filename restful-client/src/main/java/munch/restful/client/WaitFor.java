@@ -56,13 +56,14 @@ public final class WaitFor {
     /**
      * Keep trying with allowed duration
      */
-    private static boolean ping(String host, int port, int timeout) {
+    private static boolean ping(String host, int port, int timeout) throws InterruptedException {
         long startMillis = System.currentTimeMillis();
         while (System.currentTimeMillis() < startMillis + timeout) {
             try (Socket socket = new Socket()) {
                 socket.connect(new InetSocketAddress(host, port), timeout);
                 return true;
             } catch (IOException ignored) {
+                Thread.sleep(1000);
             }
         }
         return false;
