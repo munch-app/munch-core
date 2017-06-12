@@ -52,7 +52,7 @@ allprojects {
     configurations.all { resolutionStrategy.cacheChangingModulesFor 0, 'seconds' }
 
     dependencies {
-        testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.0.0-M3'
+        testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.0.0-M4'
         testCompile group: 'org.easytesting', name: 'fest-assert', version: '1.4'
 
         compile group: 'com.google.code.findbugs', name: 'annotations', version: '3.0.1u2'

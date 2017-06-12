@@ -16,4 +16,9 @@ class WaitForTest {
     void test() throws Exception {
         WaitFor.host("jdbc:postgresql://localhost:5444/postgres".substring(5), Duration.ofSeconds(10));
     }
+
+    @Test
+    void url() throws Exception {
+        WaitFor.host("http://internal-corpus-service-data-970545893.ap-southeast-1.elb.amazonaws.com", Duration.ofSeconds(10));
+    }
 }

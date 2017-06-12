@@ -38,6 +38,7 @@ public final class WaitFor {
 
     /**
      * Wait for host until given timeout
+     * Port is required in the url
      *
      * @param url     to wait for
      * @param timeout timeout in duration
