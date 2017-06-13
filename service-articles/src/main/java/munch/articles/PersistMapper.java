@@ -31,7 +31,11 @@ public final class PersistMapper {
 
     private final ImageClient imageClient;
     private final TransactionProvider provider;
-    private final Retriable retriable = new ExceptionRetriable(60, Duration.ofSeconds(2).toMillis(), ForbiddenError.class);
+    private final Retriable retriable = new ExceptionRetriable(6, Duration.ofSeconds(2).toMillis(), ForbiddenError.class) {
+        @Override
+        protected void log(int executionCount, Throwable exception) {
+        }
+    };
 
     @Inject
     public PersistMapper(ImageClient imageClient, TransactionProvider provider) {
@@ -138,7 +142,7 @@ public final class PersistMapper {
                     return imageClient.put(inputStream, url.getPath());
                 } catch (IOException ioe) {
                     if (ioe.getMessage().contains("Server returned HTTP response code: 403"))
-                        throw new ForbiddenError();
+                        throw new ForbiddenError(ioe.getMessage());
                     throw ioe;
                 }
             });
@@ -149,5 +153,8 @@ public final class PersistMapper {
     }
 
     private static class ForbiddenError extends IOException {
+        public ForbiddenError(String message) {
+            super(message);
+        }
     }
 }
