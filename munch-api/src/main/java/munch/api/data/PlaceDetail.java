@@ -16,6 +16,7 @@ public class PlaceDetail {
     private Place place;
     private List<Media> medias;
     private List<Article> articles;
+    // Future: reviews
 
     public Place getPlace() {
         return place;

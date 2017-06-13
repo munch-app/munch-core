@@ -1,10 +1,33 @@
 version: '2'
 
 services:
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:5.2.2
+  # Corpus Proxy
+  corpus-db:
+    image: postgres:9-alpine
     environment:
-      ES_JAVA_OPTS: "-Xms1g -Xmx1g"
+      - POSTGRES_PASSWORD=K851xsSffyTJP3e1M7rd
+  corpus-data:
+    image: corpus-catalyst/service-data
+    environment:
+      - DATABASE_URL=jdbc:postgresql://corpus-db:5432/postgres
+      - DATABASE_USERNAME=postgres
+      - DATABASE_PASSWORD=K851xsSffyTJP3e1M7rd
+      - DATABASE_AUTO_CREATE=true
+  corpus-proxy:
+    image: corpus-catalyst/corpus-proxy:latest
+    environment:
+      - SERVICE_DATA_URL=http://corpus-data:8000
+
+  # Munch Services of Services
+  munch-db:
+    image: postgres:9-alpine
+    environment:
+      - POSTGRES_PASSWORD=K851xsSffyTJP3e1M7rd
+  munch-es:
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.4.1
+    environment:
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+      bootstrap.memory_lock: "true"
       xpack.security.enabled: "false"
       xpack.monitoring.enabled: "false"
       xpack.graph.enabled: "false"
@@ -13,37 +36,58 @@ services:
       memlock:
         soft: -1
         hard: -1
-      nofile:
-        soft: 65536
-        hard: 65536
     mem_limit: 1g
-    cap_add:
-      - IPC_LOCK
     ports:
       - 9200:9200
-  postgres:
-    image: postgres:9-alpine
+  thumbor:
+    image: apsl/thumbor
+  fake-s3:
+    image: lphoward/fake-s3
+    ports:
+      - "4569:4569"
+
+  # Munch Services
+  images:
+    image: munch-core/service-images
     environment:
-      - POSTGRES_PASSWORD=K851xsSffyTJP3e1M7rd
+      - IMAGE_PERSIST_PROVIDER=fake
+
+      - IMAGE_THUMBOR_ENDPOINT=http://thumbor:8000
+      - IMAGE_FAKE_S3_ENDPOINT=http://fake-s3:4569
+      - IMAGE_FAKE_S3_PUBLIC_ENDPOINT=http://localhost:4569
   places:
-    image: munch-core/munch-service-places:latest
+    image: munch-core/service-places
     environment:
-      - DOCUMENT_DATABASE_URL=jdbc:postgresql://postgres:5432/postgres
+      - DOCUMENT_DATABASE_URL=jdbc:postgresql://munch-db:5432/postgres
       - DOCUMENT_DATABASE_USERNAME=postgres
       - DOCUMENT_DATABASE_PASSWORD=K851xsSffyTJP3e1M7rd
       - DOCUMENT_DATABASE_AUTO_CREATE=true
-
-      - SEARCH_DATABASE_HOSTNAME=elasticsearch
-    links:
-      - postgres
-      - elasticsearch
-  catalyst:
-    image: munch-core/munch-catalyst:latest
+      - SEARCH_DATABASE_HOSTNAME=munch-es
+  gallery:
+    image: munch-core/service-gallery
     environment:
-      - CATALYST_URL=http://catalyst.munch.space:8201
-      - CATALYST_USER=catalyst
-      - CATALYST_PASSWORD=bq1Enf1p32pTEvqzLz9OrtXtXsEWFhU5cO9Eoww9
+      - DATABASE_URL=jdbc:postgresql://munch-db:5432/postgres
+      - DATABASE_USERNAME=postgres
+      - DATABASE_PASSWORD=K851xsSffyTJP3e1M7rd
+      - DATABASE_AUTO_CREATE=true
+  articles:
+    image: munch-core/service-articles
+    environment:
+      - DATABASE_URL=jdbc:postgresql://munch-db:5432/postgres
+      - DATABASE_USERNAME=postgres
+      - DATABASE_PASSWORD=K851xsSffyTJP3e1M7rd
+      - DATABASE_AUTO_CREATE=true
+      - MUNCH_SERVICE_IMAGES_URL=http://images:8000
 
+
+  # Munch Catalyst
+  munch-catalyst:
+    image: munch-core/catalyst-munch:latest
+    environment:
+      - SERVICE_DATA_URL=http://corpus-data:8000
       - MUNCH_SERVICE_PLACES_URL=http://places:8000
-    links:
-      - places
+      - MUNCH_SERVICE_ARTICLES_URL=http://articles:8000
+      - MUNCH_SERVICE_GALLERY_URL=http://gallery:8000
+
+  # Munch Api
+
