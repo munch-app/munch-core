@@ -1,14 +1,13 @@
 package munch.catalyst.clients;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
+import com.google.inject.name.Names;
 import com.mashape.unirest.http.Unirest;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import munch.restful.client.WaitFor;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import java.time.Duration;
 
 /**
@@ -25,18 +24,22 @@ public class ClientModule extends AbstractModule {
     protected void configure() {
         requestInjection(this);
         Unirest.setTimeouts(60000, 600000);
+
+        Config services = ConfigFactory.load().getConfig("services");
+
+        bind(String.class).annotatedWith(Names.named("services.places.url"))
+                .toInstance(services.getString("places.url"));
+        bind(String.class).annotatedWith(Names.named("services.articles.url"))
+                .toInstance(services.getString("articles.url"));
+        bind(String.class).annotatedWith(Names.named("services.gallery.url"))
+                .toInstance(services.getString("gallery.url"));
+
     }
 
     @Inject
-    void waitFor(@Named("services") Config services) {
-        WaitFor.host(services.getString("places.url"), Duration.ofSeconds(60));
-        WaitFor.host(services.getString("articles.url"), Duration.ofSeconds(60));
-        WaitFor.host(services.getString("gallery.url"), Duration.ofSeconds(60));
-    }
-
-    @Provides
-    @Named("services")
-    Config provideConfig() {
-        return ConfigFactory.load().getConfig("services");
+    void waitFor(Config config) {
+        WaitFor.host(config.getString("services.places.url"), Duration.ofSeconds(60));
+        WaitFor.host(config.getString("services.articles.url"), Duration.ofSeconds(60));
+        WaitFor.host(config.getString("services.gallery.url"), Duration.ofSeconds(60));
     }
 }

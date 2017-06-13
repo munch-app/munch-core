@@ -26,14 +26,14 @@ import java.util.Map;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @TypeDefs(value = {
-        @TypeDef(name = "user", typeClass = Media.UserType.User.class),
+        @TypeDef(name = "profile", typeClass = Media.UserType.User.class),
         @TypeDef(name = "images", typeClass = Media.UserType.Images.class)
 })
 public final class Media {
     private String placeId;
     private String mediaId;
 
-    private User user;
+    private Profile profile;
     private String caption;
     private Map<String, Image> images;
 
@@ -97,13 +97,13 @@ public final class Media {
     }
 
     @Column(nullable = false)
-    @Type(type = "user")
-    public User getUser() {
-        return user;
+    @Type(type = "profile")
+    public Profile getProfile() {
+        return profile;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
 
     /**
@@ -142,7 +142,7 @@ public final class Media {
     /**
      * Owner of the media
      */
-    public static class User {
+    public static class Profile {
         private String userId;
         private String username;
         private String pictureUrl;

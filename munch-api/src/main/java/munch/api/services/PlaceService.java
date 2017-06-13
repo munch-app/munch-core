@@ -44,8 +44,9 @@ public class PlaceService extends AbstractService {
     @Override
     public void route() {
         PATH("/places", () -> {
-            GET("/suggest", this::suggest);
             POST("/search", this::search);
+            POST("/suggest", this::suggest);
+            POST("/collection/search", this::collectionSearch);
 
             // Single place endpoint
             PATH("/:placeId", () -> {
@@ -58,6 +59,18 @@ public class PlaceService extends AbstractService {
     }
 
     /**
+     * @param call json call
+     * @return list of Place result
+     */
+    private List<PlaceCollection> search(JsonCall call) {
+        // TODO Query Object and Search with List of Collection
+        ObjectNode node = call.bodyAsJson().deepCopy();
+        node.put("size", 40);
+        List<Place> places = placeClient.search(node);
+        return grouper.parse(places);
+    }
+
+    /**
      * ?text={String}&size={Int}
      *
      * @param call json call
@@ -66,19 +79,20 @@ public class PlaceService extends AbstractService {
     private List<Place> suggest(JsonCall call) {
         int size = call.queryInt("size");
         String text = call.queryString("text");
+
+        // TODO Query Object returns suggestion List<Place>
         return placeClient.suggest(size, text);
     }
 
-    /**
-     * @param call json call
-     * @return list of Place result
-     */
-    private List<PlaceCollection> search(JsonCall call) {
-        ObjectNode node = call.bodyAsJson().deepCopy();
-        node.put("size", 40);
-        List<Place> places = placeClient.search(node);
-        return grouper.parse(places);
+
+    private List<Place> collectionSearch(JsonCall call) {
+        int from = call.queryInt("from");
+        int size = call.queryInt("size");
+
+        // TODO Query Object returns searched List<Place>
+        return null;
     }
+
 
     /**
      * GET = /:placeId

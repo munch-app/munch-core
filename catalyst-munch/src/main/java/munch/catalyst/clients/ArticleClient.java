@@ -3,7 +3,6 @@ package munch.catalyst.clients;
 import catalyst.data.CorpusData;
 import catalyst.utils.FieldWrapper;
 import com.google.inject.Singleton;
-import com.typesafe.config.Config;
 import munch.catalyst.data.Article;
 import munch.restful.client.RestfulClient;
 import org.apache.commons.lang3.StringUtils;
@@ -29,14 +28,14 @@ public class ArticleClient extends RestfulClient {
     private static final Supplier<NullPointerException> NullSupplier = () -> new NullPointerException("Article");
 
     @Inject
-    public ArticleClient(@Named("services") Config config) {
-        super(config.getString("articles.url"));
+    public ArticleClient(@Named("services.articles.url") String url) {
+        super(url);
     }
 
     public void put(CorpusData data, Date updatedDate) {
         try {
             Article article = create(data, updatedDate);
-            doPut("/places/{placeId}/articles/put")
+            doPost("/places/{placeId}/articles/put")
                     .path("placeId", article.getPlaceId())
                     .body(article)
                     .hasMetaCodes(200);

@@ -89,6 +89,9 @@ public class MunchCatalyst extends CatalystEngine {
      * @return true = validated, false = cannot be a munch place
      */
     private boolean validate(List<CorpusData> links) {
+        // Make sure have 2 links
+        if (links.size() < 2) return false;
+
         // Validate has at least 1 Article written about place
         boolean hasArticle = links.stream().anyMatch(data ->
                 ArticleCorpusName.matcher(data.getCorpusName()).matches());

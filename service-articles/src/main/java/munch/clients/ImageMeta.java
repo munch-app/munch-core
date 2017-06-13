@@ -33,6 +33,7 @@ public class ImageMeta {
         this.images = images;
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public final static class Type {
         private String url;
 

@@ -4,12 +4,15 @@ import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.munch.utils.file.ContentTypeError;
+import com.munch.utils.file.FileTypeUtils;
 import com.typesafe.config.Config;
 import munch.images.database.ImageMapper;
 import munch.images.database.ImageMeta;
 import munch.images.database.ImageType;
 import munch.restful.server.JsonService;
 import munch.restful.server.exceptions.StructuredException;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import spark.Request;
 import spark.Response;
 import spark.Spark;
@@ -17,6 +20,7 @@ import spark.Spark;
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletException;
 import javax.servlet.http.Part;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Set;
@@ -71,7 +75,7 @@ public class PutService implements JsonService {
      */
     private ImageMeta put(Request request, Response response) throws IOException, ContentTypeError, ServletException {
         Set<ImageType> kinds = ImageType.resolveKinds(request.queryParams("kinds"));
-        if (kinds == null) kinds = ImageType.DEFAULT_KINDS;
+        if (kinds.isEmpty()) kinds = ImageType.DEFAULT_KINDS;
 
         // Get file part
         request.attribute("org.eclipse.jetty.multipartConfig", multipartConfig);
@@ -79,10 +83,18 @@ public class PutService implements JsonService {
 
         // Upload the image
         try (InputStream inputStream = part.getInputStream()) {
+            // Convert to file
+            File temp = File.createTempFile(RandomStringUtils.randomAlphabetic(20), part.getName());
+            FileUtils.copyInputStreamToFile(inputStream, temp);
+
+            // Check contentType, if is octet then convert to actual
             String contentType = part.getContentType();
+            if (contentType.equals("application/octet-stream"))
+                contentType = FileTypeUtils.getContentType(part.getName(), temp);
+
+            // Validate content type
             if (!contentTypes.contains(contentType)) throw new NotImageException(contentType);
-            long length = part.getSize();
-            return mapper.upload(inputStream, length, contentType, kinds);
+            return mapper.upload(temp, contentType, kinds);
         }
     }
 

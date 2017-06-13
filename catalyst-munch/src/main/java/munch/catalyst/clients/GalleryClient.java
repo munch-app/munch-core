@@ -3,7 +3,6 @@ package munch.catalyst.clients;
 import catalyst.data.CorpusData;
 import catalyst.utils.FieldWrapper;
 import com.google.inject.Singleton;
-import com.typesafe.config.Config;
 import munch.catalyst.data.Media;
 import munch.restful.client.RestfulClient;
 import org.slf4j.Logger;
@@ -29,8 +28,8 @@ public class GalleryClient extends RestfulClient {
     private static final Supplier<NullPointerException> NullSupplier = () -> new NullPointerException("Media");
 
     @Inject
-    public GalleryClient(@Named("services") Config config) {
-        super(config.getString("gallery.url"));
+    public GalleryClient(@Named("services.gallery.url") String url) {
+        super(url);
     }
 
     public void put(CorpusData data, Date updatedDate) {
@@ -54,11 +53,11 @@ public class GalleryClient extends RestfulClient {
         media.setMediaId(wrapper.getValue("Instagram.Media.mediaId", NullSupplier));
         media.setCaption(wrapper.getValue("Instagram.Media.caption", NullSupplier));
 
-        Media.User user = new Media.User();
-        user.setUserId(wrapper.getValue("Instagram.Media.userId", NullSupplier));
-        user.setUsername(wrapper.getValue("Instagram.Media.username", NullSupplier));
-        user.setPictureUrl(wrapper.getValue("Instagram.Media.profilePicture", NullSupplier));
-        media.setUser(user);
+        Media.Profile profile = new Media.Profile();
+        profile.setUserId(wrapper.getValue("Instagram.Media.userId", NullSupplier));
+        profile.setUsername(wrapper.getValue("Instagram.Media.username", NullSupplier));
+        profile.setPictureUrl(wrapper.getValue("Instagram.Media.profilePicture", NullSupplier));
+        media.setProfile(profile);
 
         Map<String, Media.Image> images = new HashMap<>();
         for (CorpusData.Field field : wrapper.getAll("Instagram.Media.images")) {

@@ -19,7 +19,6 @@ public class PlaceModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        install(new PlaceModule());
         install(new PostgresModule());
         install(new ElasticModule());
     }

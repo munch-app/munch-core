@@ -5,14 +5,12 @@ import com.google.inject.Singleton;
 import com.munch.hibernate.utils.TransactionProvider;
 import munch.clients.ImageClient;
 import munch.clients.ImageMeta;
-import org.apache.http.entity.ContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Set;
@@ -89,7 +87,7 @@ public final class PersistMapper {
 
             // Persist changes
             saved.setImages(images.toArray(new Article.ArticleImage[images.size()]));
-            provider.with(em -> em.persist(article));
+            provider.with(em -> em.merge(saved));
         }
     }
 
@@ -131,10 +129,8 @@ public final class PersistMapper {
         try {
             URL url = new URL(urlString);
             // Open connect download and return
-            URLConnection connection = url.openConnection();
-            String contentType = connection.getContentType();
-            try (InputStream inputStream = connection.getInputStream()) {
-                return imageClient.put(inputStream, ContentType.create(contentType), url.getPath());
+            try (InputStream inputStream = url.openConnection().getInputStream()) {
+                return imageClient.put(inputStream, url.getPath());
             }
         } catch (IOException ioe) {
             logger.error("Skip: Failed to put image for url: {}", urlString, ioe);

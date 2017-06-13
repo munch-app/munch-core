@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.util.HashMap;
@@ -64,15 +63,14 @@ public class ImageMapper {
     /**
      * Note: key for image will be generated; currently length is 32
      *
-     * @param inputStream input stream of file
-     * @param length      length of stream
+     * @param file file to persist
      * @param contentType content type of file
      * @param kinds       types of image
      * @return newly created Image object
      * @throws ContentTypeError content type cannot be parsed
      * @throws IOException      network error
      */
-    public ImageMeta upload(InputStream inputStream, long length, String contentType,
+    public ImageMeta upload(File file, String contentType,
                             Set<ImageType> kinds) throws ContentTypeError, IOException {
         if (kinds.isEmpty()) throw new ImageKindsEmptyException();
         String newKey = RandomStringUtils.randomAlphanumeric(32);
@@ -89,7 +87,7 @@ public class ImageMapper {
         original.setKey(newKey + getExtension(contentType));
         original.setUrl(fileEndpoint.getUrl(original.getKey()));
         imageMeta.getImages().put(ImageType.Original, original);
-        fileMapper.put(original.getKey(), inputStream, length, contentType, AccessControl.PublicRead);
+        fileMapper.put(original.getKey(), file, contentType, AccessControl.PublicRead);
 
         // Persist resize different kinds of images
         resize(imageMeta, kinds);

@@ -20,7 +20,7 @@ public final class Media {
     private String placeId;
     private String mediaId;
 
-    private User user;
+    private Profile profile;
     private String caption;
     private Map<String, Image> images;
 
@@ -75,12 +75,12 @@ public final class Media {
         this.images = images;
     }
 
-    public User getUser() {
-        return user;
+    public Profile getProfile() {
+        return profile;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
 
     /**
@@ -119,7 +119,7 @@ public final class Media {
     /**
      * Owner of the media
      */
-    public static class User {
+    public static class Profile {
         private String userId;
         private String username;
         private String pictureUrl;

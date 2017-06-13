@@ -6,6 +6,7 @@ import com.typesafe.config.ConfigFactory;
 import munch.articles.hibernate.PostgresModule;
 import munch.clients.ClientModule;
 import munch.restful.server.RestfulServer;
+import spark.Spark;
 
 /**
  * Created by: Fuxing
@@ -31,6 +32,12 @@ public class ArticleModule extends AbstractModule {
         @Inject
         public Server(ArticleService service) {
             super(service);
+        }
+
+        @Override
+        public void start(int port) {
+            super.start(port);
+            Spark.before((request, response) -> logger.info("{}: {}", request.requestMethod(), request.pathInfo()));
         }
     }
 

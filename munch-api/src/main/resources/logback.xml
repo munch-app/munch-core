@@ -22,7 +22,15 @@
         <appender-ref ref="ASYNC_STDOUT"/>
     </logger>
 
+    <logger name="catalyst" level="INFO" additivity="false">
+        <appender-ref ref="ASYNC_STDOUT"/>
+    </logger>
+
     <logger name="com.corpus" level="INFO" additivity="false">
+        <appender-ref ref="ASYNC_STDOUT"/>
+    </logger>
+
+    <logger name="corpus" level="INFO" additivity="false">
         <appender-ref ref="ASYNC_STDOUT"/>
     </logger>
 

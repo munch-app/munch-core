@@ -2,7 +2,6 @@ package munch.catalyst;
 
 import catalyst.CatalystEngine;
 import catalyst.CatalystModule;
-import catalyst.EngineThread;
 import catalyst.data.DataModule;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -27,6 +26,6 @@ public class MunchModule extends AbstractModule {
 
     public static void main(String[] args) {
         Injector injector = Guice.createInjector(new MunchModule());
-        injector.getInstance(EngineThread.class).start();
+        injector.getInstance(MunchCatalyst.class).run();
     }
 }

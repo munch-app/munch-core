@@ -1,6 +1,5 @@
 package munch.catalyst.clients;
 
-import com.typesafe.config.Config;
 import munch.catalyst.data.Place;
 import munch.restful.client.RestfulClient;
 
@@ -24,12 +23,12 @@ public class PlaceClient extends RestfulClient {
      * @param config config to load data.url
      */
     @Inject
-    public PlaceClient(@Named("services") Config config) {
-        super(config.getString("places.url"));
+    public PlaceClient(@Named("services.places.url") String url) {
+        super(url);
     }
 
     public void put(Place place) {
-        doPut("/places/:id")
+        doPut("/places/{id}")
                 .path("id", place.getId())
                 .body(place)
                 .hasMetaCodes(200);

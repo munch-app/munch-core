@@ -23,7 +23,7 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @TypeDefs(value = {
-        @TypeDef(name = "types", typeClass = Article.UserType.Images.class)
+        @TypeDef(name = "images", typeClass = Article.UserType.Images.class)
 })
 public final class Article {
     private String placeId;

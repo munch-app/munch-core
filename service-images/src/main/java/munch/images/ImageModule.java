@@ -5,6 +5,7 @@ import com.squareup.pollexor.Thumbor;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import munch.restful.server.RestfulServer;
+import spark.Spark;
 
 /**
  * Created by: Fuxing
@@ -41,6 +42,12 @@ public class ImageModule extends AbstractModule {
         @Inject
         public Server(ImageService image, PutService put) {
             super(image, put);
+        }
+
+        @Override
+        public void start(int port) {
+            super.start(port);
+            Spark.before((request, response) -> logger.info("{}: {}", request.requestMethod(), request.pathInfo()));
         }
     }
 

@@ -49,6 +49,10 @@ public class ImageClient extends RestfulClient {
                 .asDataObject(ImageMeta.class);
     }
 
+    public ImageMeta put(InputStream stream, String fileName) {
+        return put(stream, ContentType.APPLICATION_OCTET_STREAM, fileName);
+    }
+
     /**
      * @param key key of image to delete
      */

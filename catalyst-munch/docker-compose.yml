@@ -13,6 +13,8 @@ services:
       - DATABASE_USERNAME=postgres
       - DATABASE_PASSWORD=K851xsSffyTJP3e1M7rd
       - DATABASE_AUTO_CREATE=true
+    ports:
+      - "8222:8000"
   corpus-proxy:
     image: corpus-catalyst/corpus-proxy:latest
     environment:
