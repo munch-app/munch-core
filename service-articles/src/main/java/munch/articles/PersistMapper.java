@@ -1,6 +1,6 @@
 package munch.articles;
 
-import catalyst.utils.exception.ExceptionRetriable;
+import catalyst.utils.exception.PredicateRetriable;
 import catalyst.utils.exception.Retriable;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -31,9 +31,11 @@ public final class PersistMapper {
 
     private final ImageClient imageClient;
     private final TransactionProvider provider;
-    private final Retriable retriable = new ExceptionRetriable(6, Duration.ofSeconds(2).toMillis(), ForbiddenError.class) {
+    private final Retriable retriable = new PredicateRetriable(6, Duration.ofSeconds(2),
+            t -> t.getMessage().contains("Server returned HTTP response code: 403")) {
         @Override
-        protected void log(int executionCount, Throwable exception) {
+        public void log(Throwable exception, int executionCount) {
+            super.log(exception, executionCount);
         }
     };
 
@@ -140,21 +142,11 @@ public final class PersistMapper {
             return retriable.loop(() -> {
                 try (InputStream inputStream = url.openConnection().getInputStream()) {
                     return imageClient.put(inputStream, url.getPath());
-                } catch (IOException ioe) {
-                    if (ioe.getMessage().contains("Server returned HTTP response code: 403"))
-                        throw new ForbiddenError(ioe.getMessage());
-                    throw ioe;
                 }
             });
         } catch (IOException ioe) {
             logger.warn("Skip: Failed to put image for url: {}", urlString, ioe);
             return null;
-        }
-    }
-
-    private static class ForbiddenError extends IOException {
-        public ForbiddenError(String message) {
-            super(message);
         }
     }
 }
