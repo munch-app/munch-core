@@ -71,7 +71,10 @@ public class MunchCatalyst extends CatalystEngine {
 
         // Put place data to place services
         Place place = builder.collect(updatedDate);
-        if (place != null) placeClient.put(place);
+        if (place != null) {
+            logger.info("Putting place id: {} name: {}", place.getId(), place.getName());
+            placeClient.put(place);
+        }
         else logger.warn("Place unable to put due to incomplete corpus data: {}", collected);
 
         // Delete data that is not updated

@@ -54,8 +54,14 @@ public class ArticleClient extends RestfulClient {
         article.setBrand(wrapper.getValue("Article.brand", NullSupplier));
         article.setUrl(wrapper.getValue("Article.url", NullSupplier));
 
+        // Title and Description are trimmed if they are too long
         article.setTitle(wrapper.getValue("Article.title", NullSupplier));
+        if (article.getTitle().length() > 255)
+            article.setTitle(article.getTitle().substring(0, 255));
+
         article.setDescription(wrapper.getValue("Article.description", NullSupplier));
+        if (article.getDescription().length() > 2048)
+            article.setDescription(article.getDescription().substring(0, 2048));
 
         // Collect images
         List<Article.ArticleImage> images = wrapper.getAll("Article.images").stream()

@@ -3,6 +3,7 @@ ext.hibernateVersion = '5.0.11.Final'
 dependencies {
     compile project(':restful-server')
     compile project(':restful-client')
+    compile group: 'catalyst', name: 'catalyst-utils', version: ccVersion
 
     // Injection
     compile group: 'com.google.inject', name: 'guice', version: '4.1.0'

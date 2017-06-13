@@ -91,7 +91,7 @@ public final class Article {
         this.title = title;
     }
 
-    @Column(nullable = false, length = 1000)
+    @Column(nullable = false, length = 2048)
     public String getDescription() {
         return description;
     }

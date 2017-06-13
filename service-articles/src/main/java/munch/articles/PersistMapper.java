@@ -1,5 +1,7 @@
 package munch.articles;
 
+import catalyst.utils.exception.ExceptionRetriable;
+import catalyst.utils.exception.Retriable;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.munch.hibernate.utils.TransactionProvider;
@@ -11,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Set;
@@ -28,6 +31,7 @@ public final class PersistMapper {
 
     private final ImageClient imageClient;
     private final TransactionProvider provider;
+    private final Retriable retriable = new ExceptionRetriable(60, Duration.ofSeconds(2).toMillis(), ForbiddenError.class);
 
     @Inject
     public PersistMapper(ImageClient imageClient, TransactionProvider provider) {
@@ -129,12 +133,21 @@ public final class PersistMapper {
         try {
             URL url = new URL(urlString);
             // Open connect download and return
-            try (InputStream inputStream = url.openConnection().getInputStream()) {
-                return imageClient.put(inputStream, url.getPath());
-            }
+            return retriable.loop(() -> {
+                try (InputStream inputStream = url.openConnection().getInputStream()) {
+                    return imageClient.put(inputStream, url.getPath());
+                } catch (IOException ioe) {
+                    if (ioe.getMessage().contains("Server returned HTTP response code: 403"))
+                        throw new ForbiddenError();
+                    throw ioe;
+                }
+            });
         } catch (IOException ioe) {
-            logger.error("Skip: Failed to put image for url: {}", urlString, ioe);
+            logger.warn("Skip: Failed to put image for url: {}", urlString, ioe);
             return null;
         }
+    }
+
+    private static class ForbiddenError extends IOException {
     }
 }
