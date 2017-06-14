@@ -3,6 +3,7 @@ package munch.catalyst;
 import catalyst.data.CorpusData;
 import munch.catalyst.data.Place;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.WordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,6 +70,10 @@ public final class PlaceBuilder {
         place.setId(id);
 
         place.setName(valueBuilder.collectMax("Place.name"));
+        if (StringUtils.isBlank(place.getName())) return null;
+        // Transform Name to Upper Camel Case
+        place.setName(WordUtils.capitalizeFully(place.getName()));
+
         place.setPhone(valueBuilder.collectMax("Place.phone"));
         place.setWebsite(valueBuilder.collectMax("Place.website"));
         place.setDescription(valueBuilder.collectMax("Place.description"));
