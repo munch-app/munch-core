@@ -180,7 +180,8 @@ public class RestfulRequest {
 
     /**
      * Check that meta json has follow codes
-     * if not structured error will be thrown
+     * If not structured error will be thrown
+     * In order to handle exception separately, handle function should be called first
      *
      * @param codes allowed codes in meta
      * @return RestfulResponse

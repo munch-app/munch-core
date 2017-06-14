@@ -57,14 +57,15 @@ public class ElasticModule extends AbstractModule {
      */
     @Provides
     @Singleton
-    RestClient provideClient(Config config) {
+    RestClient provideClient(Config config) throws InterruptedException {
         String scheme = config.getString("elastic.scheme");
         String host = config.getString("elastic.hostname");
         int port = config.getInt("elastic.port");
 
         // Wait for host to be alive
-        WaitFor.host(host, port, Duration.ofSeconds(30));
-
+        WaitFor.host(host, port, Duration.ofSeconds(160));
+        // Wait another 15 seconds elastic search to be ready
+        Thread.sleep(Duration.ofSeconds(15).toMillis());
         return RestClient.builder(new HttpHost(host, port, scheme)).build();
     }
 }

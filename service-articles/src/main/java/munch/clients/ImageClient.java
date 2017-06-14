@@ -37,9 +37,10 @@ public class ImageClient extends RestfulClient {
                 .asDataObject(ImageMeta.class);
     }
 
-    public ImageMeta put(File file, ContentType contentType) {
+    public ImageMeta put(File file, ContentType contentType) throws NotImageException {
         return doPut("/images")
                 .field("file", file, contentType.getMimeType())
+                .handle(NotImageException::handle)
                 .hasMetaCodes(200)
                 .asDataObject(ImageMeta.class);
     }
@@ -47,8 +48,8 @@ public class ImageClient extends RestfulClient {
     public ImageMeta put(InputStream stream, ContentType contentType, String fileName) throws NotImageException {
         return doPut("/images")
                 .field("file", stream, contentType, fileName)
-                .hasMetaCodes(200)
                 .handle(NotImageException::handle)
+                .hasMetaCodes(200)
                 .asDataObject(ImageMeta.class);
     }
 

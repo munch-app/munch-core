@@ -38,8 +38,8 @@ public class ClientModule extends AbstractModule {
 
     @Inject
     void waitFor(Config config) {
-        WaitFor.host(config.getString("services.places.url"), Duration.ofSeconds(60));
         WaitFor.host(config.getString("services.articles.url"), Duration.ofSeconds(60));
         WaitFor.host(config.getString("services.gallery.url"), Duration.ofSeconds(60));
+        WaitFor.host(config.getString("services.places.url"), Duration.ofSeconds(180));
     }
 }

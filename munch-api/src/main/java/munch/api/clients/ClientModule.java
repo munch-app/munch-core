@@ -25,11 +25,11 @@ public class ClientModule extends AbstractModule {
 
     @Inject
     void waitFor(@Named("services") Config services) {
-        WaitFor.host(services.getString("places.url"), Duration.ofSeconds(60));
         WaitFor.host(services.getString("articles.url"), Duration.ofSeconds(60));
         WaitFor.host(services.getString("gallery.url"), Duration.ofSeconds(60));
         WaitFor.host(services.getString("images.url"), Duration.ofSeconds(60));
         WaitFor.host(services.getString("geocoder.url"), Duration.ofSeconds(60));
+        WaitFor.host(services.getString("places.url"), Duration.ofSeconds(180));
     }
 
     @Provides
