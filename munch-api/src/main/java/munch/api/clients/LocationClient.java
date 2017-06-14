@@ -1,7 +1,7 @@
 package munch.api.clients;
 
 import com.typesafe.config.Config;
-import munch.api.data.Neighborhood;
+import munch.api.data.Location;
 import munch.restful.client.RestfulClient;
 import munch.restful.client.exception.StructuredException;
 
@@ -17,32 +17,32 @@ import java.util.List;
  * Project: munch-core
  */
 @Singleton
-public class GeocoderClient extends RestfulClient {
+public class LocationClient extends RestfulClient {
 
     @Inject
-    public GeocoderClient(@Named("services") Config config) {
+    public LocationClient(@Named("services") Config config) {
         super(config.getString("geocoder.url"));
     }
 
-    public Neighborhood reverse(double lat, double lng) throws StructuredException {
+    public Location reverse(double lat, double lng) throws StructuredException {
         return doGet("/reverse")
                 .queryString("lat", lat)
                 .queryString("lng", lng)
                 .hasMetaCodes(200, 404)
-                .asDataObject(Neighborhood.class);
+                .asDataObject(Location.class);
     }
 
-    public Neighborhood geocode(String text) throws StructuredException {
+    public Location geocode(String text) throws StructuredException {
         return doGet("/geocode")
                 .queryString("text", text)
                 .hasMetaCodes(200, 404)
-                .asDataObject(Neighborhood.class);
+                .asDataObject(Location.class);
     }
 
-    public List<Neighborhood> search(String text) throws StructuredException {
+    public List<Location> search(String text) throws StructuredException {
         return doGet("/search")
                 .queryString("text", text)
                 .hasMetaCodes(200)
-                .asDataList(Neighborhood.class);
+                .asDataList(Location.class);
     }
 }

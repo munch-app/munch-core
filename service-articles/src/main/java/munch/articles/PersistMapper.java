@@ -133,7 +133,7 @@ public final class PersistMapper {
      */
     private ImageMeta putImage(String urlString) {
         return null;
-        // TODO: Image are not persisted for now
+        // TODO: Image are not persisted for now, changing article corpus design
 //        try {
 //            URL url = new URL(urlString);
 //            // Open connect download and return

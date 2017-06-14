@@ -7,7 +7,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import munch.geocoder.database.DataImporter;
-import munch.geocoder.database.Neighborhood;
+import munch.geocoder.database.Location;
 import munch.geocoder.database.Region;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
@@ -78,9 +78,9 @@ public class GeocoderService implements JsonService {
                 .setParameter("point", point)
                 .getResultList())
                 .stream()
-                .map(Region::getNeighborhoods)
+                .map(Region::getLocations)
                 .flatMap(List::stream)
-                .max(Comparator.comparingLong(Neighborhood::getSort))
+                .max(Comparator.comparingLong(Location::getSort))
                 .map(this::convert)
                 .orElse(null);
     }
@@ -98,7 +98,7 @@ public class GeocoderService implements JsonService {
     private JsonNode geocode(JsonCall call) {
         String text = call.queryString("text").toLowerCase();
         return provider.optional(em -> em.createQuery("SELECT p FROM Neighborhood p " +
-                "WHERE LOWER(p.name) = :name", Neighborhood.class)
+                "WHERE LOWER(p.name) = :name", Location.class)
                 .setParameter("name", text)
                 .getSingleResult())
                 .map(this::convert)
@@ -120,40 +120,40 @@ public class GeocoderService implements JsonService {
         String text = call.queryString("text").toLowerCase();
         if (text.length() < 3) return Collections.emptyList();
 
-        List<Neighborhood> neighborhoods = provider.reduce(em -> {
+        List<Location> locations = provider.reduce(em -> {
             FullTextEntityManager fullText = Search.getFullTextEntityManager(em);
 
-            QueryBuilder titleQB = fullText.getSearchFactory().buildQueryBuilder().forEntity(Neighborhood.class).get();
+            QueryBuilder titleQB = fullText.getSearchFactory().buildQueryBuilder().forEntity(Location.class).get();
             Query query = titleQB.phrase().withSlop(2).onField("edgeNGramName")
                     .andField("nGramName").boostedTo(5)
                     .sentence(text).createQuery();
 
-            FullTextQuery fullTextQuery = fullText.createFullTextQuery(query, Neighborhood.class);
+            FullTextQuery fullTextQuery = fullText.createFullTextQuery(query, Location.class);
             fullTextQuery.setMaxResults(20);
 
             //noinspection unchecked
             return fullTextQuery.getResultList();
         });
-        if (neighborhoods.isEmpty()) return Collections.emptyList();
+        if (locations.isEmpty()) return Collections.emptyList();
 
-        return neighborhoods.stream().map(Neighborhood::getName).collect(Collectors.toList());
+        return locations.stream().map(Location::getName).collect(Collectors.toList());
     }
 
     /**
      * Convert neighborhood to json node
      *
-     * @param neighborhood Neighborhood
+     * @param location Neighborhood
      * @return converted json node
      */
-    private JsonNode convert(Neighborhood neighborhood) {
-        if (!cache.containsKey(neighborhood.getName())) {
+    private JsonNode convert(Location location) {
+        if (!cache.containsKey(location.getName())) {
             ObjectNode node = newNode();
             // Put name
-            node.put("name", neighborhood.getName());
+            node.put("name", location.getName());
 
             // Put geo json
             GeoJSONWriter writer = new GeoJSONWriter();
-            List<Feature> features = neighborhood.getRegions().stream()
+            List<Feature> features = location.getRegions().stream()
                     .map(Region::getGeometry)
                     .map(geo -> new Feature(writer.write(geo), Collections.emptyMap()))
                     .collect(Collectors.toList());
@@ -161,13 +161,13 @@ public class GeocoderService implements JsonService {
             node.set("geometry", geometryCenter);
 
             // If center exist, put a node for it
-            if (neighborhood.getCenter() != null) {
-                Geometry centerJson = writer.write(neighborhood.getCenter());
+            if (location.getCenter() != null) {
+                Geometry centerJson = writer.write(location.getCenter());
                 JsonNode center = objectMapper.valueToTree(centerJson);
                 node.set("center", center);
             }
-            cache.put(neighborhood.getName(), node);
+            cache.put(location.getName(), node);
         }
-        return cache.getOrDefault(neighborhood.getName(), null);
+        return cache.getOrDefault(location.getName(), null);
     }
 }

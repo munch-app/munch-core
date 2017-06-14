@@ -81,7 +81,7 @@ import java.util.Set;
                                 @Parameter(name = "replace", value = "all")})
                 }) // Def
 })
-public final class Neighborhood {
+public final class Location {
 
     private String name;
     private long sort;

@@ -2,8 +2,8 @@ package munch.api.services;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import munch.api.clients.GeocoderClient;
-import munch.api.data.Neighborhood;
+import munch.api.clients.LocationClient;
+import munch.api.data.Location;
 import munch.restful.server.JsonCall;
 
 import java.util.List;
@@ -15,12 +15,12 @@ import java.util.List;
  * Project: munch-core
  */
 @Singleton
-public class NeighborhoodService extends AbstractService {
+public class LocationService extends AbstractService {
 
-    private final GeocoderClient geocoder;
+    private final LocationClient geocoder;
 
     @Inject
-    public NeighborhoodService(GeocoderClient geocoder) {
+    public LocationService(LocationClient geocoder) {
         this.geocoder = geocoder;
     }
 
@@ -29,7 +29,7 @@ public class NeighborhoodService extends AbstractService {
      */
     @Override
     public void route() {
-        PATH("/neighborhood", () -> {
+        PATH("/location", () -> {
             GET("/search", this::search);
             GET("/geocode", this::geocode);
             GET("/reverse", this::reverse);
@@ -43,7 +43,7 @@ public class NeighborhoodService extends AbstractService {
      * @return Neighborhood or NULL
      * code: 200 = ok
      */
-    private Neighborhood reverse(JsonCall call) {
+    private Location reverse(JsonCall call) {
         double lat = call.queryDouble("lat");
         double lng = call.queryDouble("lng");
         return geocoder.reverse(lat, lng);
@@ -56,7 +56,7 @@ public class NeighborhoodService extends AbstractService {
      * @return List of Neighborhood or empty
      * code: 200 = ok
      */
-    private List<Neighborhood> search(JsonCall call) {
+    private List<Location> search(JsonCall call) {
         String text = call.queryString("text");
         return geocoder.search(text);
     }
@@ -68,7 +68,7 @@ public class NeighborhoodService extends AbstractService {
      * @return Neighborhood or NULL
      * code: 200 = ok
      */
-    private Neighborhood geocode(JsonCall call) {
+    private Location geocode(JsonCall call) {
         String text = call.queryString("text");
         return geocoder.geocode(text);
     }

@@ -6,6 +6,8 @@ import org.wololo.geojson.GeoJSON;
 import org.wololo.geojson.Point;
 
 /**
+ * Location POJO is marked out for future development
+ *
  * Created By: Fuxing Loh
  * Date: 17/4/2017
  * Time: 8:34 PM
@@ -13,25 +15,11 @@ import org.wololo.geojson.Point;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class Neighborhood {
-    private String id;
+public final class Location {
     private String name;
 
     private Point center;
     private GeoJSON geometry;
-
-    /**
-     * TODO: id not implemented yet
-     *
-     * @return unique id of neighborhood
-     */
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     /**
      * @return name of neighborhood

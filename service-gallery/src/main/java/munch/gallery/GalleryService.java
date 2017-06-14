@@ -59,7 +59,6 @@ public class GalleryService implements JsonService {
     private JsonNode put(JsonCall call) {
         Media media = call.bodyAsObject(Media.class);
         provider.with(em -> {
-            // TODO check if it works
             if (em.find(Media.class, media.getMediaId()) == null) {
                 em.persist(media);
             } else {

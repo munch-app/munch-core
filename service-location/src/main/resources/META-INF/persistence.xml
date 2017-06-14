@@ -6,7 +6,7 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
         <class>munch.geocoder.database.Region</class>
-        <class>munch.geocoder.database.Neighborhood</class>
+        <class>munch.geocoder.database.Location</class>
 
         <properties>
             <property name="hibernate.hbm2ddl.auto" value="update"/>
