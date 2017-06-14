@@ -2,8 +2,8 @@ package munch.api.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.JsonNode;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -15,11 +15,8 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PlaceCollection {
-
-    // TODO better version of this?, what is this?
-
     private String name;
-    private Filter filter;
+    private Query query;
     private List<Place> places;
 
     /**
@@ -41,14 +38,14 @@ public class PlaceCollection {
 
     /**
      * @return logic to apply to search to get same results
-     * @see Filter
+     * @see Query
      */
-    public Filter getFilter() {
-        return filter;
+    public Query getQuery() {
+        return query;
     }
 
-    public void setFilter(Filter filter) {
-        this.filter = filter;
+    public void setQuery(Query query) {
+        this.query = query;
     }
 
     /**
@@ -66,32 +63,33 @@ public class PlaceCollection {
      * Logic for which can be passed to search
      * to get same result as collection
      */
-    public static class Filter {
-
+    public static class Query {
+        private String query;
+        private JsonNode geometry;
         private Place.Filters filters;
 
-        /**
-         * The filter can be used to do a search with place client
-         * & get back the same results
-         *
-         * @return filters that is applied for this collection
-         */
+        public String getQuery() {
+            return query;
+        }
+
+        public void setQuery(String query) {
+            this.query = query;
+        }
+
+        public JsonNode getGeometry() {
+            return geometry;
+        }
+
+        public void setGeometry(JsonNode geometry) {
+            this.geometry = geometry;
+        }
+
         public Place.Filters getFilters() {
             return filters;
         }
 
         public void setFilters(Place.Filters filters) {
             this.filters = filters;
-        }
-
-        public static Filter createTag(String text) {
-            Filter filter = new Filter();
-            filter.filters = new Place.Filters();
-            Place.Filters.Tag tag = new Place.Filters.Tag();
-            tag.setPositive(true);
-            tag.setText(text);
-            filter.filters.setTags(Collections.singleton(tag));
-            return filter;
         }
     }
 }

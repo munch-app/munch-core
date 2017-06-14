@@ -14,7 +14,6 @@ import java.util.Set;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class Filters {
-
     private PriceRange priceRange;
     private Set<Tag> tags;
     private Double ratingsAbove;

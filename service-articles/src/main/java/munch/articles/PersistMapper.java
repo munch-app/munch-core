@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Date;
@@ -35,7 +36,6 @@ public final class PersistMapper {
             t -> t.getMessage().contains("Server returned HTTP response code: 403")) {
         @Override
         public void log(Throwable exception, int executionCount) {
-            super.log(exception, executionCount);
         }
     };
 
@@ -140,12 +140,17 @@ public final class PersistMapper {
             URL url = new URL(urlString);
             // Open connect download and return
             return retriable.loop(() -> {
-                try (InputStream inputStream = url.openConnection().getInputStream()) {
+                URLConnection connection = url.openConnection();
+                connection.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:25.0) Gecko/20100101 Firefox/25.0");
+                try (InputStream inputStream = connection.getInputStream()) {
                     return imageClient.put(inputStream, url.getPath());
                 }
             });
         } catch (IOException ioe) {
-            logger.warn("Skip: Failed to put image for url: {}", urlString, ioe);
+            logger.warn("Skip: Failed to put image for url: {}, error: {}", urlString, ioe.getMessage());
+            return null;
+        } catch (ImageClient.NotImageException nie) {
+            logger.warn("Skip: Failed to put image for url: {}, error: {}", urlString, nie.getType());
             return null;
         }
     }

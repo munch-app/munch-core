@@ -142,7 +142,7 @@ public class PlaceService extends AbstractService {
                 new GroupLogic("Healthy Food", null, place -> {
                     return place.getTags().contains("healthy options");
                 }),
-                new GroupLogic("Halal Food", new PlaceCollection.Filter(), place -> {
+                new GroupLogic("Halal Food", new PlaceCollection.Query(), place -> {
                     return place.getTags().contains("halal");
                 })
         );
@@ -165,7 +165,7 @@ public class PlaceService extends AbstractService {
 
                 // Check if size can fulfil, else ignore group list
                 if (group.size() >= GROUP_MIN_SIZE) {
-                    collections.add(create(groupLogic.name, groupLogic.filter, group));
+                    collections.add(create(groupLogic.name, groupLogic.query, group));
                 }
             }
 
@@ -191,14 +191,14 @@ public class PlaceService extends AbstractService {
 
         /**
          * @param name   name of collection
-         * @param filter filter that can be applied to search for see more
+         * @param query filter that can be applied to search for see more
          * @param places places in collection
          * @return created PlaceCollection
          */
-        public PlaceCollection create(String name, PlaceCollection.Filter filter, List<Place> places) {
+        public PlaceCollection create(String name, PlaceCollection.Query query, List<Place> places) {
             PlaceCollection collection = new PlaceCollection();
             collection.setName(name);
-            collection.setFilter(filter);
+            collection.setQuery(query);
             collection.setPlaces(places);
             return collection;
         }
@@ -209,12 +209,12 @@ public class PlaceService extends AbstractService {
          */
         private static class GroupLogic {
             private String name;
-            private PlaceCollection.Filter filter;
+            private PlaceCollection.Query query;
             private Predicate<Place> predicate;
 
-            private GroupLogic(String name, PlaceCollection.Filter filter, Predicate<Place> predicate) {
+            private GroupLogic(String name, PlaceCollection.Query query, Predicate<Place> predicate) {
                 this.name = name;
-                this.filter = filter;
+                this.query = query;
                 this.predicate = predicate;
             }
 
