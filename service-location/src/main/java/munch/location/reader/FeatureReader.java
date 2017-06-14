@@ -1,10 +1,12 @@
-package munch.location.database;
+package munch.location.reader;
 
 import com.google.common.io.Resources;
 import com.munch.hibernate.utils.TransactionProvider;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.util.GeometricShapeFactory;
+import munch.location.database.Location;
+import munch.location.database.Region;
 import org.apache.commons.lang3.StringUtils;
 import org.wololo.geojson.Feature;
 import org.wololo.geojson.FeatureCollection;
@@ -27,12 +29,12 @@ import java.util.stream.Collectors;
  * Project: munch-core
  */
 @Singleton
-public class DataImporter {
+public class FeatureReader {
 
     private final TransactionProvider provider;
 
     @Inject
-    public DataImporter(TransactionProvider provider) {
+    public FeatureReader(TransactionProvider provider) {
         this.provider = provider;
     }
 
@@ -42,7 +44,7 @@ public class DataImporter {
      */
     public void importSubzone() throws IOException {
         // Load feature collection
-        URL url = Resources.getResource("subzone.json");
+        URL url = Resources.getResource("reader/subzone.json");
         String json = Resources.toString(url, Charset.forName("UTF-8"));
         FeatureCollection collection = (FeatureCollection) GeoJSONFactory.create(json);
         GeoJSONReader reader = new GeoJSONReader();
@@ -71,7 +73,7 @@ public class DataImporter {
      * http://stackoverflow.com/questions/8464666/distance-between-2-points-in-postgis-in-srid-4326-in-metres
      */
     public void importMrt() throws IOException {
-        URL url = Resources.getResource("mrt.csv");
+        URL url = Resources.getResource("reader/mrt.csv");
         String csv = Resources.toString(url, Charset.forName("UTF-8"));
 
         provider.with(em -> {
@@ -105,7 +107,7 @@ public class DataImporter {
     }
 
     public void importPlace() throws IOException {
-        URL url = Resources.getResource("place.csv");
+        URL url = Resources.getResource("reader/place.csv");
         String csv = Resources.toString(url, Charset.forName("UTF-8"));
 
         provider.with(em -> {

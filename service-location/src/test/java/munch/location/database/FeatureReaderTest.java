@@ -3,6 +3,7 @@ package munch.location.database;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.munch.hibernate.utils.TransactionProvider;
+import munch.location.reader.FeatureReader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,15 +15,15 @@ import java.util.List;
  * Time: 6:42 PM
  * Project: munch-core
  */
-class DataImporterTest {
+class FeatureReaderTest {
 
-    DataImporter importer;
+    FeatureReader importer;
     TransactionProvider provider;
 
     @BeforeEach
     void setUp() throws Exception {
         Injector injector = Guice.createInjector(new DatabaseModule());
-        importer = injector.getInstance(DataImporter.class);
+        importer = injector.getInstance(FeatureReader.class);
         provider = injector.getInstance(TransactionProvider.class);
     }
 

@@ -9,9 +9,9 @@ import org.hibernate.spatial.dialect.h2geodb.GeoDBGeometryTypeDescriptor;
  * Time: 8:29 PM
  * Project: munch-core
  */
-public class GeoH2Dialect extends GeoDBDialect {
+public class GeoDialect extends GeoDBDialect {
 
-    public GeoH2Dialect() {
+    public GeoDialect() {
         super();
         registerColumnType( GeoDBGeometryTypeDescriptor.INSTANCE.getSqlType(), "blob" );
     }

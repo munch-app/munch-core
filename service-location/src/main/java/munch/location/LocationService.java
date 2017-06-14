@@ -6,9 +6,9 @@ import com.munch.hibernate.utils.TransactionProvider;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
-import munch.location.database.DataImporter;
 import munch.location.database.Location;
 import munch.location.database.Region;
+import munch.location.reader.FeatureReader;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
 import org.apache.lucene.search.Query;
@@ -40,16 +40,16 @@ public class LocationService implements JsonService {
     private Map<String, JsonNode> cache = new HashMap<>();
 
     /**
-     * @param dataImporter data to import to geocoding services
+     * @param featureReader data to import to geocoding services
      * @param provider     run database queries
      * @throws IOException import failure
      */
     @Inject
-    public LocationService(TransactionProvider provider, DataImporter dataImporter) throws IOException {
+    public LocationService(TransactionProvider provider, FeatureReader featureReader) throws IOException {
         this.provider = provider;
-        dataImporter.importSubzone();
-        dataImporter.importMrt();
-        dataImporter.importPlace();
+        featureReader.importSubzone();
+        featureReader.importMrt();
+        featureReader.importPlace();
     }
 
     @Override
@@ -97,7 +97,7 @@ public class LocationService implements JsonService {
      */
     private JsonNode geocode(JsonCall call) {
         String text = call.queryString("text").toLowerCase();
-        return provider.optional(em -> em.createQuery("SELECT p FROM Neighborhood p " +
+        return provider.optional(em -> em.createQuery("SELECT p FROM Location p " +
                 "WHERE LOWER(p.name) = :name", Location.class)
                 .setParameter("name", text)
                 .getSingleResult())
@@ -113,7 +113,7 @@ public class LocationService implements JsonService {
      * text must be size of 3 or above or will be rejected
      *
      * @param call json call
-     * @return code 200: List of neighborhoods
+     * @return code 200: List of Locations
      * if none found empty data list
      */
     private List<String> search(JsonCall call) {
@@ -140,9 +140,9 @@ public class LocationService implements JsonService {
     }
 
     /**
-     * Convert neighborhood to json node
+     * Convert Location to json node
      *
-     * @param location Neighborhood
+     * @param location Location
      * @return converted json node
      */
     private JsonNode convert(Location location) {
