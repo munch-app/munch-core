@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.typesafe.config.Config;
 import munch.api.data.Place;
+import munch.api.data.SearchQuery;
 import munch.restful.client.RestfulClient;
 
 import javax.annotation.Nullable;
@@ -49,27 +50,17 @@ public class PlaceClient extends RestfulClient {
     }
 
     /**
-     * @param from     list from size
-     * @param size     size per list
-     * @param geometry geometry to filter
-     * @param query    text query
-     * @param filters  Place filters
+     * @param query query object
      * @return List of Place results
+     * @see SearchQuery
      */
-    public List<Place> search(int from, int size, JsonNode geometry, String query, Place.Filters filters) {
-        ObjectNode node = mapper.createObjectNode();
-        node.put("from", from);
-        node.put("size", size);
-        node.set("geometry", geometry);
-        node.put("query", query);
-        node.set("filters", mapper.valueToTree(filters));
-        return search(node);
+    public List<Place> search(SearchQuery query) {
+        return search(mapper.valueToTree(query));
     }
 
     /**
      * @param node node
      * @return List of Place results
-     * @see PlaceClient#search(int, int, JsonNode, String, Place.Filters)
      */
     public List<Place> search(JsonNode node) {
         return doPost("/places/search")

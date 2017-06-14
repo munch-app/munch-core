@@ -2,11 +2,12 @@ package munch.api.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.List;
 
 /**
+ * Collection of Place with title and reapply logic
+ * <p>
  * Created by: Fuxing
  * Date: 23/4/2017
  * Time: 11:09 AM
@@ -16,7 +17,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PlaceCollection {
     private String name;
-    private Query query;
+    private SearchQuery query;
     private List<Place> places;
 
     /**
@@ -37,14 +38,13 @@ public class PlaceCollection {
     }
 
     /**
-     * @return logic to apply to search to get same results
-     * @see Query
+     * @return SearchQuery = logic to apply to search to get same results
      */
-    public Query getQuery() {
+    public SearchQuery getQuery() {
         return query;
     }
 
-    public void setQuery(Query query) {
+    public void setQuery(SearchQuery query) {
         this.query = query;
     }
 
@@ -59,37 +59,4 @@ public class PlaceCollection {
         this.places = places;
     }
 
-    /**
-     * Logic for which can be passed to search
-     * to get same result as collection
-     */
-    public static class Query {
-        private String query;
-        private JsonNode geometry;
-        private Place.Filters filters;
-
-        public String getQuery() {
-            return query;
-        }
-
-        public void setQuery(String query) {
-            this.query = query;
-        }
-
-        public JsonNode getGeometry() {
-            return geometry;
-        }
-
-        public void setGeometry(JsonNode geometry) {
-            this.geometry = geometry;
-        }
-
-        public Place.Filters getFilters() {
-            return filters;
-        }
-
-        public void setFilters(Place.Filters filters) {
-            this.filters = filters;
-        }
-    }
 }
