@@ -1,4 +1,4 @@
-package munch.geocoder.database;
+package munch.location.database;
 
 import com.google.common.io.Resources;
 import com.munch.hibernate.utils.TransactionProvider;

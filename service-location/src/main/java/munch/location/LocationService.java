@@ -1,4 +1,4 @@
-package munch.geocoder;
+package munch.location;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -6,9 +6,9 @@ import com.munch.hibernate.utils.TransactionProvider;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
-import munch.geocoder.database.DataImporter;
-import munch.geocoder.database.Location;
-import munch.geocoder.database.Region;
+import munch.location.database.DataImporter;
+import munch.location.database.Location;
+import munch.location.database.Region;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
 import org.apache.lucene.search.Query;
@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  * Project: munch-core
  */
 @Singleton
-public class GeocoderService implements JsonService {
+public class LocationService implements JsonService {
     private final TransactionProvider provider;
     private final GeometryFactory factory = new GeometryFactory();
 
@@ -45,7 +45,7 @@ public class GeocoderService implements JsonService {
      * @throws IOException import failure
      */
     @Inject
-    public GeocoderService(TransactionProvider provider, DataImporter dataImporter) throws IOException {
+    public LocationService(TransactionProvider provider, DataImporter dataImporter) throws IOException {
         this.provider = provider;
         dataImporter.importSubzone();
         dataImporter.importMrt();

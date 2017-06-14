@@ -1,4 +1,4 @@
-package munch.geocoder.database;
+package munch.location.database;
 
 import org.hibernate.spatial.dialect.h2geodb.GeoDBDialect;
 import org.hibernate.spatial.dialect.h2geodb.GeoDBGeometryTypeDescriptor;

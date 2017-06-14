@@ -1,4 +1,4 @@
-package munch.geocoder.database;
+package munch.location.database;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;

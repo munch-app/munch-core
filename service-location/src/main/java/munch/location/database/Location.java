@@ -1,4 +1,4 @@
-package munch.geocoder.database;
+package munch.location.database;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vividsolutions.jts.geom.Point;

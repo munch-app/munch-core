@@ -5,12 +5,12 @@
     <persistence-unit name="geocoderPersistenceUnit">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-        <class>munch.geocoder.database.Region</class>
-        <class>munch.geocoder.database.Location</class>
+        <class>munch.location.database.Region</class>
+        <class>munch.location.database.Location</class>
 
         <properties>
             <property name="hibernate.hbm2ddl.auto" value="update"/>
-            <property name="hibernate.dialect" value="munch.geocoder.database.GeoH2Dialect"/>
+            <property name="hibernate.dialect" value="munch.location.database.GeoH2Dialect"/>
 
             <property name="hibernate.connection.driver_class" value="org.h2.Driver"/>
             <property name="hibernate.connection.username" value="sa"/>
