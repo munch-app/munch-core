@@ -1,4 +1,4 @@
-package munch.places.search;
+package munch.places.elastic;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.places.data.Place;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.nio.entity.NStringEntity;
@@ -24,7 +25,7 @@ import java.util.List;
  * Project: munch-core
  */
 @Singleton
-public class SearchIndex {
+public class ElasticIndex {
 
     private final RestClient client;
     private final ObjectMapper mapper;
@@ -32,13 +33,12 @@ public class SearchIndex {
     /**
      * https://www.elastic.co/guide/en/elasticsearch/client/java-api/current/java-docs-index.html
      *
-     * @param mapping mapping validator
-     * @param client  injected rest client
-     * @param mapper
+     * @param client injected rest client
+     * @param mapper jackson json mapper
      * @throws RuntimeException if ElasticSearchMapping validation failed
      */
     @Inject
-    public SearchIndex(RestClient client, ObjectMapper mapper) {
+    public ElasticIndex(RestClient client, ObjectMapper mapper) {
         this.client = client;
         this.mapper = mapper;
     }
@@ -64,7 +64,13 @@ public class SearchIndex {
         node.put("website", place.getWebsite());
         node.put("description", place.getDescription());
 
+        // Location Field
         node.set("location", locationNode(place.getLocation()));
+
+        // Suggest Field
+        ArrayNode suggest = mapper.createArrayNode();
+        suggest.add(place.getName());
+        node.set("suggest", suggest);
 
         String json = mapper.writeValueAsString(node);
         HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
@@ -107,19 +113,9 @@ public class SearchIndex {
         node.put("country", location.getCountry());
         node.put("postal", location.getPostal());
 
-        // https://www.elastic.co/guide/en/elasticsearch/reference/current/geo-shape.html
-        // location.geo Node, only if lat, lng exist
-        if (location.getLng() != null) {
-            ObjectNode geo = mapper.createObjectNode();
-            geo.put("type", "Point");
-
-            // location.geo.coordinates Node
-            ArrayNode coordinates = mapper.createArrayNode();
-            coordinates.add(location.getLng());
-            coordinates.add(location.getLat());
-            geo.set("coordinates", coordinates);
-
-            node.set("geo", geo);
+        // https://www.elastic.co/guide/en/elasticsearch/reference/current/geo-point.html
+        if (StringUtils.isNotBlank(location.getLatLng())) {
+            node.put("latLng", location.getLatLng());
         }
         return node;
     }

@@ -6,10 +6,10 @@ import com.typesafe.config.Config;
 import munch.api.data.Place;
 import munch.restful.client.RestfulClient;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -79,12 +79,21 @@ public class PlaceClient extends RestfulClient {
     }
 
     /**
+     * Suggest place data based on name
+     *
      * @param size  size per list
      * @param query text query
      * @return List of Place results
      */
-    public List<Place> suggest(int size, String query) {
-        // TODO New Service Suggest?: /v/places/suggest
-        return Collections.emptyList();
+    public List<Place> suggest(int size, String query, @Nullable String latLng) {
+        ObjectNode node = mapper.createObjectNode();
+        node.put("size", size);
+        node.put("query", query);
+        node.put("latLng", latLng);
+
+        return doPost("/places/suggest")
+                .body(node)
+                .hasMetaCodes(200)
+                .asDataList(Place.class);
     }
 }

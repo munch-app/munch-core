@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.misc.FloatingDecimal;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -87,12 +88,7 @@ public final class PlaceBuilder {
         location.setCountry(valueBuilder.collectMax("Place.Location.country"));
 
         location.setPostal(valueBuilder.collectMax("Place.Location.postal"));
-        String latLng = valueBuilder.collectMax("Place.Location.latLng");
-        if (latLng != null) {
-            String[] split = latLng.split(",");
-            location.setLat(Double.parseDouble(split[0].trim()));
-            location.setLng(Double.parseDouble(split[1].trim()));
-        }
+        location.setLatLng(valueBuilder.collectMax("Place.Location.latLng"));
         place.setLocation(location);
 
         List<String> tags = new ArrayList<>();
@@ -133,11 +129,19 @@ public final class PlaceBuilder {
         if (place.getLocation() == null) return false;
         if (StringUtils.isBlank(place.getLocation().getPostal())) return false;
         if (StringUtils.isBlank(place.getLocation().getCountry())) return false;
-        if (place.getLocation().getLat() == null) return false;
-        if (place.getLocation().getLng() == null) return false;
+        if (StringUtils.isBlank(place.getLocation().getLatLng())) return false;
 
         if (place.getCreatedDate() == null) return false;
         if (place.getUpdatedDate() == null) return false;
+
+        try {
+            String[] split = place.getLocation().getLatLng().split(",");
+            FloatingDecimal.parseDouble(split[0].trim());
+            FloatingDecimal.parseDouble(split[1].trim());
+        } catch (NumberFormatException nfe) {
+            logger.error("LatLng Validation failed");
+            return false;
+        }
         return true;
     }
 

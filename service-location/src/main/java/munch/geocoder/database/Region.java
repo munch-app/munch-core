@@ -26,6 +26,7 @@ public final class Region {
 
     // Mapped by places
     private List<Location> locations;
+    // TODO return single polygon
 
     /**
      * Subzone code

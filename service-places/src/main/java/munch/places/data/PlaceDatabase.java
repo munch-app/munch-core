@@ -98,7 +98,6 @@ public class PlaceDatabase {
      */
     private static void persist(EntityManager em, Place place) {
         String key = Objects.requireNonNull(place.getId(), "Place id cannot be null");
-        // TODO check if it works
         if (em.find(Place.class, key) == null) {
             em.persist(place);
         } else {

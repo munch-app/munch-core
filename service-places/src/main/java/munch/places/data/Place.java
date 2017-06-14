@@ -192,8 +192,7 @@ public final class Place {
         private String country;
 
         private String postal;
-        private Double lat;
-        private Double lng;
+        private String latLng;
 
         public String getAddress() {
             return address;
@@ -235,20 +234,12 @@ public final class Place {
             this.postal = postal;
         }
 
-        public Double getLat() {
-            return lat;
+        public String getLatLng() {
+            return latLng;
         }
 
-        public void setLat(Double lat) {
-            this.lat = lat;
-        }
-
-        public Double getLng() {
-            return lng;
-        }
-
-        public void setLng(Double lng) {
-            this.lng = lng;
+        public void setLatLng(String latLng) {
+            this.latLng = latLng;
         }
     }
 

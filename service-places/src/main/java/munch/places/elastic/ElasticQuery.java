@@ -1,10 +1,11 @@
-package munch.places.search;
+package munch.places.elastic;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Singleton;
+import munch.places.SearchQuery;
 import munch.places.data.Place;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.http.HttpEntity;
@@ -29,8 +30,7 @@ import java.util.List;
  * Project: munch-core
  */
 @Singleton
-public class SearchQuery {
-
+public final class ElasticQuery {
     private final RestClient client;
     private final ObjectMapper mapper;
 
@@ -38,7 +38,7 @@ public class SearchQuery {
     private final BoolQuery boolQuery;
 
     @Inject
-    public SearchQuery(RestClient client, ObjectMapper mapper, BoolQuery boolQuery) {
+    public ElasticQuery(RestClient client, ObjectMapper mapper, BoolQuery boolQuery) {
         this.client = client;
         this.mapper = mapper;
         this.boolQuery = boolQuery;
@@ -55,22 +55,57 @@ public class SearchQuery {
      * @param filters  tags, price, ratings and hours filters
      * @return pair = (list of Place, total results)
      * @throws IOException exception
-     * @see Filters
+     * @see SearchQuery.Filters
      */
-    public Pair<List<Place>, Integer> query(int from, int size, @Nullable JsonNode geometry,
-                                            @Nullable String query, @Nullable Filters filters) throws IOException {
+    public Pair<List<Place>, Integer> query(SearchQuery query) throws IOException {
         ObjectNode root = mapper.createObjectNode();
-        root.put("from", from);
-        root.put("size", size);
+        root.put("from", query.getFrom());
+        root.put("size", query.getSize());
         root.set("_source", sources);
-        root.set("query", mapper.createObjectNode().set("bool",
-                boolQuery.make(geometry, query, filters)));
+        root.set("query", mapper.createObjectNode().set("bool", boolQuery.make(query)));
 
-        // Query and parse
+        // Query, parse and return
         JsonNode hits = postSearch(root).path("hits");
         List<Place> places = new ArrayList<>();
         for (JsonNode hit : hits.path("hits")) places.add(parse(hit));
         return Pair.of(places, hits.path("total").asInt());
+    }
+
+    /**
+     * @param query  query string
+     * @param latLng nullable latLng
+     * @param size   size of suggestion of place
+     * @return List of suggested place
+     */
+    public List<Place> suggest(String query, @Nullable String latLng, int size) throws IOException {
+        ObjectNode completion = mapper.createObjectNode();
+        completion.put("field", "suggest");
+        completion.put("size", size);
+        if (latLng != null) {
+            ObjectNode contexts = mapper.createObjectNode();
+            ObjectNode location = mapper.createObjectNode();
+
+            String[] lls = latLng.split(",");
+            location.put("lat", Double.parseDouble(lls[0].trim()));
+            location.put("lng", Double.parseDouble(lls[1].trim()));
+            contexts.set("latLng", location);
+            completion.set("contexts", contexts);
+        }
+
+        ObjectNode placeSuggest = mapper.createObjectNode();
+        placeSuggest.put("prefix", query);
+        placeSuggest.set("completion", completion);
+
+        ObjectNode suggest = mapper.createObjectNode();
+        suggest.set("place-suggest", placeSuggest);
+        ObjectNode root = mapper.createObjectNode();
+        root.set("suggest", suggest);
+
+        // Query, parse and return
+        JsonNode hits = postSearch(root).path("hits");
+        List<Place> places = new ArrayList<>();
+        for (JsonNode hit : hits.path("hits")) places.add(parse(hit));
+        return places;
     }
 
     /**

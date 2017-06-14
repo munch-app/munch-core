@@ -1,4 +1,4 @@
-package munch.places.search;
+package munch.places.elastic;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
@@ -29,24 +29,8 @@ public class ElasticModule extends AbstractModule {
     }
 
     @Inject
-    void configureMapping(SearchMapping mapping) throws IOException {
-        SearchMapping.Result result = mapping.validate();
-        logger.info("Place mapping validation result: {}", result.name());
-        switch (result) {
-            case Success:
-                return;
-            case NoIndexError:
-                mapping.createIndex();
-                logger.info("Created index for place mapping");
-                if (mapping.validate() != SearchMapping.Result.Success) {
-                    throw new RuntimeException("Place created index error.");
-                }
-                return;
-            case UnknownError:
-                throw new RuntimeException("Place unknown index error.");
-            case GeoIndexError:
-                throw new RuntimeException("Place geo index error.");
-        }
+    void configureMapping(ElasticMapping mapping) throws IOException {
+        mapping.tryCreate();
     }
 
     /**

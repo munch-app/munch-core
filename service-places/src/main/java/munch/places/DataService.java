@@ -6,7 +6,7 @@ import com.google.inject.Singleton;
 import com.munch.hibernate.utils.TransactionProvider;
 import munch.places.data.Place;
 import munch.places.data.PlaceDatabase;
-import munch.places.search.SearchIndex;
+import munch.places.elastic.ElasticIndex;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
 
@@ -24,10 +24,10 @@ public class DataService implements JsonService {
 
     private final TransactionProvider provider;
     private final PlaceDatabase database;
-    private final SearchIndex index;
+    private final ElasticIndex index;
 
     @Inject
-    public DataService(TransactionProvider provider, PlaceDatabase database, SearchIndex index) {
+    public DataService(TransactionProvider provider, PlaceDatabase database, ElasticIndex index) {
         this.provider = provider;
         this.database = database;
         this.index = index;

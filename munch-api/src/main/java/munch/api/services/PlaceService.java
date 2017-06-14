@@ -1,5 +1,6 @@
 package munch.api.services;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
@@ -71,24 +72,26 @@ public class PlaceService extends AbstractService {
     }
 
     /**
-     * ?text={String}&size={Int}
+     * {
+     *     size: 10,
+     *     text: "",
+     *     geometry: {} // Optional
+     * }
      *
      * @param call json call
      * @return list of Place result
      */
-    private List<Place> suggest(JsonCall call) {
-        int size = call.queryInt("size");
-        String text = call.queryString("text");
-
-        // TODO Query Object returns suggestion List<Place>
-        return placeClient.suggest(size, text);
+    private List<Place> suggest(JsonCall call, JsonNode request) {
+        int size = request.get("size").asInt();
+        String text = request.get("text").asText();
+        String latLng = request.path("latLng").asText(null); // Nullable
+        return placeClient.suggest(size, text, latLng);
     }
 
 
     private List<Place> collectionSearch(JsonCall call) {
         int from = call.queryInt("from");
         int size = call.queryInt("size");
-
         // TODO Query Object returns searched List<Place>
         return null;
     }
@@ -191,7 +194,7 @@ public class PlaceService extends AbstractService {
 
         /**
          * @param name   name of collection
-         * @param query filter that can be applied to search for see more
+         * @param query  filter that can be applied to search for see more
          * @param places places in collection
          * @return created PlaceCollection
          */
