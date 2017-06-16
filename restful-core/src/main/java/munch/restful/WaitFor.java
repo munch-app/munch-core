@@ -1,4 +1,4 @@
-package munch.restful.core;
+package munch.restful;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

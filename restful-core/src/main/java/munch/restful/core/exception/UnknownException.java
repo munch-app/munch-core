@@ -6,10 +6,14 @@ package munch.restful.core.exception;
  * Time: 1:27 PM
  * Project: munch-core
  */
-public class UnknownException extends StructuredException {
-    // TODO
+public final class UnknownException extends StructuredException {
 
-    public UnknownException(int code, String type, String message, Throwable throwable) {
-        super(code, type, message, throwable);
+    /**
+     * Map any throwable to Unknown Exception
+     *
+     * @param throwable throwable unknown error
+     */
+    public UnknownException(Throwable throwable) {
+        super(500, "UnknownException", throwable.getMessage(), throwable);
     }
 }

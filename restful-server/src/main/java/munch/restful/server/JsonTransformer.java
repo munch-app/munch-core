@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import munch.restful.core.RestfulMeta;
 import spark.ResponseTransformer;
 
 /**
@@ -17,20 +18,22 @@ public class JsonTransformer implements ResponseTransformer {
 
     static final JsonNode Meta200 =
             objectMapper.createObjectNode()
-                    .set("meta", objectMapper.createObjectNode()
-                            .put("code", 200));
+                    .set("meta", objectMapper.valueToTree(RestfulMeta.builder()
+                            .code(200)
+                            .build()));
     static final JsonNode Meta404 =
             objectMapper.createObjectNode()
-                    .set("meta", objectMapper.createObjectNode()
-                            .put("code", 200)
-                            .put("errorType", "ObjectNotFound")
-                            .put("errorMessage", "Object requested not found."));
+                    .set("meta", objectMapper.valueToTree(RestfulMeta.builder()
+                            .code(200)
+                            .errorType("ObjectNotFound")
+                            .errorMessage("Object requested not found.")
+                            .build()));
 
     private static final String Meta200String = toJson(Meta200);
     private static final String Meta404String = toJson(Meta404);
 
     @Override
-    public String render(Object model) throws Exception {
+    public String render(Object model) {
         // Check if JsonNode is any of the static helpers
         if (model == null || model == Meta404) return Meta404String;
         if (model == Meta200) return Meta200String;

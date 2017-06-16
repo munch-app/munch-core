@@ -3,14 +3,15 @@ package munch.restful.server;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import munch.restful.core.RestfulMeta;
 import munch.restful.core.exception.StructuredException;
-import org.apache.commons.lang3.exception.ExceptionUtils;
+import munch.restful.core.exception.UnknownException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.Response;
 import spark.Spark;
 
+import javax.annotation.Nullable;
 import java.util.Set;
 
 /**
@@ -22,6 +23,13 @@ import java.util.Set;
 public class RestfulServer {
     protected static final Logger logger = LoggerFactory.getLogger(RestfulServer.class);
     protected static final ObjectMapper objectMapper = JsonService.objectMapper;
+
+    private static final JsonNode notFound = objectMapper.createObjectNode()
+            .set("meta", objectMapper.valueToTree(RestfulMeta.builder()
+                    .code(404)
+                    .errorType("EndpointNotFound")
+                    .errorMessage("Requested endpoint is not registered.")
+                    .build()));
 
     private final RestfulService[] routers;
     private boolean started = false;
@@ -75,8 +83,9 @@ public class RestfulServer {
             logger.info("Started SparkRouter: {}", router.getClass().getSimpleName());
         }
 
-        // Default not found meta
-        handleNotFound();
+        // Default handler for not found
+        Spark.notFound((req, res) -> JsonTransformer.toJson(notFound));
+        logger.info("Registered http 404 not found json response.");
 
         // Handle all expected exceptions
         handleException();
@@ -84,37 +93,39 @@ public class RestfulServer {
         this.started = true;
     }
 
-    protected void handleNotFound() {
-        JsonNode notFound = objectMapper.createObjectNode()
-                .set("meta", objectMapper.createObjectNode()
-                        .put("code", 200)
-                        .put("errorType", "EndpointNotFound")
-                        .put("errorMessage", "Requested endpoint is not registered."));
-
-        Spark.notFound((req, res) -> JsonTransformer.toJson(notFound));
-        logger.info("Registered http 404 not found json response.");
-    }
-
-
     /**
-     * All exceptions that can be expected and handled is handled.
-     * Expected status code is
-     * 400: structured error
-     * 500: unknown error
+     * @see StructuredException to see values and creating custom structured exception
+     * @see UnknownException to see how unknown exception values is mapped
+     * @see RestfulMeta to see how it is formatted
      */
     protected void handleException() {
         logger.info("Adding exception handling for StructuredError.");
         Spark.exception(StructuredException.class, (exception, request, response) -> {
             logger.warn("Structured exception thrown", exception);
-            StructuredException error = (StructuredException) exception;
-            handleException(response, error.getCode(), error.getType(), error.getMessage());
+            handleException(response, (StructuredException) exception);
         });
 
         logger.info("Adding exception handling for all Exception.");
         Spark.exception(Exception.class, (exception, request, response) -> {
-            logger.error("Unknown exception thrown", exception);
-            handleUnknownException(exception, response);
+            logger.warn("Structured exception thrown", exception);
+            StructuredException structured = mapException(exception);
+            if (structured != null) {
+                // Mapped exception
+                handleException(response, structured);
+            } else {
+                // Unknown exception
+                handleException(response, new UnknownException(exception));
+            }
         });
+    }
+
+    /**
+     * @param exception additional exception to map
+     * @return Structured exception, null = unknown
+     */
+    @Nullable
+    protected StructuredException mapException(Exception exception) {
+        return null;
     }
 
     /**
@@ -123,39 +134,12 @@ public class RestfulServer {
      * @param errorType    error type
      * @param errorMessage error message
      */
-    protected void handleException(Response response, int code, String errorType, String errorMessage) {
-        ObjectNode metaNode = objectMapper.createObjectNode();
-        metaNode.put("code", code);
-        metaNode.put("errorType", errorType);
-        metaNode.put("errorMessage", errorMessage);
-
+    protected void handleException(Response response, StructuredException exception) {
         try {
-            response.status(code);
-            JsonNode node = objectMapper.createObjectNode().set("meta", metaNode);
-            response.body(objectMapper.writeValueAsString(node));
-            response.type(JsonService.APP_JSON);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Handle unknown exception
-     *
-     * @param exception unknown exception
-     * @param response  response to write to
-     */
-    protected void handleUnknownException(Exception exception, Response response) {
-        ObjectNode metaNode = objectMapper.createObjectNode();
-        metaNode.put("code", 500);
-        metaNode.put("errorType", "UnknownException");
-        metaNode.put("errorMessage", exception.getMessage());
-        metaNode.put("errorDetailed", ExceptionUtils.getStackTrace(exception));
-
-        try {
-            response.status(500);
-            JsonNode node = objectMapper.createObjectNode().set("meta", metaNode);
-            response.body(objectMapper.writeValueAsString(node));
+            response.status(exception.getCode());
+            JsonNode nodes = objectMapper.createObjectNode().set(
+                    "meta", objectMapper.valueToTree(exception.toMeta()));
+            response.body(objectMapper.writeValueAsString(nodes));
             response.type(JsonService.APP_JSON);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);

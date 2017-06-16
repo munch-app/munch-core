@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import munch.restful.core.RestfulMeta;
 import munch.restful.core.exception.JsonException;
 import spark.ResponseTransformer;
 import spark.RouteGroup;
@@ -15,6 +16,8 @@ import spark.Spark;
  * Date: 8/2/2017
  * Time: 2:29 PM
  * Project: munch-core
+ *
+ * @see munch.restful.core.RestfulMeta for structure for meta
  */
 public interface JsonService extends RestfulService {
     String APP_JSON = "application/json";
@@ -224,9 +227,9 @@ public interface JsonService extends RestfulService {
      * @param meta meta node
      * @return object node with meta only
      */
-    default ObjectNode nodes(JsonNode meta) {
+    default ObjectNode nodes(RestfulMeta meta) {
         ObjectNode nodes = newNode();
-        nodes.set("meta", meta);
+        nodes.set("meta", toTree(meta));
         return nodes;
     }
 
@@ -235,20 +238,11 @@ public interface JsonService extends RestfulService {
      * @param data data node
      * @return object node with meta and data node
      */
-    default ObjectNode nodes(JsonNode meta, JsonNode data) {
+    default ObjectNode nodes(RestfulMeta meta, JsonNode data) {
         ObjectNode nodes = newNode();
-        nodes.set("meta", meta);
+        nodes.set("meta", toTree(meta));
         nodes.set("data", data);
         return nodes;
-    }
-
-    /**
-     * @param meta   meta node
-     * @param object object
-     * @return object node with meta and data node
-     */
-    default ObjectNode nodes(JsonNode meta, Object object) {
-        return nodes(meta, toTree(object));
     }
 
     /**
