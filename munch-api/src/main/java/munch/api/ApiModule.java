@@ -9,7 +9,7 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import munch.api.clients.ClientModule;
 import munch.api.services.ServiceModule;
-import munch.restful.server.JsonUtils;
+import munch.restful.server.JsonService;
 import munch.restful.server.RestfulServer;
 
 /**
@@ -28,7 +28,7 @@ public class ApiModule extends AbstractModule {
 
     @Provides
     ObjectMapper provideObjectMapper() {
-        return JsonUtils.objectMapper;
+        return JsonService.objectMapper;
     }
 
     @Provides

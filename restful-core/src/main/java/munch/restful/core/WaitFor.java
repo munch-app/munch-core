@@ -1,4 +1,4 @@
-package munch.restful.client;
+package munch.restful.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +38,7 @@ public final class WaitFor {
 
     /**
      * Wait for host until given timeout
+     * Port is required in the url
      *
      * @param url     to wait for
      * @param timeout timeout in duration
@@ -46,8 +47,9 @@ public final class WaitFor {
         logger.info("Waiting for {} with timeout duration of {}", url, timeout);
         try {
             URI uri = new URI(url);
-            if (!ping(uri.getHost(), uri.getPort(), (int) timeout.toMillis()))
+            if (!ping(uri.getHost(), uri.getPort(), (int) timeout.toMillis())) {
                 throw new RuntimeException(url + " is unreachable.");
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -63,8 +65,8 @@ public final class WaitFor {
                 socket.connect(new InetSocketAddress(host, port), timeout);
                 return true;
             } catch (IOException ignored) {
-                Thread.sleep(1000);
             }
+            Thread.sleep(1000);
         }
         return false;
     }

@@ -6,7 +6,7 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import munch.places.data.PostgresModule;
 import munch.places.elastic.ElasticModule;
-import munch.restful.server.JsonUtils;
+import munch.restful.server.JsonService;
 import munch.restful.server.RestfulServer;
 
 /**
@@ -31,7 +31,7 @@ public class PlaceModule extends AbstractModule {
     @Provides
     @Singleton
     ObjectMapper provideObjectMapper() {
-        return JsonUtils.objectMapper;
+        return JsonService.objectMapper;
     }
 
     @Singleton

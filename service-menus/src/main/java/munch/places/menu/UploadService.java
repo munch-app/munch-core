@@ -6,13 +6,9 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.munch.utils.file.ContentTypeError;
 import munch.places.menu.data.MenuMapper;
+import munch.restful.core.exception.StructuredException;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
-import munch.restful.server.RestfulUtils;
-import munch.restful.server.exceptions.StructuredException;
-import spark.Request;
-import spark.Response;
-import spark.Spark;
 
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletException;
@@ -47,19 +43,19 @@ public class UploadService implements JsonService {
     @Override
     public void route() {
         PATH("/places/:placeId/menu", () -> {
-            Spark.put("/:menuId/image", "multipart/form-data", this::putImage, toJson);
-            Spark.put("/:menuId/pdf", "multipart/form-data", this::putPdf, toJson);
+            PUT("/:menuId/image", "multipart/form-data", this::putImage);
+            PUT("/:menuId/pdf", "multipart/form-data", this::putPdf);
             PUT("/:menuId/website", this::putWebsite);
 
             DELETE("/:menuId", this::delete);
         });
     }
 
-    private JsonNode putImage(Request request, Response response) throws IOException, ServletException, ContentTypeError {
-        String placeId = RestfulUtils.pathString(request, "placeId");
-        String menuId = RestfulUtils.pathString(request, "menuId");
-        request.attribute("org.eclipse.jetty.multipartConfig", multipartConfig);
-        Part part = request.raw().getPart("file");
+    private JsonNode putImage(JsonCall call) throws IOException, ServletException, ContentTypeError {
+        String placeId = call.pathString("placeId");
+        String menuId = call.pathString("menuId");
+        call.request().attribute("org.eclipse.jetty.multipartConfig", multipartConfig);
+        Part part = call.request().raw().getPart("file");
 
         // Upload image
         try (InputStream inputStream = part.getInputStream()) {
@@ -71,11 +67,11 @@ public class UploadService implements JsonService {
         return Meta200;
     }
 
-    private JsonNode putPdf(Request request, Response response) throws IOException, ServletException, ContentTypeError {
-        String placeId = RestfulUtils.pathString(request, "placeId");
-        String menuId = RestfulUtils.pathString(request, "menuId");
-        request.attribute("org.eclipse.jetty.multipartConfig", multipartConfig);
-        Part part = request.raw().getPart("file");
+    private JsonNode putPdf(JsonCall call) throws IOException, ServletException, ContentTypeError {
+        String placeId = call.pathString("placeId");
+        String menuId = call.pathString("menuId");
+        call.request().attribute("org.eclipse.jetty.multipartConfig", multipartConfig);
+        Part part = call.request().raw().getPart("file");
 
         // Upload pdf
         try (InputStream inputStream = part.getInputStream()) {
@@ -103,7 +99,7 @@ public class UploadService implements JsonService {
 
     public static class NotMatchException extends StructuredException {
         protected NotMatchException(String contentType) {
-            super("ContentTypeNotMatchException", "Uploaded content type must be image. (" + contentType + ")", 400);
+            super(400, "ContentTypeNotMatchException", "Uploaded content type must be image. (" + contentType + ")");
         }
     }
 }

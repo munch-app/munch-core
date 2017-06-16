@@ -6,6 +6,8 @@ import spark.Response;
 import spark.Route;
 
 /**
+ * Lambda Route interface
+ * <p>
  * Created by: Fuxing
  * Date: 7/3/2017
  * Time: 4:22 PM

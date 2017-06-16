@@ -1,10 +1,11 @@
 package munch.restful.server;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import munch.restful.server.exceptions.JsonException;
+import munch.restful.core.exception.JsonException;
 import spark.ResponseTransformer;
 import spark.RouteGroup;
 import spark.Spark;
@@ -18,30 +19,16 @@ import spark.Spark;
 public interface JsonService extends RestfulService {
     String APP_JSON = "application/json";
 
-    ObjectMapper objectMapper = JsonUtils.objectMapper;
+    ObjectMapper objectMapper = new ObjectMapper();
 
     /**
      * Theses nodes are pre-build notes, use the as a whole don't
      * put them in another node
      */
-    JsonNode Meta200 = JsonUtils.nodes(JsonUtils.metaNode(200));
-    JsonNode Meta404 = JsonUtils.nodes(JsonUtils.metaNode(
-            404, "ObjectNotFound", "Object requested not found."));
+    JsonNode Meta200 = JsonTransformer.Meta200;
+    JsonNode Meta404 = JsonTransformer.Meta404;
 
-    String Meta200String = JsonUtils.toJson(Meta200);
-    String Meta404String = JsonUtils.toJson(Meta404);
-
-    ResponseTransformer toJson = (Object model) -> {
-        // Check if JsonNode is any of the static helpers
-        if (model == null || model == Meta404) return Meta404String;
-        if (model == Meta200) return Meta200String;
-
-        // Json node means already structured
-        if (model instanceof JsonNode) return JsonUtils.toJson(model);
-
-        // If not json node, wrap it into data node
-        return JsonUtils.toJson(JsonUtils.nodes(200, model));
-    };
+    ResponseTransformer toJson = new JsonTransformer();
 
     /**
      * Override for custom transformer
@@ -93,6 +80,28 @@ public interface JsonService extends RestfulService {
     /**
      * Map route for HTTP Put
      *
+     * @param path       the path
+     * @param acceptType the request accept type
+     * @param route      json node route
+     */
+    default void POST(String path, String acceptType, JsonRoute route) {
+        Spark.post(path, acceptType, route, toJson);
+    }
+
+    /**
+     * Map route for HTTP Put
+     *
+     * @param path       the path
+     * @param acceptType the request accept type
+     * @param route      json node route
+     */
+    default void POST(String path, String acceptType, JsonRoute.Node route) {
+        Spark.post(path, acceptType, route, toJson);
+    }
+
+    /**
+     * Map route for HTTP Put
+     *
      * @param path  the path
      * @param route json route
      */
@@ -108,6 +117,28 @@ public interface JsonService extends RestfulService {
      */
     default void PUT(String path, JsonRoute.Node route) {
         Spark.put(path, route, toJson());
+    }
+
+    /**
+     * Map route for HTTP Put
+     *
+     * @param path       the path
+     * @param acceptType the request accept type
+     * @param route      json node route
+     */
+    default void PUT(String path, String acceptType, JsonRoute route) {
+        Spark.put(path, acceptType, route, toJson);
+    }
+
+    /**
+     * Map route for HTTP Put
+     *
+     * @param path       the path
+     * @param acceptType the request accept type
+     * @param route      json node route
+     */
+    default void PUT(String path, String acceptType, JsonRoute.Node route) {
+        Spark.put(path, acceptType, route, toJson);
     }
 
     /**
@@ -151,65 +182,93 @@ public interface JsonService extends RestfulService {
     }
 
     /**
-     * {@link JsonUtils#readJson(JsonNode, Class)}
+     * Read json node to POJO Bean
+     *
+     * @param node  json node
+     * @param clazz Class Type to return
+     * @param <T>   Return Class Type
+     * @return json body as @code{<T>}
+     * @throws JsonException json exception
      */
-    default <T> T readObject(JsonNode node, Class<T> clazz) throws JsonException {
-        return JsonUtils.readJson(node, clazz);
+    default <T> T toObject(JsonNode node, Class<T> clazz) throws JsonException {
+        try {
+            return objectMapper.treeToValue(node, clazz);
+        } catch (JsonProcessingException e) {
+            throw new JsonException(e);
+        }
     }
 
     /**
-     * {@link JsonUtils#toTree(Object)}
+     * @param object object
+     * @return json object write to json string
      */
     default JsonNode toTree(Object object) {
-        return JsonUtils.toTree(object);
+        return objectMapper.valueToTree(object);
     }
 
     /**
-     * {@link JsonUtils#newNode()}
+     * @return new object node for consumption
      */
     default ObjectNode newNode() {
-        return JsonUtils.newNode();
+        return objectMapper.createObjectNode();
     }
 
     /**
-     * {@link JsonUtils#newArrayNode()}
+     * @return new array node for consumption
      */
     default ArrayNode newArrayNode() {
-        return JsonUtils.newArrayNode();
+        return objectMapper.createArrayNode();
     }
 
     /**
-     * {@link JsonUtils#nodes(JsonNode)}
+     * @param meta meta node
+     * @return object node with meta only
      */
     default ObjectNode nodes(JsonNode meta) {
-        return JsonUtils.nodes(meta);
+        ObjectNode nodes = newNode();
+        nodes.set("meta", meta);
+        return nodes;
     }
 
     /**
-     * {@link JsonUtils#nodes(JsonNode, JsonNode)}
+     * @param meta meta node
+     * @param data data node
+     * @return object node with meta and data node
      */
     default ObjectNode nodes(JsonNode meta, JsonNode data) {
-        return JsonUtils.nodes(meta, data);
+        ObjectNode nodes = newNode();
+        nodes.set("meta", meta);
+        nodes.set("data", data);
+        return nodes;
     }
 
     /**
-     * {@link JsonUtils#nodes(JsonNode, Object)}
+     * @param meta   meta node
+     * @param object object
+     * @return object node with meta and data node
      */
     default ObjectNode nodes(JsonNode meta, Object object) {
-        return JsonUtils.nodes(meta, object);
+        return nodes(meta, toTree(object));
     }
 
     /**
-     * {@link JsonUtils#nodes(int, JsonNode)}
+     * @param code code for meta node
+     * @param data data node
+     * @return object node with meta and data node
      */
     default ObjectNode nodes(int code, JsonNode data) {
-        return JsonUtils.nodes(code, data);
+        ObjectNode nodes = newNode();
+        nodes.set("meta", newNode().put("code", code));
+        nodes.set("data", data);
+        return nodes;
     }
 
     /**
-     * {@link JsonUtils#nodes(int, Object)}
+     * @param code   code for meta node
+     * @param object object
+     * @return object node with meta and data node
      */
     default ObjectNode nodes(int code, Object object) {
-        return JsonUtils.nodes(code, object);
+        return nodes(code, toTree(object));
     }
 }

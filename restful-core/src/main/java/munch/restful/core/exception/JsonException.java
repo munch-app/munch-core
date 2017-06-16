@@ -1,4 +1,4 @@
-package munch.restful.server.exceptions;
+package munch.restful.core.exception;
 
 /**
  * Created by: Fuxing
@@ -12,13 +12,13 @@ public final class JsonException extends StructuredException {
      * @param cause throwable for actual cause of json exception
      */
     public JsonException(Throwable cause) {
-        super("JsonException", cause.getMessage());
+        super(400, "JsonException", cause.getMessage(), cause);
     }
 
     /**
      * @param message readable message
      */
     public JsonException(String message) {
-        super("JsonException", message);
+        super(400, "JsonException", message);
     }
 }

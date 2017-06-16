@@ -1,10 +1,16 @@
 package munch.restful.server;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import munch.restful.server.exceptions.ParamException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import munch.restful.core.exception.JsonException;
+import munch.restful.core.exception.ParamException;
+import org.apache.commons.lang3.StringUtils;
 import spark.Request;
 import spark.Response;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -15,6 +21,7 @@ import java.util.function.Function;
  * Project: munch-core
  */
 public class JsonCall {
+    private static final ObjectMapper objectMapper = JsonService.objectMapper;
 
     private final Request request;
     private final Response response;
@@ -43,17 +50,26 @@ public class JsonCall {
     }
 
     /**
-     * @return request body as json node
+     * @return request body as JsonNode
+     * @throws JsonException json exception
      */
     public JsonNode bodyAsJson() {
-        return JsonUtils.readJson(request);
+        try {
+            return objectMapper.readTree(request.bodyAsBytes());
+        } catch (IOException e) {
+            throw new JsonException(e);
+        }
     }
 
     /**
      * @return request body as json object
      */
     public <T> T bodyAsObject(Class<T> clazz) {
-        return JsonUtils.readJson(request, clazz);
+        try {
+            return objectMapper.readValue(request.bodyAsBytes(), clazz);
+        } catch (IOException e) {
+            throw new JsonException(e);
+        }
     }
 
     /**
@@ -62,7 +78,7 @@ public class JsonCall {
      * @return List as type
      */
     public <T> List<T> bodyAsList(Class<T> clazz) {
-        return JsonUtils.readJsonArray(bodyAsJson(), clazz);
+        return readJsonArray(bodyAsJson(), clazz);
     }
 
     /**
@@ -71,77 +87,177 @@ public class JsonCall {
      * @return List as type
      */
     public <T> List<T> bodyAsList(Function<JsonNode, T> mapper) {
-        return JsonUtils.readJsonArray(bodyAsJson(), mapper);
+        return readJsonArray(bodyAsJson(), mapper);
     }
 
     /**
-     * {@link RestfulUtils#queryLong(Request, String)}
+     * Map json node to List of POJO Bean
+     *
+     * @param nodes  array node
+     * @param mapper json mapper
+     * @param <T>    Return Class Type
+     * @return json body as @code{<T>}
+     * @throws JsonException json exception
+     */
+    public static <T> List<T> readJsonArray(JsonNode nodes, Function<JsonNode, T> mapper) throws JsonException {
+        List<T> list = new ArrayList<>();
+        for (JsonNode node : nodes) {
+            list.add(mapper.apply(node));
+        }
+        return list;
+    }
+
+    /**
+     * Map json node to List of POJO Bean
+     *
+     * @param nodes array node
+     * @param clazz Class Type to return
+     * @param <T>   Return Class Type
+     * @return json body as @code{<T>}
+     * @throws JsonException json exception
+     */
+    public static <T> List<T> readJsonArray(JsonNode nodes, Class<T> clazz) throws JsonException {
+        return readJsonArray(nodes, node -> {
+            try {
+                return objectMapper.treeToValue(node, clazz);
+            } catch (JsonProcessingException e) {
+                throw new JsonException(e);
+            }
+        });
+    }
+
+    /**
+     * @param name name of query string
+     * @return long value from query string
+     * @throws ParamException query param not found
      */
     public long queryLong(String name) throws ParamException {
-        return RestfulUtils.queryLong(request, name);
+        try {
+            String value = queryString(name);
+            return Long.parseLong(value);
+        } catch (NumberFormatException e) {
+            throw new ParamException(name);
+        }
     }
 
     /**
-     * {@link RestfulUtils#queryInt(Request, String)}
+     * @param name name of query string
+     * @return integer value from query string
+     * @throws ParamException query param not found
      */
     public int queryInt(String name) throws ParamException {
-        return RestfulUtils.queryInt(request, name);
+        try {
+            String value = queryString(name);
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            throw new ParamException(name);
+        }
     }
 
     /**
-     * {@link RestfulUtils#queryDouble(Request, String)}
+     * @param name name of query string
+     * @return double value from query string
+     * @throws ParamException query param not found
      */
     public double queryDouble(String name) throws ParamException {
-        return RestfulUtils.queryDouble(request, name);
+        try {
+            String value = queryString(name);
+            return Double.parseDouble(value);
+        } catch (NumberFormatException e) {
+            throw new ParamException(name);
+        }
     }
 
     /**
-     * {@link RestfulUtils#queryBool(Request, String)}
+     * Boolean query string by checking string.equal("true")
+     *
+     * @param name name of query string
+     * @return boolean value from query string
+     * @throws ParamException query param not found
      */
     public boolean queryBool(String name) throws ParamException {
-        return RestfulUtils.queryBool(request, name);
+        return Boolean.parseBoolean(queryString(name));
     }
 
     /**
-     * {@link RestfulUtils#queryString(Request, String)}
+     * @param name name of query string
+     * @return String value
+     * @throws ParamException query param not found
      */
     public String queryString(String name) throws ParamException {
-        return RestfulUtils.queryString(request, name);
+        String value = request.queryParams(name);
+        if (StringUtils.isNotBlank(value)) {
+            return value;
+        }
+        throw new ParamException(name);
     }
 
     /**
-     * {@link RestfulUtils#queryString(Request, String, String)}
+     * @param name         name of query string
+     * @param defaultValue default String value
+     * @return String value
      */
     public String queryString(String name, String defaultValue) throws ParamException {
-        return RestfulUtils.queryString(request, name, defaultValue);
+        String value = request.queryParams(name);
+        if (StringUtils.isNotBlank(value)) {
+            return value;
+        }
+        return defaultValue;
     }
 
     /**
-     * {@link RestfulUtils#pathLong(Request, String)}
+     * @param name name of path param
+     * @return Long value
+     * @throws ParamException path param not found
      */
     public long pathLong(String name) throws ParamException {
-        return RestfulUtils.pathLong(request, name);
+        try {
+            String value = pathString(name);
+            return Long.parseLong(value);
+        } catch (NumberFormatException e) {
+            throw new ParamException(name);
+        }
     }
 
     /**
-     * {@link RestfulUtils#pathInt(Request, String)}
+     * @param name name of path param
+     * @return Int value
+     * @throws ParamException path param not found
      */
     public int pathInt(String name) throws ParamException {
-        return RestfulUtils.pathInt(request, name);
+        try {
+            String value = pathString(name);
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            throw new ParamException(name);
+        }
     }
 
     /**
-     * {@link RestfulUtils#pathDouble(Request, String)}
+     * @param name name of path param
+     * @return Double value
+     * @throws ParamException path param not found
      */
     public double pathDouble(String name) throws ParamException {
-        return RestfulUtils.pathDouble(request, name);
+        try {
+            String value = pathString(name);
+            return Double.parseDouble(value);
+        } catch (NumberFormatException e) {
+            throw new ParamException(name);
+        }
     }
 
     /**
-     * {@link RestfulUtils#pathString(Request, String)}
+     * @param name name of path param
+     * @return String value
+     * @throws ParamException path param not found
      */
     public String pathString(String name) throws ParamException {
-        return RestfulUtils.pathString(request, name);
+        String value = request.params(name);
+        if (StringUtils.isNotBlank(value)) {
+            return value;
+        }
+        throw new ParamException(name);
     }
 
     /**

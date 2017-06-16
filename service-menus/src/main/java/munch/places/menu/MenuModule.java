@@ -8,7 +8,7 @@ import com.google.inject.multibindings.Multibinder;
 import com.squareup.pollexor.Thumbor;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import munch.restful.server.JsonUtils;
+import munch.restful.server.JsonService;
 import munch.restful.server.RestfulService;
 
 /**
@@ -37,7 +37,7 @@ public class MenuModule extends AbstractModule {
     @Provides
     @Singleton
     ObjectMapper provideObjectMapper() {
-        return JsonUtils.objectMapper;
+        return JsonService.objectMapper;
     }
 
     @Provides

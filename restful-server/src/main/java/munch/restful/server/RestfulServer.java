@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import munch.restful.server.exceptions.StructuredException;
+import munch.restful.core.exception.StructuredException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,7 +65,7 @@ public class RestfulServer {
         // Setup port
         Spark.port(port);
 
-        // Spark after register json as content type
+        // Spark after register all path content type as json
         Spark.after((req, res) -> res.type(JsonService.APP_JSON));
         logger.info("Registered all response Content-Type as application/json");
 
@@ -76,16 +76,25 @@ public class RestfulServer {
         }
 
         // Default not found meta
-        JsonNode notFound = JsonUtils.nodes(JsonUtils.metaNode(
-                404, "EndpointNotFound", "Requested endpoint is not registered."));
-        Spark.notFound((req, res) -> JsonUtils.toJson(notFound));
-        logger.info("Registered http 404 not found json response.");
+        handleNotFound();
 
         // Handle all expected exceptions
         handleException();
         logger.info("Started Spark Server on port: {}", port);
         this.started = true;
     }
+
+    protected void handleNotFound() {
+        JsonNode notFound = objectMapper.createObjectNode()
+                .set("meta", objectMapper.createObjectNode()
+                        .put("code", 200)
+                        .put("errorType", "EndpointNotFound")
+                        .put("errorMessage", "Requested endpoint is not registered."));
+
+        Spark.notFound((req, res) -> JsonTransformer.toJson(notFound));
+        logger.info("Registered http 404 not found json response.");
+    }
+
 
     /**
      * All exceptions that can be expected and handled is handled.
