@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import munch.restful.core.RestfulMeta;
+import munch.restful.core.exception.CodeException;
 import munch.restful.core.exception.StructuredException;
 import munch.restful.core.exception.UnknownException;
 import org.slf4j.Logger;
@@ -98,7 +99,23 @@ public class RestfulServer {
      * @see RestfulMeta to see how it is formatted
      */
     protected void handleException() {
-        logger.info("Adding exception handling for StructuredError.");
+        logger.info("Adding exception handling for CodeException.");
+        Spark.exception(CodeException.class, (exception, request, response) -> {
+            logger.trace("Code exception thrown", exception);
+            int code = ((CodeException) exception).getCode();
+            try {
+                response.status(code);
+                JsonNode nodes = objectMapper.createObjectNode()
+                        .set("meta", objectMapper.createObjectNode()
+                                .put("code", code));
+                response.body(objectMapper.writeValueAsString(nodes));
+                response.type(JsonService.APP_JSON);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        logger.info("Adding exception handling for StructuredException.");
         Spark.exception(StructuredException.class, (exception, request, response) -> {
             logger.warn("Structured exception thrown", exception);
             handleException(response, (StructuredException) exception);
@@ -134,8 +151,8 @@ public class RestfulServer {
     protected void handleException(Response response, StructuredException exception) {
         try {
             response.status(exception.getCode());
-            JsonNode nodes = objectMapper.createObjectNode().set(
-                    "meta", objectMapper.valueToTree(exception.toMeta()));
+            JsonNode nodes = objectMapper.createObjectNode()
+                    .set("meta", objectMapper.valueToTree(exception.toMeta()));
             response.body(objectMapper.writeValueAsString(nodes));
             response.type(JsonService.APP_JSON);
         } catch (JsonProcessingException e) {
