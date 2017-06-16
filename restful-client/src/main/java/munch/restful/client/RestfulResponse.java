@@ -49,7 +49,7 @@ public class RestfulResponse {
             this.jsonNode = objectMapper.readTree(response.getBody());
             try {
                 meta = JsonUtils.toObject(getNode().path("meta"), RestfulMeta.class);
-            } catch (IOException e) {
+            } catch (JsonException e) {
                 throw new RuntimeException("RestfulMeta cannot be parsed.", e);
             }
         } catch (IOException e) {
@@ -121,10 +121,6 @@ public class RestfulResponse {
     }
 
     public <T> List<T> asDataList(Class<T> clazz) {
-        try {
-            return JsonUtils.toList(getDataNode(), clazz);
-        } catch (IOException e) {
-            throw new JsonException(e);
-        }
+        return JsonUtils.toList(getDataNode(), clazz);
     }
 }

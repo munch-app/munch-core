@@ -10,7 +10,6 @@ import spark.Request;
 import spark.Response;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -78,7 +77,7 @@ public class JsonCall {
      * @return List as type
      */
     public <T> List<T> bodyAsList(Class<T> clazz) {
-        return readJsonArray(bodyAsJson(), clazz);
+        return JsonUtils.toList(bodyAsJson(), clazz);
     }
 
     /**
@@ -87,41 +86,7 @@ public class JsonCall {
      * @return List as type
      */
     public <T> List<T> bodyAsList(Function<JsonNode, T> mapper) {
-        return readJsonArray(bodyAsJson(), mapper);
-    }
-
-    /**
-     * Map json node to List of POJO Bean
-     *
-     * @param nodes  array node
-     * @param mapper json mapper
-     * @param <T>    Return Class Type
-     * @return json body as @code{<T>}
-     * @throws JsonException json exception
-     */
-    public static <T> List<T> readJsonArray(JsonNode nodes, Function<JsonNode, T> mapper) throws JsonException {
-        List<T> list = new ArrayList<>();
-        for (JsonNode node : nodes) {
-            list.add(mapper.apply(node));
-        }
-        return list;
-    }
-
-    /**
-     * Map json node to List of POJO Bean
-     *
-     * @param nodes array node
-     * @param clazz Class Type to return
-     * @param <T>   Return Class Type
-     * @return json body as @code{<T>}
-     * @throws JsonException json exception
-     */
-    public static <T> List<T> readJsonArray(JsonNode nodes, Class<T> clazz) throws JsonException {
-        try {
-            return JsonUtils.toList(nodes, clazz);
-        } catch (IOException e) {
-            throw new JsonException(e);
-        }
+        return JsonUtils.toList(bodyAsJson(), mapper);
     }
 
     /**

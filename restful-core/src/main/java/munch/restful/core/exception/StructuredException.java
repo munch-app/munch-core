@@ -32,7 +32,7 @@ public class StructuredException extends RuntimeException {
      * @param type    error type name
      * @param message error message
      */
-    protected StructuredException(int code, String type, String message) {
+    public StructuredException(int code, String type, String message) {
         this(code, type, message, (String) null);
     }
 
@@ -42,7 +42,7 @@ public class StructuredException extends RuntimeException {
      * @param message   error message
      * @param throwable error stacktrace
      */
-    protected StructuredException(int code, String type, String message, Throwable throwable) {
+    public StructuredException(int code, String type, String message, Throwable throwable) {
         this(code, type, message, throwable != null ? ExceptionUtils.getStackTrace(throwable) : null);
     }
 

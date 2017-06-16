@@ -1,6 +1,8 @@
 package munch.restful.core;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
@@ -104,6 +106,7 @@ public final class RestfulMeta {
         }
     }
 
+    @JsonIgnore
     public static Builder builder() {
         return new Builder();
     }
@@ -111,6 +114,7 @@ public final class RestfulMeta {
     /**
      * Restful meta builder class not POJO
      */
+    @JsonIgnoreType
     public static class Builder {
 
         private RestfulMeta meta;

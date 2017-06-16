@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import spark.Response;
 import spark.Spark;
 
-import javax.annotation.Nullable;
 import java.util.Set;
 
 /**
@@ -108,31 +107,29 @@ public class RestfulServer {
         logger.info("Adding exception handling for all Exception.");
         Spark.exception(Exception.class, (exception, request, response) -> {
             logger.warn("Structured exception thrown", exception);
-            StructuredException structured = mapException(exception);
-            if (structured != null) {
-                // Mapped exception
-                handleException(response, structured);
-            } else {
+            try {
+                mapException(exception);
                 // Unknown exception
                 handleException(response, new UnknownException(exception));
+            } catch (StructuredException structured) {
+                // Mapped exception
+                handleException(response, structured);
             }
         });
     }
 
     /**
+     * If mapped, you can throw it
+     *
      * @param exception additional exception to map
-     * @return Structured exception, null = unknown
+     * @throws StructuredException mapped exceptions
      */
-    @Nullable
-    protected StructuredException mapException(Exception exception) {
-        return null;
+    protected void mapException(Exception exception) throws StructuredException {
     }
 
     /**
-     * @param response     response to write to
-     * @param code         int status code
-     * @param errorType    error type
-     * @param errorMessage error message
+     * @param response  response to write to
+     * @param exception exception to write
      */
     protected void handleException(Response response, StructuredException exception) {
         try {
