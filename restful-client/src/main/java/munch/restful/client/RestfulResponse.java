@@ -123,4 +123,20 @@ public class RestfulResponse {
     public <T> List<T> asDataList(Class<T> clazz) {
         return JsonUtils.toList(getDataNode(), clazz);
     }
+
+    /**
+     * Validate meta code of response
+     *
+     * @param codes codes to validate
+     */
+    public void hasCode(int... codes) {
+        int code = getMeta().getCode();
+        for (int i : codes) {
+            if (i == code) {
+                return;
+            }
+        }
+
+        throw new StructuredException(code, "CodeException", "Explicit validation on code failed.");
+    }
 }
