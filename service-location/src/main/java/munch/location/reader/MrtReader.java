@@ -21,6 +21,8 @@ import java.util.stream.Collectors;
  */
 public class MrtReader {
 
+    private static final double radius = DegreeMetres.kmToDegree(1.0);
+
     public List<LocationV2> read() throws IOException {
         URL url = Resources.getResource("reader/mrt.csv");
         String csv = Resources.toString(url, Charset.forName("UTF-8"));
@@ -34,7 +36,7 @@ public class MrtReader {
 
                     // Create polygon circle
                     Coordinate coordinate = new Coordinate(Double.parseDouble(lines[2]), Double.parseDouble(lines[1]));
-                    location.setPolygon(createCircle(coordinate, 0.009, 10));
+                    location.setPolygon(createCircle(coordinate, radius, 10));
 
                     return location;
                 }).collect(Collectors.toList());
