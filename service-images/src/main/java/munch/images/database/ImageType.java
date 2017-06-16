@@ -2,7 +2,7 @@ package munch.images.database;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.ImmutableSet;
-import munch.restful.server.exceptions.StructuredException;
+import munch.restful.core.exception.StructuredException;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
@@ -129,7 +129,7 @@ public enum ImageType {
      */
     public static class NotFoundException extends StructuredException {
         NotFoundException(String kind) {
-            super("ImageKindNotFoundException", "ImageKind: " + kind + " not found.", 400);
+            super(400, "ImageKindNotFoundException", "ImageKind: " + kind + " not found.");
         }
     }
 }

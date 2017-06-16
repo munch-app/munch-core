@@ -9,13 +9,11 @@ import com.typesafe.config.Config;
 import munch.images.database.ImageMapper;
 import munch.images.database.ImageMeta;
 import munch.images.database.ImageType;
+import munch.restful.core.exception.StructuredException;
+import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
-import munch.restful.server.exceptions.StructuredException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
-import spark.Request;
-import spark.Response;
-import spark.Spark;
 
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletException;
@@ -53,12 +51,11 @@ public class PutService implements JsonService {
         PATH("/images", () -> {
             // Check if thumbor exists
             if (config.hasPath("image.thumbor.url")) {
-                Spark.put("", "multipart/form-data", this::put, toJson);
+                PUT("", "multipart/form-data", this::put);
             } else {
-                Spark.put("", "multipart/form-data", (req, res) -> {
-                    throwError("ThumborNotAvailable", "Required thumbor instance not available.", 501);
-                    return null;
-                }, toJson);
+                PUT("", "multipart/form-data", call -> {
+                    throw new ThumborNotAvailable();
+                });
             }
         });
     }
@@ -67,19 +64,18 @@ public class PutService implements JsonService {
      * Create new image
      * multipart = file
      *
-     * @param request  Spark request
-     * @param response Spark response
+     * @param call Json call
      * @return newly create image
      * @throws IOException      network error
      * @throws ContentTypeError content error
      */
-    private ImageMeta put(Request request, Response response) throws IOException, ContentTypeError, ServletException {
-        Set<ImageType> kinds = ImageType.resolveKinds(request.queryParams("kinds"));
+    private ImageMeta put(JsonCall call) throws IOException, ContentTypeError, ServletException {
+        Set<ImageType> kinds = ImageType.resolveKinds(call.queryString("kinds", null));
         if (kinds.isEmpty()) kinds = ImageType.DEFAULT_KINDS;
 
         // Get file part
-        request.attribute("org.eclipse.jetty.multipartConfig", multipartConfig);
-        Part part = request.raw().getPart("file");
+        call.request().attribute("org.eclipse.jetty.multipartConfig", multipartConfig);
+        Part part = call.request().raw().getPart("file");
 
         // Upload the image
         try (InputStream inputStream = part.getInputStream()) {
@@ -103,7 +99,7 @@ public class PutService implements JsonService {
      */
     private static class NotImageException extends StructuredException {
         private NotImageException(String contentType) {
-            super("NotImageException", "Uploaded content type must be image. (" + contentType + ")", 400);
+            super(400, "NotImageException", "Uploaded content type must be image. (" + contentType + ")");
         }
     }
 }

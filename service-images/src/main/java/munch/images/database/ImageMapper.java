@@ -8,7 +8,7 @@ import com.munch.utils.file.FileEndpoint;
 import com.munch.utils.file.FileMapper;
 import com.squareup.pollexor.Thumbor;
 import com.squareup.pollexor.ThumborUrlBuilder;
-import munch.restful.server.exceptions.StructuredException;
+import munch.restful.core.exception.StructuredException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -63,7 +63,7 @@ public class ImageMapper {
     /**
      * Note: key for image will be generated; currently length is 32
      *
-     * @param file file to persist
+     * @param file        file to persist
      * @param contentType content type of file
      * @param kinds       types of image
      * @return newly created Image object
@@ -174,13 +174,13 @@ public class ImageMapper {
 
     private static class OriginalNotFoundException extends StructuredException {
         private OriginalNotFoundException() {
-            super("OriginalNotFoundException", "Required original image deleted.", 500);
+            super(500, "OriginalNotFoundException", "Required original image deleted.");
         }
     }
 
     private static class ImageKindsEmptyException extends StructuredException {
         private ImageKindsEmptyException() {
-            super("ImageKindsEmptyException", "Image kinds is not given before upload. Server error.", 500);
+            super(500, "ImageKindsEmptyException", "Image kinds is not given before upload. Server error.");
         }
     }
 

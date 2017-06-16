@@ -1,8 +1,8 @@
 package munch.restful.server;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import munch.restful.core.JsonUtils;
 import munch.restful.core.exception.JsonException;
 import munch.restful.core.exception.ParamException;
 import org.apache.commons.lang3.StringUtils;
@@ -117,13 +117,11 @@ public class JsonCall {
      * @throws JsonException json exception
      */
     public static <T> List<T> readJsonArray(JsonNode nodes, Class<T> clazz) throws JsonException {
-        return readJsonArray(nodes, node -> {
-            try {
-                return objectMapper.treeToValue(node, clazz);
-            } catch (JsonProcessingException e) {
-                throw new JsonException(e);
-            }
-        });
+        try {
+            return JsonUtils.toList(nodes, clazz);
+        } catch (IOException e) {
+            throw new JsonException(e);
+        }
     }
 
     /**

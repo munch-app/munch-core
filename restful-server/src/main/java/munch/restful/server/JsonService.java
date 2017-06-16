@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import munch.restful.core.JsonUtils;
 import munch.restful.core.RestfulMeta;
 import munch.restful.core.exception.JsonException;
 import spark.ResponseTransformer;
@@ -22,7 +23,7 @@ import spark.Spark;
 public interface JsonService extends RestfulService {
     String APP_JSON = "application/json";
 
-    ObjectMapper objectMapper = new ObjectMapper();
+    ObjectMapper objectMapper = JsonUtils.objectMapper;
 
     /**
      * Theses nodes are pre-build notes, use the as a whole don't

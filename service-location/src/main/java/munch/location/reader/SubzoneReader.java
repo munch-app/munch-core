@@ -14,7 +14,7 @@ import java.util.List;
 public class SubzoneReader {
 
     public List<LocationV2> read() throws IOException {
-
+        // TODO polygon union
         return null;
     }
 

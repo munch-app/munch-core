@@ -1,13 +1,8 @@
 package munch.restful.client;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.CollectionType;
 import com.mashape.unirest.http.HttpMethod;
-import munch.restful.client.exception.ExceptionParser;
-
-import java.util.List;
+import munch.restful.core.JsonUtils;
 
 /**
  * Created By: Fuxing Loh
@@ -16,7 +11,7 @@ import java.util.List;
  * Project: munch-core
  */
 public abstract class RestfulClient {
-    protected static final ObjectMapper mapper = new ObjectMapper();
+    protected static final ObjectMapper objectMapper = JsonUtils.objectMapper;
 
     private final String url;
 
@@ -78,18 +73,5 @@ public abstract class RestfulClient {
     protected RestfulRequest doPut(String path) {
         RestfulRequest request = new RestfulRequest(HttpMethod.PUT, path(path));
         return before(request);
-    }
-
-    public static <T> T toObject(JsonNode node, Class<T> clazz) {
-        try {
-            return mapper.treeToValue(node, clazz);
-        } catch (JsonProcessingException e) {
-            throw ExceptionParser.handle(e);
-        }
-    }
-
-    public static <T> List<T> toList(JsonNode nodes, Class<T> clazz) {
-        CollectionType type = mapper.getTypeFactory().constructCollectionType(List.class, clazz);
-        return mapper.convertValue(nodes, type);
     }
 }

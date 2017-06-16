@@ -4,17 +4,17 @@ package munch.restful.client;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.CollectionType;
 import com.mashape.unirest.http.Headers;
 import com.mashape.unirest.http.HttpResponse;
-import munch.restful.client.exception.ExceptionParser;
-import munch.restful.client.exception.StructuredException;
+import munch.restful.core.JsonUtils;
+import munch.restful.core.RestfulMeta;
+import munch.restful.core.exception.JsonException;
+import munch.restful.core.exception.StructuredException;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 /**
  * Created By: Fuxing Loh
@@ -23,18 +23,48 @@ import java.util.function.Consumer;
  * Project: munch-core
  */
 public class RestfulResponse {
-    protected static final ObjectMapper mapper = RestfulClient.mapper;
+    protected static final ObjectMapper objectMapper = RestfulClient.objectMapper;
 
     private final JsonNode jsonNode;
+    private final RestfulMeta meta;
     private final HttpResponse<InputStream> response;
 
-    RestfulResponse(HttpResponse<InputStream> response) {
+    /**
+     * For error parser, as long there is error node it is consider a error and will be converted to Structured Error
+     * <pre>
+     * {
+     *      meta: {
+     *          code: 200 or 404
+     *          error: {} // THIS
+     *      }
+     * }
+     * </pre>
+     *
+     * @param response unirest response
+     * @param handler  handler for error
+     */
+    RestfulResponse(RestfulRequest request, HttpResponse<InputStream> response, BiConsumer<RestfulResponse, StructuredException> handler) {
         this.response = response;
         try {
-            this.jsonNode = mapper.readTree(response.getBody());
+            this.jsonNode = objectMapper.readTree(response.getBody());
+            try {
+                meta = JsonUtils.toObject(getNode().path("meta"), RestfulMeta.class);
+            } catch (IOException e) {
+                throw new RuntimeException("RestfulMeta cannot be parsed.", e);
+            }
         } catch (IOException e) {
-            throw ExceptionParser.handle(e);
+            throw new JsonException(e);
         }
+
+        // Create structured exception first
+        StructuredException structured = null;
+        if (meta.getError() != null) structured = StructuredException.fromMeta(meta, request.request.getUrl());
+
+        // Run through handler
+        handler.accept(this, structured);
+
+        // Then else if structured exist, throw it
+        if (structured != null) throw structured;
     }
 
     public int getStatus() {
@@ -63,35 +93,8 @@ public class RestfulResponse {
         return jsonNode;
     }
 
-    /**
-     * @return json node
-     */
-    public JsonNode getMetaNode() {
-        return getNode().path("meta");
-    }
-
-    /**
-     * @return error type from meta node
-     */
-    @Nullable
-    public String getErrorType() {
-        return getMetaNode().path("errorType").asText(null);
-    }
-
-    /**
-     * If no error type found, will always return false
-     *
-     * @param types array of error type
-     * @return true if contain a error type and is equal to given type
-     */
-    public boolean hasErrorType(String... types) {
-        String errorType = getErrorType();
-        if (errorType == null) return false;
-
-        for (String type : types) {
-            if (errorType.equals(type)) return true;
-        }
-        return false;
+    public RestfulMeta getMeta() {
+        return meta;
     }
 
     /**
@@ -99,39 +102,6 @@ public class RestfulResponse {
      */
     public JsonNode getDataNode() {
         return getNode().path("data");
-    }
-
-    /**
-     * Check that meta json has follow codes
-     * if not structured error will be thrown
-     *
-     * @param codes allowed codes in meta
-     * @return RestfulResponse
-     * @throws StructuredException if codes are not matched
-     */
-    public RestfulResponse hasMetaCodes(int... codes) throws StructuredException {
-        JsonNode meta = jsonNode.path("meta");
-        int code = meta.path("code").asInt();
-        for (int c : codes) {
-            if (code == c) return this;
-        }
-
-        // Construct StructuredException
-        String type = meta.path("errorType").asText(null);
-        String message = meta.path("errorMessage").asText(null);
-        String detailed = meta.path("errorDetailed").asText(null);
-        throw new StructuredException(code, type, message, detailed);
-    }
-
-    /**
-     * Handle response for anything
-     *
-     * @param handler response handler
-     * @return RestfulResponse
-     */
-    public RestfulResponse handle(Consumer<RestfulResponse> handler) {
-        handler.accept(this);
-        return this;
     }
 
     /**
@@ -144,14 +114,17 @@ public class RestfulResponse {
         try {
             JsonNode data = getDataNode();
             if (data.isNull() || data.isMissingNode()) return null;
-            return mapper.treeToValue(data, clazz);
+            return objectMapper.treeToValue(data, clazz);
         } catch (JsonProcessingException e) {
-            throw ExceptionParser.handle(e);
+            throw new JsonException(e);
         }
     }
 
     public <T> List<T> asDataList(Class<T> clazz) {
-        CollectionType type = mapper.getTypeFactory().constructCollectionType(List.class, clazz);
-        return mapper.convertValue(getDataNode(), type);
+        try {
+            return JsonUtils.toList(getDataNode(), clazz);
+        } catch (IOException e) {
+            throw new JsonException(e);
+        }
     }
 }

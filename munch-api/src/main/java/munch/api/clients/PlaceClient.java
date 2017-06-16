@@ -34,7 +34,6 @@ public class PlaceClient extends RestfulClient {
     public Place get(String key) {
         return doGet("/places/{key}")
                 .path("key", key)
-                .hasMetaCodes(200, 404)
                 .asDataObject(Place.class);
     }
 
@@ -45,7 +44,6 @@ public class PlaceClient extends RestfulClient {
     public List<Place> get(List<String> keys) {
         return doPost("/places/get")
                 .body(keys)
-                .hasMetaCodes(200)
                 .asDataList(Place.class);
     }
 
@@ -55,7 +53,7 @@ public class PlaceClient extends RestfulClient {
      * @see SearchQuery
      */
     public List<Place> search(SearchQuery query) {
-        return search(mapper.valueToTree(query));
+        return search(objectMapper.valueToTree(query));
     }
 
     /**
@@ -65,7 +63,6 @@ public class PlaceClient extends RestfulClient {
     public List<Place> search(JsonNode node) {
         return doPost("/places/search")
                 .body(node)
-                .hasMetaCodes(200)
                 .asDataList(Place.class);
     }
 
@@ -77,14 +74,13 @@ public class PlaceClient extends RestfulClient {
      * @return List of Place results
      */
     public List<Place> suggest(int size, String query, @Nullable String latLng) {
-        ObjectNode node = mapper.createObjectNode();
+        ObjectNode node = objectMapper.createObjectNode();
         node.put("size", size);
         node.put("query", query);
         node.put("latLng", latLng);
 
         return doPost("/places/suggest")
                 .body(node)
-                .hasMetaCodes(200)
                 .asDataList(Place.class);
     }
 }

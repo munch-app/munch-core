@@ -36,7 +36,6 @@ public final class ArticleClient extends RestfulClient {
                 .path("placeId", placeId)
                 .queryString("from", from)
                 .queryString("size", size)
-                .hasMetaCodes(200)
                 .asDataList(Article.class);
     }
 }

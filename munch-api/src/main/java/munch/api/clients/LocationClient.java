@@ -3,7 +3,7 @@ package munch.api.clients;
 import com.typesafe.config.Config;
 import munch.api.data.Location;
 import munch.restful.client.RestfulClient;
-import munch.restful.client.exception.StructuredException;
+import munch.restful.core.exception.StructuredException;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -28,21 +28,18 @@ public class LocationClient extends RestfulClient {
         return doGet("/reverse")
                 .queryString("lat", lat)
                 .queryString("lng", lng)
-                .hasMetaCodes(200, 404)
                 .asDataObject(Location.class);
     }
 
     public Location geocode(String text) throws StructuredException {
         return doGet("/geocode")
                 .queryString("text", text)
-                .hasMetaCodes(200, 404)
                 .asDataObject(Location.class);
     }
 
     public List<Location> search(String text) throws StructuredException {
         return doGet("/search")
                 .queryString("text", text)
-                .hasMetaCodes(200)
                 .asDataList(Location.class);
     }
 }

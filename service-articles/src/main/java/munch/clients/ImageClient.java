@@ -1,11 +1,11 @@
 package munch.clients;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.typesafe.config.Config;
 import munch.restful.client.RestfulClient;
 import munch.restful.client.RestfulResponse;
+import munch.restful.core.exception.StructuredException;
 import org.apache.http.entity.ContentType;
 
 import javax.inject.Named;
@@ -33,23 +33,20 @@ public class ImageClient extends RestfulClient {
     public ImageMeta get(String key) {
         return doGet("/images/{key}")
                 .path("key", key)
-                .hasMetaCodes(200, 404)
                 .asDataObject(ImageMeta.class);
     }
 
     public ImageMeta put(File file, ContentType contentType) throws NotImageException {
         return doPut("/images")
                 .field("file", file, contentType.getMimeType())
-                .handle(NotImageException::handle)
-                .hasMetaCodes(200)
+                .asResponse(NotImageException::handle)
                 .asDataObject(ImageMeta.class);
     }
 
     public ImageMeta put(InputStream stream, ContentType contentType, String fileName) throws NotImageException {
         return doPut("/images")
                 .field("file", stream, contentType, fileName)
-                .handle(NotImageException::handle)
-                .hasMetaCodes(200)
+                .asResponse(NotImageException::handle)
                 .asDataObject(ImageMeta.class);
     }
 
@@ -63,31 +60,17 @@ public class ImageClient extends RestfulClient {
     public void delete(String key) {
         doDelete("/images/{key}")
                 .path("key", key)
-                .hasMetaCodes(200);
+                .asResponse();
     }
 
-    public static class NotImageException extends RuntimeException {
-        private final String type;
+    static class NotImageException extends StructuredException {
 
-        public NotImageException(String type, String message) {
-            super(message);
-            this.type = type;
+        NotImageException(StructuredException e) {
+            super(e);
         }
 
-        public String getType() {
-            return type;
-        }
-
-        /**
-         * Default data client error handling
-         *
-         * @param response response to handle
-         */
-        public static void handle(RestfulResponse response) {
-            if (response.hasErrorType("NotImageException")) {
-                JsonNode meta = response.getMetaNode();
-                throw new NotImageException(response.getErrorType(), meta.path("errorMessage").asText());
-            }
+        static void handle(RestfulResponse r, StructuredException e) {
+            if (e != null && e.hasType("NotImageException")) throw new NotImageException(e);
         }
     }
 }

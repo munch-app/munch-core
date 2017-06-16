@@ -7,8 +7,11 @@ import com.mashape.unirest.http.HttpMethod;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.HttpRequestWithBody;
 import com.mashape.unirest.request.body.MultipartBody;
-import munch.restful.client.exception.ExceptionParser;
-import munch.restful.client.exception.StructuredException;
+import munch.restful.client.exception.OfflineException;
+import munch.restful.client.exception.TimeoutException;
+import munch.restful.core.exception.JsonException;
+import munch.restful.core.exception.StructuredException;
+import munch.restful.core.exception.UnknownException;
 import org.apache.http.entity.ContentType;
 
 import java.io.File;
@@ -16,7 +19,7 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 /**
  * Created By: Fuxing Loh
@@ -25,7 +28,7 @@ import java.util.function.Consumer;
  * Project: munch-core
  */
 public class RestfulRequest {
-    protected static final ObjectMapper mapper = RestfulClient.mapper;
+    protected static final ObjectMapper objectMapper = RestfulClient.objectMapper;
 
     protected final HttpRequestWithBody request;
     protected MultipartBody multipartBody;
@@ -155,10 +158,10 @@ public class RestfulRequest {
      */
     public RestfulRequest body(Object object) {
         try {
-            request.body(mapper.writeValueAsBytes(object));
+            request.body(objectMapper.writeValueAsBytes(object));
             return this;
         } catch (JsonProcessingException e) {
-            throw ExceptionParser.handle(e);
+            throw new JsonException(e);
         }
     }
 
@@ -179,55 +182,33 @@ public class RestfulRequest {
     }
 
     /**
-     * Check that meta json has follow codes
-     * If not structured error will be thrown
-     * In order to handle exception separately, handle function should be called first
-     *
-     * @param codes allowed codes in meta
-     * @return RestfulResponse
-     * @throws StructuredException if codes are not matched
-     */
-    public RestfulResponse hasMetaCodes(int... codes) throws StructuredException {
-        return asResponse().hasMetaCodes(codes);
-    }
-
-    /**
-     * Using default exception parser
+     * Call service and convert request to response
+     * At the same time OfflineException and TimeoutException is parsed
+     * Other exception will be parsed to unknown exception
      *
      * @return RestfulResponse
      */
     public RestfulResponse asResponse() {
-        return asResponse((exception, response) -> {
-            if (exception != null) throw ExceptionParser.handle(exception);
+        return asResponse((restfulResponse, e) -> {
         });
     }
 
     /**
-     * Handle response, both exception and response
+     * Call service and convert request to response
+     * At the same time OfflineException and TimeoutException is parsed
+     * Other exception will be parsed to unknown exception
      *
-     * @param handler response handler
-     * @param <E>     Exception
      * @return RestfulResponse
-     * @throws E exception
      */
-    public <E extends Exception> RestfulResponse asResponse(ResponseHandler<E> handler) throws E {
+    public RestfulResponse asResponse(BiConsumer<RestfulResponse, StructuredException> handler) {
         try {
-            RestfulResponse response = new RestfulResponse(request.asBinary());
-            handler.handle(null, response);
-            return response;
+            return new RestfulResponse(this, request.asBinary(), handler);
         } catch (UnirestException e) {
-            handler.handle((Exception) e.getCause(), null);
-            return null;
+            // Try parse error
+            Exception cause = (Exception) e.getCause();
+            OfflineException.parse(cause);
+            TimeoutException.parse(cause);
+            throw new UnknownException(e);
         }
-    }
-
-    /**
-     * Handle response for anything
-     *
-     * @param handler response handler
-     * @return RestfulResponse
-     */
-    public RestfulResponse handle(Consumer<RestfulResponse> handler) {
-        return asResponse().handle(handler);
     }
 }

@@ -1,4 +1,4 @@
-package munch.restful.server;
+package munch.restful;
 
 import org.junit.jupiter.api.Test;
 

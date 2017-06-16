@@ -36,7 +36,6 @@ public class GalleryClient extends RestfulClient {
                 .path("placeId", placeId)
                 .queryString("from", from)
                 .queryString("size", size)
-                .hasMetaCodes(200)
                 .asDataList(Media.class);
     }
 }

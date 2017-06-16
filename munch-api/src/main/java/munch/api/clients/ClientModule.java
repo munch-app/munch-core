@@ -4,6 +4,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import munch.restful.WaitFor;
 
 import javax.inject.Inject;
 import javax.inject.Named;

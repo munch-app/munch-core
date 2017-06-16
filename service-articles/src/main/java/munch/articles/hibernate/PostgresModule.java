@@ -7,6 +7,7 @@ import com.google.inject.Singleton;
 import com.munch.hibernate.utils.HibernateUtils;
 import com.munch.hibernate.utils.TransactionProvider;
 import com.typesafe.config.Config;
+import munch.restful.WaitFor;
 
 import java.time.Duration;
 import java.util.HashMap;
