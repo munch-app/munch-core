@@ -5,7 +5,7 @@ import com.google.inject.name.Names;
 import com.mashape.unirest.http.Unirest;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import munch.restful.client.WaitFor;
+import munch.restful.WaitFor;
 
 import javax.inject.Inject;
 import java.time.Duration;

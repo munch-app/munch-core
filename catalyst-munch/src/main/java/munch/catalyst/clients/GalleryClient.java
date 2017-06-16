@@ -39,7 +39,8 @@ public class GalleryClient extends RestfulClient {
                     .path("placeId", media.getPlaceId())
                     .path("mediaId", media.getMediaId())
                     .body(media)
-                    .hasMetaCodes(200);
+                    .asResponse()
+                    .hasCode(200);
         } catch (NullPointerException e) {
             logger.error("Unable to put Media into GalleryService due to NPE", e);
         }
@@ -79,6 +80,7 @@ public class GalleryClient extends RestfulClient {
         doDelete("/places/{placeId}/gallery/before/{timestamp}")
                 .path("placeId", catalystId)
                 .path("timestamp", updatedDate.getTime())
-                .hasMetaCodes(200);
+                .asResponse()
+                .hasCode(200);
     }
 }

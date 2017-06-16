@@ -38,7 +38,8 @@ public class ArticleClient extends RestfulClient {
             doPost("/places/{placeId}/articles/put")
                     .path("placeId", article.getPlaceId())
                     .body(article)
-                    .hasMetaCodes(200);
+                    .asResponse()
+                    .hasCode(200);
         } catch (NullPointerException e) {
             logger.error("Unable to put Media into ArticleClient due to NPE", e);
         }
@@ -80,6 +81,7 @@ public class ArticleClient extends RestfulClient {
         doDelete("/places/{placeId}/articles/before/{timestamp}")
                 .path("placeId", catalystId)
                 .path("timestamp", updatedDate.getTime())
-                .hasMetaCodes(200);
+                .asResponse()
+                .hasCode(200);
     }
 }

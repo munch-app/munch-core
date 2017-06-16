@@ -211,4 +211,13 @@ public class RestfulRequest {
             throw new UnknownException(e);
         }
     }
+
+    /**
+     * Validate meta code of response
+     *
+     * @param codes codes to validate
+     */
+    public void hasCode(int... codes) {
+        asResponse().hasCode(codes);
+    }
 }

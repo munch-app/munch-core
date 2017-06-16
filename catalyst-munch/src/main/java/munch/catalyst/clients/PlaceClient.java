@@ -19,8 +19,6 @@ public class PlaceClient extends RestfulClient {
 
     /**
      * Look at data service package to api service settings
-     *
-     * @param config config to load data.url
      */
     @Inject
     public PlaceClient(@Named("services.places.url") String url) {
@@ -31,12 +29,14 @@ public class PlaceClient extends RestfulClient {
         doPut("/places/{id}")
                 .path("id", place.getId())
                 .body(place)
-                .hasMetaCodes(200);
+                .asResponse()
+                .hasCode(200);
     }
 
     public void deleteBefore(Date updatedDate) {
         doDelete("/places/before/{timestamp}")
                 .path("timestamp", updatedDate.getTime())
-                .hasMetaCodes(200);
+                .asResponse()
+                .hasCode(200);
     }
 }

@@ -94,7 +94,7 @@ configure(subprojects.findAll { it.name.matches("munch-api|catalyst-munch|servic
 
 configure(subprojects.findAll { it.name.matches("restful-(.+)") }) {
     group 'munch'
-    version '0.8.5'
+    version '0.8.6'
 
     task publishLib {
         dependsOn 'build'
