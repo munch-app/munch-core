@@ -33,7 +33,6 @@ public class LocationModule extends AbstractModule {
 
     public static void main(String[] args) {
         Injector injector = Guice.createInjector(new LocationModule());
-        // Start server on default port in setting = http.port
         final RestfulServer server = injector.getInstance(Server.class);
         server.start(ConfigFactory.load().getInt("http.port"));
     }

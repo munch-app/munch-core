@@ -6,7 +6,7 @@ import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.simplify.TopologyPreservingSimplifier;
-import munch.location.database.LocationV2;
+import munch.location.database.Location;
 import org.apache.commons.lang3.StringUtils;
 import org.wololo.geojson.Feature;
 import org.wololo.geojson.FeatureCollection;
@@ -31,7 +31,7 @@ public class SubzoneReader {
     private final GeoJSONReader reader = new GeoJSONReader();
     private final GeometryFactory factory = new GeometryFactory();
 
-    public List<LocationV2> read() throws IOException {
+    public List<Location> read() throws IOException {
         Map<String, Geometry> regions = readRegions();
         List<Place> places = readPlaces();
 
@@ -69,7 +69,7 @@ public class SubzoneReader {
             Geometry result = TopologyPreservingSimplifier.simplify(joined, margin);
 
             // Create location set and return
-            LocationV2 location = new LocationV2();
+            Location location = new Location();
             location.setName(place.name);
             if (result.getNumGeometries() > 1) {
                 System.out.println(place.name);

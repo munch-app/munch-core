@@ -2,6 +2,7 @@ package munch.location.database;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
 import org.apache.lucene.analysis.core.KeywordTokenizerFactory;
 import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
 import org.apache.lucene.analysis.core.StopFilterFactory;
@@ -11,44 +12,39 @@ import org.apache.lucene.analysis.ngram.NGramFilterFactory;
 import org.apache.lucene.analysis.pattern.PatternReplaceFilterFactory;
 import org.apache.lucene.analysis.standard.StandardTokenizerFactory;
 import org.hibernate.search.annotations.*;
-import org.hibernate.search.annotations.Index;
-import org.hibernate.search.annotations.Parameter;
 
-import javax.persistence.*;
-import java.util.Set;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 /**
- * Created By: Fuxing Loh
- * Date: 14/4/2017
- * Time: 3:08 PM
+ * Created by: Fuxing
+ * Date: 15/6/2017
+ * Time: 6:36 AM
  * Project: munch-core
  */
 @Entity
 @Indexed
 @AnalyzerDefs({
         @AnalyzerDef(name = "autocompleteEdgeAnalyzer",
-
-// Split input into tokens according to tokenizer
                 tokenizer = @TokenizerDef(factory = KeywordTokenizerFactory.class),
 
                 filters = {
                         // Normalize token text to lowercase, as the user is unlikely to
                         // care about casing when searching for matches
                         @TokenFilterDef(factory = PatternReplaceFilterFactory.class, params = {
-                                @Parameter(name = "pattern", value = "([^a-zA-Z0-9\\.])"),
-                                @Parameter(name = "replacement", value = " "),
-                                @Parameter(name = "replace", value = "all")}),
+                                @org.hibernate.search.annotations.Parameter(name = "pattern", value = "([^a-zA-Z0-9\\.])"),
+                                @org.hibernate.search.annotations.Parameter(name = "replacement", value = " "),
+                                @org.hibernate.search.annotations.Parameter(name = "replace", value = "all")}),
                         @TokenFilterDef(factory = LowerCaseFilterFactory.class),
                         @TokenFilterDef(factory = StopFilterFactory.class),
                         // Index partial words starting at the front, so we can provide
                         // Autocomplete functionality
                         @TokenFilterDef(factory = EdgeNGramFilterFactory.class, params = {
-                                @Parameter(name = "minGramSize", value = "3"),
-                                @Parameter(name = "maxGramSize", value = "50")})}),
+                                @org.hibernate.search.annotations.Parameter(name = "minGramSize", value = "3"),
+                                @org.hibernate.search.annotations.Parameter(name = "maxGramSize", value = "50")})}),
 
         @AnalyzerDef(name = "autocompleteNGramAnalyzer",
-
-// Split input into tokens according to tokenizer
                 tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
 
                 filters = {
@@ -57,17 +53,15 @@ import java.util.Set;
                         @TokenFilterDef(factory = WordDelimiterFilterFactory.class),
                         @TokenFilterDef(factory = LowerCaseFilterFactory.class),
                         @TokenFilterDef(factory = NGramFilterFactory.class, params = {
-                                @Parameter(name = "minGramSize", value = "3"),
-                                @Parameter(name = "maxGramSize", value = "5")}),
+                                @org.hibernate.search.annotations.Parameter(name = "minGramSize", value = "3"),
+                                @org.hibernate.search.annotations.Parameter(name = "maxGramSize", value = "5")}),
                         @TokenFilterDef(factory = PatternReplaceFilterFactory.class, params = {
-                                @Parameter(name = "pattern", value = "([^a-zA-Z0-9\\.])"),
-                                @Parameter(name = "replacement", value = " "),
-                                @Parameter(name = "replace", value = "all")})
+                                @org.hibernate.search.annotations.Parameter(name = "pattern", value = "([^a-zA-Z0-9\\.])"),
+                                @org.hibernate.search.annotations.Parameter(name = "replacement", value = " "),
+                                @org.hibernate.search.annotations.Parameter(name = "replace", value = "all")})
                 }),
 
         @AnalyzerDef(name = "standardAnalyzer",
-
-// Split input into tokens according to tokenizer
                 tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
 
                 filters = {
@@ -76,18 +70,17 @@ import java.util.Set;
                         @TokenFilterDef(factory = WordDelimiterFilterFactory.class),
                         @TokenFilterDef(factory = LowerCaseFilterFactory.class),
                         @TokenFilterDef(factory = PatternReplaceFilterFactory.class, params = {
-                                @Parameter(name = "pattern", value = "([^a-zA-Z0-9\\.])"),
-                                @Parameter(name = "replacement", value = " "),
-                                @Parameter(name = "replace", value = "all")})
-                }) // Def
+                                @org.hibernate.search.annotations.Parameter(name = "pattern", value = "([^a-zA-Z0-9\\.])"),
+                                @org.hibernate.search.annotations.Parameter(name = "replacement", value = " "),
+                                @org.hibernate.search.annotations.Parameter(name = "replace", value = "all")})
+                })
 })
-public final class Location {
-
+public class Location {
     private String name;
     private long sort;
 
     private Point center;
-    private Set<Region> regions;
+    private Polygon polygon;
 
     @Id
     @DocumentId
@@ -106,24 +99,16 @@ public final class Location {
         this.name = name;
     }
 
-    /**
-     * For reverse geo-coding, the one on top is more important
-     *
-     * @return order/sort of place, higher shows up first
-     */
     @JsonIgnore
     @Column(updatable = false, nullable = false)
     public long getSort() {
         return sort;
     }
 
-    public void setSort(long order) {
-        this.sort = order;
+    public void setSort(long sort) {
+        this.sort = sort;
     }
 
-    /**
-     * @return center of the place
-     */
     @Column(updatable = false, nullable = true)
     public Point getCenter() {
         return center;
@@ -133,18 +118,22 @@ public final class Location {
         this.center = center;
     }
 
-    /**
-     * Cannot be empty
-     *
-     * @return multi linked region of place
-     */
-    @JsonIgnore
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    public Set<Region> getRegions() {
-        return regions;
+    @Column(updatable = false, nullable = false)
+    public Polygon getPolygon() {
+        return polygon;
     }
 
-    public void setRegions(Set<Region> regions) {
-        this.regions = regions;
+    public void setPolygon(Polygon polygon) {
+        this.polygon = polygon;
+    }
+
+    @Override
+    public String toString() {
+        return "LocationV2{" +
+                "name='" + name + '\'' +
+                ", sort=" + sort +
+                ", center=" + center +
+                ", polygon=" + polygon +
+                '}';
     }
 }

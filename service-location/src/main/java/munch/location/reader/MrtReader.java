@@ -4,7 +4,7 @@ import com.google.common.io.Resources;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.util.GeometricShapeFactory;
-import munch.location.database.LocationV2;
+import munch.location.database.Location;
 
 import java.io.IOException;
 import java.net.URL;
@@ -23,21 +23,22 @@ public class MrtReader {
 
     private static final double radius = DegreeMetres.kmToDegree(1.0);
 
-    public List<LocationV2> read() throws IOException {
+    public List<Location> read() throws IOException {
         URL url = Resources.getResource("reader/mrt.csv");
         String csv = Resources.toString(url, Charset.forName("UTF-8"));
 
         return Arrays.stream(csv.split("\n"))
                 .map(s -> s.split(","))
                 .map(lines -> {
-                    LocationV2 location = new LocationV2();
+                    double lat = Double.parseDouble(lines[1]);
+                    double lng = Double.parseDouble(lines[2]);
+                    Polygon polygon = createCircle(lat, lng, radius, 10);
+
+                    Location location = new Location();
                     location.setName(lines[0].trim());
                     location.setSort(1);
-
-                    // Create polygon circle
-                    Coordinate coordinate = new Coordinate(Double.parseDouble(lines[2]), Double.parseDouble(lines[1]));
-                    location.setPolygon(createCircle(coordinate, radius, 10));
-
+                    location.setPolygon(polygon);
+                    location.setCenter(polygon.getCentroid());
                     return location;
                 }).collect(Collectors.toList());
     }
@@ -48,10 +49,10 @@ public class MrtReader {
      * @param points     amounts of point in polygon
      * @return Polygon
      */
-    private static Polygon createCircle(Coordinate coordinate, double size, int points) {
+    private static Polygon createCircle(double lat, double lng, double size, int points) {
         // Create circle shape
         GeometricShapeFactory shape = new GeometricShapeFactory();
-        shape.setCentre(coordinate);
+        shape.setCentre(new Coordinate(lng, lat));
         shape.setSize(size);
         shape.setNumPoints(points);
 

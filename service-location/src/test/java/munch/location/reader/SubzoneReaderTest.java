@@ -1,6 +1,6 @@
 package munch.location.reader;
 
-import munch.location.database.LocationV2;
+import munch.location.database.Location;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -23,8 +23,8 @@ class SubzoneReaderTest {
 
     @Test
     void readTest() throws Exception {
-        for (LocationV2 locationV2 : reader.read()) {
-            System.out.println(locationV2.getName());
+        for (Location location : reader.read()) {
+            System.out.println(location.getName());
         }
     }
 
