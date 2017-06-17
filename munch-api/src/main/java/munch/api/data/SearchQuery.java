@@ -156,6 +156,14 @@ public final class SearchQuery {
             private String text;
             private boolean positive;
 
+            public Tag() {
+            }
+
+            public Tag(String text, boolean positive) {
+                this.text = text;
+                this.positive = positive;
+            }
+
             public String getText() {
                 return text;
             }

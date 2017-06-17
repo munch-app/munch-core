@@ -23,11 +23,14 @@ public class PlaceService extends AbstractService {
     private final ArticleClient articleClient;
     private final GalleryClient galleryClient;
 
+    private final PlaceCategorizer categorizer;
+
     @Inject
-    public PlaceService(PlaceClient placeClient, ArticleClient articleClient, GalleryClient galleryClient) {
+    public PlaceService(PlaceClient placeClient, ArticleClient articleClient, GalleryClient galleryClient, PlaceCategorizer categorizer) {
         this.placeClient = placeClient;
         this.articleClient = articleClient;
         this.galleryClient = galleryClient;
+        this.categorizer = categorizer;
     }
 
     /**
@@ -59,8 +62,8 @@ public class PlaceService extends AbstractService {
         SearchQuery query = call.bodyAsObject(SearchQuery.class);
         query.setSize(40);
 
-        // TODO Query Object and Search with List of Collection
-        return null;
+        List<Place> places = placeClient.search(query);
+        return categorizer.categorize(query, places);
     }
 
     /**
