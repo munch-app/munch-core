@@ -1,8 +1,8 @@
-package munch.location.database;
+package munch.location;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
+import munch.location.database.PointsUserType;
 import org.apache.lucene.analysis.core.KeywordTokenizerFactory;
 import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
 import org.apache.lucene.analysis.core.StopFilterFactory;
@@ -11,6 +11,9 @@ import org.apache.lucene.analysis.ngram.EdgeNGramFilterFactory;
 import org.apache.lucene.analysis.ngram.NGramFilterFactory;
 import org.apache.lucene.analysis.pattern.PatternReplaceFilterFactory;
 import org.apache.lucene.analysis.standard.StandardTokenizerFactory;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 import org.hibernate.search.annotations.*;
 
 import javax.persistence.Column;
@@ -75,12 +78,16 @@ import javax.persistence.Id;
                                 @org.hibernate.search.annotations.Parameter(name = "replace", value = "all")})
                 })
 })
+@TypeDefs(value = {
+        @TypeDef(name = "points", typeClass = PointsUserType.class)
+})
 public class Location {
     private String name;
-    private long sort;
+    private String center;
+    private String[] polygonPoints;
 
-    private Point center;
-    private Polygon polygon;
+    private long sort;
+    private Polygon geoPolygon;
 
     @Id
     @DocumentId
@@ -110,21 +117,32 @@ public class Location {
     }
 
     @Column(updatable = false, nullable = true)
-    public Point getCenter() {
+    public String getCenter() {
         return center;
     }
 
-    public void setCenter(Point center) {
+    public void setCenter(String center) {
         this.center = center;
     }
 
+    @JsonIgnore
     @Column(updatable = false, nullable = false)
-    public Polygon getPolygon() {
-        return polygon;
+    public Polygon getGeoPolygon() {
+        return geoPolygon;
     }
 
-    public void setPolygon(Polygon polygon) {
-        this.polygon = polygon;
+    public void setGeoPolygon(Polygon polygon) {
+        this.geoPolygon = polygon;
+    }
+
+    @Type(type = "points")
+    @Column(updatable = false, nullable = false)
+    public String[] getPolygonPoints() {
+        return polygonPoints;
+    }
+
+    public void setPolygonPoints(String[] points) {
+        this.polygonPoints = points;
     }
 
     @Override
@@ -133,7 +151,7 @@ public class Location {
                 "name='" + name + '\'' +
                 ", sort=" + sort +
                 ", center=" + center +
-                ", polygon=" + polygon +
+                ", polygon=" + geoPolygon +
                 '}';
     }
 }

@@ -4,7 +4,7 @@ import com.google.common.io.Resources;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.util.GeometricShapeFactory;
-import munch.location.database.Location;
+import munch.location.Location;
 
 import java.io.IOException;
 import java.net.URL;
@@ -19,10 +19,15 @@ import java.util.stream.Collectors;
  * Time: 6:33 AM
  * Project: munch-core
  */
-public class MrtReader {
-
+public final class MrtReader {
     private static final double radius = DegreeMetres.kmToDegree(1.0);
 
+    /**
+     * Read and return
+     *
+     * @return List of Location
+     * @throws IOException exception
+     */
     public List<Location> read() throws IOException {
         URL url = Resources.getResource("reader/mrt.csv");
         String csv = Resources.toString(url, Charset.forName("UTF-8"));
@@ -37,16 +42,21 @@ public class MrtReader {
                     Location location = new Location();
                     location.setName(lines[0].trim());
                     location.setSort(1);
-                    location.setPolygon(polygon);
-                    location.setCenter(polygon.getCentroid());
+                    location.setGeoPolygon(polygon);
+                    location.setCenter(lat + "," + lng);
+                    String[] points = Arrays.stream(polygon.getCoordinates())
+                            .map(cord -> cord.y + "," + cord.x)
+                            .toArray(String[]::new);
+                    location.setPolygonPoints(points);
                     return location;
                 }).collect(Collectors.toList());
     }
 
     /**
-     * @param coordinate coordinates
-     * @param size       size in decimals
-     * @param points     amounts of point in polygon
+     * @param lat    latitude
+     * @param lng    longitude
+     * @param size   size in decimals
+     * @param points amounts of point in polygon
      * @return Polygon
      */
     private static Polygon createCircle(double lat, double lng, double size, int points) {

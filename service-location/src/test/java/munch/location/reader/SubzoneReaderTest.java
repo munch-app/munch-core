@@ -1,6 +1,6 @@
 package munch.location.reader;
 
-import munch.location.database.Location;
+import munch.location.Location;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

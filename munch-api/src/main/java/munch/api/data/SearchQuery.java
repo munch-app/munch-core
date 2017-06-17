@@ -232,6 +232,9 @@ public final class SearchQuery {
     public static final class Polygon {
         private List<String> points;
 
+        /**
+         * @return as ["lat, lng", "lat, lng"]
+         */
         public List<String> getPoints() {
             return points;
         }

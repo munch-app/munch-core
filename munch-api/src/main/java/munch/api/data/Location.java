@@ -2,12 +2,10 @@ package munch.api.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.wololo.geojson.GeoJSON;
-import org.wololo.geojson.Point;
 
 /**
  * Location POJO is marked out for future development
- *
+ * <p>
  * Created By: Fuxing Loh
  * Date: 17/4/2017
  * Time: 8:34 PM
@@ -17,9 +15,8 @@ import org.wololo.geojson.Point;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class Location {
     private String name;
-
-    private Point center;
-    private GeoJSON geometry;
+    private String center;
+    private String[] polygonPoints;
 
     /**
      * @return name of neighborhood
@@ -33,26 +30,24 @@ public final class Location {
     }
 
     /**
-     * Center for like to put a pin
-     *
-     * @return center of geometry for visual purpose
+     * @return as "lat, lng"
      */
-    public Point getCenter() {
+    public String getCenter() {
         return center;
     }
 
-    public void setCenter(Point center) {
+    public void setCenter(String center) {
         this.center = center;
     }
 
     /**
-     * @return geometry of area
+     * @return as ["lat, lng", "lat, lng"]
      */
-    public GeoJSON getGeometry() {
-        return geometry;
+    public String[] getPolygonPoints() {
+        return polygonPoints;
     }
 
-    public void setGeometry(GeoJSON geometry) {
-        this.geometry = geometry;
+    public void setPolygonPoints(String[] polygonPoints) {
+        this.polygonPoints = polygonPoints;
     }
 }

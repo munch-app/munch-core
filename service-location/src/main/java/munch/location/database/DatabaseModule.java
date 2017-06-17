@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provides;
 import com.munch.hibernate.utils.HibernateUtils;
 import com.munch.hibernate.utils.TransactionProvider;
+import munch.location.Location;
 import munch.location.reader.MrtReader;
 import org.hibernate.search.jpa.Search;
 
@@ -26,6 +27,9 @@ public class DatabaseModule extends AbstractModule {
         requestInjection(this);
     }
 
+    /**
+     * Setup database for geo functions
+     */
     private void setupDatabase() {
         TransactionProvider provider = HibernateUtils.setupFactory("geocoderPersistenceUnit", null);
         provider.with(em -> {
@@ -39,8 +43,14 @@ public class DatabaseModule extends AbstractModule {
         });
     }
 
+    /**
+     * Load all features into database
+     *
+     * @param provider provider
+     * @throws IOException exceptions
+     */
     @Inject
-    private void setupFeatures(TransactionProvider provider) throws IOException {
+    private void loadFeatures(TransactionProvider provider) throws IOException {
         MrtReader reader = new MrtReader();
         List<Location> list = reader.read();
 

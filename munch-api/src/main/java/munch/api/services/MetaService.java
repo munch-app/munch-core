@@ -14,7 +14,7 @@ public class MetaService extends AbstractService {
     @Override
     public void route() {
         PATH("/meta", () -> {
-            // TODO for use for alpha/beta channel testing
+            // For use for alpha/beta channel testing
         });
     }
 

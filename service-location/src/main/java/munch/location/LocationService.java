@@ -4,7 +4,6 @@ import com.munch.hibernate.utils.TransactionProvider;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
-import munch.location.database.Location;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
 import org.apache.lucene.search.Query;
@@ -64,7 +63,7 @@ public class LocationService implements JsonService {
         Point point = factory.createPoint(new Coordinate(lng, lat));
 
         return provider.optional(em -> em.createQuery("FROM Location " +
-                "WHERE within(:point, polygon) = true ORDER BY sort DESC", Location.class)
+                "WHERE within(:point, geoPolygon) = true ORDER BY sort DESC", Location.class)
                 .setParameter("point", point)
                 .setMaxResults(1)
                 .getSingleResult())
