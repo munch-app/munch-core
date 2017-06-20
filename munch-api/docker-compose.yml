@@ -104,5 +104,8 @@ services:
 
       - MUNCH_SERVICE_LOCATION_URL=http://location:8000
       - MUNCH_SERVICE_IMAGES_URL=http://images:8000
+    ports:
+      - "8800:8000"
+
 
 

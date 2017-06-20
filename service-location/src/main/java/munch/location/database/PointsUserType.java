@@ -20,8 +20,11 @@ import java.sql.Types;
  * Time: 2:33 PM
  * Project: munch-core
  */
-public abstract class PointsUserType implements UserType {
+public class PointsUserType implements UserType {
     private static final ObjectMapper Mapper = new ObjectMapper();
+
+    public PointsUserType() {
+    }
 
     @Override
     public int[] sqlTypes() {
