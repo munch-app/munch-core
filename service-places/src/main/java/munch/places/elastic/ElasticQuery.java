@@ -51,7 +51,7 @@ public final class ElasticQuery {
                 .add("name")
                 .add("location.latLng")
                 .add("location.address")
-                .add("location.singapore");
+                .add("location.city");
     }
 
     /**
@@ -107,8 +107,9 @@ public final class ElasticQuery {
 
         // Query, parse and return
         List<Place> places = new ArrayList<>();
-        for (JsonNode each : postSearch(root).path("suggest").path("place-suggest")) {
-            places.add(parse(each));
+        JsonNode result = postSearch(root).path("suggest").path("place-suggest");
+        for (JsonNode each : result.get(0).path("options")) {
+            places.add(parse(each.path("options")));
         }
         return places;
     }
@@ -137,7 +138,16 @@ public final class ElasticQuery {
     private static Place parse(JsonNode node) {
         Place place = new Place();
         place.setId(node.path("_id").asText());
-        place.setName(node.path("_source").path("name").asText());
+        JsonNode source = node.path("_source");
+        place.setName(source.path("name").asText());
+
+        if (source.has("location")) {
+            JsonNode location = source.path("location");
+            place.setLocation(new Place.Location());
+            place.getLocation().setAddress(location.path("address").asText(null));
+            place.getLocation().setCity(location.path("city").asText(null));
+            place.getLocation().setLatLng(location.path("latLng").asText(null));
+        }
         return place;
     }
 }
