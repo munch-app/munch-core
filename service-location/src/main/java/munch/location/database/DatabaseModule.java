@@ -22,7 +22,7 @@ public class DatabaseModule extends AbstractModule {
 
     private void setupDatabase() {
         TransactionProvider provider = HibernateUtils
-                .setupFactory("geocoderPersistenceUnit", null);
+                .setupFactory("locationPersistenceUnit", null);
         provider.with(em -> {
             em.createNativeQuery("CREATE ALIAS ST_Within FOR \"geodb.GeoDB.ST_Within\"").executeUpdate();
             try {
@@ -34,10 +34,10 @@ public class DatabaseModule extends AbstractModule {
     }
 
     /**
-     * @return default provider for geocoder database
+     * @return default provider for location database
      */
     @Provides
     TransactionProvider provideTransaction() {
-        return HibernateUtils.get("geocoderPersistenceUnit");
+        return HibernateUtils.get("locationPersistenceUnit");
     }
 }

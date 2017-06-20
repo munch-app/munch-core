@@ -21,7 +21,7 @@ public class LocationClient extends RestfulClient {
 
     @Inject
     public LocationClient(@Named("services") Config config) {
-        super(config.getString("geocoder.url"));
+        super(config.getString("location.url"));
     }
 
     public Location reverse(double lat, double lng) throws StructuredException {

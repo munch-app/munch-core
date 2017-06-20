@@ -27,4 +27,4 @@ repositories {
     }
 }
 
-mainClassName = 'munch.geocoder.LocationModule'
+mainClassName = 'munch.location.LocationModule'

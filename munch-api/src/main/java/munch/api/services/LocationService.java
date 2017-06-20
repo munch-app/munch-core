@@ -17,11 +17,11 @@ import java.util.List;
 @Singleton
 public class LocationService extends AbstractService {
 
-    private final LocationClient geocoder;
+    private final LocationClient location;
 
     @Inject
-    public LocationService(LocationClient geocoder) {
-        this.geocoder = geocoder;
+    public LocationService(LocationClient location) {
+        this.location = location;
     }
 
     /**
@@ -46,7 +46,7 @@ public class LocationService extends AbstractService {
     private Location reverse(JsonCall call) {
         double lat = call.queryDouble("lat");
         double lng = call.queryDouble("lng");
-        return geocoder.reverse(lat, lng);
+        return location.reverse(lat, lng);
     }
 
     /**
@@ -58,7 +58,7 @@ public class LocationService extends AbstractService {
      */
     private List<Location> search(JsonCall call) {
         String text = call.queryString("text");
-        return geocoder.search(text);
+        return location.search(text);
     }
 
     /**
@@ -70,6 +70,6 @@ public class LocationService extends AbstractService {
      */
     private Location geocode(JsonCall call) {
         String text = call.queryString("text");
-        return geocoder.geocode(text);
+        return location.geocode(text);
     }
 }
