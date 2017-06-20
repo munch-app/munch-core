@@ -168,6 +168,8 @@ public class Place {
     /**
      * Location data of the place
      */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Location {
         private String address;
         private String unitNumber;

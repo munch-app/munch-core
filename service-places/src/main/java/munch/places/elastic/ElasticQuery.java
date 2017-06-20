@@ -109,7 +109,7 @@ public final class ElasticQuery {
         List<Place> places = new ArrayList<>();
         JsonNode result = postSearch(root).path("suggest").path("place-suggest");
         for (JsonNode each : result.get(0).path("options")) {
-            places.add(parse(each.path("options")));
+            places.add(parse(each));
         }
         return places;
     }
