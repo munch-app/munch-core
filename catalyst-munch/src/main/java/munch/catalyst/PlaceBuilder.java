@@ -93,7 +93,7 @@ public final class PlaceBuilder {
 
         List<String> tags = new ArrayList<>();
         tags.addAll(valueBuilder.collect("Place.tag"));
-        tags.addAll(valueBuilder.collect("Place.type"));
+        // tags.addAll(valueBuilder.collect("Place.type")); Type is not tag?
         place.setTags(tags);
         place.setHours(new ArrayList<>(hourBuilder.collect()));
 

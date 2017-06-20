@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Singleton;
 import munch.places.SearchQuery;
 import munch.places.data.Place;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.ContentType;
@@ -34,7 +35,8 @@ public final class ElasticQuery {
     private final RestClient client;
     private final ObjectMapper mapper;
 
-    private final ArrayNode sources;
+    private final ArrayNode searchSources;
+    private final ArrayNode suggestSources;
     private final BoolQuery boolQuery;
 
     @Inject
@@ -44,15 +46,16 @@ public final class ElasticQuery {
         this.boolQuery = boolQuery;
 
         // Sources of data to return
-        this.sources = mapper.createArrayNode();
+        this.searchSources = mapper.createArrayNode();
+        this.suggestSources = mapper.createArrayNode()
+                .add("name")
+                .add("location.latLng")
+                .add("location.address")
+                .add("location.singapore");
     }
 
     /**
-     * @param from     start from: pagination
-     * @param size     size for: pagination
-     * @param geometry geometry for within function
-     * @param query    text query string on name
-     * @param filters  tags, price, ratings and hours filters
+     * @param query search query object
      * @return pair = (list of Place, total results)
      * @throws IOException exception
      * @see SearchQuery.Filters
@@ -61,7 +64,7 @@ public final class ElasticQuery {
         ObjectNode root = mapper.createObjectNode();
         root.put("from", query.getFrom());
         root.put("size", query.getSize());
-        root.set("_source", sources);
+        root.set("_source", searchSources);
         root.set("query", mapper.createObjectNode().set("bool", boolQuery.make(query)));
 
         // Query, parse and return
@@ -81,13 +84,13 @@ public final class ElasticQuery {
         ObjectNode completion = mapper.createObjectNode();
         completion.put("field", "suggest");
         completion.put("size", size);
-        if (latLng != null) {
+        if (StringUtils.isNotBlank(latLng)) {
             ObjectNode contexts = mapper.createObjectNode();
             ObjectNode location = mapper.createObjectNode();
 
             String[] lls = latLng.split(",");
             location.put("lat", Double.parseDouble(lls[0].trim()));
-            location.put("lng", Double.parseDouble(lls[1].trim()));
+            location.put("lon", Double.parseDouble(lls[1].trim()));
             contexts.set("latLng", location);
             completion.set("contexts", contexts);
         }
@@ -100,11 +103,13 @@ public final class ElasticQuery {
         suggest.set("place-suggest", placeSuggest);
         ObjectNode root = mapper.createObjectNode();
         root.set("suggest", suggest);
+        root.set("_source", suggestSources);
 
         // Query, parse and return
-        JsonNode hits = postSearch(root).path("hits");
         List<Place> places = new ArrayList<>();
-        for (JsonNode hit : hits.path("hits")) places.add(parse(hit));
+        for (JsonNode each : postSearch(root).path("suggest").path("place-suggest")) {
+            places.add(parse(each));
+        }
         return places;
     }
 
