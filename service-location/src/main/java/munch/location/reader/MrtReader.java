@@ -47,7 +47,7 @@ public final class MrtReader {
                     String[] points = Arrays.stream(polygon.getCoordinates())
                             .map(cord -> cord.y + "," + cord.x)
                             .toArray(String[]::new);
-                    location.setPolygonPoints(points);
+                    location.setPoints(points);
                     return location;
                 }).collect(Collectors.toList());
     }

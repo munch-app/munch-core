@@ -16,7 +16,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 public final class Location {
     private String name;
     private String center;
-    private String[] polygonPoints;
+    private String[] points;
 
     /**
      * @return name of neighborhood
@@ -43,11 +43,11 @@ public final class Location {
     /**
      * @return as ["lat, lng", "lat, lng"]
      */
-    public String[] getPolygonPoints() {
-        return polygonPoints;
+    public String[] getPoints() {
+        return points;
     }
 
-    public void setPolygonPoints(String[] polygonPoints) {
-        this.polygonPoints = polygonPoints;
+    public void setPoints(String[] points) {
+        this.points = points;
     }
 }

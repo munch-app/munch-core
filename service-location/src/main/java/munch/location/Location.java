@@ -84,7 +84,7 @@ import javax.persistence.Id;
 public class Location {
     private String name;
     private String center;
-    private String[] polygonPoints;
+    private String[] points;
 
     private long sort;
     private Polygon geoPolygon;
@@ -137,12 +137,12 @@ public class Location {
 
     @Type(type = "points")
     @Column(updatable = false, nullable = false)
-    public String[] getPolygonPoints() {
-        return polygonPoints;
+    public String[] getPoints() {
+        return points;
     }
 
-    public void setPolygonPoints(String[] points) {
-        this.polygonPoints = points;
+    public void setPoints(String[] points) {
+        this.points = points;
     }
 
     @Override
