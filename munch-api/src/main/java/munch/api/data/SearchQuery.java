@@ -156,6 +156,14 @@ public final class SearchQuery {
             private String text;
             private boolean positive;
 
+            public Tag() {
+            }
+
+            public Tag(String text, boolean positive) {
+                this.text = text;
+                this.positive = positive;
+            }
+
             public String getText() {
                 return text;
             }
@@ -232,6 +240,9 @@ public final class SearchQuery {
     public static final class Polygon {
         private List<String> points;
 
+        /**
+         * @return as ["lat, lng", "lat, lng"]
+         */
         public List<String> getPoints() {
             return points;
         }

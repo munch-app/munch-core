@@ -3,7 +3,6 @@ package munch.location.database;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.munch.hibernate.utils.TransactionProvider;
-import munch.location.reader.FeatureReader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

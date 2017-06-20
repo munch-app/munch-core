@@ -74,8 +74,15 @@ public final class ElasticMapping {
         JsonNode geo = properties.path("location").path("properties").path("latLng");
         if (!geo.path("type").asText().equals("geo_point")) return false;
 
-        // Check suggest field exist TODO: validate further
-        return properties.has("suggest");
+        // Validate suggest field
+        JsonNode suggest = properties.get("suggest");
+        if (!suggest.path("type").asText().equals("completion")) return false;
+        if (!suggest.has("contexts")) return false;
+        if (suggest.path("contexts").size() != 1) return false;
+
+        JsonNode latLng = suggest.path("contexts").get(0);
+        if (!latLng.path("name").asText().equals("latLng")) return false;
+        return latLng.path("path").asText().equals("location.latLng");
     }
 
     /**

@@ -1,12 +1,9 @@
 package munch.location.reader;
 
 import com.google.common.io.Resources;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryCollection;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.*;
 import com.vividsolutions.jts.simplify.TopologyPreservingSimplifier;
-import munch.location.database.LocationV2;
+import munch.location.Location;
 import org.apache.commons.lang3.StringUtils;
 import org.wololo.geojson.Feature;
 import org.wololo.geojson.FeatureCollection;
@@ -25,13 +22,13 @@ import java.util.stream.Collectors;
  * Time: 6:33 AM
  * Project: munch-core
  */
-public class SubzoneReader {
+public final class SubzoneReader {
     private static final double margin = DegreeMetres.kmToDegree(0.005);
 
     private final GeoJSONReader reader = new GeoJSONReader();
     private final GeometryFactory factory = new GeometryFactory();
 
-    public List<LocationV2> read() throws IOException {
+    public List<Location> read() throws IOException {
         Map<String, Geometry> regions = readRegions();
         List<Place> places = readPlaces();
 
@@ -44,7 +41,7 @@ public class SubzoneReader {
 
             // Validate that all is polygon and has been mapped
             if (polygons.size() != place.codes.size()) {
-                List<Geometry> collect = place.codes.stream().map(regions::get).collect(Collectors.toList());
+                // List<Geometry> collect = place.codes.stream().map(regions::get).collect(Collectors.toList());
                 throw new RuntimeException("Region code not mapped or not polygon.");
             }
 
@@ -52,7 +49,6 @@ public class SubzoneReader {
 
             if (polygons.size() > 1) {
                 // Map all to multi polygon
-                GeometryFactory factory = new GeometryFactory();
                 GeometryCollection collection = (GeometryCollection) factory.buildGeometry(polygons);
 
                 // Increase polygon area
@@ -69,15 +65,16 @@ public class SubzoneReader {
             Geometry result = TopologyPreservingSimplifier.simplify(joined, margin);
 
             // Create location set and return
-            LocationV2 location = new LocationV2();
+            Location location = new Location();
             location.setName(place.name);
             if (result.getNumGeometries() > 1) {
                 System.out.println(place.name);
                 return null;
             }
 
-            location.setPolygon((Polygon) result);
-            location.setCenter(result.getCentroid());
+            location.setGeoPolygon((Polygon) result);
+            Point centroid = result.getCentroid();
+            location.setCenter(centroid.getY() + "," + centroid.getX());
             return location;
         }).collect(Collectors.toList());
     }

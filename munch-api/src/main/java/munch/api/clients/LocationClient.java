@@ -3,7 +3,6 @@ package munch.api.clients;
 import com.typesafe.config.Config;
 import munch.api.data.Location;
 import munch.restful.client.RestfulClient;
-import munch.restful.core.exception.StructuredException;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -24,20 +23,20 @@ public class LocationClient extends RestfulClient {
         super(config.getString("location.url"));
     }
 
-    public Location reverse(double lat, double lng) throws StructuredException {
+    public Location reverse(double lat, double lng) {
         return doGet("/reverse")
                 .queryString("lat", lat)
                 .queryString("lng", lng)
                 .asDataObject(Location.class);
     }
 
-    public Location geocode(String text) throws StructuredException {
+    public Location geocode(String text) {
         return doGet("/geocode")
                 .queryString("text", text)
                 .asDataObject(Location.class);
     }
 
-    public List<Location> search(String text) throws StructuredException {
+    public List<Location> search(String text) {
         return doGet("/search")
                 .queryString("text", text)
                 .asDataList(Location.class);

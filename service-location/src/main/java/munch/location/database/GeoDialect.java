@@ -3,6 +3,8 @@ package munch.location.database;
 import org.hibernate.spatial.dialect.h2geodb.GeoDBDialect;
 import org.hibernate.spatial.dialect.h2geodb.GeoDBGeometryTypeDescriptor;
 
+import java.sql.Types;
+
 /**
  * Created By: Fuxing Loh
  * Date: 14/4/2017
@@ -13,6 +15,7 @@ public class GeoDialect extends GeoDBDialect {
 
     public GeoDialect() {
         super();
-        registerColumnType( GeoDBGeometryTypeDescriptor.INSTANCE.getSqlType(), "blob" );
+        registerColumnType(GeoDBGeometryTypeDescriptor.INSTANCE.getSqlType(), "blob");
+        registerColumnType(Types.JAVA_OBJECT, "blob");
     }
 }
