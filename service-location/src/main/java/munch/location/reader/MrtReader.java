@@ -42,7 +42,7 @@ public final class MrtReader {
                     Location location = new Location();
                     location.setName(lines[0].trim());
                     location.setSort(1);
-                    location.setGeoPolygon(polygon);
+                    location.setGeometry(polygon);
                     location.setCenter(lat + "," + lng);
                     String[] points = Arrays.stream(polygon.getCoordinates())
                             .map(cord -> cord.y + "," + cord.x)

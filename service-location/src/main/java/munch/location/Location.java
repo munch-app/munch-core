@@ -19,6 +19,7 @@ import org.hibernate.search.annotations.*;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.util.Arrays;
 
 /**
  * Created by: Fuxing
@@ -81,13 +82,14 @@ import javax.persistence.Id;
 @TypeDefs(value = {
         @TypeDef(name = "points", typeClass = PointsUserType.class)
 })
-public class Location {
+public final class Location {
     private String name;
     private String center;
     private String[] points;
 
+    // Private fields
     private long sort;
-    private Polygon geoPolygon;
+    private Polygon geometry;
 
     @Id
     @DocumentId
@@ -127,12 +129,12 @@ public class Location {
 
     @JsonIgnore
     @Column(updatable = false, nullable = false)
-    public Polygon getGeoPolygon() {
-        return geoPolygon;
+    public Polygon getGeometry() {
+        return geometry;
     }
 
-    public void setGeoPolygon(Polygon polygon) {
-        this.geoPolygon = polygon;
+    public void setGeometry(Polygon polygon) {
+        this.geometry = polygon;
     }
 
     @Type(type = "points")
@@ -147,11 +149,12 @@ public class Location {
 
     @Override
     public String toString() {
-        return "LocationV2{" +
+        return "Location{" +
                 "name='" + name + '\'' +
+                ", center='" + center + '\'' +
+                ", points=" + Arrays.toString(points) +
                 ", sort=" + sort +
-                ", center=" + center +
-                ", polygon=" + geoPolygon +
+                ", geometry=" + geometry +
                 '}';
     }
 }

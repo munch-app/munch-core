@@ -48,7 +48,7 @@ public class BoolQuery {
         ObjectNode bool = mapper.createObjectNode();
         bool.set("must", must(query.getQuery()));
         bool.set("must_not", mustNot(filters));
-        bool.set("filter", filter(query.getDistance(), query.getPolygon(), filters));
+        bool.set("filter", filter(query.getPolygon(), filters));
         return bool;
     }
 
@@ -92,18 +92,15 @@ public class BoolQuery {
      * https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-geo-distance-query.html
      * https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-geo-polygon-query.html
      *
-     * @param distance distance geo query
      * @param polygon  polygon geo query
      * @param filters  filters object
      * @return JsonNode bool filter
      */
-    private JsonNode filter(@Nullable SearchQuery.Distance distance, @Nullable SearchQuery.Polygon polygon, SearchQuery.Filters filters) {
+    private JsonNode filter(@Nullable SearchQuery.Polygon polygon, SearchQuery.Filters filters) {
         ArrayNode filterArray = mapper.createArrayNode();
 
         // Distance geo query first else then polygon
-        if (distance != null) {
-            filterArray.add(filterDistance(distance));
-        } else if (polygon != null) {
+        if (polygon != null) {
             filterArray.add(filterPolygon(polygon));
         }
 

@@ -72,7 +72,7 @@ public final class SubzoneReader {
                 return null;
             }
 
-            location.setGeoPolygon((Polygon) result);
+            location.setGeometry((Polygon) result);
             Point centroid = result.getCentroid();
             location.setCenter(centroid.getY() + "," + centroid.getX());
             return location;

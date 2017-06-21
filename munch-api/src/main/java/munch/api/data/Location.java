@@ -30,7 +30,7 @@ public final class Location {
     }
 
     /**
-     * @return as "lat, lng"
+     * @return as "lat, lng" String
      */
     public String getCenter() {
         return center;
@@ -41,7 +41,7 @@ public final class Location {
     }
 
     /**
-     * @return as ["lat, lng", "lat, lng"]
+     * @return as ["lat, lng", "lat, lng"] String Array
      */
     public String[] getPoints() {
         return points;

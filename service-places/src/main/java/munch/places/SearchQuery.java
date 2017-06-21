@@ -21,7 +21,6 @@ public final class SearchQuery {
     private int size;
 
     private String query;
-    private Distance distance; // Optional
     private Polygon polygon; // Optional
     private Filters filters; // Optional
 
@@ -47,20 +46,6 @@ public final class SearchQuery {
 
     public void setQuery(String query) {
         this.query = query;
-    }
-
-    /**
-     * Optional
-     * If distance and polygon is both present, distance will be used
-     *
-     * @return distance geo query
-     */
-    public Distance getDistance() {
-        return distance;
-    }
-
-    public void setDistance(Distance distance) {
-        this.distance = distance;
     }
 
     /**

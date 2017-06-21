@@ -51,7 +51,7 @@ public class LocationService implements JsonService {
      * query string must contain both lat & lng
      * if any is missing code: 400
      * <p>
-     * geocode reverse geocoding, converting latLng to place
+     * geocode reverse geocoding, converting latLng to a location
      *
      * @param call json call
      * @return code 200: Place if exist
@@ -63,7 +63,7 @@ public class LocationService implements JsonService {
         Point point = factory.createPoint(new Coordinate(lng, lat));
 
         return provider.optional(em -> em.createQuery("FROM Location " +
-                "WHERE within(:point, geoPolygon) = true ORDER BY sort DESC", Location.class)
+                "WHERE within(:point, geometry) = true ORDER BY sort DESC", Location.class)
                 .setParameter("point", point)
                 .setMaxResults(1)
                 .getSingleResult())

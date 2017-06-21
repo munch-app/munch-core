@@ -79,8 +79,6 @@ public class PlaceCategorizer {
         SearchQuery query = new SearchQuery();
         query.setFrom(0);
         query.setSize(20);
-
-        query.setDistance(original.getDistance());
         query.setPolygon(original.getPolygon());
 
         SearchQuery.Filters filters = new SearchQuery.Filters();
