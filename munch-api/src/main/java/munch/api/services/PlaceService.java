@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.clients.ArticleClient;
-import munch.api.clients.GalleryClient;
+import munch.api.clients.MediaClient;
 import munch.api.clients.PlaceClient;
 import munch.api.data.*;
 import munch.restful.server.JsonCall;
@@ -21,15 +21,15 @@ import java.util.List;
 public class PlaceService extends AbstractService {
     private final PlaceClient placeClient;
     private final ArticleClient articleClient;
-    private final GalleryClient galleryClient;
+    private final MediaClient mediaClient;
 
     private final PlaceCategorizer categorizer;
 
     @Inject
-    public PlaceService(PlaceClient placeClient, ArticleClient articleClient, GalleryClient galleryClient, PlaceCategorizer categorizer) {
+    public PlaceService(PlaceClient placeClient, ArticleClient articleClient, MediaClient mediaClient, PlaceCategorizer categorizer) {
         this.placeClient = placeClient;
         this.articleClient = articleClient;
-        this.galleryClient = galleryClient;
+        this.mediaClient = mediaClient;
         this.categorizer = categorizer;
     }
 
@@ -48,7 +48,7 @@ public class PlaceService extends AbstractService {
             PATH("/:placeId", () -> {
                 GET("", this::get);
 
-                GET("/gallery/list", this::gallery);
+                GET("/medias/list", this::medias);
                 GET("/articles/list", this::articles);
             });
         });
@@ -109,16 +109,16 @@ public class PlaceService extends AbstractService {
         // PlaceDetail: query 10 articles and medias
         PlaceDetail detail = new PlaceDetail();
         detail.setPlace(place);
-        detail.setMedias(galleryClient.list(placeId, 0, 10));
+        detail.setMedias(mediaClient.list(placeId, 0, 10));
         detail.setArticles(articleClient.list(placeId, 0, 10));
         return detail;
     }
 
-    private List<Media> gallery(JsonCall call) {
+    private List<Media> medias(JsonCall call) {
         String placeId = call.pathString("placeId");
         int from = call.queryInt("from");
         int size = call.queryInt("size");
-        return galleryClient.list(placeId, from, size);
+        return mediaClient.list(placeId, from, size);
     }
 
     private List<Article> articles(JsonCall call) {

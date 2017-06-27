@@ -1,4 +1,4 @@
-package munch.gallery.hibernate;
+package munch.medias.hibernate;
 
 import org.hibernate.dialect.PostgreSQL82Dialect;
 

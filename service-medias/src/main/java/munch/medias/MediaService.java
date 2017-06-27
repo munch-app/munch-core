@@ -1,4 +1,4 @@
-package munch.gallery;
+package munch.medias;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
@@ -17,18 +17,18 @@ import java.util.List;
  * Project: munch-core
  */
 @Singleton
-public class GalleryService implements JsonService {
+public class MediaService implements JsonService {
 
     private final TransactionProvider provider;
 
     @Inject
-    public GalleryService(TransactionProvider provider) {
+    public MediaService(TransactionProvider provider) {
         this.provider = provider;
     }
 
     @Override
     public void route() {
-        PATH("/places/:placeId/gallery", () -> {
+        PATH("/places/:placeId/medias", () -> {
             GET("/list", this::list);
             GET("/:mediaId", this::get);
 

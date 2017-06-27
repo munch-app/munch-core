@@ -16,11 +16,11 @@ import java.util.List;
  * Project: munch-core
  */
 @Singleton
-public class GalleryClient extends RestfulClient {
+public class MediaClient extends RestfulClient {
 
     @Inject
-    public GalleryClient(@Named("services") Config config) {
-        super(config.getString("gallery.url"));
+    public MediaClient(@Named("services") Config config) {
+        super(config.getString("medias.url"));
     }
 
     /**
@@ -32,7 +32,7 @@ public class GalleryClient extends RestfulClient {
      * @return List of Media
      */
     public List<Media> list(String placeId, int from, int size) {
-        return doGet("/places/{placeId}/gallery/list")
+        return doGet("/places/{placeId}/medias/list")
                 .path("placeId", placeId)
                 .queryString("from", from)
                 .queryString("size", size)

@@ -3,10 +3,7 @@ package munch.places.data;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import munch.places.data.hibernate.HoursUserType;
-import munch.places.data.hibernate.LocationUserType;
-import munch.places.data.hibernate.PriceUserType;
-import munch.places.data.hibernate.TagsUserType;
+import munch.places.data.hibernate.PlaceUserType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
@@ -24,10 +21,11 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @TypeDefs(value = {
-        @TypeDef(name = "price", typeClass = PriceUserType.class),
-        @TypeDef(name = "location", typeClass = LocationUserType.class),
-        @TypeDef(name = "tags", typeClass = TagsUserType.class),
-        @TypeDef(name = "hours", typeClass = HoursUserType.class)
+        @TypeDef(name = "price", typeClass = PlaceUserType.Price.class),
+        @TypeDef(name = "location", typeClass = PlaceUserType.Location.class),
+        @TypeDef(name = "tags", typeClass = PlaceUserType.Tags.class),
+        @TypeDef(name = "hours", typeClass = PlaceUserType.Hours.class),
+        @TypeDef(name = "images", typeClass = PlaceUserType.Images.class),
 })
 @Table(indexes = {
         @Index(name = "index_munch_place_update_date", columnList = "updatedDate")
@@ -48,6 +46,7 @@ public final class Place {
     // Many
     private String[] tags;
     private Hour[] hours;
+    private Image[] images;
 
     // Dates
     private Date createdDate;
@@ -161,6 +160,15 @@ public final class Place {
 
     public void setHours(Hour[] hours) {
         this.hours = hours;
+    }
+
+    @Type(type = "images")
+    public Image[] getImages() {
+        return images;
+    }
+
+    public void setImages(Image[] images) {
+        this.images = images;
     }
 
     @Column(nullable = false)
@@ -349,5 +357,9 @@ public final class Place {
         public void setClose(String close) {
             this.close = close;
         }
+    }
+
+    public static final class Image {
+
     }
 }

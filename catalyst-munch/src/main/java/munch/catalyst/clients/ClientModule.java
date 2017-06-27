@@ -31,15 +31,15 @@ public class ClientModule extends AbstractModule {
                 .toInstance(services.getString("places.url"));
         bind(String.class).annotatedWith(Names.named("services.articles.url"))
                 .toInstance(services.getString("articles.url"));
-        bind(String.class).annotatedWith(Names.named("services.gallery.url"))
-                .toInstance(services.getString("gallery.url"));
+        bind(String.class).annotatedWith(Names.named("services.medias.url"))
+                .toInstance(services.getString("medias.url"));
 
     }
 
     @Inject
     void waitFor(Config config) {
         WaitFor.host(config.getString("services.articles.url"), Duration.ofSeconds(60));
-        WaitFor.host(config.getString("services.gallery.url"), Duration.ofSeconds(60));
+        WaitFor.host(config.getString("services.medias.url"), Duration.ofSeconds(60));
         WaitFor.host(config.getString("services.places.url"), Duration.ofSeconds(180));
     }
 }

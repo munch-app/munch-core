@@ -1,4 +1,4 @@
-package munch.gallery.hibernate;
+package munch.medias.hibernate;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
@@ -21,7 +21,7 @@ import java.util.Map;
  */
 public class PostgresModule extends AbstractModule {
 
-    private static final String UnitName = "galleryPersistenceUnit";
+    private static final String UnitName = "mediasPersistenceUnit";
 
     @Override
     protected void configure() {

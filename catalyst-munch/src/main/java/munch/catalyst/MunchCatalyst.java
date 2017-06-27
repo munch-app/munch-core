@@ -6,7 +6,7 @@ import catalyst.data.CorpusData;
 import catalyst.data.DataClient;
 import com.google.inject.Inject;
 import munch.catalyst.clients.ArticleClient;
-import munch.catalyst.clients.GalleryClient;
+import munch.catalyst.clients.MediaClient;
 import munch.catalyst.clients.PlaceClient;
 import munch.catalyst.data.Place;
 import org.slf4j.Logger;
@@ -28,21 +28,21 @@ public class MunchCatalyst extends CatalystEngine {
     private static final Logger logger = LoggerFactory.getLogger(MunchCatalyst.class);
 
     private static final Pattern ArticleCorpusName = Pattern.compile("Global\\.Article\\.\\w+");
-    private static final String GalleryCorpusName = "Global.Instagram.Media";
+    private static final String MediaCorpusName = "Global.Instagram.Media";
 
     private final PlaceClient placeClient;
     private final ArticleClient articleClient;
-    private final GalleryClient galleryClient;
+    private final MediaClient mediaClient;
 
     private Date updatedDate;
 
     @Inject
     public MunchCatalyst(DataClient dataClient, CatalystClient catalystClient,
-                         PlaceClient placeClient, ArticleClient articleClient, GalleryClient galleryClient) {
+                         PlaceClient placeClient, ArticleClient articleClient, MediaClient mediaClient) {
         super(logger, dataClient, catalystClient);
         this.placeClient = placeClient;
         this.articleClient = articleClient;
-        this.galleryClient = galleryClient;
+        this.mediaClient = mediaClient;
     }
 
     @Override
@@ -63,7 +63,7 @@ public class MunchCatalyst extends CatalystEngine {
         PlaceBuilder builder = new PlaceBuilder();
         Date updatedDate = new Timestamp(System.currentTimeMillis());
 
-        // Consume for Article & Gallery and Place builder
+        // Consume for Article & Media and Place builder
         for (CorpusData data : collected) {
             consume(data, updatedDate);
             builder.consume(data);
@@ -79,7 +79,7 @@ public class MunchCatalyst extends CatalystEngine {
 
         // Delete data that is not updated
         articleClient.deleteBefore(catalystId, updatedDate);
-        galleryClient.deleteBefore(catalystId, updatedDate);
+        mediaClient.deleteBefore(catalystId, updatedDate);
     }
 
     /**
@@ -112,8 +112,8 @@ public class MunchCatalyst extends CatalystEngine {
      */
     private void consume(CorpusData data, Date updatedDate) {
         String name = data.getCorpusName();
-        if (GalleryCorpusName.equals(name)) {
-            galleryClient.put(data, updatedDate);
+        if (MediaCorpusName.equals(name)) {
+            mediaClient.put(data, updatedDate);
         } else if (ArticleCorpusName.matcher(name).matches()) {
             articleClient.put(data, updatedDate);
         }

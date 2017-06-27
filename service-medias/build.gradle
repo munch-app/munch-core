@@ -14,4 +14,4 @@ dependencies {
     compile group: 'org.postgresql', name: 'postgresql', version: '9.4.1212.jre7'
 }
 
-mainClassName = 'munch.gallery.GalleryModule'
+mainClassName = 'munch.medias.MediaModule'

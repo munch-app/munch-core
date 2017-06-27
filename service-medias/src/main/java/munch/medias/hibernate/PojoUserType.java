@@ -1,4 +1,4 @@
-package munch.gallery.hibernate;
+package munch.medias.hibernate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hibernate.HibernateException;

@@ -23,26 +23,26 @@ import java.util.function.Supplier;
  * Project: munch-core
  */
 @Singleton
-public class GalleryClient extends RestfulClient {
-    private static final Logger logger = LoggerFactory.getLogger(GalleryClient.class);
+public class MediaClient extends RestfulClient {
+    private static final Logger logger = LoggerFactory.getLogger(MediaClient.class);
     private static final Supplier<NullPointerException> NullSupplier = () -> new NullPointerException("Media");
 
     @Inject
-    public GalleryClient(@Named("services.gallery.url") String url) {
+    public MediaClient(@Named("services.medias.url") String url) {
         super(url);
     }
 
     public void put(CorpusData data, Date updatedDate) {
         try {
             Media media = create(data, updatedDate);
-            doPut("/places/{placeId}/gallery/{mediaId}")
+            doPut("/places/{placeId}/medias/{mediaId}")
                     .path("placeId", media.getPlaceId())
                     .path("mediaId", media.getMediaId())
                     .body(media)
                     .asResponse()
                     .hasCode(200);
         } catch (NullPointerException e) {
-            logger.error("Unable to put Media into GalleryService due to NPE", e);
+            logger.error("Unable to put Media into MediaService due to NPE", e);
         }
     }
 
@@ -77,7 +77,7 @@ public class GalleryClient extends RestfulClient {
     }
 
     public void deleteBefore(String catalystId, Date updatedDate) {
-        doDelete("/places/{placeId}/gallery/before/{timestamp}")
+        doDelete("/places/{placeId}/medias/before/{timestamp}")
                 .path("placeId", catalystId)
                 .path("timestamp", updatedDate.getTime())
                 .asResponse()

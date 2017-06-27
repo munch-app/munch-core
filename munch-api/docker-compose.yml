@@ -65,8 +65,8 @@ services:
       - DOCUMENT_DATABASE_PASSWORD=K851xsSffyTJP3e1M7rd
       - DOCUMENT_DATABASE_AUTO_CREATE=true
       - SEARCH_DATABASE_HOSTNAME=munch-es
-  gallery:
-    image: munch-core/service-gallery
+  medias:
+    image: munch-core/service-medias
     environment:
       - DATABASE_URL=jdbc:postgresql://munch-db:5432/postgres
       - DATABASE_USERNAME=postgres
@@ -88,7 +88,7 @@ services:
       - SERVICE_DATA_URL=http://corpus-data:8000
       - MUNCH_SERVICE_PLACES_URL=http://places:8000
       - MUNCH_SERVICE_ARTICLES_URL=http://articles:8000
-      - MUNCH_SERVICE_GALLERY_URL=http://gallery:8000
+      - MUNCH_SERVICE_MEDIAS_URL=http://medias:8000
 
   # Location Service For Munch
   location:
@@ -100,7 +100,7 @@ services:
     environment:
       - MUNCH_SERVICE_PLACES_URL=http://places:8000
       - MUNCH_SERVICE_ARTICLES_URL=http://articles:8000
-      - MUNCH_SERVICE_GALLERY_URL=http://gallery:8000
+      - MUNCH_SERVICE_MEDIAS_URL=http://medias:8000
 
       - MUNCH_SERVICE_LOCATION_URL=http://location:8000
       - MUNCH_SERVICE_IMAGES_URL=http://images:8000

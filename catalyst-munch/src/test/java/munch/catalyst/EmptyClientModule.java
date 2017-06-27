@@ -5,7 +5,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.mashape.unirest.http.Unirest;
 import munch.catalyst.clients.ArticleClient;
-import munch.catalyst.clients.GalleryClient;
+import munch.catalyst.clients.MediaClient;
 import munch.catalyst.clients.PlaceClient;
 import munch.catalyst.data.Place;
 
@@ -38,8 +38,8 @@ public class EmptyClientModule extends AbstractModule {
     }
 
     @Provides
-    GalleryClient provideGalleryClient() {
-        return new EmtpyGalleryClient();
+    MediaClient provideMediaClient() {
+        return new EmtpyMediaClient();
     }
 
     static class EmtpyArticleClient extends ArticleClient {
@@ -70,8 +70,8 @@ public class EmptyClientModule extends AbstractModule {
         }
     }
 
-    static class EmtpyGalleryClient extends GalleryClient {
-        public EmtpyGalleryClient() {
+    static class EmtpyMediaClient extends MediaClient {
+        public EmtpyMediaClient() {
             super("");
         }
 
