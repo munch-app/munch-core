@@ -10,6 +10,7 @@ import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Created by: Fuxing
@@ -143,7 +144,7 @@ public final class Place {
     }
 
     @Type(type = "tags")
-    @Column(nullable = true)
+    @Column(nullable = false)
     public String[] getTags() {
         return tags;
     }
@@ -153,7 +154,7 @@ public final class Place {
     }
 
     @Type(type = "hours")
-    @Column(nullable = true)
+    @Column(nullable = false)
     public Hour[] getHours() {
         return hours;
     }
@@ -162,7 +163,11 @@ public final class Place {
         this.hours = hours;
     }
 
+    /**
+     * @return some images of place from other source
+     */
     @Type(type = "images")
+    @Column(nullable = false)
     public Image[] getImages() {
         return images;
     }
@@ -359,7 +364,58 @@ public final class Place {
         }
     }
 
+    /**
+     * Technically this is a smaller subclass of ImageMeta in munch-images
+     * with lesser fields
+     */
     public static final class Image {
+        private String key;
+        private Map<String, Type> images;
 
+        /**
+         * @return unique key of the image
+         */
+        public String getKey() {
+            return key;
+        }
+
+        public void setKey(String key) {
+            this.key = key;
+        }
+
+        /**
+         * @return images type with url
+         */
+        public Map<String, Type> getImages() {
+            return images;
+        }
+
+        public void setImages(Map<String, Type> images) {
+            this.images = images;
+        }
+
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        public final static class Type {
+            private String url;
+
+            /**
+             * @return public url of image content
+             */
+            public String getUrl() {
+                return url;
+            }
+
+            public void setUrl(String url) {
+                this.url = url;
+            }
+
+            @Override
+            public String toString() {
+                return "Type{" +
+                        "url='" + url + '\'' +
+                        '}';
+            }
+        }
     }
 }

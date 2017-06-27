@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by: Fuxing
@@ -31,6 +32,7 @@ public final class Place {
     // Many
     private List<String> tags;
     private List<Hour> hours;
+    private List<Image> images;
 
     // Dates
     private Date createdDate;
@@ -130,6 +132,17 @@ public final class Place {
 
     public void setHours(List<Hour> hours) {
         this.hours = hours;
+    }
+
+    /**
+     * @return some images of place from other source
+     */
+    public List<Image> getImages() {
+        return images;
+    }
+
+    public void setImages(List<Image> images) {
+        this.images = images;
     }
 
     public Date getCreatedDate() {
@@ -380,6 +393,61 @@ public final class Place {
                     ", open='" + open + '\'' +
                     ", close='" + close + '\'' +
                     '}';
+        }
+    }
+
+    /**
+     * Technically this is a smaller subclass of ImageMeta in munch-images
+     * with lesser fields
+     */
+    public static final class Image {
+        private String key;
+        private Map<String, Type> images;
+
+        /**
+         * @return unique key of the image
+         */
+        public String getKey() {
+            return key;
+        }
+
+        public void setKey(String key) {
+            this.key = key;
+        }
+
+        /**
+         * @return images type with url
+         */
+        public Map<String, Type> getImages() {
+            return images;
+        }
+
+        public void setImages(Map<String, Type> images) {
+            this.images = images;
+        }
+
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        public final static class Type {
+            private String url;
+
+            /**
+             * @return public url of image content
+             */
+            public String getUrl() {
+                return url;
+            }
+
+            public void setUrl(String url) {
+                this.url = url;
+            }
+
+            @Override
+            public String toString() {
+                return "Type{" +
+                        "url='" + url + '\'' +
+                        '}';
+            }
         }
     }
 }
