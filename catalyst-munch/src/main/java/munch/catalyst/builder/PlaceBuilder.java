@@ -1,4 +1,4 @@
-package munch.catalyst;
+package munch.catalyst.builder;
 
 import catalyst.data.CorpusData;
 import munch.catalyst.data.Place;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  * Time: 5:33 AM
  * Project: munch-core
  */
-public final class PlaceBuilder {
+public final class PlaceBuilder implements DataBuilder<Place> {
     private static final Logger logger = LoggerFactory.getLogger(PlaceBuilder.class);
 
     private static final Pattern HourKeysPattern = Pattern.compile("Place\\.Hour\\.\\w+");
@@ -38,6 +38,7 @@ public final class PlaceBuilder {
         this.valueBuilder = new ValueBuilder();
     }
 
+    @Override
     public void consume(CorpusData data) {
         if (id == null) id = data.getCatalystId();
         if (!id.equals(data.getCatalystId()))
@@ -65,13 +66,13 @@ public final class PlaceBuilder {
     /**
      * @return created Place value with consumed links
      */
-    @Nullable
-    public Place collect(Date updatedDate) {
+    @Override
+    public List<Place> collect(Date updatedDate) {
         Place place = new Place();
         place.setId(id);
 
         place.setName(valueBuilder.collectMax("Place.name"));
-        if (StringUtils.isBlank(place.getName())) return null;
+        if (StringUtils.isBlank(place.getName())) return Collections.emptyList();
         // Transform Name to Upper Camel Case
         place.setName(WordUtils.capitalizeFully(place.getName()));
 
@@ -99,10 +100,11 @@ public final class PlaceBuilder {
 
         place.setCreatedDate(earliestDate);
         place.setUpdatedDate(updatedDate);
+        // TODO put images too
 
         // Return null if validation failed
-        if (!validate(place)) return null;
-        return place;
+        if (!validate(place)) return Collections.emptyList();
+        return Collections.singletonList(place);
     }
 
     /**

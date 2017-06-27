@@ -5,9 +5,14 @@ import catalyst.data.CatalystClient;
 import catalyst.data.CorpusData;
 import catalyst.data.DataClient;
 import com.google.inject.Inject;
+import munch.catalyst.builder.ArticleBuilder;
+import munch.catalyst.builder.MediaBuilder;
+import munch.catalyst.builder.PlaceBuilder;
 import munch.catalyst.clients.ArticleClient;
 import munch.catalyst.clients.MediaClient;
 import munch.catalyst.clients.PlaceClient;
+import munch.catalyst.data.Article;
+import munch.catalyst.data.Media;
 import munch.catalyst.data.Place;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +21,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * Created by: Fuxing
@@ -26,9 +30,6 @@ import java.util.regex.Pattern;
  */
 public class MunchCatalyst extends CatalystEngine {
     private static final Logger logger = LoggerFactory.getLogger(MunchCatalyst.class);
-
-    private static final Pattern ArticleCorpusName = Pattern.compile("Global\\.Article\\.\\w+");
-    private static final String MediaCorpusName = "Global.Instagram.Media";
 
     private final PlaceClient placeClient;
     private final ArticleClient articleClient;
@@ -60,21 +61,30 @@ public class MunchCatalyst extends CatalystEngine {
         if (!validate(collected)) return;
 
         // Else validate = success: put new place
-        PlaceBuilder builder = new PlaceBuilder();
+        PlaceBuilder placeBuilder = new PlaceBuilder();
+        ArticleBuilder articleBuilder = new ArticleBuilder();
+        MediaBuilder mediaBuilder = new MediaBuilder();
         Date updatedDate = new Timestamp(System.currentTimeMillis());
 
         // Consume for Article & Media and Place builder
         for (CorpusData data : collected) {
-            consume(data, updatedDate);
-            builder.consume(data);
+            placeBuilder.consume(data);
+            articleBuilder.consume(data);
+            mediaBuilder.consume(data);
         }
 
         // Put place data to place services
-        Place place = builder.collect(updatedDate);
-        if (place != null) {
+        List<Place> places = placeBuilder.collect(updatedDate);
+        List<Media> medias = mediaBuilder.collect(updatedDate);
+        List<Article> articles = articleBuilder.collect(updatedDate);
+
+        if (!places.isEmpty()) {
+            Place place = places.get(0);
             logger.info("Putting place id: {} name: {}", place.getId(), place.getName());
-            // TODO put images too
+            // Put to 3 services
             placeClient.put(place);
+            medias.forEach(mediaClient::put);
+            articles.forEach(articleClient::put);
         } else logger.warn("Place unable to put due to incomplete corpus data: {}", collected);
 
         // Delete data that is not updated
@@ -96,27 +106,11 @@ public class MunchCatalyst extends CatalystEngine {
         if (links.size() < 2) return false;
 
         // Validate has at least 1 Article written about place
-        boolean hasArticle = links.stream().anyMatch(data ->
-                ArticleCorpusName.matcher(data.getCorpusName()).matches());
-        if (!hasArticle) return false;
+        if (links.stream().noneMatch(data -> ArticleBuilder.ArticleCorpusName
+                .matcher(data.getCorpusName()).matches())) return false;
 
         // Validate has NeaRecord
         return links.stream().anyMatch(l -> l.getCorpusName().equals("Sg.Nea.TrackRecord"));
-    }
-
-    /**
-     * Consume special catalyst link
-     * Client will be in charge of structuring data for service.
-     *
-     * @param data link
-     */
-    private void consume(CorpusData data, Date updatedDate) {
-        String name = data.getCorpusName();
-        if (MediaCorpusName.equals(name)) {
-            mediaClient.put(data, updatedDate);
-        } else if (ArticleCorpusName.matcher(name).matches()) {
-            articleClient.put(data, updatedDate);
-        }
     }
 
     @Override
