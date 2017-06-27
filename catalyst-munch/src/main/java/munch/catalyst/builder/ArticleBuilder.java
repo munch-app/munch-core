@@ -25,7 +25,7 @@ public class ArticleBuilder implements DataBuilder<Article> {
     private static final Supplier<NullPointerException> NullSupplier = () -> new NullPointerException("Media");
     public static final Pattern ArticleCorpusName = Pattern.compile("Global\\.Article\\.\\w+");
 
-    List<Article> articleList = new ArrayList<>();
+    private List<Article> articleList = new ArrayList<>();
 
     @Override
     public void consume(CorpusData data) {
@@ -34,6 +34,8 @@ public class ArticleBuilder implements DataBuilder<Article> {
         FieldWrapper wrapper = new FieldWrapper(data);
 
         Article article = new Article();
+        article.setCreatedDate(data.getCreatedDate());
+        article.setCreatedDate(data.getCreatedDate());
         article.setPlaceId(data.getCatalystId());
         article.setArticleId(data.getCorpusKey());
 
@@ -49,6 +51,9 @@ public class ArticleBuilder implements DataBuilder<Article> {
         if (article.getDescription().length() > 2048)
             article.setDescription(article.getDescription().substring(0, 2048));
 
+        // TODO thumbnail
+        String thumbnail = wrapper.getValue("Article.thumbnail");
+
         // Collect images
         List<Article.ArticleImage> images = wrapper.getAll("Article.images").stream()
                 .map(CorpusData.Field::getValue)
@@ -58,7 +63,6 @@ public class ArticleBuilder implements DataBuilder<Article> {
         article.setImages(images);
 
         // Add to List
-        article.setCreatedDate(data.getCreatedDate());
         articleList.add(article);
     }
 

@@ -20,7 +20,7 @@ public class MediaBuilder implements DataBuilder<Media> {
     private static final Supplier<NullPointerException> NullSupplier = () -> new NullPointerException("Media");
     private static final String MediaCorpusName = "Global.Instagram.Media";
 
-    List<Media> mediaList = new ArrayList<>();
+    private List<Media> mediaList = new ArrayList<>();
 
     @Override
     public void consume(CorpusData data) {
@@ -29,6 +29,7 @@ public class MediaBuilder implements DataBuilder<Media> {
         FieldWrapper wrapper = new FieldWrapper(data);
 
         Media media = new Media();
+        media.setCreatedDate(data.getCreatedDate());
         media.setPlaceId(data.getCatalystId());
         media.setMediaId(wrapper.getValue("Instagram.Media.mediaId", NullSupplier));
         media.setCaption(wrapper.getValue("Instagram.Media.caption", NullSupplier));
@@ -53,7 +54,6 @@ public class MediaBuilder implements DataBuilder<Media> {
         }
 
         // Add to List
-        media.setCreatedDate(data.getCreatedDate());
         mediaList.add(media);
     }
 
