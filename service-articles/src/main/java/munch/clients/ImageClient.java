@@ -63,7 +63,7 @@ public class ImageClient extends RestfulClient {
                 .asResponse();
     }
 
-    static class NotImageException extends StructuredException {
+    public static class NotImageException extends StructuredException {
 
         NotImageException(StructuredException e) {
             super(e);

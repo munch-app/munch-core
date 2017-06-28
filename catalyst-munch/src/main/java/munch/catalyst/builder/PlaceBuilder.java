@@ -149,7 +149,8 @@ public final class PlaceBuilder implements DataBuilder<Place> {
     }
 
     public static void addImages(Place place, List<Media> medias, List<Article> articles) {
-        // TODO images
+        // TODO select images
+
     }
 
     private class ValueBuilder {
