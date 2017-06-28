@@ -42,15 +42,17 @@ public class MediaBuilder implements DataBuilder<Media> {
 
         Map<String, Media.Image> images = new HashMap<>();
         for (CorpusData.Field field : wrapper.getAll("Instagram.Media.images")) {
+            int width = Integer.parseInt(field.getMetadata().get("width"));
+            int height = Integer.parseInt(field.getMetadata().get("height"));
+
+            // Put images
             Media.Image image = new Media.Image();
             image.setUrl(Objects.requireNonNull(field.getValue()));
-            image.setWidth(Integer.parseInt(field.getMetadata().get("width")));
-            image.setHeight(Integer.parseInt(field.getMetadata().get("height")));
-            images.put(Objects.requireNonNull(field.getMetadata().get("type")), image);
+            images.put(width + "x" + height, image);
         }
         media.setImages(images);
         if (images.size() < 3) {
-            logger.error("Unable to put Media into MediaService due to NPE, images not all found: {}", images.size());
+            logger.error("Unable to put Media into MediaService due to images not all found: {}", images.size());
         }
 
         // Add to List

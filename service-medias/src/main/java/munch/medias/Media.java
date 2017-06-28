@@ -109,36 +109,6 @@ public final class Media {
     /**
      * Instagram types of images
      */
-    public static class Image {
-        private String url;
-        private int width;
-        private int height;
-
-        public String getUrl() {
-            return url;
-        }
-
-        public void setUrl(String url) {
-            this.url = url;
-        }
-
-        public int getWidth() {
-            return width;
-        }
-
-        public void setWidth(int width) {
-            this.width = width;
-        }
-
-        public int getHeight() {
-            return height;
-        }
-
-        public void setHeight(int height) {
-            this.height = height;
-        }
-    }
-
     /**
      * Owner of the media
      */
@@ -169,6 +139,18 @@ public final class Media {
 
         public void setPictureUrl(String pictureUrl) {
             this.pictureUrl = pictureUrl;
+        }
+    }
+
+    public static class Image {
+        private String url;
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
         }
     }
 
