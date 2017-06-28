@@ -34,7 +34,7 @@ public final class Article {
 
     private String title;
     private String description;
-    private ArticleImage thumbnail;
+    private Image thumbnail;
 
     private Date createdDate;
     private Date updatedDate;
@@ -102,11 +102,11 @@ public final class Article {
 
     @Column(nullable = true)
     @Type(type = "images")
-    public ArticleImage getThumbnail() {
+    public Image getThumbnail() {
         return thumbnail;
     }
 
-    public void setThumbnail(ArticleImage thumbnail) {
+    public void setThumbnail(Image thumbnail) {
         this.thumbnail = thumbnail;
     }
 
@@ -132,7 +132,7 @@ public final class Article {
      * This extends ImageMeta
      * Article version requires url to be saved
      */
-    public static final class ArticleImage extends ImageMeta {
+    public static final class Image extends ImageMeta {
         private String url;
 
         public String getUrl() {
@@ -145,9 +145,9 @@ public final class Article {
     }
 
     public static class UserType {
-        public static class Image extends PojoUserType<ArticleImage> {
+        public static class Image extends PojoUserType<Article.Image> {
             public Image() {
-                super(ArticleImage.class);
+                super(Article.Image.class);
             }
         }
     }

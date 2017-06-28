@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by: Fuxing
@@ -400,10 +399,8 @@ public final class Place {
      * Technically this is a smaller subclass of ImageMeta in munch-images
      * with lesser fields
      */
-    public static final class Image {
+    public static final class Image extends ImageMeta {
         private String from;
-        private String key;
-        private Map<String, Type> images;
 
         /**
          * @return where is the image from
@@ -414,52 +411,6 @@ public final class Place {
 
         public void setFrom(String from) {
             this.from = from;
-        }
-
-        /**
-         * @return unique key of the image
-         */
-        public String getKey() {
-            return key;
-        }
-
-        public void setKey(String key) {
-            this.key = key;
-        }
-
-        /**
-         * @return images type with url
-         */
-        public Map<String, Type> getImages() {
-            return images;
-        }
-
-        public void setImages(Map<String, Type> images) {
-            this.images = images;
-        }
-
-        @JsonInclude(JsonInclude.Include.NON_NULL)
-        @JsonIgnoreProperties(ignoreUnknown = true)
-        public final static class Type {
-            private String url;
-
-            /**
-             * @return public url of image content
-             */
-            public String getUrl() {
-                return url;
-            }
-
-            public void setUrl(String url) {
-                this.url = url;
-            }
-
-            @Override
-            public String toString() {
-                return "Type{" +
-                        "url='" + url + '\'' +
-                        '}';
-            }
         }
     }
 }

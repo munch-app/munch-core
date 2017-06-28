@@ -47,7 +47,7 @@ public final class PersistMapper {
 
         if (saved == null) {
             // Persist new entry of Article
-            Article.ArticleImage thumbnail = article.getThumbnail();
+            Article.Image thumbnail = article.getThumbnail();
             ImageMeta meta = putImage(thumbnail.getUrl());
             if (meta != null) {
                 thumbnail.setUrl(thumbnail.getUrl());
@@ -68,8 +68,8 @@ public final class PersistMapper {
             saved.setUpdatedDate(article.getUpdatedDate());
 
             // Filter images to add and delete
-            Article.ArticleImage existing = saved.getThumbnail();
-            Article.ArticleImage replacing = article.getThumbnail();
+            Article.Image existing = saved.getThumbnail();
+            Article.Image replacing = article.getThumbnail();
 
             if (existing != null && replacing == null) {
                 // Delete existing
@@ -124,7 +124,7 @@ public final class PersistMapper {
      */
     public void delete(Article article) {
         // Delete all the images in article
-        Article.ArticleImage thumbnail = article.getThumbnail();
+        Article.Image thumbnail = article.getThumbnail();
         if (thumbnail != null) {
             imageClient.delete(thumbnail.getKey());
         }

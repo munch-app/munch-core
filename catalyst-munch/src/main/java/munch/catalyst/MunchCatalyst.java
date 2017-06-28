@@ -87,7 +87,7 @@ public class MunchCatalyst extends CatalystEngine {
             articles = articles.stream().map(articleClient::put).collect(Collectors.toList());
 
             // Add images to place from medias and articles
-            PlaceBuilder.addImages(place, medias, articles);
+            place.setImages(PlaceBuilder.ImageBuilder.selectFrom(medias, articles));
             placeClient.put(place);
         } else logger.warn("Place unable to put due to incomplete corpus data: {}", collected);
 

@@ -54,13 +54,13 @@ public class ArticleBuilder implements DataBuilder<Article> {
         // Next version of article corpus uses thumbnail
         String thumbnail = wrapper.getValue("Article.thumbnail");
         if (StringUtils.isNotBlank(thumbnail)) {
-            article.setThumbnail(new Article.ArticleImage(thumbnail));
+            article.setThumbnail(new Article.Image(thumbnail));
         } else {
             // Deprecated backward compatibility
-            List<Article.ArticleImage> images = wrapper.getAll("Article.images").stream()
+            List<Article.Image> images = wrapper.getAll("Article.images").stream()
                     .map(CorpusData.Field::getValue)
                     .filter(StringUtils::isNotBlank)
-                    .map(Article.ArticleImage::new)
+                    .map(Article.Image::new)
                     .collect(Collectors.toList());
 
             if (!images.isEmpty()) {

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.Date;
-import java.util.Map;
 
 /**
  * https://www.instagram.com/developer/endpoints/media/
@@ -22,7 +21,7 @@ public final class Media {
 
     private Profile profile;
     private String caption;
-    private Image image;
+    private ImageMeta image;
 
     private Date createdDate;
     private Date updatedDate;
@@ -67,11 +66,11 @@ public final class Media {
         this.caption = caption;
     }
 
-    public Image getImage() {
+    public ImageMeta getImage() {
         return image;
     }
 
-    public void setImage(Image image) {
+    public void setImage(ImageMeta image) {
         this.image = image;
     }
 
@@ -81,49 +80,6 @@ public final class Media {
 
     public void setProfile(Profile profile) {
         this.profile = profile;
-    }
-
-    /**
-     * Technically this is a smaller subclass of ImageMeta in munch-images
-     * with lesser fields
-     */
-    public static final class Image {
-        private Map<String, Type> images;
-
-        /**
-         * @return images type with url
-         */
-        public Map<String, Type> getImages() {
-            return images;
-        }
-
-        public void setImages(Map<String, Type> images) {
-            this.images = images;
-        }
-
-        @JsonInclude(JsonInclude.Include.NON_NULL)
-        @JsonIgnoreProperties(ignoreUnknown = true)
-        public final static class Type {
-            private String url;
-
-            /**
-             * @return public url of image content
-             */
-            public String getUrl() {
-                return url;
-            }
-
-            public void setUrl(String url) {
-                this.url = url;
-            }
-
-            @Override
-            public String toString() {
-                return "Type{" +
-                        "url='" + url + '\'' +
-                        '}';
-            }
-        }
     }
 
     /**

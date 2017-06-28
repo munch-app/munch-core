@@ -2,6 +2,7 @@ package munch.catalyst.builder;
 
 import catalyst.data.CorpusData;
 import catalyst.utils.FieldWrapper;
+import munch.catalyst.data.ImageMeta;
 import munch.catalyst.data.Media;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,14 +41,14 @@ public class MediaBuilder implements DataBuilder<Media> {
         profile.setPictureUrl(wrapper.getValue("Instagram.Media.profilePicture", NullSupplier));
         media.setProfile(profile);
 
-        media.setImage(new Media.Image());
+        media.setImage(new ImageMeta());
         media.getImage().setImages(new HashMap<>());
         for (CorpusData.Field field : wrapper.getAll("Instagram.Media.images")) {
             int width = Integer.parseInt(field.getMetadata().get("width"));
             int height = Integer.parseInt(field.getMetadata().get("height"));
 
             // Put images
-            Media.Image.Type type = new Media.Image.Type();
+            ImageMeta.Type type = new ImageMeta.Type();
             type.setUrl(Objects.requireNonNull(field.getValue()));
             media.getImage().getImages().put(width + "x" + height, type);
         }

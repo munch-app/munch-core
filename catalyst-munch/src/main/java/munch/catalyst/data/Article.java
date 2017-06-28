@@ -22,7 +22,7 @@ public final class Article {
 
     private String title;
     private String description;
-    private ArticleImage thumbnail;
+    private Image thumbnail;
 
     private Date createdDate;
     private Date updatedDate;
@@ -81,11 +81,11 @@ public final class Article {
         this.description = summary;
     }
 
-    public ArticleImage getThumbnail() {
+    public Image getThumbnail() {
         return thumbnail;
     }
 
-    public void setThumbnail(ArticleImage thumbnail) {
+    public void setThumbnail(Image thumbnail) {
         this.thumbnail = thumbnail;
     }
 
@@ -109,13 +109,13 @@ public final class Article {
      * This extends ImageMeta, but not at catalyst
      * Article version requires url to be saved
      */
-    public static final class ArticleImage extends ImageMeta {
+    public static final class Image extends ImageMeta {
         private String url;
 
-        public ArticleImage() {
+        public Image() {
         }
 
-        public ArticleImage(String url) {
+        public Image(String url) {
             this.url = url;
         }
 
