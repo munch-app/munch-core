@@ -56,7 +56,7 @@ public class MediaService implements JsonService {
         return provider.reduce(em -> em.find(Media.class, mediaId));
     }
 
-    private JsonNode put(JsonCall call) {
+    private Media put(JsonCall call) {
         Media media = call.bodyAsObject(Media.class);
         provider.with(em -> {
             if (em.find(Media.class, media.getMediaId()) == null) {
@@ -65,7 +65,7 @@ public class MediaService implements JsonService {
                 em.merge(media);
             }
         });
-        return Meta200;
+        return media;
     }
 
     private JsonNode delete(JsonCall call) {

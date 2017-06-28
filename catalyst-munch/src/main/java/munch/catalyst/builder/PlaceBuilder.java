@@ -1,6 +1,8 @@
 package munch.catalyst.builder;
 
 import catalyst.data.CorpusData;
+import munch.catalyst.data.Article;
+import munch.catalyst.data.Media;
 import munch.catalyst.data.Place;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
@@ -100,7 +102,6 @@ public final class PlaceBuilder implements DataBuilder<Place> {
 
         place.setCreatedDate(earliestDate);
         place.setUpdatedDate(updatedDate);
-        // TODO put images too
 
         // Return null if validation failed
         if (!validate(place)) return Collections.emptyList();
@@ -145,6 +146,10 @@ public final class PlaceBuilder implements DataBuilder<Place> {
             return false;
         }
         return true;
+    }
+
+    public static void addImages(Place place, List<Media> medias, List<Article> articles) {
+        // TODO images
     }
 
     private class ValueBuilder {

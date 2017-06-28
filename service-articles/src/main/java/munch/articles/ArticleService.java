@@ -58,10 +58,9 @@ public final class ArticleService implements JsonService {
         return provider.reduce(em -> em.find(Article.class, articleId));
     }
 
-    private JsonNode put(JsonCall call) {
+    private Article put(JsonCall call) {
         Article article = call.bodyAsObject(Article.class);
-        mapper.put(article);
-        return Meta200;
+        return mapper.put(article);
     }
 
     private JsonNode delete(JsonCall call, JsonNode request) {

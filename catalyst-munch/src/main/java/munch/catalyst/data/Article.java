@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by: Fuxing
@@ -23,7 +22,7 @@ public final class Article {
 
     private String title;
     private String description;
-    private List<ArticleImage> images;
+    private ArticleImage thumbnail;
 
     private Date createdDate;
     private Date updatedDate;
@@ -82,12 +81,12 @@ public final class Article {
         this.description = summary;
     }
 
-    public List<ArticleImage> getImages() {
-        return images;
+    public ArticleImage getThumbnail() {
+        return thumbnail;
     }
 
-    public void setImages(List<ArticleImage> images) {
-        this.images = images;
+    public void setThumbnail(ArticleImage thumbnail) {
+        this.thumbnail = thumbnail;
     }
 
     public Date getCreatedDate() {
@@ -110,7 +109,7 @@ public final class Article {
      * This extends ImageMeta, but not at catalyst
      * Article version requires url to be saved
      */
-    public static final class ArticleImage {
+    public static final class ArticleImage extends ImageMeta {
         private String url;
 
         public ArticleImage() {

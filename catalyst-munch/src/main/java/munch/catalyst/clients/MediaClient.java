@@ -22,13 +22,13 @@ public class MediaClient extends RestfulClient {
         super(url);
     }
 
-    public void put(Media media) {
-        doPut("/places/{placeId}/medias/{mediaId}")
+    public Media put(Media media) {
+        return doPut("/places/{placeId}/medias/{mediaId}")
                 .path("placeId", media.getPlaceId())
                 .path("mediaId", media.getMediaId())
                 .body(media)
                 .asResponse()
-                .hasCode(200);
+                .asDataObject(Media.class);
     }
 
     public void deleteBefore(String catalystId, Date updatedDate) {

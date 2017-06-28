@@ -107,9 +107,6 @@ public final class Media {
     }
 
     /**
-     * Instagram types of images
-     */
-    /**
      * Owner of the media
      */
     public static class Profile {
@@ -142,6 +139,9 @@ public final class Media {
         }
     }
 
+    /**
+     * Instagram types of images
+     */
     public static class Image {
         private String url;
 

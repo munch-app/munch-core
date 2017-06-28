@@ -22,12 +22,12 @@ public class ArticleClient extends RestfulClient {
         super(url);
     }
 
-    public void put(Article article) {
-        doPost("/places/{placeId}/articles/put")
+    public Article put(Article article) {
+        return doPost("/places/{placeId}/articles/put")
                 .path("placeId", article.getPlaceId())
                 .body(article)
                 .asResponse()
-                .hasCode(200);
+                .asDataObject(Article.class);
     }
 
     public void deleteBefore(String catalystId, Date updatedDate) {

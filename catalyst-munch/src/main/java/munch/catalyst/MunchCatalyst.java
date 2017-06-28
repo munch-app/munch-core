@@ -21,6 +21,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by: Fuxing
@@ -82,9 +83,12 @@ public class MunchCatalyst extends CatalystEngine {
             Place place = places.get(0);
             logger.info("Putting place id: {} name: {}", place.getId(), place.getName());
             // Put to 3 services
+            medias = medias.stream().map(mediaClient::put).collect(Collectors.toList());
+            articles = articles.stream().map(articleClient::put).collect(Collectors.toList());
+
+            // Add images to place from medias and articles
+            PlaceBuilder.addImages(place, medias, articles);
             placeClient.put(place);
-            medias.forEach(mediaClient::put);
-            articles.forEach(articleClient::put);
         } else logger.warn("Place unable to put due to incomplete corpus data: {}", collected);
 
         // Delete data that is not updated

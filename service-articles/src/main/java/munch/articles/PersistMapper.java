@@ -11,10 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Created by: Fuxing
@@ -41,18 +38,22 @@ public final class PersistMapper {
         this.provider = provider;
     }
 
-    public void put(Article article) {
+    public Article put(Article article) {
         Article saved = provider.reduce(em -> em.find(Article.class, article.getArticleId()));
 
         if (saved == null) {
             // Persist new entry of Article
-            for (Article.ArticleImage image : article.getImages()) {
-                ImageMeta meta = putImage(image.getUrl());
-                if (meta == null) continue;
-                image.setKey(meta.getKey());
-                image.setImages(meta.getImages());
+            Article.ArticleImage thumbnail = article.getThumbnail();
+            ImageMeta meta = putImage(thumbnail.getUrl());
+            if (meta != null) {
+                thumbnail.setUrl(thumbnail.getUrl());
+                thumbnail.setKey(meta.getKey());
+                thumbnail.setImages(meta.getImages());
+            } else {
+                article.setThumbnail(null);
             }
             provider.with(em -> em.persist(article));
+            return article;
         } else {
             // Persist existing entry of Article
             saved.setPlaceId(article.getPlaceId());
@@ -63,37 +64,39 @@ public final class PersistMapper {
             saved.setUpdatedDate(article.getUpdatedDate());
 
             // Filter images to add and delete
-            Set<String> existingUrls = Arrays.stream(saved.getImages())
-                    .map(Article.ArticleImage::getUrl)
-                    .collect(Collectors.toSet());
-            Set<String> newUrls = Arrays.stream(article.getImages())
-                    .map(Article.ArticleImage::getUrl)
-                    .collect(Collectors.toSet());
+            Article.ArticleImage existing = saved.getThumbnail();
+            Article.ArticleImage replacing = article.getThumbnail();
 
-            // Remove and add into to Set
-            Set<Article.ArticleImage> images = Arrays.stream(saved.getImages()).collect(Collectors.toSet());
-
-            // Urls to remove
-            images.stream().filter(i -> !newUrls.contains(i.getUrl())).forEach(image -> {
-                images.remove(image);
-                imageClient.delete(image.getKey());
-            });
-
-            // Urls to add
-            newUrls.stream().filter(url -> !existingUrls.contains(url)).forEach(url -> {
-                ImageMeta meta = putImage(url);
+            if (existing != null && replacing == null) {
+                // Delete existing
+                imageClient.delete(existing.getKey());
+            } else if (existing == null && replacing != null) {
+                // Add replacing
+                ImageMeta meta = putImage(replacing.getUrl());
                 if (meta != null) {
-                    Article.ArticleImage image = new Article.ArticleImage();
-                    image.setUrl(url);
-                    image.setKey(meta.getKey());
-                    image.setImages(meta.getImages());
-                    images.add(image);
+                    replacing.setUrl(replacing.getUrl());
+                    replacing.setImages(meta.getImages());
+                    replacing.setKey(meta.getKey());
+                    saved.setThumbnail(replacing);
                 }
-            });
+            } else if (existing != null) {
+                // Replace existing
+                if (!existing.getUrl().equals(replacing.getUrl())) {
+                    // Only replace if not same
+                    imageClient.delete(existing.getKey());
+                    ImageMeta meta = putImage(replacing.getUrl());
+                    if (meta != null) {
+                        replacing.setUrl(replacing.getUrl());
+                        replacing.setKey(meta.getKey());
+                        replacing.setImages(meta.getImages());
+                        saved.setThumbnail(replacing);
+                    }
+                }
+            }
 
             // Persist changes
-            saved.setImages(images.toArray(new Article.ArticleImage[images.size()]));
             provider.with(em -> em.merge(saved));
+            return saved;
         }
     }
 
@@ -117,8 +120,9 @@ public final class PersistMapper {
      */
     public void delete(Article article) {
         // Delete all the images in article
-        for (Article.ArticleImage image : article.getImages()) {
-            imageClient.delete(image.getKey());
+        Article.ArticleImage thumbnail = article.getThumbnail();
+        if (thumbnail != null) {
+            imageClient.delete(thumbnail.getKey());
         }
 
         // Remove Article from Database

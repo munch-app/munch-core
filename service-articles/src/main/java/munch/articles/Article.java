@@ -23,7 +23,7 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @TypeDefs(value = {
-        @TypeDef(name = "images", typeClass = Article.UserType.Images.class)
+        @TypeDef(name = "thumbnail", typeClass = Article.UserType.Image.class)
 })
 public final class Article {
     private String placeId;
@@ -34,7 +34,7 @@ public final class Article {
 
     private String title;
     private String description;
-    private ArticleImage[] images;
+    private ArticleImage thumbnail;
 
     private Date createdDate;
     private Date updatedDate;
@@ -100,14 +100,14 @@ public final class Article {
         this.description = summary;
     }
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     @Type(type = "images")
-    public ArticleImage[] getImages() {
-        return images;
+    public ArticleImage getThumbnail() {
+        return thumbnail;
     }
 
-    public void setImages(ArticleImage[] images) {
-        this.images = images;
+    public void setThumbnail(ArticleImage thumbnail) {
+        this.thumbnail = thumbnail;
     }
 
     @Column(nullable = false)
@@ -145,9 +145,9 @@ public final class Article {
     }
 
     public static class UserType {
-        public static class Images extends PojoUserType<ArticleImage[]> {
-            public Images() {
-                super(ArticleImage[].class);
+        public static class Image extends PojoUserType<ArticleImage> {
+            public Image() {
+                super(ArticleImage.class);
             }
         }
     }

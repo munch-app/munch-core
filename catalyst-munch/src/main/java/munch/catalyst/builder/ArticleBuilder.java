@@ -51,16 +51,22 @@ public class ArticleBuilder implements DataBuilder<Article> {
         if (article.getDescription().length() > 2048)
             article.setDescription(article.getDescription().substring(0, 2048));
 
-        // TODO thumbnail
+        // Next version of article corpus uses thumbnail
         String thumbnail = wrapper.getValue("Article.thumbnail");
+        if (StringUtils.isNotBlank(thumbnail)) {
+            article.setThumbnail(new Article.ArticleImage(thumbnail));
+        } else {
+            // Deprecated backward compatibility
+            List<Article.ArticleImage> images = wrapper.getAll("Article.images").stream()
+                    .map(CorpusData.Field::getValue)
+                    .filter(StringUtils::isNotBlank)
+                    .map(Article.ArticleImage::new)
+                    .collect(Collectors.toList());
 
-        // Collect images
-        List<Article.ArticleImage> images = wrapper.getAll("Article.images").stream()
-                .map(CorpusData.Field::getValue)
-                .filter(StringUtils::isNotBlank)
-                .map(Article.ArticleImage::new)
-                .collect(Collectors.toList());
-        article.setImages(images);
+            if (!images.isEmpty()) {
+                article.setThumbnail(images.get(0));
+            }
+        }
 
         // Add to List
         articleList.add(article);
