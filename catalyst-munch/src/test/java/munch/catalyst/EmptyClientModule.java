@@ -1,12 +1,13 @@
 package munch.catalyst;
 
-import catalyst.data.CorpusData;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.mashape.unirest.http.Unirest;
 import munch.catalyst.clients.ArticleClient;
 import munch.catalyst.clients.MediaClient;
 import munch.catalyst.clients.PlaceClient;
+import munch.catalyst.data.Article;
+import munch.catalyst.data.Media;
 import munch.catalyst.data.Place;
 
 import java.util.Date;
@@ -48,11 +49,13 @@ public class EmptyClientModule extends AbstractModule {
         }
 
         @Override
-        public void put(CorpusData data, Date updatedDate) {
+        public Article put(Article article) {
+            return super.put(article);
         }
 
         @Override
         public void deleteBefore(String catalystId, Date updatedDate) {
+            super.deleteBefore(catalystId, updatedDate);
         }
     }
 
@@ -76,7 +79,8 @@ public class EmptyClientModule extends AbstractModule {
         }
 
         @Override
-        public void put(CorpusData data, Date updatedDate) {
+        public Media put(Media media) {
+            return super.put(media);
         }
 
         @Override

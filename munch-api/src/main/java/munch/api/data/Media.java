@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.Date;
-import java.util.Map;
 
 /**
  * https://www.instagram.com/developer/endpoints/media/
@@ -22,7 +21,7 @@ public final class Media {
 
     private Profile profile;
     private String caption;
-    private Map<String, Image> images;
+    private ImageMeta image;
 
     private Date createdDate;
     private Date updatedDate;
@@ -67,12 +66,12 @@ public final class Media {
         this.caption = caption;
     }
 
-    public Map<String, Image> getImages() {
-        return images;
+    public ImageMeta getImage() {
+        return image;
     }
 
-    public void setImages(Map<String, Image> images) {
-        this.images = images;
+    public void setImage(ImageMeta image) {
+        this.image = image;
     }
 
     public Profile getProfile() {
@@ -81,39 +80,6 @@ public final class Media {
 
     public void setProfile(Profile profile) {
         this.profile = profile;
-    }
-
-    /**
-     * Instagram types of images
-     */
-    public static class Image {
-        private String url;
-        private int width;
-        private int height;
-
-        public String getUrl() {
-            return url;
-        }
-
-        public void setUrl(String url) {
-            this.url = url;
-        }
-
-        public int getWidth() {
-            return width;
-        }
-
-        public void setWidth(int width) {
-            this.width = width;
-        }
-
-        public int getHeight() {
-            return height;
-        }
-
-        public void setHeight(int height) {
-            this.height = height;
-        }
     }
 
     /**

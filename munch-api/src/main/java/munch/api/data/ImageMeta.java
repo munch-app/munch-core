@@ -19,9 +19,9 @@ import java.util.Map;
 public class ImageMeta {
     private String key;
     private String contentType;
+    private Date created;
 
     private Map<String, Type> images;
-    private Date created;
 
     /**
      * @return unique id of the image
