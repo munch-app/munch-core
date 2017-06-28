@@ -401,8 +401,20 @@ public final class Place {
      * with lesser fields
      */
     public static final class Image {
+        private String from;
         private String key;
         private Map<String, Type> images;
+
+        /**
+         * @return where is the image from
+         */
+        public String getFrom() {
+            return from;
+        }
+
+        public void setFrom(String from) {
+            this.from = from;
+        }
 
         /**
          * @return unique key of the image

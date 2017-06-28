@@ -11,7 +11,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -27,7 +26,7 @@ import java.util.Map;
 @Entity
 @TypeDefs(value = {
         @TypeDef(name = "profile", typeClass = Media.UserType.User.class),
-        @TypeDef(name = "images", typeClass = Media.UserType.Images.class)
+        @TypeDef(name = "image", typeClass = Media.UserType.Image.class)
 })
 public final class Media {
     private String placeId;
@@ -35,7 +34,7 @@ public final class Media {
 
     private Profile profile;
     private String caption;
-    private Map<String, Image> images;
+    private Image image;
 
     private Date createdDate;
     private Date updatedDate;
@@ -86,14 +85,14 @@ public final class Media {
         this.caption = caption;
     }
 
+    @Type(type = "image")
     @Column(nullable = false)
-    @Type(type = "images")
-    public Map<String, Image> getImages() {
-        return images;
+    public Image getImage() {
+        return image;
     }
 
-    public void setImages(Map<String, Image> images) {
-        this.images = images;
+    public void setImage(Image image) {
+        this.image = image;
     }
 
     @Column(nullable = false)
@@ -140,17 +139,45 @@ public final class Media {
     }
 
     /**
-     * Instagram types of images
+     * Technically this is a smaller subclass of ImageMeta in munch-images
+     * with lesser fields
      */
-    public static class Image {
-        private String url;
+    public static final class Image {
+        private Map<String, Type> images;
 
-        public String getUrl() {
-            return url;
+        /**
+         * @return images type with url
+         */
+        public Map<String, Type> getImages() {
+            return images;
         }
 
-        public void setUrl(String url) {
-            this.url = url;
+        public void setImages(Map<String, Type> images) {
+            this.images = images;
+        }
+
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        public final static class Type {
+            private String url;
+
+            /**
+             * @return public url of image content
+             */
+            public String getUrl() {
+                return url;
+            }
+
+            public void setUrl(String url) {
+                this.url = url;
+            }
+
+            @Override
+            public String toString() {
+                return "Type{" +
+                        "url='" + url + '\'' +
+                        '}';
+            }
         }
     }
 
@@ -164,12 +191,9 @@ public final class Media {
             }
         }
 
-        public static class ImageMap extends HashMap<String, Image> {
-        }
-
-        public static class Images extends PojoUserType<ImageMap> {
-            public Images() {
-                super(ImageMap.class);
+        public static class Image extends PojoUserType<Image> {
+            public Image() {
+                super(Image.class);
             }
         }
     }

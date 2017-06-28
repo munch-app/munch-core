@@ -40,19 +40,20 @@ public class MediaBuilder implements DataBuilder<Media> {
         profile.setPictureUrl(wrapper.getValue("Instagram.Media.profilePicture", NullSupplier));
         media.setProfile(profile);
 
-        Map<String, Media.Image> images = new HashMap<>();
+        media.setImage(new Media.Image());
+        media.getImage().setImages(new HashMap<>());
         for (CorpusData.Field field : wrapper.getAll("Instagram.Media.images")) {
             int width = Integer.parseInt(field.getMetadata().get("width"));
             int height = Integer.parseInt(field.getMetadata().get("height"));
 
             // Put images
-            Media.Image image = new Media.Image();
-            image.setUrl(Objects.requireNonNull(field.getValue()));
-            images.put(width + "x" + height, image);
+            Media.Image.Type type = new Media.Image.Type();
+            type.setUrl(Objects.requireNonNull(field.getValue()));
+            media.getImage().getImages().put(width + "x" + height, type);
         }
-        media.setImages(images);
-        if (images.size() < 3) {
-            logger.error("Unable to put Media into MediaService due to images not all found: {}", images.size());
+        if (media.getImage().getImages().size() < 3) {
+            logger.error("Unable to put Media into MediaService due to images not all found: {}",
+                    media.getImage().getImages().size());
         }
 
         // Add to List
