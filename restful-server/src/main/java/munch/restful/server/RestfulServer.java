@@ -77,7 +77,9 @@ public class RestfulServer {
         // Logging Setup
         if (pathLogging) {
             logger.info("Path logging is registered.");
-            Spark.before((request, response) -> logger.info("{}: {}", request.requestMethod(), request.pathInfo()));
+            // Because it is trace, to activate logging
+            // set munch.restful.server.RestfulServer to trace
+            Spark.before((request, response) -> logger.trace("{}: {}", request.requestMethod(), request.pathInfo()));
         }
 
         // Spark after register all path content type as json

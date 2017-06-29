@@ -2,7 +2,6 @@ package munch.catalyst;
 
 import catalyst.CatalystEngine;
 import catalyst.CatalystModule;
-import catalyst.EngineThread;
 import catalyst.data.DataModule;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -20,7 +19,7 @@ class MunchCatalystTest {
         System.setProperty("services.catalyst.data.url", "http://localhost:8222");
 
         Injector injector = Guice.createInjector(new TestModule());
-        injector.getInstance(EngineThread.class).start();
+        injector.getInstance(MunchCatalyst.class).run();
     }
 
     static class TestModule extends AbstractModule {
