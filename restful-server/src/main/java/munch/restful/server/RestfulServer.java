@@ -33,7 +33,6 @@ public class RestfulServer {
 
     private final RestfulService[] routers;
     private boolean started = false;
-    private boolean pathLogging = false;
 
     /**
      * @param routers array of routes for spark server to route with
@@ -75,12 +74,10 @@ public class RestfulServer {
         Spark.port(port);
 
         // Logging Setup
-        if (pathLogging) {
-            logger.info("Path logging is registered.");
-            // Because it is trace, to activate logging
-            // set munch.restful.server.RestfulServer to trace
-            Spark.before((request, response) -> logger.trace("{}: {}", request.requestMethod(), request.pathInfo()));
-        }
+        logger.info("Path logging is registered to trace.");
+        // Because it is trace, to activate logging
+        // set munch.restful.server.RestfulServer to trace
+        Spark.before((request, response) -> logger.trace("{}: {}", request.requestMethod(), request.pathInfo()));
 
         // Spark after register all path content type as json
         Spark.after((req, res) -> res.type(JsonService.APP_JSON));
@@ -174,13 +171,6 @@ public class RestfulServer {
      */
     public boolean isStarted() {
         return started;
-    }
-
-    /**
-     * @param logging true = turn on path logging
-     */
-    public void setPathLogging(boolean logging) {
-        this.pathLogging = logging;
     }
 
     /**
