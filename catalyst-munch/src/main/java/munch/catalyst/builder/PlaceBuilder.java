@@ -9,7 +9,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.misc.FloatingDecimal;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -126,6 +125,7 @@ public final class PlaceBuilder implements DataBuilder<Place> {
      * @param place place to validate
      * @return true = success
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private boolean validate(Place place) {
         if (StringUtils.isBlank(place.getId())) return false;
         if (StringUtils.isBlank(place.getName())) return false;
@@ -140,8 +140,8 @@ public final class PlaceBuilder implements DataBuilder<Place> {
 
         try {
             String[] split = place.getLocation().getLatLng().split(",");
-            FloatingDecimal.parseDouble(split[0].trim());
-            FloatingDecimal.parseDouble(split[1].trim());
+            Double.parseDouble(split[0].trim());
+            Double.parseDouble(split[1].trim());
         } catch (NumberFormatException nfe) {
             logger.error("LatLng Validation failed");
             return false;
