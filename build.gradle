@@ -115,7 +115,7 @@ buildscript {
     }
     dependencies {
         classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4+"
-        classpath 'com.bmuschko:gradle-docker-plugin:3.0.8'
+        classpath 'com.bmuschko:gradle-docker-plugin:3.0.5'
     }
 }
 

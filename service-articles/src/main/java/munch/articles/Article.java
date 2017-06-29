@@ -101,7 +101,7 @@ public final class Article {
     }
 
     @Column(nullable = true)
-    @Type(type = "images")
+    @Type(type = "thumbnail")
     public Image getThumbnail() {
         return thumbnail;
     }
