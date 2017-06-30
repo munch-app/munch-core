@@ -2,7 +2,8 @@ package munch.api.services;
 
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
-import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import spark.RouteGroup;
 import spark.Spark;
 
@@ -15,8 +16,12 @@ import java.util.Optional;
  * Project: munch-core
  */
 public abstract class AbstractService implements JsonService {
+    private static final Logger logger = LoggerFactory.getLogger(AbstractService.class);
 
     private static final String Version = "/v1";
+
+    protected static final String HEADER_LOCATION_LATLNG = "Location-LatLng";
+    protected static final String HEADER_LOCATION_CITY = "Location-City";
 
     @Override
     public void PATH(String path, RouteGroup routeGroup) {
@@ -24,42 +29,44 @@ public abstract class AbstractService implements JsonService {
     }
 
     /**
-     * Required Headers:
-     * Spatial-Lat
-     * Spatial-Lng
-     *
-     * @param call json call to search header object
-     * @return Optional Spatial object
+     * @param call json call to find the header
+     * @return Optional latLng
      */
-    protected static Optional<Spatial> getSpatial(JsonCall call) {
-        String lat = call.getHeader("Spatial-Lat");
-        String lng = call.getHeader("Spatial-Lng");
-        if (StringUtils.isAnyBlank(lat, lng)) return Optional.empty();
-        return Optional.of(new Spatial(lat, lng));
+    public Optional<LatLng> getHeaderLatLng(JsonCall call) {
+        String latLng = call.getHeader(HEADER_LOCATION_LATLNG);
+        if (latLng == null) return Optional.empty();
+
+        try {
+            return Optional.of(new LatLng(latLng));
+        } catch (NullPointerException | IndexOutOfBoundsException | NumberFormatException e) {
+            logger.warn("Unable to parse Header: Location-LatLng value: {}", latLng, e);
+            return Optional.empty();
+        }
     }
 
     /**
-     * Spatial header
+     * Special wrapper for HeaderL Location-LatLng
      */
-    public static class Spatial {
+    public static class LatLng {
         private final double lat;
         private final double lng;
 
-        protected Spatial(String lat, String lng) {
-            this.lat = Double.parseDouble(lat);
-            this.lng = Double.parseDouble(lng);
+        /**
+         * @param latLng latLng is string separated by ,
+         * @throws NumberFormatException     if number is not double
+         * @throws IndexOutOfBoundsException if size is not 2
+         * @throws NullPointerException      latlng is null, or either split string is null
+         */
+        public LatLng(String latLng) throws NullPointerException, IndexOutOfBoundsException, NumberFormatException {
+            String[] split = latLng.split(",");
+            lat = Double.parseDouble(split[0].trim());
+            lng = Double.parseDouble(split[1].trim());
         }
 
-        /**
-         * @return current latitude of user
-         */
         public double getLat() {
             return lat;
         }
 
-        /**
-         * @return current longitude of user
-         */
         public double getLng() {
             return lng;
         }

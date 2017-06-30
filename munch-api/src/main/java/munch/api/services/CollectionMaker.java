@@ -1,6 +1,8 @@
 package munch.api.services;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import munch.api.clients.PlaceClient;
 import munch.api.data.Place;
 import munch.api.data.PlaceCollection;
 import munch.api.data.SearchQuery;
@@ -20,12 +22,19 @@ import java.util.stream.Collectors;
  * Project: munch-core
  */
 @Singleton
-public class PlaceCategorizer {
+public class CollectionMaker {
     private static final int MIN = 5;
 
     private static final Predicate<Place> CafePredicate = p -> p.getTags().contains("cafe");
     private static final Predicate<Place> HalalPredicate = p -> p.getTags().contains("halal");
     private static final Predicate<Place> HealthyPredicate = p -> p.getTags().contains("healthy options");
+
+    private final PlaceClient placeClient;
+
+    @Inject
+    public CollectionMaker(PlaceClient placeClient) {
+        this.placeClient = placeClient;
+    }
 
     /**
      * Currently supported:
@@ -38,7 +47,13 @@ public class PlaceCategorizer {
      * @param places places to categorize
      * @return List of PlaceCollection
      */
-    public List<PlaceCollection> categorize(SearchQuery query, List<Place> places) {
+    public List<PlaceCollection> search(SearchQuery query, @Nullable AbstractService.LatLng latLng) {
+        // TODO parse latLng and process
+
+        query.setFrom(0);
+        query.setSize(80);
+
+        List<Place> places = placeClient.search(query);
         List<PlaceCollection> collections = new ArrayList<>();
         // Mandatory collection
         collections.add(group("Nearby", query, places, p -> true));

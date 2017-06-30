@@ -17,6 +17,7 @@ import java.util.Set;
  * Project: munch-core
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public final class SearchQuery {
     private int from;
     private int size;

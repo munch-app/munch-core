@@ -23,10 +23,10 @@ public class PlaceService extends AbstractService {
     private final ArticleClient articleClient;
     private final MediaClient mediaClient;
 
-    private final PlaceCategorizer categorizer;
+    private final CollectionMaker categorizer;
 
     @Inject
-    public PlaceService(PlaceClient placeClient, ArticleClient articleClient, MediaClient mediaClient, PlaceCategorizer categorizer) {
+    public PlaceService(PlaceClient placeClient, ArticleClient articleClient, MediaClient mediaClient, CollectionMaker categorizer) {
         this.placeClient = placeClient;
         this.articleClient = articleClient;
         this.mediaClient = mediaClient;
@@ -40,9 +40,10 @@ public class PlaceService extends AbstractService {
     @Override
     public void route() {
         PATH("/places", () -> {
-            POST("/categorize", this::categorize);
             POST("/suggest", this::suggest);
+
             POST("/search", this::search);
+            POST("/search/scroll", this::searchScroll);
 
             // Single place endpoint
             PATH("/:placeId", () -> {
@@ -52,18 +53,6 @@ public class PlaceService extends AbstractService {
                 GET("/articles/list", this::articles);
             });
         });
-    }
-
-    /**
-     * @param call json call
-     * @return list of Place result
-     */
-    private List<PlaceCollection> categorize(JsonCall call) {
-        SearchQuery query = call.bodyAsObject(SearchQuery.class);
-        query.setSize(40);
-
-        List<Place> places = placeClient.search(query);
-        return categorizer.categorize(query, places);
     }
 
     /**
@@ -87,10 +76,19 @@ public class PlaceService extends AbstractService {
 
     /**
      * @param call json call
+     * @return list of Place result
+     */
+    private List<PlaceCollection> search(JsonCall call) {
+        SearchQuery query = call.bodyAsObject(SearchQuery.class);
+        return categorizer.search(query, getHeaderLatLng(call).orElse(null));
+    }
+
+    /**
+     * @param call json call
      * @return list of Place
      * @see SearchQuery
      */
-    private List<Place> search(JsonCall call) {
+    private List<Place> searchScroll(JsonCall call) {
         SearchQuery query = call.bodyAsObject(SearchQuery.class);
         return placeClient.search(query);
     }
