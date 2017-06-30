@@ -44,12 +44,11 @@ public class CollectionMaker {
      * 4. Healthy = tag
      *
      * @param query  search query
-     * @param places places to categorize
+     * @param latLng nullable latLng of user
      * @return List of PlaceCollection
      */
     public List<PlaceCollection> search(SearchQuery query, @Nullable AbstractService.LatLng latLng) {
         // TODO parse latLng and process
-
         query.setFrom(0);
         query.setSize(80);
 
