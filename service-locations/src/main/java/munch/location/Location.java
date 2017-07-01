@@ -83,6 +83,7 @@ import java.util.Arrays;
         @TypeDef(name = "points", typeClass = PointsUserType.class)
 })
 public final class Location {
+    private String id;
     private String name;
     private String center;
     private String[] points;
@@ -94,12 +95,21 @@ public final class Location {
     @Id
     @DocumentId
     @Column(length = 255, updatable = false, nullable = false)
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     @Fields({
             @Field(name = "edgeNGramName", index = Index.YES, store = Store.NO,
                     analyze = Analyze.YES, analyzer = @Analyzer(definition = "autocompleteEdgeAnalyzer")),
             @Field(name = "nGramName", index = Index.YES, store = Store.NO,
                     analyze = Analyze.YES, analyzer = @Analyzer(definition = "autocompleteNGramAnalyzer"))
     })
+    @Column(length = 255, updatable = false, nullable = false)
     public String getName() {
         return name;
     }

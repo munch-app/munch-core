@@ -92,7 +92,7 @@ services:
 
   # Location Service For Munch
   location:
-    image: munch-core/service-location:latest
+    image: munch-core/service-locations:latest
 
   # Munch Api
   munch-api:

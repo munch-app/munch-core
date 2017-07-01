@@ -1,14 +1,14 @@
-package munch.api.data;
+package munch.places;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import java.util.List;
+
 /**
- * Location POJO is marked out for future development
- * <p>
- * Created By: Fuxing Loh
- * Date: 17/4/2017
- * Time: 8:34 PM
+ * Created by: Fuxing
+ * Date: 2/7/2017
+ * Time: 3:12 AM
  * Project: munch-core
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -17,10 +17,7 @@ public final class Location {
     private String id;
     private String name;
     private String center;
-    private String[] points;
-
-    public Location() {
-    }
+    private List<String> points;
 
     public String getId() {
         return id;
@@ -30,16 +27,14 @@ public final class Location {
         this.id = id;
     }
 
-    /**
-     * @param center center only location for distance search
-     */
-    public Location(String center) {
-        this.center = center;
+    public List<String> getPoints() {
+        return points;
     }
 
-    /**
-     * @return name of neighborhood
-     */
+    public void setPoints(List<String> points) {
+        this.points = points;
+    }
+
     public String getName() {
         return name;
     }
@@ -48,25 +43,11 @@ public final class Location {
         this.name = name;
     }
 
-    /**
-     * @return as "lat, lng" String
-     */
     public String getCenter() {
         return center;
     }
 
     public void setCenter(String center) {
         this.center = center;
-    }
-
-    /**
-     * @return as ["lat, lng", "lat, lng"] String Array
-     */
-    public String[] getPoints() {
-        return points;
-    }
-
-    public void setPoints(String[] points) {
-        this.points = points;
     }
 }

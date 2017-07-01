@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import munch.places.Location;
 import munch.places.SearchQuery;
 import org.apache.commons.lang3.StringUtils;
 
@@ -99,7 +100,7 @@ public class BoolQuery {
      * @param filters  filters object
      * @return JsonNode bool filter
      */
-    private JsonNode filter(@Nullable SearchQuery.Location location, SearchQuery.Filters filters) {
+    private JsonNode filter(@Nullable Location location, SearchQuery.Filters filters) {
         ArrayNode filterArray = mapper.createArrayNode();
 
         // Distance geo query first else then polygon

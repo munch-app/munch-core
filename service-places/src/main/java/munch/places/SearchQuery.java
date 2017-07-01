@@ -3,12 +3,11 @@ package munch.places;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import java.util.List;
 import java.util.Set;
 
 /**
  * This is a structure for place query
- * If distance and polygon is both present, distance will be used
+ * Naturally everything is optional except for from & size
  * <p>
  * Created By: Fuxing Loh
  * Date: 20/4/2017
@@ -21,8 +20,8 @@ public final class SearchQuery {
     private int size;
 
     private String query;
-    private Location location; // Optional
-    private Filters filters; // Optional
+    private Location location;
+    private Filters filters;
 
     public int getFrom() {
         return from;
@@ -186,36 +185,6 @@ public final class SearchQuery {
             public void setClose(String close) {
                 this.close = close;
             }
-        }
-    }
-
-    public static final class Location {
-        private String name;
-        private String center;
-        private List<String> points;
-
-        public List<String> getPoints() {
-            return points;
-        }
-
-        public void setPoints(List<String> points) {
-            this.points = points;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getCenter() {
-            return center;
-        }
-
-        public void setCenter(String center) {
-            this.center = center;
         }
     }
 }

@@ -7,7 +7,7 @@ include 'catalyst-munch'
 include 'munch-api'
 
 // Tier 1 Service Api
-include 'service-location'
+include 'service-locations'
 include 'service-places'
 include 'service-menus'
 include 'service-articles'
