@@ -1,5 +1,6 @@
 package munch.api.services;
 
+import munch.api.data.LatLng;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
 import org.slf4j.Logger;
@@ -41,34 +42,6 @@ public abstract class AbstractService implements JsonService {
         } catch (NullPointerException | IndexOutOfBoundsException | NumberFormatException e) {
             logger.warn("Unable to parse Header: Location-LatLng value: {}", latLng, e);
             return Optional.empty();
-        }
-    }
-
-    /**
-     * Special wrapper for HeaderL Location-LatLng
-     */
-    public static class LatLng {
-        private final double lat;
-        private final double lng;
-
-        /**
-         * @param latLng latLng is string separated by ,
-         * @throws NumberFormatException     if number is not double
-         * @throws IndexOutOfBoundsException if size is not 2
-         * @throws NullPointerException      latlng is null, or either split string is null
-         */
-        public LatLng(String latLng) throws NullPointerException, IndexOutOfBoundsException, NumberFormatException {
-            String[] split = latLng.split(",");
-            lat = Double.parseDouble(split[0].trim());
-            lng = Double.parseDouble(split[1].trim());
-        }
-
-        public double getLat() {
-            return lat;
-        }
-
-        public double getLng() {
-            return lng;
         }
     }
 }

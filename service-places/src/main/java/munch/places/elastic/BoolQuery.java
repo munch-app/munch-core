@@ -7,9 +7,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.places.SearchQuery;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Created By: Fuxing Loh
@@ -19,6 +21,7 @@ import java.util.Collections;
  */
 @Singleton
 public class BoolQuery {
+    private static final String DEFAULT_DISTANCE = "2km";
 
     // Create streamlined empty filter
     private static final SearchQuery.Filters emptyFilter = new SearchQuery.Filters();
@@ -48,7 +51,7 @@ public class BoolQuery {
         ObjectNode bool = mapper.createObjectNode();
         bool.set("must", must(query.getQuery()));
         bool.set("must_not", mustNot(filters));
-        bool.set("filter", filter(query.getPolygon(), filters));
+        bool.set("filter", filter(query.getLocation(), filters));
         return bool;
     }
 
@@ -92,16 +95,20 @@ public class BoolQuery {
      * https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-geo-distance-query.html
      * https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-geo-polygon-query.html
      *
-     * @param polygon  polygon geo query
+     * @param location polygon geo query
      * @param filters  filters object
      * @return JsonNode bool filter
      */
-    private JsonNode filter(@Nullable SearchQuery.Polygon polygon, SearchQuery.Filters filters) {
+    private JsonNode filter(@Nullable SearchQuery.Location location, SearchQuery.Filters filters) {
         ArrayNode filterArray = mapper.createArrayNode();
 
         // Distance geo query first else then polygon
-        if (polygon != null) {
-            filterArray.add(filterPolygon(polygon));
+        if (location != null) {
+            if (location.getPoints() == null || location.getPoints().isEmpty() && StringUtils.isNotBlank(location.getCenter())) {
+                filterArray.add(filterDistance(location.getCenter(), DEFAULT_DISTANCE));
+            } else {
+                filterArray.add(filterPolygon(location.getPoints()));
+            }
         }
 
         // Filter to positive tags
@@ -121,10 +128,10 @@ public class BoolQuery {
      * @param distance distance query
      * @return JsonNode = { "geo_distance": { "distance": "1km", "location.latLng": "-12,23"}}
      */
-    private JsonNode filterDistance(SearchQuery.Distance distance) {
+    private JsonNode filterDistance(String latLng, String distance) {
         ObjectNode geoDistance = mapper.createObjectNode();
-        geoDistance.put("distance", distance.getDistance());
-        geoDistance.put("location.latLng", distance.getLatLng());
+        geoDistance.put("distance", distance);
+        geoDistance.put("location.latLng", latLng);
 
         ObjectNode filter = mapper.createObjectNode();
         filter.set("geo_distance", geoDistance);
@@ -134,12 +141,12 @@ public class BoolQuery {
     /**
      * https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-geo-polygon-query.html
      *
-     * @param polygon polygon query
+     * @param pointList list of points to form a polygon
      * @return JsonNode = { "geo_polygon": { "location.latLng": { "points": ["-1,2", "-5,33" ...]}}}
      */
-    private JsonNode filterPolygon(SearchQuery.Polygon polygon) {
+    private JsonNode filterPolygon(List<String> pointList) {
         ArrayNode points = mapper.createArrayNode();
-        polygon.getPoints().forEach(points::add);
+        pointList.forEach(points::add);
 
         ObjectNode latLng = mapper.createObjectNode();
         latLng.set("points", points);

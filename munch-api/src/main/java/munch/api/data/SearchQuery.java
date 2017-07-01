@@ -3,6 +3,7 @@ package munch.api.data;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -23,7 +24,7 @@ public final class SearchQuery {
     private int size;
 
     private String query;
-    private Polygon polygon; // Optional
+    private Location location; // Optional
     private Filters filters; // Optional
 
     public int getFrom() {
@@ -51,17 +52,19 @@ public final class SearchQuery {
     }
 
     /**
-     * Optional
-     * If distance and polygon is both present, distance will be used
+     * location.name = for display
+     * location.center = currently provide no functions
+     * location.points = polygon points
      *
-     * @return polygon geo query
+     * @return Location for searchQuery
+     * @see Location
      */
-    public Polygon getPolygon() {
-        return polygon;
+    public Location getLocation() {
+        return location;
     }
 
-    public void setPolygon(Polygon polygon) {
-        this.polygon = polygon;
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     /**
@@ -77,6 +80,10 @@ public final class SearchQuery {
         this.filters = filters;
     }
 
+    /**
+     * TODO: Not yet implemented
+     * Add sort by distance
+     */
     public static final class Filters {
         private PriceRange priceRange;
         private Set<Tag> tags;
@@ -244,8 +251,48 @@ public final class SearchQuery {
                 "from=" + from +
                 ", size=" + size +
                 ", query='" + query + '\'' +
-                ", polygon=" + polygon +
+                ", location=" + location +
                 ", filters=" + filters +
                 '}';
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static final class Builder {
+        private final SearchQuery query;
+
+        private Builder() {
+            this.query = new SearchQuery();
+        }
+
+        public Builder with(SearchQuery query) {
+            this.query.setQuery(query.query);
+            this.query.setLocation(query.location);
+            this.query.setFilters(query.filters);
+            return this;
+        }
+
+        public Builder query(String text) {
+            query.setQuery(text);
+            return this;
+        }
+
+        public Builder polygon(Location location) {
+            query.setLocation(location);
+            return this;
+        }
+
+        public Builder tag(String tag) {
+            if (query.getFilters() == null) query.setFilters(new Filters());
+            if (query.getFilters().getTags() == null) query.getFilters().setTags(new HashSet<>());
+            query.getFilters().getTags().add(new Filters.Tag(tag, true));
+            return this;
+        }
+
+        public SearchQuery build() {
+            return query;
+        }
     }
 }

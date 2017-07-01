@@ -21,7 +21,7 @@ public final class SearchQuery {
     private int size;
 
     private String query;
-    private Polygon polygon; // Optional
+    private Location location; // Optional
     private Filters filters; // Optional
 
     public int getFrom() {
@@ -54,12 +54,12 @@ public final class SearchQuery {
      *
      * @return polygon geo query
      */
-    public Polygon getPolygon() {
-        return polygon;
+    public Location getLocation() {
+        return location;
     }
 
-    public void setPolygon(Polygon polygon) {
-        this.polygon = polygon;
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     /**
@@ -189,31 +189,9 @@ public final class SearchQuery {
         }
     }
 
-    /**
-     * Geo query
-     */
-    public static final class Distance {
-        private String distance;
-        private String latLng;
-
-        public String getDistance() {
-            return distance;
-        }
-
-        public void setDistance(String distance) {
-            this.distance = distance;
-        }
-
-        public String getLatLng() {
-            return latLng;
-        }
-
-        public void setLatLng(String latLng) {
-            this.latLng = latLng;
-        }
-    }
-
-    public static final class Polygon {
+    public static final class Location {
+        private String name;
+        private String center;
         private List<String> points;
 
         public List<String> getPoints() {
@@ -222,6 +200,22 @@ public final class SearchQuery {
 
         public void setPoints(List<String> points) {
             this.points = points;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getCenter() {
+            return center;
+        }
+
+        public void setCenter(String center) {
+            this.center = center;
         }
     }
 }

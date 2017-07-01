@@ -1,12 +1,14 @@
 package munch.api.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.clients.ArticleClient;
 import munch.api.clients.MediaClient;
 import munch.api.clients.PlaceClient;
 import munch.api.data.*;
+import munch.api.services.curator.CollectionCurator;
 import munch.restful.server.JsonCall;
 
 import java.util.List;
@@ -23,14 +25,14 @@ public class PlaceService extends AbstractService {
     private final ArticleClient articleClient;
     private final MediaClient mediaClient;
 
-    private final CollectionMaker categorizer;
+    private final CollectionCurator curator;
 
     @Inject
-    public PlaceService(PlaceClient placeClient, ArticleClient articleClient, MediaClient mediaClient, CollectionMaker categorizer) {
+    public PlaceService(PlaceClient placeClient, ArticleClient articleClient, MediaClient mediaClient, CollectionCurator curator) {
         this.placeClient = placeClient;
         this.articleClient = articleClient;
         this.mediaClient = mediaClient;
-        this.categorizer = categorizer;
+        this.curator = curator;
     }
 
     /**
@@ -42,8 +44,8 @@ public class PlaceService extends AbstractService {
         PATH("/places", () -> {
             POST("/suggest", this::suggest);
 
-            POST("/search", this::search);
-            POST("/search/scroll", this::searchScroll);
+            POST("/collections/search", this::search);
+            POST("/collections/search/next", this::searchNext);
 
             // Single place endpoint
             PATH("/:placeId", () -> {
@@ -78,9 +80,15 @@ public class PlaceService extends AbstractService {
      * @param call json call
      * @return list of Place result
      */
-    private List<PlaceCollection> search(JsonCall call) {
+    private JsonNode search(JsonCall call) {
         SearchQuery query = call.bodyAsObject(SearchQuery.class);
-        return categorizer.search(query, getHeaderLatLng(call).orElse(null));
+        LatLng latLng = getHeaderLatLng(call).orElse(null);
+        List<PlaceCollection> collections = curator.search(query, latLng);
+
+        ObjectNode nodes = nodes(200, collections);
+        // Return query object to keep search bar concurrent
+        nodes.set("query", toTree(query));
+        return nodes;
     }
 
     /**
@@ -88,7 +96,7 @@ public class PlaceService extends AbstractService {
      * @return list of Place
      * @see SearchQuery
      */
-    private List<Place> searchScroll(JsonCall call) {
+    private List<Place> searchNext(JsonCall call) {
         SearchQuery query = call.bodyAsObject(SearchQuery.class);
         return placeClient.search(query);
     }

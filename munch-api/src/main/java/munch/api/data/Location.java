@@ -18,6 +18,16 @@ public final class Location {
     private String center;
     private String[] points;
 
+    public Location() {
+    }
+
+    /**
+     * @param center center only location for distance search
+     */
+    public Location(String center) {
+        this.center = center;
+    }
+
     /**
      * @return name of neighborhood
      */
