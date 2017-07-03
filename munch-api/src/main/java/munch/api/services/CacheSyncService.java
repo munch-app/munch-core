@@ -9,10 +9,12 @@ import com.google.inject.Singleton;
  * Project: munch-core
  */
 @Singleton
-public class SyncService extends AbstractService {
+public class CacheSyncService extends AbstractService {
 
     @Override
     public void route() {
-        // TODO: PD-14 Sync service for fetching settings
+        PATH("/cache/sync", () -> {
+            // TODO: PD-14 Sync service for fetching settings
+        });
     }
 }

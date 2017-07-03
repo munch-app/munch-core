@@ -1,12 +1,14 @@
 package munch.articles;
 
-import com.google.inject.*;
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Provides;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import munch.articles.hibernate.PostgresModule;
 import munch.clients.ClientModule;
 import munch.restful.server.RestfulServer;
-import spark.Spark;
 
 /**
  * Created by: Fuxing
@@ -27,24 +29,10 @@ public class ArticleModule extends AbstractModule {
         return ConfigFactory.load();
     }
 
-    @Singleton
-    public static class Server extends RestfulServer {
-        @Inject
-        public Server(ArticleService service) {
-            super(service);
-        }
-
-        @Override
-        public void start(int port) {
-            super.start(port);
-            Spark.before((request, response) -> logger.info("{}: {}", request.requestMethod(), request.pathInfo()));
-        }
-    }
-
     public static void main(String[] args) {
         Injector injector = Guice.createInjector(new ArticleModule());
         // Start server on default port in setting = http.port
-        final RestfulServer server = injector.getInstance(Server.class);
+        final RestfulServer server = injector.getInstance(ArticleApi.class);
         server.start(ConfigFactory.load().getInt("http.port"));
     }
 }

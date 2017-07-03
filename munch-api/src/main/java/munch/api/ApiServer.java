@@ -2,6 +2,7 @@ package munch.api;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.typesafe.config.Config;
 import munch.restful.server.RestfulServer;
 import munch.restful.server.RestfulService;
 import spark.Spark;
@@ -19,14 +20,17 @@ import java.util.Set;
 @Singleton
 public final class ApiServer extends RestfulServer {
 
+    private final Config config;
+
     @Inject
-    public ApiServer(Set<RestfulService> routers) {
+    public ApiServer(Set<RestfulService> routers, Config config) {
         super(routers);
+        this.config = config;
     }
 
     @Override
     public void start(int port) {
-        super.start(port);
-        Spark.before((request, response) -> logger.info("{}: {}", request.requestMethod(), request.pathInfo()));
+        String version = config.getString("api.version");
+        Spark.path(version, () -> super.start(port));
     }
 }

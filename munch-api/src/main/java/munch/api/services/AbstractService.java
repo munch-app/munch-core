@@ -5,8 +5,6 @@ import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import spark.RouteGroup;
-import spark.Spark;
 
 import java.util.Optional;
 
@@ -19,15 +17,8 @@ import java.util.Optional;
 public abstract class AbstractService implements JsonService {
     private static final Logger logger = LoggerFactory.getLogger(AbstractService.class);
 
-    private static final String Version = "/v1";
-
     protected static final String HEADER_LOCATION_LATLNG = "Location-LatLng";
     protected static final String HEADER_LOCATION_CITY = "Location-City";
-
-    @Override
-    public void PATH(String path, RouteGroup routeGroup) {
-        Spark.path(Version + path, routeGroup);
-    }
 
     /**
      * @param call json call to find the header

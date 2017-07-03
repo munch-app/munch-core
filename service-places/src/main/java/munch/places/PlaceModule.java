@@ -34,19 +34,11 @@ public class PlaceModule extends AbstractModule {
         return JsonService.objectMapper;
     }
 
-    @Singleton
-    private static final class Server extends RestfulServer {
-        @Inject
-        public Server(DataService data, SearchService search, MetaService meta) {
-            super(data, search, meta);
-        }
-    }
-
     public static void main(String[] args) {
         Injector injector = Guice.createInjector(new PlaceModule());
 
         // Start restful server on config port
-        final RestfulServer server = injector.getInstance(Server.class);
+        final RestfulServer server = injector.getInstance(PlaceApi.class);
         server.start(ConfigFactory.load().getInt("http.port"));
     }
 }

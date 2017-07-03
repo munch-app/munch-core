@@ -34,19 +34,19 @@ import java.util.Map;
 public final class Place {
     private String id;
 
-    // Basic
+    // Basic (All Indexed)
     private String name;
     private String phone;
     private String website;
     private String description;
 
-    // One
+    // One (All Indexed)
     private Price price;
     private Location location;
 
     // Many
-    private String[] tags;
-    private Hour[] hours;
+    private String[] tags; // Index
+    private Hour[] hours; // Index
     private Image[] images;
 
     // Dates

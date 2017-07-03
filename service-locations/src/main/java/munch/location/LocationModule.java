@@ -2,13 +2,10 @@ package munch.location;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
-import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.typesafe.config.ConfigFactory;
 import munch.location.database.DatabaseModule;
 import munch.restful.server.RestfulServer;
-
-import javax.inject.Singleton;
 
 /**
  * Created By: Fuxing Loh
@@ -23,17 +20,9 @@ public class LocationModule extends AbstractModule {
         install(new DatabaseModule());
     }
 
-    @Singleton
-    public static final class Server extends RestfulServer {
-        @Inject
-        public Server(LocationService service) {
-            super(service);
-        }
-    }
-
     public static void main(String[] args) {
         Injector injector = Guice.createInjector(new LocationModule());
-        final RestfulServer server = injector.getInstance(Server.class);
+        final RestfulServer server = injector.getInstance(LocationApi.class);
         server.start(ConfigFactory.load().getInt("http.port"));
     }
 }

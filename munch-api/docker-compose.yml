@@ -7,7 +7,7 @@ services:
     environment:
       - POSTGRES_PASSWORD=K851xsSffyTJP3e1M7rd
   corpus-data:
-    image: 197547471367.dkr.ecr.ap-southeast-1.amazonaws.com/corpus-catalyst/service-data:latest
+    image: corpus-catalyst/service-data:latest
     environment:
       - DATABASE_URL=jdbc:postgresql://corpus-db:5432/postgres
       - DATABASE_USERNAME=postgres
@@ -16,7 +16,7 @@ services:
     ports:
       - "8222:8000"
   corpus-proxy:
-    image: 197547471367.dkr.ecr.ap-southeast-1.amazonaws.com/corpus-catalyst/corpus-proxy:latest
+    image: corpus-catalyst/corpus-proxy:latest
     environment:
       - SERVICE_DATA_URL=http://corpus-data:8000
 
@@ -65,6 +65,8 @@ services:
       - DOCUMENT_DATABASE_PASSWORD=K851xsSffyTJP3e1M7rd
       - DOCUMENT_DATABASE_AUTO_CREATE=true
       - SEARCH_DATABASE_HOSTNAME=munch-es
+    ports:
+      - "8700:8000"
   medias:
     image: munch-core/service-medias
     environment:

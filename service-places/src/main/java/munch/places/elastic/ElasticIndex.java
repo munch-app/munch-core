@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.places.data.Place;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.nio.entity.NStringEntity;
@@ -57,6 +56,12 @@ public class ElasticIndex {
         }
     }
 
+    /**
+     * Index a place by putting it into elastic search
+     *
+     * @param place place to index
+     * @throws Exception any exception
+     */
     public void put(Place place) throws Exception {
         ObjectNode node = mapper.createObjectNode();
         node.put("name", place.getName());
@@ -64,8 +69,22 @@ public class ElasticIndex {
         node.put("website", place.getWebsite());
         node.put("description", place.getDescription());
 
-        // Location Field
+        // Tags array node
+        ArrayNode tagsNode = mapper.createArrayNode();
+        for (String tag : place.getTags()) tagsNode.add(tag);
+        node.set("tags", tagsNode);
+
+        // Location Node
         node.set("location", locationNode(place.getLocation()));
+        // Price Node
+        if (place.getPrice() != null) {
+            node.set("price", priceNode(place.getPrice()));
+        }
+
+        // Hours array node
+        ArrayNode hoursNode = mapper.createArrayNode();
+        for (Place.Hour hour : place.getHours()) hoursNode.add(hourNode(hour));
+        node.set("hours", hoursNode);
 
         // Suggest Field
         ArrayNode suggest = mapper.createArrayNode();
@@ -114,9 +133,22 @@ public class ElasticIndex {
         node.put("postal", location.getPostal());
 
         // https://www.elastic.co/guide/en/elasticsearch/reference/current/geo-point.html
-        if (StringUtils.isNotBlank(location.getLatLng())) {
-            node.put("latLng", location.getLatLng());
-        }
+        node.put("latLng", location.getLatLng());
+        return node;
+    }
+
+    private ObjectNode priceNode(Place.Price price) {
+        ObjectNode node = mapper.createObjectNode();
+        node.put("lowest", price.getLowest());
+        node.put("highest", price.getHighest());
+        return node;
+    }
+
+    private ObjectNode hourNode(Place.Hour hour) {
+        ObjectNode node = mapper.createObjectNode();
+        node.put("day", hour.getDay().name());
+        node.put("open", hour.getOpen());
+        node.put("close", hour.getClose());
         return node;
     }
 }
