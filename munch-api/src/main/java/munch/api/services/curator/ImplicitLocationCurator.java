@@ -33,9 +33,9 @@ public class ImplicitLocationCurator extends Curator {
         List<PlaceCollection> collections = new ArrayList<>();
         // If contains search query data
         if (!isEmpty(query)) {
-            collections.add(new PlaceCollection("Nearby Search", query));
+            collections.add(new PlaceCollection("NEARBY SEARCH", query));
         } else {
-            collections.add(new PlaceCollection("Implicit Nearby", query));
+            collections.add(new PlaceCollection("IMPLICIT NEARBY", query));
         }
 
         // TODO more logic

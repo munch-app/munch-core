@@ -96,8 +96,7 @@ public final class PlaceBuilder implements DataBuilder<Place> {
 
         List<String> tags = new ArrayList<>();
         tags.addAll(valueBuilder.collect("Place.tag"));
-        // tags.addAll(valueBuilder.collect("Place.type")); Type is not tag?
-        place.setTags(tags);
+        place.setTags(tags.stream().map(String::toLowerCase).collect(Collectors.toList()));
         place.setHours(new ArrayList<>(hourBuilder.collect()));
 
         place.setCreatedDate(earliestDate);

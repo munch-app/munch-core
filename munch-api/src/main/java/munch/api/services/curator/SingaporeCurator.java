@@ -46,12 +46,12 @@ public class SingaporeCurator extends Curator {
         List<PlaceCollection> collections = new ArrayList<>();
 
         // If not empty do search based on query
-        if (!isEmpty(query)) collections.add(new PlaceCollection("Search", query));
+        if (!isEmpty(query)) collections.add(new PlaceCollection("SEARCH", query));
 
         // Preset Default Collections
-        collections.add(new PlaceCollection("Breakfast", createTagQuery("Breakfast")));
-        collections.add(new PlaceCollection("Halal", createTagQuery("Halal")));
-        collections.add(new PlaceCollection("Healthy Options", createTagQuery("Healthy Options")));
+        collections.add(new PlaceCollection("BREAKFAST", createTagQuery("breakfast")));
+        collections.add(new PlaceCollection("HALAL", createTagQuery("halal")));
+        collections.add(new PlaceCollection("HEALTHY OPTIONS", createTagQuery("healthy options")));
         return collections;
     }
 }

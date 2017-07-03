@@ -75,12 +75,10 @@ public final class SearchService implements JsonService {
      * size: Int = size of query
      *
      * @param call    json call
-     * @param request body node
      * @return {data: list of place, total: size of all possible place}
      */
     private JsonNode search(JsonCall call) throws IOException {
         SearchQuery query = call.bodyAsObject(SearchQuery.class);
-
         Pair<List<Place>, Integer> result = search.query(query);
         // Get data from database, remove the place if it is null
         List<String> ids = result.getLeft().stream().map(Place::getId).collect(Collectors.toList());

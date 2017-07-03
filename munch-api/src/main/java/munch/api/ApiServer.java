@@ -29,8 +29,9 @@ public final class ApiServer extends RestfulServer {
     }
 
     @Override
-    public void start(int port) {
-        String version = config.getString("api.version");
-        Spark.path(version, () -> super.start(port));
+    protected void setupRouters() {
+        Spark.path(config.getString("version"), () -> {
+            super.setupRouters();
+        });
     }
 }

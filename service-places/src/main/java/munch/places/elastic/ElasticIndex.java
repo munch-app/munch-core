@@ -69,7 +69,7 @@ public class ElasticIndex {
         node.put("website", place.getWebsite());
         node.put("description", place.getDescription());
 
-        // Tags array node
+        // Tags array node, Index as lower case
         ArrayNode tagsNode = mapper.createArrayNode();
         for (String tag : place.getTags()) tagsNode.add(tag);
         node.set("tags", tagsNode);

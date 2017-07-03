@@ -31,7 +31,7 @@ public class ExplicitLocationCurator extends Curator {
 
         // If contains search query data
         if (!isEmpty(query)) {
-            collections.add(new PlaceCollection(locationName + " Search", query));
+            collections.add(new PlaceCollection(locationName + " SEARCH", query));
         } else {
             collections.add(new PlaceCollection(locationName, query));
         }

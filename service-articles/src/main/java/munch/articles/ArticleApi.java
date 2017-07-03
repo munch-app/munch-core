@@ -3,7 +3,6 @@ package munch.articles;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.restful.server.RestfulServer;
-import spark.Spark;
 
 /**
  * Created by: Fuxing
@@ -21,6 +20,5 @@ public class ArticleApi extends RestfulServer {
     @Override
     public void start(int port) {
         super.start(port);
-        Spark.before((request, response) -> logger.info("{}: {}", request.requestMethod(), request.pathInfo()));
     }
 }

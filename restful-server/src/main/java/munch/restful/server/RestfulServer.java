@@ -84,10 +84,7 @@ public class RestfulServer {
         logger.info("Registered all response Content-Type as application/json");
 
         // Setup all routers
-        for (RestfulService router : routers) {
-            router.start();
-            logger.info("Started SparkRouter: {}", router.getClass().getSimpleName());
-        }
+        setupRouters();
 
         // Default handler for not found
         Spark.notFound((req, res) -> JsonTransformer.toJson(notFound));
@@ -97,6 +94,16 @@ public class RestfulServer {
         handleException();
         logger.info("Started Spark Server on port: {}", port);
         this.started = true;
+    }
+
+    /**
+     * Setup all the routers by starting them
+     */
+    protected void setupRouters() {
+        for (RestfulService router : routers) {
+            router.start();
+            logger.info("Started SparkRouter: {}", router.getClass().getSimpleName());
+        }
     }
 
     /**

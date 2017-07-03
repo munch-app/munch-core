@@ -86,7 +86,7 @@ public class BoolQuery {
         // Must not filters
         for (SearchQuery.Filters.Tag tag : filters.getTags()) {
             if (!tag.isPositive()) {
-                notArray.add(filterTerm("tag", tag.getText()));
+                notArray.add(filterTerm("tags", tag.getText().toLowerCase()));
             }
         }
         return notArray;
@@ -115,11 +115,11 @@ public class BoolQuery {
         // Filter to positive tags
         for (SearchQuery.Filters.Tag tag : filters.getTags()) {
             if (tag.isPositive()) {
-                filterArray.add(filterTerm("tag", tag.getText()));
+                filterArray.add(filterTerm("tags", tag.getText().toLowerCase()));
             }
         }
 
-        // Future TODO logic for price, ratings and hours
+        // TODO for Future: logic for price, ratings and hours
         return filterArray;
     }
 
