@@ -51,7 +51,7 @@ public class SingaporeCurator extends Curator {
         // Preset Default Collections
         collections.add(new PlaceCollection("BREAKFAST", createTagQuery("breakfast")));
         collections.add(new PlaceCollection("HALAL", createTagQuery("halal")));
-        collections.add(new PlaceCollection("HEALTHY OPTIONS", createTagQuery("healthy options")));
+        collections.add(new PlaceCollection("HEALTHIER", createTagQuery("healthier choice")));
         return collections;
     }
 }
