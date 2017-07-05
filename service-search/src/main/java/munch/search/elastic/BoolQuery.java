@@ -1,4 +1,4 @@
-package munch.places.elastic;
+package munch.search.elastic;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -6,8 +6,8 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import munch.places.Location;
-import munch.places.SearchQuery;
+import munch.search.data.Location;
+import munch.search.data.SearchQuery;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;

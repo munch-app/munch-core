@@ -1,12 +1,12 @@
-package munch.places.elastic;
+package munch.search.elastic;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Singleton;
-import munch.places.SearchQuery;
-import munch.places.data.Place;
+import munch.search.data.Place;
+import munch.search.data.SearchQuery;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.http.HttpEntity;
@@ -58,7 +58,6 @@ public final class ElasticQuery {
      * @param query search query object
      * @return pair = (list of Place, total results)
      * @throws IOException exception
-     * @see SearchQuery.Filters
      */
     public Pair<List<Place>, Integer> query(SearchQuery query) throws IOException {
         ObjectNode root = mapper.createObjectNode();

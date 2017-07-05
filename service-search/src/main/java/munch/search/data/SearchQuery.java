@@ -1,11 +1,11 @@
-package munch.places;
+package munch.search.data;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.Set;
 
 /**
- * This is a structure for place query
+ * This is a structure for place query, ONLY FOR PLACE
  * Naturally everything is optional except for from & size
  * <p>
  * Created By: Fuxing Loh

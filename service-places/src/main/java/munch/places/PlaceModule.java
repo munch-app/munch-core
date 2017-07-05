@@ -5,7 +5,6 @@ import com.google.inject.*;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import munch.places.data.PostgresModule;
-import munch.places.elastic.ElasticModule;
 import munch.restful.server.JsonService;
 import munch.restful.server.RestfulServer;
 
@@ -20,7 +19,6 @@ public class PlaceModule extends AbstractModule {
     @Override
     protected void configure() {
         install(new PostgresModule());
-        install(new ElasticModule());
     }
 
     @Provides

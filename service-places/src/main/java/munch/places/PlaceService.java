@@ -6,7 +6,6 @@ import com.google.inject.Singleton;
 import com.munch.hibernate.utils.TransactionProvider;
 import munch.places.data.Place;
 import munch.places.data.PlaceDatabase;
-import munch.places.elastic.ElasticIndex;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
 
@@ -20,17 +19,15 @@ import java.util.List;
  * Project: munch-core
  */
 @Singleton
-public class DataService implements JsonService {
+public class PlaceService implements JsonService {
 
     private final TransactionProvider provider;
     private final PlaceDatabase database;
-    private final ElasticIndex index;
 
     @Inject
-    public DataService(TransactionProvider provider, PlaceDatabase database, ElasticIndex index) {
+    public PlaceService(TransactionProvider provider, PlaceDatabase database) {
         this.provider = provider;
         this.database = database;
-        this.index = index;
     }
 
     @Override
@@ -72,7 +69,6 @@ public class DataService implements JsonService {
     private JsonNode put(JsonCall call) throws Exception {
         Place place = call.bodyAsObject(Place.class);
         database.put(place);
-        index.put(place);
         return Meta200;
     }
 
@@ -82,7 +78,6 @@ public class DataService implements JsonService {
      */
     private JsonNode delete(JsonCall call) throws Exception {
         String id = call.pathString("id");
-        index.delete(id);
         database.delete(id);
         return Meta200;
     }

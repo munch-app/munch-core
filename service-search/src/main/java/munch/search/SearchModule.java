@@ -6,6 +6,7 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import munch.restful.server.JsonService;
 import munch.restful.server.RestfulServer;
+import munch.search.elastic.ElasticModule;
 
 /**
  * Created by: Fuxing
@@ -17,7 +18,7 @@ public class SearchModule extends AbstractModule {
 
     @Override
     protected void configure() {
-//        install(new ElasticModule());
+        install(new ElasticModule());
     }
 
     @Provides

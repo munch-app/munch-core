@@ -1,4 +1,4 @@
-package munch.places.elastic;
+package munch.search.elastic;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;

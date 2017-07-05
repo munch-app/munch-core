@@ -1,4 +1,4 @@
-package munch.places;
+package munch.search.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -15,7 +15,10 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class Location {
     private String id;
+
     private String name;
+    private String city;
+    private String country;
     private String center;
     private List<String> points;
 
@@ -25,6 +28,22 @@ public final class Location {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 
     public List<String> getPoints() {

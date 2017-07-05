@@ -1,40 +1,33 @@
-package munch.places;
+package munch.search;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import munch.places.data.Place;
-import munch.places.data.PlaceDatabase;
-import munch.places.elastic.ElasticQuery;
 import munch.restful.core.exception.ValidationException;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
+import munch.search.data.Place;
+import munch.search.data.SearchQuery;
+import munch.search.elastic.ElasticQuery;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * Created By: Fuxing Loh
- * Date: 17/4/2017
- * Time: 5:08 PM
+ * Created by: Fuxing
+ * Date: 6/7/2017
+ * Time: 6:36 AM
  * Project: munch-core
  */
 @Singleton
-public final class SearchService implements JsonService {
+public class SearchService implements JsonService {
 
-    private final PlaceDatabase database;
     private final ElasticQuery search;
 
-    /**
-     * @param database place database service
-     * @param search   place search service
-     */
     @Inject
-    public SearchService(PlaceDatabase database, ElasticQuery search) {
-        this.database = database;
+    public SearchService(ElasticQuery search) {
         this.search = search;
     }
 
@@ -86,10 +79,10 @@ public final class SearchService implements JsonService {
         Pair<List<Place>, Integer> result = search.query(query);
         // Get data from database, remove the place if it is null
         List<String> ids = result.getLeft().stream().map(Place::getId).collect(Collectors.toList());
-        List<Place> places = database.get(ids).stream().filter(Objects::nonNull).collect(Collectors.toList());
+//        List<Place> places = database.get(ids).stream().filter(Objects::nonNull).collect(Collectors.toList());
 
         // Return data: [] with total: Integer & linked: {} object
-        return nodes(200, places).put("total", result.getRight());
+        return nodes(200, null).put("total", result.getRight());
     }
 
     /**
