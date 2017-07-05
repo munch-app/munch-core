@@ -8,10 +8,11 @@ include 'munch-api'
 
 // Tier 1 Service Api
 include 'service-locations' // TODO to be removed
+include 'service-search'
 include 'service-places'
-include 'service-menus'
 include 'service-articles'
 include 'service-instagram'
+include 'service-menus'
 
 // Tier 2 Service Api
 include 'service-images'

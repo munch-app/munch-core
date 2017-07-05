@@ -1,0 +1,12 @@
+
+dependencies {
+    compile project(':restful-server')
+
+    // Injection
+    compile group: 'com.google.inject', name: 'guice', version: '4.1.0'
+
+    // Search
+    compile group: 'org.elasticsearch.client', name: 'rest', version: '5.2.2'
+}
+
+mainClassName = 'munch.search.SearchModule'
