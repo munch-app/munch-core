@@ -10,8 +10,6 @@ import munch.places.Location;
 import munch.places.SearchQuery;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -22,18 +20,6 @@ import java.util.List;
  */
 @Singleton
 public class BoolQuery {
-    private static final String DEFAULT_DISTANCE = "2km";
-
-    // Create streamlined empty filter
-    private static final SearchQuery.Filters emptyFilter = new SearchQuery.Filters();
-
-    static {
-        emptyFilter.setPriceRange(null);
-        emptyFilter.setRatingsAbove(null);
-        emptyFilter.setHours(Collections.emptySet());
-        emptyFilter.setTags(Collections.emptySet());
-    }
-
     private final ObjectMapper mapper;
 
     @Inject
@@ -46,13 +32,10 @@ public class BoolQuery {
      * @return created bool node
      */
     public JsonNode make(SearchQuery query) {
-        // Fix filter to be more streamlined
-        SearchQuery.Filters filters = fixFilters(query.getFilters());
-
         ObjectNode bool = mapper.createObjectNode();
         bool.set("must", must(query.getQuery()));
-        bool.set("must_not", mustNot(filters));
-        bool.set("filter", filter(query.getLocation(), filters));
+        bool.set("must_not", mustNot(query.getFilter()));
+        bool.set("filter", filter(query.getLocation(), query.getFilter()));
         return bool;
     }
 
@@ -62,11 +45,11 @@ public class BoolQuery {
      * @param query query string
      * @return JsonNode must filter
      */
-    private JsonNode must(@Nullable String query) {
+    private JsonNode must(String query) {
         ObjectNode must = mapper.createObjectNode();
 
-        // Match all if no query
-        if (query == null) return must.set("match_all", mapper.createObjectNode());
+        // Match all if query is blank
+        if (StringUtils.isBlank(query)) return must.set("match_all", mapper.createObjectNode());
 
         // Match name if got query
         ObjectNode match = mapper.createObjectNode();
@@ -77,55 +60,73 @@ public class BoolQuery {
     /**
      * Filter to must not
      *
-     * @param filters filters list
+     * @param filter filters
      * @return JsonNode must_not filter
      */
-    private JsonNode mustNot(SearchQuery.Filters filters) {
+    private JsonNode mustNot(SearchQuery.Filter filter) {
         ArrayNode notArray = mapper.createArrayNode();
+        if (filter.getTag() == null || filter.getTag().getNegatives() == null) return notArray;
 
         // Must not filters
-        for (SearchQuery.Filters.Tag tag : filters.getTags()) {
-            if (!tag.isPositive()) {
-                notArray.add(filterTerm("tags", tag.getText().toLowerCase()));
-            }
+        for (String tag : filter.getTag().getNegatives()) {
+            notArray.add(filterTerm("tags", tag.toLowerCase()));
         }
         return notArray;
     }
 
     /**
-     * https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-geo-distance-query.html
-     * https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-geo-polygon-query.html
-     *
      * @param location polygon geo query
-     * @param filters  filters object
+     * @param filter   filters object
      * @return JsonNode bool filter
      */
-    private JsonNode filter(@Nullable Location location, SearchQuery.Filters filters) {
+    private JsonNode filter(Location location, SearchQuery.Filter filter) {
         ArrayNode filterArray = mapper.createArrayNode();
 
-        // Distance geo query first else then polygon
-        if (location != null) {
-            if (location.getPoints() == null || location.getPoints().isEmpty() && StringUtils.isNotBlank(location.getCenter())) {
-                filterArray.add(filterDistance(location.getCenter(), DEFAULT_DISTANCE));
-            } else {
-                filterArray.add(filterPolygon(location.getPoints()));
+        // Polygon if location exists
+        if (location != null && location.getPoints() != null) {
+            filterArray.add(filterPolygon(location.getPoints()));
+        }
+
+        // Filter distance
+        if (filter.getDistance() != null && filter.getDistance().getLatLng() != null) {
+            if (filter.getDistance().getMin() != null || filter.getDistance().getMax() != null) {
+                filterArray.add(filterDistanceRange(
+                        filter.getDistance().getLatLng(), filter.getDistance().getMin(), filter.getDistance().getMax()));
             }
         }
 
         // Filter to positive tags
-        for (SearchQuery.Filters.Tag tag : filters.getTags()) {
-            if (tag.isPositive()) {
-                filterArray.add(filterTerm("tags", tag.getText().toLowerCase()));
+        if (filter.getTag() != null && filter.getTag().getNegatives() != null) {
+            for (String tag : filter.getTag().getPositives()) {
+                filterArray.add(filterTerm("tags", tag.toLowerCase()));
             }
         }
 
-        // TODO for Future: logic for price, ratings and hours
+        // Filter price
+        if (filter.getPrice() != null) {
+            ObjectNode range = mapper.createObjectNode();
+            if (filter.getPrice().getMax() != null) {
+                range.put("lte", filter.getPrice().getMax());
+            }
+
+            if (filter.getPrice().getMin() != null) {
+                range.put("gte", filter.getPrice().getMin());
+            }
+
+            // Only add if contains max or min
+            if (range.size() != 0) {
+                filterArray.add(mapper.createObjectNode().set("term", range));
+            }
+        }
+
+        // TODO for Future: logic for ratings and hours
         return filterArray;
     }
 
     /**
      * https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-geo-distance-query.html
      *
+     * @param latLng   center
      * @param distance distance query
      * @return JsonNode = { "geo_distance": { "distance": "1km", "location.latLng": "-12,23"}}
      */
@@ -136,6 +137,27 @@ public class BoolQuery {
 
         ObjectNode filter = mapper.createObjectNode();
         filter.set("geo_distance", geoDistance);
+        return filter;
+    }
+
+    /**
+     * https://www.elastic.co/guide/en/elasticsearch/reference/5.4/query-dsl-geo-distance-range-query.html
+     *
+     * @param latLng center
+     * @param min    min distance
+     * @param max    max distance
+     * @return JsonNode = { "geo_distance_range": { "from": "1km", "to": "2km", "location.latLng": "-12,23"}}
+     */
+    private JsonNode filterDistanceRange(String latLng, Integer min, Integer max) {
+        ObjectNode geoDistance = mapper.createObjectNode();
+        if (min != null)
+            geoDistance.put("from", min + "m");
+        if (max != null)
+            geoDistance.put("to", max + "m");
+        geoDistance.put("location.latLng", latLng);
+
+        ObjectNode filter = mapper.createObjectNode();
+        filter.set("geo_distance_range", geoDistance);
         return filter;
     }
 
@@ -172,18 +194,5 @@ public class BoolQuery {
         ObjectNode filter = mapper.createObjectNode();
         filter.set("term", term);
         return filter;
-    }
-
-    /**
-     * Fix filter to be more streamlined concise code for above
-     *
-     * @param filters filters to fix
-     * @return filters
-     */
-    private static SearchQuery.Filters fixFilters(SearchQuery.Filters filters) {
-        if (filters == null) filters = emptyFilter;
-        if (filters.getHours() == null) filters.setHours(Collections.emptySet());
-        if (filters.getTags() == null) filters.setTags(Collections.emptySet());
-        return filters;
     }
 }

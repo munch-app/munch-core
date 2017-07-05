@@ -54,4 +54,13 @@ public class SingaporeCurator extends Curator {
         collections.add(new PlaceCollection("HEALTHIER", createTagQuery("healthier choice")));
         return collections;
     }
+
+    /**
+     * @return create SearchQuery with filters tags only
+     */
+    protected static SearchQuery createLocationQuery() {
+        SearchQuery.Builder builder = SearchQuery.builder();
+
+        return builder.build();
+    }
 }

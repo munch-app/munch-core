@@ -1,6 +1,5 @@
 package munch.places;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.Set;
@@ -16,26 +15,29 @@ import java.util.Set;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public final class SearchQuery {
-    private int from;
-    private int size;
+    private Integer from;
+    private Integer size;
 
-    private String query;
-    private Location location;
-    private Filters filters;
+    // Optional fields
+    private String query; // Bool: Must
+    private Location location; // Bool: Filter
 
-    public int getFrom() {
+    private Filter filter; // Bool: Filter, Must Not
+    private Sort sort; // Query: Sort
+
+    public Integer getFrom() {
         return from;
     }
 
-    public void setFrom(int from) {
+    public void setFrom(Integer from) {
         this.from = from;
     }
 
-    public int getSize() {
+    public Integer getSize() {
         return size;
     }
 
-    public void setSize(int size) {
+    public void setSize(Integer size) {
         this.size = size;
     }
 
@@ -48,10 +50,12 @@ public final class SearchQuery {
     }
 
     /**
-     * Optional
-     * If distance and polygon is both present, distance will be used
+     * location.name = for display
+     * location.center = currently provide no functions
+     * location.points = polygon points
      *
-     * @return polygon geo query
+     * @return Location for searchQuery
+     * @see Location
      */
     public Location getLocation() {
         return location;
@@ -66,125 +70,179 @@ public final class SearchQuery {
      *
      * @return Place additional filters
      */
-    public Filters getFilters() {
-        return filters;
+    public Filter getFilter() {
+        return filter;
     }
 
-    public void setFilters(Filters filters) {
-        this.filters = filters;
+    public void setFilter(Filter filter) {
+        this.filter = filter;
     }
 
-    public static final class Filters {
-        private PriceRange priceRange;
-        private Set<Tag> tags;
-        private Double ratingsAbove;
-        private Set<Hour> hours;
+    public Sort getSort() {
+        return sort;
+    }
 
-        public PriceRange getPriceRange() {
-            return priceRange;
+    public void setSort(Sort sort) {
+        this.sort = sort;
+    }
+
+    /**
+     * Add sort by distance
+     */
+    public static final class Filter {
+        private Price price;
+        private Tag tag;
+        private Rating rating; // Not Yet Implemented
+        private Hour hour; // Not Yet Implemented
+        private Distance distance;
+
+        public Price getPrice() {
+            return price;
         }
 
-        public void setPriceRange(PriceRange priceRange) {
-            this.priceRange = priceRange;
+        public void setPrice(Price price) {
+            this.price = price;
         }
 
-        public Set<Tag> getTags() {
-            return tags;
+        public Tag getTag() {
+            return tag;
         }
 
-        public void setTags(Set<Tag> tags) {
-            this.tags = tags;
+        public void setTag(Tag tag) {
+            this.tag = tag;
         }
 
-        public Double getRatingsAbove() {
-            return ratingsAbove;
+        public Rating getRating() {
+            return rating;
         }
 
-        public void setRatingsAbove(Double ratingsAbove) {
-            this.ratingsAbove = ratingsAbove;
+        public void setRating(Rating rating) {
+            this.rating = rating;
         }
 
-        public Set<Hour> getHours() {
-            return hours;
+        public Hour getHour() {
+            return hour;
         }
 
-        public void setHours(Set<Hour> hours) {
-            this.hours = hours;
+        public void setHour(Hour hour) {
+            this.hour = hour;
         }
 
-        @JsonIgnoreProperties(ignoreUnknown = false)
-        public static class PriceRange {
-            private double highest;
-            private double lowest;
+        public Distance getDistance() {
+            return distance;
+        }
 
-            public double getHighest() {
-                return highest;
+        public void setDistance(Distance distance) {
+            this.distance = distance;
+        }
+
+        public static class Price {
+            private Double min;
+            private Double max;
+
+            public Double getMin() {
+                return min;
             }
 
-            public void setHighest(double highest) {
-                this.highest = highest;
+            public void setMin(Double min) {
+                this.min = min;
             }
 
-            public double getLowest() {
-                return lowest;
+            public Double getMax() {
+                return max;
             }
 
-            public void setLowest(double lowest) {
-                this.lowest = lowest;
+            public void setMax(Double max) {
+                this.max = max;
             }
         }
 
-        @JsonIgnoreProperties(ignoreUnknown = false)
         public static class Tag {
-            private String text;
-            private boolean positive;
+            private Set<String> positives;
+            private Set<String> negatives;
 
-            public String getText() {
-                return text;
+            public Set<String> getPositives() {
+                return positives;
             }
 
-            public void setText(String text) {
-                this.text = text;
+            public void setPositives(Set<String> positives) {
+                this.positives = positives;
             }
 
-            public boolean isPositive() {
-                return positive;
+            public Set<String> getNegatives() {
+                return negatives;
             }
 
-            public void setPositive(boolean positive) {
-                this.positive = positive;
+            public void setNegatives(Set<String> negatives) {
+                this.negatives = negatives;
             }
         }
 
-        @JsonIgnoreProperties(ignoreUnknown = false)
+        public static class Rating {
+            private Double min;
+
+            public Double getMin() {
+                return min;
+            }
+
+            public void setMin(Double min) {
+                this.min = min;
+            }
+        }
+
         public static class Hour {
-            private int day;
-            private String open;
-            private String close;
+            // Not Yet Implemented
+        }
 
-            public int getDay() {
-                return day;
+        /**
+         * latLng: "lat, lng"
+         * min: in metres
+         * max: in metres
+         */
+        public static class Distance {
+            private String latLng;
+            private Integer min;
+            private Integer max;
+
+            public String getLatLng() {
+                return latLng;
             }
 
-            public void setDay(int day) {
-                this.day = day;
+            public void setLatLng(String latLng) {
+                this.latLng = latLng;
             }
 
-            public String getOpen() {
-                return open;
+            public Integer getMin() {
+                return min;
             }
 
-            public void setOpen(String open) {
-                this.open = open;
+            public void setMin(Integer min) {
+                this.min = min;
             }
 
-            public String getClose() {
-                return close;
+            public Integer getMax() {
+                return max;
             }
 
-            public void setClose(String close) {
-                this.close = close;
+            public void setMax(Integer max) {
+                this.max = max;
             }
         }
+    }
+
+    public static final class Sort {
+        // Not Yet Implemented
+    }
+
+    @Override
+    public String toString() {
+        return "SearchQuery{" +
+                "from=" + from +
+                ", size=" + size +
+                ", query='" + query + '\'' +
+                ", location=" + location +
+                ", filter=" + filter +
+                ", sort=" + sort +
+                '}';
     }
 }

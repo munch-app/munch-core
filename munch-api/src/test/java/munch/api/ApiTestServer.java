@@ -3,6 +3,7 @@ package munch.api;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.typesafe.config.Config;
 import munch.api.services.AbstractService;
 import org.fest.util.Collections;
 
@@ -28,7 +29,7 @@ public interface ApiTestServer {
         Injector injector = injector(modules);
         T endpoint = injector.getInstance(type);
 
-        ApiServer apiServer = new ApiServer(Collections.set(endpoint), config);
+        ApiServer apiServer = new ApiServer(Collections.set(endpoint), injector.getInstance(Config.class));
         apiServer.start(DEFAULT_PORT);
     }
 

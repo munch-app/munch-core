@@ -6,6 +6,7 @@ import com.google.inject.Singleton;
 import munch.places.data.Place;
 import munch.places.data.PlaceDatabase;
 import munch.places.elastic.ElasticQuery;
+import munch.restful.core.exception.ValidationException;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
 import org.apache.commons.lang3.tuple.Pair;
@@ -74,11 +75,14 @@ public final class SearchService implements JsonService {
      * from: Int = start from
      * size: Int = size of query
      *
-     * @param call    json call
+     * @param call json call
      * @return {data: list of place, total: size of all possible place}
      */
     private JsonNode search(JsonCall call) throws IOException {
         SearchQuery query = call.bodyAsObject(SearchQuery.class);
+        // Validate and search for error and fix
+        validateFix(query);
+
         Pair<List<Place>, Integer> result = search.query(query);
         // Get data from database, remove the place if it is null
         List<String> ids = result.getLeft().stream().map(Place::getId).collect(Collectors.toList());
@@ -96,19 +100,12 @@ public final class SearchService implements JsonService {
      * {
      *     size: 20,
      *     query: "", // Mandatory
-     *     geometry: { // Optional
-     *         "type": "multipolygon", // circle, polygon, multipolygon, geometrycollection are all supported
-     *         "coordinates": [
-     *              [[[102.0, 2.0], [103.0, 2.0], [103.0, 3.0], [102.0, 3.0], [102.0, 2.0]]],
-     *              [[[100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0]],
-     *              [[100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2]]]
-     *           ]
-     *     }
+     *     latLng: "lat,lng" // Optional
      * }
      * </pre>
      * <p>
      * query: String = is for place name search
-     * geometry: GeoJson = apply spatial filter for bounding search
+     * latLng: String = to provide radius context to the suggestion
      * size: Int = size of query
      *
      * @param call    json call
@@ -116,9 +113,28 @@ public final class SearchService implements JsonService {
      * @return {data: list of place, total: size of all possible place}
      */
     private List<Place> suggest(JsonCall call, JsonNode request) throws IOException {
-        int size = request.get("size").asInt();
-        String query = request.get("query").asText();
+        int size = ValidationException.require("size", request.path("size")).asInt();
+        String query = ValidationException.requireNonBlank("query", request.path("query"));
         String latLng = request.path("latLng").asText(null);
         return search.suggest(query, latLng, size);
+    }
+
+    /**
+     * Validate from, size
+     * Validate points must be more than 3
+     *
+     * @param query query to validate and fix
+     */
+    private static void validateFix(SearchQuery query) {
+        // From and Size not null validation
+        ValidationException.requireNonNull("from", query.getFrom());
+        ValidationException.requireNonNull("size", query.getSize());
+
+        // Check if location contains polygon if exist
+        if (query.getLocation() != null && query.getLocation().getPoints() != null) {
+            if (query.getLocation().getPoints().size() < 3) {
+                throw new ValidationException("location.points", "Points must have at least 3 points.");
+            }
+        }
     }
 }

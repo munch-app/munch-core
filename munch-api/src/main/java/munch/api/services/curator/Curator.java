@@ -73,7 +73,7 @@ public abstract class Curator {
     /**
      * Check if a SearchQuery is empty
      * Only filters and query is checked
-     * For filters: TODO this feature
+     * For filters:
      * Implicit user settings filters is considered empty
      *
      * @param query query to check if empty
@@ -81,13 +81,31 @@ public abstract class Curator {
      */
     protected static boolean isEmpty(SearchQuery query) {
         if (StringUtils.isNotBlank(query.getQuery())) return false;
-        if (query.getFilters() == null) return true;
+        if (query.getFilter() == null) return true;
 
         // All filters must be empty or null
-        if (query.getFilters().getRatingsAbove() != null) return false;
-        if (query.getFilters().getPriceRange() != null) return false;
-        if (!query.getFilters().getHours().isEmpty()) return false;
-        if (!query.getFilters().getTags().isEmpty()) return false;
+        if (query.getFilter().getPrice() != null) {
+            if (query.getFilter().getPrice().getMin() != null) return false;
+            if (query.getFilter().getPrice().getMax() != null) return false;
+        }
+
+        if (query.getFilter().getTag() != null) {
+            if (query.getFilter().getTag().getPositives() != null) {
+                if (!query.getFilter().getTag().getPositives().isEmpty()) return false;
+            }
+
+            if (query.getFilter().getTag().getNegatives() != null) {
+                if (!query.getFilter().getTag().getNegatives().isEmpty()) return false;
+            }
+        }
+
+        if (query.getFilter().getRating() != null) {
+            if (query.getFilter().getRating().getMin() != null) return false;
+        }
+
+        if (query.getFilter().getDistance() != null) {
+            if (query.getFilter().getDistance().getLatLng() != null) return false;
+        }
 
         return true;
     }
