@@ -7,7 +7,8 @@ import catalyst.data.DataClient;
 import com.google.inject.Inject;
 import munch.catalyst.builder.ArticleBuilder;
 import munch.catalyst.builder.MediaBuilder;
-import munch.catalyst.builder.PlaceBuilder;
+import munch.catalyst.builder.place.ImageCurator;
+import munch.catalyst.builder.place.PlaceBuilder;
 import munch.catalyst.clients.ArticleClient;
 import munch.catalyst.clients.MediaClient;
 import munch.catalyst.clients.PlaceClient;
@@ -87,7 +88,7 @@ public class MunchCatalyst extends CatalystEngine {
             articles = articles.stream().map(articleClient::put).collect(Collectors.toList());
 
             // Add images to place from medias and articles
-            place.setImages(PlaceBuilder.ImageBuilder.selectFrom(medias, articles));
+            place.setImages(ImageCurator.selectFrom(medias, articles));
             placeClient.put(place);
         } else logger.warn("Place unable to put due to incomplete corpus data: {}", collected);
 

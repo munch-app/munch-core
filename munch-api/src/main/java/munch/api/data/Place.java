@@ -183,8 +183,10 @@ public class Place {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Location {
+        private String street;
         private String address;
         private String unitNumber;
+        private String building;
 
         private String city;
         private String country;
@@ -198,6 +200,22 @@ public class Place {
 
         public void setAddress(String address) {
             this.address = address;
+        }
+
+        public String getStreet() {
+            return street;
+        }
+
+        public void setStreet(String street) {
+            this.street = street;
+        }
+
+        public String getBuilding() {
+            return building;
+        }
+
+        public void setBuilding(String building) {
+            this.building = building;
         }
 
         public String getUnitNumber() {
@@ -243,8 +261,10 @@ public class Place {
         @Override
         public String toString() {
             return "Location{" +
-                    "address='" + address + '\'' +
+                    "street='" + street + '\'' +
+                    ", address='" + address + '\'' +
                     ", unitNumber='" + unitNumber + '\'' +
+                    ", building='" + building + '\'' +
                     ", city='" + city + '\'' +
                     ", country='" + country + '\'' +
                     ", postal='" + postal + '\'' +
