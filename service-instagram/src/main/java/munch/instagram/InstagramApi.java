@@ -1,4 +1,4 @@
-package munch.medias;
+package munch.instagram;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -11,14 +11,9 @@ import munch.restful.server.RestfulServer;
  * Project: munch-core
  */
 @Singleton
-final class MediaApi extends RestfulServer {
+final class InstagramApi extends RestfulServer {
     @Inject
-    public MediaApi(MediaService service) {
+    public InstagramApi(MediaService service) {
         super(service);
-    }
-
-    @Override
-    public void start(int port) {
-        super.start(port);
     }
 }

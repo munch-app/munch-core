@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.clients.ArticleClient;
-import munch.api.clients.MediaClient;
+import munch.api.clients.InstagramClient;
 import munch.api.clients.PlaceClient;
 import munch.api.data.*;
 import munch.api.services.curator.CollectionCurator;
@@ -23,15 +23,15 @@ import java.util.List;
 public class PlaceService extends AbstractService {
     private final PlaceClient placeClient;
     private final ArticleClient articleClient;
-    private final MediaClient mediaClient;
+    private final InstagramClient instagramClient;
 
     private final CollectionCurator curator;
 
     @Inject
-    public PlaceService(PlaceClient placeClient, ArticleClient articleClient, MediaClient mediaClient, CollectionCurator curator) {
+    public PlaceService(PlaceClient placeClient, ArticleClient articleClient, InstagramClient instagramClient, CollectionCurator curator) {
         this.placeClient = placeClient;
         this.articleClient = articleClient;
-        this.mediaClient = mediaClient;
+        this.instagramClient = instagramClient;
         this.curator = curator;
     }
 
@@ -51,7 +51,7 @@ public class PlaceService extends AbstractService {
             PATH("/:placeId", () -> {
                 GET("", this::get);
 
-                GET("/medias/list", this::medias);
+                GET("/instagram/medias/list", this::medias);
                 GET("/articles/list", this::articles);
             });
         });
@@ -115,16 +115,17 @@ public class PlaceService extends AbstractService {
         // PlaceDetail: query 10 articles and medias
         PlaceDetail detail = new PlaceDetail();
         detail.setPlace(place);
-        detail.setMedias(mediaClient.list(placeId, 0, 10));
+        detail.setInstagram(new PlaceDetail.Instagram());
+        detail.getInstagram().setMedias(instagramClient.list(placeId, 0, 20));
         detail.setArticles(articleClient.list(placeId, 0, 10));
         return detail;
     }
 
-    private List<Media> medias(JsonCall call) {
+    private List<InstagramMedia> medias(JsonCall call) {
         String placeId = call.pathString("placeId");
         int from = call.queryInt("from");
         int size = call.queryInt("size");
-        return mediaClient.list(placeId, from, size);
+        return instagramClient.list(placeId, from, size);
     }
 
     private List<Article> articles(JsonCall call) {

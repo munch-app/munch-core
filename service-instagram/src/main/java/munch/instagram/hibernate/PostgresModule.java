@@ -1,4 +1,4 @@
-package munch.medias.hibernate;
+package munch.instagram.hibernate;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
@@ -21,7 +21,7 @@ import java.util.Map;
  */
 public class PostgresModule extends AbstractModule {
 
-    private static final String UnitName = "mediasPersistenceUnit";
+    private static final String UnitName = "instagramPersistenceUnit";
 
     @Override
     protected void configure() {

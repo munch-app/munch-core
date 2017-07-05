@@ -15,7 +15,7 @@ import java.util.Date;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class Media {
+public final class InstagramMedia {
     private String placeId;
     private String mediaId;
 

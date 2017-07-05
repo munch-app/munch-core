@@ -2,7 +2,7 @@ package munch.catalyst.builder.place;
 
 import munch.catalyst.data.Article;
 import munch.catalyst.data.ImageMeta;
-import munch.catalyst.data.Media;
+import munch.catalyst.data.InstagramMedia;
 import munch.catalyst.data.Place;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,11 +25,11 @@ public final class ImageCurator {
      * @param articles article
      * @return list of image that is >= ImageBuilder.MAX_SIZE
      */
-    public static List<Place.Image> selectFrom(List<Media> medias, List<Article> articles) {
+    public static List<Place.Image> selectFrom(List<InstagramMedia> medias, List<Article> articles) {
         List<Place.Image> images = new ArrayList<>();
 
-        for (Media media : medias) {
-            Place.Image image = create("media", media.getImage());
+        for (InstagramMedia media : medias) {
+            Place.Image image = create("instagram", media.getImage());
             if (image != null) images.add(image);
             if (images.size() >= MAX_SIZE) return images;
         }

@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class PlaceDetail {
     private Place place;
-    private List<Media> medias;
+    private Instagram instagram;
     private List<Article> articles;
     // Future: reviews
 
@@ -26,12 +26,12 @@ public class PlaceDetail {
         this.place = place;
     }
 
-    public List<Media> getMedias() {
-        return medias;
+    public Instagram getInstagram() {
+        return instagram;
     }
 
-    public void setMedias(List<Media> medias) {
-        this.medias = medias;
+    public void setInstagram(Instagram instagram) {
+        this.instagram = instagram;
     }
 
     public List<Article> getArticles() {
@@ -40,5 +40,17 @@ public class PlaceDetail {
 
     public void setArticles(List<Article> articles) {
         this.articles = articles;
+    }
+
+    public static class Instagram {
+        private List<InstagramMedia> medias;
+
+        public List<InstagramMedia> getMedias() {
+            return medias;
+        }
+
+        public void setMedias(List<InstagramMedia> medias) {
+            this.medias = medias;
+        }
     }
 }

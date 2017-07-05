@@ -1,8 +1,8 @@
-package munch.medias;
+package munch.instagram;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import munch.medias.hibernate.PojoUserType;
+import munch.instagram.hibernate.PojoUserType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
@@ -25,10 +25,10 @@ import java.util.Map;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @TypeDefs(value = {
-        @TypeDef(name = "profile", typeClass = Media.UserType.User.class),
-        @TypeDef(name = "image", typeClass = Media.UserType.Image.class)
+        @TypeDef(name = "profile", typeClass = InstagramMedia.UserType.User.class),
+        @TypeDef(name = "image", typeClass = InstagramMedia.UserType.Image.class)
 })
-public final class Media {
+public final class InstagramMedia {
     private String placeId;
     private String mediaId;
 

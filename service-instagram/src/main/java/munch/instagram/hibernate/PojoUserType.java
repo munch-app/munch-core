@@ -1,4 +1,4 @@
-package munch.medias.hibernate;
+package munch.instagram.hibernate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hibernate.HibernateException;

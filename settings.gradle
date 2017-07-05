@@ -7,11 +7,11 @@ include 'catalyst-munch'
 include 'munch-api'
 
 // Tier 1 Service Api
-include 'service-locations'
+include 'service-locations' // TODO to be removed
 include 'service-places'
 include 'service-menus'
 include 'service-articles'
-include 'service-medias'
+include 'service-instagram'
 
 // Tier 2 Service Api
 include 'service-images'

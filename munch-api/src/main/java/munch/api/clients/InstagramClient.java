@@ -2,7 +2,7 @@ package munch.api.clients;
 
 import com.google.inject.Singleton;
 import com.typesafe.config.Config;
-import munch.api.data.Media;
+import munch.api.data.InstagramMedia;
 import munch.restful.client.RestfulClient;
 
 import javax.inject.Inject;
@@ -16,11 +16,11 @@ import java.util.List;
  * Project: munch-core
  */
 @Singleton
-public class MediaClient extends RestfulClient {
+public class InstagramClient extends RestfulClient {
 
     @Inject
-    public MediaClient(@Named("services") Config config) {
-        super(config.getString("medias.url"));
+    public InstagramClient(@Named("services") Config config) {
+        super(config.getString("instagram.url"));
     }
 
     /**
@@ -31,11 +31,11 @@ public class MediaClient extends RestfulClient {
      * @param size    size
      * @return List of Media
      */
-    public List<Media> list(String placeId, int from, int size) {
-        return doGet("/places/{placeId}/medias/list")
+    public List<InstagramMedia> list(String placeId, int from, int size) {
+        return doGet("/places/{placeId}/instagram/medias/list")
                 .path("placeId", placeId)
                 .queryString("from", from)
                 .queryString("size", size)
-                .asDataList(Media.class);
+                .asDataList(InstagramMedia.class);
     }
 }

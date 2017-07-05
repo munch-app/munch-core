@@ -10,10 +10,10 @@ import munch.catalyst.builder.MediaBuilder;
 import munch.catalyst.builder.place.ImageCurator;
 import munch.catalyst.builder.place.PlaceBuilder;
 import munch.catalyst.clients.ArticleClient;
-import munch.catalyst.clients.MediaClient;
+import munch.catalyst.clients.InstagramClient;
 import munch.catalyst.clients.PlaceClient;
 import munch.catalyst.data.Article;
-import munch.catalyst.data.Media;
+import munch.catalyst.data.InstagramMedia;
 import munch.catalyst.data.Place;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,17 +35,17 @@ public class MunchCatalyst extends CatalystEngine {
 
     private final PlaceClient placeClient;
     private final ArticleClient articleClient;
-    private final MediaClient mediaClient;
+    private final InstagramClient instagramClient;
 
     private Date updatedDate;
 
     @Inject
     public MunchCatalyst(DataClient dataClient, CatalystClient catalystClient,
-                         PlaceClient placeClient, ArticleClient articleClient, MediaClient mediaClient) {
+                         PlaceClient placeClient, ArticleClient articleClient, InstagramClient instagramClient) {
         super(logger, dataClient, catalystClient);
         this.placeClient = placeClient;
         this.articleClient = articleClient;
-        this.mediaClient = mediaClient;
+        this.instagramClient = instagramClient;
     }
 
     @Override
@@ -77,14 +77,14 @@ public class MunchCatalyst extends CatalystEngine {
 
         // Put place data to place services
         List<Place> places = placeBuilder.collect(updatedDate);
-        List<Media> medias = mediaBuilder.collect(updatedDate);
+        List<InstagramMedia> medias = mediaBuilder.collect(updatedDate);
         List<Article> articles = articleBuilder.collect(updatedDate);
 
         if (!places.isEmpty()) {
             Place place = places.get(0);
             logger.info("Putting place id: {} name: {}", place.getId(), place.getName());
             // Put to 3 services
-            medias = medias.stream().map(mediaClient::put).collect(Collectors.toList());
+            medias = medias.stream().map(instagramClient::put).collect(Collectors.toList());
             articles = articles.stream().map(articleClient::put).collect(Collectors.toList());
 
             // Add images to place from medias and articles
@@ -92,9 +92,9 @@ public class MunchCatalyst extends CatalystEngine {
             placeClient.put(place);
         } else logger.warn("Place unable to put due to incomplete corpus data: {}", collected);
 
-        // Delete data that is not updated
+        // Delete place associated data that is not updated
         articleClient.deleteBefore(catalystId, updatedDate);
-        mediaClient.deleteBefore(catalystId, updatedDate);
+        instagramClient.deleteBefore(catalystId, updatedDate);
     }
 
     /**
@@ -107,11 +107,11 @@ public class MunchCatalyst extends CatalystEngine {
      * @return true = validated, false = cannot be a munch place
      */
     private boolean validate(List<CorpusData> links) {
-        // Make sure have 2 links
+        // Make sure have at least 2 links
         if (links.size() < 2) return false;
 
         // Validate has at least 1 Article written about place
-        if (links.stream().noneMatch(data -> ArticleBuilder.ArticleCorpusName
+        if (links.stream().noneMatch(data -> ArticleBuilder.CorpusName
                 .matcher(data.getCorpusName()).matches())) return false;
 
         // Validate has NeaRecord

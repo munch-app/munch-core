@@ -1,7 +1,7 @@
 package munch.catalyst.clients;
 
 import com.google.inject.Singleton;
-import munch.catalyst.data.Media;
+import munch.catalyst.data.InstagramMedia;
 import munch.restful.client.RestfulClient;
 
 import javax.inject.Inject;
@@ -15,24 +15,24 @@ import java.util.Date;
  * Project: munch-core
  */
 @Singleton
-public class MediaClient extends RestfulClient {
+public class InstagramClient extends RestfulClient {
 
     @Inject
-    public MediaClient(@Named("services.medias.url") String url) {
+    public InstagramClient(@Named("services.instagram.url") String url) {
         super(url);
     }
 
-    public Media put(Media media) {
-        return doPut("/places/{placeId}/medias/{mediaId}")
+    public InstagramMedia put(InstagramMedia media) {
+        return doPut("/places/{placeId}/instagram/medias/{mediaId}")
                 .path("placeId", media.getPlaceId())
                 .path("mediaId", media.getMediaId())
                 .body(media)
                 .asResponse()
-                .asDataObject(Media.class);
+                .asDataObject(InstagramMedia.class);
     }
 
     public void deleteBefore(String catalystId, Date updatedDate) {
-        doDelete("/places/{placeId}/medias/before/{timestamp}")
+        doDelete("/places/{placeId}/instagram/medias/before/{timestamp}")
                 .path("placeId", catalystId)
                 .path("timestamp", updatedDate.getTime())
                 .asResponse()

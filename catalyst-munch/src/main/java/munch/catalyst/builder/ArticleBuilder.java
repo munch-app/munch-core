@@ -22,14 +22,14 @@ import java.util.stream.Collectors;
  */
 public class ArticleBuilder implements DataBuilder<Article> {
     private static final Logger logger = LoggerFactory.getLogger(ArticleBuilder.class);
-    private static final Supplier<NullPointerException> NullSupplier = () -> new NullPointerException("Media");
-    public static final Pattern ArticleCorpusName = Pattern.compile("Global\\.Article\\.\\w+");
+    private static final Supplier<NullPointerException> NullSupplier = () -> new NullPointerException("Article");
+    public static final Pattern CorpusName = Pattern.compile("Global\\.Article\\.\\w+");
 
     private List<Article> articleList = new ArrayList<>();
 
     @Override
     public void consume(CorpusData data) {
-        if (!ArticleCorpusName.matcher(data.getCorpusName()).matches()) return;
+        if (!CorpusName.matcher(data.getCorpusName()).matches()) return;
 
         FieldWrapper wrapper = new FieldWrapper(data);
 

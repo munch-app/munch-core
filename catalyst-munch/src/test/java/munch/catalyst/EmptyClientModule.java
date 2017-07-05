@@ -4,10 +4,10 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.mashape.unirest.http.Unirest;
 import munch.catalyst.clients.ArticleClient;
-import munch.catalyst.clients.MediaClient;
+import munch.catalyst.clients.InstagramClient;
 import munch.catalyst.clients.PlaceClient;
 import munch.catalyst.data.Article;
-import munch.catalyst.data.Media;
+import munch.catalyst.data.InstagramMedia;
 import munch.catalyst.data.Place;
 
 import java.util.Date;
@@ -39,8 +39,8 @@ public class EmptyClientModule extends AbstractModule {
     }
 
     @Provides
-    MediaClient provideMediaClient() {
-        return new EmtpyMediaClient();
+    InstagramClient provideInstagramClient() {
+        return new EmtpyInstagramClient();
     }
 
     static class EmtpyArticleClient extends ArticleClient {
@@ -73,13 +73,13 @@ public class EmptyClientModule extends AbstractModule {
         }
     }
 
-    static class EmtpyMediaClient extends MediaClient {
-        public EmtpyMediaClient() {
+    static class EmtpyInstagramClient extends InstagramClient {
+        public EmtpyInstagramClient() {
             super("");
         }
 
         @Override
-        public Media put(Media media) {
+        public InstagramMedia put(InstagramMedia media) {
             return super.put(media);
         }
 

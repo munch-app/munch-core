@@ -1,4 +1,4 @@
-package munch.medias.hibernate;
+package munch.instagram.hibernate;
 
 import org.hibernate.dialect.PostgreSQL82Dialect;
 

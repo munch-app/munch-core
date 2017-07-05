@@ -3,7 +3,7 @@ package munch.catalyst.builder;
 import catalyst.data.CorpusData;
 import catalyst.utils.FieldWrapper;
 import munch.catalyst.data.ImageMeta;
-import munch.catalyst.data.Media;
+import munch.catalyst.data.InstagramMedia;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,12 +16,12 @@ import java.util.function.Supplier;
  * Time: 8:57 PM
  * Project: munch-core
  */
-public class MediaBuilder implements DataBuilder<Media> {
+public class MediaBuilder implements DataBuilder<InstagramMedia> {
     private static final Logger logger = LoggerFactory.getLogger(MediaBuilder.class);
     private static final Supplier<NullPointerException> NullSupplier = () -> new NullPointerException("Media");
     private static final String MediaCorpusName = "Global.Instagram.Media";
 
-    private List<Media> mediaList = new ArrayList<>();
+    private List<InstagramMedia> mediaList = new ArrayList<>();
 
     @Override
     public void consume(CorpusData data) {
@@ -29,13 +29,13 @@ public class MediaBuilder implements DataBuilder<Media> {
 
         FieldWrapper wrapper = new FieldWrapper(data);
 
-        Media media = new Media();
+        InstagramMedia media = new InstagramMedia();
         media.setCreatedDate(data.getCreatedDate());
         media.setPlaceId(data.getCatalystId());
         media.setMediaId(wrapper.getValue("Instagram.Media.mediaId", NullSupplier));
         media.setCaption(wrapper.getValue("Instagram.Media.caption", NullSupplier));
 
-        Media.Profile profile = new Media.Profile();
+        InstagramMedia.Profile profile = new InstagramMedia.Profile();
         profile.setUserId(wrapper.getValue("Instagram.Media.userId", NullSupplier));
         profile.setUsername(wrapper.getValue("Instagram.Media.username", NullSupplier));
         profile.setPictureUrl(wrapper.getValue("Instagram.Media.profilePicture", NullSupplier));
@@ -62,7 +62,7 @@ public class MediaBuilder implements DataBuilder<Media> {
     }
 
     @Override
-    public List<Media> collect(Date updatedDate) {
+    public List<InstagramMedia> collect(Date updatedDate) {
         mediaList.forEach(media -> media.setUpdatedDate(updatedDate));
         return mediaList;
     }
