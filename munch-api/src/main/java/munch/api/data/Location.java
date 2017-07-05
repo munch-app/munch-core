@@ -19,22 +19,12 @@ public final class Location {
     private String center;
     private String[] points;
 
-    public Location() {
-    }
-
     public String getId() {
         return id;
     }
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    /**
-     * @param center center only location for distance search
-     */
-    public Location(String center) {
-        this.center = center;
     }
 
     /**

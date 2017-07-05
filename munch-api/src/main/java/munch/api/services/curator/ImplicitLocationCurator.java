@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.clients.PlaceClient;
 import munch.api.data.LatLng;
-import munch.api.data.Location;
 import munch.api.data.PlaceCollection;
 import munch.api.data.SearchQuery;
 
@@ -28,8 +27,6 @@ public class ImplicitLocationCurator extends Curator {
     @Override
     protected List<PlaceCollection> curate(SearchQuery query, LatLng latLng) {
         query = clone(query);
-        query.setLocation(new Location(latLng.getString()));
-
         List<PlaceCollection> collections = new ArrayList<>();
         // If contains search query data
         if (!isEmpty(query)) {

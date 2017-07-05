@@ -259,14 +259,6 @@ public final class SearchQuery {
             this.query = new SearchQuery();
         }
 
-        public Builder with(SearchQuery query) {
-            this.query.setQuery(query.query);
-            this.query.setLocation(query.location);
-            this.query.setFilter(query.filter);
-            this.query.setSort(query.sort);
-            return this;
-        }
-
         public Builder query(String text) {
             query.setQuery(text);
             return this;

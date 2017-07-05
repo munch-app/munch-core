@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.clients.PlaceClient;
 import munch.api.data.LatLng;
+import munch.api.data.Location;
 import munch.api.data.PlaceCollection;
 import munch.api.data.SearchQuery;
 
@@ -24,6 +25,11 @@ import java.util.List;
  */
 @Singleton
 public class SingaporeCurator extends Curator {
+    // TODO all the points
+    private static final String[] POINTS_BISHAN = new String[]{};
+    private static final String[] POINTS_ONE_NORTH = new String[]{};
+    private static final String[] POINTS_THOMSON = new String[]{};
+    private static final String[] POINTS_SERANGOON_GARDENS = new String[]{};
 
     @Inject
     public SingaporeCurator(PlaceClient placeClient) {
@@ -42,25 +48,35 @@ public class SingaporeCurator extends Curator {
      */
     @Override
     protected List<PlaceCollection> curate(SearchQuery query, @Nullable LatLng latLng) {
-        query.setLocation(null);
         List<PlaceCollection> collections = new ArrayList<>();
 
-        // If not empty do search based on query
-        if (!isEmpty(query)) collections.add(new PlaceCollection("SEARCH", query));
-
-        // Preset Default Collections
-        collections.add(new PlaceCollection("BREAKFAST", createTagQuery("breakfast")));
-        collections.add(new PlaceCollection("HALAL", createTagQuery("halal")));
-        collections.add(new PlaceCollection("HEALTHIER", createTagQuery("healthier choice")));
+        if (isEmpty(query)) {
+            // If query is empty: means location collections
+            collections.add(locationQuery("BISHAN", query, POINTS_BISHAN));
+            collections.add(locationQuery("ONE NORTH", query, POINTS_ONE_NORTH));
+            collections.add(locationQuery("THOMSON", query, POINTS_THOMSON));
+            collections.add(locationQuery("SERANGOON GARDENS", query, POINTS_SERANGOON_GARDENS));
+        } else {
+            // Else do single collection search
+            query.setFrom(0);
+            query.setSize(15);
+            collections.add(new PlaceCollection(null, query, placeClient.search(query)));
+        }
         return collections;
     }
 
     /**
-     * @return create SearchQuery with filters tags only
+     * Create PlaceLocation with no place data populated
+     *
+     * @param name   name collection name
+     * @param source source of query that will be cloned
+     * @param points points for polygon
+     * @return collection created
      */
-    protected static SearchQuery createLocationQuery() {
-        SearchQuery.Builder builder = SearchQuery.builder();
-
-        return builder.build();
+    protected static PlaceCollection locationQuery(String name, SearchQuery source, String[] points) {
+        SearchQuery query = clone(source);
+        query.setLocation(new Location());
+        query.getLocation().setPoints(points);
+        return new PlaceCollection(name, query);
     }
 }
