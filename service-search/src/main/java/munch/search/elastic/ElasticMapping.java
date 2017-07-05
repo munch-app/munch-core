@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.Map;
 
 /**
+ * For validation of Mappings
  * Created By: Fuxing Loh
  * Date: 10/3/2017
  * Time: 11:22 PM
@@ -38,6 +39,8 @@ public final class ElasticMapping {
         this.client = client;
         this.mapper = mapper;
     }
+
+    // TODO Mapping For Location
 
     /**
      * Does 2 things

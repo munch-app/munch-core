@@ -6,7 +6,7 @@ import com.google.inject.Singleton;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
 import munch.search.data.Place;
-import munch.search.elastic.ElasticIndex;
+import munch.search.elastic.ElasticDatabase;
 
 import java.util.Date;
 
@@ -19,10 +19,10 @@ import java.util.Date;
 @Singleton
 public class PlaceService implements JsonService {
 
-    private final ElasticIndex index;
+    private final ElasticDatabase index;
 
     @Inject
-    public PlaceService(ElasticIndex index) {
+    public PlaceService(ElasticDatabase index) {
         this.index = index;
     }
 
@@ -30,6 +30,7 @@ public class PlaceService implements JsonService {
     public void route() {
         PATH("/places", () -> {
             PUT("/:id", this::put);
+
             DELETE("/before/:timestamp", this::deleteBefore);
             DELETE("/:id", this::delete);
         });
@@ -52,7 +53,7 @@ public class PlaceService implements JsonService {
      */
     private JsonNode delete(JsonCall call) throws Exception {
         String id = call.pathString("id");
-        index.delete(id);
+        index.delete("place", id);
         return Meta200;
     }
 

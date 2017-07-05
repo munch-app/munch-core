@@ -31,16 +31,16 @@ import java.util.List;
  * Project: munch-core
  */
 @Singleton
-public final class ElasticQuery {
+public final class ElasticClient {
     private final RestClient client;
     private final ObjectMapper mapper;
 
     private final ArrayNode searchSources;
     private final ArrayNode suggestSources;
-    private final BoolQuery boolQuery;
+    private final PlaceBoolQuery boolQuery;
 
     @Inject
-    public ElasticQuery(RestClient client, ObjectMapper mapper, BoolQuery boolQuery) {
+    public ElasticClient(RestClient client, ObjectMapper mapper, PlaceBoolQuery boolQuery) {
         this.client = client;
         this.mapper = mapper;
         this.boolQuery = boolQuery;

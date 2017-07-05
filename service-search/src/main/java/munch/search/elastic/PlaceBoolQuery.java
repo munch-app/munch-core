@@ -19,11 +19,11 @@ import java.util.List;
  * Project: munch-core
  */
 @Singleton
-public class BoolQuery {
+public class PlaceBoolQuery {
     private final ObjectMapper mapper;
 
     @Inject
-    public BoolQuery(ObjectMapper mapper) {
+    public PlaceBoolQuery(ObjectMapper mapper) {
         this.mapper = mapper;
     }
 

@@ -1,6 +1,7 @@
 package munch.search;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.restful.core.exception.ValidationException;
@@ -8,7 +9,7 @@ import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
 import munch.search.data.Place;
 import munch.search.data.SearchQuery;
-import munch.search.elastic.ElasticQuery;
+import munch.search.elastic.ElasticClient;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.IOException;
@@ -24,19 +25,17 @@ import java.util.stream.Collectors;
 @Singleton
 public class SearchService implements JsonService {
 
-    private final ElasticQuery search;
+    private final ElasticClient search;
 
     @Inject
-    public SearchService(ElasticQuery search) {
+    public SearchService(ElasticClient search) {
         this.search = search;
     }
 
     @Override
     public void route() {
-        PATH("/places", () -> {
-            POST("/search", this::search);
-            POST("/suggest", this::suggest);
-        });
+        POST("/search", this::search);
+        POST("/suggest", this::suggest);
     }
 
     /**
@@ -79,10 +78,12 @@ public class SearchService implements JsonService {
         Pair<List<Place>, Integer> result = search.query(query);
         // Get data from database, remove the place if it is null
         List<String> ids = result.getLeft().stream().map(Place::getId).collect(Collectors.toList());
-//        List<Place> places = database.get(ids).stream().filter(Objects::nonNull).collect(Collectors.toList());
+        ObjectNode data = newNode();
+        data.set("ids", toTree(ids));
+        data.put("total", result.getRight());
 
         // Return data: [] with total: Integer & linked: {} object
-        return nodes(200, null).put("total", result.getRight());
+        return nodes(200, ids);
     }
 
     /**
@@ -106,6 +107,7 @@ public class SearchService implements JsonService {
      * @return {data: list of place, total: size of all possible place}
      */
     private List<Place> suggest(JsonCall call, JsonNode request) throws IOException {
+        // TODO for Location Suggestion Also
         int size = ValidationException.require("size", request.path("size")).asInt();
         String query = ValidationException.requireNonBlank("query", request.path("query"));
         String latLng = request.path("latLng").asText(null);

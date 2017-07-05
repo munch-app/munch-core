@@ -1,5 +1,6 @@
 package munch.search.elastic;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -14,6 +15,7 @@ import org.elasticsearch.client.Response;
 import org.elasticsearch.client.ResponseException;
 import org.elasticsearch.client.RestClient;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,7 +26,7 @@ import java.util.List;
  * Project: munch-core
  */
 @Singleton
-public class ElasticIndex {
+public class ElasticDatabase {
 
     private final RestClient client;
     private final ObjectMapper mapper;
@@ -37,7 +39,7 @@ public class ElasticIndex {
      * @throws RuntimeException if ElasticSearchMapping validation failed
      */
     @Inject
-    public ElasticIndex(RestClient client, ObjectMapper mapper) {
+    public ElasticDatabase(RestClient client, ObjectMapper mapper) {
         this.client = client;
         this.mapper = mapper;
     }
@@ -99,14 +101,9 @@ public class ElasticIndex {
         isSuccessful(response);
     }
 
-    public void put(List<Place> places) throws Exception {
-        if (places.isEmpty()) return;
-        for (Place place : places) {
-            put(place);
-        }
-    }
+    // TODO: put for Location
 
-    public void delete(String key) throws Exception {
+    public void delete(String type, String key) throws Exception {
         try {
             Response response = client.performRequest("DELETE",
                     "/munch/place/" + key, Collections.emptyMap());
@@ -117,11 +114,25 @@ public class ElasticIndex {
         }
     }
 
-    public void delete(List<String> keys) throws Exception {
+    public void delete(String type, List<String> keys) throws Exception {
         if (keys.isEmpty()) return;
         for (String key : keys) {
-            delete(key);
+            delete(type, key);
         }
+    }
+
+    public void deleteBefore(String type, long cycleNo) throws IOException {
+        // TODO: Need to Test This, or add timestamp?
+        JsonNode cycleNode = mapper.createObjectNode().put("lt", cycleNo);
+        JsonNode rangeNode = mapper.createObjectNode().set("updatedDate", cycleNode);
+        JsonNode queryNode = mapper.createObjectNode().set("range", rangeNode);
+        JsonNode rootNode = mapper.createObjectNode().set("query", queryNode);
+
+        String json = mapper.writeValueAsString(rootNode);
+        HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
+        String endpoint = "/munch/" + type + "_delete_by_query?conflicts=proceed";
+        Response response = client.performRequest("POST", endpoint, Collections.emptyMap(), entity);
+        isSuccessful(response);
     }
 
     private ObjectNode locationNode(Place.Location location) {
