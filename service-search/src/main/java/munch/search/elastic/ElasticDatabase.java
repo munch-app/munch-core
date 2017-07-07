@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import munch.search.data.Location;
 import munch.search.data.Place;
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.ContentType;
@@ -15,9 +16,8 @@ import org.elasticsearch.client.Response;
 import org.elasticsearch.client.ResponseException;
 import org.elasticsearch.client.RestClient;
 
-import java.io.IOException;
 import java.util.Collections;
-import java.util.List;
+import java.util.Map;
 
 /**
  * Created By: Fuxing Loh
@@ -27,6 +27,7 @@ import java.util.List;
  */
 @Singleton
 public class ElasticDatabase {
+    private static final Map<String, String> PARAMS = Collections.emptyMap();
 
     private final RestClient client;
     private final ObjectMapper mapper;
@@ -65,28 +66,9 @@ public class ElasticDatabase {
      * @throws Exception any exception
      */
     public void put(Place place) throws Exception {
-        ObjectNode node = mapper.createObjectNode();
-        node.put("name", place.getName());
-        node.put("phone", place.getPhone());
-        node.put("website", place.getWebsite());
-        node.put("description", place.getDescription());
-
-        // Tags array node, Index as lower case
-        ArrayNode tagsNode = mapper.createArrayNode();
-        for (String tag : place.getTags()) tagsNode.add(tag);
-        node.set("tags", tagsNode);
-
-        // Location Node
-        node.set("location", locationNode(place.getLocation()));
-        // Price Node
-        if (place.getPrice() != null) {
-            node.set("price", priceNode(place.getPrice()));
-        }
-
-        // Hours array node
-        ArrayNode hoursNode = mapper.createArrayNode();
-        for (Place.Hour hour : place.getHours()) hoursNode.add(hourNode(hour));
-        node.set("hours", hoursNode);
+        ObjectNode node = mapper.valueToTree(place);
+        node.put("createdDate", place.getCreatedDate().getTime());
+        node.put("updatedDate", place.getUpdatedDate().getTime());
 
         // Suggest Field
         ArrayNode suggest = mapper.createArrayNode();
@@ -96,17 +78,47 @@ public class ElasticDatabase {
         String json = mapper.writeValueAsString(node);
         HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
 
-        Response response = client.performRequest("PUT",
-                "/munch/place/" + place.getId(), Collections.emptyMap(), entity);
+        String endpoint = "/munch/place/" + place.getId();
+        Response response = client.performRequest("PUT", endpoint, PARAMS, entity);
         isSuccessful(response);
     }
 
-    // TODO: put for Location
+    /**
+     * Index a location by putting it into elastic search
+     * https://www.elastic.co/guide/en/elasticsearch/reference/current/geo-shape.html
+     *
+     * @param location location to index
+     * @throws Exception any exception
+     */
+    public void put(Location location) throws Exception {
+        ObjectNode node = mapper.valueToTree(location);
+        node.put("updatedDate", location.getUpdatedDate().getTime());
 
+        // TODO Polygon indexing
+        // TODO Custom Deserialization
+
+        // Suggest Field
+        ArrayNode suggest = mapper.createArrayNode();
+        suggest.add(location.getName());
+        node.set("suggest", suggest);
+
+        String json = mapper.writeValueAsString(node);
+        HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
+
+        String endpoint = "/munch/location/" + location.getId();
+        Response response = client.performRequest("PUT", endpoint, PARAMS, entity);
+        isSuccessful(response);
+    }
+
+    /**
+     * @param type data type to delete before
+     * @param key  key of data type
+     * @throws Exception exception for deletion
+     */
     public void delete(String type, String key) throws Exception {
         try {
-            Response response = client.performRequest("DELETE",
-                    "/munch/place/" + key, Collections.emptyMap());
+            String endpoint = "/munch/" + type + "/" + key;
+            Response response = client.performRequest("DELETE", endpoint);
             isSuccessful(response);
         } catch (ResponseException responseException) {
             int code = responseException.getResponse().getStatusLine().getStatusCode();
@@ -114,16 +126,13 @@ public class ElasticDatabase {
         }
     }
 
-    public void delete(String type, List<String> keys) throws Exception {
-        if (keys.isEmpty()) return;
-        for (String key : keys) {
-            delete(type, key);
-        }
-    }
-
-    public void deleteBefore(String type, long cycleNo) throws IOException {
-        // TODO: Need to Test This, or add timestamp?
-        JsonNode cycleNode = mapper.createObjectNode().put("lt", cycleNo);
+    /**
+     * @param type        data type to delete before
+     * @param updatedDate updated date in millis
+     * @throws Exception exception for deletion
+     */
+    public void deleteBefore(String type, long updatedDate) throws Exception {
+        JsonNode cycleNode = mapper.createObjectNode().put("lt", updatedDate);
         JsonNode rangeNode = mapper.createObjectNode().set("updatedDate", cycleNode);
         JsonNode queryNode = mapper.createObjectNode().set("range", rangeNode);
         JsonNode rootNode = mapper.createObjectNode().set("query", queryNode);
@@ -131,35 +140,7 @@ public class ElasticDatabase {
         String json = mapper.writeValueAsString(rootNode);
         HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
         String endpoint = "/munch/" + type + "_delete_by_query?conflicts=proceed";
-        Response response = client.performRequest("POST", endpoint, Collections.emptyMap(), entity);
+        Response response = client.performRequest("POST", endpoint, PARAMS, entity);
         isSuccessful(response);
-    }
-
-    private ObjectNode locationNode(Place.Location location) {
-        // location node
-        ObjectNode node = mapper.createObjectNode();
-        node.put("address", location.getAddress());
-        node.put("city", location.getCity());
-        node.put("country", location.getCountry());
-        node.put("postal", location.getPostal());
-
-        // https://www.elastic.co/guide/en/elasticsearch/reference/current/geo-point.html
-        node.put("latLng", location.getLatLng());
-        return node;
-    }
-
-    private ObjectNode priceNode(Place.Price price) {
-        ObjectNode node = mapper.createObjectNode();
-        node.put("lowest", price.getLowest());
-        node.put("highest", price.getHighest());
-        return node;
-    }
-
-    private ObjectNode hourNode(Place.Hour hour) {
-        ObjectNode node = mapper.createObjectNode();
-        node.put("day", hour.getDay().name());
-        node.put("open", hour.getOpen());
-        node.put("close", hour.getClose());
-        return node;
     }
 }

@@ -34,8 +34,8 @@ public class PlaceClient extends RestfulClient {
     }
 
     public void deleteBefore(Date updatedDate) {
-        doDelete("/places/before/{timestamp}")
-                .path("timestamp", updatedDate.getTime())
+        doDelete("/places/before/{updatedDate}")
+                .path("updatedDate", updatedDate.getTime())
                 .asResponse()
                 .hasCode(200);
     }

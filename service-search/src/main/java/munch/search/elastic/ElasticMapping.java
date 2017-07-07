@@ -2,6 +2,7 @@ package munch.search.elastic;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.io.Resources;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.apache.commons.lang3.StringUtils;
@@ -16,6 +17,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
+import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.Map;
 
@@ -40,8 +43,6 @@ public final class ElasticMapping {
         this.mapper = mapper;
     }
 
-    // TODO Mapping For Location
-
     /**
      * Does 2 things
      * 1. Try to create mappings if don't exist
@@ -53,9 +54,10 @@ public final class ElasticMapping {
         sleep();
         logger.info("Validating Index for endpoint /munch");
         JsonNode index = getIndex();
+
+        // Index don't exist; hence create and revalidate
         if (index == null) {
-            // Index don't exist; hence create
-            create();
+            createIndex();
             sleep();
             index = getIndex();
         }
@@ -64,28 +66,17 @@ public final class ElasticMapping {
     }
 
     /**
-     * Validate location.latLng type is geo_point
-     * Validate suggest is completion
+     * Major migrate of elastic search mapping should be done by migrate
+     * to a whole new elastic search version with different endpoint
      *
      * @return true = passed
      */
     private boolean validate(JsonNode node) {
-        JsonNode properties = node.path("munch")
-                .path("mappings").path("place").path("properties");
+        JsonNode mappings = node.path("munch").path("mappings");
 
-        // Validate geo type is geo_point
-        JsonNode geo = properties.path("location").path("properties").path("latLng");
-        if (!geo.path("type").asText().equals("geo_point")) return false;
-
-        // Validate suggest field
-        JsonNode suggest = properties.get("suggest");
-        if (!suggest.path("type").asText().equals("completion")) return false;
-        if (!suggest.has("contexts")) return false;
-        if (suggest.path("contexts").size() != 1) return false;
-
-        JsonNode latLng = suggest.path("contexts").get(0);
-        if (!latLng.path("name").asText().equals("latLng")) return false;
-        return latLng.path("path").asText().equals("location.latLng");
+        // Validate has these types
+        if (!mappings.path("place").has("properties")) return false;
+        return mappings.path("location").has("properties");
     }
 
     /**
@@ -116,34 +107,15 @@ public final class ElasticMapping {
      *
      * @throws IOException io exception
      */
-    public void create() throws IOException {
-        String json = "{" +
-                "    \"mappings\": {" +
-                "        \"place\" : {" +
-                "            \"properties\" : {" +
-                "                \"suggest\" : {" +
-                "                    \"type\" : \"completion\"," +
-                "                    \"contexts\": [" +
-                "                        { " +
-                "                            \"name\": \"latLng\"," +
-                "                            \"type\": \"geo\"," +
-                "                            \"precision\": 5," +
-                "                            \"path\": \"location.latLng\"" +
-                "                        }" +
-                "                    ]" +
-                "                }," +
-                "                \"location.latLng\": {" +
-                "                    \"type\": \"geo_point\"" +
-                "                }" +
-                "            }" +
-                "        }" +
-                "    }" +
-                "}";
+    public void createIndex() throws IOException {
+        URL url = Resources.getResource("mappings.json");
+        String json = Resources.toString(url, Charset.forName("UTF-8"));
         HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
         client.performRequest("PUT", "/munch", PARAMS, entity);
     }
 
     /**
+     * Wait for es to apply change
      * sleep for 2 seconds
      */
     private void sleep() {

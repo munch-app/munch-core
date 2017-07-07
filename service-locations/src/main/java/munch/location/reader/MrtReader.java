@@ -40,7 +40,7 @@ public final class MrtReader {
                     Polygon polygon = createCircle(lat, lng, radius, 10);
 
                     Location location = new Location();
-                    // TODO temporary solution
+                    // Temporary solution
                     location.setId("sg-" + lines[0].trim());
                     location.setName(lines[0].trim());
                     location.setSort(1);

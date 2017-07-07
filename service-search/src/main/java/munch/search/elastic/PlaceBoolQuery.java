@@ -119,7 +119,7 @@ public class PlaceBoolQuery {
             }
         }
 
-        // TODO for Future: logic for ratings and hours
+        // Future: logic for ratings and hours
         return filterArray;
     }
 

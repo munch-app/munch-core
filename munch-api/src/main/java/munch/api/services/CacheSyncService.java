@@ -14,7 +14,7 @@ public class CacheSyncService extends AbstractService {
     @Override
     public void route() {
         PATH("/cache/sync", () -> {
-            // TODO: PD-14 Sync service for fetching settings
+            // PD-14 Sync service for fetching settings
         });
     }
 }

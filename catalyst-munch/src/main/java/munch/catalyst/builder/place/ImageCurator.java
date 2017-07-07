@@ -19,7 +19,7 @@ public final class ImageCurator {
     private static final int MAX_SIZE = 10;
 
     /**
-     * TODO: PD-4: Select image properly with curating
+     * PD-4: Select image properly with curating
      *
      * @param medias   medias
      * @param articles article

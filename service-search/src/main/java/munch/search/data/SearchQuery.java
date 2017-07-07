@@ -1,6 +1,7 @@
 package munch.search.data;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import munch.restful.core.exception.ValidationException;
 
 import java.util.Set;
 
@@ -244,5 +245,24 @@ public final class SearchQuery {
                 ", filter=" + filter +
                 ", sort=" + sort +
                 '}';
+    }
+
+    /**
+     * Validate from, size
+     * Validate points must be more than 3
+     *
+     * @param query query to validate and fix
+     */
+    public static void validateFix(SearchQuery query) {
+        // From and Size not null validation
+        ValidationException.requireNonNull("from", query.getFrom());
+        ValidationException.requireNonNull("size", query.getSize());
+
+        // Check if location contains polygon if exist
+        if (query.getLocation() != null && query.getLocation().getPoints() != null) {
+            if (query.getLocation().getPoints().size() < 3) {
+                throw new ValidationException("location.points", "Points must have at least 3 points.");
+            }
+        }
     }
 }

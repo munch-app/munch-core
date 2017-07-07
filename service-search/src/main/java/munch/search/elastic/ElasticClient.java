@@ -1,5 +1,6 @@
 package munch.search.elastic;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -23,6 +24,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created By: Fuxing Loh
@@ -32,6 +34,8 @@ import java.util.List;
  */
 @Singleton
 public final class ElasticClient {
+    private static final Map<String, String> PARAMS = Collections.emptyMap();
+
     private final RestClient client;
     private final ObjectMapper mapper;
 
@@ -119,7 +123,7 @@ public final class ElasticClient {
      */
     private JsonNode postSearch(JsonNode node) throws IOException {
         HttpEntity jsonEntity = new NStringEntity(mapper.writeValueAsString(node), ContentType.APPLICATION_JSON);
-        Response response = client.performRequest("POST", "/munch/place/_search", Collections.emptyMap(), jsonEntity);
+        Response response = client.performRequest("POST", "/munch/place/_search", PARAMS, jsonEntity);
         HttpEntity entity = response.getEntity();
 
         try {
@@ -134,19 +138,7 @@ public final class ElasticClient {
      * @param node json node
      * @return parsed place
      */
-    private static Place parse(JsonNode node) {
-        Place place = new Place();
-        place.setId(node.path("_id").asText());
-        JsonNode source = node.path("_source");
-        place.setName(source.path("name").asText());
-
-        if (source.has("location")) {
-            JsonNode location = source.path("location");
-            place.setLocation(new Place.Location());
-            place.getLocation().setAddress(location.path("address").asText(null));
-            place.getLocation().setCity(location.path("city").asText(null));
-            place.getLocation().setLatLng(location.path("latLng").asText(null));
-        }
-        return place;
+    private Place parse(JsonNode node) throws JsonProcessingException {
+        return mapper.treeToValue(node, Place.class);
     }
 }

@@ -1,0 +1,44 @@
+{
+  "mappings": {
+    "place": {
+      "properties": {
+        "location.latLng": {
+          "type": "geo_point"
+        },
+        "suggest": {
+          "type": "completion",
+          "contexts": [
+            {
+              "name": "latLng",
+              "type": "geo",
+              "precision": 5,
+              "path": "location.latLng"
+            }
+          ]
+        }
+      }
+    },
+    "location": {
+      "properties": {
+        "center": {
+          "type": "geo_point"
+        },
+        "points": {
+          "type": "geo_shape",
+          "precision": "5m"
+        },
+        "suggest": {
+          "type": "completion",
+          "contexts": [
+            {
+              "name": "center",
+              "type": "geo",
+              "precision": 5,
+              "path": "center"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

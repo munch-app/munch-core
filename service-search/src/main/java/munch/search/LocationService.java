@@ -8,8 +8,6 @@ import munch.restful.server.JsonService;
 import munch.search.data.Location;
 import munch.search.elastic.ElasticDatabase;
 
-import java.util.Date;
-
 /**
  * Created by: Fuxing
  * Date: 6/7/2017
@@ -30,6 +28,8 @@ public class LocationService implements JsonService {
     public void route() {
         PATH("/locations", () -> {
             PUT("/:id", this::put);
+            // TODO: /reverse
+            // TODO: /suggest
 
             DELETE("/before/:timestamp", this::deleteBefore);
             DELETE("/:id", this::delete);
@@ -43,7 +43,7 @@ public class LocationService implements JsonService {
      */
     private JsonNode put(JsonCall call) throws Exception {
         Location location = call.bodyAsObject(Location.class);
-        // TODO put Location
+        index.put(location);
         return Meta200;
     }
 
@@ -57,9 +57,13 @@ public class LocationService implements JsonService {
         return Meta200;
     }
 
-    private JsonNode deleteBefore(JsonCall call) {
-        Date before = new Date(call.pathLong("timestamp"));
-        // TODO Delete Before?
+    /**
+     * @param call json call
+     * @return 200 = deleted
+     */
+    private JsonNode deleteBefore(JsonCall call) throws Exception {
+        long updated = call.pathLong("updatedDate");
+        index.deleteBefore("location", updated);
         return Meta200;
     }
 }
