@@ -26,23 +26,26 @@ import java.util.Map;
  * Project: munch-core
  */
 @Singleton
-public class ElasticDatabase {
+public class ElasticIndex {
     private static final Map<String, String> PARAMS = Collections.emptyMap();
 
     private final RestClient client;
     private final ObjectMapper mapper;
+    private final Location.Marshaller locationMarshaller;
 
     /**
      * https://www.elastic.co/guide/en/elasticsearch/client/java-api/current/java-docs-index.html
      *
-     * @param client injected rest client
-     * @param mapper jackson json mapper
+     * @param client             injected rest client
+     * @param mapper             jackson json mapper
+     * @param locationMarshaller to marshal location json
      * @throws RuntimeException if ElasticSearchMapping validation failed
      */
     @Inject
-    public ElasticDatabase(RestClient client, ObjectMapper mapper) {
+    public ElasticIndex(RestClient client, ObjectMapper mapper, Location.Marshaller locationMarshaller) {
         this.client = client;
         this.mapper = mapper;
+        this.locationMarshaller = locationMarshaller;
     }
 
     /**
@@ -91,11 +94,7 @@ public class ElasticDatabase {
      * @throws Exception any exception
      */
     public void put(Location location) throws Exception {
-        ObjectNode node = mapper.valueToTree(location);
-        node.put("updatedDate", location.getUpdatedDate().getTime());
-
-        // TODO Polygon indexing
-        // TODO Custom Deserialization
+        ObjectNode node = locationMarshaller.serialize(location);
 
         // Suggest Field
         ArrayNode suggest = mapper.createArrayNode();
@@ -139,7 +138,7 @@ public class ElasticDatabase {
 
         String json = mapper.writeValueAsString(rootNode);
         HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
-        String endpoint = "/munch/" + type + "_delete_by_query?conflicts=proceed";
+        String endpoint = "/munch/" + type + "/_delete_by_query?conflicts=proceed";
         Response response = client.performRequest("POST", endpoint, PARAMS, entity);
         isSuccessful(response);
     }

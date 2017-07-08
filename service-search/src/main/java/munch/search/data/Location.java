@@ -2,16 +2,14 @@ package munch.search.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -33,6 +31,7 @@ public final class Location {
     private String center;
     private List<String> points;
 
+    private int sort;
     private Date updatedDate;
 
     public String getId() {
@@ -86,6 +85,14 @@ public final class Location {
         this.points = points;
     }
 
+    public int getSort() {
+        return sort;
+    }
+
+    public void setSort(int sort) {
+        this.sort = sort;
+    }
+
     public Date getUpdatedDate() {
         return updatedDate;
     }
@@ -94,47 +101,70 @@ public final class Location {
         this.updatedDate = updatedDate;
     }
 
-    public static class Deserializer extends StdDeserializer<Location> {
+    @Singleton
+    public static class Marshaller {
+        private final ObjectMapper mapper;
 
-        protected Deserializer(Class<?> vc) {
-            super(vc);
+        @Inject
+        public Marshaller(ObjectMapper mapper) {
+            this.mapper = mapper;
         }
 
-        @Override
-        public Location deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
-            JsonNode node = p.getCodec().readTree(p);
+        /**
+         * @param node json node
+         * @return deserialized Location
+         */
+        public Location deserialize(JsonNode node) {
             Location location = new Location();
             location.setId(node.get("id").asText());
             location.setName(node.get("name").asText());
             location.setCity(node.get("city").asText());
             location.setCountry(node.get("country").asText());
-
             location.setCenter(node.get("center").asText());
-            // TODO points: {type: "polygon", "coordinates": [[lng, lat]]}
+
+            // points: {type: "polygon", "coordinates": [[lng, lat]]}
+            List<String> points = new ArrayList<>();
+            for (JsonNode point : node.get("points").get("coordinates")) {
+                points.add(point.get(1).asDouble() + "," + point.get(0).asDouble());
+            }
+            location.setPoints(points);
+            location.setSort(node.get("sort").asInt());
             location.setUpdatedDate(new Date(node.get("updatedDate").asLong()));
             return location;
         }
-    }
 
-    public static class Serializer extends StdSerializer<Location> {
+        /**
+         * If coordinates failed to parse, exception will be thrown
+         *
+         * @param location location to serialize to json
+         * @return serialized json
+         * @throws NullPointerException      if any points is null
+         * @throws IndexOutOfBoundsException if points are not in the array
+         * @throws NumberFormatException     if points are not double
+         */
+        public ObjectNode serialize(Location location) {
+            ObjectNode node = mapper.createObjectNode();
+            node.put("id", location.getId());
+            node.put("name", location.getName());
+            node.put("city", location.getCity());
+            node.put("country", location.getCountry());
+            node.put("center", location.getCenter());
 
-        protected Serializer(Class<Location> t) {
-            super(t);
-        }
+            ObjectNode points = mapper.createObjectNode();
+            points.put("type", "polygon");
+            ArrayNode coordinates = mapper.createArrayNode();
+            for (String point : location.getPoints()) {
+                String[] split = point.split(",");
+                double lat = Double.parseDouble(split[0].trim());
+                double lng = Double.parseDouble(split[1].trim());
+                coordinates.add(mapper.createArrayNode().add(lng).add(lat));
+            }
+            points.set("coordinates", coordinates);
+            node.set("points", points);
 
-        @Override
-        public void serialize(Location value, JsonGenerator gen, SerializerProvider provider) throws IOException {
-            gen.writeStartObject();
-            gen.writeStringField("id", value.getId());
-            gen.writeStringField("name", value.getName());
-            gen.writeStringField("city", value.getCity());
-            gen.writeStringField("country", value.getCountry());
-
-            gen.writeStringField("center", value.getCenter());
-            // TODO points: {type: "polygon", "coordinates": [[lng, lat]]}
-
-            gen.writeNumberField("updatedDate", value.getUpdatedDate().getTime());
-            gen.writeEndObject();
+            node.put("sort", location.getSort());
+            node.put("updatedDate", location.getUpdatedDate().getTime());
+            return node;
         }
     }
 }
