@@ -29,6 +29,7 @@ public class LocationService extends AbstractService {
      */
     @Override
     public void route() {
+        // TODO, reflect updates
         PATH("/location", () -> {
             GET("/search", this::search);
             GET("/geocode", this::geocode);
