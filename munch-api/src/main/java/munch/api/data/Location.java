@@ -25,7 +25,7 @@ public final class Location {
     private String center;
     private List<String> points;
 
-    private int sort;
+    private long sort;
     private Date updatedDate;
 
     public String getId() {
@@ -76,11 +76,11 @@ public final class Location {
         this.center = center;
     }
 
-    public int getSort() {
+    public long getSort() {
         return sort;
     }
 
-    public void setSort(int sort) {
+    public void setSort(long sort) {
         this.sort = sort;
     }
 

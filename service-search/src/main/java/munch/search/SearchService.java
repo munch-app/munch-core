@@ -1,6 +1,7 @@
 package munch.search;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
@@ -9,8 +10,10 @@ import munch.restful.core.exception.ValidationException;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
 import munch.search.data.Location;
+import munch.search.data.Place;
 import munch.search.data.SearchQuery;
 import munch.search.elastic.ElasticClient;
+import munch.search.elastic.ElasticMarshaller;
 import munch.search.elastic.PlaceBoolQuery;
 
 import java.io.IOException;
@@ -26,17 +29,20 @@ public class SearchService implements JsonService {
 
     private final ElasticClient client;
     private final PlaceBoolQuery placeBoolQuery;
-    private final Location.Marshaller locationMarshaller;
+    private final ElasticMarshaller marshaller;
+    private final ObjectMapper mapper;
 
     @Inject
-    public SearchService(ElasticClient client, PlaceBoolQuery placeBoolQuery, Location.Marshaller locationMarshaller) {
+    public SearchService(ElasticClient client, PlaceBoolQuery placeBoolQuery, ElasticMarshaller marshaller, ObjectMapper mapper) {
         this.client = client;
         this.placeBoolQuery = placeBoolQuery;
-        this.locationMarshaller = locationMarshaller;
+        this.marshaller = marshaller;
+        this.mapper = mapper;
     }
 
     @Override
     public void route() {
+        // Root service can return any results
         POST("/search", this::search);
         POST("/suggest", this::suggest);
     }
@@ -85,7 +91,7 @@ public class SearchService implements JsonService {
      *
      * @param call    json call
      * @param request json body
-     * @return {data: list of place, total: size of all possible place}
+     * @return { "data": [places, locations] }
      */
     private JsonNode suggest(JsonCall call, JsonNode request) throws IOException {
         int size = ValidationException.require("size", request.path("size")).asInt();
@@ -100,7 +106,16 @@ public class SearchService implements JsonService {
      * @return result that is compatible for munch-core
      */
     private ArrayNode parse(JsonNode results) {
-        // TODO Parse Place & Location Result
-        return null;
+        ArrayNode array = mapper.createArrayNode();
+        for (Object object : marshaller.deserializeList(results)) {
+            ObjectNode objectNode = mapper.valueToTree(object);
+            if (object instanceof Place) {
+                objectNode.put("_type", "Place");
+            } else if (object instanceof Location) {
+                objectNode.put("_type", "Location");
+            }
+            array.add(objectNode);
+        }
+        return array;
     }
 }

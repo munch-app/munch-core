@@ -8,10 +8,10 @@ import munch.restful.server.JsonService;
 import munch.search.data.Location;
 import munch.search.elastic.ElasticClient;
 import munch.search.elastic.ElasticIndex;
+import munch.search.elastic.ElasticMarshaller;
 import munch.search.elastic.LocationBoolQuery;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,15 +28,15 @@ public class LocationService implements JsonService {
     private final ElasticIndex index;
     private final ElasticClient client;
     private final LocationBoolQuery boolQuery;
-    private final Location.Marshaller locationMarshaller;
+    private final ElasticMarshaller marshaller;
 
     @Inject
     public LocationService(ElasticIndex index, ElasticClient client, LocationBoolQuery boolQuery,
-                           Location.Marshaller locationMarshaller) {
+                           ElasticMarshaller marshaller) {
         this.index = index;
         this.client = client;
         this.boolQuery = boolQuery;
-        this.locationMarshaller = locationMarshaller;
+        this.marshaller = marshaller;
     }
 
     @Override
@@ -58,7 +58,7 @@ public class LocationService implements JsonService {
         JsonNode reverse = boolQuery.reverse(lat, lng);
         JsonNode result = client.postBoolSearch("location", 0, 1, reverse);
 
-        List<Location> locations = toList(result.path("hits").path("hits"));
+        List<Location> locations = marshaller.deserializeList(result.path("hits").path("hits"));
         if (locations.isEmpty()) return null;
         return locations.stream()
                 .sorted((o1, o2) -> Long.compare(o2.getSort(), o1.getSort()))
@@ -72,7 +72,7 @@ public class LocationService implements JsonService {
 
         // Location results search
         JsonNode results = client.suggest("location", text, null, size);
-        return toList(results);
+        return marshaller.deserializeList(results);
     }
 
     /**
@@ -103,17 +103,5 @@ public class LocationService implements JsonService {
         long updated = call.pathLong("updatedDate");
         index.deleteBefore("location", updated);
         return Meta200;
-    }
-
-    /**
-     * json array parse to list
-     *
-     * @param results array results
-     * @return list of location
-     */
-    private List<Location> toList(JsonNode results) {
-        List<Location> locations = new ArrayList<>();
-        for (JsonNode result : results) locations.add(locationMarshaller.deserialize(result));
-        return locations;
     }
 }

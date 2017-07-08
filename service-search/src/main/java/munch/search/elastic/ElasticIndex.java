@@ -2,7 +2,6 @@ package munch.search.elastic;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -31,21 +30,21 @@ public class ElasticIndex {
 
     private final RestClient client;
     private final ObjectMapper mapper;
-    private final Location.Marshaller locationMarshaller;
+    private final ElasticMarshaller marshaller;
 
     /**
      * https://www.elastic.co/guide/en/elasticsearch/client/java-api/current/java-docs-index.html
      *
-     * @param client             injected rest client
-     * @param mapper             jackson json mapper
-     * @param locationMarshaller to marshal location json
+     * @param client            injected rest client
+     * @param mapper            jackson json mapper
+     * @param marshaller to marshal json
      * @throws RuntimeException if ElasticSearchMapping validation failed
      */
     @Inject
-    public ElasticIndex(RestClient client, ObjectMapper mapper, Location.Marshaller locationMarshaller) {
+    public ElasticIndex(RestClient client, ObjectMapper mapper, ElasticMarshaller marshaller) {
         this.client = client;
         this.mapper = mapper;
-        this.locationMarshaller = locationMarshaller;
+        this.marshaller = marshaller;
     }
 
     /**
@@ -69,15 +68,7 @@ public class ElasticIndex {
      * @throws Exception any exception
      */
     public void put(Place place) throws Exception {
-        ObjectNode node = mapper.valueToTree(place);
-        node.put("createdDate", place.getCreatedDate().getTime());
-        node.put("updatedDate", place.getUpdatedDate().getTime());
-
-        // Suggest Field
-        ArrayNode suggest = mapper.createArrayNode();
-        suggest.add(place.getName());
-        node.set("suggest", suggest);
-
+        ObjectNode node = marshaller.serialize(place);
         String json = mapper.writeValueAsString(node);
         HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
 
@@ -94,13 +85,7 @@ public class ElasticIndex {
      * @throws Exception any exception
      */
     public void put(Location location) throws Exception {
-        ObjectNode node = locationMarshaller.serialize(location);
-
-        // Suggest Field
-        ArrayNode suggest = mapper.createArrayNode();
-        suggest.add(location.getName());
-        node.set("suggest", suggest);
-
+        ObjectNode node = marshaller.serialize(location);
         String json = mapper.writeValueAsString(node);
         HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
 
