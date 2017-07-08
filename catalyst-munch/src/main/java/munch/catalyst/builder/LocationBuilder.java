@@ -47,6 +47,7 @@ public class LocationBuilder implements DataBuilder<Location> {
 
         String wkt = FieldUtils.getValue(data, "Place.Location.polygon");
         try {
+            //noinspection ConstantConditions
             Polygon polygon = (Polygon) reader.read(wkt);
             List<String> points = Arrays.stream(polygon.getCoordinates())
                     .map(c -> c.y + "," + c.x)
