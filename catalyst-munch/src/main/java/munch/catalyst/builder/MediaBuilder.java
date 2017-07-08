@@ -19,13 +19,13 @@ import java.util.function.Supplier;
 public class MediaBuilder implements DataBuilder<InstagramMedia> {
     private static final Logger logger = LoggerFactory.getLogger(MediaBuilder.class);
     private static final Supplier<NullPointerException> NullSupplier = () -> new NullPointerException("Media");
-    private static final String MediaCorpusName = "Global.Instagram.Media";
+    private static final String CorpusName = "Global.Instagram.Media";
 
     private List<InstagramMedia> mediaList = new ArrayList<>();
 
     @Override
     public void consume(CorpusData data) {
-        if (!MediaCorpusName.equals(data.getCorpusName())) return;
+        if (!CorpusName.equals(data.getCorpusName())) return;
 
         FieldWrapper wrapper = new FieldWrapper(data);
 

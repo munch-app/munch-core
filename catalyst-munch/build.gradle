@@ -1,5 +1,6 @@
 dependencies {
     compile group: 'catalyst', name: 'catalyst-framework', version: ccVersion
+    compile group: 'com.vividsolutions', name: 'jts', version: '1.13'
 }
 
 mainClassName = 'munch.catalyst.MunchModule'

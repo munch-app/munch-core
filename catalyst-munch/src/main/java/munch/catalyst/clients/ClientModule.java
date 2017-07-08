@@ -27,19 +27,22 @@ public class ClientModule extends AbstractModule {
 
         Config services = ConfigFactory.load().getConfig("services");
 
+        // Bind all service url String from config
         bind(String.class).annotatedWith(Names.named("services.places.url"))
                 .toInstance(services.getString("places.url"));
         bind(String.class).annotatedWith(Names.named("services.articles.url"))
                 .toInstance(services.getString("articles.url"));
         bind(String.class).annotatedWith(Names.named("services.instagram.url"))
                 .toInstance(services.getString("instagram.url"));
-
+        bind(String.class).annotatedWith(Names.named("services.search.url"))
+                .toInstance(services.getString("search.url"));
     }
 
     @Inject
     void waitFor(Config config) {
         WaitFor.host(config.getString("services.instagram.url"), Duration.ofSeconds(60));
         WaitFor.host(config.getString("services.articles.url"), Duration.ofSeconds(60));
-        WaitFor.host(config.getString("services.places.url"), Duration.ofSeconds(180));
+        WaitFor.host(config.getString("services.places.url"), Duration.ofSeconds(80));
+        WaitFor.host(config.getString("services.search.url"), Duration.ofSeconds(180));
     }
 }

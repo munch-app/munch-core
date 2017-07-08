@@ -42,9 +42,10 @@ public class LocationService implements JsonService {
     @Override
     public void route() {
         PATH("/locations", () -> {
+            PUT("/:id", this::put);
+
             GET("/reverse", this::reverse);
             GET("/suggest", this::suggest);
-            PUT("/:id", this::put);
 
             DELETE("/before/:timestamp", this::deleteBefore);
             DELETE("/:id", this::delete);
