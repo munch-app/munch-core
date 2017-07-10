@@ -28,8 +28,8 @@ public class ClientModule extends AbstractModule {
         WaitFor.host(services.getString("articles.url"), Duration.ofSeconds(60));
         WaitFor.host(services.getString("instagram.url"), Duration.ofSeconds(60));
         WaitFor.host(services.getString("images.url"), Duration.ofSeconds(60));
-        WaitFor.host(services.getString("location.url"), Duration.ofSeconds(60));
-        WaitFor.host(services.getString("places.url"), Duration.ofSeconds(180));
+        WaitFor.host(services.getString("places.url"), Duration.ofSeconds(100));
+        WaitFor.host(services.getString("search.url"), Duration.ofSeconds(180));
     }
 
     @Provides

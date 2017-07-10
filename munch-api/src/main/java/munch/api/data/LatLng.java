@@ -25,6 +25,15 @@ public final class LatLng {
         lng = Double.parseDouble(split[1].trim());
     }
 
+    /**
+     * @param lat latitude of latLng
+     * @param lng longitude of latLng
+     */
+    public LatLng(double lat, double lng) {
+        this.lat = lat;
+        this.lng = lng;
+    }
+
     public double getLat() {
         return lat;
     }

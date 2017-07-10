@@ -1,8 +1,10 @@
 package munch.search;
 
+import catalyst.utils.LatLngUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import munch.restful.core.exception.ParamException;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
 import munch.search.data.Location;
@@ -53,11 +55,10 @@ public class LocationService implements JsonService {
     }
 
     private Location reverse(JsonCall call) throws IOException {
-        double lat = call.queryDouble("lat");
-        double lng = call.queryDouble("lng");
+        LatLngUtils.LatLng latLng = parseLatLng(call.queryString("latLng"));
 
-        JsonNode reverse = boolQuery.reverse(lat, lng);
-        JsonNode result = client.postBoolSearch("location", 0, 1, reverse);
+        JsonNode query = boolQuery.reverse(latLng.getLat(), latLng.getRight());
+        JsonNode result = client.postBoolSearch("location", 0, 1, query);
 
         List<Location> locations = marshaller.deserializeList(result.path("hits").path("hits"));
         if (locations.isEmpty()) return null;
@@ -104,5 +105,13 @@ public class LocationService implements JsonService {
         long updated = call.pathLong("updatedDate");
         index.deleteBefore("location", updated);
         return Meta200;
+    }
+
+    public LatLngUtils.LatLng parseLatLng(String latLng) {
+        try {
+            return LatLngUtils.parse(latLng);
+        } catch (LatLngUtils.ParseException pe) {
+            throw new ParamException("latLng");
+        }
     }
 }

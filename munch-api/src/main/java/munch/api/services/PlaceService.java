@@ -7,6 +7,7 @@ import com.google.inject.Singleton;
 import munch.api.clients.ArticleClient;
 import munch.api.clients.InstagramClient;
 import munch.api.clients.PlaceClient;
+import munch.api.clients.SearchClient;
 import munch.api.data.*;
 import munch.api.services.curator.CollectionCurator;
 import munch.restful.server.JsonCall;
@@ -24,14 +25,16 @@ public class PlaceService extends AbstractService {
     private final PlaceClient placeClient;
     private final ArticleClient articleClient;
     private final InstagramClient instagramClient;
+    private final SearchClient searchClient;
 
     private final CollectionCurator curator;
 
     @Inject
-    public PlaceService(PlaceClient placeClient, ArticleClient articleClient, InstagramClient instagramClient, CollectionCurator curator) {
+    public PlaceService(PlaceClient placeClient, ArticleClient articleClient, InstagramClient instagramClient, SearchClient searchClient, CollectionCurator curator) {
         this.placeClient = placeClient;
         this.articleClient = articleClient;
         this.instagramClient = instagramClient;
+        this.searchClient = searchClient;
         this.curator = curator;
     }
 
@@ -69,11 +72,12 @@ public class PlaceService extends AbstractService {
      * @param call json call
      * @return list of Place result
      */
-    private List<Place> suggest(JsonCall call, JsonNode request) {
+    private JsonNode suggest(JsonCall call, JsonNode request) {
         int size = request.get("size").asInt();
         String text = request.get("text").asText();
         String latLng = request.path("latLng").asText(null); // Nullable
-        return placeClient.suggest(size, text, latLng);
+        JsonNode data = searchClient.suggest(size, text, latLng);
+        return nodes(200, data);
     }
 
     /**
@@ -96,9 +100,11 @@ public class PlaceService extends AbstractService {
      * @return list of Place
      * @see SearchQuery
      */
-    private List<Place> searchNext(JsonCall call) {
+    private JsonNode searchNext(JsonCall call) {
         SearchQuery query = call.bodyAsObject(SearchQuery.class);
-        return placeClient.search(query);
+        JsonNode data = searchClient.search(query);
+        return nodes(200, data);
+
     }
 
     /**

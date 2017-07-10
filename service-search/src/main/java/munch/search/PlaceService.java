@@ -6,7 +6,6 @@ import com.google.inject.Singleton;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
 import munch.search.data.Place;
-import munch.search.elastic.ElasticClient;
 import munch.search.elastic.ElasticIndex;
 
 /**
@@ -19,12 +18,10 @@ import munch.search.elastic.ElasticIndex;
 public class PlaceService implements JsonService {
 
     private final ElasticIndex index;
-    private final ElasticClient search;
 
     @Inject
-    public PlaceService(ElasticIndex index, ElasticClient search) {
+    public PlaceService(ElasticIndex index) {
         this.index = index;
-        this.search = search;
     }
 
     @Override

@@ -2,7 +2,7 @@ package munch.api.services;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import munch.api.clients.LocationClient;
+import munch.api.clients.SearchClient;
 import munch.api.data.Location;
 import munch.restful.server.JsonCall;
 
@@ -17,11 +17,11 @@ import java.util.List;
 @Singleton
 public class LocationService extends AbstractService {
 
-    private final LocationClient location;
+    private final SearchClient searchClient;
 
     @Inject
-    public LocationService(LocationClient location) {
-        this.location = location;
+    public LocationService(SearchClient searchClient) {
+        this.searchClient = searchClient;
     }
 
     /**
@@ -29,11 +29,9 @@ public class LocationService extends AbstractService {
      */
     @Override
     public void route() {
-        // TODO, reflect updates
-        PATH("/location", () -> {
-            GET("/search", this::search);
-            GET("/geocode", this::geocode);
+        PATH("/locations", () -> {
             GET("/reverse", this::reverse);
+            GET("/suggest", this::suggest);
         });
     }
 
@@ -45,9 +43,8 @@ public class LocationService extends AbstractService {
      * code: 200 = ok
      */
     private Location reverse(JsonCall call) {
-        double lat = call.queryDouble("lat");
-        double lng = call.queryDouble("lng");
-        return location.reverse(lat, lng);
+        String latLng = call.queryString("latLng");
+        return searchClient.reverseLocation(latLng);
     }
 
     /**
@@ -57,20 +54,8 @@ public class LocationService extends AbstractService {
      * @return List of Neighborhood or empty
      * code: 200 = ok
      */
-    private List<Location> search(JsonCall call) {
+    private List<Location> suggest(JsonCall call) {
         String text = call.queryString("text");
-        return location.search(text);
-    }
-
-    /**
-     * ?text={String}
-     *
-     * @param call json call
-     * @return Neighborhood or NULL
-     * code: 200 = ok
-     */
-    private Location geocode(JsonCall call) {
-        String text = call.queryString("text");
-        return location.geocode(text);
+        return searchClient.suggestLocation(text);
     }
 }

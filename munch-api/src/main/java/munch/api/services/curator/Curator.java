@@ -3,6 +3,7 @@ package munch.api.services.curator;
 import com.google.inject.Inject;
 import com.rits.cloning.Cloner;
 import munch.api.clients.PlaceClient;
+import munch.api.clients.SearchClient;
 import munch.api.data.LatLng;
 import munch.api.data.PlaceCollection;
 import munch.api.data.SearchQuery;
@@ -21,7 +22,7 @@ public abstract class Curator {
     public static final int SEARCH_SIZE = 20;
     private static final Cloner cloner = new Cloner();
 
-    protected final PlaceClient placeClient;
+    protected final SearchClient searchClient;
 
     @Inject
     protected Curator(PlaceClient placeClient) {
