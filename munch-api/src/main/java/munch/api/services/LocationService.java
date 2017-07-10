@@ -56,6 +56,6 @@ public class LocationService extends AbstractService {
      */
     private List<Location> suggest(JsonCall call) {
         String text = call.queryString("text");
-        return searchClient.suggestLocation(text);
+        return searchClient.suggestLocation(text, 20);
     }
 }

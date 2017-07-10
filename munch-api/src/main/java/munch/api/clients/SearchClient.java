@@ -56,16 +56,25 @@ public class SearchClient extends RestfulClient {
                 .asDataNode();
     }
 
+    /**
+     * @param latLng latLng in "lat,lng"
+     * @return Location or null if cannot find
+     */
     public Location reverseLocation(String latLng) {
         return doGet("/locations/reverse")
                 .queryString("latLng", latLng)
                 .asDataObject(Location.class);
     }
 
-    public List<Location> suggestLocation(String text) {
+    /**
+     * @param text text
+     * @param size size of location to suggest
+     * @return list of Location
+     */
+    public List<Location> suggestLocation(String text, int size) {
         return doGet("/locations/suggest")
                 .queryString("text", text)
-                .queryString("size", 15)
+                .queryString("size", size)
                 .asDataList(Location.class);
     }
 }
