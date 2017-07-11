@@ -34,6 +34,15 @@ public class ExplicitLocationCurator extends TabCurator {
     @Override
     public boolean match(SearchQuery query, @Nullable LatLng latLng) {
         if (isComplex(query)) return false;
-        return query.getLocation() != null;
+
+        // Contains polygonal location data
+        if (query.getLocation() != null) {
+            if (query.getLocation().getPoints() == null) return false;
+            // Must has 3 points
+            if (query.getLocation().getPoints().size() >= 3) return true;
+        }
+
+        // Else fail
+        return false;
     }
 }

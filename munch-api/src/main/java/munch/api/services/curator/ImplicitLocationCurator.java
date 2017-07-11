@@ -33,7 +33,15 @@ public class ImplicitLocationCurator extends TabCurator {
 
     @Override
     public boolean match(SearchQuery query, @Nullable LatLng latLng) {
+        // Non complex query
         if (isComplex(query)) return false;
-        return query.getLocation() == null && latLng != null;
+        // No location data at all
+        if (query.getLocation() != null) {
+            if (query.getLocation().getPoints() != null) return false;
+            if (!query.getLocation().getPoints().isEmpty()) return false;
+        }
+
+        // Contains implicit location
+        return latLng != null;
     }
 }
