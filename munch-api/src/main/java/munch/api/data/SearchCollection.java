@@ -16,12 +16,12 @@ import java.util.List;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PlaceCollection {
+public class SearchCollection {
     private String name;
     private SearchQuery query;
-    private List<Place> places;
+    private List<SearchResult> results;
 
-    public PlaceCollection() {
+    public SearchCollection() {
     }
 
     /**
@@ -30,21 +30,21 @@ public class PlaceCollection {
      * @param name  name of collection
      * @param query query for this collection
      */
-    public PlaceCollection(String name, SearchQuery query) {
+    public SearchCollection(String name, SearchQuery query) {
         this.name = name;
         this.query = query;
-        this.places = Collections.emptyList();
+        this.results = Collections.emptyList();
     }
 
     /**
      * @param name   name of collection
      * @param query  query for this collection
-     * @param places pre filled place for this collection
+     * @param results pre filled place for this collection
      */
-    public PlaceCollection(String name, SearchQuery query, List<Place> places) {
+    public SearchCollection(String name, SearchQuery query, List<SearchResult> results) {
         this.name = name;
         this.query = query;
-        this.places = places;
+        this.results = results;
     }
 
     /**
@@ -80,12 +80,12 @@ public class PlaceCollection {
     /**
      * @return list of place; the actual data1
      */
-    public List<Place> getPlaces() {
-        return places;
+    public List<SearchResult> getResults() {
+        return results;
     }
 
-    public void setPlaces(List<Place> places) {
-        this.places = places;
+    public void setResults(List<SearchResult> results) {
+        this.results = results;
     }
 
 }

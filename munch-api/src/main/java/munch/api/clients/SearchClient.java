@@ -1,13 +1,18 @@
 package munch.api.clients;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.typesafe.config.Config;
 import munch.api.data.Location;
+import munch.api.data.Place;
 import munch.api.data.SearchQuery;
+import munch.api.data.SearchResult;
 import munch.restful.client.RestfulClient;
+import munch.restful.core.JsonUtils;
+import munch.restful.core.exception.JsonException;
 
 import javax.annotation.Nullable;
 import javax.inject.Named;
@@ -27,12 +32,33 @@ public class SearchClient extends RestfulClient {
         super(config.getString("search.url"));
     }
 
+
+    /**
+     * @param query query object
+     * @return List of SearchResult
+     * @see SearchQuery
+     */
+    public List<SearchResult> search(SearchQuery query) {
+        return deserialize(searchRaw(query));
+    }
+
+    /**
+     * Suggest place data based on name
+     *
+     * @param size  size per list
+     * @param query text query
+     * @return List of SearchResult
+     */
+    public List<SearchResult> suggest(int size, String query, @Nullable String latLng) {
+        return deserialize(suggestRaw(size, query, latLng));
+    }
+
     /**
      * @param query query object
      * @return List of Place results
      * @see SearchQuery
      */
-    public JsonNode search(SearchQuery query) {
+    public JsonNode searchRaw(SearchQuery query) {
         return doPost("/search")
                 .body(query)
                 .asDataNode();
@@ -45,7 +71,7 @@ public class SearchClient extends RestfulClient {
      * @param query text query
      * @return List of Place results
      */
-    public JsonNode suggest(int size, String query, @Nullable String latLng) {
+    public JsonNode suggestRaw(int size, String query, @Nullable String latLng) {
         ObjectNode node = objectMapper.createObjectNode();
         node.put("size", size);
         node.put("query", query);
@@ -54,6 +80,37 @@ public class SearchClient extends RestfulClient {
         return doPost("/suggest")
                 .body(node)
                 .asDataNode();
+    }
+
+    /**
+     * @param dataNode data node
+     * @return List of SearchResult
+     * @throws JsonException instead of JsonProcessingException
+     */
+    private List<SearchResult> deserialize(JsonNode dataNode) throws JsonException {
+        return JsonUtils.toList(dataNode, node ->
+                parse(node.path("_type").asText(), node));
+    }
+
+    /**
+     * @param type class name (usually)
+     * @param node node with fields
+     * @return single search result
+     * @throws JsonException instead of JsonProcessingException
+     */
+    private SearchResult parse(String type, JsonNode node) throws JsonException {
+        try {
+            switch (type) {
+                case "Location":
+                    return objectMapper.treeToValue(node, Location.class);
+                case "Place":
+                    return objectMapper.treeToValue(node, Place.class);
+                default:
+                    return null;
+            }
+        } catch (JsonProcessingException e) {
+            throw new JsonException(e);
+        }
     }
 
     /**

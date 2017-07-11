@@ -16,7 +16,7 @@ import java.util.List;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class Location {
+public final class Location implements SearchResult {
     private String id;
 
     private String name;
@@ -90,5 +90,10 @@ public final class Location {
 
     public void setUpdatedDate(Date updatedDate) {
         this.updatedDate = updatedDate;
+    }
+
+    @Override
+    public String getType() {
+        return "Location";
     }
 }

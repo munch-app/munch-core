@@ -15,7 +15,7 @@ import java.util.List;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Place {
+public class Place implements SearchResult {
     private String id;
 
     // Basic
@@ -175,6 +175,11 @@ public class Place {
                 ", createdDate=" + createdDate +
                 ", updatedDate=" + updatedDate +
                 '}';
+    }
+
+    @Override
+    public String getType() {
+        return "Place";
     }
 
     /**

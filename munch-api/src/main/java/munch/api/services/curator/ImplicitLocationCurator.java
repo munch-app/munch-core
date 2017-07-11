@@ -2,12 +2,12 @@ package munch.api.services.curator;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import munch.api.clients.PlaceClient;
+import munch.api.clients.SearchClient;
 import munch.api.data.LatLng;
-import munch.api.data.PlaceCollection;
+import munch.api.data.Place;
 import munch.api.data.SearchQuery;
 
-import java.util.ArrayList;
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -17,25 +17,23 @@ import java.util.List;
  * Project: munch-core
  */
 @Singleton
-public class ImplicitLocationCurator extends Curator {
+public class ImplicitLocationCurator extends TabCurator {
 
     @Inject
-    protected ImplicitLocationCurator(PlaceClient placeClient) {
-        super(placeClient);
+    protected ImplicitLocationCurator(SearchClient searchClient) {
+        super(searchClient);
     }
 
     @Override
-    protected List<PlaceCollection> curate(SearchQuery query, LatLng latLng) {
+    public List<Place> query(SearchQuery query, @Nullable LatLng latLng) {
         query = clone(query);
-        List<PlaceCollection> collections = new ArrayList<>();
-        // If contains search query data
-        if (!isEmpty(query)) {
-            collections.add(new PlaceCollection("NEARBY SEARCH", query));
-        } else {
-            collections.add(new PlaceCollection("IMPLICIT NEARBY", query));
-        }
+        // TODO search & its size
+        return null;
+    }
 
-        // TODO more logic
-        return collections;
+    @Override
+    public boolean match(SearchQuery query, @Nullable LatLng latLng) {
+        if (isComplex(query)) return false;
+        return query.getLocation() == null && latLng != null;
     }
 }

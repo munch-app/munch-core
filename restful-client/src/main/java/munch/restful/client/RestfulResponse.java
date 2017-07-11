@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 /**
  * Created By: Fuxing Loh
@@ -120,8 +121,22 @@ public class RestfulResponse {
         }
     }
 
+    /**
+     * @param clazz class of array type
+     * @param <T>   Type
+     * @return List of given type
+     */
     public <T> List<T> asDataList(Class<T> clazz) {
         return JsonUtils.toList(getDataNode(), clazz);
+    }
+
+    /**
+     * @param mapper map from root node to any result
+     * @param <T>    Type to return
+     * @return Type
+     */
+    public <T> T as(Function<JsonNode, T> mapper) {
+        return mapper.apply(getNode());
     }
 
     /**
