@@ -20,10 +20,10 @@
     },
     "location": {
       "properties": {
-        "center": {
+        "location.latLng": {
           "type": "geo_point"
         },
-        "points": {
+        "location.polygon": {
           "type": "geo_shape",
           "precision": "5m"
         },
@@ -31,10 +31,10 @@
           "type": "completion",
           "contexts": [
             {
-              "name": "center",
+              "name": "latLng",
               "type": "geo",
               "precision": 5,
-              "path": "center"
+              "path": "location.latLng"
             }
           ]
         }

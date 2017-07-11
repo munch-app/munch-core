@@ -25,7 +25,6 @@ public final class Location implements SearchResult {
     private String center;
     private List<String> points;
 
-    private long sort;
     private Date updatedDate;
 
     public String getId() {
@@ -74,14 +73,6 @@ public final class Location implements SearchResult {
 
     public void setCenter(String center) {
         this.center = center;
-    }
-
-    public long getSort() {
-        return sort;
-    }
-
-    public void setSort(long sort) {
-        this.sort = sort;
     }
 
     public Date getUpdatedDate() {

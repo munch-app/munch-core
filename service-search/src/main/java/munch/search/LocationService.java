@@ -16,7 +16,6 @@ import munch.search.elastic.LocationBoolQuery;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by: Fuxing
@@ -62,9 +61,7 @@ public class LocationService implements JsonService {
 
         List<Location> locations = marshaller.deserializeList(result.path("hits").path("hits"));
         if (locations.isEmpty()) return null;
-        return locations.stream()
-                .sorted((o1, o2) -> Long.compare(o2.getSort(), o1.getSort()))
-                .collect(Collectors.toList()).get(0);
+        return locations.get(0);
     }
 
     private List<Location> suggest(JsonCall call) throws IOException {

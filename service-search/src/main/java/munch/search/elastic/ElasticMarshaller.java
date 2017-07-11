@@ -23,7 +23,7 @@ import java.util.List;
  */
 @Singleton
 public class ElasticMarshaller {
-    public final ObjectMapper mapper;
+    private final ObjectMapper mapper;
 
     @Inject
     public ElasticMarshaller(ObjectMapper mapper) {
@@ -59,7 +59,6 @@ public class ElasticMarshaller {
         points.set("coordinates", coordinates);
         node.set("points", points);
 
-        node.put("sort", location.getSort());
         node.put("updatedDate", location.getUpdatedDate().getTime());
 
         // Suggest Field
@@ -127,7 +126,6 @@ public class ElasticMarshaller {
             points.add(point.get(1).asDouble() + "," + point.get(0).asDouble());
         }
         location.setPoints(points);
-        location.setSort(node.get("sort").asInt());
         location.setUpdatedDate(new Date(node.get("updatedDate").asLong()));
         return location;
     }

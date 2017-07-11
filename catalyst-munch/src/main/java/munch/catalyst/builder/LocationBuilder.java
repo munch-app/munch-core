@@ -38,8 +38,6 @@ public class LocationBuilder implements DataBuilder<Location> {
 
         Location location = new Location();
         location.setName(FieldUtils.getValue(data, "Place.name"));
-        String value = FieldUtils.getValue(data, "Sg.Munch.LocationPolygon.sort");
-        location.setSort(Long.parseLong(value != null ? value : "0"));
 
         location.setCountry(FieldUtils.getValue(data, "Place.Location.country"));
         location.setCity(FieldUtils.getValue(data, "Place.Location.city"));
