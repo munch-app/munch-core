@@ -56,12 +56,13 @@ public final class CuratorDelegator {
      * This is the public subroutine for curate method
      * This method will pre-fill search results for first collection if not already done so
      *
-     * @param query  mandatory query in search bar
+     * @param query  mandatory query in search bar, this method is cloned
      * @param latLng nullable latLng (user physical location in latLng)
      * @return Curated List of PlaceCollection
      */
     public List<SearchCollection> delegate(SearchQuery query, @Nullable LatLng latLng) {
-        List<SearchCollection> collections = curate(query, latLng);
+        SearchQuery cloned = Curator.clone(query);
+        List<SearchCollection> collections = curate(cloned, latLng);
         if (collections.isEmpty()) return collections;
 
         // Pre-fill first collection result

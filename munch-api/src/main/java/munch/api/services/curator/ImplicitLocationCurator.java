@@ -4,8 +4,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.clients.SearchClient;
 import munch.api.data.LatLng;
-import munch.api.data.Place;
 import munch.api.data.SearchQuery;
+import munch.api.data.SearchResult;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -25,10 +25,11 @@ public class ImplicitLocationCurator extends TabCurator {
     }
 
     @Override
-    public List<Place> query(SearchQuery query, LatLng latLng) {
-        query = clone(query);
-        // TODO search & its size
-        return null;
+    public List<SearchResult> query(SearchQuery query, LatLng latLng) {
+        query.setFrom(0);
+        query.setSize(SEARCH_SIZE);
+        resolveLocation(query, latLng);
+        return searchClient.search(query);
     }
 
     @Override
@@ -43,5 +44,30 @@ public class ImplicitLocationCurator extends TabCurator {
 
         // Contains implicit location
         return latLng != null;
+    }
+
+    /**
+     * If LatLng is not null
+     * query.getFilter().getDistance is not null
+     * Then: Add a filter of distance of latLng and radius of 1000 metres
+     *
+     * @param query  search query
+     * @param latLng user current location
+     */
+    public static void resolveLocation(SearchQuery query, @Nullable LatLng latLng) {
+        // Has no explicit location but has implicit location
+        if (latLng != null) {
+            if (query.getFilter() == null) {
+                query.setFilter(new SearchQuery.Filter());
+            }
+            if (query.getFilter().getDistance() == null) {
+                SearchQuery.Filter.Distance distance = new SearchQuery.Filter.Distance();
+                distance.setLatLng(latLng.toString());
+                // 0 - 1000 Metres of Radius
+                distance.setMin(0);
+                distance.setMax(1000);
+                query.getFilter().setDistance(distance);
+            }
+        }
     }
 }

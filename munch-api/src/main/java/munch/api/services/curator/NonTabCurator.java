@@ -6,8 +6,10 @@ import munch.api.clients.SearchClient;
 import munch.api.data.LatLng;
 import munch.api.data.SearchCollection;
 import munch.api.data.SearchQuery;
+import munch.api.data.SearchResult;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -36,7 +38,24 @@ public class NonTabCurator extends Curator {
 
     @Override
     public List<SearchCollection> curate(SearchQuery query, @Nullable LatLng latLng) {
-        // TODO search
-        return null;
+        // Resolve implicit location if need to
+        if (hasNoExplicitLocation(query, latLng)) {
+            ImplicitLocationCurator.resolveLocation(query, latLng);
+        }
+        List<SearchResult> result = searchClient.search(query);
+        // Wrap result into single collection
+        return Collections.singletonList(new SearchCollection(null, query, result));
+    }
+
+    /**
+     * @param query  search query
+     * @param latLng user location in latLng
+     * @return true if no explicit location
+     */
+    private boolean hasNoExplicitLocation(SearchQuery query, @Nullable LatLng latLng) {
+        if (query.getLocation() == null) return true;
+        if (query.getLocation().getPoints() == null) return true;
+        // Less than 3 points is implicit location
+        return query.getLocation().getPoints().size() < 3;
     }
 }

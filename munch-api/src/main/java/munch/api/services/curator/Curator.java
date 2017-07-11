@@ -45,7 +45,7 @@ public abstract class Curator {
      * @param query query to clone
      * @return deep cloned query
      */
-    protected static SearchQuery clone(SearchQuery query) {
+    public static SearchQuery clone(SearchQuery query) {
         return cloner.deepClone(query);
     }
 

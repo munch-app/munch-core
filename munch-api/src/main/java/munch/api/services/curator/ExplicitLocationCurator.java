@@ -4,8 +4,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.clients.SearchClient;
 import munch.api.data.LatLng;
-import munch.api.data.Place;
 import munch.api.data.SearchQuery;
+import munch.api.data.SearchResult;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -25,10 +25,10 @@ public class ExplicitLocationCurator extends TabCurator {
     }
 
     @Override
-    public List<Place> query(SearchQuery query, @Nullable LatLng latLng) {
-        query = clone(query);
-        // TODO search & its size
-        return null;
+    public List<SearchResult> query(SearchQuery query, @Nullable LatLng latLng) {
+        query.setFrom(0);
+        query.setSize(SEARCH_SIZE);
+        return searchClient.search(query);
     }
 
     @Override
