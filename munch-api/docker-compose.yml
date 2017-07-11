@@ -56,7 +56,6 @@ services:
 
       - IMAGE_THUMBOR_ENDPOINT=http://thumbor:8000
       - IMAGE_FAKE_S3_ENDPOINT=http://fake-s3:4569
-      # - IMAGE_FAKE_S3_PUBLIC_ENDPOINT=http://192.168.1.197:4569
     env_file: H:/docker/munch-core.env
   places:
     image: munch-core/service-places
