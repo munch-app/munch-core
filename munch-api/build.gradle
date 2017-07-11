@@ -2,7 +2,9 @@ dependencies {
     compile project(':restful-server')
     compile project(':restful-client')
 
+    compile group: 'catalyst', name: 'retriable-utils', version: '1.0.0-SNAPSHOT'
     compile group: 'uk.com.robust-it', name: 'cloning', version: '1.9.4'
+    compile group: 'fr.dudie', name: 'nominatim-api', version: '3.3'
 
     // Injection
     compile group: 'com.google.inject', name: 'guice', version: '4.1.0'

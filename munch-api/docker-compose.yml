@@ -99,6 +99,10 @@ services:
       - MUNCH_SERVICE_ARTICLES_URL=http://articles:8000
       - MUNCH_SERVICE_INSTAGRAM_URL=http://instagram:8000
 
+  nominatim:
+    image: fuxingloh/nominatim-docker-singapore:2.5
+    ports:
+      - "9888:8080"
   # Munch Api
   munch-api:
     image: munch-core/munch-api:latest
@@ -109,6 +113,7 @@ services:
       - MUNCH_SERVICE_INSTAGRAM_URL=http://instagram:8000
 
       - MUNCH_SERVICE_IMAGES_URL=http://images:8000
+      - SERVICE_NOMINATIM_URL=http://nominatim:8080
     ports:
       - "8800:8000"
 

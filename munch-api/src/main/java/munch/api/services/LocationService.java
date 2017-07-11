@@ -1,8 +1,11 @@
 package munch.api.services;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import munch.api.clients.NominatimClient;
 import munch.api.clients.SearchClient;
+import munch.api.data.LatLng;
 import munch.api.data.Location;
 import munch.restful.server.JsonCall;
 
@@ -17,10 +20,12 @@ import java.util.List;
 @Singleton
 public class LocationService extends AbstractService {
 
+    private final NominatimClient nominatimClient;
     private final SearchClient searchClient;
 
     @Inject
-    public LocationService(SearchClient searchClient) {
+    public LocationService(NominatimClient nominatimClient, SearchClient searchClient) {
+        this.nominatimClient = nominatimClient;
         this.searchClient = searchClient;
     }
 
@@ -30,13 +35,35 @@ public class LocationService extends AbstractService {
     @Override
     public void route() {
         PATH("/locations", () -> {
+            GET("/streets/reverse", this::streetReverse);
             GET("/reverse", this::reverse);
             GET("/suggest", this::suggest);
         });
     }
 
     /**
-     * ?lat={Double}&lng={Double}
+     * ?latLng=lat,lng
+     *
+     * @param call json call
+     * @return 200 = ok, 404 = nil
+     * <pre>
+     * {
+     *      "data": "street name",
+     *      "meta": {
+     *          "code": 200 // or 404 if null
+     *      }
+     * }
+     * </pre>
+     */
+    private JsonNode streetReverse(JsonCall call) {
+        String latLng = call.queryString("latLng");
+        String street = nominatimClient.getStreet(new LatLng(latLng));
+        if (street == null) return null;
+        return nodes(200, street);
+    }
+
+    /**
+     * ?latLng=lat,lng
      *
      * @param call json call
      * @return Neighborhood or NULL

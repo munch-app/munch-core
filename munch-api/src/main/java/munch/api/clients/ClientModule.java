@@ -1,7 +1,12 @@
 package munch.api.clients;
 
+import catalyst.utils.exception.Retriable;
+import catalyst.utils.exception.SleepRetriable;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import com.mashape.unirest.http.HttpMethod;
+import com.mashape.unirest.http.exceptions.UnirestException;
+import com.mashape.unirest.request.GetRequest;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import munch.restful.WaitFor;
@@ -30,6 +35,26 @@ public class ClientModule extends AbstractModule {
         WaitFor.host(services.getString("images.url"), Duration.ofSeconds(60));
         WaitFor.host(services.getString("places.url"), Duration.ofSeconds(100));
         WaitFor.host(services.getString("search.url"), Duration.ofSeconds(180));
+    }
+
+    /**
+     * Wait for 200 seconds for nominatim to be ready
+     *
+     * @param services services config
+     */
+    @Inject
+    void waitForNomination(@Named("services") Config services) throws UnirestException {
+        String url = services.getString("nominatim.url");
+
+        WaitFor.host(url, Duration.ofSeconds(200));
+        Retriable retriable = new SleepRetriable(15, Duration.ofSeconds(20)) {
+            @Override
+            public void log(Throwable exception, int executionCount) {
+                logger.info("Waiting for {} to be ready.", url);
+            }
+        };
+        retriable.loop(() -> new GetRequest(HttpMethod.GET,
+                url + "/reverse?format=json").asJson().getBody());
     }
 
     @Provides
