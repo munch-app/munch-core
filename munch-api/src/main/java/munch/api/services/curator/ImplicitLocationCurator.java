@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.clients.SearchClient;
 import munch.api.data.LatLng;
-import munch.api.data.Location;
 import munch.api.data.Place;
 import munch.api.data.SearchQuery;
 
@@ -27,9 +26,6 @@ public class ImplicitLocationCurator extends TabCurator {
 
     @Override
     public List<Place> query(SearchQuery query, LatLng latLng) {
-        // Transform Query if need to
-        reverse(query, latLng);
-
         query = clone(query);
         // TODO search & its size
         return null;
@@ -47,15 +43,5 @@ public class ImplicitLocationCurator extends TabCurator {
 
         // Contains implicit location
         return latLng != null;
-    }
-
-    /**
-     * @param query query to transform for implicit latLng
-     */
-    private void reverse(SearchQuery query, LatLng latLng) {
-        Location location = searchClient.reverseLocation(latLng.toString());
-        if (location != null) {
-            query.setLocation(location);
-        }
     }
 }
