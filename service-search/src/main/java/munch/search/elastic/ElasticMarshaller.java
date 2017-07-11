@@ -41,25 +41,23 @@ public class ElasticMarshaller {
      */
     public ObjectNode serialize(Location location) {
         ObjectNode node = mapper.createObjectNode();
+
+        // Root Node
         node.put("id", location.getId());
         node.put("name", location.getName());
-        node.put("city", location.getCity());
-        node.put("country", location.getCountry());
-        node.put("center", location.getCenter());
-
-        ObjectNode points = mapper.createObjectNode();
-        points.put("type", "polygon");
-        ArrayNode coordinates = mapper.createArrayNode();
-        for (String point : location.getPoints()) {
-            String[] split = point.split(",");
-            double lat = Double.parseDouble(split[0].trim());
-            double lng = Double.parseDouble(split[1].trim());
-            coordinates.add(mapper.createArrayNode().add(lng).add(lat));
-        }
-        points.set("coordinates", coordinates);
-        node.set("points", points);
-
         node.put("updatedDate", location.getUpdatedDate().getTime());
+
+        // Location Node
+        node.putObject("location")
+                //now at /location/
+                .put("city", location.getCity())
+                .put("country", location.getCountry())
+                .put("center", location.getCenter())
+                //now at /location/polygon/
+                .putObject("polygon")
+                .put("type", "polygon")
+                .set("coordinates", latLngPointsAsCoordinates(location.getPoints()));
+
 
         // Suggest Field
         ArrayNode suggest = mapper.createArrayNode();
@@ -100,9 +98,9 @@ public class ElasticMarshaller {
     public <T> T deserialize(JsonNode node) {
         switch (node.path("_type").asText()) {
             case "location":
-                return (T) deserializeLocation(node);
+                return (T) deserializeLocation(node.path("_source"));
             case "place":
-                return (T) deserializePlace(node);
+                return (T) deserializePlace(node.path("_source"));
             default:
                 return null;
         }
@@ -116,17 +114,18 @@ public class ElasticMarshaller {
         Location location = new Location();
         location.setId(node.get("id").asText());
         location.setName(node.get("name").asText());
-        location.setCity(node.get("city").asText());
-        location.setCountry(node.get("country").asText());
-        location.setCenter(node.get("center").asText());
+        location.setUpdatedDate(new Date(node.get("updatedDate").asLong()));
+
+        location.setCity(node.at("/location/city").asText());
+        location.setCountry(node.at("/location/country").asText());
+        location.setCenter(node.at("/location/latLng").asText());
 
         // points: { "type": "polygon", "coordinates": [[lng, lat]]}
         List<String> points = new ArrayList<>();
-        for (JsonNode point : node.get("points").get("coordinates")) {
+        for (JsonNode point : node.at("/location/polygon/coordinates")) {
             points.add(point.get(1).asDouble() + "," + point.get(0).asDouble());
         }
         location.setPoints(points);
-        location.setUpdatedDate(new Date(node.get("updatedDate").asLong()));
         return location;
     }
 
@@ -140,5 +139,20 @@ public class ElasticMarshaller {
         } catch (JsonProcessingException e) {
             throw new JsonException(e);
         }
+    }
+
+    /**
+     * @param points points in ["lat,lng", "lat,lng"]
+     * @return coordinates in [[lng, lat], [lng, lat]]
+     */
+    private ArrayNode latLngPointsAsCoordinates(List<String> points) {
+        ArrayNode coordinates = mapper.createArrayNode();
+        for (String point : points) {
+            String[] split = point.split(",");
+            double lat = Double.parseDouble(split[0].trim());
+            double lng = Double.parseDouble(split[1].trim());
+            coordinates.add(mapper.createArrayNode().add(lng).add(lat));
+        }
+        return coordinates;
     }
 }

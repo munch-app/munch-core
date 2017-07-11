@@ -48,7 +48,7 @@ public class LocationService implements JsonService {
             GET("/reverse", this::reverse);
             GET("/suggest", this::suggest);
 
-            DELETE("/before/:timestamp", this::deleteBefore);
+            DELETE("/before/:updatedDate", this::deleteBefore);
             DELETE("/:id", this::delete);
         });
     }
