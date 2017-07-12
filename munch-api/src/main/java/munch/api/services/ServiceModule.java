@@ -19,6 +19,7 @@ public class ServiceModule extends AbstractModule {
 
         Multibinder<RestfulService> routerBinder = Multibinder.newSetBinder(binder(), RestfulService.class);
         routerBinder.addBinding().to(MetaService.class);
+        routerBinder.addBinding().to(DiscoveryService.class);
         routerBinder.addBinding().to(PlaceService.class);
         routerBinder.addBinding().to(LocationService.class);
         routerBinder.addBinding().to(CacheSyncService.class);
