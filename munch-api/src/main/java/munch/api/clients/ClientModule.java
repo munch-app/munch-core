@@ -10,6 +10,8 @@ import com.mashape.unirest.request.GetRequest;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import munch.restful.WaitFor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -22,6 +24,7 @@ import java.time.Duration;
  * Project: munch-core
  */
 public class ClientModule extends AbstractModule {
+    private static final Logger logger = LoggerFactory.getLogger(ClientModule.class);
 
     @Override
     protected void configure() {
@@ -47,12 +50,9 @@ public class ClientModule extends AbstractModule {
         String url = services.getString("nominatim.url");
 
         WaitFor.host(url, Duration.ofSeconds(200));
-        Retriable retriable = new SleepRetriable(15, Duration.ofSeconds(20)) {
-            @Override
-            public void log(Throwable exception, int executionCount) {
-                logger.info("Waiting for {} to be ready.", url);
-            }
-        };
+        Retriable retriable = new SleepRetriable(15, Duration.ofSeconds(20), (throwable, integer) -> {
+            logger.info("Waiting for {} to be ready.", url);
+        });
         retriable.loop(() -> new GetRequest(HttpMethod.GET,
                 url + "/reverse?format=json").asJson().getBody());
     }

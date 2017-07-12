@@ -103,6 +103,7 @@ services:
     image: fuxingloh/nominatim-docker-singapore:2.5
     ports:
       - "9888:8080"
+
   # Munch Api
   munch-api:
     image: munch-core/munch-api:latest
