@@ -37,6 +37,7 @@ public class LocationBuilder implements DataBuilder<Location> {
         if (type == null || !type.equals("location")) return;
 
         Location location = new Location();
+        location.setId(data.getCatalystId());
         location.setName(FieldUtils.getValue(data, "Place.name"));
 
         location.setCountry(FieldUtils.getValue(data, "Place.Location.country"));
