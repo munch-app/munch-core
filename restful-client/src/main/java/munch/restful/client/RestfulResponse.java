@@ -57,9 +57,9 @@ public class RestfulResponse {
             throw new JsonException(e);
         }
 
-        // Create structured exception first
-        StructuredException structured = null;
-        if (meta.getError() != null) structured = StructuredException.fromMeta(meta, request.request.getUrl());
+        // Set structured error
+        StructuredException structured = meta.getError() == null ? null
+                : StructuredException.fromMeta(meta, request.request.getUrl());
 
         // Run through handler
         handler.accept(this, structured);

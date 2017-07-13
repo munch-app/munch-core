@@ -1,62 +1,11 @@
 version: '2'
 
 services:
-  # Corpus Proxy
-  corpus-db:
-    image: postgres:9-alpine
-    environment:
-      - POSTGRES_PASSWORD=K851xsSffyTJP3e1M7rd
-  corpus-data:
-    image: corpus-catalyst/service-data:latest
-    environment:
-      - DATABASE_URL=jdbc:postgresql://corpus-db:5432/postgres
-      - DATABASE_USERNAME=postgres
-      - DATABASE_PASSWORD=K851xsSffyTJP3e1M7rd
-      - DATABASE_AUTO_CREATE=true
-    ports:
-      - "8222:8000"
-  corpus-proxy:
-    image: corpus-catalyst/corpus-proxy:latest
-    environment:
-      - SERVICE_DATA_URL=http://corpus-data:8000
-
-  # Munch Services of Services
+  # Data Service
   munch-db:
     image: postgres:9-alpine
     environment:
       - POSTGRES_PASSWORD=K851xsSffyTJP3e1M7rd
-  munch-es:
-    image: docker.elastic.co/elasticsearch/elasticsearch:5.5.0
-    environment:
-      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
-      bootstrap.memory_lock: "true"
-      xpack.security.enabled: "false"
-      xpack.monitoring.enabled: "false"
-      xpack.graph.enabled: "false"
-      xpack.watcher.enabled: "false"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    mem_limit: 1g
-    ports:
-      - 9200:9200
-  thumbor:
-    image: apsl/thumbor
-  fake-s3:
-    image: lphoward/fake-s3
-    ports:
-      - "4569:4569"
-
-  # Munch Services
-  images:
-    image: munch-core/service-images
-    environment:
-      - IMAGE_PERSIST_PROVIDER=fake
-
-      - IMAGE_THUMBOR_ENDPOINT=http://thumbor:8000
-      - IMAGE_FAKE_S3_ENDPOINT=http://fake-s3:4569
-    env_file: H:/docker/munch-core.env
   places:
     image: munch-core/service-places
     environment:
@@ -81,6 +30,24 @@ services:
       - DATABASE_PASSWORD=K851xsSffyTJP3e1M7rd
       - DATABASE_AUTO_CREATE=true
       - MUNCH_SERVICE_IMAGES_URL=http://images:8000
+
+  # Search Service
+  munch-es:
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.5.0
+    environment:
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+      bootstrap.memory_lock: "true"
+      xpack.security.enabled: "false"
+      xpack.monitoring.enabled: "false"
+      xpack.graph.enabled: "false"
+      xpack.watcher.enabled: "false"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    mem_limit: 1g
+    ports:
+      - 9200:9200
   search:
     image: munch-core/service-search
     environment:
@@ -88,21 +55,33 @@ services:
     ports:
       - "8701:8000"
 
+  # Image Service
+  images:
+    image: munch-core/service-images
+    environment:
+      - IMAGE_PERSIST_PROVIDER=fake
+
+      - IMAGE_THUMBOR_ENDPOINT=http://thumbor:8000
+      - IMAGE_FAKE_S3_ENDPOINT=http://fake-s3:4569
+    env_file: H:/docker/munch-core.env
+  thumbor:
+    image: apsl/thumbor
+  fake-s3:
+    image: lphoward/fake-s3
+    ports:
+      - "4569:4569"
+
   # Munch Catalyst
   munch-catalyst:
     image: munch-core/catalyst-munch:latest
     environment:
-      - SERVICE_DATA_URL=http://corpus-data:8000
+      - SERVICE_DATA_URL=http://edge.corpus.munch.space:8200
 
       - MUNCH_SERVICE_PLACES_URL=http://places:8000
       - MUNCH_SERVICE_SEARCH_URL=http://search:8000
       - MUNCH_SERVICE_ARTICLES_URL=http://articles:8000
       - MUNCH_SERVICE_INSTAGRAM_URL=http://instagram:8000
-
-  nominatim:
-    image: fuxingloh/nominatim-docker-singapore:2.5
-    ports:
-      - "9888:8080"
+    env_file: H:/docker/munch-core.env
 
   # Munch Api
   munch-api:
@@ -117,6 +96,10 @@ services:
       - SERVICE_NOMINATIM_URL=http://nominatim:8080
     ports:
       - "8800:8000"
+  nominatim:
+    image: fuxingloh/nominatim-docker-singapore:2.5
+    ports:
+      - "9888:8080"
 
 
 

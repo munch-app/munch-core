@@ -16,7 +16,8 @@ import com.google.inject.Injector;
 class MunchCatalystTest {
 
     public static void main(String[] args) {
-        System.setProperty("services.catalyst.data.url", "http://localhost:8222");
+        System.setProperty("services.catalyst.data.url", "http://edge.corpus.munch.space:8200");
+        // Token is injected with env
 
         Injector injector = Guice.createInjector(new TestModule());
         injector.getInstance(MunchCatalyst.class).run();

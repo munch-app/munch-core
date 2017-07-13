@@ -33,7 +33,7 @@ public class ElasticMarshaller {
     /**
      * If coordinates failed to parse, exception will be thrown
      *
-     * @param location location to serialize to json
+     * @param location location to serialize to json for elastic
      * @return serialized json
      * @throws NullPointerException      if any points is null
      * @throws IndexOutOfBoundsException if points are not in the array
@@ -52,11 +52,11 @@ public class ElasticMarshaller {
                 //now at /location/
                 .put("city", location.getCity())
                 .put("country", location.getCountry())
-                .put("center", location.getCenter())
+                .put("latLng", location.getCenter())
                 //now at /location/polygon/
                 .putObject("polygon")
                 .put("type", "polygon")
-                .set("coordinates", latLngPointsAsCoordinates(location.getPoints()));
+                .set("coordinates", pointsAsCoordinates(location.getPoints()));
 
 
         // Suggest Field
@@ -66,6 +66,10 @@ public class ElasticMarshaller {
         return node;
     }
 
+    /**
+     * @param place place to serialize to json for elastic
+     * @return serialized json
+     */
     public ObjectNode serialize(Place place) {
         ObjectNode node = mapper.valueToTree(place);
         node.put("createdDate", place.getCreatedDate().getTime());
@@ -120,9 +124,9 @@ public class ElasticMarshaller {
         location.setCountry(node.at("/location/country").asText());
         location.setCenter(node.at("/location/latLng").asText());
 
-        // points: { "type": "polygon", "coordinates": [[lng, lat]]}
+        // points: { "type": "polygon", "coordinates": [[[lng, lat]]]}
         List<String> points = new ArrayList<>();
-        for (JsonNode point : node.at("/location/polygon/coordinates")) {
+        for (JsonNode point : node.at("/location/polygon/coordinates/0")) {
             points.add(point.get(1).asDouble() + "," + point.get(0).asDouble());
         }
         location.setPoints(points);
@@ -143,9 +147,9 @@ public class ElasticMarshaller {
 
     /**
      * @param points points in ["lat,lng", "lat,lng"]
-     * @return coordinates in [[lng, lat], [lng, lat]]
+     * @return coordinates in [[[lng,lat], [lng,lat]]]
      */
-    private ArrayNode latLngPointsAsCoordinates(List<String> points) {
+    private ArrayNode pointsAsCoordinates(List<String> points) {
         ArrayNode coordinates = mapper.createArrayNode();
         for (String point : points) {
             String[] split = point.split(",");
@@ -153,6 +157,7 @@ public class ElasticMarshaller {
             double lng = Double.parseDouble(split[1].trim());
             coordinates.add(mapper.createArrayNode().add(lng).add(lat));
         }
-        return coordinates;
+        // Results will be [[[lng,lat], [lng,lat]]]
+        return mapper.createArrayNode().add(coordinates);
     }
 }

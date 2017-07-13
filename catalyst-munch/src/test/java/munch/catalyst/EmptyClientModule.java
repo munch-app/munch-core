@@ -6,8 +6,10 @@ import com.mashape.unirest.http.Unirest;
 import munch.catalyst.clients.ArticleClient;
 import munch.catalyst.clients.InstagramClient;
 import munch.catalyst.clients.PlaceClient;
+import munch.catalyst.clients.SearchClient;
 import munch.catalyst.data.Article;
 import munch.catalyst.data.InstagramMedia;
+import munch.catalyst.data.Location;
 import munch.catalyst.data.Place;
 
 import java.util.Date;
@@ -43,6 +45,11 @@ public class EmptyClientModule extends AbstractModule {
         return new EmtpyInstagramClient();
     }
 
+    @Provides
+    SearchClient provideSearchClient() {
+        return new EmptySearchClient();
+    }
+
     static class EmtpyArticleClient extends ArticleClient {
         public EmtpyArticleClient() {
             super("");
@@ -50,12 +57,11 @@ public class EmptyClientModule extends AbstractModule {
 
         @Override
         public Article put(Article article) {
-            return super.put(article);
+            return article;
         }
 
         @Override
         public void deleteBefore(String catalystId, Date updatedDate) {
-            super.deleteBefore(catalystId, updatedDate);
         }
     }
 
@@ -80,11 +86,29 @@ public class EmptyClientModule extends AbstractModule {
 
         @Override
         public InstagramMedia put(InstagramMedia media) {
-            return super.put(media);
+            return media;
         }
 
         @Override
         public void deleteBefore(String catalystId, Date updatedDate) {
+        }
+    }
+
+    static class EmptySearchClient extends SearchClient {
+        public EmptySearchClient() {
+            super("");
+        }
+
+        @Override
+        public void put(Place place) {
+        }
+
+        @Override
+        public void put(Location location) {
+        }
+
+        @Override
+        public void deleteBefore(String type, Date updatedDate) {
         }
     }
 }
