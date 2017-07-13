@@ -20,6 +20,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Created By: Fuxing Loh
@@ -33,8 +35,23 @@ public class RestfulRequest {
     protected final HttpRequestWithBody request;
     protected MultipartBody multipartBody;
 
+    protected Function<Supplier<RestfulResponse>, RestfulResponse> executor;
+
+    /**
+     * @param method http method
+     * @param url    base url without /
+     */
     public RestfulRequest(HttpMethod method, String url) {
         this.request = new HttpRequestWithBody(method, url);
+    }
+
+    /**
+     * Set executor to intercept any behaviour
+     *
+     * @param executor executor for asResponse
+     */
+    public void setExecutor(Function<Supplier<RestfulResponse>, RestfulResponse> executor) {
+        this.executor = executor;
     }
 
     public RestfulRequest basicAuth(String username, String password) {
@@ -201,6 +218,15 @@ public class RestfulRequest {
      * @return RestfulResponse
      */
     public RestfulResponse asResponse(BiConsumer<RestfulResponse, StructuredException> handler) {
+        if (executor == null) return executeResponse(handler);
+        return executor.apply(() -> executeResponse(handler));
+    }
+
+    /**
+     * @param handler handler of response
+     * @return RestfulResponse
+     */
+    private RestfulResponse executeResponse(BiConsumer<RestfulResponse, StructuredException> handler) {
         try {
             return new RestfulResponse(this, request.asBinary(), handler);
         } catch (UnirestException e) {
