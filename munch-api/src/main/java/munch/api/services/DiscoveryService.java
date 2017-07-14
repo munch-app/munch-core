@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import munch.api.clients.NominatimClient;
 import munch.api.clients.SearchClient;
 import munch.api.data.LatLng;
 import munch.api.data.SearchCollection;
@@ -24,11 +25,13 @@ public class DiscoveryService extends AbstractService {
 
     private final SearchClient searchClient;
     private final CuratorDelegator curatorDelegator;
+    private final NominatimClient nominatimClient;
 
     @Inject
-    public DiscoveryService(SearchClient searchClient, CuratorDelegator curatorDelegator) {
+    public DiscoveryService(SearchClient searchClient, CuratorDelegator curatorDelegator, NominatimClient nominatimClient) {
         this.searchClient = searchClient;
         this.curatorDelegator = curatorDelegator;
+        this.nominatimClient = nominatimClient;
     }
 
     @Override
@@ -71,8 +74,8 @@ public class DiscoveryService extends AbstractService {
         List<SearchCollection> collections = curatorDelegator.delegate(query, latLng);
 
         ObjectNode nodes = nodes(200, collections);
-        // Return query object to keep search bar concurrent
-        nodes.set("query", toTree(query));
+        String street = nominatimClient.getStreet(latLng);
+        nodes.putObject("street").put("name", street);
         return nodes;
     }
 

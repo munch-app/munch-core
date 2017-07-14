@@ -65,7 +65,8 @@ public final class NominatimClient {
      * @see NominatimClient#getStreet(double, double)
      */
     @Nullable
-    public String getStreet(LatLng latLng) {
+    public String getStreet(@Nullable LatLng latLng) {
+        if (latLng == null) return null;
         return getStreet(latLng.getLat(), latLng.getLng());
     }
 }
