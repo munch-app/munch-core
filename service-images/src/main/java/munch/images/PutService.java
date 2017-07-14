@@ -108,9 +108,9 @@ public class PutService implements JsonService {
         Part part = call.request().raw().getPart("file");
 
         // Upload the image
+        File temp = File.createTempFile(RandomStringUtils.randomAlphabetic(20), part.getName());
         try (InputStream inputStream = part.getInputStream()) {
             // Convert to file
-            File temp = File.createTempFile(RandomStringUtils.randomAlphabetic(20), part.getName());
             FileUtils.copyInputStreamToFile(inputStream, temp);
 
             // Check contentType, if is octet then convert to actual
@@ -121,6 +121,8 @@ public class PutService implements JsonService {
             // Validate content type
             if (!contentTypes.contains(contentType)) throw new NotImageException(contentType);
             return mapper.upload(temp, contentType, kinds);
+        } finally {
+            FileUtils.deleteQuietly(temp);
         }
     }
 
@@ -153,9 +155,12 @@ public class PutService implements JsonService {
                 String contentType = connection.getContentType();
                 if (!contentTypes.contains(contentType)) throw new NotImageException(contentType);
 
+                File temp = File.createTempFile(RandomStringUtils.randomAlphabetic(20), ".tmp");
                 try (InputStream inputStream = connection.getInputStream()) {
-                    int length = connection.getContentLength();
-                    return mapper.upload(inputStream, length, contentType, kinds);
+                    FileUtils.copyInputStreamToFile(inputStream, temp);
+                    return mapper.upload(temp, contentType, kinds);
+                } finally {
+                    FileUtils.deleteQuietly(temp);
                 }
             });
         } catch (Exception ioe) {

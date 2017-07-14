@@ -9,7 +9,6 @@ import munch.restful.core.exception.StructuredException;
  * Project: munch-core
  */
 public final class ThumborNotAvailable extends StructuredException {
-
     public ThumborNotAvailable() {
         super(501, "ThumborNotAvailable", "Required thumbor instance not available.");
     }

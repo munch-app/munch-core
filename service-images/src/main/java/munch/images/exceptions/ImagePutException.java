@@ -8,7 +8,7 @@ import munch.restful.core.exception.StructuredException;
  * Time: 11:11 PM
  * Project: munch-core
  */
-public class ImagePutException extends StructuredException {
+public final class ImagePutException extends StructuredException {
     public ImagePutException(String message) {
         super(403, "ImagePutException", message);
     }

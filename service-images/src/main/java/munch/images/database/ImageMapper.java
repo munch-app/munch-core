@@ -195,6 +195,7 @@ public class ImageMapper {
             type.setUrl(fileEndpoint.getUrl(type.getKey()));
             imageMeta.getImages().put(appendKind, type);
             fileMapper.put(appendKey, appendFile, imageMeta.getContentType(), AccessControl.PublicRead);
+            FileUtils.deleteQuietly(appendFile);
         }
     }
 

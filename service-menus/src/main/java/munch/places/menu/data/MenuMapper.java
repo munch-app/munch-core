@@ -77,6 +77,7 @@ public class MenuMapper {
         File x200File = File.createTempFile(x200.getKey(), "");
         FileUtils.copyURLToFile(new URL(resizeUrl), x200File);
         fileMapper.put(x200.getKey(), x200File);
+        FileUtils.deleteQuietly(x200File);
 
         menu.setImage(image);
         image.getKinds().add(original);
