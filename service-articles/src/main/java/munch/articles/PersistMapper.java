@@ -1,7 +1,5 @@
 package munch.articles;
 
-import catalyst.utils.exception.PredicateRetriable;
-import catalyst.utils.exception.Retriable;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.munch.hibernate.utils.TransactionProvider;
@@ -10,11 +8,6 @@ import munch.clients.ImageMeta;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
-import java.time.Duration;
 import java.util.Date;
 
 /**
@@ -29,12 +22,6 @@ public final class PersistMapper {
 
     private final ImageClient imageClient;
     private final TransactionProvider provider;
-    private final Retriable retriable = new PredicateRetriable(6, Duration.ofSeconds(2),
-            t -> t.getMessage().contains("Server returned HTTP response code: 403")) {
-        @Override
-        public void log(Throwable exception, int executionCount) {
-        }
-    };
 
     @Inject
     public PersistMapper(ImageClient imageClient, TransactionProvider provider) {
@@ -141,19 +128,8 @@ public final class PersistMapper {
      */
     private ImageMeta putImage(String urlString) {
         try {
-            URL url = new URL(urlString);
-            // Open connect download and return
-            return retriable.loop(() -> {
-                URLConnection connection = url.openConnection();
-                connection.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:25.0) Gecko/20100101 Firefox/25.0");
-                try (InputStream inputStream = connection.getInputStream()) {
-                    return imageClient.put(inputStream, url.getPath());
-                }
-            });
-        } catch (IOException ioe) {
-            logger.warn("Skip: Failed to put image for url: {}, error: {}", urlString, ioe.getMessage());
-            return null;
-        } catch (ImageClient.NotImageException nie) {
+            return imageClient.put(urlString);
+        } catch (ImageClient.ImageException nie) {
             logger.warn("Skip: Failed to put image for url: {}, error: {}", urlString, nie.getType());
             return null;
         }

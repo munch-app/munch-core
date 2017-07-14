@@ -36,21 +36,29 @@ public class ImageClient extends RestfulClient {
                 .asDataObject(ImageMeta.class);
     }
 
-    public ImageMeta put(File file, ContentType contentType) throws NotImageException {
+    public ImageMeta put(String imageUrl) throws ImageException {
+        return doPut("/images")
+                .body(objectMapper.createObjectNode()
+                        .put("url", imageUrl))
+                .asResponse(ImageException::handle)
+                .asDataObject(ImageMeta.class);
+    }
+
+    public ImageMeta put(File file, ContentType contentType) throws ImageException {
         return doPut("/images")
                 .field("file", file, contentType.getMimeType())
-                .asResponse(NotImageException::handle)
+                .asResponse(ImageException::handle)
                 .asDataObject(ImageMeta.class);
     }
 
-    public ImageMeta put(InputStream stream, ContentType contentType, String fileName) throws NotImageException {
+    public ImageMeta put(InputStream stream, ContentType contentType, String fileName) throws ImageException {
         return doPut("/images")
                 .field("file", stream, contentType, fileName)
-                .asResponse(NotImageException::handle)
+                .asResponse(ImageException::handle)
                 .asDataObject(ImageMeta.class);
     }
 
-    public ImageMeta put(InputStream stream, String fileName) throws NotImageException {
+    public ImageMeta put(InputStream stream, String fileName) throws ImageException {
         return put(stream, ContentType.APPLICATION_OCTET_STREAM, fileName);
     }
 
@@ -63,14 +71,13 @@ public class ImageClient extends RestfulClient {
                 .asResponse();
     }
 
-    public static class NotImageException extends StructuredException {
-
-        NotImageException(StructuredException e) {
+    public static class ImageException extends StructuredException {
+        ImageException(StructuredException e) {
             super(e);
         }
 
         static void handle(RestfulResponse r, StructuredException e) {
-            if (e != null && e.hasType("NotImageException")) throw new NotImageException(e);
+            if (e != null && e.hasType("NotImageException", "ImagePutException")) throw new ImageException(e);
         }
     }
 }

@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.util.HashMap;
@@ -58,6 +59,50 @@ public class ImageMapper {
         this.fileEndpoint = fileEndpoint;
         this.database = database;
         this.thumbor = thumbor;
+    }
+
+    /**
+     * Note: key for image will be generated; currently length is 32
+     *
+     * @param inputStream input stream to persist
+     * @param length      length of stream
+     * @param contentType content type of file
+     * @param kinds       types of image
+     * @return newly created Image object
+     * @throws ContentTypeError content type cannot be parsed
+     * @throws IOException      network error
+     */
+    public ImageMeta upload(InputStream inputStream, long length, String contentType,
+                            Set<ImageType> kinds) throws ContentTypeError, IOException {
+        if (kinds.isEmpty()) throw new ImageKindsEmptyException();
+        String newKey = RandomStringUtils.randomAlphanumeric(32);
+
+        // Create new empty image object
+        ImageMeta imageMeta = new ImageMeta();
+        imageMeta.setKey(newKey);
+        imageMeta.setContentType(contentType);
+        imageMeta.setImages(new HashMap<>());
+        imageMeta.setCreated(new Timestamp(System.currentTimeMillis()));
+
+        // Add original image kind
+        ImageMeta.Type original = new ImageMeta.Type();
+        original.setKey(newKey + getExtension(contentType));
+        original.setUrl(fileEndpoint.getUrl(original.getKey()));
+        imageMeta.getImages().put(ImageType.Original, original);
+        fileMapper.put(original.getKey(), inputStream, length, contentType, AccessControl.PublicRead);
+
+        // Persist resize different kinds of images
+        resize(imageMeta, kinds);
+
+        // Delete Original image if need to (image, storage)
+        if (!kinds.contains(ImageType.Original)) {
+            imageMeta.getImages().remove(ImageType.Original);
+            fileMapper.remove(original.getKey());
+        }
+
+        // Finally persist image object to data store
+        database.put(imageMeta);
+        return imageMeta;
     }
 
     /**

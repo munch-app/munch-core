@@ -1,5 +1,6 @@
 dependencies {
     compile project(':restful-server')
+    compile group: 'catalyst', name: 'retriable-utils', version: ccVersion
 
     // Injection
     compile group: 'com.google.inject', name: 'guice', version: '4.1.0'

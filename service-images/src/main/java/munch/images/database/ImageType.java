@@ -116,7 +116,15 @@ public enum ImageType {
      * @return Set of ImageKind
      */
     public static Set<ImageType> resolveKinds(@Nullable String queryString) {
-        if (StringUtils.isBlank(queryString)) return ImmutableSet.of();
+        return resolveKinds(queryString, ImmutableSet.of());
+    }
+
+    /**
+     * @param queryString query string of kinds
+     * @return Set of ImageKind
+     */
+    public static Set<ImageType> resolveKinds(@Nullable String queryString, Set<ImageType> defaultKinds) {
+        if (StringUtils.isBlank(queryString)) return defaultKinds;
         return Arrays.stream(queryString.split(" *, *"))
                 .map(ImageType::forValue)
                 .collect(Collectors.toSet());

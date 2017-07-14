@@ -1,4 +1,4 @@
-package munch.images;
+package munch.images.exceptions;
 
 import munch.restful.core.exception.StructuredException;
 
@@ -10,7 +10,7 @@ import munch.restful.core.exception.StructuredException;
  */
 public final class ThumborNotAvailable extends StructuredException {
 
-    protected ThumborNotAvailable() {
+    public ThumborNotAvailable() {
         super(501, "ThumborNotAvailable", "Required thumbor instance not available.");
     }
 }
