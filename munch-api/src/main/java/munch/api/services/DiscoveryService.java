@@ -28,7 +28,8 @@ public class DiscoveryService extends AbstractService {
     private final NominatimClient nominatimClient;
 
     @Inject
-    public DiscoveryService(SearchClient searchClient, CuratorDelegator curatorDelegator, NominatimClient nominatimClient) {
+    public DiscoveryService(SearchClient searchClient, CuratorDelegator curatorDelegator,
+                            NominatimClient nominatimClient) {
         this.searchClient = searchClient;
         this.curatorDelegator = curatorDelegator;
         this.nominatimClient = nominatimClient;

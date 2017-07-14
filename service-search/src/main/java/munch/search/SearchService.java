@@ -110,9 +110,9 @@ public class SearchService implements JsonService {
         for (Object object : marshaller.deserializeList(results)) {
             ObjectNode objectNode = mapper.valueToTree(object);
             if (object instanceof Place) {
-                objectNode.put("_type", "Place");
+                objectNode.put("type", "Place");
             } else if (object instanceof Location) {
-                objectNode.put("_type", "Location");
+                objectNode.put("type", "Location");
             }
             array.add(objectNode);
         }

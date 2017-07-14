@@ -39,9 +39,7 @@ public class LocationBoolQuery {
      * @return bool search query
      */
     public JsonNode search(String text) {
-        ObjectNode bool = mapper.createObjectNode();
-        bool.set("must", must(text));
-        return bool;
+        return mapper.createObjectNode().set("must", must(text));
     }
 
     /**
@@ -49,17 +47,17 @@ public class LocationBoolQuery {
      * @return { "match_all": {} } OR { "match": { "name": query }}
      */
     private JsonNode must(String query) {
-        ObjectNode must = mapper.createObjectNode();
+        ObjectNode root = mapper.createObjectNode();
 
         // Match all if query is blank
         if (StringUtils.isBlank(query)) {
-            return must.set("match_all", mapper.createObjectNode());
+            root.putObject("match_all");
+            return root;
         }
 
         // Match name if got query
-        ObjectNode match = mapper.createObjectNode();
-        match.put("name", query);
-        return must.set("match", match);
+        root.putObject("match").put("name", query);
+        return root;
     }
 
     /**
@@ -70,18 +68,12 @@ public class LocationBoolQuery {
      * @return { "geo_shape": { "points": { "shape": { "type": "point", "coordinates": [lat, lng] }}}}
      */
     private JsonNode filter(double lat, double lng) {
-        ObjectNode shape = mapper.createObjectNode();
-        shape.put("type", "point");
-        shape.set("coordinates", mapper.createArrayNode().add(lng).add(lat));
-
-        ObjectNode points = mapper.createObjectNode();
-        points.set("shape", shape);
-
-        ObjectNode geoShape = mapper.createObjectNode();
-        geoShape.set("points", points);
-
-        ObjectNode filter = mapper.createObjectNode();
-        filter.set("geo_shape", geoShape);
-        return filter;
+        ObjectNode root = mapper.createObjectNode();
+        root.putObject("geo_shape")
+                .putObject("points")
+                .putObject("shape")
+                .put("type", "point")
+                .putArray("coordinates").add(lng).add(lat);
+        return root;
     }
 }

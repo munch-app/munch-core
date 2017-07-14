@@ -130,7 +130,7 @@ public final class PersistMapper {
         try {
             return imageClient.put(urlString);
         } catch (ImageClient.ImageException nie) {
-            logger.warn("Skip: Failed to put image for url: {}, error: {}", urlString, nie.getType());
+            logger.warn("Skip: Failed for url: {}, reason: {}", urlString, nie.getMessage());
             return null;
         }
     }

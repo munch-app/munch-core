@@ -47,32 +47,37 @@ public final class ElasticClient {
      * @return options array nodes containing the results
      */
     public JsonNode suggest(String type, String query, @Nullable String latLng, int size) throws IOException {
-        ObjectNode completion = mapper.createObjectNode();
-        completion.put("field", "suggest");
-        completion.put("size", size);
-        if (StringUtils.isNotBlank(latLng)) {
-            ObjectNode contexts = mapper.createObjectNode();
-            ObjectNode location = mapper.createObjectNode();
+        ObjectNode completion = mapper.createObjectNode()
+                .put("field", "suggest")
+                .put("size", size);
+        ObjectNode contexts = completion.putObject("contexts");
 
+        // Context: LatLng
+        if (StringUtils.isNotBlank(latLng)) {
             String[] lls = latLng.split(",");
-            location.put("lat", Double.parseDouble(lls[0].trim()));
-            location.put("lon", Double.parseDouble(lls[1].trim()));
-            contexts.set("latLng", location);
-            completion.set("contexts", contexts);
+
+            contexts.putObject("latLng")
+                    .put("lat", Double.parseDouble(lls[0].trim()))
+                    .put("lon", Double.parseDouble(lls[1].trim()));
         }
 
-        ObjectNode placeSuggest = mapper.createObjectNode();
-        placeSuggest.put("prefix", query);
-        placeSuggest.set("completion", completion);
+        // Context: Type
+        if (type != null) {
+            contexts.put("type", type);
+        }
 
-        ObjectNode suggest = mapper.createObjectNode();
-        suggest.set("suggestions", placeSuggest);
         ObjectNode root = mapper.createObjectNode();
-        root.set("suggest", suggest);
+        root.putObject("suggest")
+                .putObject("suggestions")
+                .put("prefix", query)
+                .set("completion", completion);
 
         // Query, parse and return options array node
-        JsonNode result = postSearch(type, root).path("suggest").path("suggestions");
-        return result.get(0).path("options");
+        return postSearch(null, root)
+                .path("suggest")
+                .path("suggestions")
+                .get(0)
+                .path("options");
     }
 
     /**
@@ -85,9 +90,10 @@ public final class ElasticClient {
      */
     public JsonNode postBoolSearch(String type, int from, int size, JsonNode boolQuery) throws IOException {
         ObjectNode root = mapper.createObjectNode();
-        root.put("from", from);
-        root.put("size", size);
-        root.set("query", mapper.createObjectNode().set("bool", boolQuery));
+        root.put("from", from)
+                .put("size", size)
+                .putObject("query")
+                .set("bool", boolQuery);
 
         return postSearch(type, root);
     }

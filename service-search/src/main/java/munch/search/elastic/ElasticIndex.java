@@ -1,6 +1,5 @@
 package munch.search.elastic;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
@@ -35,8 +34,8 @@ public class ElasticIndex {
     /**
      * https://www.elastic.co/guide/en/elasticsearch/client/java-api/current/java-docs-index.html
      *
-     * @param client            injected rest client
-     * @param mapper            jackson json mapper
+     * @param client     injected rest client
+     * @param mapper     jackson json mapper
      * @param marshaller to marshal json
      * @throws RuntimeException if ElasticSearchMapping validation failed
      */
@@ -116,12 +115,13 @@ public class ElasticIndex {
      * @throws Exception exception for deletion
      */
     public void deleteBefore(String type, long updatedDate) throws Exception {
-        JsonNode cycleNode = mapper.createObjectNode().put("lt", updatedDate);
-        JsonNode rangeNode = mapper.createObjectNode().set("updatedDate", cycleNode);
-        JsonNode queryNode = mapper.createObjectNode().set("range", rangeNode);
-        JsonNode rootNode = mapper.createObjectNode().set("query", queryNode);
+        ObjectNode root = mapper.createObjectNode();
+        root.putObject("query")
+                .putObject("range")
+                .putObject("updatedDate")
+                .put("lt", updatedDate);
 
-        String json = mapper.writeValueAsString(rootNode);
+        String json = mapper.writeValueAsString(root);
         HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
         String endpoint = "/munch/" + type + "/_delete_by_query?conflicts=proceed";
         Response response = client.performRequest("POST", endpoint, PARAMS, entity);

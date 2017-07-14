@@ -46,15 +46,17 @@ public class PlaceBoolQuery {
      * @return JsonNode must filter
      */
     private JsonNode must(String query) {
-        ObjectNode must = mapper.createObjectNode();
+        ObjectNode root = mapper.createObjectNode();
 
         // Match all if query is blank
-        if (StringUtils.isBlank(query)) return must.set("match_all", mapper.createObjectNode());
+        if (StringUtils.isBlank(query)) {
+            root.putObject("match_all");
+            return root;
+        }
 
         // Match name if got query
-        ObjectNode match = mapper.createObjectNode();
-        match.put("name", query);
-        return must.set("match", match);
+        root.putObject("match").put("name", query);
+        return root;
     }
 
     /**
@@ -149,16 +151,12 @@ public class PlaceBoolQuery {
      * @return JsonNode = { "geo_distance_range": { "from": "1km", "to": "2km", "location.latLng": "-12,23"}}
      */
     private JsonNode filterDistanceRange(String latLng, Integer min, Integer max) {
-        ObjectNode geoDistance = mapper.createObjectNode();
-        if (min != null)
-            geoDistance.put("from", min + "m");
-        if (max != null)
-            geoDistance.put("to", max + "m");
-        geoDistance.put("location.latLng", latLng);
+        ObjectNode geoDistance = mapper.createObjectNode()
+                .put("location.latLng", latLng);
+        if (min != null) geoDistance.put("from", min + "m");
+        if (max != null) geoDistance.put("to", max + "m");
 
-        ObjectNode filter = mapper.createObjectNode();
-        filter.set("geo_distance_range", geoDistance);
-        return filter;
+        return mapper.createObjectNode().set("geo_distance_range", geoDistance);
     }
 
     /**
@@ -168,17 +166,11 @@ public class PlaceBoolQuery {
      * @return JsonNode = { "geo_polygon": { "location.latLng": { "points": ["-1,2", "-5,33" ...]}}}
      */
     private JsonNode filterPolygon(List<String> pointList) {
-        ArrayNode points = mapper.createArrayNode();
-        pointList.forEach(points::add);
-
-        ObjectNode latLng = mapper.createObjectNode();
-        latLng.set("points", points);
-
-        ObjectNode geoPolygon = mapper.createObjectNode();
-        geoPolygon.set("location.latLng", latLng);
-
         ObjectNode filter = mapper.createObjectNode();
-        filter.set("geo_polygon", geoPolygon);
+        ArrayNode points = filter.putObject("geo_polygon")
+                .putObject("location.latLng")
+                .putArray("points");
+        pointList.forEach(points::add);
         return filter;
     }
 
@@ -188,11 +180,8 @@ public class PlaceBoolQuery {
      * @return JsonNode =  { "term" : { "name" : "text" } }
      */
     private JsonNode filterTerm(String name, String text) {
-        ObjectNode term = mapper.createObjectNode();
-        term.put(name, text);
-
         ObjectNode filter = mapper.createObjectNode();
-        filter.set("term", term);
+        filter.putObject("term").put(name, text);
         return filter;
     }
 }

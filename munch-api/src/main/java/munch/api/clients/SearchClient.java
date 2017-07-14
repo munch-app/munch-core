@@ -89,7 +89,7 @@ public class SearchClient extends RestfulClient {
      */
     private List<SearchResult> deserialize(JsonNode dataNode) throws JsonException {
         return JsonUtils.toList(dataNode, node ->
-                parse(node.path("_type").asText(), node));
+                parse(node.path("type").asText(), node));
     }
 
     /**

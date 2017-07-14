@@ -5,9 +5,20 @@
         "location.latLng": {
           "type": "geo_point"
         },
+        "images": {
+          "enabled": false
+        },
+        "type": {
+          "type": "keyword"
+        },
         "suggest": {
           "type": "completion",
           "contexts": [
+            {
+              "name": "type",
+              "type": "category",
+              "path": "type"
+            },
             {
               "name": "latLng",
               "type": "geo",
@@ -15,9 +26,6 @@
               "path": "location.latLng"
             }
           ]
-        },
-        "images": {
-          "enabled": false
         }
       }
     },
@@ -30,9 +38,20 @@
           "type": "geo_shape",
           "precision": "5m"
         },
+        "images": {
+          "enabled": false
+        },
+        "type": {
+          "type": "keyword"
+        },
         "suggest": {
           "type": "completion",
           "contexts": [
+            {
+              "name": "type",
+              "type": "category",
+              "path": "type"
+            },
             {
               "name": "latLng",
               "type": "geo",
@@ -40,9 +59,6 @@
               "path": "location.latLng"
             }
           ]
-        },
-        "images": {
-          "enabled": false
         }
       }
     }

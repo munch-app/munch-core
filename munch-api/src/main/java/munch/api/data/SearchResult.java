@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public interface SearchResult {
 
-    @JsonProperty("_type")
+    @JsonProperty("type")
     String getType();
 
 }

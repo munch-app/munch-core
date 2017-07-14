@@ -146,7 +146,7 @@ public class PutService implements JsonService {
             // Open connect download and return
             return retriable.loop(() -> {
                 URLConnection connection = url.openConnection();
-                connection.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:25.0) Gecko/20100101 Firefox/25.0");
+                connection.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36");
                 connection.connect();
 
                 // Validate is allowed content type

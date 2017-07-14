@@ -37,7 +37,7 @@ public class ImageClient extends RestfulClient {
     }
 
     public ImageMeta put(String imageUrl) throws ImageException {
-        return doPut("/images")
+        return doPut("/images/url")
                 .body(objectMapper.createObjectNode()
                         .put("url", imageUrl))
                 .asResponse(ImageException::handle)

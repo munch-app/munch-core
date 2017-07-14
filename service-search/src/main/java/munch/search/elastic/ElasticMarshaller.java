@@ -41,6 +41,7 @@ public class ElasticMarshaller {
      */
     public ObjectNode serialize(Location location) {
         ObjectNode node = mapper.createObjectNode();
+        node.put("type", "Location");
 
         // Root Node
         node.put("id", location.getId());
@@ -72,6 +73,7 @@ public class ElasticMarshaller {
      */
     public ObjectNode serialize(Place place) {
         ObjectNode node = mapper.valueToTree(place);
+        node.put("type", "Place");
         node.put("createdDate", place.getCreatedDate().getTime());
         node.put("updatedDate", place.getUpdatedDate().getTime());
 
@@ -100,11 +102,12 @@ public class ElasticMarshaller {
      */
     @SuppressWarnings("unchecked")
     public <T> T deserialize(JsonNode node) {
-        switch (node.path("_type").asText()) {
-            case "location":
-                return (T) deserializeLocation(node.path("_source"));
-            case "place":
-                return (T) deserializePlace(node.path("_source"));
+        JsonNode source = node.path("_source");
+        switch (source.path("type").asText()) {
+            case "Location":
+                return (T) deserializeLocation(source);
+            case "Place":
+                return (T) deserializePlace(source);
             default:
                 return null;
         }
