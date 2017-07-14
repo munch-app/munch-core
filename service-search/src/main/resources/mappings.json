@@ -15,6 +15,9 @@
               "path": "location.latLng"
             }
           ]
+        },
+        "images": {
+          "enabled": false
         }
       }
     },
@@ -37,6 +40,9 @@
               "path": "location.latLng"
             }
           ]
+        },
+        "images": {
+          "enabled": false
         }
       }
     }
