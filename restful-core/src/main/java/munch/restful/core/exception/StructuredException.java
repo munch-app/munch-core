@@ -68,6 +68,10 @@ public class StructuredException extends RuntimeException {
         return type;
     }
 
+    public List<String> getSources() {
+        return sources;
+    }
+
     /**
      * Convert Structured exception to meta to restful use
      *

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Singleton;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.WordUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.nio.entity.NStringEntity;
@@ -63,7 +64,7 @@ public final class ElasticClient {
 
         // Context: Type
         if (type != null) {
-            contexts.put("type", type);
+            contexts.put("type", WordUtils.capitalize(type));
         }
 
         ObjectNode root = mapper.createObjectNode();
