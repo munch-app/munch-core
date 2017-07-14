@@ -76,6 +76,7 @@ services:
     image: munch-core/catalyst-munch:latest
     environment:
       - SERVICE_DATA_URL=http://edge.corpus.munch.space:8200
+      - MUNCH_CATALYST_SLEEP=100h
 
       - MUNCH_SERVICE_PLACES_URL=http://places:8000
       - MUNCH_SERVICE_SEARCH_URL=http://search:8000
