@@ -231,9 +231,8 @@ public class RestfulRequest {
             return new RestfulResponse(this, request.asBinary(), handler);
         } catch (UnirestException e) {
             // Try parse error
-            Exception cause = (Exception) e.getCause();
-            OfflineException.parse(cause);
-            TimeoutException.parse(cause);
+            OfflineException.parse(e);
+            TimeoutException.parse(e);
             throw new UnknownException(e);
         }
     }

@@ -1,6 +1,7 @@
 package munch.restful.client.exception;
 
 import munch.restful.core.exception.StructuredException;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.NoHttpResponseException;
 import org.apache.http.conn.HttpHostConnectException;
 
@@ -23,11 +24,11 @@ public final class OfflineException extends StructuredException {
      * @throws TimeoutException timeout
      */
     public static void parse(Exception e) throws TimeoutException {
-        if (e instanceof HttpHostConnectException) {
+        if (ExceptionUtils.hasCause(e, HttpHostConnectException.class)) {
             throw new OfflineException(e);
         }
 
-        if (e instanceof NoHttpResponseException) {
+        if (ExceptionUtils.hasCause(e, NoHttpResponseException.class)) {
             throw new OfflineException(e);
         }
     }

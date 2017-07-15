@@ -1,6 +1,7 @@
 package munch.restful.client.exception;
 
 import munch.restful.core.exception.StructuredException;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.net.SocketTimeoutException;
 
@@ -23,7 +24,7 @@ public final class TimeoutException extends StructuredException {
      * @throws TimeoutException Timeout exception
      */
     public static void parse(Exception e) throws TimeoutException {
-        if (e instanceof SocketTimeoutException) {
+        if (ExceptionUtils.hasCause(e, SocketTimeoutException.class)) {
             throw new TimeoutException(e);
         }
     }
