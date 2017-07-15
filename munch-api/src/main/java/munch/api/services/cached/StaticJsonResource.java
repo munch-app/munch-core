@@ -1,4 +1,4 @@
-package munch.api.clients;
+package munch.api.services.cached;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,19 +10,21 @@ import java.io.IOException;
 import java.net.URL;
 
 /**
+ * Read from resources/static-json
+ *
  * Created by: Fuxing
  * Date: 14/7/2017
  * Time: 11:30 PM
  * Project: munch-core
  */
 @Singleton
-public final class StaticJson {
+public final class StaticJsonResource {
 
     private static final String directory = "static-json";
     private final ObjectMapper objectMapper;
 
     @Inject
-    public StaticJson(ObjectMapper objectMapper) {
+    public StaticJsonResource(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 

@@ -3,11 +3,11 @@ package munch.api.services.curator;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.clients.SearchClient;
-import munch.api.clients.StaticJson;
 import munch.api.data.LatLng;
 import munch.api.data.Location;
 import munch.api.data.SearchCollection;
 import munch.api.data.SearchQuery;
+import munch.api.services.cached.StaticJsonResource;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -30,9 +30,9 @@ public class SingaporeCurator extends Curator {
     private final Location[] popularLocations;
 
     @Inject
-    protected SingaporeCurator(SearchClient searchClient, StaticJson staticJson) throws IOException {
+    protected SingaporeCurator(SearchClient searchClient, StaticJsonResource resource) throws IOException {
         super(searchClient);
-        this.popularLocations = staticJson.getResource("popular-locations.json", Location[].class);
+        this.popularLocations = resource.getResource("popular-locations.json", Location[].class);
     }
 
     @Override
