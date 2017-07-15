@@ -22,7 +22,7 @@ public class ServiceModule extends AbstractModule {
         routerBinder.addBinding().to(DiscoveryService.class);
         routerBinder.addBinding().to(PlaceService.class);
         routerBinder.addBinding().to(LocationService.class);
-        routerBinder.addBinding().to(CacheSyncService.class);
+        routerBinder.addBinding().to(CachedSyncService.class);
     }
 
 }
