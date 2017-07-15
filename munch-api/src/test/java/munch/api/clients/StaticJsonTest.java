@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -25,9 +26,10 @@ class StaticJsonTest {
     void generatePopularPlaces() throws Exception {
         String[] places = ("Orchard,Marina Bay,Clarke Quay,Bukit Timah,Chinatown," +
                 "Downtown Core,Holland Village,Dhoby Ghaut,Little India,Tanjong Pagar," +
-                "Changi Airport,Bugis,Bedok,Jurong East,Serangoon").split(",");
+                "Changi,Bugis,Bedok,Jurong East,Serangoon").split(",");
         List<Location> locations = Arrays.stream(places)
                 .map(this::query)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
         assertThat(places.length).isEqualTo(locations.size());

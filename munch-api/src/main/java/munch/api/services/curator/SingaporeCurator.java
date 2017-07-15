@@ -46,7 +46,7 @@ public class SingaporeCurator extends Curator {
      * 1. query
      * 2. filters
      *
-     * @param query  mandatory query in search bar, polygon will be ignored
+     * @param source  mandatory query in search bar, polygon will be ignored
      * @param latLng ignored for Singapore curator
      * @return Curated List of PlaceCollection
      */
