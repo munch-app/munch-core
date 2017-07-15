@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.HttpMethod;
-import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.HttpRequestWithBody;
 import com.mashape.unirest.request.body.MultipartBody;
 import munch.restful.client.exception.OfflineException;
@@ -223,13 +222,16 @@ public class RestfulRequest {
     }
 
     /**
+     * Handler will handle StructuredException
+     * For non structured exception it will handled by catch(Exception) below
+     *
      * @param handler handler of response
      * @return RestfulResponse
      */
     private RestfulResponse executeResponse(BiConsumer<RestfulResponse, StructuredException> handler) {
         try {
             return new RestfulResponse(this, request.asBinary(), handler);
-        } catch (UnirestException e) {
+        } catch (Exception e) {
             // Try parse error
             OfflineException.parse(e);
             TimeoutException.parse(e);
