@@ -31,7 +31,6 @@ public final class CuratorDelegator {
         this.curators = curators;
     }
 
-
     /**
      * Propagate curating to curators by:
      * 1. Matching
@@ -43,6 +42,9 @@ public final class CuratorDelegator {
      * @see CuratorModule
      */
     private List<SearchCollection> curate(SearchQuery query, @Nullable LatLng latLng) {
+        query.setFrom(0);
+        query.setSize(15);
+
         for (Curator curator : curators) {
             // If curator matches: do search
             if (curator.match(query, latLng)) {
