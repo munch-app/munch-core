@@ -149,15 +149,16 @@ public class PutService implements JsonService {
             return retriable.loop(() -> {
                 URLConnection connection = url.openConnection();
                 connection.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36");
-                connection.connect();
 
                 // Validate is allowed content type
+                // 1: Here can throw IOE
                 String contentType = connection.getContentType();
                 if (!contentTypes.contains(contentType)) throw new NotImageException(contentType);
 
                 File temp = File.createTempFile(RandomStringUtils.randomAlphabetic(20), ".tmp");
                 try (InputStream inputStream = connection.getInputStream()) {
                     FileUtils.copyInputStreamToFile(inputStream, temp);
+                    // 2: Here can throw IOE
                     return mapper.upload(temp, contentType, kinds);
                 } finally {
                     FileUtils.deleteQuietly(temp);
