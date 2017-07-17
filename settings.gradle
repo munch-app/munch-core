@@ -11,7 +11,7 @@ include 'service-search'
 include 'service-places'
 include 'service-articles'
 include 'service-instagram'
-include 'service-menus'
+// include 'service-menus'
 
 // Tier 2 Service Api
 include 'service-images'

@@ -232,6 +232,11 @@ public class RestfulRequest {
         try {
             return new RestfulResponse(this, request.asBinary(), handler);
         } catch (Exception e) {
+            // If is structured error just throw
+            if (e instanceof StructuredException) {
+                throw (StructuredException) e;
+            }
+
             // Try parse error
             OfflineException.parse(e);
             TimeoutException.parse(e);
