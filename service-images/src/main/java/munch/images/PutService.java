@@ -20,6 +20,7 @@ import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.Request;
@@ -146,24 +147,26 @@ public class PutService implements JsonService {
         try {
             URL url = new URL(urlString);
             // Open connect download and return
-            return retriable.loop(() -> {
+            Pair<File, String> filePair = retriable.loop(() -> {
                 URLConnection connection = url.openConnection();
                 connection.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36");
-
-                // Validate is allowed content type
-                // 1: Here can throw IOE
-                String contentType = connection.getContentType();
-                if (!contentTypes.contains(contentType)) throw new NotImageException(contentType);
 
                 File temp = File.createTempFile(RandomStringUtils.randomAlphabetic(20), ".tmp");
                 try (InputStream inputStream = connection.getInputStream()) {
                     FileUtils.copyInputStreamToFile(inputStream, temp);
-                    // 2: Here can throw IOE
-                    return mapper.upload(temp, contentType, kinds);
-                } finally {
-                    FileUtils.deleteQuietly(temp);
+
+                    // Validate is allowed content type
+                    String contentType = connection.getContentType();
+                    if (!contentTypes.contains(contentType)) throw new NotImageException(contentType);
+                    return Pair.of(temp, contentType);
                 }
             });
+
+            try {
+                return mapper.upload(filePair.getLeft(), filePair.getRight(), kinds);
+            } finally {
+                FileUtils.deleteQuietly(filePair.getLeft());
+            }
         } catch (Exception ioe) {
             throw new ImagePutException("Failed to put image for url: " + urlString + ", error: " + ioe.getMessage());
         }

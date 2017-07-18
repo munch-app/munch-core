@@ -24,7 +24,7 @@ public class JsonTransformer implements ResponseTransformer {
     static final JsonNode Meta404 =
             objectMapper.createObjectNode()
                     .set("meta", objectMapper.valueToTree(RestfulMeta.builder()
-                            .code(404)));
+                            .code(404).build()));
 
     private static final String Meta200String = toJson(Meta200);
     private static final String Meta404String = toJson(Meta404);
