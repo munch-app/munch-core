@@ -33,7 +33,7 @@ public class FakeModule extends AbstractModule {
         if (config.hasPath("fake.s3.public-endpoint")) {
             // Some bug, too lazy to debug
             String endpoint = config.getString("fake.s3.public-endpoint");
-            return key -> endpoint + "/fake-s3/" + bucket + "/" + key;
+            return key -> endpoint + "/" + key;
         }
         String endpoint = config.getString("fake.s3.endpoint");
         return key -> endpoint + "/" + bucket + "/" + key;
