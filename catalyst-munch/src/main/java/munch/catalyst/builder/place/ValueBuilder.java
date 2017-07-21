@@ -13,7 +13,7 @@ import java.util.*;
  * Time: 4:23 PM
  * Project: munch-core
  */
-public final class ValueBuilder implements TypeBuilder {
+public class ValueBuilder implements TypeBuilder {
     private static final Logger logger = LoggerFactory.getLogger(ValueBuilder.class);
 
     private Map<String, Map<String, Integer>> keyValueCount = new HashMap<>();

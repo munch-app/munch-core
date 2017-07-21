@@ -19,6 +19,9 @@ import java.util.List;
 @Singleton
 public class ExplicitLocationCurator extends TabCurator {
 
+    /**
+     * Curator with LocationPolygon
+     */
     @Inject
     protected ExplicitLocationCurator(SearchClient searchClient) {
         super(searchClient);

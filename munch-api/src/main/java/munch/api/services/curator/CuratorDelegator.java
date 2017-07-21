@@ -42,6 +42,7 @@ public final class CuratorDelegator {
      * @see CuratorModule
      */
     private List<SearchCollection> curate(SearchQuery query, @Nullable LatLng latLng) {
+        // Safety Override, for scenario where from, size is not send and is required
         query.setFrom(0);
         query.setSize(15);
 

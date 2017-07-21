@@ -21,6 +21,9 @@ import java.util.List;
 @Singleton
 public class NonTabCurator extends Curator {
 
+    /**
+     * For Complex Query
+     */
     @Inject
     protected NonTabCurator(SearchClient searchClient) {
         super(searchClient);

@@ -11,6 +11,7 @@ import munch.search.data.SearchQuery;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created By: Fuxing Loh
@@ -90,10 +91,10 @@ public class PlaceBoolQuery {
         }
 
         // Filter distance
-        if (filter.getDistance() != null && filter.getDistance().getLatLng() != null) {
-            if (filter.getDistance().getMin() != null || filter.getDistance().getMax() != null) {
-                filterArray.add(filterDistanceRange(
-                        filter.getDistance().getLatLng(), filter.getDistance().getMin(), filter.getDistance().getMax()));
+        if (filter.getDistance() != null) {
+            SearchQuery.Filter.Distance dist = filter.getDistance();
+            if (dist.getMin() != null && dist.getMax() != null && dist.getLatLng() != null) {
+                filterArray.add(filterDistanceRange(filter.getDistance()));
             }
         }
 
@@ -133,13 +134,23 @@ public class PlaceBoolQuery {
      * @return JsonNode = { "geo_distance": { "distance": "1km", "location.latLng": "-12,23"}}
      */
     private JsonNode filterDistance(String latLng, String distance) {
-        ObjectNode geoDistance = mapper.createObjectNode();
-        geoDistance.put("distance", distance);
-        geoDistance.put("location.latLng", latLng);
+        ObjectNode geoDistance = mapper.createObjectNode()
+                .put("distance", distance)
+                .put("location.latLng", latLng);
 
         ObjectNode filter = mapper.createObjectNode();
         filter.set("geo_distance", geoDistance);
         return filter;
+    }
+
+    /**
+     * Convenience method to create distance range
+     *
+     * @param distance distance filter
+     * @return { "geo_distance_range": { "from": "1km", "to": "2km", "location.latLng": "-12,23"}}
+     */
+    private JsonNode filterDistanceRange(SearchQuery.Filter.Distance distance) {
+        return filterDistanceRange(distance.getLatLng(), distance.getMin(), distance.getMax());
     }
 
     /**
@@ -151,12 +162,17 @@ public class PlaceBoolQuery {
      * @return JsonNode = { "geo_distance_range": { "from": "1km", "to": "2km", "location.latLng": "-12,23"}}
      */
     private JsonNode filterDistanceRange(String latLng, Integer min, Integer max) {
-        ObjectNode geoDistance = mapper.createObjectNode()
-                .put("location.latLng", latLng);
-        if (min != null) geoDistance.put("from", min + "m");
-        if (max != null) geoDistance.put("to", max + "m");
+        Objects.requireNonNull(min);
+        Objects.requireNonNull(max);
 
-        return mapper.createObjectNode().set("geo_distance_range", geoDistance);
+        ObjectNode geoDistance = mapper.createObjectNode()
+                .put("location.latLng", latLng)
+                .put("from", min + "m")
+                .put("to", max + "m");
+
+        ObjectNode filter = mapper.createObjectNode();
+        filter.set("geo_distance_range", geoDistance);
+        return filter;
     }
 
     /**
