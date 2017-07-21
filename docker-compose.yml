@@ -22,6 +22,8 @@ services:
       - DATABASE_USERNAME=postgres
       - DATABASE_PASSWORD=K851xsSffyTJP3e1M7rd
       - DATABASE_AUTO_CREATE=true
+    ports:
+      - "8704:8000"
   articles:
     image: munch-core/service-articles
     environment:
@@ -30,7 +32,8 @@ services:
       - DATABASE_PASSWORD=K851xsSffyTJP3e1M7rd
       - DATABASE_AUTO_CREATE=true
       - MUNCH_SERVICE_IMAGES_URL=http://images:8000
-
+    ports:
+      - "8703:8000"
   # Search Service
   munch-es:
     image: docker.elastic.co/elasticsearch/elasticsearch:5.5.0
@@ -64,6 +67,8 @@ services:
       - IMAGE_THUMBOR_ENDPOINT=http://thumbor:8000
       - IMAGE_FAKE_S3_ENDPOINT=http://fake-s3:4569
     env_file: H:/docker/munch-core.env
+    ports:
+      - "8702:8000"
   thumbor:
     image: apsl/thumbor
   fake-s3:

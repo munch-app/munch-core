@@ -18,7 +18,6 @@ import java.util.Objects;
  */
 @Singleton
 public class SortQuery {
-
     private final ObjectMapper mapper;
 
     @Inject
