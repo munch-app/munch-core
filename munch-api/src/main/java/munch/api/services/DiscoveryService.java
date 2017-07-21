@@ -11,6 +11,7 @@ import munch.api.data.SearchCollection;
 import munch.api.data.SearchQuery;
 import munch.api.services.curator.CuratorDelegator;
 import munch.restful.server.JsonCall;
+import org.apache.commons.lang3.text.WordUtils;
 
 import java.util.List;
 
@@ -75,7 +76,7 @@ public class DiscoveryService extends AbstractService {
         List<SearchCollection> collections = curatorDelegator.delegate(query, latLng);
 
         ObjectNode nodes = nodes(200, collections);
-        String street = nominatimClient.getStreet(latLng);
+        String street = WordUtils.capitalizeFully(nominatimClient.getStreet(latLng));
         nodes.putObject("street").put("name", street);
         return nodes;
     }

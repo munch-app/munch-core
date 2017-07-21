@@ -2,11 +2,13 @@ package munch.api.services.curator;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import munch.api.clients.NominatimClient;
 import munch.api.clients.SearchClient;
 import munch.api.data.LatLng;
 import munch.api.data.SearchCollection;
 import munch.api.data.SearchQuery;
 import munch.api.data.SearchResult;
+import org.apache.commons.lang3.text.WordUtils;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -21,12 +23,15 @@ import java.util.List;
 @Singleton
 public class NonTabCurator extends Curator {
 
+    private final NominatimClient nominatimClient;
+
     /**
      * For Complex Query
      */
     @Inject
-    protected NonTabCurator(SearchClient searchClient) {
+    protected NonTabCurator(SearchClient searchClient, NominatimClient nominatimClient) {
         super(searchClient);
+        this.nominatimClient = nominatimClient;
     }
 
     /**
@@ -46,8 +51,9 @@ public class NonTabCurator extends Curator {
             ImplicitLocationCurator.resolveLocation(query, latLng);
         }
         List<SearchResult> result = searchClient.search(query);
+        String street = WordUtils.capitalizeFully(nominatimClient.getStreet(latLng));
         // Wrap result into single collection
-        return Collections.singletonList(new SearchCollection(null, query, result));
+        return Collections.singletonList(new SearchCollection(street, query, result));
     }
 
     /**
