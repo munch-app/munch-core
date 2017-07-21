@@ -104,6 +104,22 @@ public class JsonCall {
     }
 
     /**
+     * @param name         name of query string
+     * @param defaultValue default long value if not found
+     * @return long value from query string
+     * @throws ParamException query param not found
+     */
+    public long queryLong(String name, long defaultValue) throws ParamException {
+        try {
+            String value = request.queryParams(name);
+            if (StringUtils.isBlank(value)) return defaultValue;
+            return Long.parseLong(value);
+        } catch (NumberFormatException e) {
+            throw new ParamException(name);
+        }
+    }
+
+    /**
      * @param name name of query string
      * @return integer value from query string
      * @throws ParamException query param not found
@@ -111,6 +127,22 @@ public class JsonCall {
     public int queryInt(String name) throws ParamException {
         try {
             String value = queryString(name);
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            throw new ParamException(name);
+        }
+    }
+
+    /**
+     * @param name         name of query string
+     * @param defaultValue default int value if not found
+     * @return int value from query string
+     * @throws ParamException query param not found
+     */
+    public int queryInt(String name, int defaultValue) throws ParamException {
+        try {
+            String value = request.queryParams(name);
+            if (StringUtils.isBlank(value)) return defaultValue;
             return Integer.parseInt(value);
         } catch (NumberFormatException e) {
             throw new ParamException(name);
@@ -132,6 +164,22 @@ public class JsonCall {
     }
 
     /**
+     * @param name         name of query string
+     * @param defaultValue default double value if not found
+     * @return double value from query string
+     * @throws ParamException query param not found
+     */
+    public double queryDouble(String name, double defaultValue) throws ParamException {
+        try {
+            String value = queryString(name);
+            if (StringUtils.isBlank(value)) return defaultValue;
+            return Double.parseDouble(value);
+        } catch (NumberFormatException e) {
+            throw new ParamException(name);
+        }
+    }
+
+    /**
      * Boolean query string by checking string.equal("true")
      *
      * @param name name of query string
@@ -139,6 +187,20 @@ public class JsonCall {
      * @throws ParamException query param not found
      */
     public boolean queryBool(String name) throws ParamException {
+        return Boolean.parseBoolean(queryString(name));
+    }
+
+    /**
+     * Boolean query string by checking string.equal("true")
+     *
+     * @param name         name of query string
+     * @param defaultValue default boolean value if not found
+     * @return boolean value from query string
+     * @throws ParamException query param not found
+     */
+    public boolean queryBool(String name, boolean defaultValue) throws ParamException {
+        String value = queryString(name);
+        if (StringUtils.isBlank(value)) return defaultValue;
         return Boolean.parseBoolean(queryString(name));
     }
 
