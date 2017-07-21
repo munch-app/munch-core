@@ -259,6 +259,16 @@ public interface JsonService extends RestfulService {
     }
 
     /**
+     * @param code code
+     * @return ObjectNode with meta
+     */
+    default ObjectNode nodes(int code) {
+        ObjectNode nodes = newNode();
+        nodes.set("meta", newNode().put("code", code));
+        return nodes;
+    }
+
+    /**
      * @param code   code for meta node
      * @param object object
      * @return object node with meta and data node
