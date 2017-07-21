@@ -198,14 +198,8 @@ public final class SearchQuery {
         public static class Hour {
         }
 
-        /**
-         * latLng: "lat, lng"
-         * min: in metres
-         * max: in metres
-         */
         public static class Distance {
             private String latLng;
-            private Integer min;
             private Integer max;
 
             public String getLatLng() {
@@ -224,14 +218,6 @@ public final class SearchQuery {
                 setLatLng(latLng.getString());
             }
 
-            public Integer getMin() {
-                return min;
-            }
-
-            public void setMin(Integer min) {
-                this.min = min;
-            }
-
             public Integer getMax() {
                 return max;
             }
@@ -243,6 +229,40 @@ public final class SearchQuery {
     }
 
     public static final class Sort {
+        private Distance distance;
+
+        public Distance getDistance() {
+            return distance;
+        }
+
+        public void setDistance(Distance distance) {
+            this.distance = distance;
+        }
+
+        /**
+         * latLng: "lat, lng"
+         * min: in metres
+         * max: in metres
+         */
+        public static class Distance {
+            private String latLng;
+
+            public String getLatLng() {
+                return latLng;
+            }
+
+            public void setLatLng(String latLng) {
+                this.latLng = latLng;
+            }
+
+            /**
+             * @param latLng latLng Object From munch-api
+             */
+            @JsonIgnore
+            public void setLatLng(LatLng latLng) {
+                setLatLng(latLng.getString());
+            }
+        }
     }
 
     @Override

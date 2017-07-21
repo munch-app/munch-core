@@ -11,7 +11,6 @@ import munch.search.data.SearchQuery;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Created By: Fuxing Loh
@@ -20,11 +19,11 @@ import java.util.Objects;
  * Project: munch-core
  */
 @Singleton
-public class PlaceBoolQuery {
+public class BoolQuery {
     private final ObjectMapper mapper;
 
     @Inject
-    public PlaceBoolQuery(ObjectMapper mapper) {
+    public BoolQuery(ObjectMapper mapper) {
         this.mapper = mapper;
     }
 
@@ -92,9 +91,9 @@ public class PlaceBoolQuery {
 
         // Filter distance
         if (filter.getDistance() != null) {
-            SearchQuery.Filter.Distance dist = filter.getDistance();
-            if (dist.getMin() != null && dist.getMax() != null && dist.getLatLng() != null) {
-                filterArray.add(filterDistanceRange(filter.getDistance()));
+            SearchQuery.Filter.Distance distance = filter.getDistance();
+            if (distance.getMax() != null && distance.getLatLng() != null) {
+                filterArray.add(filterDistance(distance.getLatLng(), distance.getMax()));
             }
         }
 
@@ -129,49 +128,17 @@ public class PlaceBoolQuery {
     /**
      * https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-geo-distance-query.html
      *
-     * @param latLng   center
-     * @param distance distance query
+     * @param latLng center
+     * @param max    distance query
      * @return JsonNode = { "geo_distance": { "distance": "1km", "location.latLng": "-12,23"}}
      */
-    private JsonNode filterDistance(String latLng, String distance) {
+    private JsonNode filterDistance(String latLng, Integer max) {
         ObjectNode geoDistance = mapper.createObjectNode()
-                .put("distance", distance)
+                .put("distance", max + "m")
                 .put("location.latLng", latLng);
 
         ObjectNode filter = mapper.createObjectNode();
         filter.set("geo_distance", geoDistance);
-        return filter;
-    }
-
-    /**
-     * Convenience method to create distance range
-     *
-     * @param distance distance filter
-     * @return { "geo_distance_range": { "from": "1km", "to": "2km", "location.latLng": "-12,23"}}
-     */
-    private JsonNode filterDistanceRange(SearchQuery.Filter.Distance distance) {
-        return filterDistanceRange(distance.getLatLng(), distance.getMin(), distance.getMax());
-    }
-
-    /**
-     * https://www.elastic.co/guide/en/elasticsearch/reference/5.4/query-dsl-geo-distance-range-query.html
-     *
-     * @param latLng center
-     * @param min    min distance
-     * @param max    max distance
-     * @return JsonNode = { "geo_distance_range": { "from": "1km", "to": "2km", "location.latLng": "-12,23"}}
-     */
-    private JsonNode filterDistanceRange(String latLng, Integer min, Integer max) {
-        Objects.requireNonNull(min);
-        Objects.requireNonNull(max);
-
-        ObjectNode geoDistance = mapper.createObjectNode()
-                .put("location.latLng", latLng)
-                .put("from", min + "m")
-                .put("to", max + "m");
-
-        ObjectNode filter = mapper.createObjectNode();
-        filter.set("geo_distance_range", geoDistance);
         return filter;
     }
 

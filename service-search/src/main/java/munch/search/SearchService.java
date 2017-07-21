@@ -12,9 +12,10 @@ import munch.restful.server.JsonService;
 import munch.search.data.Location;
 import munch.search.data.Place;
 import munch.search.data.SearchQuery;
+import munch.search.elastic.BoolQuery;
 import munch.search.elastic.ElasticClient;
 import munch.search.elastic.ElasticMarshaller;
-import munch.search.elastic.PlaceBoolQuery;
+import munch.search.elastic.SortQuery;
 
 import java.io.IOException;
 
@@ -28,14 +29,16 @@ import java.io.IOException;
 public class SearchService implements JsonService {
 
     private final ElasticClient client;
-    private final PlaceBoolQuery placeBoolQuery;
+    private final BoolQuery boolQuery;
+    private final SortQuery sortQuery;
     private final ElasticMarshaller marshaller;
     private final ObjectMapper mapper;
 
     @Inject
-    public SearchService(ElasticClient client, PlaceBoolQuery placeBoolQuery, ElasticMarshaller marshaller, ObjectMapper mapper) {
+    public SearchService(ElasticClient client, BoolQuery boolQuery, SortQuery sortQuery, ElasticMarshaller marshaller, ObjectMapper mapper) {
         this.client = client;
-        this.placeBoolQuery = placeBoolQuery;
+        this.boolQuery = boolQuery;
+        this.sortQuery = sortQuery;
         this.marshaller = marshaller;
         this.mapper = mapper;
     }
@@ -63,8 +66,9 @@ public class SearchService implements JsonService {
         SearchQuery query = call.bodyAsObject(SearchQuery.class);
         SearchQuery.validateFix(query);
 
-        JsonNode boolQuery = placeBoolQuery.make(query);
-        JsonNode result = client.postBoolSearch("place", query.getFrom(), query.getSize(), boolQuery);
+        JsonNode boolNode = this.boolQuery.make(query);
+        JsonNode sortNode = this.sortQuery.make(query);
+        JsonNode result = client.postBoolSearch("place", query.getFrom(), query.getSize(), boolNode, sortNode);
         JsonNode hits = result.path("hits");
 
         // Return data: [] with total: Integer & linked: {} object

@@ -90,11 +90,25 @@ public final class ElasticClient {
      * @throws IOException exception
      */
     public JsonNode postBoolSearch(String type, int from, int size, JsonNode boolQuery) throws IOException {
+        return postBoolSearch(type, from, size, boolQuery, null);
+    }
+
+
+    /**
+     * @param type      type to focus
+     * @param from      page from
+     * @param size      page size
+     * @param boolQuery bool query node
+     * @param sort      sort nodes
+     * @return JsonNode
+     * @throws IOException exception
+     */
+    public JsonNode postBoolSearch(String type, int from, int size, JsonNode boolQuery, @Nullable JsonNode sort) throws IOException {
         ObjectNode root = mapper.createObjectNode();
-        root.put("from", from)
-                .put("size", size)
-                .putObject("query")
-                .set("bool", boolQuery);
+        root.put("from", from);
+        root.put("size", size);
+        root.putObject("query").set("bool", boolQuery);
+        if (sort != null) root.set("sort", sort);
 
         return postSearch(type, root);
     }

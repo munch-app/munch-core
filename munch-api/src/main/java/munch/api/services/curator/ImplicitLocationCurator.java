@@ -40,7 +40,6 @@ public class ImplicitLocationCurator extends TabCurator {
         if (query.getLocation() != null) {
             // Points Array not Null
             if (query.getLocation().getPoints() != null) {
-
                 if (query.getLocation().getPoints().size() > 2) return false;
             }
         }
@@ -58,18 +57,23 @@ public class ImplicitLocationCurator extends TabCurator {
      * @param latLng user current location
      */
     public static void resolveLocation(SearchQuery query, @Nullable LatLng latLng) {
+        if (query.getSort() == null) query.setSort(new SearchQuery.Sort());
+        if (query.getFilter() == null) query.setFilter(new SearchQuery.Filter());
+
+        if (query.getSort().getDistance() == null) {
+            query.getSort().setDistance(new SearchQuery.Sort.Distance());
+        }
+        if (query.getFilter().getDistance() == null) {
+            query.getFilter().setDistance(new SearchQuery.Filter.Distance());
+        }
+
+
         // Has no explicit location but has implicit location
         if (latLng != null) {
-            if (query.getFilter() == null) query.setFilter(new SearchQuery.Filter());
-            if (query.getFilter().getDistance() == null) {
-                query.getFilter().setDistance(new SearchQuery.Filter.Distance());
-            }
-
-            SearchQuery.Filter.Distance distance = query.getFilter().getDistance();
-            distance.setLatLng(latLng);
-            // 0 - 1000 Metres of Radius
-            distance.setMin(0);
-            distance.setMax(1000);
+            query.getSort().getDistance().setLatLng(latLng);
+            query.getFilter().getDistance().setLatLng(latLng);
+            // Of 1000 meters
+            query.getFilter().getDistance().setMax(2000);
         }
     }
 }

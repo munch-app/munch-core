@@ -195,14 +195,8 @@ public final class SearchQuery {
             // Not Yet Implemented
         }
 
-        /**
-         * latLng: "lat, lng"
-         * min: in metres
-         * max: in metres
-         */
         public static class Distance {
             private String latLng;
-            private Integer min;
             private Integer max;
 
             public String getLatLng() {
@@ -211,14 +205,6 @@ public final class SearchQuery {
 
             public void setLatLng(String latLng) {
                 this.latLng = latLng;
-            }
-
-            public Integer getMin() {
-                return min;
-            }
-
-            public void setMin(Integer min) {
-                this.min = min;
             }
 
             public Integer getMax() {
@@ -232,7 +218,32 @@ public final class SearchQuery {
     }
 
     public static final class Sort {
-        // Not Yet Implemented
+        private Distance distance;
+
+        public Distance getDistance() {
+            return distance;
+        }
+
+        public void setDistance(Distance distance) {
+            this.distance = distance;
+        }
+
+        /**
+         * latLng: "lat, lng"
+         * min: in metres
+         * max: in metres
+         */
+        public static class Distance {
+            private String latLng;
+
+            public String getLatLng() {
+                return latLng;
+            }
+
+            public void setLatLng(String latLng) {
+                this.latLng = latLng;
+            }
+        }
     }
 
     @Override
