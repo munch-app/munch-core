@@ -1,5 +1,6 @@
 package munch.api.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -213,6 +214,14 @@ public final class SearchQuery {
 
             public void setLatLng(String latLng) {
                 this.latLng = latLng;
+            }
+
+            /**
+             * @param latLng latLng Object From munch-api
+             */
+            @JsonIgnore
+            public void setLatLng(LatLng latLng) {
+                setLatLng(latLng.getString());
             }
 
             public Integer getMin() {

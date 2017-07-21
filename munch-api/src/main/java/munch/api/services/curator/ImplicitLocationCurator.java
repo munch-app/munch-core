@@ -62,7 +62,7 @@ public class ImplicitLocationCurator extends TabCurator {
             }
             if (query.getFilter().getDistance() == null) {
                 SearchQuery.Filter.Distance distance = new SearchQuery.Filter.Distance();
-                distance.setLatLng(latLng.toString());
+                distance.setLatLng(latLng);
                 // 0 - 1000 Metres of Radius
                 distance.setMin(0);
                 distance.setMax(1000);

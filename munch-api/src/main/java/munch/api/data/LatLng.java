@@ -48,4 +48,11 @@ public final class LatLng {
     public String getString() {
         return lat + "," + lng;
     }
+
+    /**
+     * @return "lat, lng"
+     */
+    public String toString() {
+        return getString();
+    }
 }
