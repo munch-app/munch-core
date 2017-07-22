@@ -36,8 +36,9 @@ public class SortQuery {
         SearchQuery.Sort sort = query.getSort();
 
         // Distance sort
-        if (sort.getDistance() != null) {
-            sortArray.add(sortDistance(sort.getDistance().getLatLng()));
+        SearchQuery.Sort.Distance distance = sort.getDistance();
+        if (distance != null && distance.getLatLng() != null) {
+            sortArray.add(sortDistance(distance.getLatLng()));
         }
         return sortArray;
     }
