@@ -21,17 +21,20 @@ import java.util.Set;
 public final class ApiServer extends RestfulServer {
 
     private final Config config;
+    private final SupportedVersions supportedVersions;
 
     @Inject
-    public ApiServer(Set<RestfulService> routers, Config config) {
+    public ApiServer(Set<RestfulService> routers, Config config, SupportedVersions supportedVersions) {
         super(routers);
         this.config = config;
+        this.supportedVersions = supportedVersions;
     }
 
     @Override
     protected void setupRouters() {
-        Spark.path(config.getString("version"), () -> {
-            super.setupRouters();
-        });
+        // Validate that version is supported
+        Spark.before((req, res) -> supportedVersions.validate(req));
+
+        Spark.path(config.getString("version"), () -> super.setupRouters());
     }
 }

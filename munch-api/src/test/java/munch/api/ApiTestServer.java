@@ -29,7 +29,7 @@ public interface ApiTestServer {
         Injector injector = injector(modules);
         T endpoint = injector.getInstance(type);
 
-        ApiServer apiServer = new ApiServer(Collections.set(endpoint), injector.getInstance(Config.class));
+        ApiServer apiServer = new ApiServer(Collections.set(endpoint), injector.getInstance(Config.class), supportedVersions);
         apiServer.start(DEFAULT_PORT);
     }
 
