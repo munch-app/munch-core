@@ -24,8 +24,8 @@ public final class SupportedVersions {
 
     @Inject
     public SupportedVersions(Config config) {
-        this.supportedVersions = ImmutableSet.copyOf(config.getString("api.supported.versions").split(","));
-        this.supportedBuilds = ImmutableSet.copyOf(config.getString("api.supported.builds").split(","));
+        this.supportedVersions = ImmutableSet.copyOf(config.getString("supported.versions").split(","));
+        this.supportedBuilds = ImmutableSet.copyOf(config.getString("supported.builds").split(","));
     }
 
     public void validate(Request request) {
