@@ -1,6 +1,7 @@
 package munch.api;
 
 import com.google.common.collect.ImmutableSet;
+import com.typesafe.config.Config;
 import munch.api.exception.UnsupportedException;
 import spark.Request;
 
@@ -17,8 +18,13 @@ public final class SupportedVersions {
     public static final String HEADER_VERSION = "Application-Version";
     public static final String HEADER_BUILD = "Application-Build";
 
-    private static final ImmutableSet<String> supportedVersions = ImmutableSet.of("0.1");
-    private static final ImmutableSet<String> supportedBuilds = ImmutableSet.of("6");
+    private final ImmutableSet<String> supportedVersions;
+    private final ImmutableSet<String> supportedBuilds;
+
+    public SupportedVersions(Config config) {
+        this.supportedVersions = ImmutableSet.copyOf(config.getString("api.supported.versions").split(","));
+        this.supportedBuilds = ImmutableSet.copyOf(config.getString("api.supported.builds").split(","));
+    }
 
     public void validate(Request request) {
         String version = request.headers(HEADER_VERSION);

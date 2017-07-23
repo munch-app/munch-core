@@ -39,7 +39,7 @@ public abstract class TabCurator extends Curator {
         List<SearchResult> results = query(query, latLng);
 
         List<SearchCollection> collections = new ArrayList<>();
-        collections.add(new SearchCollection("NEARBY", query, results));
+        collections.add(new SearchCollection("HIGHLIGHT", query, results));
 
         collections.addAll(categorize(query, results, TAB_SIZE, TAB_MIN_RESULT_SIZE));
         return collections;
