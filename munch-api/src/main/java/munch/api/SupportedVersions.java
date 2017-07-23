@@ -5,6 +5,7 @@ import com.typesafe.config.Config;
 import munch.api.exception.UnsupportedException;
 import spark.Request;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
@@ -21,6 +22,7 @@ public final class SupportedVersions {
     private final ImmutableSet<String> supportedVersions;
     private final ImmutableSet<String> supportedBuilds;
 
+    @Inject
     public SupportedVersions(Config config) {
         this.supportedVersions = ImmutableSet.copyOf(config.getString("api.supported.versions").split(","));
         this.supportedBuilds = ImmutableSet.copyOf(config.getString("api.supported.builds").split(","));
