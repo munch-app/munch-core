@@ -192,6 +192,7 @@ public class Place implements SearchResult {
         private String address;
         private String unitNumber;
         private String building;
+        private String nearestTrain;
 
         private String city;
         private String country;
@@ -221,6 +222,14 @@ public class Place implements SearchResult {
 
         public void setBuilding(String building) {
             this.building = building;
+        }
+
+        public String getNearestTrain() {
+            return nearestTrain;
+        }
+
+        public void setNearestTrain(String nearestTrain) {
+            this.nearestTrain = nearestTrain;
         }
 
         public String getUnitNumber() {
