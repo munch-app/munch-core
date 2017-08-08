@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.typesafe.config.ConfigFactory;
 import munch.restful.core.RestfulMeta;
 import munch.restful.core.exception.CodeException;
 import munch.restful.core.exception.StructuredException;
@@ -13,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import spark.Response;
 import spark.Spark;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -50,6 +53,16 @@ public class RestfulServer {
      */
     public RestfulServer(Set<RestfulService> routers) {
         this(routers.toArray(new RestfulService[routers.size()]));
+    }
+
+    /**
+     * Start restful server with default port in the config = http.port
+     * Port number can also be injected in the env as: HTTP_PORT
+     *
+     * @see RestfulServer#start()
+     */
+    public void start() {
+        start(ConfigFactory.load().getInt("http.port"));
     }
 
     /**
@@ -188,5 +201,24 @@ public class RestfulServer {
      */
     public int getPort() {
         return Spark.port();
+    }
+
+    /**
+     * Easy way to start a service in a server with the default port
+     * <p>
+     * Start restful server with default port in the config = http.port
+     * Port number can also be injected in the env as: HTTP_PORT
+     *
+     * @param service  single service to start
+     * @param services any other services to start
+     * @return started RestfulServer
+     */
+    public static RestfulServer start(RestfulService service, RestfulService... services) {
+        Set<RestfulService> serviceSet = new HashSet<>(Arrays.asList(services));
+        serviceSet.add(service);
+
+        RestfulServer server = new RestfulServer(serviceSet);
+        server.start();
+        return server;
     }
 }
