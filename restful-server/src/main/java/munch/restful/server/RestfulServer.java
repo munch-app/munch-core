@@ -151,13 +151,14 @@ public class RestfulServer {
 
         logger.info("Adding exception handling for all Exception.");
         Spark.exception(Exception.class, (exception, request, response) -> {
-            logger.warn("Structured exception thrown", exception);
             try {
                 mapException(exception);
                 // Unknown exception
+                logger.warn("Unknown exception thrown", exception);
                 handleException(response, new UnknownException(exception));
             } catch (StructuredException structured) {
                 // Mapped exception
+                logger.warn("Structured exception thrown", exception);
                 handleException(response, structured);
             }
         });
