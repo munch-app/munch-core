@@ -7,7 +7,6 @@ import com.google.inject.Provides;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import munch.articles.hibernate.PostgresModule;
-import munch.clients.ClientModule;
 import munch.restful.server.RestfulServer;
 
 /**
@@ -21,7 +20,6 @@ public class ArticleModule extends AbstractModule {
     @Override
     protected void configure() {
         install(new PostgresModule());
-        install(new ClientModule());
     }
 
     @Provides
@@ -31,8 +29,6 @@ public class ArticleModule extends AbstractModule {
 
     public static void main(String[] args) {
         Injector injector = Guice.createInjector(new ArticleModule());
-        // Start server on default port in setting = http.port
-        final RestfulServer server = injector.getInstance(ArticleApi.class);
-        server.start(ConfigFactory.load().getInt("http.port"));
+        RestfulServer.start(injector.getInstance(ArticleService.class));
     }
 }

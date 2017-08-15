@@ -1,4 +1,4 @@
-package munch.api.data;
+package munch.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -209,13 +209,6 @@ public final class SearchQuery {
                 this.latLng = latLng;
             }
 
-            /**
-             * @param latLng latLng Object From munch-api
-             */
-            public void setLatLng(LatLng latLng) {
-                setLatLng(latLng.getString());
-            }
-
             public Integer getMax() {
                 return max;
             }
@@ -251,13 +244,6 @@ public final class SearchQuery {
 
             public void setLatLng(String latLng) {
                 this.latLng = latLng;
-            }
-
-            /**
-             * @param latLng latLng Object From munch-api
-             */
-            public void setLatLng(LatLng latLng) {
-                setLatLng(latLng.getString());
             }
         }
     }

@@ -35,6 +35,6 @@ public final class ApiServer extends RestfulServer {
         // Validate that version is supported
         Spark.before((req, res) -> supportedVersions.validate(req));
 
-        Spark.path(config.getString("version"), () -> super.setupRouters());
+        Spark.path(config.getString("api.version"), () -> super.setupRouters());
     }
 }

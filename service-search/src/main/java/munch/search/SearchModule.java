@@ -5,7 +5,6 @@ import com.google.inject.*;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import munch.restful.server.JsonService;
-import munch.restful.server.RestfulServer;
 import munch.search.elastic.ElasticModule;
 
 /**
@@ -34,8 +33,7 @@ public class SearchModule extends AbstractModule {
 
     public static void main(String[] args) {
         Injector injector = Guice.createInjector(new SearchModule());
-        final RestfulServer server = injector.getInstance(SearchApi.class);
-        server.start(ConfigFactory.load().getInt("http.port"));
+        injector.getInstance(SearchApi.class).start();
     }
 }
 

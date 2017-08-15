@@ -3,9 +3,9 @@ package munch.api.services.curator;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.clients.SearchClient;
-import munch.api.data.LatLng;
-import munch.api.data.SearchQuery;
-import munch.api.data.SearchResult;
+import munch.api.services.AbstractService;
+import munch.data.SearchQuery;
+import munch.data.SearchResult;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -25,7 +25,7 @@ public class ImplicitLocationCurator extends TabCurator {
     }
 
     @Override
-    public List<SearchResult> query(SearchQuery query, LatLng latLng) {
+    public List<SearchResult> query(SearchQuery query, AbstractService.LatLng latLng) {
         query.setFrom(0);
         query.setSize(SEARCH_SIZE);
         resolveLocation(query, latLng);
@@ -33,7 +33,7 @@ public class ImplicitLocationCurator extends TabCurator {
     }
 
     @Override
-    public boolean match(SearchQuery query, @Nullable LatLng latLng) {
+    public boolean match(SearchQuery query, @Nullable AbstractService.LatLng latLng) {
         // Non complex query
         if (isComplex(query)) return false;
         // Check Location not Null
@@ -56,7 +56,7 @@ public class ImplicitLocationCurator extends TabCurator {
      * @param query  search query
      * @param latLng user current location
      */
-    public static void resolveLocation(SearchQuery query, @Nullable LatLng latLng) {
+    public static void resolveLocation(SearchQuery query, @Nullable AbstractService.LatLng latLng) {
         if (query.getSort() == null) query.setSort(new SearchQuery.Sort());
         if (query.getFilter() == null) query.setFilter(new SearchQuery.Filter());
 
@@ -70,8 +70,8 @@ public class ImplicitLocationCurator extends TabCurator {
 
         // Has no explicit location but has implicit location
         if (latLng != null) {
-            query.getSort().getDistance().setLatLng(latLng);
-            query.getFilter().getDistance().setLatLng(latLng);
+            query.getSort().getDistance().setLatLng(latLng.toString());
+            query.getFilter().getDistance().setLatLng(latLng.toString());
             // Of 1000 meters
             query.getFilter().getDistance().setMax(2000);
         }

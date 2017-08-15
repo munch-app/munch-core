@@ -2,11 +2,10 @@ package munch.api.clients;
 
 import com.google.inject.Singleton;
 import com.typesafe.config.Config;
-import munch.api.data.Article;
+import munch.data.Article;
 import munch.restful.client.RestfulClient;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import java.util.List;
 
 /**
@@ -19,8 +18,8 @@ import java.util.List;
 public final class ArticleClient extends RestfulClient {
 
     @Inject
-    public ArticleClient(@Named("services") Config config) {
-        super(config.getString("articles.url"));
+    public ArticleClient(Config config) {
+        super(config.getString("services.articles.url"));
     }
 
     /**

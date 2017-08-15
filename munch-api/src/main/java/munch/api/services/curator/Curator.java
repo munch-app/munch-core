@@ -3,9 +3,9 @@ package munch.api.services.curator;
 import com.google.inject.Inject;
 import com.rits.cloning.Cloner;
 import munch.api.clients.SearchClient;
-import munch.api.data.LatLng;
-import munch.api.data.SearchCollection;
-import munch.api.data.SearchQuery;
+import munch.api.services.AbstractService;
+import munch.data.SearchCollection;
+import munch.data.SearchQuery;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
@@ -32,14 +32,14 @@ public abstract class Curator {
      * @param latLng nullable latLng (user physical location in latLng)
      * @return true if current curator can return results
      */
-    public abstract boolean match(SearchQuery query, @Nullable LatLng latLng);
+    public abstract boolean match(SearchQuery query, @Nullable AbstractService.LatLng latLng);
 
     /**
      * @param query  mandatory query in search bar
      * @param latLng nullable latLng (user physical location in latLng)
      * @return Curated List of PlaceCollection
      */
-    public abstract List<SearchCollection> curate(SearchQuery query, @Nullable LatLng latLng);
+    public abstract List<SearchCollection> curate(SearchQuery query, @Nullable AbstractService.LatLng latLng);
 
     /**
      * @param query query to clone

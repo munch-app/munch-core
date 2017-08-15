@@ -2,11 +2,10 @@ package munch.api.clients;
 
 import com.google.inject.Singleton;
 import com.typesafe.config.Config;
-import munch.api.data.InstagramMedia;
+import munch.data.InstagramMedia;
 import munch.restful.client.RestfulClient;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import java.util.List;
 
 /**
@@ -19,8 +18,8 @@ import java.util.List;
 public class InstagramClient extends RestfulClient {
 
     @Inject
-    public InstagramClient(@Named("services") Config config) {
-        super(config.getString("instagram.url"));
+    public InstagramClient(Config config) {
+        super(config.getString("services.instagram.url"));
     }
 
     /**

@@ -1,11 +1,10 @@
 package munch.api.clients;
 
 import com.typesafe.config.Config;
-import munch.api.data.Place;
+import munch.data.Place;
 import munch.restful.client.RestfulClient;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.List;
 
@@ -19,8 +18,8 @@ import java.util.List;
 public class PlaceClient extends RestfulClient {
 
     @Inject
-    public PlaceClient(@Named("services") Config config) {
-        super(config.getString("places.url"));
+    public PlaceClient(Config config) {
+        super(config.getString("services.places.url"));
     }
 
     /**

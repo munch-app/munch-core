@@ -3,11 +3,11 @@ package munch.api.services.curator;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.clients.SearchClient;
-import munch.api.data.LatLng;
-import munch.api.data.Location;
-import munch.api.data.SearchCollection;
-import munch.api.data.SearchQuery;
+import munch.api.services.AbstractService;
 import munch.api.services.cached.StaticJsonResource;
+import munch.data.Location;
+import munch.data.SearchCollection;
+import munch.data.SearchQuery;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -36,7 +36,7 @@ public class SingaporeCurator extends Curator {
     }
 
     @Override
-    public boolean match(SearchQuery query, @Nullable LatLng latLng) {
+    public boolean match(SearchQuery query, @Nullable AbstractService.LatLng latLng) {
         return latLng == null && query.getLocation() == null;
     }
 
@@ -51,7 +51,7 @@ public class SingaporeCurator extends Curator {
      * @return Curated List of PlaceCollection
      */
     @Override
-    public List<SearchCollection> curate(SearchQuery source, @Nullable LatLng latLng) {
+    public List<SearchCollection> curate(SearchQuery source, @Nullable AbstractService.LatLng latLng) {
         List<SearchCollection> collections = new ArrayList<>();
 
         // If query is empty: means location collections

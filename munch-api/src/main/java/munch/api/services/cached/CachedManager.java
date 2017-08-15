@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import munch.api.data.Location;
+import munch.data.Location;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.IOException;

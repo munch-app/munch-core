@@ -10,7 +10,6 @@ import com.typesafe.config.ConfigFactory;
 import munch.api.clients.ClientModule;
 import munch.api.services.ServiceModule;
 import munch.restful.server.JsonService;
-import munch.restful.server.RestfulServer;
 
 /**
  * Created by: Fuxing
@@ -33,7 +32,7 @@ public class ApiModule extends AbstractModule {
 
     @Provides
     Config provideConfig() {
-        return ConfigFactory.load().getConfig("api");
+        return ConfigFactory.load();
     }
 
     /**
@@ -43,7 +42,6 @@ public class ApiModule extends AbstractModule {
      */
     public static void main(String[] args) {
         Injector injector = Guice.createInjector(new ApiModule());
-        final RestfulServer server = injector.getInstance(ApiServer.class);
-        server.start(ConfigFactory.load().getInt("http.port"));
+        injector.getInstance(ApiServer.class).start();
     }
 }

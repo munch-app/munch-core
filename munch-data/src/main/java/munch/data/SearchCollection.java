@@ -1,4 +1,4 @@
-package munch.api.data;
+package munch.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -16,7 +16,7 @@ import java.util.List;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SearchCollection {
+public final class SearchCollection {
     private String name;
     private SearchQuery query;
     private List<SearchResult> results;

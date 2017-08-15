@@ -4,10 +4,10 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.clients.NominatimClient;
 import munch.api.clients.SearchClient;
-import munch.api.data.LatLng;
-import munch.api.data.SearchCollection;
-import munch.api.data.SearchQuery;
-import munch.api.data.SearchResult;
+import munch.api.services.AbstractService;
+import munch.data.SearchCollection;
+import munch.data.SearchQuery;
+import munch.data.SearchResult;
 import org.apache.commons.lang3.text.WordUtils;
 
 import javax.annotation.Nullable;
@@ -40,12 +40,12 @@ public class NonTabCurator extends Curator {
      * @return true if search query contains complex query
      */
     @Override
-    public boolean match(SearchQuery query, @Nullable LatLng latLng) {
+    public boolean match(SearchQuery query, @Nullable AbstractService.LatLng latLng) {
         return isComplex(query);
     }
 
     @Override
-    public List<SearchCollection> curate(SearchQuery query, @Nullable LatLng latLng) {
+    public List<SearchCollection> curate(SearchQuery query, @Nullable AbstractService.LatLng latLng) {
         // Resolve implicit location if need to
         if (hasNoExplicitLocation(query, latLng)) {
             ImplicitLocationCurator.resolveLocation(query, latLng);
@@ -61,7 +61,7 @@ public class NonTabCurator extends Curator {
      * @param latLng user location in latLng
      * @return true if no explicit location
      */
-    private boolean hasNoExplicitLocation(SearchQuery query, @Nullable LatLng latLng) {
+    private boolean hasNoExplicitLocation(SearchQuery query, @Nullable AbstractService.LatLng latLng) {
         if (query.getLocation() == null) return true;
         if (query.getLocation().getPoints() == null) return true;
         // Less than 3 points is implicit location

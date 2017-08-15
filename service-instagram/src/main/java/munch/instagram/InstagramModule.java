@@ -30,7 +30,6 @@ public final class InstagramModule extends AbstractModule {
     public static void main(String[] args) {
         // Start server on default port in setting = http.port
         Injector injector = Guice.createInjector(new InstagramModule());
-        final RestfulServer server = injector.getInstance(InstagramApi.class);
-        server.start(ConfigFactory.load().getInt("http.port"));
+        RestfulServer.start(injector.getInstance(MediaService.class));
     }
 }

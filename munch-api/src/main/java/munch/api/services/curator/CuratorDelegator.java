@@ -3,9 +3,9 @@ package munch.api.services.curator;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.clients.SearchClient;
-import munch.api.data.LatLng;
-import munch.api.data.SearchCollection;
-import munch.api.data.SearchQuery;
+import munch.api.services.AbstractService;
+import munch.data.SearchCollection;
+import munch.data.SearchQuery;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -41,7 +41,7 @@ public final class CuratorDelegator {
      * @return Curated List of PlaceCollection
      * @see CuratorModule
      */
-    private List<SearchCollection> curate(SearchQuery query, @Nullable LatLng latLng) {
+    private List<SearchCollection> curate(SearchQuery query, @Nullable AbstractService.LatLng latLng) {
         // Safety Override, for scenario where from, size is not send and is required
         query.setFrom(0);
         query.setSize(15);
@@ -63,7 +63,7 @@ public final class CuratorDelegator {
      * @param latLng nullable latLng (user physical location in latLng)
      * @return Curated List of PlaceCollection
      */
-    public List<SearchCollection> delegate(SearchQuery query, @Nullable LatLng latLng) {
+    public List<SearchCollection> delegate(SearchQuery query, @Nullable AbstractService.LatLng latLng) {
         SearchQuery cloned = Curator.clone(query);
         List<SearchCollection> collections = curate(cloned, latLng);
         if (collections.isEmpty()) return collections;

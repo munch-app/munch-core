@@ -23,5 +23,4 @@ public class ServiceModule extends AbstractModule {
         routerBinder.addBinding().to(LocationService.class);
         routerBinder.addBinding().to(CachedSyncService.class);
     }
-
 }

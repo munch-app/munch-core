@@ -1,4 +1,5 @@
 dependencies {
+    compile project(':munch-data')
     compile project(':restful-server')
     compile project(':restful-client')
 

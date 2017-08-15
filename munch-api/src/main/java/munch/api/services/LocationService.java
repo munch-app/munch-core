@@ -5,8 +5,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.clients.NominatimClient;
 import munch.api.clients.SearchClient;
-import munch.api.data.LatLng;
-import munch.api.data.Location;
+import munch.data.Location;
 import munch.restful.server.JsonCall;
 
 import java.util.List;

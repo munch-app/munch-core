@@ -3,6 +3,9 @@ rootProject.name = 'munch-core'
 // Munch catalyst task for updating munch data
 include 'catalyst-munch'
 
+// Tier Libraries
+include 'munch-data'
+
 // Tier 0 Service Api Gateway
 include 'munch-api'
 

@@ -1,4 +1,4 @@
-package munch.api.data;
+package munch.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -22,7 +22,7 @@ public final class Article {
 
     private String title;
     private String description;
-    private Image thumbnail;
+    private ImageMeta thumbnail;
 
     private Date createdDate;
     private Date updatedDate;
@@ -81,11 +81,11 @@ public final class Article {
         this.description = summary;
     }
 
-    public Image getThumbnail() {
+    public ImageMeta getThumbnail() {
         return thumbnail;
     }
 
-    public void setThumbnail(Image thumbnail) {
+    public void setThumbnail(ImageMeta thumbnail) {
         this.thumbnail = thumbnail;
     }
 
@@ -103,28 +103,5 @@ public final class Article {
 
     public void setUpdatedDate(Date updatedDate) {
         this.updatedDate = updatedDate;
-    }
-
-    /**
-     * This extends ImageMeta, but not at catalyst
-     * Article version requires url to be saved
-     */
-    public static final class Image extends ImageMeta {
-        private String url;
-
-        public Image() {
-        }
-
-        public Image(String url) {
-            this.url = url;
-        }
-
-        public String getUrl() {
-            return url;
-        }
-
-        public void setUrl(String url) {
-            this.url = url;
-        }
     }
 }

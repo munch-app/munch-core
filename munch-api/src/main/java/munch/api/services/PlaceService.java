@@ -5,10 +5,10 @@ import com.google.inject.Singleton;
 import munch.api.clients.ArticleClient;
 import munch.api.clients.InstagramClient;
 import munch.api.clients.PlaceClient;
-import munch.api.data.Article;
-import munch.api.data.InstagramMedia;
-import munch.api.data.Place;
-import munch.api.data.PlaceDetail;
+import munch.data.Article;
+import munch.data.InstagramMedia;
+import munch.data.Place;
+import munch.data.PlaceDetail;
 import munch.restful.server.JsonCall;
 
 import java.util.List;

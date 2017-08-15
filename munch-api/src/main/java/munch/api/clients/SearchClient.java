@@ -6,16 +6,15 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.typesafe.config.Config;
-import munch.api.data.Location;
-import munch.api.data.Place;
-import munch.api.data.SearchQuery;
-import munch.api.data.SearchResult;
+import munch.data.Location;
+import munch.data.Place;
+import munch.data.SearchQuery;
+import munch.data.SearchResult;
 import munch.restful.client.RestfulClient;
 import munch.restful.core.JsonUtils;
 import munch.restful.core.exception.JsonException;
 
 import javax.annotation.Nullable;
-import javax.inject.Named;
 import java.util.List;
 
 /**
@@ -28,8 +27,8 @@ import java.util.List;
 public class SearchClient extends RestfulClient {
 
     @Inject
-    public SearchClient(@Named("services") Config config) {
-        super(config.getString("search.url"));
+    public SearchClient(Config config) {
+        super(config.getString("services.search.url"));
     }
 
 

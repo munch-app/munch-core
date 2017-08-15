@@ -6,10 +6,9 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.clients.NominatimClient;
 import munch.api.clients.SearchClient;
-import munch.api.data.LatLng;
-import munch.api.data.SearchCollection;
-import munch.api.data.SearchQuery;
 import munch.api.services.curator.CuratorDelegator;
+import munch.data.SearchCollection;
+import munch.data.SearchQuery;
 import munch.restful.server.JsonCall;
 import org.apache.commons.lang3.text.WordUtils;
 

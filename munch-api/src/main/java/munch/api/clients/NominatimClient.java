@@ -6,14 +6,13 @@ import com.typesafe.config.Config;
 import fr.dudie.nominatim.client.JsonNominatimClient;
 import fr.dudie.nominatim.model.Address;
 import fr.dudie.nominatim.model.Element;
-import munch.api.data.LatLng;
+import munch.api.services.AbstractService;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
-import javax.inject.Named;
 import java.io.IOException;
 
 /**
@@ -29,8 +28,8 @@ public final class NominatimClient {
     private final JsonNominatimClient jsonClient;
 
     @Inject
-    public NominatimClient(@Named("services") Config config) {
-        String url = config.getString("nominatim.url");
+    public NominatimClient(Config config) {
+        String url = config.getString("services.nominatim.url");
         HttpClient httpClient = HttpClientBuilder.create().build();
         this.jsonClient = new JsonNominatimClient(url, httpClient, "");
     }
@@ -65,7 +64,7 @@ public final class NominatimClient {
      * @see NominatimClient#getStreet(double, double)
      */
     @Nullable
-    public String getStreet(@Nullable LatLng latLng) {
+    public String getStreet(@Nullable AbstractService.LatLng latLng) {
         if (latLng == null) return null;
         return getStreet(latLng.getLat(), latLng.getLng());
     }

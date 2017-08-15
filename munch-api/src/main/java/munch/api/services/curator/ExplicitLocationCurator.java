@@ -3,9 +3,9 @@ package munch.api.services.curator;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.clients.SearchClient;
-import munch.api.data.LatLng;
-import munch.api.data.SearchQuery;
-import munch.api.data.SearchResult;
+import munch.api.services.AbstractService;
+import munch.data.SearchQuery;
+import munch.data.SearchResult;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -28,14 +28,14 @@ public class ExplicitLocationCurator extends TabCurator {
     }
 
     @Override
-    public List<SearchResult> query(SearchQuery query, @Nullable LatLng latLng) {
+    public List<SearchResult> query(SearchQuery query, @Nullable AbstractService.LatLng latLng) {
         query.setFrom(0);
         query.setSize(SEARCH_SIZE);
         return searchClient.search(query);
     }
 
     @Override
-    public boolean match(SearchQuery query, @Nullable LatLng latLng) {
+    public boolean match(SearchQuery query, @Nullable AbstractService.LatLng latLng) {
         if (isComplex(query)) return false;
 
         // Contains polygonal location data

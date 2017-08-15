@@ -3,18 +3,15 @@ package munch.api.clients;
 import catalyst.utils.exception.Retriable;
 import catalyst.utils.exception.SleepRetriable;
 import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
 import com.mashape.unirest.http.HttpMethod;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.GetRequest;
 import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 import munch.restful.WaitFor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import java.time.Duration;
 
 /**
@@ -32,12 +29,11 @@ public class ClientModule extends AbstractModule {
     }
 
     @Inject
-    void waitFor(@Named("services") Config services) {
-        WaitFor.host(services.getString("articles.url"), Duration.ofSeconds(60));
-        WaitFor.host(services.getString("instagram.url"), Duration.ofSeconds(60));
-        WaitFor.host(services.getString("images.url"), Duration.ofSeconds(60));
-        WaitFor.host(services.getString("places.url"), Duration.ofSeconds(100));
-        WaitFor.host(services.getString("search.url"), Duration.ofSeconds(180));
+    void waitFor(Config config) {
+        WaitFor.host(config.getString("services.articles.url"), Duration.ofSeconds(60));
+        WaitFor.host(config.getString("services.instagram.url"), Duration.ofSeconds(60));
+        WaitFor.host(config.getString("services.places.url"), Duration.ofSeconds(100));
+        WaitFor.host(config.getString("services.search.url"), Duration.ofSeconds(180));
     }
 
     /**
@@ -46,8 +42,8 @@ public class ClientModule extends AbstractModule {
      * @param services services config
      */
     @Inject
-    void waitForNomination(@Named("services") Config services) throws UnirestException {
-        String url = services.getString("nominatim.url");
+    void waitForNomination(Config config) throws UnirestException {
+        String url = config.getString("services.nominatim.url");
 
         WaitFor.host(url, Duration.ofSeconds(200));
         Retriable retriable = new SleepRetriable(15, Duration.ofSeconds(20), (throwable, integer) -> {
@@ -55,11 +51,5 @@ public class ClientModule extends AbstractModule {
         });
         retriable.loop(() -> new GetRequest(HttpMethod.GET,
                 url + "/reverse?format=json").asJson().getBody());
-    }
-
-    @Provides
-    @Named("services")
-    Config provideConfig() {
-        return ConfigFactory.load().getConfig("services");
     }
 }
