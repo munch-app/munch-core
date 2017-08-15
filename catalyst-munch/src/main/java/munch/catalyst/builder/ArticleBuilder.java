@@ -1,7 +1,7 @@
 package munch.catalyst.builder;
 
-import catalyst.data.CorpusData;
 import catalyst.utils.FieldWrapper;
+import corpus.data.CorpusData;
 import munch.catalyst.data.Article;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

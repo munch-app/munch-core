@@ -1,7 +1,7 @@
 package munch.catalyst.builder;
 
-import catalyst.data.CorpusData;
 import catalyst.utils.FieldWrapper;
+import corpus.data.CorpusData;
 import munch.catalyst.data.ImageMeta;
 import munch.catalyst.data.InstagramMedia;
 import org.slf4j.Logger;

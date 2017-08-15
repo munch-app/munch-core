@@ -1,6 +1,6 @@
 package munch.catalyst.builder.place;
 
-import catalyst.data.CorpusData;
+import corpus.data.CorpusData;
 import munch.catalyst.data.Place;
 import org.apache.commons.lang3.text.WordUtils;
 import org.slf4j.Logger;

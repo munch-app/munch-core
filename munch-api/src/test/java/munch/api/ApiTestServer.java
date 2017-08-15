@@ -28,8 +28,9 @@ public interface ApiTestServer {
     static <T extends AbstractService> void start(Class<T> type, AbstractModule... modules) {
         Injector injector = injector(modules);
         T endpoint = injector.getInstance(type);
+        SupportedVersions versions = injector.getInstance(SupportedVersions.class);
 
-        ApiServer apiServer = new ApiServer(Collections.set(endpoint), injector.getInstance(Config.class), supportedVersions);
+        ApiServer apiServer = new ApiServer(Collections.set(endpoint), injector.getInstance(Config.class), versions);
         apiServer.start(DEFAULT_PORT);
     }
 

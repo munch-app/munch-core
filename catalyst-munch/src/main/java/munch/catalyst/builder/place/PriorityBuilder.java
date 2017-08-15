@@ -1,7 +1,7 @@
 package munch.catalyst.builder.place;
 
-import catalyst.data.CorpusData;
 import com.google.common.collect.ImmutableSet;
+import corpus.data.CorpusData;
 
 import java.util.Set;
 

@@ -2,9 +2,9 @@ package munch.catalyst;
 
 import catalyst.CatalystEngine;
 import catalyst.data.CatalystClient;
-import catalyst.data.CorpusData;
 import catalyst.data.DataClient;
 import com.google.inject.Inject;
+import corpus.data.CorpusData;
 import munch.catalyst.builder.ArticleBuilder;
 import munch.catalyst.builder.LocationBuilder;
 import munch.catalyst.builder.MediaBuilder;

@@ -1,6 +1,6 @@
 package munch.catalyst.builder.place;
 
-import catalyst.data.CorpusData;
+import corpus.data.CorpusData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

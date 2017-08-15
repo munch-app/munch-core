@@ -1,6 +1,7 @@
 package munch.catalyst.builder.place;
 
-import catalyst.data.CorpusData;
+
+import corpus.data.CorpusData;
 
 /**
  * Created By: Fuxing Loh

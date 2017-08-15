@@ -2,10 +2,10 @@ package munch.catalyst;
 
 import catalyst.CatalystEngine;
 import catalyst.CatalystModule;
-import catalyst.data.DataModule;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import corpus.data.DataModule;
 import munch.catalyst.clients.ClientModule;
 
 /**

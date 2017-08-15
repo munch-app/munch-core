@@ -1,6 +1,7 @@
 package munch.catalyst.builder;
 
-import catalyst.data.CorpusData;
+
+import corpus.data.CorpusData;
 
 import java.util.Date;
 import java.util.List;
