@@ -12,9 +12,6 @@ include 'service-places'
 include 'service-articles'
 include 'service-instagram'
 
-// Tier 2 Service Api
-include 'service-images'
-
 // Library modules
 include 'restful-server'
 include 'restful-client'
