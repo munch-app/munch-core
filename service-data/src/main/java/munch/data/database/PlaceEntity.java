@@ -5,7 +5,6 @@ import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.Entity;
-import javax.persistence.Index;
 import javax.persistence.Table;
 
 /**
@@ -19,14 +18,13 @@ import javax.persistence.Table;
         @TypeDef(name = "data", typeClass = PlaceEntity.DataType.class)
 })
 @Table(indexes = {
-        @Index(name = "index_munch_place_entity", columnList = "")
+//        @Index(name = "index_munch_place_entity", columnList = "")
 })
 public final class PlaceEntity extends AbstractEntity<Place> {
 
     public PlaceEntity() {
         super(Place::getId);
     }
-
 
     public static class DataType extends PojoUserType<Place> {
         public DataType() {

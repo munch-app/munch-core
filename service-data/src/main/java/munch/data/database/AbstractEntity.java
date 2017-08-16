@@ -14,12 +14,12 @@ import java.util.function.Function;
  * Project: munch-core
  */
 @MappedSuperclass
-public abstract class AbstractEntity<T> {
+public abstract class AbstractEntity<D> {
 
-    private T data;
-    private final Function<T, String> idMapper;
+    private D data;
+    private final Function<D, String> idMapper;
 
-    public AbstractEntity(Function<T, String> idMapper) {
+    protected AbstractEntity(Function<D, String> idMapper) {
         this.idMapper = idMapper;
     }
 
@@ -34,11 +34,11 @@ public abstract class AbstractEntity<T> {
 
     @Type(type = "data")
     @Column(nullable = false)
-    public T getData() {
+    public D getData() {
         return data;
     }
 
-    public void setData(T data) {
+    public void setData(D data) {
         this.data = data;
     }
 }
