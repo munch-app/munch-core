@@ -1,12 +1,11 @@
-package munch.places;
+package munch.data;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.*;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import munch.places.data.PostgresModule;
+import munch.data.database.PostgresModule;
 import munch.restful.server.JsonService;
-import munch.restful.server.RestfulServer;
 
 /**
  * Created by: Fuxing
@@ -14,7 +13,7 @@ import munch.restful.server.RestfulServer;
  * Time: 4:11 PM
  * Project: munch-core
  */
-public class PlaceModule extends AbstractModule {
+public class DataModule extends AbstractModule {
 
     @Override
     protected void configure() {
@@ -33,10 +32,7 @@ public class PlaceModule extends AbstractModule {
     }
 
     public static void main(String[] args) {
-        Injector injector = Guice.createInjector(new PlaceModule());
-
-        // Start restful server on config port
-        final RestfulServer server = injector.getInstance(PlaceApi.class);
-        server.start(ConfigFactory.load().getInt("http.port"));
+        Injector injector = Guice.createInjector(new DataModule());
+        injector.getInstance(DataApi.class).start();
     }
 }

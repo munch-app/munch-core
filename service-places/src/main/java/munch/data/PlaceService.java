@@ -1,11 +1,11 @@
-package munch.places;
+package munch.data;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.munch.hibernate.utils.TransactionProvider;
-import munch.places.data.Place;
-import munch.places.data.PlaceDatabase;
+import munch.data.database.Place;
+import munch.data.database.PlaceDatabase;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
 

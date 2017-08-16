@@ -1,4 +1,4 @@
-package munch.places;
+package munch.data;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -11,10 +11,10 @@ import munch.restful.server.RestfulServer;
  * Project: munch-core
  */
 @Singleton
-final class PlaceApi extends RestfulServer {
+final class DataApi extends RestfulServer {
 
     @Inject
-    public PlaceApi(PlaceService data, MetaService meta) {
+    public DataApi(PlaceService data, MetaService meta) {
         super(data, meta);
     }
 }

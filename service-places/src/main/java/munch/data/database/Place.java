@@ -1,9 +1,9 @@
-package munch.places.data;
+package munch.data.database;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import munch.places.data.hibernate.PlaceUserType;
+import munch.data.database.hibernate.PlaceUserType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;

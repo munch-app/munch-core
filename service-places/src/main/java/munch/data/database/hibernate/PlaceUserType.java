@@ -1,6 +1,6 @@
-package munch.places.data.hibernate;
+package munch.data.database.hibernate;
 
-import munch.places.data.Place;
+import munch.data.database.Place;
 
 /**
  * Created by: Fuxing

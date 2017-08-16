@@ -1,4 +1,4 @@
-package munch.places.data;
+package munch.data.database;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
@@ -21,7 +21,7 @@ import java.util.Map;
  */
 public class PostgresModule extends AbstractModule {
 
-    private static final String UnitName = "placesPersistenceUnit";
+    private static final String UnitName = "dataPersistenceUnit";
 
     @Override
     protected void configure() {

@@ -1,4 +1,4 @@
-package munch.places.data.hibernate;
+package munch.data.database.hibernate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hibernate.HibernateException;

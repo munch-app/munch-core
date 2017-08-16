@@ -22,10 +22,12 @@ public final class Location implements SearchResult {
     private String name;
     private String city;
     private String country;
+
     private String center;
     private List<String> points;
 
     private Date updatedDate;
+    private Date createdDate;
 
     public String getId() {
         return id;
@@ -81,6 +83,14 @@ public final class Location implements SearchResult {
 
     public void setUpdatedDate(Date updatedDate) {
         this.updatedDate = updatedDate;
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package munch.places.data.hibernate;
+package munch.data.database.hibernate;
 
 import org.hibernate.dialect.PostgreSQL82Dialect;
 

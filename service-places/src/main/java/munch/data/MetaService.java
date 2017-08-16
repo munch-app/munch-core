@@ -1,9 +1,9 @@
-package munch.places;
+package munch.data;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.munch.hibernate.utils.TransactionProvider;
-import munch.places.data.Place;
+import munch.data.database.Place;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
 

@@ -1,4 +1,4 @@
-package munch.places.data;
+package munch.data.database;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

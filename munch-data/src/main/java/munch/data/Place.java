@@ -435,8 +435,9 @@ public final class Place implements SearchResult {
      * Technically this is a smaller subclass of ImageMeta in munch-images
      * with lesser fields
      */
-    public static final class Image extends ImageMeta {
+    public static final class Image {
         private String from;
+        private ImageMeta imageMeta;
 
         public String getFrom() {
             return from;
@@ -444,6 +445,14 @@ public final class Place implements SearchResult {
 
         public void setFrom(String from) {
             this.from = from;
+        }
+
+        public ImageMeta getImageMeta() {
+            return imageMeta;
+        }
+
+        public void setImageMeta(ImageMeta imageMeta) {
+            this.imageMeta = imageMeta;
         }
     }
 }
