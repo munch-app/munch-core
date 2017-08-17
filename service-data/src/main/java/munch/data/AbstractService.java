@@ -2,7 +2,7 @@ package munch.data;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.munch.hibernate.utils.TransactionProvider;
-import munch.data.database.AbstractEntity;
+import munch.data.database.CycleEntity;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
 
@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
  * Time: 9:23 PM
  * Project: munch-core
  */
-public abstract class AbstractService<D, T extends AbstractEntity<D>> implements JsonService {
+public abstract class AbstractService<T extends CycleEntity> implements JsonService {
     protected final String serviceName;
 
     @Inject
@@ -26,13 +27,10 @@ public abstract class AbstractService<D, T extends AbstractEntity<D>> implements
     protected final Class<T> entityClass;
     protected final String entityName;
 
-    protected final Class<D> dataClass;
-
-    protected AbstractService(String serviceName, Class<T> entityClass, Class<D> dataClass) {
+    protected AbstractService(String serviceName, Class<T> entityClass) {
         this.serviceName = serviceName;
         this.entityName = entityClass.getSimpleName();
         this.entityClass = entityClass;
-        this.dataClass = dataClass;
     }
 
     @Override
@@ -41,44 +39,68 @@ public abstract class AbstractService<D, T extends AbstractEntity<D>> implements
             POST("/get", this::batchGet);
 
             GET("/:id", this::get);
-            PUT("/:id", this::put);
-            DELETE("/:id", this::delete);
+            PUT("/:cycleNo/:id", this::put);
+
+            DELETE("/:cycleNo/before", this::deleteBefore);
+            DELETE("/:cycleNo/:id", this::delete);
         });
     }
 
-    protected List<D> batchGet(JsonCall call) {
+    protected abstract Function<T, String> getKeyMapper();
+
+    protected abstract List<T> getList(List<String> keys);
+
+    protected List<T> batchGet(JsonCall call) {
         List<String> keys = call.bodyAsList(String.class);
 
         if (keys.isEmpty()) return Collections.emptyList();
 
-        Map<String, D> placeMap = provider.reduce(em -> em.createQuery(
-                "FROM " + entityName + " WHERE id IN (:keys)", entityClass)
-                .setParameter("keys", keys)
-                .getResultList())
-                .stream()
-                .collect(Collectors.toMap(AbstractEntity::getId, AbstractEntity::getData));
+        Map<String, T> placeMap = getList(keys).stream()
+                .collect(Collectors.toMap(getKeyMapper(), Function.identity()));
         return keys.stream().map(placeMap::get).collect(Collectors.toList());
     }
 
-    protected D get(JsonCall call) {
+    protected T get(JsonCall call) {
         String id = call.pathString("id");
 
         return provider.optional(em -> em.find(entityClass, id))
-                .map(AbstractEntity::getData)
                 .orElse(null);
     }
 
     protected JsonNode put(JsonCall call) {
-        D data = call.bodyAsObject(dataClass);
-//        call.bodyAsObject()
+        // String id = call.pathString("id");
+        long cycleNo = call.pathLong("cycleNo");
 
-//        provider.with(em -> persist(em, place));
 
+        T data = call.bodyAsObject(entityClass);
+        data.setCycleNo(cycleNo);
+
+        provider.with(em -> {
+            em.merge(entityClass);
+
+            // TODO if Merge works
+//            if (em.find(entityClass, id) == null) {
+//                em.persist(entityClass);
+//            } else {
+//                em.merge(entityClass);
+//            }
+        });
+        return Meta200;
+    }
+
+    private JsonNode deleteBefore(JsonCall call) {
+        long cycleNo = call.pathLong("cycleNo");
+
+        provider.with(em -> em.createQuery("DELETE FROM " + entityName + " " +
+                "WHERE cycleNo < :cycleNo", entityClass)
+                .setParameter("cycleNo", cycleNo)
+                .executeUpdate());
         return Meta200;
     }
 
     protected JsonNode delete(JsonCall call) {
-
+        String id = call.pathString("id");
+        provider.with(em -> em.remove(em.find(entityClass, id)));
         return Meta200;
     }
 }

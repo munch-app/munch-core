@@ -5,7 +5,7 @@
     <persistence-unit name="dataPersistenceUnit">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-        <class>munch.data.database.Place</class>
+        <class>munch.data.database.PlaceEntity</class>
 
         <properties>
             <property name="hibernate.dialect" value="munch.data.database.hibernate.JsonPostgresDialect"/>

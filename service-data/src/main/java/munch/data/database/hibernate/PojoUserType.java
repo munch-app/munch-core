@@ -22,7 +22,7 @@ import java.sql.Types;
  */
 public abstract class PojoUserType<T> implements UserType {
 
-    private static final ObjectMapper Mapper = new ObjectMapper();
+    static final ObjectMapper Mapper = new ObjectMapper();
 
     private final Class<T> returnedClass;
 
