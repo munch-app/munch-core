@@ -1,12 +1,13 @@
 package munch.api.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import munch.api.services.cached.CachedManager;
-import munch.restful.server.JsonCall;
+import munch.api.services.cached.StaticJsonResource;
+import org.apache.commons.codec.digest.DigestUtils;
+
+import java.io.IOException;
 
 /**
  * Created by: Fuxing
@@ -17,33 +18,42 @@ import munch.restful.server.JsonCall;
 @Singleton
 public class CachedSyncService extends AbstractService {
 
-    private final CachedManager cachedManager;
+    private final StaticJsonResource jsonResource;
     private final ObjectNode hashesNodes;
 
+    private final JsonNode popularLocations;
+
     @Inject
-    public CachedSyncService(CachedManager cachedManager, ObjectMapper objectMapper) {
-        this.cachedManager = cachedManager;
-        this.hashesNodes = objectMapper.createObjectNode()
-                .put("popular-locations", cachedManager.getPopularLocations().getHash());
+    public CachedSyncService(StaticJsonResource jsonResource) throws IOException {
+        this.jsonResource = jsonResource;
+        this.hashesNodes = objectMapper.createObjectNode();
+
+        this.popularLocations = createJsonHashNode("popular-locations");
     }
 
     @Override
     public void route() {
         PATH("/cached", () -> {
-            GET("/hashes", this::hashes);
+            // {"data": { "popular-locations": "hash-value" }}
+            GET("/hashes", call -> nodes(200, hashesNodes));
 
             // Returns: "data": { "hash": "", "data": data }
             PATH("/data", () -> {
-                GET("/popular-locations", call -> cachedManager.getPopularLocations());
+                GET("/popular-locations", call -> nodes(200, popularLocations));
             });
         });
     }
 
-    /**
-     * @param call json call
-     * @return {"data": { "popular-locations": "hash-value" }}
-     */
-    private JsonNode hashes(JsonCall call) {
-        return nodes(200, hashesNodes);
+    private JsonNode createJsonHashNode(String resourceName) throws IOException {
+        JsonNode node = jsonResource.getResource(resourceName + ".json");
+        String hash = DigestUtils.sha512Hex(node.toString());
+
+        // Update to hashes node
+        hashesNodes.put(resourceName, hash);
+
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("hash", hash);
+        objectNode.set("data", node);
+        return objectNode;
     }
 }

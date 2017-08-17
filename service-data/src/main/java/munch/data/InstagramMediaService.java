@@ -25,7 +25,7 @@ public final class InstagramMediaService extends AbstractService<InstagramMediaE
     @Override
     public void route() {
         super.route();
-        GET("/instagram/medias/list", this::list);
+        GET("/places/:placeId/instagram/medias/list", this::list);
     }
 
     @Override

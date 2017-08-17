@@ -2,9 +2,7 @@ package munch.api.services;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import munch.api.clients.ArticleClient;
-import munch.api.clients.InstagramClient;
-import munch.api.clients.PlaceClient;
+import munch.api.clients.DataClient;
 import munch.data.Article;
 import munch.data.InstagramMedia;
 import munch.data.Place;
@@ -21,15 +19,11 @@ import java.util.List;
  */
 @Singleton
 public class PlaceService extends AbstractService {
-    private final PlaceClient placeClient;
-    private final ArticleClient articleClient;
-    private final InstagramClient instagramClient;
+    private final DataClient dataClient;
 
     @Inject
-    public PlaceService(PlaceClient placeClient, ArticleClient articleClient, InstagramClient instagramClient) {
-        this.placeClient = placeClient;
-        this.articleClient = articleClient;
-        this.instagramClient = instagramClient;
+    public PlaceService(DataClient dataClient) {
+        this.dataClient = dataClient;
     }
 
     /**
@@ -54,22 +48,22 @@ public class PlaceService extends AbstractService {
      * @return Place or Null
      */
     private PlaceDetail get(JsonCall call) {
-        // Explicit card will be generate at mobile app
+        // TODO Explicit card will be generate at mobile app
         // data: { place: {}, cards: [] }
         // Other card, are generate here
         // Card: name, version, data
 
 
         String placeId = call.pathString("placeId");
-        Place place = placeClient.get(placeId);
+        Place place = dataClient.get(placeId);
         if (place == null) return null;
 
         // PlaceDetail: query 10 articles and medias
         PlaceDetail detail = new PlaceDetail();
         detail.setPlace(place);
         detail.setInstagram(new PlaceDetail.Instagram());
-        detail.getInstagram().setMedias(instagramClient.list(placeId, 0, 20));
-        detail.setArticles(articleClient.list(placeId, 0, 10));
+        detail.getInstagram().setMedias(dataClient.getInstagramMedias(placeId, 0, 20));
+        detail.setArticles(dataClient.getArticles(placeId, 0, 10));
         return detail;
     }
 
@@ -77,13 +71,13 @@ public class PlaceService extends AbstractService {
         String placeId = call.pathString("placeId");
         int from = call.queryInt("from");
         int size = call.queryInt("size");
-        return instagramClient.list(placeId, from, size);
+        return dataClient.getInstagramMedias(placeId, from, size);
     }
 
     private List<Article> articles(JsonCall call) {
         String placeId = call.pathString("placeId");
         int from = call.queryInt("from");
         int size = call.queryInt("size");
-        return articleClient.list(placeId, from, size);
+        return dataClient.getArticles(placeId, from, size);
     }
 }

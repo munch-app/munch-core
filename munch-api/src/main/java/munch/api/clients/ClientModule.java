@@ -30,9 +30,7 @@ public class ClientModule extends AbstractModule {
 
     @Inject
     void waitFor(Config config) {
-        WaitFor.host(config.getString("services.articles.url"), Duration.ofSeconds(60));
-        WaitFor.host(config.getString("services.instagram.url"), Duration.ofSeconds(60));
-        WaitFor.host(config.getString("services.places.url"), Duration.ofSeconds(100));
+        WaitFor.host(config.getString("services.data.url"), Duration.ofSeconds(180));
         WaitFor.host(config.getString("services.search.url"), Duration.ofSeconds(180));
     }
 

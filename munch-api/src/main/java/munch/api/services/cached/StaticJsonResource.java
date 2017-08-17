@@ -19,12 +19,11 @@ import java.net.URL;
  */
 @Singleton
 public final class StaticJsonResource {
-
     private static final String directory = "static-json";
     private final ObjectMapper objectMapper;
 
     @Inject
-    public StaticJsonResource(ObjectMapper objectMapper) {
+    public StaticJsonResource(ObjectMapper objectMapper) throws IOException {
         this.objectMapper = objectMapper;
     }
 
