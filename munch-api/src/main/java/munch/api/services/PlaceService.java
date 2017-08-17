@@ -54,6 +54,12 @@ public class PlaceService extends AbstractService {
      * @return Place or Null
      */
     private PlaceDetail get(JsonCall call) {
+        // Explicit card will be generate at mobile app
+        // data: { place: {}, cards: [] }
+        // Other card, are generate here
+        // Card: name, version, data
+
+
         String placeId = call.pathString("placeId");
         Place place = placeClient.get(placeId);
         if (place == null) return null;

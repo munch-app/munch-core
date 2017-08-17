@@ -12,6 +12,7 @@ import java.util.List;
  * Time: 4:48 PM
  * Project: munch-core
  */
+@Deprecated
 public final class PlaceDetail {
     private Place place;
     private Instagram instagram;

@@ -35,7 +35,7 @@ public abstract class AbstractService<T extends CycleEntity> implements JsonServ
 
     @Override
     public void route() {
-        PATH("/" + serviceName, () -> {
+        PATH(serviceName, () -> {
             POST("/get", this::batchGet);
 
             GET("/:id", this::get);
@@ -91,8 +91,8 @@ public abstract class AbstractService<T extends CycleEntity> implements JsonServ
     private JsonNode deleteBefore(JsonCall call) {
         long cycleNo = call.pathLong("cycleNo");
 
-        provider.with(em -> em.createQuery("DELETE FROM " + entityName + " " +
-                "WHERE cycleNo < :cycleNo", entityClass)
+        provider.with(em -> em.createQuery(
+                "DELETE FROM " + entityName + " WHERE cycleNo < :cycleNo", entityClass)
                 .setParameter("cycleNo", cycleNo)
                 .executeUpdate());
         return Meta200;

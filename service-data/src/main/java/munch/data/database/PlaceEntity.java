@@ -28,9 +28,9 @@ import java.util.List;
         @TypeDef(name = "images", typeClass = PlaceEntity.ImagesUserType.class),
 })
 @Table(indexes = {
-        @Index(name = "index_munch_place_cycle_entity", columnList = "cycleNo")
+        @Index(name = "index_munch_place_entity_cycle_no", columnList = "cycleNo")
 })
-public final class PlaceEntity extends munch.data.Place implements CycleEntity {
+public final class PlaceEntity extends Place implements CycleEntity {
 
     private Long cycleNo;
 

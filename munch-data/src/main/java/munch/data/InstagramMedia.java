@@ -15,7 +15,7 @@ import java.util.Date;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class InstagramMedia {
+public class InstagramMedia {
     private String placeId;
     private String mediaId;
 
@@ -43,20 +43,12 @@ public final class InstagramMedia {
         this.mediaId = mediaId;
     }
 
-    public Date getCreatedDate() {
-        return createdDate;
+    public Profile getProfile() {
+        return profile;
     }
 
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public Date getUpdatedDate() {
-        return updatedDate;
-    }
-
-    public void setUpdatedDate(Date putDate) {
-        this.updatedDate = putDate;
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
 
     public ImageMeta getImage() {
@@ -75,12 +67,20 @@ public final class InstagramMedia {
         this.caption = caption;
     }
 
-    public Profile getProfile() {
-        return profile;
+    public Date getCreatedDate() {
+        return createdDate;
     }
 
-    public void setProfile(Profile profile) {
-        this.profile = profile;
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public Date getUpdatedDate() {
+        return updatedDate;
+    }
+
+    public void setUpdatedDate(Date putDate) {
+        this.updatedDate = putDate;
     }
 
     /**

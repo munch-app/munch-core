@@ -13,7 +13,7 @@ import java.util.Date;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class Article {
+public class Article {
     private String placeId;
     private String articleId;
 

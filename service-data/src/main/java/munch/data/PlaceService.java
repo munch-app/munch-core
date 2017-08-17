@@ -14,11 +14,11 @@ import java.util.function.Function;
  * Project: munch-core
  */
 @Singleton
-public class PlaceService extends AbstractService<PlaceEntity> {
+public final class PlaceService extends AbstractService<PlaceEntity> {
 
     @Inject
     public PlaceService() {
-        super("places", PlaceEntity.class);
+        super("/places", PlaceEntity.class);
     }
 
     @Override
