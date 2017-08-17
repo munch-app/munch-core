@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import munch.search.data.SearchQuery;
+import munch.data.SearchQuery;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -17,7 +17,7 @@ import java.util.Objects;
  * Project: munch-core
  */
 @Singleton
-public class SortQuery {
+public final class SortQuery {
     private final ObjectMapper mapper;
 
     @Inject

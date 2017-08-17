@@ -96,8 +96,8 @@ public final class SearchQuery {
     public static final class Filter {
         private Price price;
         private Tag tag;
-        private Rating rating;
         private Hour hour;
+        private Rating rating;
         private Distance distance;
 
         public Price getPrice() {
@@ -116,20 +116,20 @@ public final class SearchQuery {
             this.tag = tag;
         }
 
-        public Rating getRating() {
-            return rating;
-        }
-
-        public void setRating(Rating rating) {
-            this.rating = rating;
-        }
-
         public Hour getHour() {
             return hour;
         }
 
         public void setHour(Hour hour) {
             this.hour = hour;
+        }
+
+        public Rating getRating() {
+            return rating;
+        }
+
+        public void setRating(Rating rating) {
+            this.rating = rating;
         }
 
         public Distance getDistance() {

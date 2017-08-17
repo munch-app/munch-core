@@ -3,9 +3,9 @@ package munch.search;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import munch.data.Place;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
-import munch.search.data.Place;
 import munch.search.elastic.ElasticIndex;
 
 /**
@@ -27,10 +27,9 @@ public class PlaceService implements JsonService {
     @Override
     public void route() {
         PATH("/places", () -> {
-            PUT("/:id", this::put);
-
-            DELETE("/before/:updatedDate", this::deleteBefore);
-            DELETE("/:id", this::delete);
+            PUT("/:cycleNo/:id", this::put);
+            DELETE("/:cycleNo/before", this::deleteBefore);
+            DELETE("/:cycleNo/:id", this::delete);
         });
     }
 
@@ -39,8 +38,9 @@ public class PlaceService implements JsonService {
      * @return 200 = saved
      */
     private JsonNode put(JsonCall call) throws Exception {
+        long cycleNo = call.pathLong("cycleNo");
         Place place = call.bodyAsObject(Place.class);
-        index.put(place);
+        index.put(place, cycleNo);
         return Meta200;
     }
 
@@ -59,8 +59,8 @@ public class PlaceService implements JsonService {
      * @return 200 = deleted
      */
     private JsonNode deleteBefore(JsonCall call) throws Exception {
-        long updated = call.pathLong("updatedDate");
-        index.deleteBefore("place", updated);
+        long cycleNo = call.pathLong("cycleNo");
+        index.deleteBefore("place", cycleNo);
         return Meta200;
     }
 }

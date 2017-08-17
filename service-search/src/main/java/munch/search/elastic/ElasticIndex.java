@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import munch.search.data.Location;
-import munch.search.data.Place;
+import munch.data.Location;
+import munch.data.Place;
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.nio.entity.NStringEntity;
@@ -24,7 +24,7 @@ import java.util.Map;
  * Project: munch-core
  */
 @Singleton
-public class ElasticIndex {
+public final class ElasticIndex {
     private static final Map<String, String> PARAMS = Collections.emptyMap();
 
     private final RestClient client;
@@ -63,11 +63,12 @@ public class ElasticIndex {
     /**
      * Index a place by putting it into elastic search
      *
-     * @param place place to index
+     * @param place   place to index
+     * @param cycleNo cycle long in millis
      * @throws Exception any exception
      */
-    public void put(Place place) throws Exception {
-        ObjectNode node = marshaller.serialize(place);
+    public void put(Place place, long cycleNo) throws Exception {
+        ObjectNode node = marshaller.serialize(place, cycleNo);
         String json = mapper.writeValueAsString(node);
         HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
 
@@ -81,10 +82,11 @@ public class ElasticIndex {
      * https://www.elastic.co/guide/en/elasticsearch/reference/current/geo-shape.html
      *
      * @param location location to index
+     * @param cycleNo  cycle long in millis
      * @throws Exception any exception
      */
-    public void put(Location location) throws Exception {
-        ObjectNode node = marshaller.serialize(location);
+    public void put(Location location, long cycleNo) throws Exception {
+        ObjectNode node = marshaller.serialize(location, cycleNo);
         String json = mapper.writeValueAsString(node);
         HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
 
@@ -110,16 +112,16 @@ public class ElasticIndex {
     }
 
     /**
-     * @param type        data type to delete before
-     * @param updatedDate updated date in millis
+     * @param type    data type to delete before
+     * @param cycleNo cycle long in millis
      * @throws Exception exception for deletion
      */
-    public void deleteBefore(String type, long updatedDate) throws Exception {
+    public void deleteBefore(String type, long cycleNo) throws Exception {
         ObjectNode root = mapper.createObjectNode();
         root.putObject("query")
                 .putObject("range")
-                .putObject("updatedDate")
-                .put("lt", updatedDate);
+                .putObject("cycleNo")
+                .put("lt", cycleNo);
 
         String json = mapper.writeValueAsString(root);
         HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);

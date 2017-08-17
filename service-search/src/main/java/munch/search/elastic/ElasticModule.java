@@ -8,8 +8,6 @@ import com.typesafe.config.Config;
 import munch.restful.WaitFor;
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -20,8 +18,7 @@ import java.time.Duration;
  * Time: 3:49 PM
  * Project: munch-core
  */
-public class ElasticModule extends AbstractModule {
-    private static final Logger logger = LoggerFactory.getLogger(ElasticModule.class);
+public final class ElasticModule extends AbstractModule {
 
     @Override
     protected void configure() {

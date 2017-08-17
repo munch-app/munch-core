@@ -7,9 +7,9 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import munch.data.Location;
+import munch.data.Place;
 import munch.restful.core.exception.JsonException;
-import munch.search.data.Location;
-import munch.search.data.Place;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,7 +22,7 @@ import java.util.List;
  * Project: munch-core
  */
 @Singleton
-public class ElasticMarshaller {
+public final class ElasticMarshaller {
     private final ObjectMapper mapper;
 
     @Inject
@@ -39,9 +39,10 @@ public class ElasticMarshaller {
      * @throws IndexOutOfBoundsException if points are not in the array
      * @throws NumberFormatException     if points are not double
      */
-    public ObjectNode serialize(Location location) {
+    public ObjectNode serialize(Location location, long cycleNo) {
         ObjectNode node = mapper.createObjectNode();
         node.put("type", "Location");
+        node.put("cycleNo", cycleNo);
 
         // Root Node
         node.put("id", location.getId());
@@ -71,9 +72,10 @@ public class ElasticMarshaller {
      * @param place place to serialize to json for elastic
      * @return serialized json
      */
-    public ObjectNode serialize(Place place) {
+    public ObjectNode serialize(Place place, long cycleNo) {
         ObjectNode node = mapper.valueToTree(place);
         node.put("type", "Place");
+        node.put("cycleNo", cycleNo);
         node.put("createdDate", place.getCreatedDate().getTime());
         node.put("updatedDate", place.getUpdatedDate().getTime());
 

@@ -10,6 +10,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public interface SearchResult {
 
+    /**
+     * @return type, Case Sensitive
+     */
     @JsonProperty("type")
     String getType();
 

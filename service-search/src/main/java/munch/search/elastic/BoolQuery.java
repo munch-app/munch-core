@@ -6,8 +6,8 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import munch.search.data.Location;
-import munch.search.data.SearchQuery;
+import munch.data.Location;
+import munch.data.SearchQuery;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.List;
  * Project: munch-core
  */
 @Singleton
-public class BoolQuery {
+public final class BoolQuery {
     private final ObjectMapper mapper;
 
     @Inject

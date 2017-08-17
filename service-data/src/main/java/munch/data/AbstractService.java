@@ -39,8 +39,8 @@ public abstract class AbstractService<T extends CycleEntity> implements JsonServ
             POST("/get", this::batchGet);
 
             GET("/:id", this::get);
-            PUT("/:cycleNo/:id", this::put);
 
+            PUT("/:cycleNo/:id", this::put);
             DELETE("/:cycleNo/before", this::deleteBefore);
             DELETE("/:cycleNo/:id", this::delete);
         });

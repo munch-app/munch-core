@@ -6,12 +6,12 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import munch.data.Location;
+import munch.data.Place;
+import munch.data.SearchQuery;
 import munch.restful.core.exception.ValidationException;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
-import munch.search.data.Location;
-import munch.search.data.Place;
-import munch.search.data.SearchQuery;
 import munch.search.elastic.BoolQuery;
 import munch.search.elastic.ElasticClient;
 import munch.search.elastic.ElasticMarshaller;
@@ -45,6 +45,7 @@ public class SearchService implements JsonService {
 
     @Override
     public void route() {
+        // TODO Validate
         // Root service can return any results
         POST("/search", this::search);
         POST("/suggest", this::suggest);
@@ -64,7 +65,7 @@ public class SearchService implements JsonService {
     private JsonNode search(JsonCall call) throws IOException {
         // Validate and search for error and fixes it
         SearchQuery query = call.bodyAsObject(SearchQuery.class);
-        SearchQuery.validateFix(query);
+        validateFix(query);
 
         JsonNode boolNode = this.boolQuery.make(query);
         JsonNode sortNode = this.sortQuery.make(query);
@@ -121,5 +122,24 @@ public class SearchService implements JsonService {
             array.add(objectNode);
         }
         return array;
+    }
+
+    /**
+     * Validate from, size
+     * Validate points must be more than 3
+     *
+     * @param query query to validate and fix
+     */
+    private static void validateFix(SearchQuery query) {
+        // From and Size not null validation
+        ValidationException.requireNonNull("from", query.getFrom());
+        ValidationException.requireNonNull("size", query.getSize());
+
+        // Check if location contains polygon if exist
+        if (query.getLocation() != null && query.getLocation().getPoints() != null) {
+            if (query.getLocation().getPoints().size() < 3) {
+                throw new ValidationException("location.points", "Points must have at least 3 points.");
+            }
+        }
     }
 }

@@ -14,11 +14,11 @@ import org.apache.commons.lang3.StringUtils;
  * Project: munch-core
  */
 @Singleton
-public class LocationBoolQuery {
+public final class LocationQuery {
     private final ObjectMapper mapper;
 
     @Inject
-    public LocationBoolQuery(ObjectMapper mapper) {
+    public LocationQuery(ObjectMapper mapper) {
         this.mapper = mapper;
     }
 
