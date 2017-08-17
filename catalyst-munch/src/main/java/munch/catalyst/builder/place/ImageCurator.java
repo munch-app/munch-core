@@ -1,9 +1,9 @@
 package munch.catalyst.builder.place;
 
-import munch.catalyst.data.Article;
-import munch.catalyst.data.ImageMeta;
-import munch.catalyst.data.InstagramMedia;
-import munch.catalyst.data.Place;
+import munch.data.Article;
+import munch.data.ImageMeta;
+import munch.data.InstagramMedia;
+import munch.data.Place;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

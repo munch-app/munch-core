@@ -2,7 +2,6 @@ package munch.catalyst;
 
 import catalyst.CatalystEngine;
 import catalyst.data.CatalystClient;
-import catalyst.data.DataClient;
 import com.google.inject.Inject;
 import corpus.data.CorpusData;
 import munch.catalyst.builder.ArticleBuilder;
@@ -10,9 +9,7 @@ import munch.catalyst.builder.LocationBuilder;
 import munch.catalyst.builder.MediaBuilder;
 import munch.catalyst.builder.place.ImageCurator;
 import munch.catalyst.builder.place.PlaceBuilder;
-import munch.catalyst.clients.ArticleClient;
-import munch.catalyst.clients.InstagramClient;
-import munch.catalyst.clients.PlaceClient;
+import munch.catalyst.clients.DataClient;
 import munch.catalyst.clients.SearchClient;
 import munch.catalyst.data.Article;
 import munch.catalyst.data.InstagramMedia;
@@ -36,10 +33,8 @@ import java.util.stream.Collectors;
 public class MunchCatalyst extends CatalystEngine {
     private static final Logger logger = LoggerFactory.getLogger(MunchCatalyst.class);
 
-    private final PlaceClient placeClient;
+    private final DataClient munchDataClient;
     private final SearchClient searchClient;
-    private final ArticleClient articleClient;
-    private final InstagramClient instagramClient;
 
     private final PlaceIngress placeIngress = new PlaceIngress();
     private final LocationIngress locationIngress = new LocationIngress();
@@ -47,14 +42,11 @@ public class MunchCatalyst extends CatalystEngine {
     private Date updatedDate;
 
     @Inject
-    public MunchCatalyst(DataClient dataClient, CatalystClient catalystClient,
-                         PlaceClient placeClient, SearchClient searchClient,
-                         ArticleClient articleClient, InstagramClient instagramClient) {
-        super(logger, dataClient, catalystClient);
-        this.placeClient = placeClient;
+    public MunchCatalyst(catalyst.data.DataClient munchDataClient, CatalystClient catalystClient,
+                         DataClient placeClient, SearchClient searchClient) {
+        super(logger, munchDataClient, catalystClient);
+        this.munchDataClient = placeClient;
         this.searchClient = searchClient;
-        this.articleClient = articleClient;
-        this.instagramClient = instagramClient;
     }
 
     @Override
@@ -74,9 +66,10 @@ public class MunchCatalyst extends CatalystEngine {
 
     @Override
     protected void postCycle() {
+        // TODO
         searchClient.deleteBefore("locations", updatedDate);
         searchClient.deleteBefore("places", updatedDate);
-        placeClient.deleteBefore(updatedDate);
+        munchDataClient.deleteBefore(updatedDate);
     }
 
     public class PlaceIngress {
@@ -106,12 +99,12 @@ public class MunchCatalyst extends CatalystEngine {
                 for (Place place : places) {
                     logger.info("Putting place id: {} name: {}", place.getId(), place.getName());
                     // Put to 3 services
-                    medias = medias.stream().map(instagramClient::put).collect(Collectors.toList());
-                    articles = articles.stream().map(articleClient::put).collect(Collectors.toList());
+                    medias = medias.stream().map(munchDataClient::put).collect(Collectors.toList());
+                    articles = articles.stream().map(munchDataClient::put).collect(Collectors.toList());
 
                     // Add images to place from medias and articles
                     place.setImages(ImageCurator.selectFrom(medias, articles));
-                    placeClient.put(place);
+                    munchDataClient.put(place);
                     searchClient.put(place);
                 }
             } else logger.warn("Place unable to put due to incomplete corpus data: {}", collected);

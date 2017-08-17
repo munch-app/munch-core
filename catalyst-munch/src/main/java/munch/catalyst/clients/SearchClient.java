@@ -24,6 +24,8 @@ public class SearchClient extends RestfulClient {
         super(url);
     }
 
+    // TODO Changes
+
     public void put(Place place) {
         put("places", place, Place::getId);
     }
