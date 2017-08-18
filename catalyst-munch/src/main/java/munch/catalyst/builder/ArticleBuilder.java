@@ -2,8 +2,7 @@ package munch.catalyst.builder;
 
 import catalyst.utils.FieldWrapper;
 import corpus.data.CorpusData;
-import munch.catalyst.data.Article;
-import org.apache.commons.lang3.StringUtils;
+import munch.data.Article;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,7 +11,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * Created by: Fuxing
@@ -29,7 +27,7 @@ public class ArticleBuilder implements DataBuilder<Article> {
 
     @Override
     public void consume(CorpusData data) {
-        if (!CorpusName.matcher(data.getCorpusName()).matches()) return;
+        if (!data.getCorpusName().equals("Global.Munch.Article")) return;
 
         FieldWrapper wrapper = new FieldWrapper(data);
 
@@ -43,30 +41,13 @@ public class ArticleBuilder implements DataBuilder<Article> {
         article.setUrl(wrapper.getValue("Article.url", NullSupplier));
 
         // Title and Description are trimmed if they are too long
-        article.setTitle(wrapper.getValue("Article.title", NullSupplier));
-        if (article.getTitle().length() > 255)
-            article.setTitle(article.getTitle().substring(0, 255));
-
-        article.setDescription(wrapper.getValue("Article.description", NullSupplier));
-        if (article.getDescription().length() > 2048)
-            article.setDescription(article.getDescription().substring(0, 2048));
+        article.setTitle(wrapper.getValue("Article.title", 255, NullSupplier));
+        article.setDescription(wrapper.getValue("Article.description", 2048, NullSupplier));
 
         // Next version of article corpus uses thumbnail
+        // TODO Read from cache
         String thumbnail = wrapper.getValue("Article.thumbnail");
-        if (StringUtils.isNotBlank(thumbnail)) {
-            article.setThumbnail(new Article.Image(thumbnail));
-        } else {
-            // Deprecated backward compatibility
-            List<Article.Image> images = wrapper.getAll("Article.images").stream()
-                    .map(CorpusData.Field::getValue)
-                    .filter(StringUtils::isNotBlank)
-                    .map(Article.Image::new)
-                    .collect(Collectors.toList());
-
-            if (!images.isEmpty()) {
-                article.setThumbnail(images.get(0));
-            }
-        }
+        article.setThumbnail(new Article.Image(thumbnail));
 
         // Add to List
         articleList.add(article);

@@ -5,7 +5,7 @@ import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 import corpus.data.CorpusData;
 import corpus.utils.FieldUtils;
-import munch.catalyst.data.Location;
+import munch.data.Location;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

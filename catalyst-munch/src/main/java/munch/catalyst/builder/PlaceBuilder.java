@@ -1,8 +1,9 @@
-package munch.catalyst.builder.place;
+package munch.catalyst.builder;
 
 import corpus.data.CorpusData;
-import munch.catalyst.builder.DataBuilder;
-import munch.catalyst.data.Place;
+import munch.catalyst.builder.place.*;
+import munch.catalyst.builder.place.LocationBuilder;
+import munch.data.Place;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.slf4j.Logger;
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
 public final class PlaceBuilder implements DataBuilder<Place> {
     private static final Logger logger = LoggerFactory.getLogger(PlaceBuilder.class);
 
-    private final LocationBuilder locationBuilder = new LocationBuilder();
+    private final munch.catalyst.builder.place.LocationBuilder locationBuilder = new LocationBuilder();
     private final PriceBuilder priceBuilder = new PriceBuilder();
     private final HourBuilder hourBuilder = new HourBuilder();
     private final ValueBuilder valueBuilder = new ValueBuilder();

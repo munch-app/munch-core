@@ -3,12 +3,13 @@ package munch.catalyst;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.mashape.unirest.http.Unirest;
+import com.typesafe.config.ConfigFactory;
 import munch.catalyst.clients.DataClient;
 import munch.catalyst.clients.SearchClient;
-import munch.catalyst.data.Location;
-import munch.catalyst.data.Place;
-
-import java.util.Date;
+import munch.data.Article;
+import munch.data.InstagramMedia;
+import munch.data.Location;
+import munch.data.Place;
 
 /**
  * In theses clients: catalystId is also know also placeId
@@ -28,7 +29,7 @@ public class EmptyClientModule extends AbstractModule {
 
     @Provides
     DataClient providePlaceClient() {
-        return new EmtpyDataClient();
+        return new EmptyDataClient();
     }
 
     @Provides
@@ -36,35 +37,55 @@ public class EmptyClientModule extends AbstractModule {
         return new EmptySearchClient();
     }
 
-    static class EmtpyDataClient extends DataClient {
-        public EmtpyDataClient() {
-            super("");
+    static class EmptyDataClient extends DataClient {
+        public EmptyDataClient() {
+            super(ConfigFactory.load());
         }
 
         @Override
-        public void put(Place place) {
+        public void put(Place place, long cycleNo) {
         }
 
         @Override
-        public void deleteBefore(Date updatedDate) {
+        public void put(InstagramMedia media, long cycleNo) {
+        }
+
+        @Override
+        public void put(Article article, long cycleNo) {
+        }
+
+        @Override
+        public void deletePlaces(long cycleNo) {
+        }
+
+        @Override
+        public void deleteArticles(long cycleNo) {
+        }
+
+        @Override
+        public void deleteInstagramMedias(long cycleNo) {
         }
     }
 
     static class EmptySearchClient extends SearchClient {
         public EmptySearchClient() {
-            super("");
+            super(ConfigFactory.load());
         }
 
         @Override
-        public void put(Place place) {
+        public void put(Place place, long cycleNo) {
         }
 
         @Override
-        public void put(Location location) {
+        public void put(Location location, long cycleNo) {
         }
 
         @Override
-        public void deleteBefore(String type, Date updatedDate) {
+        public void deletePlaces(long cycleNo) {
+        }
+
+        @Override
+        public void deleteLocations(long cycleNo) {
         }
     }
 }

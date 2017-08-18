@@ -200,6 +200,14 @@ public class Place implements SearchResult {
         private String postal;
         private String latLng;
 
+        public String getStreet() {
+            return street;
+        }
+
+        public void setStreet(String street) {
+            this.street = street;
+        }
+
         public String getAddress() {
             return address;
         }
@@ -208,12 +216,12 @@ public class Place implements SearchResult {
             this.address = address;
         }
 
-        public String getStreet() {
-            return street;
+        public String getUnitNumber() {
+            return unitNumber;
         }
 
-        public void setStreet(String street) {
-            this.street = street;
+        public void setUnitNumber(String unitNumber) {
+            this.unitNumber = unitNumber;
         }
 
         public String getBuilding() {
@@ -230,14 +238,6 @@ public class Place implements SearchResult {
 
         public void setNearestTrain(String nearestTrain) {
             this.nearestTrain = nearestTrain;
-        }
-
-        public String getUnitNumber() {
-            return unitNumber;
-        }
-
-        public void setUnitNumber(String unitNumber) {
-            this.unitNumber = unitNumber;
         }
 
         public String getCity() {

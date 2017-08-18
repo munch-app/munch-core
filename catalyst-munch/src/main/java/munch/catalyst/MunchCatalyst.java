@@ -6,15 +6,12 @@ import com.google.inject.Inject;
 import corpus.data.CorpusData;
 import munch.catalyst.builder.ArticleBuilder;
 import munch.catalyst.builder.LocationBuilder;
-import munch.catalyst.builder.MediaBuilder;
-import munch.catalyst.builder.place.ImageCurator;
-import munch.catalyst.builder.place.PlaceBuilder;
+import munch.catalyst.builder.PlaceBuilder;
 import munch.catalyst.clients.DataClient;
 import munch.catalyst.clients.SearchClient;
-import munch.catalyst.data.Article;
-import munch.catalyst.data.InstagramMedia;
-import munch.catalyst.data.Location;
-import munch.catalyst.data.Place;
+import munch.data.Article;
+import munch.data.Location;
+import munch.data.Place;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +19,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by: Fuxing
@@ -39,7 +35,7 @@ public class MunchCatalyst extends CatalystEngine {
     private final PlaceIngress placeIngress = new PlaceIngress();
     private final LocationIngress locationIngress = new LocationIngress();
 
-    private Date updatedDate;
+    private long cycleNo;
 
     @Inject
     public MunchCatalyst(catalyst.data.DataClient munchDataClient, CatalystClient catalystClient,
@@ -52,7 +48,7 @@ public class MunchCatalyst extends CatalystEngine {
     @Override
     protected void preStart() {
         super.preStart();
-        this.updatedDate = new Date();
+        this.cycleNo = System.currentTimeMillis();
     }
 
     @Override
@@ -60,58 +56,52 @@ public class MunchCatalyst extends CatalystEngine {
         List<CorpusData> collected = new ArrayList<>();
         dataClient.getLinked(catalystId).forEachRemaining(collected::add);
 
-        placeIngress.ingress(catalystId, collected);
-        locationIngress.ingress(catalystId, collected);
+        placeIngress.ingress(collected);
+        locationIngress.ingress(collected);
     }
 
     @Override
     protected void postCycle() {
-        // TODO
-        searchClient.deleteBefore("locations", updatedDate);
-        searchClient.deleteBefore("places", updatedDate);
-        munchDataClient.deleteBefore(updatedDate);
+        searchClient.deleteLocations(cycleNo);
+        searchClient.deletePlaces(cycleNo);
+
+        munchDataClient.deletePlaces(cycleNo);
+//        munchDataClient.deleteInstagramMedias(cycleNo);
+        munchDataClient.deleteArticles(cycleNo);
     }
 
-    public class PlaceIngress {
-        void ingress(String catalystId, List<CorpusData> collected) {
+    private class PlaceIngress {
+        void ingress(List<CorpusData> collected) {
             // Failed validation: will be deleted at postCycle
             if (!validate(collected)) return;
 
             // Else validate = success: put new place
             PlaceBuilder placeBuilder = new PlaceBuilder();
             ArticleBuilder articleBuilder = new ArticleBuilder();
-            MediaBuilder mediaBuilder = new MediaBuilder();
+            // TODO updatedDate should be deleted
             Date updatedDate = new Timestamp(System.currentTimeMillis());
 
             // Consume for Article & Media and Place builder
             for (CorpusData data : collected) {
                 placeBuilder.consume(data);
                 articleBuilder.consume(data);
-                mediaBuilder.consume(data);
             }
 
             // Put place data to place services
             List<Place> places = placeBuilder.collect(updatedDate);
-            List<InstagramMedia> medias = mediaBuilder.collect(updatedDate);
             List<Article> articles = articleBuilder.collect(updatedDate);
 
             if (!places.isEmpty()) {
                 for (Place place : places) {
                     logger.info("Putting place id: {} name: {}", place.getId(), place.getName());
-                    // Put to 3 services
-                    medias = medias.stream().map(munchDataClient::put).collect(Collectors.toList());
-                    articles = articles.stream().map(munchDataClient::put).collect(Collectors.toList());
+                    // Put to data and search services
 
-                    // Add images to place from medias and articles
-                    place.setImages(ImageCurator.selectFrom(medias, articles));
-                    munchDataClient.put(place);
-                    searchClient.put(place);
+                    articles.forEach(article -> munchDataClient.put(article, cycleNo));
+
+                    munchDataClient.put(place, cycleNo);
+                    searchClient.put(place, cycleNo);
                 }
             } else logger.warn("Place unable to put due to incomplete corpus data: {}", collected);
-
-            // Delete place associated data that is not updated
-            articleClient.deleteBefore(catalystId, updatedDate);
-            instagramClient.deleteBefore(catalystId, updatedDate);
         }
 
         /**
@@ -136,8 +126,8 @@ public class MunchCatalyst extends CatalystEngine {
         }
     }
 
-    public class LocationIngress {
-        void ingress(String catalystId, List<CorpusData> collected) {
+    private class LocationIngress {
+        void ingress(List<CorpusData> collected) {
             // Failed validation: will be deleted at postCycle
             if (!validate(collected)) return;
 
@@ -150,7 +140,7 @@ public class MunchCatalyst extends CatalystEngine {
             List<Location> locations = locationBuilder.collect(updatedDate);
             for (Location location : locations) {
                 logger.info("Putting location id: {} name: {}", location.getId(), location.getName());
-                searchClient.put(location);
+                searchClient.put(location, cycleNo);
             }
         }
 

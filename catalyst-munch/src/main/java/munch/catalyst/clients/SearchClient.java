@@ -1,14 +1,12 @@
 package munch.catalyst.clients;
 
 import com.google.inject.Singleton;
-import munch.catalyst.data.Location;
-import munch.catalyst.data.Place;
+import com.typesafe.config.Config;
+import munch.data.Location;
+import munch.data.Place;
 import munch.restful.client.RestfulClient;
 
 import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.Date;
-import java.util.function.Function;
 
 /**
  * Created by: Fuxing
@@ -20,47 +18,39 @@ import java.util.function.Function;
 public class SearchClient extends RestfulClient {
 
     @Inject
-    public SearchClient(@Named("services.search.url") String url) {
-        super(url);
+    public SearchClient(Config config) {
+        super(config.getString("services.search.url"));
     }
 
-    // TODO Changes
-
-    public void put(Place place) {
-        put("places", place, Place::getId);
-    }
-
-    public void put(Location location) {
-        put("locations", location, Location::getId);
-    }
-
-    /**
-     * Helper method to index search data
-     *
-     * @param type     type name
-     * @param data     data
-     * @param idMapper mapper to get id from data
-     * @param <T>      Data Type
-     */
-    private <T> void put(String type, T data, Function<T, String> idMapper) {
-        doPut("/" + type + "/{id}")
-                .path("id", idMapper.apply(data))
-                .body(data)
+    public void put(Place place, long cycleNo) {
+        doPut("/places/{cycleNo}/{id}")
+                .path("cycleNo", cycleNo)
+                .path("id", place.getId())
+                .body(place)
                 .asResponse()
                 .hasCode(200);
     }
 
-    /**
-     * Types:
-     * 1. places
-     * 2. locations
-     *
-     * @param type        type to delete before
-     * @param updatedDate to delete before updated date
-     */
-    public void deleteBefore(String type, Date updatedDate) {
-        doDelete("/" + type + "/before/{updatedDate}")
-                .path("updatedDate", updatedDate.getTime())
+    public void put(Location location, long cycleNo) {
+        doPut("/locations/{cycleNo}/{id}")
+                .path("cycleNo", cycleNo)
+                .path("id", location.getId())
+                .body(location)
+                .asResponse()
+                .hasCode(200);
+    }
+
+    public void deletePlaces(long cycleNo) {
+        doDelete("/places/{cycleNo}/before")
+                .path("cycleNo", cycleNo)
+                .asResponse()
+                .hasCode(200);
+
+    }
+
+    public void deleteLocations(long cycleNo) {
+        doDelete("/locations/{cycleNo}/before")
+                .path("cycleNo", cycleNo)
                 .asResponse()
                 .hasCode(200);
     }

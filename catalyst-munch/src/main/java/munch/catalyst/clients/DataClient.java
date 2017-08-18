@@ -1,14 +1,13 @@
 package munch.catalyst.clients;
 
+import com.typesafe.config.Config;
 import munch.data.Article;
 import munch.data.InstagramMedia;
 import munch.data.Place;
 import munch.restful.client.RestfulClient;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
-import java.util.Date;
 
 /**
  * Created By: Fuxing Loh
@@ -23,54 +22,54 @@ public class DataClient extends RestfulClient {
      * Look at data service package to api service settings
      */
     @Inject
-    public DataClient(@Named("services.data.url") String url) {
-        super(url);
+    public DataClient(Config config) {
+        super(config.getString("services.data.url"));
     }
 
-    public void put(Place place) {
-        doPut("/places/{id}")
+    public void put(Place place, long cycleNo) {
+        doPut("/places/{cycleNo}/{id}")
+                .path("cycleNo", cycleNo)
                 .path("id", place.getId())
                 .body(place)
                 .asResponse()
                 .hasCode(200);
     }
 
-    public void deleteBefore(Date updatedDate) {
-        doDelete("/places/before/{updatedDate}")
-                .path("updatedDate", updatedDate.getTime())
-                .asResponse()
-                .hasCode(200);
-    }
-
-    public InstagramMedia put(InstagramMedia media) {
-        return doPut("/places/{placeId}/instagram/medias/{mediaId}")
+    public void put(InstagramMedia media, long cycleNo) {
+        doPut("/places/{placeId}/instagram/medias/{cycleNo}/{mediaId}")
                 .path("placeId", media.getPlaceId())
+                .path("cycleNo", cycleNo)
                 .path("mediaId", media.getMediaId())
                 .body(media)
-                .asResponse()
-                .asDataObject(InstagramMedia.class);
+                .hasCode(200);
     }
 
-    public void deleteInstagram(String catalystId, Date updatedDate) {
-        doDelete("/places/{placeId}/instagram/medias/before/{timestamp}")
-                .path("placeId", catalystId)
-                .path("timestamp", updatedDate.getTime())
+    public void put(Article article, long cycleNo) {
+        doPut("/places/{placeId}/articles/{cycleNo}/{articleId}")
+                .path("placeId", article.getPlaceId())
+                .path("cycleNo", cycleNo)
+                .path("articleId", article.getArticleId())
+                .body(article)
+                .hasCode(200);
+    }
+
+    public void deletePlaces(long cycleNo) {
+        doDelete("/places/{cycleNo}/{id}")
+                .path("cycleNo", cycleNo)
                 .asResponse()
                 .hasCode(200);
     }
 
-    public Article put(Article article) {
-        return doPost("/places/{placeId}/articles/put")
-                .path("placeId", article.getPlaceId())
-                .body(article)
+    public void deleteArticles(long cycleNo) {
+        doDelete("/places/0/articles/{cycleNo}/before")
+                .path("cycleNo", cycleNo)
                 .asResponse()
-                .asDataObject(Article.class);
+                .hasCode(200);
     }
 
-    public void deleteArticle(String catalystId, Date updatedDate) {
-        doDelete("/places/{placeId}/articles/before/{timestamp}")
-                .path("placeId", catalystId)
-                .path("timestamp", updatedDate.getTime())
+    public void deleteInstagramMedias(long cycleNo) {
+        doDelete("/places/0/instagram/medias/{cycleNo}/before")
+                .path("cycleNo", cycleNo)
                 .asResponse()
                 .hasCode(200);
     }
