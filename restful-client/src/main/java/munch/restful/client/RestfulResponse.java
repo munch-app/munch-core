@@ -144,12 +144,10 @@ public class RestfulResponse {
      *
      * @param codes codes to validate
      */
-    public void hasCode(int... codes) {
+    public RestfulResponse hasCode(int... codes) {
         int code = getMeta().getCode();
         for (int i : codes) {
-            if (i == code) {
-                return;
-            }
+            if (i == code) return this;
         }
 
         throw new StructuredException(code, "CodeException", "Explicit validation on code failed.");

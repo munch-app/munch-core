@@ -249,7 +249,7 @@ public class RestfulRequest {
      *
      * @param codes codes to validate
      */
-    public void hasCode(int... codes) {
-        asResponse().hasCode(codes);
+    public RestfulResponse hasCode(int... codes) {
+        return asResponse().hasCode(codes);
     }
 }

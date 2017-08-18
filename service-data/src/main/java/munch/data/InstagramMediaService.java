@@ -19,7 +19,7 @@ public final class InstagramMediaService extends AbstractService<InstagramMediaE
 
     @Inject
     public InstagramMediaService() {
-        super("/instagram/medias", InstagramMediaEntity.class);
+        super("/places/:placeId/instagram/medias", InstagramMediaEntity.class);
     }
 
     @Override

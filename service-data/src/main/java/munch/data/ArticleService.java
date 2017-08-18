@@ -19,7 +19,7 @@ public final class ArticleService extends AbstractService<ArticleEntity> {
 
     @Inject
     public ArticleService() {
-        super("/articles", ArticleEntity.class);
+        super("/places/:placeId/articles", ArticleEntity.class);
     }
 
     @Override
