@@ -23,13 +23,14 @@ import java.util.stream.Collectors;
 public final class PlaceBuilder implements DataBuilder<Place> {
     private static final Logger logger = LoggerFactory.getLogger(PlaceBuilder.class);
 
-    private final munch.catalyst.builder.place.LocationBuilder locationBuilder = new LocationBuilder();
+    private final LocationBuilder locationBuilder = new LocationBuilder();
     private final PriceBuilder priceBuilder = new PriceBuilder();
     private final HourBuilder hourBuilder = new HourBuilder();
+    private final ImageBuilder imageBuilder = new ImageBuilder();
     private final ValueBuilder valueBuilder = new ValueBuilder();
 
     private final TypeBuilder[] builders = new TypeBuilder[]{
-            locationBuilder, priceBuilder, hourBuilder, valueBuilder};
+            locationBuilder, priceBuilder, hourBuilder, imageBuilder, valueBuilder};
 
     private String id;
     private Date earliestDate = new Date();
@@ -42,8 +43,9 @@ public final class PlaceBuilder implements DataBuilder<Place> {
             throw new IllegalArgumentException("CatalystLink catalystId is different, unable to build Place.");
 
         // Find earliest date
-        Date createdDate = data.getCreatedDate();
-        if (createdDate.compareTo(earliestDate) < 0) earliestDate = createdDate;
+        if (data.getCreatedDate().compareTo(earliestDate) < 0) {
+            earliestDate = data.getCreatedDate();
+        }
 
         // Iterate through all fields and add them to respective builders
         for (CorpusData.Field field : data.getFields()) {
@@ -75,6 +77,7 @@ public final class PlaceBuilder implements DataBuilder<Place> {
         place.setPrice(priceBuilder.collect());
         place.setLocation(locationBuilder.collect());
         place.setHours(hourBuilder.collect());
+        place.setImages(imageBuilder.collect());
 
         // Multiple values
         place.setTags(valueBuilder.collect("Place.tag").stream()

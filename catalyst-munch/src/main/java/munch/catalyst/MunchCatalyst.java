@@ -5,6 +5,7 @@ import catalyst.data.CatalystClient;
 import com.google.inject.Inject;
 import corpus.data.CorpusData;
 import munch.catalyst.builder.ArticleBuilder;
+import munch.catalyst.builder.ImageCacheResolver;
 import munch.catalyst.builder.LocationBuilder;
 import munch.catalyst.builder.PlaceBuilder;
 import munch.catalyst.clients.DataClient;
@@ -31,6 +32,7 @@ public class MunchCatalyst extends CatalystEngine {
 
     private final DataClient munchDataClient;
     private final SearchClient searchClient;
+    private final ImageCacheResolver imageCacheResolver;
 
     private final PlaceIngress placeIngress = new PlaceIngress();
     private final LocationIngress locationIngress = new LocationIngress();
@@ -39,10 +41,11 @@ public class MunchCatalyst extends CatalystEngine {
 
     @Inject
     public MunchCatalyst(catalyst.data.DataClient munchDataClient, CatalystClient catalystClient,
-                         DataClient placeClient, SearchClient searchClient) {
+                         DataClient placeClient, SearchClient searchClient, ImageCacheResolver imageCacheResolver) {
         super(logger, munchDataClient, catalystClient);
         this.munchDataClient = placeClient;
         this.searchClient = searchClient;
+        this.imageCacheResolver = imageCacheResolver;
     }
 
     @Override
@@ -66,7 +69,6 @@ public class MunchCatalyst extends CatalystEngine {
         searchClient.deletePlaces(cycleNo);
 
         munchDataClient.deletePlaces(cycleNo);
-//        munchDataClient.deleteInstagramMedias(cycleNo);
         munchDataClient.deleteArticles(cycleNo);
     }
 
@@ -77,8 +79,7 @@ public class MunchCatalyst extends CatalystEngine {
 
             // Else validate = success: put new place
             PlaceBuilder placeBuilder = new PlaceBuilder();
-            ArticleBuilder articleBuilder = new ArticleBuilder();
-            // TODO updatedDate should be deleted
+            ArticleBuilder articleBuilder = new ArticleBuilder(imageCacheResolver);
             Date updatedDate = new Timestamp(System.currentTimeMillis());
 
             // Consume for Article & Media and Place builder

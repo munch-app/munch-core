@@ -45,7 +45,6 @@ public class SearchService implements JsonService {
 
     @Override
     public void route() {
-        // TODO Validate
         // Root service can return any results
         POST("/search", this::search);
         POST("/suggest", this::suggest);

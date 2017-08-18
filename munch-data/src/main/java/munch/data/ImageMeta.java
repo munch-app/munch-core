@@ -3,7 +3,6 @@ package munch.data;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import java.util.Date;
 import java.util.Map;
 
 /**
@@ -18,8 +17,6 @@ import java.util.Map;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class ImageMeta {
     private String key;
-    private Date created;
-
     private Map<String, String> images;
 
     /**
@@ -31,14 +28,6 @@ public final class ImageMeta {
 
     public void setKey(String key) {
         this.key = key;
-    }
-
-    public Date getCreated() {
-        return created;
-    }
-
-    public void setCreated(Date created) {
-        this.created = created;
     }
 
     /**
@@ -59,7 +48,6 @@ public final class ImageMeta {
         return "ImageMeta{" +
                 "key='" + key + '\'' +
                 ", images=" + images +
-                ", created=" + created +
                 '}';
     }
 }

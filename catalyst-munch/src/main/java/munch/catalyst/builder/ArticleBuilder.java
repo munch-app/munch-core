@@ -3,6 +3,7 @@ package munch.catalyst.builder;
 import catalyst.utils.FieldWrapper;
 import corpus.data.CorpusData;
 import munch.data.Article;
+import munch.data.ImageMeta;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +26,12 @@ public class ArticleBuilder implements DataBuilder<Article> {
 
     private List<Article> articleList = new ArrayList<>();
 
+    private final ImageCacheResolver imageCacheResolver;
+
+    public ArticleBuilder(ImageCacheResolver imageCacheResolver) {
+        this.imageCacheResolver = imageCacheResolver;
+    }
+
     @Override
     public void consume(CorpusData data) {
         if (!data.getCorpusName().equals("Global.Munch.Article")) return;
@@ -45,9 +52,14 @@ public class ArticleBuilder implements DataBuilder<Article> {
         article.setDescription(wrapper.getValue("Article.description", 2048, NullSupplier));
 
         // Next version of article corpus uses thumbnail
-        // TODO Read from cache
         String thumbnail = wrapper.getValue("Article.thumbnail");
-        article.setThumbnail(new Article.Image(thumbnail));
+        CorpusData.Field imageField = imageCacheResolver.resolve(thumbnail);
+        if (imageField != null) {
+            ImageMeta imageMeta = new ImageMeta();
+            imageMeta.setKey(imageField.getKey());
+            imageMeta.setImages(imageField.getMetadata());
+            article.setThumbnail(imageMeta);
+        }
 
         // Add to List
         articleList.add(article);

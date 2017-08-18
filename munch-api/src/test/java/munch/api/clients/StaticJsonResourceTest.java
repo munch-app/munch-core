@@ -2,6 +2,7 @@ package munch.api.clients;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.HttpMethod;
+import munch.data.Location;
 import munch.restful.client.RestfulRequest;
 import org.junit.jupiter.api.Test;
 

@@ -436,15 +436,15 @@ public class Place implements SearchResult {
      * with lesser fields
      */
     public static final class Image {
-        private String from;
+        private String source;
         private ImageMeta imageMeta;
 
-        public String getFrom() {
-            return from;
+        public String getSource() {
+            return source;
         }
 
-        public void setFrom(String from) {
-            this.from = from;
+        public void setSource(String source) {
+            this.source = source;
         }
 
         public ImageMeta getImageMeta() {

@@ -7,5 +7,5 @@ package munch.api.services.rip;
  * Project: munch-core
  */
 public class PlaceCardCurator {
-    // TODO
+    // Future
 }

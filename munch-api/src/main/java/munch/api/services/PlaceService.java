@@ -48,7 +48,7 @@ public class PlaceService extends AbstractService {
      * @return Place or Null
      */
     private PlaceDetail get(JsonCall call) {
-        // TODO Explicit card will be generate at mobile app
+        // Explicit card will be generate at mobile app
         // data: { place: {}, cards: [] }
         // Other card, are generate here
         // Card: name, version, data
