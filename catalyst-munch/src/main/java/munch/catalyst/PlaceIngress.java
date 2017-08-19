@@ -28,21 +28,15 @@ public final class PlaceIngress extends AbstractIngress {
     private static final Logger logger = LoggerFactory.getLogger(LocationIngress.class);
 
     private final SearchClient searchClient;
-    private final DataClient munchDataClient;
+    private final DataClient dataClient;
     private final ImageCacheResolver imageCacheResolver;
 
     @Inject
-    public PlaceIngress(SearchClient searchClient, DataClient munchDataClient, ImageCacheResolver imageCacheResolver) {
+    public PlaceIngress(SearchClient searchClient, DataClient dataClient, ImageCacheResolver imageCacheResolver) {
+        super(logger);
         this.searchClient = searchClient;
-        this.munchDataClient = munchDataClient;
+        this.dataClient = dataClient;
         this.imageCacheResolver = imageCacheResolver;
-    }
-
-    @Override
-    protected void egress(long cycleNo) {
-        searchClient.deletePlaces(cycleNo);
-        munchDataClient.deletePlaces(cycleNo);
-        munchDataClient.deleteArticles(cycleNo);
     }
 
     /**
@@ -54,6 +48,7 @@ public final class PlaceIngress extends AbstractIngress {
      * @param dataList links
      * @return true = validated, false = cannot be a munch place
      */
+    @Override
     protected boolean validate(List<CorpusData> dataList) {
         // Must have at least one image
         if (dataList.stream().noneMatch(PlaceKey.image::has)) return false;
@@ -62,6 +57,7 @@ public final class PlaceIngress extends AbstractIngress {
         return hasCorpusName(dataList, "Sg.Nea.TrackRecord");
     }
 
+    @Override
     protected void put(List<CorpusData> dataList, final long cycleNo) {
         // Else validate = success: put new place
         PlaceBuilder placeBuilder = new PlaceBuilder();
@@ -83,11 +79,18 @@ public final class PlaceIngress extends AbstractIngress {
                 logger.info("Putting place id: {} name: {}", place.getId(), place.getName());
                 // Put to data and search services
 
-                articles.forEach(article -> munchDataClient.put(article, cycleNo));
+                articles.forEach(article -> dataClient.put(article, cycleNo));
 
-                munchDataClient.put(place, cycleNo);
+                dataClient.put(place, cycleNo);
                 searchClient.put(place, cycleNo);
             }
         } else logger.warn("Place unable to put due to incomplete corpus data: {}", dataList);
+    }
+
+    @Override
+    protected void delete(long cycleNo) {
+        searchClient.deletePlaces(cycleNo);
+        dataClient.deletePlaces(cycleNo);
+        dataClient.deleteArticles(cycleNo);
     }
 }

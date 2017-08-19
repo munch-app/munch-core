@@ -76,13 +76,12 @@ public abstract class AbstractService<T extends CycleEntity> implements JsonServ
         data.setCycleNo(cycleNo);
 
         provider.with(em -> {
-            em.merge(entityClass);
+            em.merge(data);
 
-            // TODO if Merge works
-//            if (em.find(entityClass, id) == null) {
-//                em.persist(entityClass);
+            // TODO Validate works
+//            if (em.find(entityClass, getKeyMapper().apply(data)) == null) {
+//                em.persist(data);
 //            } else {
-//                em.merge(entityClass);
 //            }
         });
         return Meta200;

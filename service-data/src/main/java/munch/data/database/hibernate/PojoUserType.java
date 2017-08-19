@@ -40,7 +40,6 @@ public abstract class PojoUserType<T> implements UserType {
         return returnedClass;
     }
 
-
     @Override
     public boolean equals(Object x, Object y) throws HibernateException {
         if (x == y) {

@@ -1,6 +1,7 @@
 package munch.catalyst;
 
 import corpus.data.CorpusData;
+import org.slf4j.Logger;
 
 import java.util.List;
 
@@ -11,6 +12,13 @@ import java.util.List;
  * Project: munch-core
  */
 public abstract class AbstractIngress {
+    private final Logger logger;
+
+    protected int ingressTotal;
+
+    protected AbstractIngress(Logger logger) {
+        this.logger = logger;
+    }
 
     /**
      * Ingress corpus data
@@ -22,6 +30,7 @@ public abstract class AbstractIngress {
         if (!validate(dataList)) return;
 
         // If passed validation, then put
+        ingressTotal++;
         put(dataList, cycleNo);
     }
 
@@ -30,11 +39,22 @@ public abstract class AbstractIngress {
      *
      * @param cycleNo current cycleNo
      */
-    protected abstract void egress(final long cycleNo);
+    public void egress(final long cycleNo) {
+        logger.info("Ingress a total of {} data", ingressTotal);
+        ingressTotal = 0;
+        delete(cycleNo);
+    }
 
     protected abstract boolean validate(List<CorpusData> dataList);
 
     protected abstract void put(List<CorpusData> dataList, final long cycleNo);
+
+    /**
+     * deletion of corpus data
+     *
+     * @param cycleNo current cycleNo
+     */
+    protected abstract void delete(final long cycleNo);
 
     /**
      * @param dataList   data list to check

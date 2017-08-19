@@ -27,12 +27,8 @@ public final class LocationIngress extends AbstractIngress {
 
     @Inject
     public LocationIngress(SearchClient searchClient) {
+        super(logger);
         this.searchClient = searchClient;
-    }
-
-    @Override
-    protected void egress(long cycleNo) {
-        searchClient.deleteLocations(cycleNo);
     }
 
     /**
@@ -44,11 +40,13 @@ public final class LocationIngress extends AbstractIngress {
      * @param dataList links
      * @return true = validated, false = cannot be a munch place
      */
+    @Override
     protected boolean validate(List<CorpusData> dataList) {
         // Must have corpus: LocationPolygon
         return hasCorpusName(dataList, "Sg.Munch.LocationPolygon");
     }
 
+    @Override
     protected void put(List<CorpusData> dataList, final long cycleNo) {
         // Else validate = success: put new place
         LocationBuilder locationBuilder = new LocationBuilder();
@@ -60,5 +58,10 @@ public final class LocationIngress extends AbstractIngress {
             logger.info("Putting location id: {} name: {}", location.getId(), location.getName());
             searchClient.put(location, cycleNo);
         }
+    }
+
+    @Override
+    protected void delete(long cycleNo) {
+        searchClient.deleteLocations(cycleNo);
     }
 }

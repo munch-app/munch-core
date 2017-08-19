@@ -3,6 +3,7 @@ package munch.api;
 import com.google.common.collect.ImmutableSet;
 import com.typesafe.config.Config;
 import munch.api.exception.UnsupportedException;
+import org.apache.commons.lang3.StringUtils;
 import spark.Request;
 
 import javax.inject.Inject;
@@ -30,13 +31,15 @@ public final class SupportedVersions {
 
     public void validate(Request request) {
         String version = request.headers(HEADER_VERSION);
-        if (!supportedVersions.contains(version)) {
+        if (StringUtils.isNotBlank(version) && !supportedVersions.contains(version)) {
             throw new UnsupportedException();
         }
 
         String build = request.headers(HEADER_BUILD);
-        if (!supportedBuilds.contains(build)) {
+        if (StringUtils.isNotBlank(build) && !supportedBuilds.contains(build)) {
             throw new UnsupportedException();
         }
+
+        // If build or version is not given, no error will be thrown
     }
 }
