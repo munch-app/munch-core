@@ -3,7 +3,6 @@ package munch.catalyst;
 import corpus.data.CorpusData;
 import corpus.field.PlaceKey;
 import munch.catalyst.builder.ArticleBuilder;
-import munch.catalyst.builder.ImageCacheResolver;
 import munch.catalyst.builder.PlaceBuilder;
 import munch.catalyst.clients.DataClient;
 import munch.catalyst.clients.SearchClient;

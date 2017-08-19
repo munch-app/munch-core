@@ -21,6 +21,7 @@ public class ClientModule extends AbstractModule {
     @Override
     protected void configure() {
         Unirest.setTimeouts(60000, 60000);
+        requestInjection(this);
     }
 
     @Inject

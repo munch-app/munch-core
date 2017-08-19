@@ -1,4 +1,4 @@
-package munch.catalyst.builder;
+package munch.catalyst;
 
 import catalyst.data.DataClient;
 import com.google.inject.Inject;

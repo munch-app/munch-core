@@ -2,6 +2,7 @@ package munch.catalyst.builder;
 
 import catalyst.utils.FieldWrapper;
 import corpus.data.CorpusData;
+import munch.catalyst.ImageCacheResolver;
 import munch.data.Article;
 import munch.data.ImageMeta;
 import org.slf4j.Logger;
