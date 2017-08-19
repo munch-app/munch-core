@@ -1,6 +1,8 @@
 dependencies {
     compile project(':munch-data')
     compile group: 'catalyst', name: 'catalyst-framework', version: ccVersion
+    compile group: 'com.google.inject.extensions', name: 'guice-multibindings', version: '4.1.0'
+
     compile group: 'com.vividsolutions', name: 'jts', version: '1.13'
 }
 

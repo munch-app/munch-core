@@ -5,6 +5,7 @@ import catalyst.CatalystModule;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.multibindings.Multibinder;
 import corpus.data.DataModule;
 import munch.catalyst.clients.ClientModule;
 
@@ -22,6 +23,10 @@ public class MunchModule extends AbstractModule {
         install(new DataModule());
         install(new ClientModule());
         bind(CatalystEngine.class).to(MunchCatalyst.class);
+
+        Multibinder<AbstractIngress> routerBinder = Multibinder.newSetBinder(binder(), AbstractIngress.class);
+        routerBinder.addBinding().to(LocationIngress.class);
+        routerBinder.addBinding().to(PlaceIngress.class);
     }
 
     public static void main(String[] args) {
