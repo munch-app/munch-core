@@ -13,9 +13,11 @@ import munch.restful.core.exception.StructuredException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Created By: Fuxing Loh
@@ -150,6 +152,9 @@ public class RestfulResponse {
             if (i == code) return this;
         }
 
-        throw new StructuredException(code, "CodeException", "Explicit validation on code failed.");
+        String codeList = Arrays.stream(codes)
+                .mapToObj(Integer::toString)
+                .collect(Collectors.joining(", "));
+        throw new StructuredException(code, "CodeException", "Explicit validation on code(" + codeList + ") failed.");
     }
 }
