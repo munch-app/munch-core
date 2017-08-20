@@ -54,7 +54,7 @@ public class DataClient extends RestfulClient {
     }
 
     public void deletePlaces(long cycleNo) {
-        doDelete("/places/{cycleNo}/{id}")
+        doDelete("/places/{cycleNo}/before")
                 .path("cycleNo", cycleNo)
                 .asResponse()
                 .hasCode(200);

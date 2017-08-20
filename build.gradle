@@ -6,7 +6,7 @@ allprojects {
 
     group 'munch.core'
     version '1.0.0-SNAPSHOT'
-    ext.ccVersion = '1.2.13'
+    ext.ccVersion = '1.2.14'
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
@@ -76,7 +76,7 @@ configure(subprojects.findAll { it.name.matches("catalyst-munch|service-(.+)") }
 
 configure(subprojects.findAll { it.name.matches("restful-(.+)") }) {
     group 'munch'
-    version '0.8.26'
+    version '0.8.27'
 
     task publishLib {
         dependsOn 'build'

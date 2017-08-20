@@ -23,13 +23,14 @@ public final class OfflineException extends StructuredException {
      * @param e all exception
      * @throws TimeoutException timeout
      */
-    public static void parse(Exception e) throws TimeoutException {
-        if (ExceptionUtils.hasCause(e, HttpHostConnectException.class)) {
-            throw new OfflineException(e);
-        }
-
-        if (ExceptionUtils.hasCause(e, NoHttpResponseException.class)) {
-            throw new OfflineException(e);
+    public static void parse(Exception e) throws OfflineException {
+        for (Throwable throwable : ExceptionUtils.getThrowables(e)) {
+            if (throwable instanceof HttpHostConnectException) {
+                throw new OfflineException(e);
+            }
+            if (throwable instanceof NoHttpResponseException) {
+                throw new OfflineException(e);
+            }
         }
     }
 }
