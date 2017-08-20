@@ -37,12 +37,10 @@ public abstract class AbstractService<T extends CycleEntity> implements JsonServ
     public void route() {
         PATH(serviceName, () -> {
             POST("/get", this::batchGet);
-
             GET("/:id", this::get);
 
             PUT("/:cycleNo/:id", this::put);
             DELETE("/:cycleNo/before", this::deleteBefore);
-            DELETE("/:cycleNo/:id", this::delete);
         });
     }
 
@@ -77,12 +75,6 @@ public abstract class AbstractService<T extends CycleEntity> implements JsonServ
 
         provider.with(em -> {
             em.merge(data);
-
-            // TODO Validate works
-//            if (em.find(entityClass, getKeyMapper().apply(data)) == null) {
-//                em.persist(data);
-//            } else {
-//            }
         });
         return Meta200;
     }
@@ -94,12 +86,6 @@ public abstract class AbstractService<T extends CycleEntity> implements JsonServ
                 "DELETE FROM " + entityName + " WHERE cycleNo < :cycleNo", entityClass)
                 .setParameter("cycleNo", cycleNo)
                 .executeUpdate());
-        return Meta200;
-    }
-
-    protected JsonNode delete(JsonCall call) {
-        String id = call.pathString("id");
-        provider.with(em -> em.remove(em.find(entityClass, id)));
         return Meta200;
     }
 }
