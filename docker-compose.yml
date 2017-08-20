@@ -33,7 +33,7 @@ services:
   search:
     image: munch-core/service-search
     environment:
-      - SEARCH_DATABASE_HOSTNAME=munch-es
+      - SERVICE_ELASTIC_URL=http://munch-es:9200
     ports:
       - "8701:8000"
 

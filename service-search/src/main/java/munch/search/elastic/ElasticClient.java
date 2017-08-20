@@ -4,19 +4,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Singleton;
+import io.searchbox.client.JestClient;
+import io.searchbox.core.Search;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.entity.ContentType;
-import org.apache.http.nio.entity.NStringEntity;
-import org.apache.http.util.EntityUtils;
-import org.elasticsearch.client.Response;
-import org.elasticsearch.client.RestClient;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collections;
 import java.util.Map;
 
@@ -30,11 +25,11 @@ import java.util.Map;
 public final class ElasticClient {
     private static final Map<String, String> PARAMS = Collections.emptyMap();
 
-    private final RestClient client;
+    private final JestClient client;
     private final ObjectMapper mapper;
 
     @Inject
-    public ElasticClient(RestClient client, ObjectMapper mapper) {
+    public ElasticClient(JestClient client, ObjectMapper mapper) {
         this.client = client;
         this.mapper = mapper;
     }
@@ -119,16 +114,11 @@ public final class ElasticClient {
      * @return root node
      */
     public JsonNode postSearch(String type, JsonNode node) throws IOException {
-        String endpoint = "/munch/" + (type != null ? type + "/" : "") + "_search";
-        HttpEntity jsonEntity = new NStringEntity(mapper.writeValueAsString(node), ContentType.APPLICATION_JSON);
-        Response response = client.performRequest("POST", endpoint, PARAMS, jsonEntity);
-        HttpEntity entity = response.getEntity();
+        Search.Builder builder = new Search.Builder(mapper.writeValueAsString(node))
+                .addIndex("munch");
+        if (type != null) builder.addType(type);
 
-        try {
-            InputStream input = entity.getContent();
-            return mapper.readTree(input);
-        } finally {
-            EntityUtils.consumeQuietly(entity);
-        }
+        return mapper.readTree(client.execute(builder.build())
+                .getJsonString());
     }
 }

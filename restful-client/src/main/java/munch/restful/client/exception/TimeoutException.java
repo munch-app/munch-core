@@ -24,10 +24,6 @@ public final class TimeoutException extends StructuredException {
      * @throws TimeoutException Timeout exception
      */
     public static void parse(Exception e) throws TimeoutException {
-        if (e instanceof SocketTimeoutException) {
-            throw new TimeoutException(e);
-        }
-
         if (ExceptionUtils.hasCause(e, SocketTimeoutException.class)) {
             throw new TimeoutException(e);
         }

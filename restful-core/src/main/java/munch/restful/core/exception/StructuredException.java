@@ -43,7 +43,11 @@ public class StructuredException extends RuntimeException {
      * @param throwable error stacktrace
      */
     public StructuredException(int code, String type, String message, Throwable throwable) {
-        this(code, type, message, throwable != null ? ExceptionUtils.getStackTrace(throwable) : null);
+        super(type + ": " + message, throwable);
+        this.code = code;
+        this.type = type;
+        this.message = message;
+        this.stacktrace = ExceptionUtils.getStackTrace(throwable);
     }
 
     /**

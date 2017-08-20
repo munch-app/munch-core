@@ -4,18 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import io.searchbox.client.JestClient;
+import io.searchbox.core.Delete;
+import io.searchbox.core.DeleteByQuery;
+import io.searchbox.core.Update;
 import munch.data.Location;
 import munch.data.Place;
-import org.apache.http.HttpEntity;
-import org.apache.http.entity.ContentType;
-import org.apache.http.nio.entity.NStringEntity;
-import org.apache.http.util.EntityUtils;
-import org.elasticsearch.client.Response;
-import org.elasticsearch.client.ResponseException;
-import org.elasticsearch.client.RestClient;
-
-import java.util.Collections;
-import java.util.Map;
 
 /**
  * Created By: Fuxing Loh
@@ -25,9 +19,7 @@ import java.util.Map;
  */
 @Singleton
 public final class ElasticIndex {
-    private static final Map<String, String> PARAMS = Collections.emptyMap();
-
-    private final RestClient client;
+    private final JestClient client;
     private final ObjectMapper mapper;
     private final ElasticMarshaller marshaller;
 
@@ -40,24 +32,10 @@ public final class ElasticIndex {
      * @throws RuntimeException if ElasticSearchMapping validation failed
      */
     @Inject
-    public ElasticIndex(RestClient client, ObjectMapper mapper, ElasticMarshaller marshaller) {
+    public ElasticIndex(JestClient client, ObjectMapper mapper, ElasticMarshaller marshaller) {
         this.client = client;
         this.mapper = mapper;
         this.marshaller = marshaller;
-    }
-
-    /**
-     * This method also consume response entity
-     *
-     * @param response response to check if successful
-     * @throws RuntimeException if response code is higher
-     */
-    private void isSuccessful(Response response) throws RuntimeException {
-        int code = response.getStatusLine().getStatusCode();
-        EntityUtils.consumeQuietly(response.getEntity());
-        if (code > 299) {
-            throw new RuntimeException("Response code is higher than 299, code: " + code);
-        }
     }
 
     /**
@@ -70,11 +48,12 @@ public final class ElasticIndex {
     public void put(Place place, long cycleNo) throws Exception {
         ObjectNode node = marshaller.serialize(place, cycleNo);
         String json = mapper.writeValueAsString(node);
-        HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
 
-        String endpoint = "/munch/place/" + place.getId();
-        Response response = client.performRequest("PUT", endpoint, PARAMS, entity);
-        isSuccessful(response);
+        client.execute(new Update.Builder(json)
+                .index("munch")
+                .type("place")
+                .id(place.getId())
+                .build());
     }
 
     /**
@@ -88,11 +67,12 @@ public final class ElasticIndex {
     public void put(Location location, long cycleNo) throws Exception {
         ObjectNode node = marshaller.serialize(location, cycleNo);
         String json = mapper.writeValueAsString(node);
-        HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
 
-        String endpoint = "/munch/location/" + location.getId();
-        Response response = client.performRequest("PUT", endpoint, PARAMS, entity);
-        isSuccessful(response);
+        client.execute(new Update.Builder(json)
+                .index("munch")
+                .type("location")
+                .id(location.getId())
+                .build());
     }
 
     /**
@@ -101,14 +81,10 @@ public final class ElasticIndex {
      * @throws Exception exception for deletion
      */
     public void delete(String type, String key) throws Exception {
-        try {
-            String endpoint = "/munch/" + type + "/" + key;
-            Response response = client.performRequest("DELETE", endpoint);
-            isSuccessful(response);
-        } catch (ResponseException responseException) {
-            int code = responseException.getResponse().getStatusLine().getStatusCode();
-            if (code != 404) throw responseException;
-        }
+        client.execute(new Delete.Builder(key)
+                .index("munch")
+                .type(type)
+                .build());
     }
 
     /**
@@ -124,9 +100,10 @@ public final class ElasticIndex {
                 .put("lt", cycleNo);
 
         String json = mapper.writeValueAsString(root);
-        HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
-        String endpoint = "/munch/" + type + "/_delete_by_query?conflicts=proceed";
-        Response response = client.performRequest("POST", endpoint, PARAMS, entity);
-        isSuccessful(response);
+        client.execute(new DeleteByQuery.Builder(json)
+                .addIndex("munch")
+                .addType(type)
+                .setParameter("conflicts", "proceed")
+                .build());
     }
 }
