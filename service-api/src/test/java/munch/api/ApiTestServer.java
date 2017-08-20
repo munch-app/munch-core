@@ -3,9 +3,8 @@ package munch.api;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.typesafe.config.Config;
 import munch.api.services.AbstractService;
-import org.fest.util.Collections;
+import munch.restful.server.RestfulServer;
 
 /**
  * Created By: Fuxing Loh
@@ -14,8 +13,6 @@ import org.fest.util.Collections;
  * Project: munch-core
  */
 public interface ApiTestServer {
-
-    int DEFAULT_PORT = 8888;
 
     /**
      * @param modules created modules to bind
@@ -26,12 +23,10 @@ public interface ApiTestServer {
     }
 
     static <T extends AbstractService> void start(Class<T> type, AbstractModule... modules) {
-        Injector injector = injector(modules);
-        T endpoint = injector.getInstance(type);
-        SupportedVersions versions = injector.getInstance(SupportedVersions.class);
+        System.setProperty("http.port", "8888");
 
-        ApiServer apiServer = new ApiServer(Collections.set(endpoint), injector.getInstance(Config.class), versions);
-        apiServer.start(DEFAULT_PORT);
+        Injector injector = injector(modules);
+        RestfulServer.start(injector.getInstance(type));
     }
 
 }

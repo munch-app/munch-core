@@ -50,7 +50,7 @@ services:
 
   # Munch Api
   munch-api:
-    image: munch-core/munch-api:latest
+    image: munch-core/service-api
     environment:
       - MUNCH_SERVICE_DATA_URL=http://data:8000
       - MUNCH_SERVICE_SEARCH_URL=http://search:8000

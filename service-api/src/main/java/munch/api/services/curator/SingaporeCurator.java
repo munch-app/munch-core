@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.clients.SearchClient;
 import munch.api.services.AbstractService;
-import munch.api.services.cached.StaticJsonResource;
+import munch.api.services.CachedService;
 import munch.data.Location;
 import munch.data.SearchCollection;
 import munch.data.SearchQuery;
@@ -30,7 +30,7 @@ public class SingaporeCurator extends Curator {
     private final Location[] popularLocations;
 
     @Inject
-    protected SingaporeCurator(SearchClient searchClient, StaticJsonResource resource) throws IOException {
+    protected SingaporeCurator(SearchClient searchClient, CachedService.StaticJson resource) throws IOException {
         super(searchClient);
         this.popularLocations = resource.getResource("popular-locations.json", Location[].class);
     }

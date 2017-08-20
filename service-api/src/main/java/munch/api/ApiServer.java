@@ -1,5 +1,6 @@
 package munch.api;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.typesafe.config.Config;
@@ -24,8 +25,8 @@ public final class ApiServer extends RestfulServer {
     private final SupportedVersions supportedVersions;
 
     @Inject
-    public ApiServer(Set<RestfulService> routers, Config config, SupportedVersions supportedVersions) {
-        super(routers);
+    public ApiServer(HealthService healthService, Set<RestfulService> routers, Config config, SupportedVersions supportedVersions) {
+        super(merge(healthService, routers));
         this.config = config;
         this.supportedVersions = supportedVersions;
     }
@@ -36,5 +37,10 @@ public final class ApiServer extends RestfulServer {
         Spark.before((req, res) -> supportedVersions.validate(req));
 
         Spark.path(config.getString("api.version"), () -> super.setupRouters());
+    }
+
+    private static Set<RestfulService> merge(RestfulService service, Set<RestfulService> routers) {
+        ImmutableSet.Builder<RestfulService> builder = ImmutableSet.builder();
+        return builder.add(service).addAll(routers).build();
     }
 }

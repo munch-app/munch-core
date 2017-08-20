@@ -20,7 +20,7 @@ import static org.fest.assertions.Assertions.assertThat;
  * Time: 4:AM
  * Project: munch-core
  */
-class StaticJsonResourceTest {
+class StaticJsonTest {
 
     @Test
     void generatePopularPlaces() throws Exception {

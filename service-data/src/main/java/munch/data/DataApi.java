@@ -14,7 +14,7 @@ import munch.restful.server.RestfulServer;
 final class DataApi extends RestfulServer {
 
     @Inject
-    public DataApi(PlaceService place, ArticleService article, InstagramMediaService media) {
-        super(place, article, media);
+    public DataApi(HealthService health, PlaceService place, ArticleService article, InstagramMediaService media) {
+        super(health, place, article, media);
     }
 }
