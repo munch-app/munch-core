@@ -38,7 +38,7 @@ public class PostgresModule extends AbstractModule {
 
         // Wait for url to be ready
         String url = postgres.getString("url");
-        WaitFor.host(url.substring(5), Duration.ofSeconds(30));
+        WaitFor.host(url.substring(5), Duration.ofSeconds(120));
 
         Map<String, String> properties = new HashMap<>();
         properties.put("hibernate.hikari.dataSource.url", url);
