@@ -26,7 +26,7 @@ import java.util.Date;
 })
 @Table(indexes = {
         @Index(name = "index_munch_instagram_media_entity_cycle_no", columnList = "cycleNo"),
-        @Index(name = "index_munch_instagram_media_entity_created_date", columnList = "createdDate")
+        @Index(name = "index_munch_instagram_media_entity_media_id_place_id_created_date", columnList = "mediaId, placeId, createdDate")
 })
 public final class InstagramMediaEntity extends InstagramMedia implements CycleEntity {
 

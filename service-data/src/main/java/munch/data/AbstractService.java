@@ -83,7 +83,7 @@ public abstract class AbstractService<T extends CycleEntity> implements JsonServ
         long cycleNo = call.pathLong("cycleNo");
 
         provider.with(em -> em.createQuery(
-                "DELETE FROM " + entityName + " WHERE cycleNo < :cycleNo", entityClass)
+                "DELETE FROM " + entityName + " WHERE cycleNo < :cycleNo")
                 .setParameter("cycleNo", cycleNo)
                 .executeUpdate());
         return Meta200;

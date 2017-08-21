@@ -24,7 +24,7 @@ import java.util.Date;
 })
 @Table(indexes = {
         @Index(name = "index_munch_article_entity_cycle_no", columnList = "cycleNo"),
-        @Index(name = "index_munch_article_entity_created_date", columnList = "createdDate"),
+        @Index(name = "index_munch_article_entity_article_id_place_id_created_date", columnList = "articleId, placeId, createdDate"),
 })
 public final class ArticleEntity extends Article implements CycleEntity {
 
