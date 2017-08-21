@@ -7,8 +7,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import io.searchbox.client.JestClient;
 import io.searchbox.client.JestResult;
+import io.searchbox.indices.CreateIndex;
 import io.searchbox.indices.mapping.GetMapping;
-import io.searchbox.indices.mapping.PutMapping;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,14 +46,14 @@ public final class ElasticMapping {
      * @throws RuntimeException if failed to create or validate
      */
     public void tryCreate() throws RuntimeException, IOException {
-        sleep();
+        sleep(1000);
         logger.info("Validating Index for endpoint /munch");
         JsonNode index = getIndex();
 
         // Index don't exist; hence create and revalidate
         if (index == null) {
             createIndex();
-            sleep();
+            sleep(5000);
             index = getIndex();
         }
 
@@ -98,18 +98,18 @@ public final class ElasticMapping {
      * @throws IOException io exception
      */
     public void createIndex() throws IOException {
-        URL url = Resources.getResource("mappings.json");
+        URL url = Resources.getResource("index.json");
         String json = Resources.toString(url, Charset.forName("UTF-8"));
-        client.execute(new PutMapping.Builder("munch", null, json).build());
+        client.execute(new CreateIndex.Builder("munch").settings(json).build());
     }
 
     /**
      * Wait for es to apply change
      * sleep for 2 seconds
      */
-    private void sleep() {
+    private void sleep(long millis) {
         try {
-            Thread.sleep(2000);
+            Thread.sleep(millis);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
