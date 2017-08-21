@@ -12,7 +12,6 @@ import munch.restful.core.exception.JsonException;
 import munch.restful.core.exception.StructuredException;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -30,7 +29,7 @@ public class RestfulResponse {
 
     private final JsonNode jsonNode;
     private final RestfulMeta meta;
-    private final HttpResponse<InputStream> response;
+    private final HttpResponse<String> response;
 
     /**
      * For error parser, as long there is error node it is consider a error and will be converted to Structured Error
@@ -46,7 +45,7 @@ public class RestfulResponse {
      * @param response unirest response
      * @param handler  handler for error
      */
-    RestfulResponse(RestfulRequest request, HttpResponse<InputStream> response, BiConsumer<RestfulResponse, StructuredException> handler) {
+    RestfulResponse(RestfulRequest request, HttpResponse<String> response, BiConsumer<RestfulResponse, StructuredException> handler) {
         this.response = response;
         try {
             this.jsonNode = objectMapper.readTree(response.getBody());
@@ -56,7 +55,7 @@ public class RestfulResponse {
                 throw new RuntimeException("RestfulMeta cannot be parsed.", e);
             }
         } catch (IOException e) {
-            throw new JsonException(e);
+            throw new JsonException(e, response.getBody());
         }
 
         // Set structured error

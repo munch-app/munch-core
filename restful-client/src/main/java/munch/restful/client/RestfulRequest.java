@@ -230,7 +230,7 @@ public class RestfulRequest {
      */
     private RestfulResponse executeResponse(BiConsumer<RestfulResponse, StructuredException> handler) {
         try {
-            return new RestfulResponse(this, request.asBinary(), handler);
+            return new RestfulResponse(this, request.asString(), handler);
         } catch (Exception e) {
             // If is structured error just throw
             if (e instanceof StructuredException) {
