@@ -13,7 +13,7 @@ import java.net.SocketTimeoutException;
  */
 public final class TimeoutException extends StructuredException {
 
-    TimeoutException(Throwable throwable) {
+    public TimeoutException(Throwable throwable) {
         super(408, "TimeoutException", "Request from client to server has timeout.", throwable);
     }
 

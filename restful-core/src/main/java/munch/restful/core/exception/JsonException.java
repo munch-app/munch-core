@@ -11,8 +11,8 @@ public final class JsonException extends StructuredException {
     /**
      * @param cause throwable for actual cause of json exception
      */
-    public JsonException(Throwable cause, String jsonString) {
-        super(400, "JsonException", cause.getMessage() + "\n" + jsonString, cause);
+    public JsonException(Throwable cause, String url) {
+        super(400, "JsonException", cause.getMessage() + "\n" + url, cause);
     }
 
     /**

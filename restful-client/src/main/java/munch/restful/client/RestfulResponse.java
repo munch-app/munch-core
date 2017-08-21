@@ -55,7 +55,9 @@ public class RestfulResponse {
                 throw new RuntimeException("RestfulMeta cannot be parsed.", e);
             }
         } catch (IOException e) {
-            throw new JsonException(e, response.getBody());
+            // Can be added to handle 504 error from AWS ELB
+            // if (response.getStatus() == 504) throw new TimeoutException(e);
+            throw new JsonException(e, request.request.getUrl());
         }
 
         // Set structured error
