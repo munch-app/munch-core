@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Supplier;
-import java.util.regex.Pattern;
 
 /**
  * Created by: Fuxing
@@ -23,7 +22,6 @@ import java.util.regex.Pattern;
 public class ArticleBuilder implements DataBuilder<Article> {
     private static final Logger logger = LoggerFactory.getLogger(ArticleBuilder.class);
     private static final Supplier<NullPointerException> NullSupplier = () -> new NullPointerException("Article");
-    public static final Pattern CorpusName = Pattern.compile("Global\\.Article\\.\\w+");
 
     private List<Article> articleList = new ArrayList<>();
 
