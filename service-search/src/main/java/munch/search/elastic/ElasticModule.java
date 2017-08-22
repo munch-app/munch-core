@@ -80,6 +80,8 @@ public final class ElasticModule extends AbstractModule {
         factory.setHttpClientConfig(new HttpClientConfig.Builder(url)
                 .multiThreaded(true)
                 .defaultMaxTotalConnectionPerRoute(5)
+                .readTimeout(30000)
+                .connTimeout(15000)
                 .build());
         return factory.getObject();
     }

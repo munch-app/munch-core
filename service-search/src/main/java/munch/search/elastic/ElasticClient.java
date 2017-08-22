@@ -12,8 +12,6 @@ import org.apache.commons.lang3.text.WordUtils;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Map;
 
 /**
  * Created By: Fuxing Loh
@@ -23,8 +21,6 @@ import java.util.Map;
  */
 @Singleton
 public final class ElasticClient {
-    private static final Map<String, String> PARAMS = Collections.emptyMap();
-
     private final JestClient client;
     private final ObjectMapper mapper;
 

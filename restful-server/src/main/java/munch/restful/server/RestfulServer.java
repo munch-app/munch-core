@@ -8,12 +8,14 @@ import com.typesafe.config.ConfigFactory;
 import munch.restful.core.RestfulMeta;
 import munch.restful.core.exception.CodeException;
 import munch.restful.core.exception.StructuredException;
+import munch.restful.core.exception.TimeoutException;
 import munch.restful.core.exception.UnknownException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.Response;
 import spark.Spark;
 
+import java.net.SocketTimeoutException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -147,6 +149,11 @@ public class RestfulServer {
             List<String> sources = ((StructuredException) exception).getSources();
             logger.warn("Structured exception thrown from sources: {}", sources, exception);
             handleException(response, (StructuredException) exception);
+        });
+
+        logger.info("Adding exception handling for TimeoutException.");
+        Spark.exception(SocketTimeoutException.class, (exception, request, response) -> {
+            handleException(response, new TimeoutException(exception));
         });
 
         logger.info("Adding exception handling for all Exception.");

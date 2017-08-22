@@ -1,6 +1,5 @@
-package munch.restful.client.exception;
+package munch.restful.core.exception;
 
-import munch.restful.core.exception.StructuredException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.net.SocketTimeoutException;
