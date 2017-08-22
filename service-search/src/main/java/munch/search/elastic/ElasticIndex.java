@@ -7,7 +7,7 @@ import com.google.inject.Singleton;
 import io.searchbox.client.JestClient;
 import io.searchbox.core.Delete;
 import io.searchbox.core.DeleteByQuery;
-import io.searchbox.core.Update;
+import io.searchbox.core.Index;
 import munch.data.Location;
 import munch.data.Place;
 
@@ -49,7 +49,7 @@ public final class ElasticIndex {
         ObjectNode node = marshaller.serialize(place, cycleNo);
         String json = mapper.writeValueAsString(node);
 
-        client.execute(new Update.Builder(json)
+        client.execute(new Index.Builder(json)
                 .index("munch")
                 .type("place")
                 .id(place.getId())
@@ -68,7 +68,7 @@ public final class ElasticIndex {
         ObjectNode node = marshaller.serialize(location, cycleNo);
         String json = mapper.writeValueAsString(node);
 
-        client.execute(new Update.Builder(json)
+        client.execute(new Index.Builder(json)
                 .index("munch")
                 .type("location")
                 .id(location.getId())
