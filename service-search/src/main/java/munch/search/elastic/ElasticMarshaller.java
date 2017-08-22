@@ -12,6 +12,7 @@ import munch.data.Place;
 import munch.restful.core.exception.JsonException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -92,6 +93,7 @@ public final class ElasticMarshaller {
      * @return deserialized type
      */
     public <T> List<T> deserializeList(JsonNode results) {
+        if (results.isMissingNode()) return Collections.emptyList();
         List<T> list = new ArrayList<>();
         for (JsonNode result : results) list.add(deserialize(result));
         return list;

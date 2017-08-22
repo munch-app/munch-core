@@ -68,7 +68,7 @@ public final class ElasticClient {
         return postSearch(null, root)
                 .path("suggest")
                 .path("suggestions")
-                .get(0)
+                .path(0)
                 .path("options");
     }
 
