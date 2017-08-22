@@ -345,7 +345,18 @@ public class Place implements SearchResult {
             @JsonProperty("evePh")EvePh,
         }
 
-        private Day day;
+        /**
+         * mon
+         * tue
+         * wed
+         * thu
+         * fri
+         * sat
+         * sun
+         * ph
+         * evePh
+         */
+        private String day;
 
         /**
          * HH:mm
@@ -371,11 +382,11 @@ public class Place implements SearchResult {
          * @return day in enum will be string in json
          * @see Day
          */
-        public Day getDay() {
+        public String getDay() {
             return day;
         }
 
-        public void setDay(Day day) {
+        public void setDay(String day) {
             this.day = day;
         }
 

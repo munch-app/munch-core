@@ -31,7 +31,7 @@ public final class HourBuilder implements TypeBuilder {
     @Override
     public void add(CorpusData data, CorpusData.Field field) {
         Set<Place.Hour> hours = map.computeIfAbsent(data.getCorpusKey(), s -> new HashSet<>());
-        Place.Hour.Day day = parseDay(field.getKey());
+        String day = parseDay(field.getKey());
         if (day != null) {
             String[] range = field.getValue().split("-");
             Place.Hour hour = new Place.Hour();
@@ -72,26 +72,26 @@ public final class HourBuilder implements TypeBuilder {
     }
 
     @Nullable
-    public Place.Hour.Day parseDay(String key) {
+    public String parseDay(String key) {
         switch (key) {
             case "Place.Hour.mon":
-                return Place.Hour.Day.Mon;
+                return "mon";
             case "Place.Hour.tue":
-                return Place.Hour.Day.Tue;
+                return "tue";
             case "Place.Hour.wed":
-                return Place.Hour.Day.Wed;
+                return "wed";
             case "Place.Hour.thu":
-                return Place.Hour.Day.Thu;
+                return "thu";
             case "Place.Hour.fri":
-                return Place.Hour.Day.Fri;
+                return "fri";
             case "Place.Hour.sat":
-                return Place.Hour.Day.Sat;
+                return "sat";
             case "Place.Hour.sun":
-                return Place.Hour.Day.Sun;
+                return "sun";
             case "Place.Hour.ph":
-                return Place.Hour.Day.Ph;
+                return "ph";
             case "Place.Hour.evePh":
-                return Place.Hour.Day.EvePh;
+                return "evePh";
             default:
                 logger.warn("Unable to parse day: {}", key);
             case "Place.Hour.raw":
@@ -105,15 +105,15 @@ public final class HourBuilder implements TypeBuilder {
      * @param day day to check
      * @return true if is
      */
-    private boolean isMonToSun(Place.Hour.Day day) {
+    private boolean isMonToSun(String day) {
         switch (day) {
-            case Mon:
-            case Tue:
-            case Wed:
-            case Thu:
-            case Fri:
-            case Sat:
-            case Sun:
+            case "mon":
+            case "tue":
+            case "wed":
+            case "thu":
+            case "fri":
+            case "sat":
+            case "sun":
                 return true;
             default:
                 return false;
