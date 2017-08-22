@@ -2,7 +2,6 @@ package munch.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Date;
 import java.util.List;
@@ -333,18 +332,7 @@ public class Place implements SearchResult {
      * Opening hour of the place
      */
     public static final class Hour {
-        public enum Day {
-            @JsonProperty("mon")Mon,
-            @JsonProperty("tue")Tue,
-            @JsonProperty("wed")Wed,
-            @JsonProperty("thu")Thu,
-            @JsonProperty("fri")Fri,
-            @JsonProperty("sat")Sat,
-            @JsonProperty("sun")Sun,
-            @JsonProperty("ph")Ph,
-            @JsonProperty("evePh")EvePh,
-        }
-
+        // TODO Problem parsing this in munch-core
         /**
          * mon
          * tue
@@ -380,7 +368,6 @@ public class Place implements SearchResult {
 
         /**
          * @return day in enum will be string in json
-         * @see Day
          */
         public String getDay() {
             return day;

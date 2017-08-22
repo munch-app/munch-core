@@ -2,13 +2,13 @@ package munch.data.database;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import munch.data.Place;
-import munch.data.database.hibernate.PojoListUserType;
 import munch.data.database.hibernate.PojoUserType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -141,12 +141,30 @@ public final class PlaceEntity extends Place implements CycleEntity {
         }
     }
 
-    public final static class TagsUserType extends PojoListUserType<String> {
+    public final static class TagsUserType extends PojoUserType<TagsUserType.ListString> {
+        public TagsUserType() {
+            super(ListString.class);
+        }
+
+        public final static class ListString extends ArrayList<String> {
+        }
     }
 
-    public final static class HoursUserType extends PojoListUserType<Place.Hour> {
+    public final static class HoursUserType extends PojoUserType<HoursUserType.ListPlaceHour> {
+        public HoursUserType() {
+            super(ListPlaceHour.class);
+        }
+
+        public final static class ListPlaceHour extends ArrayList<Place.Hour> {
+        }
     }
 
-    public final static class ImagesUserType extends PojoListUserType<Place.Image> {
+    public final static class ImagesUserType extends PojoUserType<ImagesUserType.ListPlaceImage> {
+        public ImagesUserType() {
+            super(ListPlaceImage.class);
+        }
+
+        public final static class ListPlaceImage extends ArrayList<Place.Image> {
+        }
     }
 }
