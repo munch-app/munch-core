@@ -6,7 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.HttpMethod;
 import com.mashape.unirest.request.HttpRequestWithBody;
 import com.mashape.unirest.request.body.MultipartBody;
-import munch.restful.core.exception.*;
+import munch.restful.core.exception.JsonException;
+import munch.restful.core.exception.StructuredException;
+import munch.restful.core.exception.UnknownException;
 import org.apache.http.entity.ContentType;
 
 import java.io.File;
@@ -234,8 +236,7 @@ public class RestfulRequest {
             }
 
             // Try parse error
-            OfflineException.parse(e);
-            TimeoutException.parse(e);
+            ExceptionParser.parse(e);
             throw new UnknownException(e);
         }
     }
