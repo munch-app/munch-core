@@ -15,17 +15,28 @@ import java.util.function.Function;
  * Project: munch-core
  */
 @Singleton
-public final class ArticleService extends AbstractService<ArticleEntity> {
+public final class ArticleService extends AbstractService<Article, ArticleEntity> {
 
     @Inject
     public ArticleService() {
-        super("/places/:placeId/articles", ArticleEntity.class);
+        super("/places/:placeId/articles", Article.class, ArticleEntity.class);
     }
 
     @Override
     public void route() {
         super.route();
         GET("/places/:placeId/articles/list", this::list);
+    }
+
+    @Override
+    protected ArticleEntity newEntity(Article data, long cycleNo) {
+        ArticleEntity entity = new ArticleEntity();
+        entity.setCycleNo(cycleNo);
+        entity.setPlaceId(data.getPlaceId());
+        entity.setArticleId(data.getArticleId());
+        entity.setCreatedDate(data.getCreatedDate().getTime());
+        entity.setData(data);
+        return entity;
     }
 
     @Override
@@ -43,12 +54,13 @@ public final class ArticleService extends AbstractService<ArticleEntity> {
 
     private List<ArticleEntity> list(JsonCall call) {
         String placeId = call.pathString("placeId");
-        int from = call.queryInt("from");
+        long maxCreatedDate = call.queryLong("maxCreatedDate", Long.MAX_VALUE);
         int size = call.queryInt("size");
+
         return provider.reduce(em -> em.createQuery("FROM ArticleEntity WHERE " +
-                "placeId = :placeId ORDER BY createdDate desc", ArticleEntity.class)
+                "placeId = :placeId AND createdDate < :maxCreatedDate ORDER BY createdDate desc", ArticleEntity.class)
                 .setParameter("placeId", placeId)
-                .setFirstResult(from)
+                .setParameter("maxCreatedDate", maxCreatedDate)
                 .setMaxResults(size)
                 .getResultList());
     }

@@ -2,14 +2,11 @@ package munch.data.database;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import munch.data.Article;
-import munch.data.ImageMeta;
-import munch.data.database.hibernate.ImageMetaUserType;
-import org.hibernate.annotations.Type;
+import munch.data.database.hibernate.PojoUserType;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
-import java.util.Date;
 
 /**
  * Created by: Fuxing
@@ -20,80 +17,49 @@ import java.util.Date;
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
 @TypeDefs(value = {
-        @TypeDef(name = "thumbnail", typeClass = ImageMetaUserType.class)
+        @TypeDef(name = "data", typeClass = ArticleEntity.ArticleUserType.class)
 })
 @Table(indexes = {
+        // Cluster Index: placeId, createdDate desc
         @Index(name = "index_munch_article_entity_cycle_no", columnList = "cycleNo"),
-        @Index(name = "index_munch_article_entity_article_id_place_id_created_date", columnList = "articleId, placeId, createdDate"),
 })
-public final class ArticleEntity extends Article implements CycleEntity {
+public final class ArticleEntity extends AbstractEntity<Article> {
 
-    private Long cycleNo;
-
-    @Override
-    @Column(nullable = false)
-    public Long getCycleNo() {
-        return cycleNo;
-    }
-
-    @Override
-    public void setCycleNo(Long cycleNo) {
-        this.cycleNo = cycleNo;
-    }
-
-    @Override
-    @Column(columnDefinition = "CHAR(36)", nullable = false, updatable = false)
-    public String getPlaceId() {
-        return super.getPlaceId();
-    }
+    private String placeId;
+    private String articleId;
+    private long createdDate; // Sort sorting
 
     @Id
-    @Override
-    @Column(nullable = false, length = 128) // SHA512
+    @Column(columnDefinition = "CHAR(36)", nullable = false, updatable = false)
+    public String getPlaceId() {
+        return placeId;
+    }
+
+    public void setPlaceId(String placeId) {
+        this.placeId = placeId;
+    }
+
+    @Column(nullable = false, length = 255)
     public String getArticleId() {
-        return super.getArticleId();
+        return articleId;
     }
 
-    @Override
-    @Column(nullable = false, length = 255)
-    public String getBrand() {
-        return super.getBrand();
+    public void setArticleId(String articleId) {
+        this.articleId = articleId;
     }
 
-    @Override
-    @Column(nullable = false, length = 2048)
-    public String getUrl() {
-        return super.getUrl();
-    }
-
-    @Override
-    @Column(nullable = false, length = 255)
-    public String getTitle() {
-        return super.getTitle();
-    }
-
-    @Override
-    @Column(nullable = false, length = 2048)
-    public String getDescription() {
-        return super.getDescription();
-    }
-
-    @Override
-    @Type(type = "thumbnail")
-    @Column(nullable = true)
-    public ImageMeta getThumbnail() {
-        return super.getThumbnail();
-    }
-
-    @Override
     @Column(nullable = false)
-    public Date getCreatedDate() {
-        return super.getCreatedDate();
+    public long getCreatedDate() {
+        return createdDate;
     }
 
-    @Override
-    @Column(nullable = false)
-    public Date getUpdatedDate() {
-        return super.getUpdatedDate();
+    public void setCreatedDate(long createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public final static class ArticleUserType extends PojoUserType<Article> {
+        public ArticleUserType() {
+            super(Article.class);
+        }
     }
 }

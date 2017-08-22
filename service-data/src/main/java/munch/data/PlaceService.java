@@ -14,16 +14,26 @@ import java.util.function.Function;
  * Project: munch-core
  */
 @Singleton
-public final class PlaceService extends AbstractService<PlaceEntity> {
+public final class PlaceService extends AbstractService<Place, PlaceEntity> {
 
     @Inject
     public PlaceService() {
-        super("/places", PlaceEntity.class);
+        super("/places", Place.class, PlaceEntity.class);
+    }
+
+
+    @Override
+    protected PlaceEntity newEntity(Place data, long cycleNo) {
+        PlaceEntity entity = new PlaceEntity();
+        entity.setCycleNo(cycleNo);
+        entity.setPlaceId(data.getId());
+        entity.setData(data);
+        return entity;
     }
 
     @Override
     protected Function<PlaceEntity, String> getKeyMapper() {
-        return PlaceEntity::getId;
+        return PlaceEntity::getPlaceId;
     }
 
     @Override

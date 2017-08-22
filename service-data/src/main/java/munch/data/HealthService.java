@@ -31,7 +31,7 @@ public final class HealthService implements JsonService {
 
     private JsonNode check(JsonCall call) {
         return provider.reduce(em -> {
-            em.createQuery("SELECT p.name FROM PlaceEntity p")
+            em.createQuery("SELECT p.cycleNo FROM PlaceEntity p")
                     .setMaxResults(1)
                     .getResultList();
             return Meta200;

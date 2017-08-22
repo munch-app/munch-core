@@ -8,6 +8,7 @@ import munch.restful.client.RestfulClient;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -44,18 +45,14 @@ public class DataClient extends RestfulClient {
                 .asDataList(Place.class);
     }
 
-    public List<InstagramMedia> getInstagramMedias(String placeId, int from, int size) {
-        return doGet("/places/{placeId}/instagram/medias/list")
-                .path("placeId", placeId)
-                .queryString("from", from)
-                .queryString("size", size)
-                .asDataList(InstagramMedia.class);
+    public List<InstagramMedia> getInstagramMedias(String placeId, long maxCreatedDate, int size) {
+        return Collections.emptyList();
     }
 
-    public List<Article> getArticles(String placeId, int from, int size) {
+    public List<Article> getArticles(String placeId, long maxCreatedDate, int size) {
         return doGet("/places/{placeId}/articles/list")
                 .path("placeId", placeId)
-                .queryString("from", from)
+                .queryString("maxCreatedDate", maxCreatedDate)
                 .queryString("size", size)
                 .asDataList(Article.class);
     }
