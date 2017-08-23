@@ -7,7 +7,6 @@
 
         <class>munch.data.database.PlaceEntity</class>
         <class>munch.data.database.ArticleEntity</class>
-        <class>munch.data.database.InstagramMediaEntity</class>
 
         <properties>
             <property name="hibernate.dialect" value="munch.data.database.hibernate.JsonPostgresDialect"/>

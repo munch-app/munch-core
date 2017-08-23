@@ -12,7 +12,7 @@ import com.google.inject.Injector;
 public class CreateDatabase {
 
     public static void main(String[] args) {
-        System.setProperty("postgres.url", "");
+        System.setProperty("postgres.url", "jdbc:postgresql://localhost:5432/munch");
         System.setProperty("postgres.username", "munch");
         System.setProperty("postgres.password", "");
         System.setProperty("postgres.autoCreate", "false");

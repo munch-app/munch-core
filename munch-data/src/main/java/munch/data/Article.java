@@ -16,6 +16,7 @@ import java.util.Date;
 public class Article {
     private String placeId;
     private String articleId;
+    private String sortKey;
 
     private String brand;
     private String url;
@@ -47,6 +48,14 @@ public class Article {
 
     public void setArticleId(String articleId) {
         this.articleId = articleId;
+    }
+
+    public String getSortKey() {
+        return sortKey;
+    }
+
+    public void setSortKey(String sortKey) {
+        this.sortKey = sortKey;
     }
 
     public String getBrand() {

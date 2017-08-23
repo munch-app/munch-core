@@ -20,14 +20,14 @@ import javax.persistence.*;
         @TypeDef(name = "data", typeClass = ArticleEntity.ArticleUserType.class)
 })
 @Table(indexes = {
-        // Cluster Index: placeId, createdDate desc
+        // Cluster Index: placeId, sortKey desc
         @Index(name = "index_munch_article_entity_cycle_no", columnList = "cycleNo"),
 })
 public final class ArticleEntity extends AbstractEntity<Article> {
 
     private String placeId;
     private String articleId;
-    private long createdDate; // Sort sorting
+    private String sortKey;
 
     @Id
     @Column(columnDefinition = "CHAR(36)", nullable = false, updatable = false)
@@ -49,12 +49,12 @@ public final class ArticleEntity extends AbstractEntity<Article> {
     }
 
     @Column(nullable = false)
-    public long getCreatedDate() {
-        return createdDate;
+    public String getSortKey() {
+        return sortKey;
     }
 
-    public void setCreatedDate(long createdDate) {
-        this.createdDate = createdDate;
+    public void setSortKey(String sortKey) {
+        this.sortKey = sortKey;
     }
 
     public final static class ArticleUserType extends PojoUserType<Article> {

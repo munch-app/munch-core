@@ -34,7 +34,7 @@ public final class ArticleService extends AbstractService<Article, ArticleEntity
         entity.setCycleNo(cycleNo);
         entity.setPlaceId(data.getPlaceId());
         entity.setArticleId(data.getArticleId());
-        entity.setCreatedDate(data.getCreatedDate().getTime());
+        entity.setSortKey(data.getSortKey());
         entity.setData(data);
         return entity;
     }
@@ -54,13 +54,21 @@ public final class ArticleService extends AbstractService<Article, ArticleEntity
 
     private List<ArticleEntity> list(JsonCall call) {
         String placeId = call.pathString("placeId");
-        long maxCreatedDate = call.queryLong("maxCreatedDate", Long.MAX_VALUE);
         int size = call.queryInt("size");
 
+        String maxSortKey = call.queryString("maxSortKey", null);
+        if (maxSortKey == null) {
+            return provider.reduce(em -> em.createQuery("FROM ArticleEntity WHERE " +
+                    "placeId = :placeId ORDER BY sortKey desc", ArticleEntity.class)
+                    .setParameter("placeId", placeId)
+                    .setMaxResults(size)
+                    .getResultList());
+        }
+
         return provider.reduce(em -> em.createQuery("FROM ArticleEntity WHERE " +
-                "placeId = :placeId AND createdDate < :maxCreatedDate ORDER BY createdDate desc", ArticleEntity.class)
+                "placeId = :placeId AND sortKey < :maxSortKey ORDER BY sortKey desc", ArticleEntity.class)
                 .setParameter("placeId", placeId)
-                .setParameter("maxCreatedDate", maxCreatedDate)
+                .setParameter("maxSortKey", maxSortKey)
                 .setMaxResults(size)
                 .getResultList());
     }

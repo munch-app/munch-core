@@ -38,10 +38,11 @@ public class ArticleBuilder implements DataBuilder<Article> {
         FieldWrapper wrapper = new FieldWrapper(data);
 
         Article article = new Article();
-        article.setCreatedDate(data.getCreatedDate());
+        article.setUpdatedDate(data.getUpdatedDate());
         article.setCreatedDate(data.getCreatedDate());
         article.setPlaceId(data.getCatalystId());
         article.setArticleId(data.getCorpusKey());
+        article.setSortKey(Long.toString(data.getCreatedDate().getTime()));
 
         article.setBrand(wrapper.getValue("Article.brand", NullSupplier));
         article.setUrl(wrapper.getValue("Article.url", NullSupplier));
