@@ -30,7 +30,7 @@ public class ImageCacheResolver {
     public CorpusData.Field resolve(String url) {
         if (StringUtils.isBlank(url)) return null;
 
-        String hash = DigestUtils.sha512Hex(url);
+        String hash = DigestUtils.sha256Hex(url);
         CorpusData corpusData = dataClient.getCorpusData("Sg.Munch.ImageCache", hash);
         if (corpusData == null) return null;
 
