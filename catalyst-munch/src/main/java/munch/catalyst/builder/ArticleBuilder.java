@@ -1,13 +1,14 @@
 package munch.catalyst.builder;
 
 import catalyst.utils.FieldWrapper;
+import corpus.blob.ImageMapper;
 import corpus.data.CorpusData;
-import munch.catalyst.ImageCacheResolver;
 import munch.data.Article;
 import munch.data.ImageMeta;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,10 +26,11 @@ public class ArticleBuilder implements DataBuilder<Article> {
 
     private List<Article> articleList = new ArrayList<>();
 
-    private final ImageCacheResolver imageCacheResolver;
+    private final ImageMapper imageMapper;
 
-    public ArticleBuilder(ImageCacheResolver imageCacheResolver) {
-        this.imageCacheResolver = imageCacheResolver;
+    @Inject
+    public ArticleBuilder(ImageMapper imageMapper) {
+        this.imageMapper = imageMapper;
     }
 
     @Override
@@ -53,11 +55,11 @@ public class ArticleBuilder implements DataBuilder<Article> {
 
         // Next version of article corpus uses thumbnail
         String thumbnail = wrapper.getValue("Article.thumbnail");
-        CorpusData.Field imageField = imageCacheResolver.resolve(thumbnail);
-        if (imageField != null) {
+        corpus.blob.ImageMeta blobMeta = imageMapper.resolveUrl(thumbnail);
+        if (blobMeta != null) {
             ImageMeta imageMeta = new ImageMeta();
-            imageMeta.setKey(imageField.getKey());
-            imageMeta.setImages(imageField.getMetadata());
+            imageMeta.setKey(blobMeta.getKey());
+            imageMeta.setImages(blobMeta.getImagesAsSizeUrl());
             article.setThumbnail(imageMeta);
         }
 

@@ -1,5 +1,6 @@
 package munch.catalyst;
 
+import corpus.blob.ImageMapper;
 import corpus.data.CorpusData;
 import corpus.utils.FieldUtils;
 import munch.catalyst.builder.ArticleBuilder;
@@ -29,14 +30,14 @@ public final class PlaceIngress extends AbstractIngress {
 
     private final SearchClient searchClient;
     private final DataClient dataClient;
-    private final ImageCacheResolver imageCacheResolver;
+    private final ImageMapper imageMapper;
 
     @Inject
-    public PlaceIngress(SearchClient searchClient, DataClient dataClient, ImageCacheResolver imageCacheResolver) {
+    public PlaceIngress(SearchClient searchClient, DataClient dataClient, ImageMapper imageMapper) {
         super(logger);
         this.searchClient = searchClient;
         this.dataClient = dataClient;
-        this.imageCacheResolver = imageCacheResolver;
+        this.imageMapper = imageMapper;
     }
 
     /**
@@ -70,7 +71,7 @@ public final class PlaceIngress extends AbstractIngress {
     protected void put(List<CorpusData> dataList, final long cycleNo) {
         // Else validate = success: put new place
         PlaceBuilder placeBuilder = new PlaceBuilder();
-        ArticleBuilder articleBuilder = new ArticleBuilder(imageCacheResolver);
+        ArticleBuilder articleBuilder = new ArticleBuilder(imageMapper);
         Date updatedDate = new Timestamp(System.currentTimeMillis());
 
         // Consume for Article & Media and Place builder
