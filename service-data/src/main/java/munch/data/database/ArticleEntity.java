@@ -3,6 +3,7 @@ package munch.data.database;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import munch.data.Article;
 import munch.data.database.hibernate.PojoUserType;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
@@ -17,7 +18,7 @@ import javax.persistence.*;
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
 @TypeDefs(value = {
-        @TypeDef(name = "data", typeClass = ArticleEntity.ArticleUserType.class)
+        @TypeDef(name = "articleData", typeClass = ArticleEntity.ArticleUserType.class)
 })
 @Table(indexes = {
         // Cluster Index: placeId, sortKey desc
@@ -28,6 +29,8 @@ public final class ArticleEntity extends AbstractEntity<Article> {
     private String placeId;
     private String articleId;
     private String sortKey;
+
+    private Article data;
 
     @Id
     @Column(columnDefinition = "CHAR(36)", nullable = false, updatable = false)
@@ -55,6 +58,18 @@ public final class ArticleEntity extends AbstractEntity<Article> {
 
     public void setSortKey(String sortKey) {
         this.sortKey = sortKey;
+    }
+
+    @Override
+    @Type(type = "articleData")
+    @Column(nullable = false)
+    public Article getData() {
+        return data;
+    }
+
+    @Override
+    public void setData(Article data) {
+        this.data = data;
     }
 
     public final static class ArticleUserType extends PojoUserType<Article> {

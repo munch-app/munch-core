@@ -1,7 +1,5 @@
 package munch.data.database;
 
-import org.hibernate.annotations.Type;
-
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 
@@ -13,9 +11,8 @@ import javax.persistence.MappedSuperclass;
  */
 @MappedSuperclass
 public abstract class AbstractEntity<T> {
-    private Long cycleNo;
 
-    private T data;
+    private Long cycleNo;
 
     @Column(nullable = false)
     public Long getCycleNo() {
@@ -26,13 +23,7 @@ public abstract class AbstractEntity<T> {
         this.cycleNo = cycleNo;
     }
 
-    @Type(type = "data")
-    @Column(nullable = false)
-    public T getData() {
-        return data;
-    }
+    public abstract T getData();
 
-    public void setData(T data) {
-        this.data = data;
-    }
+    public abstract void setData(T data);
 }

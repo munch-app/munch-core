@@ -3,6 +3,7 @@ package munch.data.database;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import munch.data.Place;
 import munch.data.database.hibernate.PojoUserType;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
@@ -17,7 +18,7 @@ import javax.persistence.*;
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
 @TypeDefs(value = {
-        @TypeDef(name = "data", typeClass = PlaceEntity.PlaceUserType.class),
+        @TypeDef(name = "placeData", typeClass = PlaceEntity.PlaceUserType.class),
 })
 @Table(indexes = {
         // Cluster name for placeId
@@ -26,6 +27,7 @@ import javax.persistence.*;
 public final class PlaceEntity extends AbstractEntity<Place> {
 
     private String placeId;
+    private Place data;
 
     @Id
     @Column(columnDefinition = "CHAR(36)", nullable = false, updatable = false)
@@ -37,6 +39,17 @@ public final class PlaceEntity extends AbstractEntity<Place> {
         this.placeId = placeId;
     }
 
+    @Override
+    @Type(type = "placeData")
+    @Column(nullable = false)
+    public Place getData() {
+        return data;
+    }
+
+    @Override
+    public void setData(Place data) {
+        this.data = data;
+    }
 
     public final static class PlaceUserType extends PojoUserType<Place> {
         public PlaceUserType() {
