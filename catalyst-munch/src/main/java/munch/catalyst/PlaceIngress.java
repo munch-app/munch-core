@@ -1,7 +1,7 @@
 package munch.catalyst;
 
 import corpus.data.CorpusData;
-import corpus.field.PlaceKey;
+import corpus.utils.FieldUtils;
 import munch.catalyst.builder.ArticleBuilder;
 import munch.catalyst.builder.PlaceBuilder;
 import munch.catalyst.clients.DataClient;
@@ -51,10 +51,19 @@ public final class PlaceIngress extends AbstractIngress {
     @Override
     protected boolean validate(List<CorpusData> dataList) {
         // Must have at least one image
-        if (dataList.stream().noneMatch(PlaceKey.image::has)) return false;
+        if (!hasImages(dataList)) return false;
 
         // Must have corpus: Sg.Nea.TrackRecord
         return hasCorpusName(dataList, "Sg.Nea.TrackRecord");
+    }
+
+    private boolean hasImages(List<CorpusData> dataList) {
+        for (CorpusData data : dataList) {
+            if (data.getCorpusName().equals("Global.Munch.ImageCurator")) {
+                return FieldUtils.has(data, "Global.Munch.ImageCurator.image");
+            }
+        }
+        return false;
     }
 
     @Override

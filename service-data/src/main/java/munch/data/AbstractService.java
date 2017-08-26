@@ -76,7 +76,6 @@ public abstract class AbstractService<R, T extends AbstractEntity<R>> implements
     protected JsonNode put(JsonCall call) {
         long cycleNo = call.pathLong("cycleNo");
 
-
         R data = call.bodyAsObject(dataClass);
         T entity = newEntity(data, cycleNo);
         provider.with(em -> em.merge(entity));
