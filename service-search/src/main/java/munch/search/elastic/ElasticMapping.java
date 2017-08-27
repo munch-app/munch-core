@@ -51,13 +51,17 @@ public final class ElasticMapping {
         JsonNode index = getIndex();
 
         // Index don't exist; hence create and revalidate
-        if (index == null || !validate(index)) {
+        // Note: index updating is complex
+        if (index == null) {
             createIndex();
             sleep(5000);
             index = getIndex();
         }
 
-        if (!validate(index)) throw new RuntimeException("Index validation failed.");
+        if (!validate(index)) {
+            logger.error("Index: {}", index);
+            throw new RuntimeException("Index validation failed.");
+        }
     }
 
     /**
@@ -88,6 +92,7 @@ public final class ElasticMapping {
         JsonNode node = mapper.readTree(result.getJsonString());
         String type = node.path("error").path("type").asText(null);
         if (StringUtils.equalsIgnoreCase(type, "index_not_found_exception")) {
+            logger.info("Index not found");
             return null;
         }
         return node;
@@ -99,6 +104,7 @@ public final class ElasticMapping {
      * @throws IOException io exception
      */
     public void createIndex() throws IOException {
+        logger.info("Creating index");
         URL url = Resources.getResource("index.json");
         String json = Resources.toString(url, Charset.forName("UTF-8"));
         client.execute(new CreateIndex.Builder("munch").settings(json).build());
