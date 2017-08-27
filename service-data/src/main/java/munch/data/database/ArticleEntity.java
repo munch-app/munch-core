@@ -24,7 +24,8 @@ import javax.persistence.*;
         // Cluster Index: placeId, sortKey desc
         @Index(name = "index_munch_article_entity_cycle_no", columnList = "cycleNo"),
 })
-public final class ArticleEntity extends AbstractEntity<Article> {
+public final class ArticleEntity implements AbstractEntity<Article> {
+    private Long cycleNo;
 
     private String placeId;
     private String articleId;
@@ -60,14 +61,20 @@ public final class ArticleEntity extends AbstractEntity<Article> {
         this.sortKey = sortKey;
     }
 
-    @Override
+    public Long getCycleNo() {
+        return cycleNo;
+    }
+
+    public void setCycleNo(Long cycleNo) {
+        this.cycleNo = cycleNo;
+    }
+
     @Type(type = "articleData")
     @Column(nullable = false)
     public Article getData() {
         return data;
     }
 
-    @Override
     public void setData(Article data) {
         this.data = data;
     }

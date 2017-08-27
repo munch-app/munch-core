@@ -1,29 +1,18 @@
 package munch.data.database;
 
-import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
-
 /**
  * Created by: Fuxing
  * Date: 23/8/2017
  * Time: 12:28 AM
  * Project: munch-core
  */
-@MappedSuperclass
-public abstract class AbstractEntity<T> {
+public interface AbstractEntity<T> {
 
-    private Long cycleNo;
+    Long getCycleNo();
 
-    @Column(nullable = false)
-    public Long getCycleNo() {
-        return cycleNo;
-    }
+    void setCycleNo(Long cycleNo);
 
-    public void setCycleNo(Long cycleNo) {
-        this.cycleNo = cycleNo;
-    }
+    T getData();
 
-    public abstract T getData();
-
-    public abstract void setData(T data);
+    void setData(T data);
 }

@@ -24,8 +24,9 @@ import javax.persistence.*;
         // Cluster name for placeId
         @Index(name = "index_munch_place_entity_cycle_no", columnList = "cycleNo")
 })
-public final class PlaceEntity extends AbstractEntity<Place> {
+public final class PlaceEntity implements AbstractEntity<Place> {
 
+    private Long cycleNo;
     private String placeId;
     private Place data;
 
@@ -39,14 +40,21 @@ public final class PlaceEntity extends AbstractEntity<Place> {
         this.placeId = placeId;
     }
 
-    @Override
+    @Column(nullable = false)
+    public Long getCycleNo() {
+        return cycleNo;
+    }
+
+    public void setCycleNo(Long cycleNo) {
+        this.cycleNo = cycleNo;
+    }
+
     @Type(type = "placeData")
     @Column(nullable = false)
     public Place getData() {
         return data;
     }
 
-    @Override
     public void setData(Place data) {
         this.data = data;
     }
