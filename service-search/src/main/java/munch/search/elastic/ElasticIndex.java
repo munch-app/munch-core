@@ -10,6 +10,7 @@ import io.searchbox.core.DeleteByQuery;
 import io.searchbox.core.Index;
 import munch.data.Location;
 import munch.data.Place;
+import munch.data.Tag;
 
 /**
  * Created By: Fuxing Loh
@@ -36,6 +37,24 @@ public final class ElasticIndex {
         this.client = client;
         this.mapper = mapper;
         this.marshaller = marshaller;
+    }
+
+    /**
+     * Index a tag by putting it into elastic search
+     *
+     * @param tag     tag to index
+     * @param cycleNo cycle long in millis
+     * @throws Exception any exception
+     */
+    public void put(Tag tag, long cycleNo) throws Exception {
+        ObjectNode node = marshaller.serialize(tag, cycleNo);
+        String json = mapper.writeValueAsString(node);
+
+        client.execute(new Index.Builder(json)
+                .index("munch")
+                .type("tag")
+                .id(tag.getId())
+                .build());
     }
 
     /**

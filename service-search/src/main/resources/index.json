@@ -1,5 +1,22 @@
 {
   "mappings": {
+    "tag": {
+      "properties": {
+        "type": {
+          "type": "keyword"
+        },
+        "suggest": {
+          "type": "completion",
+          "contexts": [
+            {
+              "name": "type",
+              "type": "category",
+              "path": "type"
+            }
+          ]
+        }
+      }
+    },
     "place": {
       "properties": {
         "location.latLng": {

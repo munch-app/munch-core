@@ -14,7 +14,11 @@ import munch.restful.server.RestfulServer;
 public class SearchApi extends RestfulServer {
 
     @Inject
-    public SearchApi(HealthService health, SearchService search, PlaceService place, LocationService location) {
-        super(health, search, place, location);
+    public SearchApi(HealthService health,
+                     SearchService search,
+                     PlaceService place,
+                     LocationService location,
+                     TagService tag) {
+        super(health, search, place, location, tag);
     }
 }

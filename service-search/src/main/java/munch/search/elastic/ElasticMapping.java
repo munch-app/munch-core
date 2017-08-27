@@ -51,7 +51,7 @@ public final class ElasticMapping {
         JsonNode index = getIndex();
 
         // Index don't exist; hence create and revalidate
-        if (index == null) {
+        if (index == null || !validate(index)) {
             createIndex();
             sleep(5000);
             index = getIndex();
@@ -71,6 +71,7 @@ public final class ElasticMapping {
 
         // Validate has these types
         if (!mappings.path("place").has("properties")) return false;
+        if (!mappings.path("tag").has("properties")) return false;
         return mappings.path("location").has("properties");
     }
 

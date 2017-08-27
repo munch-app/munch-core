@@ -9,6 +9,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.data.Location;
 import munch.data.Place;
+import munch.data.Tag;
 import munch.restful.core.exception.JsonException;
 
 import java.util.ArrayList;
@@ -29,6 +30,18 @@ public final class ElasticMarshaller {
     @Inject
     public ElasticMarshaller(ObjectMapper mapper) {
         this.mapper = mapper;
+    }
+
+    public ObjectNode serialize(Tag tag, long cycleNo) {
+        ObjectNode node = mapper.createObjectNode();
+        node.put("type", "Tag");
+        node.put("cycleNo", cycleNo);
+
+        // Root Node
+        node.put("id", tag.getId());
+        node.put("name", tag.getName());
+        node.put("type", tag.getType());
+        return node;
     }
 
     /**
@@ -112,9 +125,23 @@ public final class ElasticMarshaller {
                 return (T) deserializeLocation(source);
             case "Place":
                 return (T) deserializePlace(source);
+            case "Tag":
+                return (T) deserializeTag(source);
             default:
                 return null;
         }
+    }
+
+    /**
+     * @param node json node
+     * @return deserialized Tag
+     */
+    public Tag deserializeTag(JsonNode node) {
+        Tag tag = new Tag();
+        tag.setId(node.get("id").asText());
+        tag.setName(node.get("name").asText());
+        tag.setType(node.get("type").asText());
+        return tag;
     }
 
     /**
