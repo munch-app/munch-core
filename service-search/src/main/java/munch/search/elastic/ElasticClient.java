@@ -55,7 +55,7 @@ public final class ElasticClient {
 
         // Context: Type
         if (type != null) {
-            contexts.put("type", WordUtils.capitalize(type));
+            contexts.set("type", mapper.createArrayNode().add(WordUtils.capitalize(type)));
         }
 
         ObjectNode root = mapper.createObjectNode();
