@@ -5,6 +5,9 @@
         "type": {
           "type": "keyword"
         },
+        "location.latLng": {
+          "type": "geo_point"
+        },
         "suggest": {
           "type": "completion",
           "contexts": [
@@ -12,6 +15,12 @@
               "name": "type",
               "type": "category",
               "path": "type"
+            },
+            {
+              "name": "latLng",
+              "type": "geo",
+              "precision": 5,
+              "path": "location.latLng"
             }
           ]
         }
