@@ -38,11 +38,13 @@ public final class LocationBuilder implements TypeBuilder {
         location.setAddress(collectMaxCapitalizeFully("Place.Location.address"));
         location.setPostal(collectMax("Place.Location.postal"));
 
-        location.setStreet(collectMaxCapitalizeFully("Place.Location.street"));
+        // Get with special munch key
+        location.setStreet(collectMaxCapitalizeFully("Munch.Place.Location.street"));
+        location.setNearestTrain(collectMax("Munch.Place.Location.nearestTrain"));
+
         location.setUnitNumber(valueBuilder.collectMax("Place.Location.unitNumber"));
         // This is mainly to be used in conjunction with container corpus data
         location.setBuilding(collectMaxCapitalizeFully("Place.Location.building"));
-        location.setNearestTrain(collectMax("Munch.Place.Location.nearestTrain"));
 
         location.setCity(collectMaxCapitalizeFully("Place.Location.city"));
         location.setCountry(collectMaxCapitalizeFully("Place.Location.country"));
