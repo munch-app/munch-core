@@ -45,6 +45,18 @@ public final class SearchQuery {
         this.size = size;
     }
 
+    /**
+     * Data that affects query
+     * 1. Place Name
+     * 2. Location Name - Bishan
+     * 3. Amenities (A) - Wheelchair Friendly
+     * 4. Speciality (A) - Xiao Long Bao
+     * 5. Occasion (A) - Birthday Celebration
+     * 6. Establishment (A) - Restaurant
+     * 7. Cuisine (A) - Chinese
+     *
+     * @return query string
+     */
     public String getQuery() {
         return query;
     }
@@ -97,7 +109,6 @@ public final class SearchQuery {
         private Price price;
         private Tag tag;
         private Hour hour;
-        private Rating rating;
         private Distance distance;
 
         public Price getPrice() {
@@ -122,14 +133,6 @@ public final class SearchQuery {
 
         public void setHour(Hour hour) {
             this.hour = hour;
-        }
-
-        public Rating getRating() {
-            return rating;
-        }
-
-        public void setRating(Rating rating) {
-            this.rating = rating;
         }
 
         public Distance getDistance() {
@@ -182,21 +185,13 @@ public final class SearchQuery {
             }
         }
 
-        public static class Rating {
-            private Double min;
-
-            public Double getMin() {
-                return min;
-            }
-
-            public void setMin(Double min) {
-                this.min = min;
-            }
-        }
-
         public static class Hour {
+            // TODO hour type
         }
 
+        /**
+         * Distance filter is more for internal use
+         */
         public static class Distance {
             private String latLng;
             private Integer max;
@@ -219,32 +214,49 @@ public final class SearchQuery {
         }
     }
 
+    /**
+     * Ordinal sort
+     * Only a single sort type can be used
+     */
     public static final class Sort {
-        private Distance distance;
+        public static final String TYPE_MUNCH_SEO = "munch_seo";
+        public static final String TYPE_PRICE_LOWEST = "price_lowest";
+        public static final String TYPE_PRICE_HIGHEST = "price_highest";
+        public static final String TYPE_DISTANCE_NEAREST = "distance_nearest";
+        public static final String TYPE_RATING_HIGHEST = "rating_highest";
 
-        public Distance getDistance() {
-            return distance;
+        private String type;
+        private String latLng;
+
+        /**
+         * @return sort types
+         * @see Sort#TYPE_PRICE_LOWEST
+         * @see Sort#TYPE_PRICE_HIGHEST
+         * @see Sort#TYPE_DISTANCE_NEAREST
+         * @see Sort#TYPE_RATING_HIGHEST
+         */
+        public String getType() {
+            return type;
         }
 
-        public void setDistance(Distance distance) {
-            this.distance = distance;
+        public void setType(String type) {
+            this.type = type;
         }
 
         /**
          * latLng: "lat, lng"
          * min: in metres
          * max: in metres
+         * Only required if type is distance_nearest
+         *
+         * @return "lat, lng"
          */
-        public static class Distance {
-            private String latLng;
+        public String getLatLng() {
+            return latLng;
+        }
 
-            public String getLatLng() {
-                return latLng;
-            }
-
-            public void setLatLng(String latLng) {
-                this.latLng = latLng;
-            }
+        public void setLatLng(String latLng) {
+            this.latLng = latLng;
         }
     }
 
