@@ -26,7 +26,7 @@ import java.util.List;
  */
 @Singleton
 public final class PlaceIngress extends AbstractIngress {
-    private static final Logger logger = LoggerFactory.getLogger(LocationIngress.class);
+    private static final Logger logger = LoggerFactory.getLogger(PlaceIngress.class);
 
     private final SearchClient searchClient;
     private final DataClient dataClient;

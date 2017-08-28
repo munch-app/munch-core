@@ -29,6 +29,7 @@ public class MunchModule extends AbstractModule {
         Multibinder<AbstractIngress> routerBinder = Multibinder.newSetBinder(binder(), AbstractIngress.class);
         routerBinder.addBinding().to(LocationIngress.class);
         routerBinder.addBinding().to(PlaceIngress.class);
+        routerBinder.addBinding().to(TagIngress.class);
     }
 
     public static void main(String[] args) {
