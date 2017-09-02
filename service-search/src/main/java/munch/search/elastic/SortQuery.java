@@ -25,6 +25,8 @@ public final class SortQuery {
         this.mapper = mapper;
     }
 
+    // TODO New Types
+
     /**
      * @param query SearchQuery for place
      * @return created bool node

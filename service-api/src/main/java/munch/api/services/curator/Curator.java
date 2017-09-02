@@ -78,14 +78,6 @@ public abstract class Curator {
             }
         }
 
-        if (query.getFilter().getRating() != null) {
-            if (query.getFilter().getRating().getMin() != null) return true;
-        }
-
-        if (query.getFilter().getDistance() != null) {
-            if (query.getFilter().getDistance().getLatLng() != null) return true;
-        }
-
         return false;
     }
 }

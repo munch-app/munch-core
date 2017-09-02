@@ -27,6 +27,8 @@ public final class BoolQuery {
         this.mapper = mapper;
     }
 
+    // TODO New Types
+
     /**
      * @param query SearchQuery for place
      * @return created bool node
