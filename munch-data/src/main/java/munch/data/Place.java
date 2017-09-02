@@ -32,9 +32,10 @@ public class Place implements SearchResult {
     private List<Hour> hours;
     private List<Image> images;
 
-    // Dates
+    // Others
     private Date createdDate;
     private Date updatedDate;
+    private double munchRank;
 
     /**
      * @return place id, provided by catalyst groupId
@@ -157,6 +158,14 @@ public class Place implements SearchResult {
 
     public void setUpdatedDate(Date updatedDate) {
         this.updatedDate = updatedDate;
+    }
+
+    public double getMunchRank() {
+        return munchRank;
+    }
+
+    public void setMunchRank(double munchRank) {
+        this.munchRank = munchRank;
     }
 
     @Override

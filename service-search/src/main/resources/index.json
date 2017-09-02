@@ -28,6 +28,9 @@
     },
     "place": {
       "properties": {
+        "munchRank": {
+          "type": "double"
+        },
         "location.latLng": {
           "type": "geo_point"
         },

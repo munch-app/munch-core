@@ -33,6 +33,7 @@ public final class PlaceBuilder implements DataBuilder<Place> {
             locationBuilder, priceBuilder, hourBuilder, imageBuilder, valueBuilder};
 
     private String id;
+    private double munchRank = 0;
     private Date earliestDate = new Date();
 
     @Override
@@ -46,6 +47,9 @@ public final class PlaceBuilder implements DataBuilder<Place> {
         if (data.getCreatedDate().compareTo(earliestDate) < 0) {
             earliestDate = data.getCreatedDate();
         }
+
+        // For each corpus data increment munch rank
+        this.munchRank += 1;
 
         // Iterate through all fields and add them to respective builders
         for (CorpusData.Field field : data.getFields()) {
@@ -86,6 +90,7 @@ public final class PlaceBuilder implements DataBuilder<Place> {
         // Created & Updated Dates
         place.setCreatedDate(earliestDate);
         place.setUpdatedDate(updatedDate);
+        place.setMunchRank(munchRank);
 
         // Return empty list if validation failed
         if (!validate(place)) return Collections.emptyList();
