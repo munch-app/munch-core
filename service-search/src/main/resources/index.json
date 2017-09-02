@@ -2,11 +2,11 @@
   "mappings": {
     "tag": {
       "properties": {
-        "type": {
-          "type": "keyword"
-        },
         "location.latLng": {
           "type": "geo_point"
+        },
+        "type": {
+          "type": "text"
         },
         "suggest": {
           "type": "completion",
@@ -38,7 +38,7 @@
           "enabled": false
         },
         "type": {
-          "type": "keyword"
+          "type": "text"
         },
         "suggest": {
           "type": "completion",
@@ -71,7 +71,7 @@
           "enabled": false
         },
         "type": {
-          "type": "keyword"
+          "type": "text"
         },
         "suggest": {
           "type": "completion",
