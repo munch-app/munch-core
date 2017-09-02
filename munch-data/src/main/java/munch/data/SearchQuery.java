@@ -178,22 +178,20 @@ public final class SearchQuery {
         }
 
         public static class Hour {
-            public static final String TYPE_OPEN_NOW = "open_now";
-            public static final String TYPE_AFTER_MIDNIGHT = "after_midnight";
+            private Set<Day> days;
 
-            private String type;
-
-            /**
-             * @return hour types
-             * @see Hour#TYPE_OPEN_NOW
-             * @see Hour#TYPE_AFTER_MIDNIGHT
-             */
-            public String getType() {
-                return type;
+            public Set<Day> getDays() {
+                return days;
             }
 
-            public void setType(String type) {
-                this.type = type;
+            public void setDays(Set<Day> days) {
+                this.days = days;
+            }
+
+            public static class Day {
+                // TODO
+                // Day
+                // Hours
             }
         }
     }

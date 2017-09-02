@@ -57,7 +57,11 @@ public final class BoolQuery {
         }
 
         // Match name if got query
-        root.putObject("match").put("name", query);
+        ObjectNode multiMatch = root.putObject("multi_match");
+        multiMatch.put("query", query);
+        multiMatch.putArray("fields")
+                .add("name^2")
+                .add("tags");
         return root;
     }
 
@@ -91,14 +95,6 @@ public final class BoolQuery {
             filterArray.add(filterPolygon(location.getPoints()));
         }
 
-        // Filter distance
-        if (filter.getDistance() != null) {
-            SearchQuery.Filter.Distance distance = filter.getDistance();
-            if (distance.getMax() != null && distance.getLatLng() != null) {
-                filterArray.add(filterDistance(distance.getLatLng(), distance.getMax()));
-            }
-        }
-
         // Filter to positive tags
         if (filter.getTag() != null && filter.getTag().getNegatives() != null) {
             for (String tag : filter.getTag().getPositives()) {
@@ -123,25 +119,11 @@ public final class BoolQuery {
             }
         }
 
+        // Filter hours
+
+
         // Future: logic for ratings and hours
         return filterArray;
-    }
-
-    /**
-     * https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-geo-distance-query.html
-     *
-     * @param latLng center
-     * @param max    distance query
-     * @return JsonNode = { "geo_distance": { "distance": "1km", "location.latLng": "-12,23"}}
-     */
-    private JsonNode filterDistance(String latLng, Integer max) {
-        ObjectNode geoDistance = mapper.createObjectNode()
-                .put("distance", max + "m")
-                .put("location.latLng", latLng);
-
-        ObjectNode filter = mapper.createObjectNode();
-        filter.set("geo_distance", geoDistance);
-        return filter;
     }
 
     /**
