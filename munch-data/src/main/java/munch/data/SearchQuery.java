@@ -203,7 +203,7 @@ public final class SearchQuery {
      * Only a single sort type can be used
      */
     public static final class Sort {
-        public static final String TYPE_MUNCH_SEO = "munch_seo";
+        public static final String TYPE_MUNCH_RANK = "munch_rank";
         public static final String TYPE_PRICE_LOWEST = "price_lowest";
         public static final String TYPE_PRICE_HIGHEST = "price_highest";
         public static final String TYPE_DISTANCE_NEAREST = "distance_nearest";

@@ -1,10 +1,12 @@
 package munch.search.elastic;
 
+import catalyst.utils.LatLngUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import munch.data.SearchQuery;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -25,24 +27,47 @@ public final class SortQuery {
         this.mapper = mapper;
     }
 
-    // TODO New Types
-
     /**
      * @param query SearchQuery for place
      * @return created bool node
      */
     public JsonNode make(SearchQuery query) {
         ArrayNode sortArray = mapper.createArrayNode();
-        if (query.getSort() == null) return sortArray;
+        if (!validate(query.getSort())) return sortArray;
 
-        SearchQuery.Sort sort = query.getSort();
-
-        // Distance sort
-        SearchQuery.Sort.Distance distance = sort.getDistance();
-        if (distance != null && distance.getLatLng() != null) {
-            sortArray.add(sortDistance(distance.getLatLng()));
+        switch (query.getSort().getType().toLowerCase()) {
+            case SearchQuery.Sort.TYPE_MUNCH_RANK:
+                sortArray.add(sortField("munchRank", "desc"));
+                break;
+            case SearchQuery.Sort.TYPE_PRICE_LOWEST:
+                sortArray.add(sortField("price.middle", "asc"));
+                break;
+            case SearchQuery.Sort.TYPE_PRICE_HIGHEST:
+                sortArray.add(sortField("price.middle", "desc"));
+                break;
+            case SearchQuery.Sort.TYPE_DISTANCE_NEAREST:
+                sortArray.add(sortDistance(query.getSort().getLatLng()));
+                break;
+            case SearchQuery.Sort.TYPE_RATING_HIGHEST:
+                // TODO Type Rating in Future
+                break;
         }
         return sortArray;
+    }
+
+    private boolean validate(SearchQuery.Sort sort) {
+        if (sort == null) return false;
+        String type = sort.getType();
+        if (StringUtils.isBlank(type)) return false;
+
+        if (SearchQuery.Sort.TYPE_DISTANCE_NEAREST.equalsIgnoreCase(type)) {
+            try {
+                LatLngUtils.validate(sort.getLatLng());
+            } catch (LatLngUtils.ParseException e) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -61,8 +86,19 @@ public final class SortQuery {
                 .put("mode", "min")
                 .put("distance_type", "plane");
 
-        ObjectNode filter = mapper.createObjectNode();
-        filter.set("_geo_distance", geoDistance);
-        return filter;
+        ObjectNode sort = mapper.createObjectNode();
+        sort.set("_geo_distance", geoDistance);
+        return sort;
+    }
+
+    /**
+     * @param field field
+     * @param by    direction
+     * @return { "field": "by" }
+     */
+    private JsonNode sortField(String field, String by) {
+        ObjectNode sort = mapper.createObjectNode();
+        sort.put(field, by);
+        return sort;
     }
 }

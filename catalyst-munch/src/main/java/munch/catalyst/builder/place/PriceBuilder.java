@@ -42,6 +42,7 @@ public final class PriceBuilder implements TypeBuilder {
         Place.Price price = new Place.Price();
         price.setLowest(low);
         price.setHighest(high);
+        price.setMiddle((high - low) / 2 + low);
         return price;
     }
 

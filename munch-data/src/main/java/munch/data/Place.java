@@ -300,6 +300,7 @@ public class Place implements SearchResult {
      */
     public static final class Price {
         private Double lowest;
+        private Double middle;
         private Double highest;
 
         /**
@@ -313,6 +314,17 @@ public class Place implements SearchResult {
 
         public void setLowest(Double lowest) {
             this.lowest = lowest;
+        }
+
+        /**
+         * @return highest - lowest/2 + lowest
+         */
+        public Double getMiddle() {
+            return middle;
+        }
+
+        public void setMiddle(Double middle) {
+            this.middle = middle;
         }
 
         /**
