@@ -50,10 +50,6 @@ public class DataClient extends RestfulClient {
     }
 
     public List<Article> getArticles(String placeId, long maxCreatedDate, int size) {
-        return doGet("/places/{placeId}/articles/list")
-                .path("placeId", placeId)
-                .queryString("maxCreatedDate", maxCreatedDate)
-                .queryString("size", size)
-                .asDataList(Article.class);
+        return Collections.emptyList();
     }
 }

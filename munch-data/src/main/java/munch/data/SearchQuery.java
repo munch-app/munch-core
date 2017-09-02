@@ -22,7 +22,6 @@ public final class SearchQuery {
     private Integer from;
     private Integer size;
 
-    // Optional fields
     private String query;
     private Location location;
 
@@ -69,6 +68,8 @@ public final class SearchQuery {
      * location.name = for display
      * location.center = currently provide no functions
      * location.points = polygon points
+     * <p>
+     * For ad-hoc location, should be generated here as well
      *
      * @return Location for searchQuery
      * @see Location
@@ -109,7 +110,6 @@ public final class SearchQuery {
         private Price price;
         private Tag tag;
         private Hour hour;
-        private Distance distance;
 
         public Price getPrice() {
             return price;
@@ -133,14 +133,6 @@ public final class SearchQuery {
 
         public void setHour(Hour hour) {
             this.hour = hour;
-        }
-
-        public Distance getDistance() {
-            return distance;
-        }
-
-        public void setDistance(Distance distance) {
-            this.distance = distance;
         }
 
         public static class Price {
@@ -186,30 +178,22 @@ public final class SearchQuery {
         }
 
         public static class Hour {
-            // TODO hour type
-        }
+            public static final String TYPE_OPEN_NOW = "open_now";
+            public static final String TYPE_AFTER_MIDNIGHT = "after_midnight";
 
-        /**
-         * Distance filter is more for internal use
-         */
-        public static class Distance {
-            private String latLng;
-            private Integer max;
+            private String type;
 
-            public String getLatLng() {
-                return latLng;
+            /**
+             * @return hour types
+             * @see Hour#TYPE_OPEN_NOW
+             * @see Hour#TYPE_AFTER_MIDNIGHT
+             */
+            public String getType() {
+                return type;
             }
 
-            public void setLatLng(String latLng) {
-                this.latLng = latLng;
-            }
-
-            public Integer getMax() {
-                return max;
-            }
-
-            public void setMax(Integer max) {
-                this.max = max;
+            public void setType(String type) {
+                this.type = type;
             }
         }
     }

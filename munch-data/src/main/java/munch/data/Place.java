@@ -332,7 +332,6 @@ public class Place implements SearchResult {
      * Opening hour of the place
      */
     public static final class Hour {
-        // TODO Problem parsing this in munch-core
         /**
          * mon
          * tue
