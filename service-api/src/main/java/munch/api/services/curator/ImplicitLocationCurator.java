@@ -62,5 +62,12 @@ public class ImplicitLocationCurator extends TabCurator {
 
         // TODO add polygon of a place first then decide what to use
         // Change MunchApi
+
+
+        // Discovery Sequence ->
+        // 0. Refresh Discovery if Inactive
+        // 1. No Location -> Reverse Geocode for Polygon
+        // 2. 1. With Polygon
+        // 2. 2. Without Polygon
     }
 }
