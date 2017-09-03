@@ -60,20 +60,7 @@ public class ImplicitLocationCurator extends TabCurator {
         if (query.getSort() == null) query.setSort(new SearchQuery.Sort());
         if (query.getFilter() == null) query.setFilter(new SearchQuery.Filter());
 
-        if (query.getSort().getDistance() == null) {
-            query.getSort().setDistance(new SearchQuery.Sort.Distance());
-        }
-        if (query.getFilter().getDistance() == null) {
-            query.getFilter().setDistance(new SearchQuery.Filter.Distance());
-        }
-
-
-        // Has no explicit location but has implicit location
-        if (latLng != null) {
-            query.getSort().getDistance().setLatLng(latLng.toString());
-            query.getFilter().getDistance().setLatLng(latLng.toString());
-            // Of 1000 meters
-            query.getFilter().getDistance().setMax(2000);
-        }
+        // TODO add polygon of a place first then decide what to use
+        // Change MunchApi
     }
 }
