@@ -1,12 +1,15 @@
 {
   "mappings": {
-    "tag": {
+    "_default_": {
       "properties": {
-        "location.latLng": {
-          "type": "geo_point"
+        "id": {
+          "type": "keyword"
         },
         "type": {
           "type": "text"
+        },
+        "location.latLng": {
+          "type": "geo_point"
         },
         "suggest": {
           "type": "completion",
@@ -23,6 +26,24 @@
               "path": "location.latLng"
             }
           ]
+        }
+      }
+    },
+    "tag": {
+      "properties": {
+        "name": {
+          "type": "text"
+        }
+      }
+    },
+    "location": {
+      "properties": {
+        "location.polygon": {
+          "type": "geo_shape",
+          "precision": "5m"
+        },
+        "images": {
+          "enabled": false
         }
       }
     },
@@ -31,63 +52,11 @@
         "munchRank": {
           "type": "double"
         },
-        "location.latLng": {
-          "type": "geo_point"
-        },
         "images": {
           "enabled": false
         },
-        "type": {
-          "type": "text"
-        },
-        "suggest": {
-          "type": "completion",
-          "contexts": [
-            {
-              "name": "type",
-              "type": "category",
-              "path": "type"
-            },
-            {
-              "name": "latLng",
-              "type": "geo",
-              "precision": 5,
-              "path": "location.latLng"
-            }
-          ]
-        }
-      }
-    },
-    "location": {
-      "properties": {
-        "location.latLng": {
-          "type": "geo_point"
-        },
-        "location.polygon": {
-          "type": "geo_shape",
-          "precision": "5m"
-        },
-        "images": {
+        "hours": {
           "enabled": false
-        },
-        "type": {
-          "type": "text"
-        },
-        "suggest": {
-          "type": "completion",
-          "contexts": [
-            {
-              "name": "type",
-              "type": "category",
-              "path": "type"
-            },
-            {
-              "name": "latLng",
-              "type": "geo",
-              "precision": 5,
-              "path": "location.latLng"
-            }
-          ]
         }
       }
     }

@@ -178,20 +178,32 @@ public final class SearchQuery {
         }
 
         public static class Hour {
-            private Set<Day> days;
+            private String day;
+            private String time;
 
-            public Set<Day> getDays() {
-                return days;
+            /**
+             * @return day which it is open
+             * @see Place.Hour#day
+             */
+            public String getDay() {
+                return day;
             }
 
-            public void setDays(Set<Day> days) {
-                this.days = days;
+            public void setDay(String day) {
+                this.day = day;
             }
 
-            public static class Day {
-                // TODO
-                // Day
-                // Hours
+            /**
+             * @return time which it is open
+             * @see Place.Hour#open
+             * @see Place.Hour#close
+             */
+            public String getTime() {
+                return time;
+            }
+
+            public void setTime(String time) {
+                this.time = time;
             }
         }
     }

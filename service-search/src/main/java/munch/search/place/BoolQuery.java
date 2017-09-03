@@ -1,4 +1,4 @@
-package munch.search.elastic;
+package munch.search.place;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,8 +26,6 @@ public final class BoolQuery {
     public BoolQuery(ObjectMapper mapper) {
         this.mapper = mapper;
     }
-
-    // TODO New Types
 
     /**
      * @param query SearchQuery for place
@@ -115,14 +113,12 @@ public final class BoolQuery {
 
             // Only add if contains max or min
             if (range.size() != 0) {
-                filterArray.add(mapper.createObjectNode().set("term", range));
+                // Filter is applied on middle
+                filterArray.add(mapper.createObjectNode().set("price.middle", range));
             }
         }
 
-        // Filter hours
-
-
-        // Future: logic for ratings and hours
+        // Filter hours is done at client side
         return filterArray;
     }
 

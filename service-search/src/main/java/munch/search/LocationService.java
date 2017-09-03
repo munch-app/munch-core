@@ -11,7 +11,7 @@ import munch.restful.server.JsonService;
 import munch.search.elastic.ElasticClient;
 import munch.search.elastic.ElasticIndex;
 import munch.search.elastic.ElasticMarshaller;
-import munch.search.elastic.LocationQuery;
+import munch.search.location.LocationQuery;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
@@ -74,14 +74,6 @@ public class LocationService implements JsonService {
         return marshaller.deserializeList(results);
     }
 
-    private static LatLngUtils.LatLng parseLatLng(String latLng) {
-        try {
-            return LatLngUtils.parse(latLng);
-        } catch (LatLngUtils.ParseException pe) {
-            throw new ParamException("latLng");
-        }
-    }
-
     /**
      * @param call json call
      * @return 200 = saved
@@ -111,5 +103,13 @@ public class LocationService implements JsonService {
         long cycleNo = call.pathLong("cycleNo");
         index.deleteBefore("location", cycleNo);
         return Meta200;
+    }
+
+    private static LatLngUtils.LatLng parseLatLng(String latLng) {
+        try {
+            return LatLngUtils.parse(latLng);
+        } catch (LatLngUtils.ParseException pe) {
+            throw new ParamException("latLng");
+        }
     }
 }

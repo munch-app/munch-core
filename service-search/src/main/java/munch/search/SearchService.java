@@ -12,12 +12,14 @@ import munch.data.SearchQuery;
 import munch.restful.core.exception.ValidationException;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
-import munch.search.elastic.BoolQuery;
 import munch.search.elastic.ElasticClient;
 import munch.search.elastic.ElasticMarshaller;
-import munch.search.elastic.SortQuery;
+import munch.search.place.BoolQuery;
+import munch.search.place.HourFilter;
+import munch.search.place.SortQuery;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by: Fuxing
@@ -64,15 +66,20 @@ public class SearchService implements JsonService {
     private JsonNode search(JsonCall call) throws IOException {
         // Validate and search for error and fixes it
         SearchQuery query = call.bodyAsObject(SearchQuery.class);
-        validateFix(query);
+        validate(query);
 
+        // Filter hours
         JsonNode boolNode = this.boolQuery.make(query);
         JsonNode sortNode = this.sortQuery.make(query);
         JsonNode result = client.postBoolSearch("place", query.getFrom(), query.getSize(), boolNode, sortNode);
         JsonNode hits = result.path("hits");
 
+        List<Object> places = marshaller.deserializeList(hits.path("hits"));
+        // Filter Hours after query
+        HourFilter.filter(query, places);
+
         // Return data: [] with total: Integer & linked: {} object
-        ObjectNode nodes = nodes(200, parse(hits.path("hits")));
+        ObjectNode nodes = nodes(200, places);
         nodes.put("total", hits.path("total").asInt());
         return nodes;
     }
@@ -129,7 +136,7 @@ public class SearchService implements JsonService {
      *
      * @param query query to validate and fix
      */
-    private static void validateFix(SearchQuery query) {
+    private static void validate(SearchQuery query) {
         // From and Size not null validation
         ValidationException.requireNonNull("from", query.getFrom());
         ValidationException.requireNonNull("size", query.getSize());

@@ -300,7 +300,7 @@ public class Place implements SearchResult {
      */
     public static final class Price {
         private Double lowest;
-        private Double middle;
+        private Double middle; // AKA per pax
         private Double highest;
 
         /**
@@ -353,17 +353,7 @@ public class Place implements SearchResult {
      * Opening hour of the place
      */
     public static final class Hour {
-        /**
-         * mon
-         * tue
-         * wed
-         * thu
-         * fri
-         * sat
-         * sun
-         * ph
-         * evePh
-         */
+
         private String day;
 
         /**
@@ -377,7 +367,7 @@ public class Place implements SearchResult {
          * 08:00 - 19:00
          * 8am - 7pm
          * <p>
-         * Not Allowed:
+         * Now Allowed:
          * 20:00 - 04:00
          * 20:00 - 24:00
          * Not allowed to put 24:00 Highest is 23:59
@@ -387,7 +377,17 @@ public class Place implements SearchResult {
         private String close;
 
         /**
-         * @return day in enum will be string in json
+         * mon
+         * tue
+         * wed
+         * thu
+         * fri
+         * sat
+         * sun
+         * ph
+         * evePh
+         *
+         * @return day that will be in string
          */
         public String getDay() {
             return day;

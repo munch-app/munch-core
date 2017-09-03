@@ -1,4 +1,4 @@
-package munch.search.elastic;
+package munch.search.location;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

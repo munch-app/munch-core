@@ -1,4 +1,4 @@
-package munch.search.elastic;
+package munch.search.place;
 
 import catalyst.utils.LatLngUtils;
 import com.fasterxml.jackson.databind.JsonNode;
