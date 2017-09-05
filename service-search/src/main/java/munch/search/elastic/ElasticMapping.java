@@ -8,7 +8,6 @@ import com.google.inject.Singleton;
 import io.searchbox.client.JestClient;
 import io.searchbox.client.JestResult;
 import io.searchbox.indices.CreateIndex;
-import io.searchbox.indices.DeleteIndex;
 import io.searchbox.indices.mapping.GetMapping;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -49,8 +48,6 @@ public final class ElasticMapping {
     public void tryCreate() throws RuntimeException, IOException {
         sleep(1000);
         logger.info("Validating Index for endpoint /munch");
-        // DELETE, TODO remove in future:
-        client.execute(new DeleteIndex.Builder("munch").build());
         JsonNode index = getIndex();
 
         // Index don't exist; hence create and revalidate
