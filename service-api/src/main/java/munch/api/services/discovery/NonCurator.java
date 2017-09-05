@@ -52,8 +52,6 @@ public final class NonCurator extends Curator {
                     query.getFilter().getHour().getTime())) return true;
         }
 
-
-        // TODO decide if sort is considered a complex search query
         return false;
     }
 
