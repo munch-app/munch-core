@@ -5,6 +5,7 @@ import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.util.GeometricShapeFactory;
 import munch.api.clients.NominatimClient;
 import munch.api.services.AbstractService;
+import munch.api.services.discovery.SingaporeCurator;
 import munch.data.Location;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
@@ -24,8 +25,6 @@ import java.util.stream.Collectors;
  */
 @Singleton
 public final class LocationSelector {
-    private static final Location singapore = createSingapore();
-
     private final NominatimClient nominatimClient;
 
     @Inject
@@ -41,7 +40,7 @@ public final class LocationSelector {
      * @throws AbstractService.LatLng.ParseException unable to parse
      */
     public Location select(@Nullable String latLngString) throws AbstractService.LatLng.ParseException {
-        if (latLngString == null) return singapore;
+        if (latLngString == null) return SingaporeCurator.LOCATION;
 
         AbstractService.LatLng latLng = new AbstractService.LatLng(latLngString);
         // Get StreetName and use as LocationName else use CurrentLocation
@@ -84,11 +83,10 @@ public final class LocationSelector {
     /**
      * @return Singapore Default Location
      */
-    private static Location createSingapore() {
+    public static Location createLocation(String name, String id) {
         Location location = new Location();
-        location.setName("Singapore");
-        location.setId("special_singapore");
-        location.setCenter("1.3521,103.8198");
+        location.setName(name);
+        location.setId(id);
         return location;
     }
 }

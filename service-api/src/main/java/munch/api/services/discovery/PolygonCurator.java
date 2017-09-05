@@ -16,13 +16,6 @@ import java.util.List;
 public final class PolygonCurator extends TabCurator {
 
     @Override
-    public List<SearchResult> query(SearchQuery query) {
-        query.setFrom(0);
-        query.setSize(SEARCH_SIZE);
-        return searchClient.search(query);
-    }
-
-    @Override
     public boolean match(SearchQuery query) {
         // Contains polygonal location data
         if (query.getLocation() != null) {
@@ -33,5 +26,12 @@ public final class PolygonCurator extends TabCurator {
 
         // Else fail
         return false;
+    }
+
+    @Override
+    public List<SearchResult> query(SearchQuery query) {
+        query.setFrom(0);
+        query.setSize(SEARCH_SIZE);
+        return searchClient.search(query);
     }
 }

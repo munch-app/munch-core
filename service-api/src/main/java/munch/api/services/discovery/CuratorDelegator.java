@@ -26,12 +26,12 @@ public final class CuratorDelegator {
     @Inject
     public CuratorDelegator(SearchClient searchClient,
                             NonCurator nonCurator,
-                            SpecialCurator specialCurator,
+                            SingaporeCurator singaporeCurator,
                             PolygonCurator polygonCurator) {
         this.searchClient = searchClient;
         this.curators = ImmutableList.of(
                 nonCurator,     // With Explicit Search Condition
-                specialCurator, // With Special Polygon
+                singaporeCurator, // With Special Polygon
                 polygonCurator  // With Polygon
         );
     }

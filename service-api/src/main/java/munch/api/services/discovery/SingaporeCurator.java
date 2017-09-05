@@ -3,6 +3,7 @@ package munch.api.services.discovery;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.services.CachedService;
+import munch.api.services.locations.LocationSelector;
 import munch.data.Location;
 import munch.data.SearchCollection;
 import munch.data.SearchQuery;
@@ -23,18 +24,20 @@ import java.util.List;
  * Project: munch-core
  */
 @Singleton
-public final class SpecialCurator extends Curator {
+public final class SingaporeCurator extends Curator {
+    public static final Location LOCATION = LocationSelector.createLocation("Singapore", "special_sg");
+
     private final Location[] popularLocations;
 
     @Inject
-    public SpecialCurator(CachedService.StaticJson resource) throws IOException {
+    public SingaporeCurator(CachedService.StaticJson resource) throws IOException {
         this.popularLocations = resource.getResource("popular-locations.json", Location[].class);
     }
 
     @Override
     public boolean match(SearchQuery query) {
-        // TODO Match the special Location data
-        return query.getLocation() == null;
+        Location location = query.getLocation();
+        return location != null && location.getId().equals(LOCATION.getId());
     }
 
     /**
@@ -44,7 +47,6 @@ public final class SpecialCurator extends Curator {
      * 2. filters
      *
      * @param source mandatory query in search bar, polygon will be ignored
-     * @param latLng ignored for Singapore curator
      * @return Curated List of PlaceCollection
      */
     @Override
