@@ -1,8 +1,6 @@
 package munch.api.services.discovery;
 
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import munch.api.clients.SearchClient;
 import munch.data.SearchQuery;
 import munch.data.SearchResult;
 
@@ -15,15 +13,7 @@ import java.util.List;
  * Project: munch-core
  */
 @Singleton
-public class PolygonCurator extends TabCurator {
-
-    /**
-     * Curator with LocationPolygon
-     */
-    @Inject
-    protected PolygonCurator(SearchClient searchClient) {
-        super(searchClient);
-    }
+public final class PolygonCurator extends TabCurator {
 
     @Override
     public List<SearchResult> query(SearchQuery query) {
@@ -34,8 +24,6 @@ public class PolygonCurator extends TabCurator {
 
     @Override
     public boolean match(SearchQuery query) {
-        if (isComplex(query)) return false;
-
         // Contains polygonal location data
         if (query.getLocation() != null) {
             if (query.getLocation().getPoints() == null) return false;

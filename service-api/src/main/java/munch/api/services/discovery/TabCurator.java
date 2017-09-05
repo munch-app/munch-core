@@ -1,8 +1,6 @@
 package munch.api.services.discovery;
 
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import munch.api.clients.SearchClient;
 import munch.data.Place;
 import munch.data.SearchCollection;
 import munch.data.SearchQuery;
@@ -23,11 +21,6 @@ public abstract class TabCurator extends Curator {
 
     private static final int TAB_SIZE = 4;
     private static final int TAB_MIN_RESULT_SIZE = 1;
-
-    @Inject
-    protected TabCurator(SearchClient searchClient) {
-        super(searchClient);
-    }
 
     /**
      * @param query mandatory query in search bar

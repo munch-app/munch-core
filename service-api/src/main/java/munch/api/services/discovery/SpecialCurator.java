@@ -24,17 +24,17 @@ import java.util.List;
  * Project: munch-core
  */
 @Singleton
-public class SpecialCurator extends Curator {
+public final class SpecialCurator extends Curator {
     private final Location[] popularLocations;
 
     @Inject
-    protected SpecialCurator(SearchClient searchClient, CachedService.StaticJson resource) throws IOException {
-        super(searchClient);
+    public SpecialCurator(CachedService.StaticJson resource) throws IOException {
         this.popularLocations = resource.getResource("popular-locations.json", Location[].class);
     }
 
     @Override
     public boolean match(SearchQuery query) {
+        // TODO Match the special Location data
         return query.getLocation() == null;
     }
 
@@ -44,7 +44,7 @@ public class SpecialCurator extends Curator {
      * 1. query
      * 2. filters
      *
-     * @param source  mandatory query in search bar, polygon will be ignored
+     * @param source mandatory query in search bar, polygon will be ignored
      * @param latLng ignored for Singapore curator
      * @return Curated List of PlaceCollection
      */

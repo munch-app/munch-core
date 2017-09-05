@@ -1,12 +1,11 @@
 package munch.api.services.discovery;
 
-import com.google.inject.Inject;
 import com.rits.cloning.Cloner;
 import munch.api.clients.SearchClient;
 import munch.data.SearchCollection;
 import munch.data.SearchQuery;
-import org.apache.commons.lang3.StringUtils;
 
+import javax.inject.Inject;
 import java.util.List;
 
 /**
@@ -18,12 +17,8 @@ import java.util.List;
 public abstract class Curator {
     protected static final Cloner cloner = new Cloner();
 
-    protected final SearchClient searchClient;
-
     @Inject
-    protected Curator(SearchClient searchClient) {
-        this.searchClient = searchClient;
-    }
+    protected SearchClient searchClient;
 
     /**
      * @param query  mandatory query in search bar
@@ -45,37 +40,5 @@ public abstract class Curator {
      */
     public static SearchQuery clone(SearchQuery query) {
         return cloner.deepClone(query);
-    }
-
-    /**
-     * Check if a SearchQuery is complex
-     * Only filters and query is checked
-     * For filters:
-     * Implicit user settings filters is considered non complex
-     *
-     * @param query query to check if empty
-     * @return true if complex
-     */
-    public static boolean isComplex(SearchQuery query) {
-        if (StringUtils.isNotBlank(query.getQuery())) return true;
-        if (query.getFilter() == null) return false;
-
-        // All filters must be empty or null
-        if (query.getFilter().getPrice() != null) {
-            if (query.getFilter().getPrice().getMin() != null) return true;
-            if (query.getFilter().getPrice().getMax() != null) return true;
-        }
-
-        if (query.getFilter().getTag() != null) {
-            if (query.getFilter().getTag().getPositives() != null) {
-                if (!query.getFilter().getTag().getPositives().isEmpty()) return true;
-            }
-
-            if (query.getFilter().getTag().getNegatives() != null) {
-                if (!query.getFilter().getTag().getNegatives().isEmpty()) return true;
-            }
-        }
-
-        return false;
     }
 }

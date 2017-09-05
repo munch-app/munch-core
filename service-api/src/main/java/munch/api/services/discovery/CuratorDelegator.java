@@ -6,8 +6,8 @@ import com.google.inject.Singleton;
 import munch.api.clients.SearchClient;
 import munch.data.SearchCollection;
 import munch.data.SearchQuery;
+import munch.restful.core.exception.StructuredException;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -78,6 +78,8 @@ public final class CuratorDelegator {
                 return curator.curate(query);
             }
         }
-        return Collections.emptyList();
+
+        // Cannot find any curator that fit the conditions
+        throw new StructuredException(500, "CuratorException", "No curator found.");
     }
 }
