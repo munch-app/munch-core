@@ -36,15 +36,6 @@ public abstract class AbstractService implements JsonService {
     }
 
     /**
-     * @param latLngString latLng in string = "lat,lng"
-     * @return LatLng if successfully parsed
-     * @throws LatLng.ParseException failed to parse because of formatting error
-     */
-    public LatLng parseLatLng(String latLngString) throws LatLng.ParseException {
-        return new LatLng(latLngString);
-    }
-
-    /**
      * Special wrapper for HeaderL Location-LatLng
      * This is more of a parser for http headers then data struct
      * <p>
@@ -63,7 +54,7 @@ public abstract class AbstractService implements JsonService {
          * @throws IndexOutOfBoundsException if size is not 2
          * @throws NullPointerException      latlng is null, or either split string is null
          */
-        private LatLng(String latLng) throws ParseException {
+        public LatLng(String latLng) throws ParseException {
             try {
                 String[] split = latLng.split(",");
                 lat = Double.parseDouble(split[0].trim());
@@ -105,7 +96,7 @@ public abstract class AbstractService implements JsonService {
             return getString();
         }
 
-        private static class ParseException extends RuntimeException {
+        public static class ParseException extends RuntimeException {
             private ParseException(Exception e) {
                 super("Failed to parse latLng", e);
             }

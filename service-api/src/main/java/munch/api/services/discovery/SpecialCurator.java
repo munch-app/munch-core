@@ -2,7 +2,6 @@ package munch.api.services.discovery;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import munch.api.clients.SearchClient;
 import munch.api.services.CachedService;
 import munch.data.Location;
 import munch.data.SearchCollection;
