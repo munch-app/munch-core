@@ -45,6 +45,8 @@ public class DataClient extends RestfulClient {
                 .asDataList(Place.class);
     }
 
+    // Future Development
+
     public List<InstagramMedia> getInstagramMedias(String placeId, long maxCreatedDate, int size) {
         return Collections.emptyList();
     }
