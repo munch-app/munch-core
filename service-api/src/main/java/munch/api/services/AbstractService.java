@@ -29,10 +29,19 @@ public abstract class AbstractService implements JsonService {
 
         try {
             return Optional.of(new LatLng(latLng));
-        } catch (NullPointerException | IndexOutOfBoundsException | NumberFormatException e) {
+        } catch (LatLng.ParseException e) {
             logger.warn("Unable to parse Header: Location-LatLng value: {}", latLng, e);
             return Optional.empty();
         }
+    }
+
+    /**
+     * @param latLngString latLng in string = "lat,lng"
+     * @return LatLng if successfully parsed
+     * @throws LatLng.ParseException failed to parse because of formatting error
+     */
+    public LatLng parseLatLng(String latLngString) throws LatLng.ParseException {
+        return new LatLng(latLngString);
     }
 
     /**
@@ -54,10 +63,15 @@ public abstract class AbstractService implements JsonService {
          * @throws IndexOutOfBoundsException if size is not 2
          * @throws NullPointerException      latlng is null, or either split string is null
          */
-        public LatLng(String latLng) throws NullPointerException, IndexOutOfBoundsException, NumberFormatException {
-            String[] split = latLng.split(",");
-            lat = Double.parseDouble(split[0].trim());
-            lng = Double.parseDouble(split[1].trim());
+        private LatLng(String latLng) throws ParseException {
+            try {
+                String[] split = latLng.split(",");
+                lat = Double.parseDouble(split[0].trim());
+                lng = Double.parseDouble(split[1].trim());
+            } catch (NullPointerException | IndexOutOfBoundsException | NumberFormatException e) {
+                throw new ParseException(e);
+            }
+
         }
 
         /**
@@ -89,6 +103,12 @@ public abstract class AbstractService implements JsonService {
          */
         public String toString() {
             return getString();
+        }
+
+        private static class ParseException extends RuntimeException {
+            private ParseException(Exception e) {
+                super("Failed to parse latLng", e);
+            }
         }
     }
 }

@@ -1,13 +1,11 @@
-package munch.api.services.curator;
+package munch.api.services.discovery;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.clients.SearchClient;
-import munch.api.services.AbstractService;
 import munch.data.SearchQuery;
 import munch.data.SearchResult;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -17,25 +15,25 @@ import java.util.List;
  * Project: munch-core
  */
 @Singleton
-public class ExplicitLocationCurator extends TabCurator {
+public class PolygonCurator extends TabCurator {
 
     /**
      * Curator with LocationPolygon
      */
     @Inject
-    protected ExplicitLocationCurator(SearchClient searchClient) {
+    protected PolygonCurator(SearchClient searchClient) {
         super(searchClient);
     }
 
     @Override
-    public List<SearchResult> query(SearchQuery query, @Nullable AbstractService.LatLng latLng) {
+    public List<SearchResult> query(SearchQuery query) {
         query.setFrom(0);
         query.setSize(SEARCH_SIZE);
         return searchClient.search(query);
     }
 
     @Override
-    public boolean match(SearchQuery query, @Nullable AbstractService.LatLng latLng) {
+    public boolean match(SearchQuery query) {
         if (isComplex(query)) return false;
 
         // Contains polygonal location data

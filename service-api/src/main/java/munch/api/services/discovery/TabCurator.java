@@ -1,15 +1,13 @@
-package munch.api.services.curator;
+package munch.api.services.discovery;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.clients.SearchClient;
-import munch.api.services.AbstractService;
 import munch.data.Place;
 import munch.data.SearchCollection;
 import munch.data.SearchQuery;
 import munch.data.SearchResult;
 
-import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -32,15 +30,14 @@ public abstract class TabCurator extends Curator {
     }
 
     /**
-     * @param query  mandatory query in search bar
-     * @param latLng nullable latLng (user physical location in latLng)
+     * @param query mandatory query in search bar
      * @return Result of Place
      */
-    public abstract List<SearchResult> query(SearchQuery query, @Nullable AbstractService.LatLng latLng);
+    public abstract List<SearchResult> query(SearchQuery query);
 
     @Override
-    public List<SearchCollection> curate(SearchQuery query, @Nullable AbstractService.LatLng latLng) {
-        List<SearchResult> results = query(query, latLng);
+    public List<SearchCollection> curate(SearchQuery query) {
+        List<SearchResult> results = query(query);
 
         List<SearchCollection> collections = new ArrayList<>();
         collections.add(new SearchCollection("HIGHLIGHT", query, results));

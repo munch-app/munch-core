@@ -1,15 +1,13 @@
-package munch.api.services.curator;
+package munch.api.services.discovery;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.clients.SearchClient;
-import munch.api.services.AbstractService;
 import munch.api.services.CachedService;
 import munch.data.Location;
 import munch.data.SearchCollection;
 import munch.data.SearchQuery;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,18 +24,18 @@ import java.util.List;
  * Project: munch-core
  */
 @Singleton
-public class SingaporeCurator extends Curator {
+public class SpecialCurator extends Curator {
     private final Location[] popularLocations;
 
     @Inject
-    protected SingaporeCurator(SearchClient searchClient, CachedService.StaticJson resource) throws IOException {
+    protected SpecialCurator(SearchClient searchClient, CachedService.StaticJson resource) throws IOException {
         super(searchClient);
         this.popularLocations = resource.getResource("popular-locations.json", Location[].class);
     }
 
     @Override
-    public boolean match(SearchQuery query, @Nullable AbstractService.LatLng latLng) {
-        return latLng == null && query.getLocation() == null;
+    public boolean match(SearchQuery query) {
+        return query.getLocation() == null;
     }
 
     /**
@@ -51,7 +49,7 @@ public class SingaporeCurator extends Curator {
      * @return Curated List of PlaceCollection
      */
     @Override
-    public List<SearchCollection> curate(SearchQuery source, @Nullable AbstractService.LatLng latLng) {
+    public List<SearchCollection> curate(SearchQuery source) {
         List<SearchCollection> collections = new ArrayList<>();
 
         // If query is empty: means location collections

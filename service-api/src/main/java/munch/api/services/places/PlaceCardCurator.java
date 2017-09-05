@@ -1,4 +1,4 @@
-package munch.api.services.rip;
+package munch.api.services.places;
 
 /**
  * Created by: Fuxing

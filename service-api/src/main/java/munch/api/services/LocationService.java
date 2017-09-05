@@ -1,9 +1,7 @@
 package munch.api.services;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import munch.api.clients.NominatimClient;
 import munch.api.clients.SearchClient;
 import munch.data.Location;
 import munch.restful.server.JsonCall;
@@ -19,12 +17,10 @@ import java.util.List;
 @Singleton
 public class LocationService extends AbstractService {
 
-    private final NominatimClient nominatimClient;
     private final SearchClient searchClient;
 
     @Inject
-    public LocationService(NominatimClient nominatimClient, SearchClient searchClient) {
-        this.nominatimClient = nominatimClient;
+    public LocationService(SearchClient searchClient) {
         this.searchClient = searchClient;
     }
 
@@ -34,7 +30,6 @@ public class LocationService extends AbstractService {
     @Override
     public void route() {
         PATH("/locations", () -> {
-            GET("/streets/reverse", this::streetReverse);
             GET("/reverse", this::reverse);
             GET("/suggest", this::suggest);
         });
@@ -42,30 +37,10 @@ public class LocationService extends AbstractService {
 
     /**
      * ?latLng=lat,lng
+     * To be used by the Location search when user click current location
      *
      * @param call json call
-     * @return 200 = ok, 404 = nil
-     * <pre>
-     * {
-     *      "data": "street name",
-     *      "meta": {
-     *          "code": 200 // or 404 if null
-     *      }
-     * }
-     * </pre>
-     */
-    private JsonNode streetReverse(JsonCall call) {
-        String latLng = call.queryString("latLng");
-        String street = nominatimClient.getStreet(new LatLng(latLng));
-        if (street == null) return null;
-        return nodes(200, street);
-    }
-
-    /**
-     * ?latLng=lat,lng
-     *
-     * @param call json call
-     * @return Neighborhood or NULL
+     * @return Location or NULL
      * code: 200 = ok
      */
     private Location reverse(JsonCall call) {
@@ -77,7 +52,7 @@ public class LocationService extends AbstractService {
      * ?text={String}
      *
      * @param call json call
-     * @return List of Neighborhood or empty
+     * @return List of Location or empty
      * code: 200 = ok
      */
     private List<Location> suggest(JsonCall call) {
