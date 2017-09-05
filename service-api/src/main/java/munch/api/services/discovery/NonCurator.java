@@ -18,6 +18,8 @@ import java.util.List;
 @Singleton
 public final class NonCurator extends Curator {
 
+    // TODO: Check SingaporeCurator + NonCurator what happen?
+
     /**
      * Check if a SearchQuery is complex
      * Only filters and query is checked

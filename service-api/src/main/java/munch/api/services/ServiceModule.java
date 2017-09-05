@@ -14,8 +14,6 @@ public class ServiceModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        install(new CuratorModule());
-
         Multibinder<RestfulService> routerBinder = Multibinder.newSetBinder(binder(), RestfulService.class);
         routerBinder.addBinding().to(DiscoveryService.class);
         routerBinder.addBinding().to(PlaceService.class);

@@ -7,6 +7,7 @@ import munch.api.services.locations.LocationSelector;
 import munch.data.Location;
 import munch.restful.server.JsonCall;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -58,8 +59,9 @@ public class LocationService extends AbstractService {
      *
      * @param call json call
      * @return Location or NULL
-     * code: 200 = ok
+     * code: 200 = ok, 404 = not found
      */
+    @Nullable
     private Location reverse(JsonCall call) {
         String latLng = call.queryString("latLng");
         return searchClient.reverseLocation(latLng);

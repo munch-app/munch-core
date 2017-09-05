@@ -7,6 +7,7 @@ import munch.api.services.locations.LocationSelector;
 import munch.data.Location;
 import munch.data.SearchCollection;
 import munch.data.SearchQuery;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,7 +38,9 @@ public final class SingaporeCurator extends Curator {
     @Override
     public boolean match(SearchQuery query) {
         Location location = query.getLocation();
-        return location != null && location.getId().equals(LOCATION.getId());
+        if (location == null) return false;
+        if (StringUtils.isBlank(location.getId())) return false;
+        return location.getId().equals(LOCATION.getId());
     }
 
     /**

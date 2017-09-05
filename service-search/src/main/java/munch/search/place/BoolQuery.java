@@ -71,7 +71,9 @@ public final class BoolQuery {
      */
     private JsonNode mustNot(SearchQuery.Filter filter) {
         ArrayNode notArray = mapper.createArrayNode();
-        if (filter.getTag() == null || filter.getTag().getNegatives() == null) return notArray;
+        if (filter == null) return notArray;
+        if (filter.getTag() == null) return notArray;
+        if (filter.getTag().getNegatives() == null) return notArray;
 
         // Must not filters
         for (String tag : filter.getTag().getNegatives()) {
@@ -92,6 +94,9 @@ public final class BoolQuery {
         if (location != null && location.getPoints() != null) {
             filterArray.add(filterPolygon(location.getPoints()));
         }
+
+        // Check if filter is not null before continuing
+        if (filter == null) return filterArray;
 
         // Filter to positive tags
         if (filter.getTag() != null && filter.getTag().getNegatives() != null) {
