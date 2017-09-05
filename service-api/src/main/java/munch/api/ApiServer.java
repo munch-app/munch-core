@@ -3,6 +3,8 @@ package munch.api;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.typesafe.config.Config;
+import munch.api.exception.UnsupportedException;
+import munch.restful.core.exception.StructuredException;
 import munch.restful.server.RestfulServer;
 import munch.restful.server.RestfulService;
 import spark.Spark;
@@ -41,5 +43,15 @@ public final class ApiServer extends RestfulServer {
 
         healthService.start();
         logger.info("Started SparkRouter: HealthService");
+    }
+
+    @Override
+    protected void handleException() {
+        // UnsupportedException is handled but not logged
+        logger.info("Adding exception handling for UnsupportedException.");
+        Spark.exception(UnsupportedException.class, (exception, request, response) -> {
+            handleException(response, (StructuredException) exception);
+        });
+        super.handleException();
     }
 }
