@@ -17,10 +17,20 @@ import java.util.regex.Pattern;
  */
 public final class LocationBuilder implements TypeBuilder {
     private static final Logger logger = LoggerFactory.getLogger(LocationBuilder.class);
-    private static final Pattern LocationPattern = Pattern.compile("Place\\.Location\\.\\w+");
 
     private ValueBuilder priorityBuilder = new PriorityBuilder("Sg.Nea.TrackRecord");
     private ValueBuilder valueBuilder = new ValueBuilder();
+
+    /**
+     * Check if field is Place.Location.*
+     *
+     * @param field field to match
+     * @return true if field key matched
+     * @see LocationBuilder#LocationPattern
+     */
+    public boolean match(CorpusData.Field field) {
+        return field.getKey().contains("Place.Location");
+    }
 
     @Override
     public void add(CorpusData data, CorpusData.Field field) {
@@ -74,16 +84,5 @@ public final class LocationBuilder implements TypeBuilder {
     @Nullable
     private String collectMaxCapitalizeFully(String name) {
         return WordUtils.capitalizeFully(collectMax(name));
-    }
-
-    /**
-     * Check if field is Place.Location.*
-     *
-     * @param field field to match
-     * @return true if field key matched
-     * @see LocationBuilder#LocationPattern
-     */
-    public boolean match(CorpusData.Field field) {
-        return LocationPattern.matcher(field.getKey()).matches();
     }
 }
