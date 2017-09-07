@@ -6,7 +6,7 @@ package munch.data.places;
  * Time: 12:50 AM
  * Project: munch-core
  */
-public final class NameCard extends PlaceCard {
+public final class NameCard extends AbstractCard {
 
     private String name;
 

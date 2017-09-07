@@ -14,7 +14,7 @@ package munch.data.places;
  * Time: 12:35 AM
  * Project: munch-core
  */
-public abstract class PlaceCard {
+public abstract class AbstractCard {
 
     /**
      * Id format:

@@ -5,7 +5,7 @@ import com.google.inject.Singleton;
 import munch.api.clients.DataClient;
 import munch.api.services.places.PlaceCardGenerator;
 import munch.data.Place;
-import munch.data.places.PlaceCard;
+import munch.data.places.AbstractCard;
 import munch.restful.server.JsonCall;
 
 import java.util.List;
@@ -64,7 +64,7 @@ public class PlaceService extends AbstractService {
      * @param call json call
      * @return List of Cards in Order
      */
-    private List<PlaceCard> cards(JsonCall call) {
+    private List<AbstractCard> cards(JsonCall call) {
         String placeId = call.pathString("placeId");
         return cardGenerator.generate(placeId);
     }
