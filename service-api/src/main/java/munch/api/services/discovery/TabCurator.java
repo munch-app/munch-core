@@ -1,6 +1,5 @@
 package munch.api.services.discovery;
 
-import com.google.inject.Singleton;
 import munch.data.Place;
 import munch.data.SearchCollection;
 import munch.data.SearchQuery;
@@ -15,12 +14,18 @@ import java.util.stream.Collectors;
  * Time: 11:04 PM
  * Project: munch-core
  */
-@Singleton
 public abstract class TabCurator extends Curator {
-    public static final int SEARCH_SIZE = 50;
 
-    private static final int TAB_SIZE = 4;
-    private static final int TAB_MIN_RESULT_SIZE = 1;
+    private final int maxTabSize;
+    private final int minTabResultSize;
+
+    private final Set<String> tags;
+
+    protected TabCurator(int maxTabSize, int minTabResultSize, Set<String> tags) {
+        this.maxTabSize = maxTabSize;
+        this.minTabResultSize = minTabResultSize;
+        this.tags = tags.stream().map(String::toUpperCase).collect(Collectors.toSet());
+    }
 
     /**
      * @param query mandatory query in search bar
@@ -35,7 +40,7 @@ public abstract class TabCurator extends Curator {
         List<SearchCollection> collections = new ArrayList<>();
         collections.add(new SearchCollection("HIGHLIGHT", query, results));
 
-        collections.addAll(categorize(query, results, TAB_SIZE, TAB_MIN_RESULT_SIZE));
+        collections.addAll(categorize(query, results));
         return collections;
     }
 
@@ -45,44 +50,43 @@ public abstract class TabCurator extends Curator {
      * @param size    size of collections to return
      * @return categorized collection
      */
-    protected List<SearchCollection> categorize(SearchQuery source, List<SearchResult> results, int size, int minResults) {
+    protected List<SearchCollection> categorize(SearchQuery source, List<SearchResult> results) {
         Map<String, List<SearchResult>> category = new HashMap<>();
 
         // Add all results into category with key: tag, value: place
-        for (SearchResult result : results) {
-            if (result instanceof Place) {
-                for (String tag : ((Place) result).getTags()) {
-                    category.compute(tag.toLowerCase(), (s, list) -> {
-                        if (list == null) list = new ArrayList<>();
-                        list.add(result);
-                        return list;
-                    });
-                }
-            }
-        }
-
-        Map<String, List<SearchResult>> sorted = category.entrySet().stream()
-                .sorted(Comparator.comparingInt(e -> e.getValue().size()))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
-                        (a, b) -> {
-                            throw new AssertionError();
-                        }, LinkedHashMap::new
-                ));
+        results.stream()
+                .filter(result -> result instanceof Place)
+                .map(result -> (Place) result)
+                .forEach(place -> {
+                    for (String tag : place.getTags()) {
+                        // Filter to approved tags
+                        if (tags.contains(tag)) {
+                            // Add to category if found
+                            category.compute(tag.toUpperCase(), (s, list) -> {
+                                if (list == null) list = new ArrayList<>();
+                                list.add(place);
+                                return list;
+                            });
+                        }
+                    }
+                });
 
         List<SearchCollection> collections = new ArrayList<>();
-        for (Map.Entry<String, List<SearchResult>> entry : sorted.entrySet()) {
+        category.forEach((tag, list) -> {
             // Check that list is not less then min result size
-            if (entry.getValue().size() < minResults) break;
+            if (list.size() < minTabResultSize) return;
 
             // Add new SearchCollection
-            String tag = entry.getKey().toUpperCase();
             SearchQuery query = withTag(source, tag);
-            collections.add(new SearchCollection(tag, query, entry.getValue()));
+            collections.add(new SearchCollection(tag, query, list));
+        });
 
-            // Exit if more than or equal size
-            if (collections.size() >= size) break;
-        }
-        return collections;
+        return collections.stream()
+                // Most results on top
+                .sorted((o1, o2) -> Integer.compare(o2.getResults().size(), o1.getResults().size()))
+                // Limit to tab size - 1
+                .limit(maxTabSize - 1)
+                .collect(Collectors.toList());
     }
 
     /**

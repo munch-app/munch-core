@@ -1,10 +1,15 @@
 package munch.api.services.discovery;
 
 import com.google.inject.Singleton;
+import munch.api.services.CachedService;
 import munch.data.SearchQuery;
 import munch.data.SearchResult;
 
+import javax.inject.Inject;
+import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by: Fuxing
@@ -14,6 +19,24 @@ import java.util.List;
  */
 @Singleton
 public final class PolygonCurator extends TabCurator {
+
+    @Inject
+    public PolygonCurator(CachedService.StaticJson resource) throws IOException {
+        super(5, 1, collectTabTags(resource));
+    }
+
+    /**
+     * @param resource cached StaticJson resource tool
+     * @return Set of Tag that can be Tag curated, all in uppercase
+     * @throws IOException IOException
+     */
+    private static Set<String> collectTabTags(CachedService.StaticJson resource) throws IOException {
+        Set<String> tags = new HashSet<>();
+        resource.getResource("tab-tags.json").fields().forEachRemaining(entry -> {
+            entry.getValue().forEach(tag -> tags.add(tag.asText().toUpperCase()));
+        });
+        return tags;
+    }
 
     @Override
     public boolean match(SearchQuery query) {
@@ -31,7 +54,7 @@ public final class PolygonCurator extends TabCurator {
     @Override
     public List<SearchResult> query(SearchQuery query) {
         query.setFrom(0);
-        query.setSize(SEARCH_SIZE);
+        query.setSize(50);
         return searchClient.search(query);
     }
 }
