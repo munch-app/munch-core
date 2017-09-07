@@ -17,13 +17,13 @@ import java.util.stream.Collectors;
 public abstract class TabCurator extends Curator {
 
     private final int maxTabSize;
-    private final int minTabResultSize;
+    private final int tabMinResultSize;
 
     private final Set<String> tags;
 
-    protected TabCurator(int maxTabSize, int minTabResultSize, Set<String> tags) {
+    protected TabCurator(int maxTabSize, int tabMinResultSize, Set<String> tags) {
         this.maxTabSize = maxTabSize;
-        this.minTabResultSize = minTabResultSize;
+        this.tabMinResultSize = tabMinResultSize;
         this.tags = tags.stream().map(String::toUpperCase).collect(Collectors.toSet());
     }
 
@@ -60,7 +60,7 @@ public abstract class TabCurator extends Curator {
                 .forEach(place -> {
                     for (String tag : place.getTags()) {
                         // Filter to approved tags
-                        if (tags.contains(tag)) {
+                        if (tags.contains(tag.toUpperCase())) {
                             // Add to category if found
                             category.compute(tag.toUpperCase(), (s, list) -> {
                                 if (list == null) list = new ArrayList<>();
@@ -74,7 +74,7 @@ public abstract class TabCurator extends Curator {
         List<SearchCollection> collections = new ArrayList<>();
         category.forEach((tag, list) -> {
             // Check that list is not less then min result size
-            if (list.size() < minTabResultSize) return;
+            if (list.size() < tabMinResultSize) return;
 
             // Add new SearchCollection
             SearchQuery query = withTag(source, tag);

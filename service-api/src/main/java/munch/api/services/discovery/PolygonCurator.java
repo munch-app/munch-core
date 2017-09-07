@@ -33,7 +33,7 @@ public final class PolygonCurator extends TabCurator {
     private static Set<String> collectTabTags(CachedService.StaticJson resource) throws IOException {
         Set<String> tags = new HashSet<>();
         resource.getResource("tab-tags.json").fields().forEachRemaining(entry -> {
-            entry.getValue().forEach(tag -> tags.add(tag.asText().toUpperCase()));
+            entry.getValue().forEach(tag -> tags.add(tag.asText()));
         });
         return tags;
     }
