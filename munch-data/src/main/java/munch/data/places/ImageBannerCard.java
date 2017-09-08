@@ -8,7 +8,7 @@ import munch.data.ImageMeta;
  * Time: 12:45 AM
  * Project: munch-core
  */
-public final class ImageBannerCard extends AbstractCard {
+public final class ImageBannerCard extends PlaceCard {
 
     private ImageMeta image;
 

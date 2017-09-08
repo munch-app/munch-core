@@ -14,7 +14,7 @@ package munch.data.places;
  * Time: 12:35 AM
  * Project: munch-core
  */
-public abstract class AbstractCard {
+public abstract class PlaceCard {
 
     /**
      * Id format:
@@ -22,6 +22,9 @@ public abstract class AbstractCard {
      * E.g. basic_Banner_06092017
      * E.g. vendor_FacebookReview_01052017
      * E.g. vendor_InstagramMedia_01012016
+     * <p>
+     * Version of the card is usually a result of data structure update
+     * Rarely it can be based on incremental design changes as well
      *
      * @return id of the card
      */

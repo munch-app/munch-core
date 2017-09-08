@@ -2,7 +2,7 @@ package munch.api.services.places;
 
 import munch.api.clients.DataClient;
 import munch.data.Place;
-import munch.data.places.AbstractCard;
+import munch.data.places.PlaceCard;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -36,11 +36,11 @@ public final class PlaceCardGenerator {
      * @return List of AbstractCard, or null if place cannot be found
      */
     @Nullable
-    public List<AbstractCard> generate(String placeId) {
+    public List<PlaceCard> generate(String placeId) {
         Place place = dataClient.get(placeId);
         if (place == null) return null;
 
-        List<AbstractCard> cards = new ArrayList<>();
+        List<PlaceCard> cards = new ArrayList<>();
         // Generate Basic
         cards.addAll(basicGenerator.generate(place));
         // Generate Vendor

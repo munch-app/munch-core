@@ -10,7 +10,7 @@ import java.util.List;
  * Time: 2:05 PM
  * Project: munch-core
  */
-public final class BusinessHourCard extends AbstractCard {
+public final class BusinessHourCard extends PlaceCard {
 
     private List<Place.Hour> hours;
 

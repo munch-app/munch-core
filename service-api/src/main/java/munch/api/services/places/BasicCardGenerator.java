@@ -22,8 +22,8 @@ public final class BasicCardGenerator {
      * @param place place
      * @return All generated Basic typed Card
      */
-    List<AbstractCard> generate(Place place) {
-        List<AbstractCard> cards = new ArrayList<>();
+    List<PlaceCard> generate(Place place) {
+        List<PlaceCard> cards = new ArrayList<>();
 
         cards.add(createImageBanner(place));
         cards.add(createName(place));
