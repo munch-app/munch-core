@@ -28,7 +28,7 @@ public final class BasicCardGenerator {
         cards.add(createImageBanner(place));
         cards.add(createName(place));
         cards.add(createTag(place));
-        cards.add(createImageBanner(place));
+        cards.add(createBusinessHour(place));
         cards.add(createLocationDetail(place));
 
         return cards;
