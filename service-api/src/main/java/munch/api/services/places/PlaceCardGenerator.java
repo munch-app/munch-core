@@ -42,6 +42,8 @@ public final class PlaceCardGenerator {
 
         List<PlaceCard> cards = new ArrayList<>();
         // Generate Basic
+
+        // TODO break down instead of generate
         cards.addAll(basicGenerator.generate(place));
         // Generate Vendor
 
