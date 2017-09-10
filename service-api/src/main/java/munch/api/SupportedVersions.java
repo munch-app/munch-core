@@ -21,12 +21,10 @@ public final class SupportedVersions {
     public static final String HEADER_BUILD = "Application-Build";
 
     private final ImmutableSet<String> supportedVersions;
-    private final ImmutableSet<String> supportedBuilds;
 
     @Inject
     public SupportedVersions(Config config) {
-        this.supportedVersions = ImmutableSet.copyOf(config.getString("api.supported.versions").split(","));
-        this.supportedBuilds = ImmutableSet.copyOf(config.getString("api.supported.builds").split(","));
+        this.supportedVersions = ImmutableSet.copyOf(config.getString("api.supported.versions").split(" *, *"));
     }
 
     public void validate(Request request) {
@@ -35,11 +33,6 @@ public final class SupportedVersions {
             throw new UnsupportedException();
         }
 
-        String build = request.headers(HEADER_BUILD);
-        if (StringUtils.isNotBlank(build) && !supportedBuilds.contains(build)) {
-            throw new UnsupportedException();
-        }
-
-        // If build or version is not given, no error will be thrown
+        // If version is not given, no error will be thrown
     }
 }
