@@ -60,6 +60,10 @@ public final class BasicCardGenerator {
     }
 
     LocationMapCard createLocationMap(Place place) {
+        // Safety checks
+        if (place.getLocation() == null) return null;
+        if (place.getLocation().getLatLng() == null) return null;
+
         LocationMapCard card = new LocationMapCard();
         card.setLocation(place.getLocation());
         return card;
