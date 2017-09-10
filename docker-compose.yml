@@ -55,9 +55,6 @@ services:
       - MUNCH_SERVICE_DATA_URL=http://data:8000
       - MUNCH_SERVICE_SEARCH_URL=http://search:8000
       - SERVICE_NOMINATIM_URL=http://nominatim:8080
-
-      - MUNCH_API_SUPPORTED_BUILDS=1
-      - MUNCH_API_SUPPORTED_VERSIONS=1
     ports:
       - "8800:8000"
   nominatim:

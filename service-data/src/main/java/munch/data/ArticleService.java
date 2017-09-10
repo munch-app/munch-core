@@ -24,8 +24,8 @@ public final class ArticleService extends AbstractService<Article, ArticleEntity
 
     @Override
     public void route() {
-        super.route();
         GET("/places/:placeId/articles/list", this::list);
+        super.route();
     }
 
     @Override
