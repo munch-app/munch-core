@@ -6,7 +6,6 @@ import munch.data.places.*;
 
 import javax.annotation.Nullable;
 import javax.inject.Singleton;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,24 +17,8 @@ import java.util.List;
 @Singleton
 public final class BasicCardGenerator {
 
-    /**
-     * @param place place
-     * @return All generated Basic typed Card
-     */
-    List<PlaceCard> generate(Place place) {
-        List<PlaceCard> cards = new ArrayList<>();
-
-        cards.add(createImageBanner(place));
-        cards.add(createName(place));
-        cards.add(createTag(place));
-        cards.add(createBusinessHour(place));
-        cards.add(createLocationDetail(place));
-
-        return cards;
-    }
-
     @Nullable
-    private ImageBannerCard createImageBanner(Place place) {
+    ImageBannerCard createImageBanner(Place place) {
         List<Place.Image> images = place.getImages();
         if (images.isEmpty()) return null;
 
@@ -44,13 +27,13 @@ public final class BasicCardGenerator {
         return card;
     }
 
-    private NameCard createName(Place place) {
+    NameCard createName(Place place) {
         NameCard card = new NameCard();
         card.setName(place.getName());
         return card;
     }
 
-    private TagCard createTag(Place place) {
+    TagCard createTag(Place place) {
         TagCard card = new TagCard();
         if (place.getTags() != null) {
             card.setTags(ImmutableSet.copyOf(place.getTags()));
@@ -61,14 +44,23 @@ public final class BasicCardGenerator {
     }
 
     @Nullable
-    private BusinessHourCard createBusinessHour(Place place) {
+    BusinessHourCard createBusinessHour(Place place) {
+        if (place.getHours() == null) return null;
+        if (place.getHours().isEmpty()) return null;
+
         BusinessHourCard card = new BusinessHourCard();
         card.setHours(place.getHours());
-        return null;
+        return card;
     }
 
-    private LocationDetailCard createLocationDetail(Place place) {
+    LocationDetailCard createLocationDetail(Place place) {
         LocationDetailCard card = new LocationDetailCard();
+        card.setLocation(place.getLocation());
+        return card;
+    }
+
+    LocationMapCard createLocationMap(Place place) {
+        LocationMapCard card = new LocationMapCard();
         card.setLocation(place.getLocation());
         return card;
     }

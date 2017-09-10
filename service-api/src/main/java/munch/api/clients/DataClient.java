@@ -47,11 +47,15 @@ public class DataClient extends RestfulClient {
 
     // Future Development
 
-    public List<InstagramMedia> getInstagramMedias(String placeId, long maxCreatedDate, int size) {
+    public List<InstagramMedia> getInstagramMedias(String placeId, String maxSortKey, int size) {
         return Collections.emptyList();
     }
 
-    public List<Article> getArticles(String placeId, long maxCreatedDate, int size) {
-        return Collections.emptyList();
+    public List<Article> getArticles(String placeId, String maxSortKey, int size) {
+        return doGet("/places/{placeId}/articles/list")
+                .path("placeId", placeId)
+                .queryString("maxSortKey", maxSortKey)
+                .queryString("size", size)
+                .asDataList(Article.class);
     }
 }

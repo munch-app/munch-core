@@ -22,11 +22,13 @@ public final class PlaceCardGenerator {
 
     private final DataClient dataClient;
     private final BasicCardGenerator basicGenerator;
+    private final VendorCardGenerator vendorGenerator;
 
     @Inject
-    public PlaceCardGenerator(DataClient dataClient, BasicCardGenerator basicGenerator) {
+    public PlaceCardGenerator(DataClient dataClient, BasicCardGenerator basicGenerator, VendorCardGenerator vendorGenerator) {
         this.dataClient = dataClient;
         this.basicGenerator = basicGenerator;
+        this.vendorGenerator = vendorGenerator;
     }
 
     /**
@@ -41,11 +43,17 @@ public final class PlaceCardGenerator {
         if (place == null) return null;
 
         List<PlaceCard> cards = new ArrayList<>();
-        // Generate Basic
 
-        // TODO break down instead of generate
-        cards.addAll(basicGenerator.generate(place));
-        // Generate Vendor
+        // Generate Cards
+        cards.add(basicGenerator.createImageBanner(place));
+        cards.add(basicGenerator.createName(place));
+        cards.add(basicGenerator.createTag(place));
+        cards.add(basicGenerator.createBusinessHour(place));
+        cards.add(basicGenerator.createLocationDetail(place));
+
+        cards.add(vendorGenerator.createArticleGrid(place));
+
+        cards.add(basicGenerator.createLocationMap(place));
 
         // Remove all that cards that is null
         cards.removeIf(Objects::isNull);

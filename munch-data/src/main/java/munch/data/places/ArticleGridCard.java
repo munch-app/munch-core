@@ -1,5 +1,9 @@
 package munch.data.places;
 
+import munch.data.Article;
+
+import java.util.List;
+
 /**
  * Created by: Fuxing
  * Date: 10/9/2017
@@ -8,10 +12,18 @@ package munch.data.places;
  */
 public final class ArticleGridCard extends PlaceCard {
 
+    private List<Article> articles;
+
     @Override
     public String getId() {
         return "vendor_ArticleGrid_10092017";
     }
 
-    // TODO
+    public List<Article> getArticles() {
+        return articles;
+    }
+
+    public void setArticles(List<Article> articles) {
+        this.articles = articles;
+    }
 }
