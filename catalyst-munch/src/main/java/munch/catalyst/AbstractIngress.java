@@ -3,7 +3,9 @@ package munch.catalyst;
 import corpus.data.CorpusData;
 import org.slf4j.Logger;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by: Fuxing
@@ -14,7 +16,7 @@ import java.util.List;
 public abstract class AbstractIngress {
     private final Logger logger;
 
-    protected int ingressTotal;
+    private final Map<String, Long> counters = new HashMap<>();
 
     protected AbstractIngress(Logger logger) {
         this.logger = logger;
@@ -30,7 +32,7 @@ public abstract class AbstractIngress {
         if (!validate(dataList)) return;
 
         // If passed validation, then put
-        ingressTotal++;
+        incrementCount("total");
         put(dataList, cycleNo);
     }
 
@@ -40,9 +42,18 @@ public abstract class AbstractIngress {
      * @param cycleNo current cycleNo
      */
     public void egress(final long cycleNo) {
-        logger.info("Ingress a total of {} data", ingressTotal);
-        ingressTotal = 0;
+        counters.forEach((name, count) -> {
+            logger.info("Counter Name: {} count: {}", name, count);
+        });
+        counters.clear();
         delete(cycleNo);
+    }
+
+    protected void incrementCount(String name) {
+        counters.compute(name, (s, counter) -> {
+            if (counter == null) return 1L;
+            return counter + 1L;
+        });
     }
 
     protected abstract boolean validate(List<CorpusData> dataList);

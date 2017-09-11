@@ -95,9 +95,7 @@ public final class PlaceIngress extends AbstractIngress {
 
                 articles.forEach(article -> dataClient.put(article, cycleNo));
 
-                if (!place.getHours().isEmpty()) {
-                    counters.compute("hours", (s, counter) -> counter++);
-                }
+                if (!place.getHours().isEmpty()) incrementCount("hours");
 
                 dataClient.put(place, cycleNo);
                 searchClient.put(place, cycleNo);
@@ -107,10 +105,6 @@ public final class PlaceIngress extends AbstractIngress {
 
     @Override
     protected void delete(long cycleNo) {
-        counters.forEach((name, count) -> {
-            logger.info("Counter Name: {} count: {}", name, count);
-        });
-
         searchClient.deletePlaces(cycleNo);
         dataClient.deletePlaces(cycleNo);
         dataClient.deleteArticles(cycleNo);
