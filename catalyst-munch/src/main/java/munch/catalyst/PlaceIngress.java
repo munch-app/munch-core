@@ -16,7 +16,9 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by: Fuxing
@@ -31,6 +33,8 @@ public final class PlaceIngress extends AbstractIngress {
     private final SearchClient searchClient;
     private final DataClient dataClient;
     private final ImageMapper imageMapper;
+
+    private final Map<String, Long> counters = new HashMap<>();
 
     @Inject
     public PlaceIngress(SearchClient searchClient, DataClient dataClient, ImageMapper imageMapper) {
@@ -91,6 +95,10 @@ public final class PlaceIngress extends AbstractIngress {
 
                 articles.forEach(article -> dataClient.put(article, cycleNo));
 
+                if (!place.getHours().isEmpty()) {
+                    counters.compute("hours", (s, counter) -> counter++);
+                }
+
                 dataClient.put(place, cycleNo);
                 searchClient.put(place, cycleNo);
             }
@@ -99,6 +107,10 @@ public final class PlaceIngress extends AbstractIngress {
 
     @Override
     protected void delete(long cycleNo) {
+        counters.forEach((name, count) -> {
+            logger.info("Counter Name: {} count: {}", name, count);
+        });
+
         searchClient.deletePlaces(cycleNo);
         dataClient.deletePlaces(cycleNo);
         dataClient.deleteArticles(cycleNo);
