@@ -154,6 +154,14 @@ public final class SearchQuery {
             public void setMax(Double max) {
                 this.max = max;
             }
+
+            @Override
+            public String toString() {
+                return "Price{" +
+                        "min=" + min +
+                        ", max=" + max +
+                        '}';
+            }
         }
 
         public static class Tag {
@@ -174,6 +182,14 @@ public final class SearchQuery {
 
             public void setNegatives(Set<String> negatives) {
                 this.negatives = negatives;
+            }
+
+            @Override
+            public String toString() {
+                return "Tag{" +
+                        "positives=" + positives +
+                        ", negatives=" + negatives +
+                        '}';
             }
         }
 
@@ -205,6 +221,23 @@ public final class SearchQuery {
             public void setTime(String time) {
                 this.time = time;
             }
+
+            @Override
+            public String toString() {
+                return "Hour{" +
+                        "day='" + day + '\'' +
+                        ", time='" + time + '\'' +
+                        '}';
+            }
+        }
+
+        @Override
+        public String toString() {
+            return "Filter{" +
+                    "price=" + price +
+                    ", tag=" + tag +
+                    ", hour=" + hour +
+                    '}';
         }
     }
 
@@ -251,6 +284,14 @@ public final class SearchQuery {
 
         public void setLatLng(String latLng) {
             this.latLng = latLng;
+        }
+
+        @Override
+        public String toString() {
+            return "Sort{" +
+                    "type='" + type + '\'' +
+                    ", latLng='" + latLng + '\'' +
+                    '}';
         }
     }
 

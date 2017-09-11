@@ -36,9 +36,6 @@ public final class SortQuery {
         if (!validate(query.getSort())) return sortArray;
 
         switch (query.getSort().getType().toLowerCase()) {
-            case SearchQuery.Sort.TYPE_MUNCH_RANK:
-                sortArray.add(sortField("munchRank", "desc"));
-                break;
             case SearchQuery.Sort.TYPE_PRICE_LOWEST:
                 sortArray.add(sortField("price.middle", "asc"));
                 break;
@@ -50,6 +47,12 @@ public final class SortQuery {
                 break;
             case SearchQuery.Sort.TYPE_RATING_HIGHEST:
                 // TODO Type Rating in Future
+                break;
+
+            // munchRank sort is always applied by default if non given
+            default:
+            case SearchQuery.Sort.TYPE_MUNCH_RANK:
+                sortArray.add(sortField("munchRank", "desc"));
                 break;
         }
         return sortArray;

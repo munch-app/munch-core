@@ -7,6 +7,8 @@ import munch.api.clients.SearchClient;
 import munch.data.SearchCollection;
 import munch.data.SearchQuery;
 import munch.restful.core.exception.StructuredException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -18,6 +20,7 @@ import java.util.List;
  */
 @Singleton
 public final class CuratorDelegator {
+    private static final Logger logger = LoggerFactory.getLogger(CuratorDelegator.class);
     public static final int SEARCH_SIZE = 20;
 
     private final SearchClient searchClient;
@@ -80,6 +83,7 @@ public final class CuratorDelegator {
         }
 
         // Cannot find any curator that fit the conditions
+        logger.error("No curator found for search query: {}", query);
         throw new StructuredException(500, "CuratorException", "No curator found.");
     }
 }

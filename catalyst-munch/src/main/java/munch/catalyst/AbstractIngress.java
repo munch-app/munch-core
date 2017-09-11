@@ -43,7 +43,7 @@ public abstract class AbstractIngress {
      */
     public void egress(final long cycleNo) {
         counters.forEach((name, count) -> {
-            logger.info("Counter Name: {} count: {}", name, count);
+            logger.info("Ingress Counter: {}, count: {}", name, count);
         });
         counters.clear();
         delete(cycleNo);
