@@ -1,6 +1,8 @@
 package munch.data.places;
 
-import munch.data.ImageMeta;
+import munch.data.Place;
+
+import java.util.List;
 
 /**
  * Created by: Fuxing
@@ -10,18 +12,18 @@ import munch.data.ImageMeta;
  */
 public final class ImageBannerCard extends PlaceCard {
 
-    private ImageMeta image;
+    private List<Place.Image> images;
 
     @Override
     public String getId() {
-        return "basic_ImageBanner_06092017";
+        return "basic_ImageBanner_11092017";
     }
 
-    public ImageMeta getImage() {
-        return image;
+    public List<Place.Image> getImages() {
+        return images;
     }
 
-    public void setImage(ImageMeta image) {
-        this.image = image;
+    public void setImages(List<Place.Image> images) {
+        this.images = images;
     }
 }

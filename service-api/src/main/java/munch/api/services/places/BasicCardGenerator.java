@@ -23,7 +23,7 @@ public final class BasicCardGenerator {
         if (images.isEmpty()) return null;
 
         ImageBannerCard card = new ImageBannerCard();
-        card.setImage(images.get(0).getImageMeta());
+        card.setImages(images);
         return card;
     }
 
