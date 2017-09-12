@@ -84,7 +84,6 @@ public final class ElasticClient {
         return postBoolSearch(type, from, size, boolQuery, null);
     }
 
-
     /**
      * @param type      type to focus
      * @param from      page from

@@ -56,7 +56,7 @@ public class LocationService implements JsonService {
     private Location reverse(JsonCall call) throws IOException {
         LatLngUtils.LatLng latLng = parseLatLng(call.queryString("latLng"));
 
-        JsonNode query = locationQuery.reverse(latLng.getLat(), latLng.getRight());
+        JsonNode query = locationQuery.reverse(latLng.getLat(), latLng.getLng());
         JsonNode result = client.postBoolSearch("location", 0, 1, query);
 
         List<Location> locations = marshaller.deserializeList(result.path("hits").path("hits"));

@@ -106,6 +106,8 @@ public final class SearchQuery {
     /**
      * Add sort by distance
      */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Filter {
         private Price price;
         private Tag tag;
@@ -135,6 +137,7 @@ public final class SearchQuery {
             this.hour = hour;
         }
 
+        @JsonIgnoreProperties(ignoreUnknown = true)
         public static class Price {
             private Double min;
             private Double max;
@@ -164,6 +167,7 @@ public final class SearchQuery {
             }
         }
 
+        @JsonIgnoreProperties(ignoreUnknown = true)
         public static class Tag {
             private Set<String> positives;
             private Set<String> negatives;
@@ -245,6 +249,7 @@ public final class SearchQuery {
      * Ordinal sort
      * Only a single sort type can be used
      */
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Sort {
         public static final String TYPE_MUNCH_RANK = "munch_rank";
         public static final String TYPE_PRICE_LOWEST = "price_lowest";

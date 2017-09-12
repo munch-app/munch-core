@@ -70,7 +70,7 @@ public final class LocationQuery {
     private JsonNode filter(double lat, double lng) {
         ObjectNode root = mapper.createObjectNode();
         root.putObject("geo_shape")
-                .putObject("points")
+                .putObject("location.polygon")
                 .putObject("shape")
                 .put("type", "point")
                 .putArray("coordinates").add(lng).add(lat);
