@@ -47,13 +47,10 @@ public final class PlaceCardGenerator {
         // Generate Cards
         cards.add(basicGenerator.createImageBanner(place));
         cards.add(basicGenerator.createName(place));
-        cards.add(basicGenerator.createTag(place));
         cards.add(basicGenerator.createBusinessHour(place));
         cards.add(basicGenerator.createLocationDetail(place));
 
         cards.add(vendorGenerator.createArticleGrid(place));
-
-        cards.add(basicGenerator.createLocationMap(place));
 
         // Remove all that cards that is null
         cards.removeIf(Objects::isNull);

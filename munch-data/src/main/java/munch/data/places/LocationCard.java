@@ -8,13 +8,13 @@ import munch.data.Place;
  * Time: 2:08 PM
  * Project: munch-core
  */
-public final class LocationDetailCard extends PlaceCard {
+public final class LocationCard extends PlaceCard {
 
     private Place.Location location;
 
     @Override
     public String getId() {
-        return "basic_LocationDetail_07092017";
+        return "basic_Location_12092017";
     }
 
     public Place.Location getLocation() {

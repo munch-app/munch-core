@@ -1,8 +1,10 @@
 package munch.api.services.places;
 
-import com.google.common.collect.ImmutableSet;
 import munch.data.Place;
-import munch.data.places.*;
+import munch.data.places.BusinessHourCard;
+import munch.data.places.ImageBannerCard;
+import munch.data.places.LocationCard;
+import munch.data.places.NameTagCard;
 
 import javax.annotation.Nullable;
 import javax.inject.Singleton;
@@ -27,19 +29,9 @@ public final class BasicCardGenerator {
         return card;
     }
 
-    NameCard createName(Place place) {
-        NameCard card = new NameCard();
+    NameTagCard createName(Place place) {
+        NameTagCard card = new NameTagCard();
         card.setName(place.getName());
-        return card;
-    }
-
-    TagCard createTag(Place place) {
-        TagCard card = new TagCard();
-        if (place.getTags() != null) {
-            card.setTags(ImmutableSet.copyOf(place.getTags()));
-        } else {
-            card.setTags(ImmutableSet.of());
-        }
         return card;
     }
 
@@ -53,18 +45,8 @@ public final class BasicCardGenerator {
         return card;
     }
 
-    LocationDetailCard createLocationDetail(Place place) {
-        LocationDetailCard card = new LocationDetailCard();
-        card.setLocation(place.getLocation());
-        return card;
-    }
-
-    LocationMapCard createLocationMap(Place place) {
-        // Safety checks
-        if (place.getLocation() == null) return null;
-        if (place.getLocation().getLatLng() == null) return null;
-
-        LocationMapCard card = new LocationMapCard();
+    LocationCard createLocationDetail(Place place) {
+        LocationCard card = new LocationCard();
         card.setLocation(place.getLocation());
         return card;
     }
