@@ -1,5 +1,6 @@
 package munch.api.services.places;
 
+import com.google.common.collect.ImmutableSet;
 import munch.data.Place;
 import munch.data.places.BusinessHourCard;
 import munch.data.places.ImageBannerCard;
@@ -32,6 +33,7 @@ public final class BasicCardGenerator {
     NameTagCard createName(Place place) {
         NameTagCard card = new NameTagCard();
         card.setName(place.getName());
+        card.setTags(ImmutableSet.copyOf(place.getTags()));
         return card;
     }
 
