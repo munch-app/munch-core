@@ -3,11 +3,9 @@ package munch.api.services.discovery;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.services.CachedService;
-import munch.api.services.locations.LocationSelector;
 import munch.data.Location;
 import munch.data.SearchCollection;
 import munch.data.SearchQuery;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,7 +24,6 @@ import java.util.List;
  */
 @Singleton
 public final class SingaporeCurator extends Curator {
-    public static final Location LOCATION = LocationSelector.createLocation("Singapore", "special_sg");
 
     private final Location[] popularLocations;
 
@@ -37,10 +34,7 @@ public final class SingaporeCurator extends Curator {
 
     @Override
     public boolean match(SearchQuery query) {
-        Location location = query.getLocation();
-        if (location == null) return false;
-        if (StringUtils.isBlank(location.getId())) return false;
-        return location.getId().equals(LOCATION.getId());
+        return true;
     }
 
     /**

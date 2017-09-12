@@ -23,6 +23,7 @@ public final class SearchQuery {
     private Integer size;
 
     private String query;
+    private String latLng;
     private Location location;
 
     private Filter filter;
@@ -65,6 +66,21 @@ public final class SearchQuery {
     }
 
     /**
+     * Location is Polygon, latLng is user location
+     *
+     * @return latLng of user location
+     */
+    public String getLatLng() {
+        return latLng;
+    }
+
+    public void setLatLng(String latLng) {
+        this.latLng = latLng;
+    }
+
+    /**
+     * Location is Polygon, latLng is user location
+     * <p>
      * location.name = for display
      * location.center = currently provide no functions
      * location.points = polygon points
@@ -258,7 +274,6 @@ public final class SearchQuery {
         public static final String TYPE_RATING_HIGHEST = "rating_highest";
 
         private String type;
-        private String latLng;
 
         /**
          * @return sort types
@@ -275,27 +290,10 @@ public final class SearchQuery {
             this.type = type;
         }
 
-        /**
-         * latLng: "lat, lng"
-         * min: in metres
-         * max: in metres
-         * Only required if type is distance_nearest
-         *
-         * @return "lat, lng"
-         */
-        public String getLatLng() {
-            return latLng;
-        }
-
-        public void setLatLng(String latLng) {
-            this.latLng = latLng;
-        }
-
         @Override
         public String toString() {
             return "Sort{" +
                     "type='" + type + '\'' +
-                    ", latLng='" + latLng + '\'' +
                     '}';
         }
     }

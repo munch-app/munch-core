@@ -31,7 +31,7 @@ public final class LocationQuery {
         ObjectNode bool = mapper.createObjectNode();
         bool.set("must", must(null));
         bool.set("filter", filter(lat, lng));
-        return null;
+        return bool;
     }
 
     /**

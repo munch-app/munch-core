@@ -1,12 +1,13 @@
 package munch.search.place;
 
-import catalyst.utils.LatLngUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import munch.data.SearchQuery;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -20,6 +21,7 @@ import java.util.Objects;
  */
 @Singleton
 public final class SortQuery {
+    private static final Logger logger = LoggerFactory.getLogger(SortQuery.class);
     private final ObjectMapper mapper;
 
     @Inject
@@ -43,7 +45,10 @@ public final class SortQuery {
                 sortArray.add(sortField("price.middle", "desc"));
                 break;
             case SearchQuery.Sort.TYPE_DISTANCE_NEAREST:
-                sortArray.add(sortDistance(query.getSort().getLatLng()));
+                if (StringUtils.isNotBlank(query.getLatLng())) {
+                    logger.warn("Sort by distance by latLng not provided in query.latLng");
+                    sortArray.add(sortDistance(query.getLatLng()));
+                }
                 break;
             case SearchQuery.Sort.TYPE_RATING_HIGHEST:
                 // TODO Type Rating in Future
@@ -60,16 +65,8 @@ public final class SortQuery {
 
     private boolean validate(SearchQuery.Sort sort) {
         if (sort == null) return false;
-        String type = sort.getType();
-        if (StringUtils.isBlank(type)) return false;
+        if (StringUtils.isBlank(sort.getType())) return false;
 
-        if (SearchQuery.Sort.TYPE_DISTANCE_NEAREST.equalsIgnoreCase(type)) {
-            try {
-                LatLngUtils.validate(sort.getLatLng());
-            } catch (LatLngUtils.ParseException e) {
-                return false;
-            }
-        }
         return true;
     }
 

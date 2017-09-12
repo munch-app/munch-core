@@ -28,14 +28,14 @@ public final class CuratorDelegator {
 
     @Inject
     public CuratorDelegator(SearchClient searchClient,
-                            NonCurator nonCurator,
-                            SingaporeCurator singaporeCurator,
-                            PolygonCurator polygonCurator) {
+                            SearchCurator searchCurator,
+                            LocationCurator locationCurator,
+                            SingaporeCurator singaporeCurator) {
         this.searchClient = searchClient;
         this.curators = ImmutableList.of(
-                nonCurator,     // With Explicit Search Condition
-                singaporeCurator, // With Special Polygon
-                polygonCurator  // With Polygon
+                searchCurator,   // With Search Condition
+                locationCurator, // With Location, Polygon or LatLng
+                singaporeCurator // With No Location
         );
     }
 
@@ -47,6 +47,10 @@ public final class CuratorDelegator {
      * @return Curated List of PlaceCollection
      */
     public List<SearchCollection> delegate(SearchQuery query) {
+        // Safety Override, for scenario where from, size is not send and is required
+        query.setFrom(0);
+        query.setSize(15);
+
         SearchQuery cloned = Curator.clone(query);
         List<SearchCollection> collections = curate(cloned);
         if (collections.isEmpty()) return collections;
@@ -71,10 +75,6 @@ public final class CuratorDelegator {
      * @return Curated List of PlaceCollection
      */
     private List<SearchCollection> curate(SearchQuery query) {
-        // Safety Override, for scenario where from, size is not send and is required
-        query.setFrom(0);
-        query.setSize(15);
-
         for (Curator curator : curators) {
             // If curator matches: do search
             if (curator.match(query)) {

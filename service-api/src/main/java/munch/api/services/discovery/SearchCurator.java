@@ -16,9 +16,7 @@ import java.util.List;
  * Project: munch-core
  */
 @Singleton
-public final class NonCurator extends Curator {
-
-    // TODO: Check SingaporeCurator + NonCurator what happen?
+public final class SearchCurator extends Curator {
 
     /**
      * Check if a SearchQuery is complex
