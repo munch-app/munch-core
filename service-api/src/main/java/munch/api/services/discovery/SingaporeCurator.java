@@ -4,8 +4,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.services.CachedService;
 import munch.data.Location;
-import munch.data.SearchCollection;
-import munch.data.SearchQuery;
+import munch.data.search.SearchCollection;
+import munch.data.search.SearchQuery;
 
 import java.io.IOException;
 import java.util.ArrayList;

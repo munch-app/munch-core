@@ -2,6 +2,7 @@ package munch.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import munch.data.search.SearchResult;
 
 import java.util.Date;
 import java.util.List;

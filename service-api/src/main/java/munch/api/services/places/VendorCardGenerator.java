@@ -3,7 +3,7 @@ package munch.api.services.places;
 import munch.api.clients.DataClient;
 import munch.data.Article;
 import munch.data.Place;
-import munch.data.places.ArticleGridCard;
+import munch.data.places.PlaceArticleGridCard;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -27,11 +27,11 @@ public final class VendorCardGenerator {
     }
 
     @Nullable
-    ArticleGridCard createArticleGrid(Place place) {
+    PlaceArticleGridCard createArticleGrid(Place place) {
         List<Article> articles = dataClient.getArticles(place.getId(), null, 4);
         if (articles.isEmpty()) return null;
 
-        ArticleGridCard card = new ArticleGridCard();
+        PlaceArticleGridCard card = new PlaceArticleGridCard();
         card.setArticles(articles);
         return card;
     }

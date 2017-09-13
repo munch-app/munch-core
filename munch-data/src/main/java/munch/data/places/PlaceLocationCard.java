@@ -8,7 +8,7 @@ import munch.data.Place;
  * Time: 2:08 PM
  * Project: munch-core
  */
-public final class LocationCard extends PlaceCard {
+public final class PlaceLocationCard extends PlaceCard {
 
     private Place.Location location;
 

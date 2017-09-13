@@ -7,8 +7,8 @@ import com.vividsolutions.jts.util.GeometricShapeFactory;
 import munch.api.services.AbstractService;
 import munch.api.services.CachedService;
 import munch.data.Location;
-import munch.data.SearchQuery;
-import munch.data.SearchResult;
+import munch.data.search.SearchQuery;
+import munch.data.search.SearchResult;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.inject.Inject;

@@ -1,4 +1,4 @@
-package munch.data;
+package munch.data.search;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -19,7 +19,7 @@ import java.util.List;
 public final class SearchCollection {
     private String name;
     private SearchQuery query;
-    private List<SearchResult> results;
+    private List<SearchCard> cards;
 
     public SearchCollection() {
     }
@@ -33,7 +33,7 @@ public final class SearchCollection {
     public SearchCollection(String name, SearchQuery query) {
         this.name = name;
         this.query = query;
-        this.results = Collections.emptyList();
+        this.cards = Collections.emptyList();
     }
 
     /**
@@ -41,10 +41,10 @@ public final class SearchCollection {
      * @param query  query for this collection
      * @param results pre filled place for this collection
      */
-    public SearchCollection(String name, SearchQuery query, List<SearchResult> results) {
+    public SearchCollection(String name, SearchQuery query, List<SearchCard> cards) {
         this.name = name;
         this.query = query;
-        this.results = results;
+        this.cards = cards;
     }
 
     /**
@@ -77,15 +77,5 @@ public final class SearchCollection {
         this.query = query;
     }
 
-    /**
-     * @return list of place; the actual data1
-     */
-    public List<SearchResult> getResults() {
-        return results;
-    }
-
-    public void setResults(List<SearchResult> results) {
-        this.results = results;
-    }
 
 }

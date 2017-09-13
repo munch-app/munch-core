@@ -2,8 +2,8 @@ package munch.api.services.discovery;
 
 import com.rits.cloning.Cloner;
 import munch.api.clients.SearchClient;
-import munch.data.SearchCollection;
-import munch.data.SearchQuery;
+import munch.data.search.SearchCollection;
+import munch.data.search.SearchQuery;
 
 import javax.inject.Inject;
 import java.util.List;

@@ -1,7 +1,7 @@
 package munch.search.place;
 
 import munch.data.Place;
-import munch.data.SearchQuery;
+import munch.data.search.SearchQuery;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

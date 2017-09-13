@@ -10,7 +10,7 @@ import java.util.List;
  * Time: 2:09 AM
  * Project: munch-core
  */
-public final class ArticleGridCard extends PlaceCard {
+public final class PlaceArticleGridCard extends PlaceCard {
 
     private List<Article> articles;
 

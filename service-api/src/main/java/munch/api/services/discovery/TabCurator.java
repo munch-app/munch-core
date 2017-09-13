@@ -1,9 +1,9 @@
 package munch.api.services.discovery;
 
 import munch.data.Place;
-import munch.data.SearchCollection;
-import munch.data.SearchQuery;
-import munch.data.SearchResult;
+import munch.data.search.SearchCollection;
+import munch.data.search.SearchQuery;
+import munch.data.search.SearchResult;
 
 import java.util.*;
 import java.util.stream.Collectors;

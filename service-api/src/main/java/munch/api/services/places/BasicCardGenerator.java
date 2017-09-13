@@ -2,10 +2,10 @@ package munch.api.services.places;
 
 import com.google.common.collect.ImmutableSet;
 import munch.data.Place;
-import munch.data.places.BusinessHourCard;
-import munch.data.places.ImageBannerCard;
-import munch.data.places.LocationCard;
-import munch.data.places.NameTagCard;
+import munch.data.places.PlaceBusinessHourCard;
+import munch.data.places.PlaceImageBannerCard;
+import munch.data.places.PlaceLocationCard;
+import munch.data.places.PlaceNameTagCard;
 
 import javax.annotation.Nullable;
 import javax.inject.Singleton;
@@ -21,34 +21,34 @@ import java.util.List;
 public final class BasicCardGenerator {
 
     @Nullable
-    ImageBannerCard createImageBanner(Place place) {
+    PlaceImageBannerCard createImageBanner(Place place) {
         List<Place.Image> images = place.getImages();
         if (images.isEmpty()) return null;
 
-        ImageBannerCard card = new ImageBannerCard();
+        PlaceImageBannerCard card = new PlaceImageBannerCard();
         card.setImages(images);
         return card;
     }
 
-    NameTagCard createName(Place place) {
-        NameTagCard card = new NameTagCard();
+    PlaceNameTagCard createName(Place place) {
+        PlaceNameTagCard card = new PlaceNameTagCard();
         card.setName(place.getName());
         card.setTags(ImmutableSet.copyOf(place.getTags()));
         return card;
     }
 
     @Nullable
-    BusinessHourCard createBusinessHour(Place place) {
+    PlaceBusinessHourCard createBusinessHour(Place place) {
         if (place.getHours() == null) return null;
         if (place.getHours().isEmpty()) return null;
 
-        BusinessHourCard card = new BusinessHourCard();
+        PlaceBusinessHourCard card = new PlaceBusinessHourCard();
         card.setHours(place.getHours());
         return card;
     }
 
-    LocationCard createLocationDetail(Place place) {
-        LocationCard card = new LocationCard();
+    PlaceLocationCard createLocationDetail(Place place) {
+        PlaceLocationCard card = new PlaceLocationCard();
         card.setLocation(place.getLocation());
         return card;
     }

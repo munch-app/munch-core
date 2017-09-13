@@ -1,7 +1,9 @@
-package munch.data;
+package munch.data.search;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import munch.data.Location;
+import munch.data.Place;
 
 import java.util.HashSet;
 import java.util.Set;

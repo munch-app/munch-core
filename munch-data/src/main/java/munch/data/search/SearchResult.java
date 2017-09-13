@@ -1,4 +1,4 @@
-package munch.data;
+package munch.data.search;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

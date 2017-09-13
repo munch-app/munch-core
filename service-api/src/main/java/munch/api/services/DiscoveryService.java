@@ -5,8 +5,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.clients.SearchClient;
 import munch.api.services.discovery.CuratorDelegator;
-import munch.data.SearchCollection;
-import munch.data.SearchQuery;
+import munch.data.search.SearchCollection;
+import munch.data.search.SearchQuery;
 import munch.restful.server.JsonCall;
 
 import java.util.List;

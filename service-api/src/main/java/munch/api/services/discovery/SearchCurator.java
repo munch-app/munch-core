@@ -1,9 +1,9 @@
 package munch.api.services.discovery;
 
 import com.google.inject.Singleton;
-import munch.data.SearchCollection;
-import munch.data.SearchQuery;
-import munch.data.SearchResult;
+import munch.data.search.SearchCollection;
+import munch.data.search.SearchQuery;
+import munch.data.search.SearchResult;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collections;

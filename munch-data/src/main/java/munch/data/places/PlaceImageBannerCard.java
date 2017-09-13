@@ -10,7 +10,7 @@ import java.util.List;
  * Time: 12:45 AM
  * Project: munch-core
  */
-public final class ImageBannerCard extends PlaceCard {
+public final class PlaceImageBannerCard extends PlaceCard {
 
     private List<Place.Image> images;
 

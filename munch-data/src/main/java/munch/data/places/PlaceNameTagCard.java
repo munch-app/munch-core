@@ -8,7 +8,7 @@ import java.util.Set;
  * Time: 12:50 AM
  * Project: munch-core
  */
-public final class NameTagCard extends PlaceCard {
+public final class PlaceNameTagCard extends PlaceCard {
 
     private String name;
     private Set<String> tags;
