@@ -1,4 +1,4 @@
-package munch.api.services.discovery;
+package munch.api.services.search;
 
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
@@ -6,6 +6,7 @@ import com.google.inject.Singleton;
 import munch.api.clients.SearchClient;
 import munch.data.search.SearchCollection;
 import munch.data.search.SearchQuery;
+import munch.data.search.SearchResult;
 import munch.restful.core.exception.StructuredException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,10 +59,11 @@ public final class CuratorDelegator {
         // Pre-fill first collection result
         SearchCollection first = collections.get(0);
         // Only fill if not already filled
-        if (first.getResults().isEmpty()) {
+        if (first.getCards().isEmpty()) {
             first.getQuery().setFrom(0);
             first.getQuery().setSize(SEARCH_SIZE);
-            first.setResults(searchClient.search(collections.get(0).getQuery()));
+            List<SearchResult> results = searchClient.search(collections.get(0).getQuery());
+            first.setCards(Curator.parseCards(results));
         }
         return collections;
     }

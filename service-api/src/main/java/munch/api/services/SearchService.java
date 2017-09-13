@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.clients.SearchClient;
-import munch.api.services.discovery.CuratorDelegator;
+import munch.api.services.search.CuratorDelegator;
 import munch.data.search.SearchCollection;
 import munch.data.search.SearchQuery;
 import munch.restful.server.JsonCall;
@@ -18,23 +18,25 @@ import java.util.List;
  * Project: munch-core
  */
 @Singleton
-public class DiscoveryService extends AbstractService {
+public class SearchService extends AbstractService {
 
     private final SearchClient searchClient;
     private final CuratorDelegator curatorDelegator;
 
     @Inject
-    public DiscoveryService(SearchClient searchClient, CuratorDelegator curatorDelegator) {
+    public SearchService(SearchClient searchClient, CuratorDelegator curatorDelegator) {
         this.searchClient = searchClient;
         this.curatorDelegator = curatorDelegator;
     }
 
     @Override
     public void route() {
-        PATH("/discovery", () -> {
+        PATH("/search", () -> {
             POST("/suggest", this::suggest);
-            POST("/search", this::search);
-            POST("/search/next", this::searchNext);
+
+            // Collection Search
+            POST("/collections", this::collections);
+            POST("/collections/search", this::collectionsSearch);
         });
     }
 
@@ -58,9 +60,9 @@ public class DiscoveryService extends AbstractService {
 
     /**
      * @param call json call
-     * @return list of Place result
+     * @return list of SearchCollection containing cards
      */
-    private List<SearchCollection> search(JsonCall call) {
+    private List<SearchCollection> collections(JsonCall call) {
         SearchQuery query = call.bodyAsObject(SearchQuery.class);
         return curatorDelegator.delegate(query);
     }
@@ -70,7 +72,7 @@ public class DiscoveryService extends AbstractService {
      * @return list of Place
      * @see SearchQuery
      */
-    private JsonNode searchNext(JsonCall call) {
+    private JsonNode collectionsSearch(JsonCall call) {
         SearchQuery query = call.bodyAsObject(SearchQuery.class);
         JsonNode data = searchClient.searchRaw(query);
         return nodes(200, data);

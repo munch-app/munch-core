@@ -1,6 +1,7 @@
-package munch.api.services.discovery;
+package munch.api.services.search;
 
 import munch.data.Place;
+import munch.data.search.SearchCard;
 import munch.data.search.SearchCollection;
 import munch.data.search.SearchQuery;
 import munch.data.search.SearchResult;
@@ -36,9 +37,10 @@ public abstract class TabCurator extends Curator {
     @Override
     public List<SearchCollection> curate(SearchQuery query) {
         List<SearchResult> results = query(query);
+        List<SearchCard> cards = parseCards(results);
 
         List<SearchCollection> collections = new ArrayList<>();
-        collections.add(new SearchCollection("HIGHLIGHT", query, results));
+        collections.add(new SearchCollection("HIGHLIGHT", query, cards));
 
         collections.addAll(categorize(query, results));
         return collections;
@@ -47,7 +49,6 @@ public abstract class TabCurator extends Curator {
     /**
      * @param source  search query source
      * @param results results to categorize
-     * @param size    size of collections to return
      * @return categorized collection
      */
     protected List<SearchCollection> categorize(SearchQuery source, List<SearchResult> results) {
@@ -78,12 +79,12 @@ public abstract class TabCurator extends Curator {
 
             // Add new SearchCollection
             SearchQuery query = withTag(source, tag);
-            collections.add(new SearchCollection(tag, query, list));
+            collections.add(new SearchCollection(tag, query, parseCards(results)));
         });
 
         return collections.stream()
                 // Most results on top
-                .sorted((o1, o2) -> Integer.compare(o2.getResults().size(), o1.getResults().size()))
+                .sorted((o1, o2) -> Integer.compare(o2.getCards().size(), o1.getCards().size()))
                 // Limit to tab size - 1
                 .limit(maxTabSize - 1)
                 .collect(Collectors.toList());

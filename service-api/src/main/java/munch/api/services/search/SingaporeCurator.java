@@ -1,4 +1,4 @@
-package munch.api.services.discovery;
+package munch.api.services.search;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
