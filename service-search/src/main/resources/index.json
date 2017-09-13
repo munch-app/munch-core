@@ -6,7 +6,7 @@
           "type": "keyword"
         },
         "type": {
-          "type": "text"
+          "type": "keyword"
         },
         "location.latLng": {
           "type": "geo_point"

@@ -37,8 +37,8 @@ public final class SearchCollection {
     }
 
     /**
-     * @param name   name of collection
-     * @param query  query for this collection
+     * @param name    name of collection
+     * @param query   query for this collection
      * @param results pre filled place for this collection
      */
     public SearchCollection(String name, SearchQuery query, List<SearchCard> cards) {
@@ -77,5 +77,14 @@ public final class SearchCollection {
         this.query = query;
     }
 
+    /**
+     * @return cards of Collection
+     */
+    public List<SearchCard> getCards() {
+        return cards;
+    }
 
+    public void setCards(List<SearchCard> cards) {
+        this.cards = cards;
+    }
 }
