@@ -1,12 +1,15 @@
 package munch.api.services;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.clients.SearchClient;
+import munch.api.clients.StaticJsonResource;
 import munch.data.Location;
 import munch.restful.server.JsonCall;
 
 import javax.annotation.Nullable;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -19,10 +22,12 @@ import java.util.List;
 public class LocationService extends AbstractService {
 
     private final SearchClient searchClient;
+    private final StaticJsonResource jsonResource;
 
     @Inject
-    public LocationService(SearchClient searchClient) {
+    public LocationService(SearchClient searchClient, StaticJsonResource jsonResource) {
         this.searchClient = searchClient;
+        this.jsonResource = jsonResource;
     }
 
     /**
@@ -31,12 +36,25 @@ public class LocationService extends AbstractService {
     @Override
     public void route() {
         PATH("/locations", () -> {
+            GET("/popular", this::popular);
+            HEAD("/popular", this::popularHead);
+
             // Reverse Location from where the user is standing,
             // normally used when the user clicked on current location
             GET("/reverse", this::reverse);
             // Suggest Location when user is searching with location service
             GET("/suggest", this::suggest);
         });
+    }
+
+    private JsonNode popular(JsonCall call) throws IOException {
+        call.response().header("Last-Modified", "1505473814000");
+        return jsonResource.getResource("popular-locations.json");
+    }
+
+    private JsonNode popularHead(JsonCall call) {
+        call.response().header("Last-Modified", "1505473814000");
+        return nodes(200);
     }
 
     /**
