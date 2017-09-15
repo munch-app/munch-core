@@ -52,7 +52,7 @@ public abstract class Curator {
      * @param results search results
      * @return List of Parsed SearchCard
      */
-    static List<SearchCard> parseCards(List<SearchResult> results) {
+    public static List<SearchCard> parseCards(List<SearchResult> results) {
         List<SearchCard> cards = new ArrayList<>();
         for (SearchResult result : results) {
             // Since now there is only one card type, simple method to address the problem
@@ -67,7 +67,7 @@ public abstract class Curator {
      * @return SearchCard
      */
     @Nullable
-    static SearchCard parseCard(SearchResult result) {
+    public static SearchCard parseCard(SearchResult result) {
         if (result instanceof Place) {
             SearchPlaceCard card = new SearchPlaceCard();
             card.setPlace((Place) result);

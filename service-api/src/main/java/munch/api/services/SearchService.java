@@ -4,9 +4,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.clients.SearchClient;
+import munch.api.services.search.Curator;
 import munch.api.services.search.CuratorDelegator;
+import munch.api.services.search.cards.SearchCard;
 import munch.api.services.search.cards.SearchCollection;
 import munch.data.SearchQuery;
+import munch.data.SearchResult;
 import munch.restful.server.JsonCall;
 
 import java.util.List;
@@ -72,9 +75,9 @@ public class SearchService extends AbstractService {
      * @return list of Place
      * @see SearchQuery
      */
-    private JsonNode collectionsSearch(JsonCall call) {
+    private List<SearchCard> collectionsSearch(JsonCall call) {
         SearchQuery query = call.bodyAsObject(SearchQuery.class);
-        JsonNode data = searchClient.searchRaw(query);
-        return nodes(200, data);
+        List<SearchResult> results = searchClient.search(query);
+        return Curator.parseCards(results);
     }
 }
