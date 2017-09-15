@@ -2,8 +2,12 @@ package munch.api.services.search;
 
 import com.rits.cloning.Cloner;
 import munch.api.clients.SearchClient;
+import munch.api.services.search.cards.SearchCard;
+import munch.api.services.search.cards.SearchCollection;
+import munch.api.services.search.cards.SearchPlaceCard;
 import munch.data.Place;
-import munch.data.search.*;
+import munch.data.SearchQuery;
+import munch.data.SearchResult;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;

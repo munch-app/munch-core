@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.typesafe.config.Config;
+import munch.restful.client.ExceptionParser;
 import munch.restful.client.RestfulClient;
+import munch.restful.core.exception.UnknownException;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
 
@@ -20,16 +22,15 @@ import javax.inject.Singleton;
 @Singleton
 public final class HealthService implements JsonService {
 
-    private final HealthCheckClient[] checkClients;
-    private final NominatimCheckClient nominatimCheckClient;
+    private final HealthCheck[] healthChecks;
 
     @Inject
     public HealthService(Config config) {
-        this.checkClients = new HealthCheckClient[]{
-                new HealthCheckClient(config.getString("services.data.url")),
-                new HealthCheckClient(config.getString("services.search.url"))
+        this.healthChecks = new HealthCheck[]{
+                new HealthCheck(config.getString("services.data.url")),
+                new HealthCheck(config.getString("services.search.url")),
+                new NominatimClient(config.getString("services.nominatim.url"))
         };
-        this.nominatimCheckClient = new NominatimCheckClient(config.getString("services.nominatim.url"));
     }
 
     @Override
@@ -38,34 +39,36 @@ public final class HealthService implements JsonService {
     }
 
     private JsonNode check(JsonCall call) throws UnirestException {
-        for (HealthCheckClient checkClient : checkClients) {
-            checkClient.check();
+        for (HealthCheck healthCheck : healthChecks) {
+            healthCheck.check();
         }
-        nominatimCheckClient.check();
         return Meta200;
     }
 
-    private class HealthCheckClient extends RestfulClient {
-        private HealthCheckClient(String url) {
+    private class HealthCheck extends RestfulClient {
+        private HealthCheck(String url) {
             super(url);
         }
 
-        private void check() {
+        protected void check() {
             doGet("/health/check").hasCode(200);
         }
     }
 
-    private class NominatimCheckClient {
-
-        private final String url;
-
-        private NominatimCheckClient(String url) {
-            this.url = url;
+    private final class NominatimClient extends HealthCheck {
+        private NominatimClient(String url) {
+            super(url);
         }
 
-        private void check() throws UnirestException {
-            int statusCode = Unirest.get(url + "/search?format=json").asString().getStatus();
-            if (statusCode != 200) throw new RuntimeException("Nominatim not ready");
+        @Override
+        protected void check() {
+            try {
+                int statusCode = Unirest.get(url + "/search?format=json").asString().getStatus();
+                if (statusCode != 200) throw new RuntimeException("Nominatim not ready");
+            } catch (UnirestException e) {
+                ExceptionParser.parse(e);
+                throw new UnknownException(e);
+            }
         }
     }
 }

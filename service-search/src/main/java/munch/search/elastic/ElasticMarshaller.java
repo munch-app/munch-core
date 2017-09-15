@@ -34,7 +34,7 @@ public final class ElasticMarshaller {
 
     public ObjectNode serialize(Tag tag, long cycleNo) {
         ObjectNode node = mapper.createObjectNode();
-        node.put("type", "Tag");
+        node.put("_type", "Tag");
         node.put("cycleNo", cycleNo);
 
         // Root Node
@@ -55,7 +55,7 @@ public final class ElasticMarshaller {
      */
     public ObjectNode serialize(Location location, long cycleNo) {
         ObjectNode node = mapper.createObjectNode();
-        node.put("type", "Location");
+        node.put("_type", "Location");
         node.put("cycleNo", cycleNo);
 
         // Root Node
@@ -88,7 +88,7 @@ public final class ElasticMarshaller {
      */
     public ObjectNode serialize(Place place, long cycleNo) {
         ObjectNode node = mapper.valueToTree(place);
-        node.put("type", "Place");
+        node.put("_type", "Place");
         node.put("cycleNo", cycleNo);
         node.put("createdDate", place.getCreatedDate().getTime());
         node.put("updatedDate", place.getUpdatedDate().getTime());
@@ -120,7 +120,7 @@ public final class ElasticMarshaller {
     @SuppressWarnings("unchecked")
     public <T> T deserialize(JsonNode node) {
         JsonNode source = node.path("_source");
-        switch (source.path("type").asText()) {
+        switch (source.path("_type").asText()) {
             case "Location":
                 return (T) deserializeLocation(source);
             case "Place":

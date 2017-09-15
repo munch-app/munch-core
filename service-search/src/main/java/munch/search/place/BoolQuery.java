@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.data.Location;
-import munch.data.search.SearchQuery;
+import munch.data.SearchQuery;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;

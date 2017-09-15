@@ -1,4 +1,4 @@
-package munch.data.search;
+package munch.api.services.search.cards;
 
 import munch.data.Place;
 
@@ -13,7 +13,7 @@ public final class SearchPlaceCard extends SearchCard {
     private Place place;
 
     @Override
-    public String getId() {
+    public String getCardId() {
         return "basic_Place_13092017";
     }
 

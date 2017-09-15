@@ -1,4 +1,4 @@
-package munch.data.search;
+package munch.api.services.search.cards;
 
 /**
  * Created by: Fuxing
@@ -18,5 +18,5 @@ public abstract class SearchCard {
      *
      * @return id of the card
      */
-    public abstract String getId();
+    public abstract String getCardId();
 }

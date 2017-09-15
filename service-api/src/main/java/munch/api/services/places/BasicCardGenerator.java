@@ -1,11 +1,11 @@
 package munch.api.services.places;
 
 import com.google.common.collect.ImmutableSet;
+import munch.api.services.places.cards.PlaceBusinessHourCard;
+import munch.api.services.places.cards.PlaceImageBannerCard;
+import munch.api.services.places.cards.PlaceLocationCard;
+import munch.api.services.places.cards.PlaceNameTagCard;
 import munch.data.Place;
-import munch.data.places.PlaceBusinessHourCard;
-import munch.data.places.PlaceImageBannerCard;
-import munch.data.places.PlaceLocationCard;
-import munch.data.places.PlaceNameTagCard;
 
 import javax.annotation.Nullable;
 import javax.inject.Singleton;

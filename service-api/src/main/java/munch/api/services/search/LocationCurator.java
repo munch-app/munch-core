@@ -4,11 +4,11 @@ import com.google.inject.Singleton;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.util.GeometricShapeFactory;
+import munch.api.clients.StaticJsonResource;
 import munch.api.services.AbstractService;
-import munch.api.services.CachedService;
 import munch.data.Location;
-import munch.data.search.SearchQuery;
-import munch.data.search.SearchResult;
+import munch.data.SearchQuery;
+import munch.data.SearchResult;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.inject.Inject;
@@ -33,7 +33,7 @@ public final class LocationCurator extends TabCurator {
      * @return Set of Tag that can be Tag curated, all in uppercase
      * @throws IOException IOException
      */
-    private static Set<String> collectTabTags(CachedService.StaticJson resource) throws IOException {
+    private static Set<String> collectTabTags(StaticJsonResource resource) throws IOException {
         Set<String> tags = new HashSet<>();
         resource.getResource("tab-tags.json").fields().forEachRemaining(entry -> {
             entry.getValue().forEach(tag -> tags.add(tag.asText()));
@@ -42,7 +42,7 @@ public final class LocationCurator extends TabCurator {
     }
 
     @Inject
-    public LocationCurator(CachedService.StaticJson resource) throws IOException {
+    public LocationCurator(StaticJsonResource resource) throws IOException {
         super(5, 1, collectTabTags(resource));
     }
 

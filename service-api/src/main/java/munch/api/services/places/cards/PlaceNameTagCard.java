@@ -1,4 +1,4 @@
-package munch.data.places;
+package munch.api.services.places.cards;
 
 import java.util.Set;
 
@@ -9,12 +9,11 @@ import java.util.Set;
  * Project: munch-core
  */
 public final class PlaceNameTagCard extends PlaceCard {
-
     private String name;
     private Set<String> tags;
 
     @Override
-    public String getId() {
+    public String getCardId() {
         return "basic_NameTag_12092017";
     }
 

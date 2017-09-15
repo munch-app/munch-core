@@ -2,7 +2,6 @@ package munch.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import munch.data.search.SearchResult;
 
 import java.util.Date;
 import java.util.List;
@@ -187,7 +186,7 @@ public class Place implements SearchResult {
     }
 
     @Override
-    public String getType() {
+    public String get_Type() {
         return "Place";
     }
 

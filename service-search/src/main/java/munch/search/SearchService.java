@@ -8,7 +8,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.data.Location;
 import munch.data.Place;
-import munch.data.search.SearchQuery;
+import munch.data.SearchQuery;
 import munch.restful.core.exception.ValidationException;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;

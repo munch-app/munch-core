@@ -1,10 +1,10 @@
 package munch.api.services.search;
 
 import com.google.inject.Singleton;
-import munch.data.search.SearchCard;
-import munch.data.search.SearchCollection;
-import munch.data.search.SearchQuery;
-import munch.data.search.SearchResult;
+import munch.api.services.search.cards.SearchCard;
+import munch.api.services.search.cards.SearchCollection;
+import munch.data.SearchQuery;
+import munch.data.SearchResult;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collections;

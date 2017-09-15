@@ -4,8 +4,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.clients.DataClient;
 import munch.api.services.places.PlaceCardGenerator;
+import munch.api.services.places.cards.PlaceCard;
 import munch.data.Place;
-import munch.data.places.PlaceCard;
 import munch.restful.server.JsonCall;
 
 import java.util.List;

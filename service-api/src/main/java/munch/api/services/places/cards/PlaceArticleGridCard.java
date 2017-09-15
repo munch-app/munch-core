@@ -1,4 +1,4 @@
-package munch.data.places;
+package munch.api.services.places.cards;
 
 import munch.data.Article;
 
@@ -15,7 +15,7 @@ public final class PlaceArticleGridCard extends PlaceCard {
     private List<Article> articles;
 
     @Override
-    public String getId() {
+    public String getCardId() {
         return "vendor_ArticleGrid_10092017";
     }
 

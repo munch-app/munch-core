@@ -2,10 +2,10 @@ package munch.api.services.search;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import munch.api.services.CachedService;
+import munch.api.clients.StaticJsonResource;
+import munch.api.services.search.cards.SearchCollection;
 import munch.data.Location;
-import munch.data.search.SearchCollection;
-import munch.data.search.SearchQuery;
+import munch.data.SearchQuery;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public final class SingaporeCurator extends Curator {
     private final Location[] popularLocations;
 
     @Inject
-    public SingaporeCurator(CachedService.StaticJson resource) throws IOException {
+    public SingaporeCurator(StaticJsonResource resource) throws IOException {
         this.popularLocations = resource.getResource("popular-locations.json", Location[].class);
     }
 

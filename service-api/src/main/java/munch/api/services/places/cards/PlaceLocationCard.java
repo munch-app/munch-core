@@ -1,4 +1,4 @@
-package munch.data.places;
+package munch.api.services.places.cards;
 
 import munch.data.Place;
 
@@ -9,12 +9,11 @@ import munch.data.Place;
  * Project: munch-core
  */
 public final class PlaceLocationCard extends PlaceCard {
-
     private Place.Location location;
 
     @Override
-    public String getId() {
-        return "basic_Location_12092017";
+    public String getCardId() {
+        return "basic_Location_15092017";
     }
 
     public Place.Location getLocation() {

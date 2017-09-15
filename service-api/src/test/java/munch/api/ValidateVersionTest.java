@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
  * Time: 3:00 PM
  * Project: munch-core
  */
-class SupportedVersionsTest {
+class ValidateVersionTest {
 
     @Test
     void versions() throws Exception {

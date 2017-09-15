@@ -1,4 +1,4 @@
-package munch.data.places;
+package munch.api.services.places.cards;
 
 /**
  * contains 2 fields: id, data
@@ -8,6 +8,9 @@ package munch.data.places;
  *      "fields": ...
  * }
  * </pre>
+ * <p>
+ * Data in the card should be at its most primitive form.
+ * String, Double, Integer, Set no POJO
  * <p>
  * Created by: Fuxing
  * Date: 6/9/2017
@@ -28,5 +31,5 @@ public abstract class PlaceCard {
      *
      * @return id of the card
      */
-    public abstract String getId();
+    public abstract String getCardId();
 }

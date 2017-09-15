@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Tag {
+public class Tag implements SearchResult {
     private String id;
 
     private String name;
@@ -44,5 +44,10 @@ public class Tag {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    @Override
+    public String get_Type() {
+        return "Tag";
     }
 }

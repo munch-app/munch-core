@@ -1,4 +1,4 @@
-package munch.data.places;
+package munch.api.services.places.cards;
 
 import munch.data.Place;
 
@@ -11,11 +11,10 @@ import java.util.List;
  * Project: munch-core
  */
 public final class PlaceBusinessHourCard extends PlaceCard {
-
     private List<Place.Hour> hours;
 
     @Override
-    public String getId() {
+    public String getCardId() {
         return "basic_BusinessHour_07092017";
     }
 

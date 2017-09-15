@@ -1,7 +1,8 @@
-package munch.data.search;
+package munch.api.services.search.cards;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import munch.data.SearchQuery;
 
 import java.util.Collections;
 import java.util.List;

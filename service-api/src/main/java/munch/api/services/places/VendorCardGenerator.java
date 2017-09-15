@@ -1,9 +1,9 @@
 package munch.api.services.places;
 
 import munch.api.clients.DataClient;
+import munch.api.services.places.cards.PlaceArticleGridCard;
 import munch.data.Article;
 import munch.data.Place;
-import munch.data.places.PlaceArticleGridCard;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;

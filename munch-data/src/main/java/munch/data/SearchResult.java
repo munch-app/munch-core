@@ -1,4 +1,4 @@
-package munch.data.search;
+package munch.data;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -13,7 +13,7 @@ public interface SearchResult {
     /**
      * @return type, Case Sensitive
      */
-    @JsonProperty("type")
-    String getType();
+    @JsonProperty("_type")
+    String get_Type();
 
 }
