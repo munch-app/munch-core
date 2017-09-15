@@ -2,12 +2,9 @@ package munch.search;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import munch.data.Location;
-import munch.data.Place;
 import munch.data.SearchQuery;
 import munch.restful.core.exception.ValidationException;
 import munch.restful.server.JsonCall;
@@ -109,25 +106,7 @@ public class SearchService implements JsonService {
         String query = ValidationException.requireNonBlank("query", request.path("query"));
         String latLng = request.path("latLng").asText(null);
         JsonNode results = client.suggest(null, query, latLng, size);
-        return nodes(200, parse(results));
-    }
-
-    /**
-     * @param results result from elastic search
-     * @return result that is compatible for munch-core
-     */
-    private ArrayNode parse(JsonNode results) {
-        ArrayNode array = mapper.createArrayNode();
-        for (Object object : marshaller.deserializeList(results)) {
-            ObjectNode objectNode = mapper.valueToTree(object);
-            if (object instanceof Place) {
-                objectNode.put("type", "Place");
-            } else if (object instanceof Location) {
-                objectNode.put("type", "Location");
-            }
-            array.add(objectNode);
-        }
-        return array;
+        return nodes(200, marshaller.deserializeList(results));
     }
 
     /**

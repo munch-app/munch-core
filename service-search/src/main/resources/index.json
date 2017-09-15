@@ -5,7 +5,7 @@
         "id": {
           "type": "keyword"
         },
-        "type": {
+        "dataType": {
           "type": "keyword"
         },
         "location.latLng": {

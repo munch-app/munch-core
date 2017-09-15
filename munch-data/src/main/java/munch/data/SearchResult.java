@@ -13,7 +13,7 @@ public interface SearchResult {
     /**
      * @return type, Case Sensitive
      */
-    @JsonProperty("_type")
-    String get_Type();
+    @JsonProperty("dataType")
+    String getDataType();
 
 }

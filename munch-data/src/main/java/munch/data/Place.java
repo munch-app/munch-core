@@ -186,7 +186,7 @@ public class Place implements SearchResult {
     }
 
     @Override
-    public String get_Type() {
+    public String getDataType() {
         return "Place";
     }
 

@@ -34,7 +34,7 @@ public class ResourceService extends AbstractService {
     private void pathResources(JsonNode node) {
         String hash = DigestUtils.sha512Hex(node.toString());
 
-        HEAD("", call -> nodes(200, objectMapper.createObjectNode()
+        GET("/hash", call -> nodes(200, objectMapper.createObjectNode()
                 .put("hash", hash)));
         GET("", call -> nodes(200, objectMapper.createObjectNode()
                 .put("hash", hash)

@@ -6,10 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.typesafe.config.Config;
-import munch.data.Location;
-import munch.data.Place;
-import munch.data.SearchQuery;
-import munch.data.SearchResult;
+import munch.data.*;
 import munch.restful.client.RestfulClient;
 import munch.restful.core.JsonUtils;
 import munch.restful.core.exception.JsonException;
@@ -88,7 +85,7 @@ public class SearchClient extends RestfulClient {
      */
     private List<SearchResult> deserialize(JsonNode dataNode) throws JsonException {
         return JsonUtils.toList(dataNode, node ->
-                parse(node.path("type").asText(), node));
+                parse(node.path("dataType").asText(), node));
     }
 
     /**
@@ -104,6 +101,8 @@ public class SearchClient extends RestfulClient {
                     return objectMapper.treeToValue(node, Location.class);
                 case "Place":
                     return objectMapper.treeToValue(node, Place.class);
+                case "Tag":
+                    return objectMapper.treeToValue(node, Tag.class);
                 default:
                     return null;
             }

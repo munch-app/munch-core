@@ -94,7 +94,7 @@ public final class Location implements SearchResult {
     }
 
     @Override
-    public String get_Type() {
+    public String getDataType() {
         return "Location";
     }
 }
