@@ -15,9 +15,9 @@
           "type": "completion",
           "contexts": [
             {
-              "name": "type",
+              "name": "dataType",
               "type": "category",
-              "path": "type"
+              "path": "dataType"
             },
             {
               "name": "latLng",
