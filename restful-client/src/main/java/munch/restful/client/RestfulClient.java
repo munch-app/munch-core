@@ -13,7 +13,7 @@ import munch.restful.core.JsonUtils;
 public abstract class RestfulClient {
     protected static final ObjectMapper objectMapper = JsonUtils.objectMapper;
 
-    private final String url;
+    protected final String url;
 
     /**
      * @param url must not end with /
