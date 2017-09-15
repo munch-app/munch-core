@@ -25,15 +25,15 @@ import java.util.Set;
 @Singleton
 public final class ApiServer extends RestfulServer {
 
-    private final Config config;
     private final HealthService healthService;
+    private final VersionService versionService;
     private final ValidateVersion validateVersion;
 
     @Inject
-    public ApiServer(Set<RestfulService> routers, HealthService healthService, Config config) {
+    public ApiServer(Set<RestfulService> routers, HealthService healthService, VersionService versionService, Config config) {
         super(routers);
-        this.config = config;
         this.healthService = healthService;
+        this.versionService = versionService;
         this.validateVersion = new ValidateVersion(config);
     }
 
@@ -41,10 +41,14 @@ public final class ApiServer extends RestfulServer {
     protected void setupRouters() {
         // Validate that version is supported
         Spark.before((req, res) -> validateVersion.validate(req));
+        logger.info("Added version validator to all routes");
 
-        Spark.path(config.getString("api.version"), () -> super.setupRouters());
+        super.setupRouters();
 
         healthService.start();
+        logger.info("Started SparkRouter: VersionService");
+
+        versionService.start();
         logger.info("Started SparkRouter: HealthService");
     }
 
@@ -71,7 +75,7 @@ public final class ApiServer extends RestfulServer {
         private final ImmutableSet<String> supportedVersions;
 
         public ValidateVersion(Config config) {
-            String versions = config.getString("api.supported.versions");
+            String versions = config.getString("api.versions.supported");
             this.supportedVersions = ImmutableSet.copyOf(versions.split(" *, *"));
         }
 
