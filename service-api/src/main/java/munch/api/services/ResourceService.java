@@ -4,9 +4,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.clients.StaticJsonResource;
-import org.apache.commons.codec.digest.DigestUtils;
+import spark.Spark;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by: Fuxing
@@ -16,6 +18,7 @@ import java.io.IOException;
  */
 @Singleton
 public class ResourceService extends AbstractService {
+    private static final SimpleDateFormat DateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz");
 
     private final StaticJsonResource jsonResource;
 
@@ -27,23 +30,28 @@ public class ResourceService extends AbstractService {
     @Override
     public void route() {
         PATH("/resources", () -> {
-            PATH("/popular-locations", () -> pathResources(getResource("popular-locations")));
+            pathResources("/popular-locations", getResource("popular-locations"), new Date(1505473814000L));
         });
     }
 
-    private void pathResources(JsonNode node) {
-        String hash = DigestUtils.sha512Hex(node.toString());
+    private void pathResources(String path, final String json, final Date lastModified) {
+        PATH(path, () -> {
+            Spark.head("", (request, response) -> {
+                response.header("Last-Modified", DateFormat.format(lastModified));
+                return "";
+            });
 
-        GET("/hash", call -> nodes(200, objectMapper.createObjectNode()
-                .put("hash", hash)));
-        GET("", call -> nodes(200, objectMapper.createObjectNode()
-                .put("hash", hash)
-                .set("data", node)));
+            Spark.get("", (request, response) -> {
+                response.header("Last-Modified", DateFormat.format(lastModified));
+                return json;
+            });
+        });
     }
 
-    private JsonNode getResource(String resourceName) {
+    private String getResource(String resourceName) {
         try {
-            return jsonResource.getResource(resourceName + ".json");
+            JsonNode resource = jsonResource.getResource(resourceName + ".json");
+            return resource.toString();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
