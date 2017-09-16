@@ -1,4 +1,4 @@
-package munch.api.services.search;
+package munch.api.services.search.curator;
 
 import munch.api.services.search.cards.SearchCard;
 import munch.api.services.search.cards.SearchCollection;
@@ -28,6 +28,12 @@ public abstract class TabCurator extends Curator {
         this.tags = tags.stream().map(String::toUpperCase).collect(Collectors.toSet());
     }
 
+    protected TabCurator(int maxTabSize, int tabMinResultSize, String[] tags) {
+        this.maxTabSize = maxTabSize;
+        this.tabMinResultSize = tabMinResultSize;
+        this.tags = Arrays.stream(tags).map(String::toUpperCase).collect(Collectors.toSet());
+    }
+
     /**
      * @param query mandatory query in search bar
      * @return Result of Place
@@ -37,7 +43,7 @@ public abstract class TabCurator extends Curator {
     @Override
     public List<SearchCollection> curate(SearchQuery query) {
         List<SearchResult> results = query(query);
-        List<SearchCard> cards = parseCards(results);
+        List<SearchCard> cards = cardParser.parseCards(results);
 
         List<SearchCollection> collections = new ArrayList<>();
         collections.add(new SearchCollection("HIGHLIGHT", query, cards));
@@ -79,7 +85,7 @@ public abstract class TabCurator extends Curator {
 
             // Add new SearchCollection
             SearchQuery query = withTag(source, tag);
-            collections.add(new SearchCollection(tag, query, parseCards(results)));
+            collections.add(new SearchCollection(tag, query, cardParser.parseCards(results)));
         });
 
         return collections.stream()

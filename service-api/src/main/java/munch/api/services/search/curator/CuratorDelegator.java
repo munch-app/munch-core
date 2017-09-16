@@ -1,9 +1,10 @@
-package munch.api.services.search;
+package munch.api.services.search.curator;
 
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.clients.SearchClient;
+import munch.api.services.search.cards.CardParser;
 import munch.api.services.search.cards.SearchCollection;
 import munch.data.SearchQuery;
 import munch.data.SearchResult;
@@ -25,14 +26,16 @@ public final class CuratorDelegator {
     public static final int SEARCH_SIZE = 20;
 
     private final SearchClient searchClient;
+    private final CardParser cardParser;
     private final List<Curator> curators;
 
     @Inject
-    public CuratorDelegator(SearchClient searchClient,
+    public CuratorDelegator(SearchClient searchClient, CardParser cardParser,
                             SearchCurator searchCurator,
                             LocationCurator locationCurator,
                             SingaporeCurator singaporeCurator) {
         this.searchClient = searchClient;
+        this.cardParser = cardParser;
         this.curators = ImmutableList.of(
                 searchCurator,   // With Search Condition
                 locationCurator, // With Location, Polygon or LatLng
@@ -63,7 +66,7 @@ public final class CuratorDelegator {
             first.getQuery().setFrom(0);
             first.getQuery().setSize(SEARCH_SIZE);
             List<SearchResult> results = searchClient.search(collections.get(0).getQuery());
-            first.setCards(Curator.parseCards(results));
+            first.setCards(cardParser.parseCards(results));
         }
         return collections;
     }

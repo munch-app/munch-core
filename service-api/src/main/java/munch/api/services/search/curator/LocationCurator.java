@@ -1,4 +1,4 @@
-package munch.api.services.search;
+package munch.api.services.search.curator;
 
 import com.google.inject.Singleton;
 import com.vividsolutions.jts.geom.Coordinate;
@@ -14,9 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -28,22 +26,9 @@ import java.util.stream.Collectors;
 @Singleton
 public final class LocationCurator extends TabCurator {
 
-    /**
-     * @param resource cached StaticJson resource tool
-     * @return Set of Tag that can be Tag curated, all in uppercase
-     * @throws IOException IOException
-     */
-    private static Set<String> collectTabTags(StaticJsonResource resource) throws IOException {
-        Set<String> tags = new HashSet<>();
-        resource.getResource("tab-tags.json").fields().forEachRemaining(entry -> {
-            entry.getValue().forEach(tag -> tags.add(tag.asText()));
-        });
-        return tags;
-    }
-
     @Inject
     public LocationCurator(StaticJsonResource resource) throws IOException {
-        super(5, 1, collectTabTags(resource));
+        super(5, 1, resource.getResource("tags-tab.json", String[].class));
     }
 
     @Override

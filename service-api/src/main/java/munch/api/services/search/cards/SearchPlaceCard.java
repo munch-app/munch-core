@@ -2,6 +2,8 @@ package munch.api.services.search.cards;
 
 import munch.data.Place;
 
+import java.util.List;
+
 /**
  * Created by: Fuxing
  * Date: 13/9/17
@@ -10,21 +12,64 @@ import munch.data.Place;
  */
 public final class SearchPlaceCard extends SearchCard {
 
-    private Place place;
+    private List<Place.Image> images;
+    private String name;
+    private String establishment;
+    private List<String> tags;
+
+    private Place.Location location;
+    private List<Place.Hour> hours;
 
     @Override
     public String getCardId() {
-        return "basic_Place_13092017";
+        return "basic_Place_16092017";
     }
 
-    /**
-     * @return data of the card
-     */
-    public Place getPlace() {
-        return place;
+    public List<Place.Image> getImages() {
+        return images;
     }
 
-    public void setPlace(Place place) {
-        this.place = place;
+    public void setImages(List<Place.Image> images) {
+        this.images = images;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEstablishment() {
+        return establishment;
+    }
+
+    public void setEstablishment(String establishment) {
+        this.establishment = establishment;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
+    }
+
+    public Place.Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Place.Location location) {
+        this.location = location;
+    }
+
+    public List<Place.Hour> getHours() {
+        return hours;
+    }
+
+    public void setHours(List<Place.Hour> hours) {
+        this.hours = hours;
     }
 }

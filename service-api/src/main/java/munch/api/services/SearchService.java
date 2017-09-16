@@ -4,10 +4,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.clients.SearchClient;
-import munch.api.services.search.Curator;
-import munch.api.services.search.CuratorDelegator;
+import munch.api.services.search.cards.CardParser;
 import munch.api.services.search.cards.SearchCard;
 import munch.api.services.search.cards.SearchCollection;
+import munch.api.services.search.curator.CuratorDelegator;
 import munch.data.SearchQuery;
 import munch.data.SearchResult;
 import munch.restful.server.JsonCall;
@@ -25,11 +25,13 @@ public class SearchService extends AbstractService {
 
     private final SearchClient searchClient;
     private final CuratorDelegator curatorDelegator;
+    private final CardParser cardParser;
 
     @Inject
-    public SearchService(SearchClient searchClient, CuratorDelegator curatorDelegator) {
+    public SearchService(SearchClient searchClient, CuratorDelegator curatorDelegator, CardParser cardParser) {
         this.searchClient = searchClient;
         this.curatorDelegator = curatorDelegator;
+        this.cardParser = cardParser;
     }
 
     @Override
@@ -78,6 +80,6 @@ public class SearchService extends AbstractService {
     private List<SearchCard> collectionsSearch(JsonCall call) {
         SearchQuery query = call.bodyAsObject(SearchQuery.class);
         List<SearchResult> results = searchClient.search(query);
-        return Curator.parseCards(results);
+        return cardParser.parseCards(results);
     }
 }

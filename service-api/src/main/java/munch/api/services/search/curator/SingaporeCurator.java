@@ -1,4 +1,4 @@
-package munch.api.services.search;
+package munch.api.services.search.curator;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -29,7 +29,7 @@ public final class SingaporeCurator extends Curator {
 
     @Inject
     public SingaporeCurator(StaticJsonResource resource) throws IOException {
-        this.popularLocations = resource.getResource("popular-locations.json", Location[].class);
+        this.popularLocations = resource.getResource("locations-popular.json", Location[].class);
     }
 
     @Override

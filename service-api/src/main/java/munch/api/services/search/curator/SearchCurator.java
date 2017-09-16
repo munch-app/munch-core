@@ -1,4 +1,4 @@
-package munch.api.services.search;
+package munch.api.services.search.curator;
 
 import com.google.inject.Singleton;
 import munch.api.services.search.cards.SearchCard;
@@ -60,7 +60,7 @@ public final class SearchCurator extends Curator {
     public List<SearchCollection> curate(SearchQuery query) {
         List<SearchResult> result = searchClient.search(query);
         // Wrap result into single collection
-        List<SearchCard> cards = parseCards(result);
+        List<SearchCard> cards = cardParser.parseCards(result);
         return Collections.singletonList(new SearchCollection(null, query, cards));
     }
 }
