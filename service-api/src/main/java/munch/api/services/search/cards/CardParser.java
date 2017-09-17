@@ -76,6 +76,7 @@ public final class CardParser {
         private SearchPlaceCard parse(Place place) {
             SearchPlaceCard card = new SearchPlaceCard();
             card.setUniqueId(place.getId());
+            card.setPlaceId(place.getId());
             card.setImages(place.getImages());
             card.setName(place.getName());
 

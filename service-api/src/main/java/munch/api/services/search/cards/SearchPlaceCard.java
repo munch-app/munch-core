@@ -12,17 +12,26 @@ import java.util.List;
  */
 public final class SearchPlaceCard extends SearchCard {
 
-    private List<Place.Image> images;
+    private String placeId;
     private String name;
     private String establishment;
-    private List<String> tags;
-
     private Place.Location location;
+
+    private List<String> tags;
+    private List<Place.Image> images;
     private List<Place.Hour> hours;
 
     @Override
     public String getCardId() {
         return "basic_Place_16092017";
+    }
+
+    public String getPlaceId() {
+        return placeId;
+    }
+
+    public void setPlaceId(String placeId) {
+        this.placeId = placeId;
     }
 
     public List<Place.Image> getImages() {
