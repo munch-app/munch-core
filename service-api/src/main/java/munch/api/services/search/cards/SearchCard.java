@@ -8,6 +8,8 @@ package munch.api.services.search.cards;
  */
 public abstract class SearchCard {
 
+    private String uniqueId;
+
     /**
      * Id format:
      * type_Name_version(ddmmyyyy)
@@ -19,4 +21,15 @@ public abstract class SearchCard {
      * @return id of the card
      */
     public abstract String getCardId();
+
+    /**
+     * @return unique id of card to uniquely separate card content and remove duplicate on iOS side
+     */
+    public String getUniqueId() {
+        return uniqueId;
+    }
+
+    public void setUniqueId(String uniqueId) {
+        this.uniqueId = uniqueId;
+    }
 }

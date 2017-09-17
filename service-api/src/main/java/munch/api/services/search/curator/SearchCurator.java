@@ -61,6 +61,6 @@ public final class SearchCurator extends Curator {
         List<SearchResult> result = searchClient.search(query);
         // Wrap result into single collection
         List<SearchCard> cards = cardParser.parseCards(result);
-        return Collections.singletonList(new SearchCollection(null, query, cards));
+        return Collections.singletonList(new SearchCollection("HIGHLIGHT", query, cards));
     }
 }
