@@ -84,8 +84,8 @@ public abstract class TabCurator extends Curator {
             if (list.size() < tabMinResultSize) return;
 
             // Add new SearchCollection
-            SearchQuery query = withTag(source, tag);
-            collections.add(new SearchCollection(tag, query, cardParser.parseCards(results)));
+            SearchQuery query = withTag(source, tag.toLowerCase());
+            collections.add(new SearchCollection(tag, query));
         });
 
         return collections.stream()

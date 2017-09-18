@@ -87,8 +87,8 @@ public final class CardParser {
             return card;
         }
 
-        private String getEstablishment(List<String> tags) {
-            for (String tag : tags) {
+        private String getEstablishment(List<String> placeTags) {
+            for (String tag : placeTags) {
                 if (establishments.contains(tag.toLowerCase())) {
                     return WordUtils.capitalizeFully(tag);
                 }
@@ -96,10 +96,10 @@ public final class CardParser {
             return "Restaurant";
         }
 
-        private List<String> getTags(List<String> tags) {
+        private List<String> getTags(List<String> placeTags) {
             List<String> tagList = new ArrayList<>();
-            for (String tag : tags) {
-                if (this.tags.contains(tag.toLowerCase())) {
+            for (String tag : placeTags) {
+                if (tags.contains(tag.toLowerCase())) {
                     tagList.add(WordUtils.capitalizeFully(tag));
                 }
             }
