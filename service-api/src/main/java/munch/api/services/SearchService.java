@@ -60,7 +60,8 @@ public class SearchService extends AbstractService {
     private JsonNode suggest(JsonCall call, JsonNode request) {
         int size = request.get("size").asInt();
         String text = request.get("text").asText();
-        return searchClient.suggestRaw(size, text, null);
+        JsonNode dataNode = searchClient.suggestRaw(size, text, null);
+        return nodes(200, dataNode);
     }
 
     /**
