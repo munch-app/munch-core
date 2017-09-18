@@ -41,6 +41,11 @@ public final class ElasticMarshaller {
         node.put("id", tag.getId());
         node.put("name", tag.getName());
         node.put("type", tag.getType());
+
+        // Suggest Field
+        ArrayNode suggest = mapper.createArrayNode();
+        suggest.add(tag.getName());
+        node.set("suggest", suggest);
         return node;
     }
 
