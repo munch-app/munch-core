@@ -99,7 +99,7 @@ public final class BoolQuery {
         if (filter == null) return filterArray;
 
         // Filter to positive tags
-        if (filter.getTag() != null && filter.getTag().getNegatives() != null) {
+        if (filter.getTag() != null && filter.getTag().getPositives() != null) {
             for (String tag : filter.getTag().getPositives()) {
                 filterArray.add(filterTerm("tags", tag.toLowerCase()));
             }

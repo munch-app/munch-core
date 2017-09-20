@@ -30,19 +30,24 @@ public final class HourFilter {
             if (!(object instanceof Place)) return false;
 
             Place place = (Place) object;
-            if (place.getHours() == null) return false;
-            if (place.getHours().isEmpty()) return false;
+            if (place.getHours() == null) return true;
+            if (place.getHours().isEmpty()) return true;
 
             int time = parseTime(hourFilter.getTime());
             for (Place.Hour hour : place.getHours()) {
                 if (hour.getDay().equalsIgnoreCase(hourFilter.getDay())) {
-                    if (filterHour(time, hour)) return true;
+                    if (filterHour(time, hour)) return false;
                 }
             }
-            return false;
+            return true;
         });
     }
 
+    /**
+     * @param time time
+     * @param hour hour
+     * @return true is is allowed
+     */
     private static boolean filterHour(int time, Place.Hour hour) {
         int open = parseTime(hour.getOpen());
         int close = parseTime(hour.getClose());
