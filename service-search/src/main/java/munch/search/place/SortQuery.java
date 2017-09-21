@@ -35,7 +35,12 @@ public final class SortQuery {
      */
     public JsonNode make(SearchQuery query) {
         ArrayNode sortArray = mapper.createArrayNode();
-        if (!validate(query.getSort())) return sortArray;
+
+        // If it is null or blank, return default munchRank
+        if (query.getQuery() == null || StringUtils.isBlank(query.getSort().getType())) {
+            sortArray.add(sortField("munchRank", "desc"));
+            return sortArray;
+        }
 
         switch (query.getSort().getType().toLowerCase()) {
             case SearchQuery.Sort.TYPE_PRICE_LOWEST:
@@ -54,20 +59,13 @@ public final class SortQuery {
                 // TODO Type Rating in Future
                 break;
 
-            // munchRank sort is always applied by default if non given
             default:
             case SearchQuery.Sort.TYPE_MUNCH_RANK:
                 sortArray.add(sortField("munchRank", "desc"));
                 break;
         }
+
         return sortArray;
-    }
-
-    private boolean validate(SearchQuery.Sort sort) {
-        if (sort == null) return false;
-        if (StringUtils.isBlank(sort.getType())) return false;
-
-        return true;
     }
 
     /**
