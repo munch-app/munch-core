@@ -30,7 +30,7 @@ public final class BasicCardGenerator {
         return card;
     }
 
-    PlaceNameTagCard createName(Place place) {
+    PlaceNameTagCard createNameTag(Place place) {
         PlaceNameTagCard card = new PlaceNameTagCard();
         card.setName(place.getName());
         card.setTags(ImmutableSet.copyOf(place.getTags()));
@@ -49,6 +49,7 @@ public final class BasicCardGenerator {
 
     PlaceLocationCard createLocationDetail(Place place) {
         PlaceLocationCard card = new PlaceLocationCard();
+        card.setName(place.getName());
         card.setLocation(place.getLocation());
         return card;
     }

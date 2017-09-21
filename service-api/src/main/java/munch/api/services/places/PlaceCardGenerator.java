@@ -46,7 +46,7 @@ public final class PlaceCardGenerator {
 
         // Generate Cards
         cards.add(basicGenerator.createImageBanner(place));
-        cards.add(basicGenerator.createName(place));
+        cards.add(basicGenerator.createNameTag(place));
         cards.add(basicGenerator.createBusinessHour(place));
         cards.add(basicGenerator.createLocationDetail(place));
 
