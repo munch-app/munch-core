@@ -7,6 +7,7 @@ import munch.restful.server.JsonCall;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Created By: Fuxing Loh
@@ -52,24 +53,30 @@ public final class ArticleService extends AbstractService<Article, ArticleEntity
                 .getResultList());
     }
 
-    private List<ArticleEntity> list(JsonCall call) {
+    private List<Article> list(JsonCall call) {
         String placeId = call.pathString("placeId");
         int size = call.queryInt("size");
 
         String maxSortKey = call.queryString("maxSortKey", null);
         if (maxSortKey == null) {
             return provider.reduce(em -> em.createQuery("FROM ArticleEntity WHERE " +
-                    "placeId = :placeId ORDER BY sortKey desc", ArticleEntity.class)
+                    "placeId = :placeId ORDER BY sortKey DESC", ArticleEntity.class)
                     .setParameter("placeId", placeId)
                     .setMaxResults(size)
-                    .getResultList());
+                    .getResultList())
+                    .stream()
+                    .map(ArticleEntity::getData)
+                    .collect(Collectors.toList());
         }
 
         return provider.reduce(em -> em.createQuery("FROM ArticleEntity WHERE " +
-                "placeId = :placeId AND sortKey < :maxSortKey ORDER BY sortKey desc", ArticleEntity.class)
+                "placeId = :placeId AND sortKey < :maxSortKey ORDER BY sortKey DESC", ArticleEntity.class)
                 .setParameter("placeId", placeId)
                 .setParameter("maxSortKey", maxSortKey)
                 .setMaxResults(size)
-                .getResultList());
+                .getResultList())
+                .stream()
+                .map(ArticleEntity::getData)
+                .collect(Collectors.toList());
     }
 }
