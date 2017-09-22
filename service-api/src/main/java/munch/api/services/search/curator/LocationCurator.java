@@ -72,7 +72,7 @@ public final class LocationCurator extends TabCurator {
      * @param numPoints amounts of point in polygon
      * @return List of Points for the polygon
      */
-    private static List<String> createPoints(AbstractService.LatLng latLng, double radius, int numPoints) {
+    static List<String> createPoints(AbstractService.LatLng latLng, double radius, int numPoints) {
         final double radiusInDegrees = radius / 111000f;
         final Coordinate coordinate = new Coordinate(latLng.getLng(), latLng.getLat());
 

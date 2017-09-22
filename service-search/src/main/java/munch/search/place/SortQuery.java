@@ -37,7 +37,7 @@ public final class SortQuery {
         ArrayNode sortArray = mapper.createArrayNode();
 
         // If it is null or blank, return default munchRank
-        if (query.getQuery() == null || StringUtils.isBlank(query.getSort().getType())) {
+        if (query.getSort() == null || StringUtils.isBlank(query.getSort().getType())) {
             sortArray.add(sortField("munchRank", "desc"));
             return sortArray;
         }
