@@ -56,8 +56,8 @@ public final class ArticleService extends AbstractService<Article, ArticleEntity
     private List<Article> list(JsonCall call) {
         String placeId = call.pathString("placeId");
         int size = call.queryInt("size");
-
         String maxSortKey = call.queryString("maxSortKey", null);
+
         if (maxSortKey == null) {
             return provider.reduce(em -> em.createQuery("FROM ArticleEntity WHERE " +
                     "placeId = :placeId ORDER BY sortKey DESC", ArticleEntity.class)

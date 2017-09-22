@@ -1,10 +1,8 @@
 package munch.api.services.search.curator;
 
 import com.google.inject.Singleton;
-import munch.api.services.AbstractService;
 import munch.api.services.search.cards.SearchCard;
 import munch.api.services.search.cards.SearchCollection;
-import munch.data.Location;
 import munch.data.SearchQuery;
 import munch.data.SearchResult;
 import org.apache.commons.lang3.StringUtils;
@@ -60,16 +58,6 @@ public final class SearchCurator extends Curator {
 
     @Override
     public List<SearchCollection> curate(SearchQuery query) {
-        // Create LocationPolygon if only latLng is given
-        if (query.getLocation() == null && StringUtils.isNotBlank(query.getLatLng())) {
-            AbstractService.LatLng latLng = new AbstractService.LatLng(query.getLatLng());
-            Location location = new Location();
-            location.setName("Current Location");
-            location.setCenter(latLng.getString());
-            location.setPoints(LocationCurator.createPoints(latLng, 1500, 15));
-            query.setLocation(location);
-        }
-
         List<SearchResult> result = searchClient.search(query);
         // Wrap result into single collection
         List<SearchCard> cards = cardParser.parseCards(result);
