@@ -21,19 +21,18 @@ import javax.persistence.*;
         @TypeDef(name = "articleData", typeClass = ArticleEntity.ArticleUserType.class)
 })
 @Table(indexes = {
-        // Cluster Index: placeId, sortKey desc
+        // Cluster Index: index_munch_article_entity_place_id_sort_key = (placeId, sortKey desc)
         @Index(name = "index_munch_article_entity_cycle_no", columnList = "cycleNo"),
 })
 public final class ArticleEntity implements AbstractEntity<Article> {
     private Long cycleNo;
 
     private String placeId;
-    private String articleId;
+    private String articleId; // Is Unique
     private String sortKey;
 
     private Article data;
 
-    @Id
     @Column(columnDefinition = "CHAR(36)", nullable = false, updatable = false)
     public String getPlaceId() {
         return placeId;
@@ -43,7 +42,11 @@ public final class ArticleEntity implements AbstractEntity<Article> {
         this.placeId = placeId;
     }
 
-    @Column(nullable = false, length = 255)
+    /**
+     * @return SHA256 hex value of (url + address)
+     */
+    @Id
+    @Column(columnDefinition = "CHAR(64)", nullable = false, updatable = false)
     public String getArticleId() {
         return articleId;
     }

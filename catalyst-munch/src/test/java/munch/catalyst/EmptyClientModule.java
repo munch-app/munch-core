@@ -6,10 +6,7 @@ import com.mashape.unirest.http.Unirest;
 import com.typesafe.config.ConfigFactory;
 import munch.catalyst.clients.DataClient;
 import munch.catalyst.clients.SearchClient;
-import munch.data.Article;
-import munch.data.InstagramMedia;
-import munch.data.Location;
-import munch.data.Place;
+import munch.data.*;
 
 /**
  * In theses clients: catalystId is also know also placeId
@@ -23,6 +20,9 @@ public class EmptyClientModule extends AbstractModule {
 
     @Override
     protected void configure() {
+        System.setProperty("services.search.url", "");
+        System.setProperty("services.data.url", "");
+
         requestInjection(this);
         Unirest.setTimeouts(60000, 60000);
     }
@@ -86,6 +86,14 @@ public class EmptyClientModule extends AbstractModule {
 
         @Override
         public void deleteLocations(long cycleNo) {
+        }
+
+        @Override
+        public void put(Tag tag, long cycleNo) {
+        }
+
+        @Override
+        public void deleteTags(long cycleNo) {
         }
     }
 }
