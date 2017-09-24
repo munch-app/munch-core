@@ -58,9 +58,24 @@ public final class SearchCurator extends Curator {
 
     @Override
     public List<SearchCollection> curate(SearchQuery query) {
-        List<SearchResult> result = searchClient.search(query);
+        // Set SearchQuery.Sort.type to TYPE_DISTANCE_NEAREST if null
+        setIfNull(query, SearchQuery.Sort.TYPE_DISTANCE_NEAREST);
+
         // Wrap result into single collection
+        List<SearchResult> result = searchClient.search(query);
         List<SearchCard> cards = cardParser.parseCards(result);
         return Collections.singletonList(new SearchCollection("HIGHLIGHT", query, cards));
+    }
+
+    /**
+     * @param query search query
+     * @param type  type to set to
+     */
+    private void setIfNull(SearchQuery query, String type) {
+        if (query.getSort() == null) query.setSort(new SearchQuery.Sort());
+        if (StringUtils.isNotBlank(query.getSort().getType())) return;
+
+        // Set type
+        query.getSort().setType(type);
     }
 }
