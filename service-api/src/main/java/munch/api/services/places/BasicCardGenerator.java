@@ -1,10 +1,7 @@
 package munch.api.services.places;
 
 import com.google.common.collect.ImmutableSet;
-import munch.api.services.places.cards.PlaceBusinessHourCard;
-import munch.api.services.places.cards.PlaceImageBannerCard;
-import munch.api.services.places.cards.PlaceLocationCard;
-import munch.api.services.places.cards.PlaceNameTagCard;
+import munch.api.services.places.cards.*;
 import munch.data.Place;
 
 import javax.annotation.Nullable;
@@ -47,10 +44,25 @@ public final class BasicCardGenerator {
         return card;
     }
 
-    PlaceLocationCard createLocationDetail(Place place) {
+    PlaceAddressCard createAddress(Place place) {
+        PlaceAddressCard card = new PlaceAddressCard();
+        card.setAddress(place.getLocation().getAddress());
+
+        card.setStreet(place.getLocation().getStreet());
+        card.setUnitNumber(place.getLocation().getUnitNumber());
+        card.setCity(place.getLocation().getCity());
+        card.setCountry(place.getLocation().getCountry());
+        card.setPostal(place.getLocation().getPostal());
+
+        card.setLatLng(place.getLocation().getLatLng());
+        card.setNearestTrain(place.getLocation().getNearestTrain());
+        return card;
+    }
+
+    PlaceLocationCard createLocation(Place place) {
         PlaceLocationCard card = new PlaceLocationCard();
-        card.setName(place.getName());
-        card.setLocation(place.getLocation());
+        card.setPlaceName(place.getName());
+        card.setLatLng(place.getLocation().getLatLng());
         return card;
     }
 }

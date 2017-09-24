@@ -1,5 +1,7 @@
 package munch.api.services.search.cards;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Created by: Fuxing
  * Date: 13/9/17
@@ -20,11 +22,13 @@ public abstract class SearchCard {
      *
      * @return id of the card
      */
+    @JsonProperty("_cardId")
     public abstract String getCardId();
 
     /**
      * @return unique id of card to uniquely separate card content and remove duplicate on iOS side
      */
+    @JsonProperty("_uniqueId")
     public String getUniqueId() {
         return uniqueId;
     }

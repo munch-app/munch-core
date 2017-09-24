@@ -1,5 +1,7 @@
 package munch.api.services.places.cards;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * contains 2 fields: id, data
  * <pre>
@@ -31,5 +33,6 @@ public abstract class PlaceCard {
      *
      * @return id of the card
      */
+    @JsonProperty("_cardId")
     public abstract String getCardId();
 }

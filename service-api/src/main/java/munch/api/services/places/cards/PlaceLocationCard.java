@@ -1,7 +1,5 @@
 package munch.api.services.places.cards;
 
-import munch.data.Place;
-
 /**
  * Created by: Fuxing
  * Date: 7/9/17
@@ -10,27 +8,27 @@ import munch.data.Place;
  */
 public final class PlaceLocationCard extends PlaceCard {
 
-    private String name;
-    private Place.Location location;
+    private String placeName;
+    private String latLng;
 
     @Override
     public String getCardId() {
-        return "basic_Location_15092017";
+        return "basic_Location_24092017";
     }
 
-    public String getName() {
-        return name;
+    public String getPlaceName() {
+        return placeName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setPlaceName(String placeName) {
+        this.placeName = placeName;
     }
 
-    public Place.Location getLocation() {
-        return location;
+    public String getLatLng() {
+        return latLng;
     }
 
-    public void setLocation(Place.Location location) {
-        this.location = location;
+    public void setLatLng(String latLng) {
+        this.latLng = latLng;
     }
 }
