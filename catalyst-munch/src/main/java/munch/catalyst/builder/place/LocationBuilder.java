@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
-import java.util.regex.Pattern;
 
 /**
  * Created By: Fuxing Loh
@@ -52,13 +51,13 @@ public final class LocationBuilder implements TypeBuilder {
         location.setStreet(collectMaxCapitalizeFully("Munch.Place.Location.street"));
         location.setNearestTrain(collectMax("Munch.Place.Location.nearestTrain"));
 
-        location.setUnitNumber(valueBuilder.collectMax("Place.Location.unitNumber"));
+        location.setUnitNumber(collectMax("Place.Location.unitNumber"));
         // This is mainly to be used in conjunction with container corpus data
         location.setBuilding(collectMaxCapitalizeFully("Place.Location.building"));
 
         location.setCity(collectMaxCapitalizeFully("Place.Location.city"));
         location.setCountry(collectMaxCapitalizeFully("Place.Location.country"));
-        location.setLatLng(valueBuilder.collectMax("Place.Location.latLng"));
+        location.setLatLng(collectMax("Place.Location.latLng"));
         return location;
     }
 
