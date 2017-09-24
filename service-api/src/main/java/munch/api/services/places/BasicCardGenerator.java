@@ -63,6 +63,7 @@ public final class BasicCardGenerator {
         PlaceLocationCard card = new PlaceLocationCard();
         card.setPlaceName(place.getName());
         card.setLatLng(place.getLocation().getLatLng());
+        card.setAddress(place.getLocation().getAddress());
         return card;
     }
 }

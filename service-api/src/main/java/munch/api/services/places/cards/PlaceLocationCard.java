@@ -9,7 +9,9 @@ package munch.api.services.places.cards;
 public final class PlaceLocationCard extends PlaceCard {
 
     private String placeName;
+
     private String latLng;
+    private String address;
 
     @Override
     public String getCardId() {
@@ -30,5 +32,13 @@ public final class PlaceLocationCard extends PlaceCard {
 
     public void setLatLng(String latLng) {
         this.latLng = latLng;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }
