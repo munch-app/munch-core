@@ -37,9 +37,9 @@ public final class CuratorDelegator {
         this.searchClient = searchClient;
         this.cardParser = cardParser;
         this.curators = ImmutableList.of(
-                searchCurator,   // With Search Condition
-                locationCurator, // With Location, Polygon or LatLng
-                singaporeCurator // With No Location
+                searchCurator,   // 1. With Search Condition
+                locationCurator, // 2. With Location, Polygon or LatLng
+                singaporeCurator // 3. With No Location
         );
     }
 

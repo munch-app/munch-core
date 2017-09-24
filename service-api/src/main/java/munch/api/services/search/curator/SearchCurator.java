@@ -58,8 +58,8 @@ public final class SearchCurator extends Curator {
 
     @Override
     public List<SearchCollection> curate(SearchQuery query) {
-        // Set SearchQuery.Sort.type to TYPE_DISTANCE_NEAREST if null
-        setIfNull(query, SearchQuery.Sort.TYPE_DISTANCE_NEAREST);
+        // Set SearchQuery.Sort.type to TYPE_DISTANCE_NEAREST if null and contains latLng
+        updateSort(query);
 
         // Wrap result into single collection
         List<SearchResult> result = searchClient.search(query);
@@ -71,11 +71,13 @@ public final class SearchCurator extends Curator {
      * @param query search query
      * @param type  type to set to
      */
-    private void setIfNull(SearchQuery query, String type) {
+    private void updateSort(SearchQuery query) {
         if (query.getSort() == null) query.setSort(new SearchQuery.Sort());
         if (StringUtils.isNotBlank(query.getSort().getType())) return;
 
-        // Set type
-        query.getSort().setType(type);
+        // Set to distance sort if query is not blank
+        if (StringUtils.isNotBlank(query.getLatLng())) {
+            query.getSort().setType(SearchQuery.Sort.TYPE_DISTANCE_NEAREST);
+        }
     }
 }
