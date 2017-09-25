@@ -58,7 +58,7 @@
         "hours": {
           "enabled": false
         },
-        "tag": {
+        "tags": {
           "type": "keyword"
         }
       }
