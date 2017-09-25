@@ -57,6 +57,9 @@
         },
         "hours": {
           "enabled": false
+        },
+        "tag": {
+          "type": "keyword"
         }
       }
     }
