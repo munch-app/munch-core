@@ -16,9 +16,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by: Fuxing
@@ -33,8 +31,6 @@ public final class PlaceIngress extends AbstractIngress {
     private final SearchClient searchClient;
     private final DataClient dataClient;
     private final ImageMapper imageMapper;
-
-    private final Map<String, Long> counters = new HashMap<>();
 
     @Inject
     public PlaceIngress(SearchClient searchClient, DataClient dataClient, ImageMapper imageMapper) {
@@ -55,11 +51,9 @@ public final class PlaceIngress extends AbstractIngress {
      */
     @Override
     protected boolean validate(List<CorpusData> dataList) {
-        // Must have at least one image
-        if (!hasImages(dataList)) return false;
-
-        // Must have corpus: Sg.Nea.TrackRecord
-        return hasCorpusName(dataList, "Sg.Nea.TrackRecord");
+        if (hasCorpusName(dataList, "Sg.Nea.TrackRecord")) return true;
+        if (hasCorpusName(dataList, "Sg.Muis.Halal")) return true;
+        return false;
     }
 
     private boolean hasImages(List<CorpusData> dataList) {
