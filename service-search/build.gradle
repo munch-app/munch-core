@@ -1,6 +1,6 @@
 dependencies {
     compile project(':munch-data')
-    compile project(':restful-server')
+    compile group: 'munch.restful', name: 'restful-server', version: restfulVersion
     compile group: 'catalyst', name: 'catalyst-utils', version: ccVersion
 
     // Injection

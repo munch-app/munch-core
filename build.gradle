@@ -6,6 +6,7 @@ allprojects {
 
     group 'munch.core'
     version '1.0.0-SNAPSHOT'
+    ext.restfulVersion = '1.0.0'
     ext.ccVersion = '1.2.26'
 
     sourceCompatibility = 1.8
@@ -70,32 +71,6 @@ configure(subprojects.findAll { it.name.matches("catalyst-munch|service-(.+)") }
         doLast {
             exec { commandLine "docker", "tag", dockerTag, dockerHost }
             exec { commandLine "docker", "push", dockerHost}
-        }
-    }
-}
-
-configure(subprojects.findAll { it.name.matches("restful-(.+)") }) {
-    group 'munch'
-    version '0.8.31'
-
-    task publishLib {
-        dependsOn 'build'
-        dependsOn 'artifactoryPublish'
-        tasks.findByName('artifactoryPublish').mustRunAfter 'build'
-    }
-
-    artifactory {
-        contextUrl = "${artifactory_contextUrl}"
-        publish {
-            repository {
-                repoKey = "munch-${project.version.endsWith('-SNAPSHOT') ? 'snapshot' : 'release'}"
-                username = "${artifactory_user}"
-                password = "${artifactory_password}"
-                maven = true
-            }
-            defaults {
-                publications('mavenJava')
-            }
         }
     }
 }

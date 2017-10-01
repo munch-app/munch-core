@@ -13,8 +13,3 @@ include 'service-api'
 include 'service-data'
 include 'service-search'
 
-// Library modules
-include 'restful-server'
-include 'restful-client'
-include 'restful-core'
-
