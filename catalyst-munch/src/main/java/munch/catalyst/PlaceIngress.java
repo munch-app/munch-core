@@ -52,7 +52,6 @@ public final class PlaceIngress extends AbstractIngress {
     @Override
     protected boolean validate(List<CorpusData> dataList) {
         if (hasCorpusName(dataList, "Sg.Nea.TrackRecord")) return true;
-        if (hasCorpusName(dataList, "Sg.Muis.Halal")) return true;
         return false;
     }
 

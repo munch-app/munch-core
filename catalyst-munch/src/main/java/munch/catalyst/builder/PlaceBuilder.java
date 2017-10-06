@@ -1,5 +1,6 @@
 package munch.catalyst.builder;
 
+import catalyst.utils.LatLngUtils;
 import corpus.data.CorpusData;
 import munch.catalyst.builder.place.*;
 import munch.catalyst.builder.place.LocationBuilder;
@@ -114,7 +115,6 @@ public final class PlaceBuilder implements DataBuilder<Place> {
      * @param place place to validate
      * @return true = success
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     private boolean validate(Place place) {
         if (StringUtils.isBlank(place.getId())) return false;
         if (StringUtils.isBlank(place.getName())) return false;
@@ -128,11 +128,9 @@ public final class PlaceBuilder implements DataBuilder<Place> {
         if (place.getUpdatedDate() == null) return false;
 
         try {
-            String[] split = place.getLocation().getLatLng().split(",");
-            Double.parseDouble(split[0].trim());
-            Double.parseDouble(split[1].trim());
-        } catch (NumberFormatException nfe) {
-            logger.error("LatLng Validation failed");
+            LatLngUtils.validate(place.getLocation().getLatLng());
+        } catch (LatLngUtils.ParseException pe) {
+            logger.error("LatLng Validation failed", pe);
             return false;
         }
         return true;
