@@ -10,7 +10,7 @@ import java.util.List;
  * Time: 2:57 PM
  * Project: munch-core
  */
-public final class SearchPlaceCard extends SearchCard {
+public final class SearchPlaceImageCard extends SearchCard {
 
     private String placeId;
     private String name;
@@ -23,7 +23,7 @@ public final class SearchPlaceCard extends SearchCard {
 
     @Override
     public String getCardId() {
-        return "basic_Place_16092017";
+        return "basic_PlaceImage_06102017";
     }
 
     public String getPlaceId() {

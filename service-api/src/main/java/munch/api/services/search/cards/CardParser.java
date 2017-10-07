@@ -73,8 +73,22 @@ public final class CardParser {
             }
         }
 
-        private SearchPlaceCard parse(Place place) {
-            SearchPlaceCard card = new SearchPlaceCard();
+        private SearchCard parse(Place place) {
+            // Without Image
+            if (place.getImages() == null || place.getImages().isEmpty()) {
+                SearchPlaceTitleCard card = new SearchPlaceTitleCard();
+                card.setUniqueId(place.getId());
+                card.setPlaceId(place.getId());
+                card.setName(place.getName());
+
+                card.setEstablishment(getEstablishment(place.getTags()));
+                card.setTags(getTags(place.getTags()));
+                card.setLocation(place.getLocation());
+                card.setHours(place.getHours());
+                return card;
+            }
+
+            SearchPlaceImageCard card = new SearchPlaceImageCard();
             card.setUniqueId(place.getId());
             card.setPlaceId(place.getId());
             card.setImages(place.getImages());
