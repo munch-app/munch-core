@@ -27,8 +27,6 @@ public final class HealthService implements JsonService {
     @Inject
     public HealthService(Config config) {
         this.healthChecks = new HealthCheck[]{
-                new HealthCheck(config.getString("services.data.url")),
-                new HealthCheck(config.getString("services.search.url")),
                 new NominatimClient(config.getString("services.nominatim.url"))
         };
     }

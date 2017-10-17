@@ -3,13 +3,11 @@ package munch.api.services;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import munch.api.services.search.cards.CardParser;
+import munch.api.services.search.SearchManager;
 import munch.api.services.search.cards.SearchCard;
-import munch.api.services.search.cards.SearchCollection;
-import munch.api.services.search.curator.CuratorDelegator;
-import munch.data.SearchQuery;
-import munch.data.SearchResult;
 import munch.data.clients.SearchClient;
+import munch.data.structure.SearchQuery;
+import munch.data.structure.SearchResult;
 import munch.restful.server.JsonCall;
 
 import java.util.List;
@@ -24,24 +22,19 @@ import java.util.List;
 public class SearchService extends AbstractService {
 
     private final SearchClient searchClient;
-    private final CuratorDelegator curatorDelegator;
-    private final CardParser cardParser;
+    private final SearchManager searchManager;
 
     @Inject
-    public SearchService(SearchClient searchClient, CuratorDelegator curatorDelegator, CardParser cardParser) {
+    public SearchService(SearchClient searchClient, SearchManager searchManager) {
         this.searchClient = searchClient;
-        this.curatorDelegator = curatorDelegator;
-        this.cardParser = cardParser;
+        this.searchManager = searchManager;
     }
 
     @Override
     public void route() {
         PATH("/search", () -> {
             POST("/suggest", this::suggest);
-
-            // Collection Search
-            POST("/collections", this::collections);
-            POST("/collections/search", this::collectionsSearch);
+            POST("/search", this::search);
         });
     }
 
@@ -57,20 +50,10 @@ public class SearchService extends AbstractService {
      * @param call json call
      * @return list of Place result
      */
-    private JsonNode suggest(JsonCall call, JsonNode request) {
+    private List<SearchResult> suggest(JsonCall call, JsonNode request) {
         int size = request.get("size").asInt();
         String text = request.get("text").asText();
-        JsonNode dataNode = searchClient.suggestRaw(size, text, null);
-        return nodes(200, dataNode);
-    }
-
-    /**
-     * @param call json call
-     * @return list of SearchCollection containing cards
-     */
-    private List<SearchCollection> collections(JsonCall call) {
-        SearchQuery query = call.bodyAsObject(SearchQuery.class);
-        return curatorDelegator.delegate(query);
+        return searchClient.suggest(text, null, size);
     }
 
     /**
@@ -78,9 +61,8 @@ public class SearchService extends AbstractService {
      * @return list of Place
      * @see SearchQuery
      */
-    private List<SearchCard> collectionsSearch(JsonCall call) {
+    private List<SearchCard> search(JsonCall call) {
         SearchQuery query = call.bodyAsObject(SearchQuery.class);
-        List<SearchResult> results = searchClient.search(query);
-        return cardParser.parseCards(results);
+        return searchManager.search(query);
     }
 }

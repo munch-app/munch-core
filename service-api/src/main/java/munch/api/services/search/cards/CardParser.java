@@ -1,19 +1,12 @@
 package munch.api.services.search.cards;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import munch.api.clients.StaticJsonResource;
-import munch.data.Place;
-import munch.data.SearchResult;
-import org.apache.commons.lang3.text.WordUtils;
+import munch.data.structure.Place;
+import munch.data.structure.SearchResult;
 
 import javax.annotation.Nullable;
-import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by: Fuxing
@@ -23,12 +16,6 @@ import java.util.Set;
  */
 @Singleton
 public final class CardParser {
-    private final PlaceParser placeParser;
-
-    @Inject
-    private CardParser(PlaceParser placeParser) throws IOException {
-        this.placeParser = placeParser;
-    }
 
     /**
      * Only search results that is place is parsed now
@@ -36,7 +23,7 @@ public final class CardParser {
      * @param results search results
      * @return List of Parsed SearchCard
      */
-    public List<SearchCard> parseCards(List<SearchResult> results) {
+    public List<SearchCard> parseCards(List<? extends SearchResult> results) {
         List<SearchCard> cards = new ArrayList<>();
         for (SearchResult result : results) {
             // Since now there is only one card type, simple method to address the problem
@@ -53,71 +40,20 @@ public final class CardParser {
     @Nullable
     public SearchCard parseCard(SearchResult result) {
         if (result instanceof Place) {
-            return placeParser.parse((Place) result);
+            return parse((Place) result);
         }
         return null;
     }
 
-    private final static class PlaceParser {
-        private final Set<String> establishments = new HashSet<>();
-        private final Set<String> tags = new HashSet<>();
+    private SearchCard parse(Place place) {
+        SearchPlaceCard card = new SearchPlaceCard();
+        card.setPlaceId(place.getId());
+        card.setImages(place.getImages());
+        card.setName(place.getName());
 
-        @Inject
-        private PlaceParser(StaticJsonResource resource) throws IOException {
-            JsonNode node = resource.getResource("tags-place-card.json");
-            for (JsonNode establishment : node.path("establishments")) {
-                establishments.add(establishment.asText().toLowerCase());
-            }
-            for (JsonNode cuisine : node.path("tags")) {
-                tags.add(cuisine.asText().toLowerCase());
-            }
-        }
-
-        private SearchCard parse(Place place) {
-            // Without Image
-            if (place.getImages() == null || place.getImages().isEmpty()) {
-                SearchPlaceTitleCard card = new SearchPlaceTitleCard();
-                card.setUniqueId(place.getId());
-                card.setPlaceId(place.getId());
-                card.setName(place.getName());
-
-                card.setEstablishment(getEstablishment(place.getTags()));
-                card.setTags(getTags(place.getTags()));
-                card.setLocation(place.getLocation());
-                card.setHours(place.getHours());
-                return card;
-            }
-
-            SearchPlaceImageCard card = new SearchPlaceImageCard();
-            card.setUniqueId(place.getId());
-            card.setPlaceId(place.getId());
-            card.setImages(place.getImages());
-            card.setName(place.getName());
-
-            card.setEstablishment(getEstablishment(place.getTags()));
-            card.setTags(getTags(place.getTags()));
-            card.setLocation(place.getLocation());
-            card.setHours(place.getHours());
-            return card;
-        }
-
-        private String getEstablishment(List<String> placeTags) {
-            for (String tag : placeTags) {
-                if (establishments.contains(tag.toLowerCase())) {
-                    return WordUtils.capitalizeFully(tag);
-                }
-            }
-            return "Restaurant";
-        }
-
-        private List<String> getTags(List<String> placeTags) {
-            List<String> tagList = new ArrayList<>();
-            for (String tag : placeTags) {
-                if (tags.contains(tag.toLowerCase())) {
-                    tagList.add(WordUtils.capitalizeFully(tag));
-                }
-            }
-            return tagList;
-        }
+        card.setTags(place.getTag().getExplicits());
+        card.setLocation(place.getLocation());
+        card.setHours(place.getHours());
+        return card;
     }
 }

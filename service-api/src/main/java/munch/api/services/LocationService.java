@@ -3,9 +3,8 @@ package munch.api.services;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import munch.api.clients.StaticJsonResource;
+import munch.api.clients.StaticJsonClient;
 import munch.data.clients.LocationClient;
-import munch.data.clients.SearchClient;
 import munch.data.structure.Location;
 import munch.restful.server.JsonCall;
 
@@ -22,13 +21,11 @@ import java.util.List;
 public class LocationService extends AbstractService {
 
     private final LocationClient locationClient;
-    private final SearchClient searchClient;
-    private final StaticJsonResource jsonResource;
+    private final StaticJsonClient jsonResource;
 
     @Inject
-    public LocationService(LocationClient locationClient, SearchClient searchClient, StaticJsonResource jsonResource) {
+    public LocationService(LocationClient locationClient, StaticJsonClient jsonResource) {
         this.locationClient = locationClient;
-        this.searchClient = searchClient;
         this.jsonResource = jsonResource;
     }
 

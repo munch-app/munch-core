@@ -1,6 +1,7 @@
 package munch.api.services.search.cards;
 
-import munch.data.Place;
+
+import munch.data.structure.Place;
 
 import java.util.List;
 
@@ -10,11 +11,9 @@ import java.util.List;
  * Time: 2:57 PM
  * Project: munch-core
  */
-public final class SearchPlaceImageCard extends SearchCard {
-
+public final class SearchPlaceCard implements SearchCard {
     private String placeId;
     private String name;
-    private String establishment;
     private Place.Location location;
 
     private List<String> tags;
@@ -23,7 +22,12 @@ public final class SearchPlaceImageCard extends SearchCard {
 
     @Override
     public String getCardId() {
-        return "basic_PlaceImage_06102017";
+        return "basic_Place_20171018";
+    }
+
+    @Override
+    public String getUniqueId() {
+        return placeId;
     }
 
     public String getPlaceId() {
@@ -48,14 +52,6 @@ public final class SearchPlaceImageCard extends SearchCard {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getEstablishment() {
-        return establishment;
-    }
-
-    public void setEstablishment(String establishment) {
-        this.establishment = establishment;
     }
 
     public List<String> getTags() {

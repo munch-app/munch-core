@@ -1,13 +1,9 @@
 package munch.api;
 
-import com.google.common.collect.ImmutableSet;
-import com.typesafe.config.Config;
 import munch.api.exception.UnsupportedException;
 import munch.restful.core.exception.StructuredException;
 import munch.restful.server.RestfulServer;
 import munch.restful.server.RestfulService;
-import org.apache.commons.lang3.StringUtils;
-import spark.Request;
 import spark.Spark;
 
 import javax.inject.Inject;
@@ -27,20 +23,20 @@ public final class ApiServer extends RestfulServer {
 
     private final HealthService healthService;
     private final VersionService versionService;
-    private final ValidateVersion validateVersion;
+    private final VersionService.Validator versionValidator;
 
     @Inject
-    public ApiServer(Set<RestfulService> routers, HealthService healthService, VersionService versionService, Config config) {
+    public ApiServer(Set<RestfulService> routers, HealthService healthService, VersionService versionService, VersionService.Validator versionValidator) {
         super(routers);
         this.healthService = healthService;
         this.versionService = versionService;
-        this.validateVersion = new ValidateVersion(config);
+        this.versionValidator = versionValidator;
     }
 
     @Override
     protected void setupRouters() {
         // Validate that version is supported
-        Spark.before((req, res) -> validateVersion.validate(req));
+        Spark.before((req, res) -> versionValidator.validate(req));
         logger.info("Added version validator to all routes");
 
         super.setupRouters();
@@ -60,32 +56,5 @@ public final class ApiServer extends RestfulServer {
             handleException(response, (StructuredException) exception);
         });
         super.handleException();
-    }
-
-    /**
-     * Created By: Fuxing Loh
-     * Date: 23/7/2017
-     * Time: 4:03 PM
-     * Project: munch-core
-     */
-    private final class ValidateVersion {
-        public static final String HEADER_VERSION = "Application-Version";
-        public static final String HEADER_BUILD = "Application-Build";
-
-        private final ImmutableSet<String> supportedVersions;
-
-        public ValidateVersion(Config config) {
-            String versions = config.getString("api.versions.supported");
-            this.supportedVersions = ImmutableSet.copyOf(versions.split(" *, *"));
-        }
-
-        public void validate(Request request) {
-            String version = request.headers(HEADER_VERSION);
-            if (StringUtils.isNotBlank(version) && !supportedVersions.contains(version)) {
-                throw new UnsupportedException();
-            }
-
-            // If version is not given, no error will be thrown
-        }
     }
 }

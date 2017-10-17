@@ -8,14 +8,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Time: 2:15 PM
  * Project: munch-core
  */
-public abstract class SearchCard {
-
-    private String uniqueId;
+public interface SearchCard {
 
     /**
      * Id format:
-     * type_Name_version(ddmmyyyy)
-     * E.g. basic_Place_13092017
+     * type_Name_version(yyyymmdd)
+     * E.g. basic_Place_20170913
      * <p>
      * Version of the card is usually a result of data structure update
      * Rarely it can be based on incremental design changes as well
@@ -23,17 +21,11 @@ public abstract class SearchCard {
      * @return id of the card
      */
     @JsonProperty("_cardId")
-    public abstract String getCardId();
+    String getCardId();
 
     /**
      * @return unique id of card to uniquely separate card content and remove duplicate on iOS side
      */
     @JsonProperty("_uniqueId")
-    public String getUniqueId() {
-        return uniqueId;
-    }
-
-    public void setUniqueId(String uniqueId) {
-        this.uniqueId = uniqueId;
-    }
+    String getUniqueId();
 }

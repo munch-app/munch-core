@@ -18,12 +18,11 @@ import java.net.URL;
  * Project: munch-core
  */
 @Singleton
-public final class StaticJsonResource {
+public final class StaticJsonClient {
     private final ObjectMapper objectMapper;
 
     @Inject
-    public StaticJsonResource(ObjectMapper objectMapper) throws IOException {
-        // TODO Static resources
+    public StaticJsonClient(ObjectMapper objectMapper) throws IOException {
         this.objectMapper = objectMapper;
     }
 

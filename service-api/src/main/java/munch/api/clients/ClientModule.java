@@ -31,17 +31,16 @@ public class ClientModule extends AbstractModule {
     /**
      * Wait for 200 seconds for nominatim to be ready
      *
-     * @param services services config
+     * @param config config
      */
     @Inject
     void waitForNomination(Config config) throws UnirestException {
         String url = config.getString("services.nominatim.url");
 
         WaitFor.host(url, Duration.ofSeconds(200));
-        Retriable retriable = new SleepRetriable(15, Duration.ofSeconds(20), (throwable, integer) -> {
+        Retriable retriable = new SleepRetriable(30, Duration.ofSeconds(30), (throwable, integer) -> {
             logger.info("Waiting for {} to be ready.", url);
         });
-        retriable.loop(() -> new GetRequest(HttpMethod.GET,
-                url + "/reverse?format=json").asJson().getBody());
+        retriable.loop(() -> new GetRequest(HttpMethod.GET, url + "/reverse?format=json").asJson().getBody());
     }
 }
