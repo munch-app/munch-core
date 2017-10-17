@@ -3,7 +3,6 @@ package munch.api.services.search.curator;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import munch.api.clients.SearchClient;
 import munch.api.services.search.cards.CardParser;
 import munch.api.services.search.cards.SearchCollection;
 import munch.data.SearchQuery;

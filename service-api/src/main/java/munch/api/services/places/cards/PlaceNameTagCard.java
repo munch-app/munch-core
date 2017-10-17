@@ -8,13 +8,13 @@ import java.util.Set;
  * Time: 12:50 AM
  * Project: munch-core
  */
-public final class PlaceNameTagCard extends PlaceCard {
+public final class PlaceNameTagCard extends AbstractPlaceCard {
     private String name;
     private Set<String> tags;
 
     @Override
     public String getCardId() {
-        return "basic_NameTag_12092017";
+        return "basic_NameTag_20170912";
     }
 
     public String getName() {

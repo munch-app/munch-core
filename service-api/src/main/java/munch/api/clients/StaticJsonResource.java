@@ -23,6 +23,7 @@ public final class StaticJsonResource {
 
     @Inject
     public StaticJsonResource(ObjectMapper objectMapper) throws IOException {
+        // TODO Static resources
         this.objectMapper = objectMapper;
     }
 

@@ -6,16 +6,14 @@ package munch.api.services.places.cards;
  * Time: 2:08 PM
  * Project: munch-core
  */
-public final class PlaceLocationCard extends PlaceCard {
-
+public final class PlaceLocationCard extends AbstractPlaceCard {
     private String placeName;
-
     private String latLng;
     private String address;
 
     @Override
     public String getCardId() {
-        return "basic_Location_24092017";
+        return "basic_Location_20170924";
     }
 
     public String getPlaceName() {

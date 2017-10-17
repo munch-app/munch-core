@@ -3,13 +3,13 @@ package munch.api.services;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import munch.api.clients.SearchClient;
 import munch.api.services.search.cards.CardParser;
 import munch.api.services.search.cards.SearchCard;
 import munch.api.services.search.cards.SearchCollection;
 import munch.api.services.search.curator.CuratorDelegator;
 import munch.data.SearchQuery;
 import munch.data.SearchResult;
+import munch.data.clients.SearchClient;
 import munch.restful.server.JsonCall;
 
 import java.util.List;

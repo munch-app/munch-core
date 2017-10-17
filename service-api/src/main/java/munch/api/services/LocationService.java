@@ -3,12 +3,12 @@ package munch.api.services;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import munch.api.clients.SearchClient;
 import munch.api.clients.StaticJsonResource;
-import munch.data.Location;
+import munch.data.clients.LocationClient;
+import munch.data.clients.SearchClient;
+import munch.data.structure.Location;
 import munch.restful.server.JsonCall;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.List;
 
@@ -21,11 +21,13 @@ import java.util.List;
 @Singleton
 public class LocationService extends AbstractService {
 
+    private final LocationClient locationClient;
     private final SearchClient searchClient;
     private final StaticJsonResource jsonResource;
 
     @Inject
-    public LocationService(SearchClient searchClient, StaticJsonResource jsonResource) {
+    public LocationService(LocationClient locationClient, SearchClient searchClient, StaticJsonResource jsonResource) {
+        this.locationClient = locationClient;
         this.searchClient = searchClient;
         this.jsonResource = jsonResource;
     }
@@ -39,9 +41,6 @@ public class LocationService extends AbstractService {
             GET("/popular", this::popular);
             HEAD("/popular", this::popularHead);
 
-            // Reverse Location from where the user is standing,
-            // normally used when the user clicked on current location
-            GET("/reverse", this::reverse);
             // Suggest Location when user is searching with location service
             GET("/suggest", this::suggest);
         });
@@ -58,20 +57,6 @@ public class LocationService extends AbstractService {
     }
 
     /**
-     * ?latLng=lat,lng
-     * To be used by the Location search when user click current location
-     *
-     * @param call json call
-     * @return Location or NULL
-     * code: 200 = ok, 404 = not found
-     */
-    @Nullable
-    private Location reverse(JsonCall call) {
-        String latLng = call.queryString("latLng");
-        return searchClient.reverseLocation(latLng);
-    }
-
-    /**
      * ?text={String}
      *
      * @param call json call
@@ -80,6 +65,6 @@ public class LocationService extends AbstractService {
      */
     private List<Location> suggest(JsonCall call) {
         String text = call.queryString("text");
-        return searchClient.suggestLocation(text, 20);
+        return locationClient.suggest(text, 10);
     }
 }

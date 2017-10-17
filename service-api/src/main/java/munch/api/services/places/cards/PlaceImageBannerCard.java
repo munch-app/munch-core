@@ -1,6 +1,7 @@
 package munch.api.services.places.cards;
 
-import munch.data.Place;
+
+import munch.data.structure.Place;
 
 import java.util.List;
 
@@ -10,12 +11,12 @@ import java.util.List;
  * Time: 12:45 AM
  * Project: munch-core
  */
-public final class PlaceImageBannerCard extends PlaceCard {
+public final class PlaceImageBannerCard extends AbstractPlaceCard {
     private List<Place.Image> images;
 
     @Override
     public String getCardId() {
-        return "basic_ImageBanner_15092017";
+        return "basic_ImageBanner_20170915";
     }
 
     public List<Place.Image> getImages() {

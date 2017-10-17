@@ -6,8 +6,7 @@ package munch.api.services.places.cards;
  * Time: 4:31 PM
  * Project: munch-core
  */
-public final class PlaceAddressCard extends PlaceCard {
-
+public final class PlaceAddressCard extends AbstractPlaceCard {
     private String address;
 
     private String street;
@@ -21,7 +20,7 @@ public final class PlaceAddressCard extends PlaceCard {
 
     @Override
     public String getCardId() {
-        return "basic_Address_24092017";
+        return "basic_Address_20170924";
     }
 
     public String getAddress() {

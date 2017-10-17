@@ -2,10 +2,10 @@ package munch.api.services;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import munch.api.clients.DataClient;
-import munch.api.services.places.PlaceCardGenerator;
-import munch.api.services.places.cards.PlaceCard;
-import munch.data.Place;
+import munch.api.services.places.PlaceCardReader;
+import munch.data.clients.PlaceClient;
+import munch.data.structure.Place;
+import munch.data.structure.PlaceCard;
 import munch.restful.server.JsonCall;
 
 import java.util.List;
@@ -18,13 +18,13 @@ import java.util.List;
  */
 @Singleton
 public class PlaceService extends AbstractService {
-    private final DataClient dataClient;
-    private final PlaceCardGenerator cardGenerator;
+    private final PlaceClient dataClient;
+    private final PlaceCardReader cardReader;
 
     @Inject
-    public PlaceService(DataClient dataClient, PlaceCardGenerator cardGenerator) {
-        this.dataClient = dataClient;
-        this.cardGenerator = cardGenerator;
+    public PlaceService(PlaceClient placeClient, PlaceCardReader cardReader) {
+        this.dataClient = placeClient;
+        this.cardReader = cardReader;
     }
 
     /**
@@ -38,8 +38,8 @@ public class PlaceService extends AbstractService {
             GET("", this::get);
             GET("/cards", this::cards);
 
-            PATH("/detailed", () -> {
-                // Future in Beta
+            // Additional sorted data
+            PATH("/data", () -> {
                 // Instagram
                 // Article
                 // Reviews
@@ -66,6 +66,6 @@ public class PlaceService extends AbstractService {
      */
     private List<PlaceCard> cards(JsonCall call) {
         String placeId = call.pathString("placeId");
-        return cardGenerator.generate(placeId);
+        return cardReader.get(placeId);
     }
 }

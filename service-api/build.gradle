@@ -1,15 +1,16 @@
 dependencies {
-    compile project(':munch-data')
     compile group: 'munch.restful', name: 'restful-server', version: restfulVersion
     compile group: 'munch.restful', name: 'restful-client', version: restfulVersion
 
     compile group: 'catalyst', name: 'retriable-utils', version: ccVersion
-    compile group: 'uk.com.robust-it', name: 'cloning', version: '1.9.4'
-    compile group: 'fr.dudie', name: 'nominatim-api', version: '3.3'
+    compile group: 'munch.data', name: 'data-client', version: dataVersion
 
     // Injection
     compile group: 'com.google.inject', name: 'guice', version: '4.1.0'
     compile group: 'com.google.inject.extensions', name: 'guice-multibindings', version: '4.1.0'
+
+    compile group: 'uk.com.robust-it', name: 'cloning', version: '1.9.4'
+    compile group: 'fr.dudie', name: 'nominatim-api', version: '3.3'
 }
 
 mainClassName = 'munch.api.ApiModule'

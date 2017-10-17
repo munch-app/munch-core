@@ -1,7 +1,6 @@
 package munch.api.services.search.curator;
 
 import com.rits.cloning.Cloner;
-import munch.api.clients.SearchClient;
 import munch.api.services.search.cards.CardParser;
 import munch.api.services.search.cards.SearchCollection;
 import munch.data.SearchQuery;

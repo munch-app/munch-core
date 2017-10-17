@@ -5,9 +5,11 @@ allprojects {
     apply plugin: 'maven-publish'
 
     group 'munch.core'
-    version '1.0.0-SNAPSHOT'
-    ext.restfulVersion = '1.0.0'
-    ext.ccVersion = '1.2.26'
+    version '0.3.0-SNAPSHOT'
+
+    ext.restfulVersion = '1.0.1'
+    ext.ccVersion = '2.0.0-SNAPSHOT'
+    ext.dataVersion = '1.0.0-SNAPSHOT'
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
@@ -43,7 +45,7 @@ allprojects {
     }
 }
 
-configure(subprojects.findAll { it.name.matches("catalyst-munch|service-(.+)") }) {
+configure(subprojects.findAll { it.name.matches("service-(.+)") }) {
     apply plugin: 'application'
     apply plugin: 'com.bmuschko.docker-java-application'
 
