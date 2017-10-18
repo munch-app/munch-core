@@ -34,6 +34,17 @@ public final class ApiServer extends RestfulServer {
     }
 
     @Override
+    public void start() {
+        super.start();
+
+        // Only log non health check path
+        Spark.before((request, response) -> {
+            if (!request.pathInfo().equals("/health/check"))
+                logger.trace("{}: {}", request.requestMethod(), request.pathInfo());
+        });
+    }
+
+    @Override
     protected void setupRouters() {
         // Validate that version is supported
         Spark.before((req, res) -> versionValidator.validate(req));
