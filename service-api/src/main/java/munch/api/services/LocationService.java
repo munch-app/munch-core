@@ -45,7 +45,7 @@ public class LocationService extends AbstractService {
 
     private JsonNode popular(JsonCall call) throws IOException {
         call.response().header("Last-Modified", "1505473814000");
-        return jsonResource.getResource("popular-locations.json");
+        return jsonResource.getResource("locations-popular.json");
     }
 
     private JsonNode popularHead(JsonCall call) {
