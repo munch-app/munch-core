@@ -5,7 +5,7 @@ allprojects {
     apply plugin: 'maven-publish'
 
     group 'munch.core'
-    version '0.3.0-SNAPSHOT'
+    version '0.3.0'
 
     ext.restfulVersion = '1.0.1'
     ext.ccVersion = '2.0.0-SNAPSHOT'
@@ -49,7 +49,7 @@ configure(subprojects.findAll { it.name.matches("service-(.+)") }) {
     apply plugin: 'application'
     apply plugin: 'com.bmuschko.docker-java-application'
 
-    ext.dockerTag = 'munch-core/' + project.name + ':latest'
+    ext.dockerTag = 'munch-core/' + project.name + ':' + rootProject.version
     ext.dockerHost = '197547471367.dkr.ecr.ap-southeast-1.amazonaws.com/' + dockerTag
 
     dockerDistTar {
