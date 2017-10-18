@@ -9,6 +9,8 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import munch.api.clients.ClientModule;
 import munch.api.services.ServiceModule;
+import munch.data.dynamodb.DynamoModule;
+import munch.data.elastic.ElasticModule;
 import munch.restful.server.JsonService;
 
 /**
@@ -23,6 +25,8 @@ public class ApiModule extends AbstractModule {
     protected void configure() {
         install(new ClientModule());
         install(new ServiceModule());
+        install(new DynamoModule());
+        install(new ElasticModule());
     }
 
     @Provides

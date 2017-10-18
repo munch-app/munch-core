@@ -30,7 +30,7 @@ public final class VersionService implements JsonService {
      * Time: 4:03 PM
      * Project: munch-core
      */
-    public final class Validator {
+    public static final class Validator {
         public static final String HEADER_VERSION = "Application-Version";
         public static final String HEADER_BUILD = "Application-Build";
 
