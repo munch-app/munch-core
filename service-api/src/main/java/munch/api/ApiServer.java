@@ -4,6 +4,8 @@ import munch.api.exception.UnsupportedException;
 import munch.restful.core.exception.StructuredException;
 import munch.restful.server.RestfulServer;
 import munch.restful.server.RestfulService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import spark.Spark;
 
 import javax.inject.Inject;
@@ -20,6 +22,7 @@ import java.util.Set;
  */
 @Singleton
 public final class ApiServer extends RestfulServer {
+    private static final Logger logger = LoggerFactory.getLogger(ApiServer.class);
 
     private final HealthService healthService;
     private final VersionService versionService;
