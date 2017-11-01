@@ -22,6 +22,7 @@ public final class PlaceCardSorter {
                     "basic_NameTag_20170912",
                     "basic_Address_20170924",
                     "basic_BusinessHour_20170907"),
+            CardGroup.of("vendor_Article_20171029"),
             CardGroup.of(new PlaceHeaderReviewCard(),
                     "vendor_FacebookReview_20171017"),
             CardGroup.of("basic_Location_20170924")
