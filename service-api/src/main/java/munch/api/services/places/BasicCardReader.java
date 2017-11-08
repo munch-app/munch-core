@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableSet;
 import munch.api.services.places.cards.*;
 import munch.data.structure.Place;
 import munch.data.structure.PlaceCard;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -39,6 +40,8 @@ public final class BasicCardReader {
         cards.add(createImageBanner(place));
         cards.add(createNameTag(place));
         cards.add(createAddress(place));
+        cards.add(createDescription(place));
+        cards.add(createWebsite(place));
         cards.add(createBusinessHour(place));
         cards.add(createLocation(place));
 
@@ -57,6 +60,26 @@ public final class BasicCardReader {
         PlaceNameTagCard card = new PlaceNameTagCard();
         card.setName(place.getName());
         card.setTags(ImmutableSet.copyOf(place.getTag().getExplicits()));
+        return card;
+    }
+
+    @Nullable
+    private PlaceDescriptionCard createDescription(Place place) {
+        String description = place.getDescription();
+        if (StringUtils.isBlank(description)) return null;
+
+        PlaceDescriptionCard card = new PlaceDescriptionCard();
+        card.setDescription(description);
+        return card;
+    }
+
+    @Nullable
+    private PlaceWebsiteCard createWebsite(Place place) {
+        String website = place.getWebsite();
+        if (StringUtils.isBlank(website)) return null;
+
+        PlaceWebsiteCard card = new PlaceWebsiteCard();
+        card.setWebsite(website);
         return card;
     }
 
