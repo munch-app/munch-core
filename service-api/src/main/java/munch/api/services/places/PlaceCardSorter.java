@@ -20,10 +20,10 @@ public final class PlaceCardSorter {
     private static final CardGroup[] CARD_GROUPS = new CardGroup[]{
             CardGroup.of("basic_ImageBanner_20170915",
                     "basic_NameTag_20170912",
-                    "basic_Description_20171109",
                     "basic_Address_20170924",
+                    "basic_BusinessHour_20170907",
                     "basic_Website_20171109",
-                    "basic_BusinessHour_20170907"),
+                    "basic_Description_20171109"),
             CardGroup.of("vendor_Article_20171029"),
             CardGroup.of(new PlaceHeaderReviewCard(),
                     "vendor_FacebookReview_20171017"),
