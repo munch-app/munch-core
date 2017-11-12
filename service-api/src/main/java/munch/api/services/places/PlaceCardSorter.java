@@ -30,11 +30,11 @@ public final class PlaceCardSorter {
                     "vendor_FacebookReview_20171017"),
 
             CardGroup.ofHeader("header_Location_20171112",
-                    "basic_Location_20170924"),
+                    "basic_Location_20171112"),
 
             CardGroup.ofHeader("header_About_20171112",
-                    "basic_Website_20171109",
-                    "basic_Description_20171109")
+                    "basic_Description_20171109",
+                    "basic_Website_20171109")
     };
 
     /**

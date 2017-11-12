@@ -111,8 +111,17 @@ public final class BasicCardReader {
     private PlaceLocationCard createLocation(Place place) {
         PlaceLocationCard card = new PlaceLocationCard();
         card.setPlaceName(place.getName());
-        card.setLatLng(place.getLocation().getLatLng());
+
         card.setAddress(place.getLocation().getAddress());
+
+        card.setStreet(place.getLocation().getStreet());
+        card.setUnitNumber(place.getLocation().getUnitNumber());
+        card.setCity(place.getLocation().getCity());
+        card.setCountry(place.getLocation().getCountry());
+        card.setPostal(place.getLocation().getPostal());
+
+        card.setLatLng(place.getLocation().getLatLng());
+        card.setNearestTrain(place.getLocation().getNearestTrain());
         return card;
     }
 
