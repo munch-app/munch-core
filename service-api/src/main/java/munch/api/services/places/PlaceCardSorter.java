@@ -29,12 +29,12 @@ public final class PlaceCardSorter {
             CardGroup.ofHeader("header_Review_20171020",
                     "vendor_FacebookReview_20171017"),
 
-            CardGroup.ofHeader("header_Location_20171112",
-                    "basic_Location_20171112"),
-
             CardGroup.ofHeader("header_About_20171112",
                     "basic_Description_20171109",
-                    "basic_Website_20171109")
+                    "basic_Website_20171109"),
+
+            CardGroup.ofHeader("header_Location_20171112",
+                    "basic_Location_20171112"),
     };
 
     /**
