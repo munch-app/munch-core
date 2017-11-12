@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.services.search.SearchManager;
 import munch.api.services.search.cards.SearchCard;
+import munch.data.clients.PlaceClient;
 import munch.data.clients.SearchClient;
 import munch.data.structure.SearchQuery;
 import munch.data.structure.SearchResult;
@@ -22,11 +23,13 @@ import java.util.List;
 public class SearchService extends AbstractService {
 
     private final SearchClient searchClient;
+    private final PlaceClient placeClient;
     private final SearchManager searchManager;
 
     @Inject
-    public SearchService(SearchClient searchClient, SearchManager searchManager) {
+    public SearchService(SearchClient searchClient, PlaceClient placeClient, SearchManager searchManager) {
         this.searchClient = searchClient;
+        this.placeClient = placeClient;
         this.searchManager = searchManager;
     }
 
@@ -35,6 +38,7 @@ public class SearchService extends AbstractService {
         PATH("/search", () -> {
             POST("/suggest", this::suggest);
             POST("/search", this::search);
+            POST("/count", this::count);
         });
     }
 
@@ -64,5 +68,14 @@ public class SearchService extends AbstractService {
     private List<SearchCard> search(JsonCall call) {
         SearchQuery query = call.bodyAsObject(SearchQuery.class);
         return searchManager.search(query);
+    }
+
+    /**
+     * @param call json call
+     * @return total possible place result count
+     */
+    private Long count(JsonCall call) {
+        SearchQuery query = call.bodyAsObject(SearchQuery.class);
+        return placeClient.count(query);
     }
 }
