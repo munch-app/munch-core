@@ -1,6 +1,6 @@
 package munch.api.services.places;
 
-import munch.api.services.places.cards.PlaceHeaderReviewCard;
+import munch.api.services.places.cards.PlaceHeaderCard;
 import munch.data.structure.PlaceCard;
 
 import javax.annotation.Nullable;
@@ -21,13 +21,20 @@ public final class PlaceCardSorter {
             CardGroup.of("basic_ImageBanner_20170915",
                     "basic_NameTag_20170912",
                     "basic_Address_20170924",
-                    "basic_BusinessHour_20170907",
-                    "basic_Website_20171109",
-                    "basic_Description_20171109"),
-            CardGroup.of("vendor_Article_20171029"),
-            CardGroup.of(new PlaceHeaderReviewCard(),
+                    "basic_BusinessHour_20170907"),
+
+            CardGroup.ofHeader("header_Article_20171112",
+                    "vendor_Article_20171029"),
+
+            CardGroup.ofHeader("header_Review_20171020",
                     "vendor_FacebookReview_20171017"),
-            CardGroup.of("basic_Location_20170924")
+
+            CardGroup.ofHeader("header_Location_20171112",
+                    "basic_Location_20170924"),
+
+            CardGroup.ofHeader("header_About_20171112",
+                    "basic_Website_20171109",
+                    "basic_Description_20171109")
     };
 
     /**
@@ -92,12 +99,16 @@ public final class PlaceCardSorter {
             return null;
         }
 
-        private static CardGroup of(PlaceCard headerCard, String... contentIds) {
+        private static CardGroup of(String... contentIds) {
+            return new CardGroup(null, contentIds);
+        }
+
+        private static CardGroup ofHeader(PlaceCard headerCard, String... contentIds) {
             return new CardGroup(headerCard, contentIds);
         }
 
-        private static CardGroup of(String... contentIds) {
-            return new CardGroup(null, contentIds);
+        private static CardGroup ofHeader(String headerId, String... contentIds) {
+            return new CardGroup(new PlaceHeaderCard(headerId), contentIds);
         }
     }
 }
