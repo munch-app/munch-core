@@ -42,6 +42,7 @@ public final class BasicCardReader {
         cards.add(createAddress(place));
         cards.add(createDescription(place));
         cards.add(createWebsite(place));
+        cards.add(createPhone(place));
         cards.add(createBusinessHour(place));
         cards.add(createLocation(place));
 
@@ -80,6 +81,16 @@ public final class BasicCardReader {
 
         PlaceWebsiteCard card = new PlaceWebsiteCard();
         card.setWebsite(website);
+        return card;
+    }
+
+    @Nullable
+    private PlacePhoneCard createPhone(Place place) {
+        String phone = place.getPhone();
+        if (StringUtils.isEmpty(phone)) return null;
+
+        PlacePhoneCard card = new PlacePhoneCard();
+        card.setPhone(phone);
         return card;
     }
 

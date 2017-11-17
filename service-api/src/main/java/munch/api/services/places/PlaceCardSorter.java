@@ -18,6 +18,7 @@ import java.util.List;
 @Singleton
 public final class PlaceCardSorter {
     private static final CardGroup[] CARD_GROUPS = new CardGroup[]{
+            // NOTE: CardId must be updated when it is updated on the card site
             CardGroup.of("basic_ImageBanner_20170915",
                     "basic_NameTag_20170912",
                     "basic_Address_20170924",
@@ -31,6 +32,7 @@ public final class PlaceCardSorter {
 
             CardGroup.ofHeader("header_About_20171112",
                     "basic_Description_20171109",
+                    "basic_Phone_20171117",
                     "basic_Website_20171109"),
 
             CardGroup.ofHeader("header_Location_20171112",
