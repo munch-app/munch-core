@@ -1,7 +1,6 @@
 package munch.api.services.places;
 
 import munch.data.clients.PlaceCardClient;
-import munch.data.clients.PlaceClient;
 import munch.data.structure.Place;
 import munch.data.structure.PlaceCard;
 
@@ -10,6 +9,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by: Fuxing
@@ -19,15 +19,13 @@ import java.util.List;
  */
 @Singleton
 public final class PlaceCardReader {
-    private final PlaceClient placeClient;
     private final PlaceCardClient cardClient;
 
     private final BasicCardReader basicReader;
     private final PlaceCardSorter cardSorter;
 
     @Inject
-    public PlaceCardReader(PlaceClient placeClient, PlaceCardClient cardClient, BasicCardReader basicReader, PlaceCardSorter cardSorter) {
-        this.placeClient = placeClient;
+    public PlaceCardReader(PlaceCardClient cardClient, BasicCardReader basicReader, PlaceCardSorter cardSorter) {
         this.cardClient = cardClient;
         this.basicReader = basicReader;
         this.cardSorter = cardSorter;
@@ -36,17 +34,16 @@ public final class PlaceCardReader {
     /**
      * Return type is List because data return order is important
      *
-     * @param placeId placeId
+     * @param place with placeId
      * @return List of AbstractCard, or null if place cannot be found
      */
     @Nullable
-    public List<PlaceCard> get(String placeId) {
-        Place place = placeClient.get(placeId);
-        if (place == null) return null;
+    public List<PlaceCard> get(Place place) {
+        Objects.requireNonNull(place.getId());
 
         List<PlaceCard> cards = new ArrayList<>();
         cards.addAll(basicReader.generateCards(place));
-        cards.addAll(cardClient.list(placeId));
+        cards.addAll(cardClient.list(place.getId()));
         return cardSorter.sort(cards);
     }
 }

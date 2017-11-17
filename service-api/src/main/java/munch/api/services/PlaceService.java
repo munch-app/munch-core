@@ -1,5 +1,7 @@
 package munch.api.services;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.services.places.PlaceCardReader;
@@ -62,10 +64,19 @@ public class PlaceService extends AbstractService {
      * GET = /places/:placeId/cards
      *
      * @param call json call
-     * @return List of Cards in Order
+     * @return {cards: List of PlaceCard, place: Place}
      */
-    private List<PlaceCard> cards(JsonCall call) {
+    private JsonNode cards(JsonCall call) {
         String placeId = call.pathString("placeId");
-        return cardReader.get(placeId);
+        Place place = dataClient.get(placeId);
+        if (place == null) return null;
+
+        List<PlaceCard> cards = cardReader.get(place);
+
+        // Put into node and return
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.set("cards", objectMapper.valueToTree(cards));
+        objectNode.set("place", objectMapper.valueToTree(place));
+        return nodes(200, objectNode);
     }
 }
