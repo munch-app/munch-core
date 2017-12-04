@@ -40,6 +40,7 @@ public class LocationService extends AbstractService {
 
             // Suggest Location when user is searching with location service
             GET("/suggest", this::suggest);
+            GET("/search", this::search);
         });
     }
 
@@ -54,7 +55,7 @@ public class LocationService extends AbstractService {
     }
 
     /**
-     * ?text={String}
+     * ?text={String}&size={Int}
      *
      * @param call json call
      * @return List of Location or empty
@@ -62,6 +63,20 @@ public class LocationService extends AbstractService {
      */
     private List<Location> suggest(JsonCall call) {
         String text = call.queryString("text");
-        return locationClient.suggest(text, 10);
+        int size = call.queryInt("size", 10);
+        return locationClient.suggest(text, size);
+    }
+
+    /**
+     * ?text={String}&size={Int}
+     *
+     * @param call json call
+     * @return List of Location or empty
+     * code: 200 = ok
+     */
+    private List<Location> search(JsonCall call) {
+        String text = call.queryString("text");
+        int size = call.queryInt("size", 10);
+        return locationClient.search(text, size);
     }
 }

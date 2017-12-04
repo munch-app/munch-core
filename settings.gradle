@@ -1,4 +1,3 @@
 rootProject.name = 'munch-core'
 
-// Tier 0 Service Api Gateway
 include 'service-api'

@@ -4,9 +4,9 @@ dependencies {
 
     compile group: 'catalyst', name: 'retriable-utils', version: ccVersion
     compile group: 'munch.data', name: 'data-client', version: dataVersion
-    compile group: 'fr.dudie', name: 'nominatim-api', version: '3.3'
 
     // Injection
+    compile group: 'fr.dudie', name: 'nominatim-api', version: '3.3'
     compile group: 'com.google.inject', name: 'guice', version: '4.1.0'
     compile group: 'com.google.inject.extensions', name: 'guice-multibindings', version: '4.1.0'
 }
