@@ -9,21 +9,21 @@ import munch.data.structure.SearchQuery;
  * Project: munch-core
  */
 public final class SearchNoResultAnywhereCard implements SearchCard {
-    private SearchQuery query;
+    private SearchQuery searchQuery;
 
     public SearchNoResultAnywhereCard() {
     }
 
-    public SearchNoResultAnywhereCard(SearchQuery query) {
-        this.query = query;
+    public SearchNoResultAnywhereCard(SearchQuery searchQuery) {
+        this.searchQuery = searchQuery;
     }
 
-    public SearchQuery getQuery() {
-        return query;
+    public SearchQuery getSearchQuery() {
+        return searchQuery;
     }
 
-    public void setQuery(SearchQuery query) {
-        this.query = query;
+    public void setSearchQuery(SearchQuery searchQuery) {
+        this.searchQuery = searchQuery;
     }
 
     @Override
