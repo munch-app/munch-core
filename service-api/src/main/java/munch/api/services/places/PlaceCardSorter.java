@@ -24,6 +24,9 @@ public final class PlaceCardSorter {
                     "basic_Address_20170924",
                     "basic_BusinessHour_20170907"),
 
+            CardGroup.ofHeader("header_Instagram_20171208",
+                    "vendor_InstagramMedia_20171204"),
+
             CardGroup.ofHeader("header_Article_20171112",
                     "vendor_Article_20171029"),
 
