@@ -8,13 +8,13 @@ import munch.data.structure.SearchQuery;
  * Time: 12:36 AM
  * Project: munch-core
  */
-public final class SearchTryAnywhereCard implements SearchCard {
+public final class SearchNoResultAnywhereCard implements SearchCard {
     private SearchQuery query;
 
-    public SearchTryAnywhereCard() {
+    public SearchNoResultAnywhereCard() {
     }
 
-    public SearchTryAnywhereCard(SearchQuery query) {
+    public SearchNoResultAnywhereCard(SearchQuery query) {
         this.query = query;
     }
 
@@ -28,7 +28,7 @@ public final class SearchTryAnywhereCard implements SearchCard {
 
     @Override
     public String getCardId() {
-        return "injected_TryAnywhere_20171208";
+        return "injected_NoResultAnywhere_20171208";
     }
 
     @Override

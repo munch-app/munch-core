@@ -43,15 +43,16 @@ public final class SearchManager {
     }
 
     private void injectCards(List<SearchCard> cards, SearchQuery query) {
-        if (cards.isEmpty()) {
-            // Inject No Result Card
-            if (query.getFrom() == 0) {
-                cards.add(0, CARD_NO_RESULT);
-            }
-
-            if (query.getLatLng() != null && query.getLocation() == null) {
+        if (cards.isEmpty() && query.getFrom() == 0) {
+            if (query.getLatLng() != null &&
+                    query.getLocation() == null ||
+                    !"singapore".equals(query.getLocation().getId())) {
+                // Inject Search Anywhere Card
                 query.setLocation(LOCATION_SINGAPORE);
-                cards.add(0, new SearchTryAnywhereCard(query));
+                cards.add(0, new SearchNoResultAnywhereCard(query));
+            } else {
+                // Inject No Result Card
+                cards.add(0, CARD_NO_RESULT);
             }
         }
 
@@ -63,6 +64,7 @@ public final class SearchManager {
 
     private static Location createSingapore() {
         Location location = new Location();
+        location.setId("singapore");
         location.setName("Singapore");
         location.setCountry("singapore");
         location.setCity("singapore");
