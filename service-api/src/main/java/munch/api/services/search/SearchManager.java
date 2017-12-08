@@ -48,8 +48,16 @@ public final class SearchManager {
                     query.getLocation() == null ||
                     !"singapore".equals(query.getLocation().getId())) {
                 // Inject Search Anywhere Card
+                SearchNoResultLocationCard card = new SearchNoResultLocationCard();
+                if (query.getLocation() != null) {
+                    card.setLocationName(query.getLocation().getName());
+                } else {
+                    card.setLocationName("Nearby");
+                }
+
                 query.setLocation(LOCATION_SINGAPORE);
-                cards.add(0, new SearchNoResultAnywhereCard(query));
+                card.setSearchQuery(query);
+                cards.add(0, card);
             } else {
                 // Inject No Result Card
                 cards.add(0, CARD_NO_RESULT);

@@ -8,14 +8,16 @@ import munch.data.structure.SearchQuery;
  * Time: 12:36 AM
  * Project: munch-core
  */
-public final class SearchNoResultAnywhereCard implements SearchCard {
+public final class SearchNoResultLocationCard implements SearchCard {
+    private String locationName;
     private SearchQuery searchQuery;
 
-    public SearchNoResultAnywhereCard() {
+    public String getLocationName() {
+        return locationName;
     }
 
-    public SearchNoResultAnywhereCard(SearchQuery searchQuery) {
-        this.searchQuery = searchQuery;
+    public void setLocationName(String locationName) {
+        this.locationName = locationName;
     }
 
     public SearchQuery getSearchQuery() {
@@ -28,7 +30,7 @@ public final class SearchNoResultAnywhereCard implements SearchCard {
 
     @Override
     public String getCardId() {
-        return "injected_NoResultAnywhere_20171208";
+        return "injected_NoResultLocation_20171208";
     }
 
     @Override
