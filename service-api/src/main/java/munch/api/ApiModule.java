@@ -1,17 +1,16 @@
 package munch.api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import munch.api.clients.ClientModule;
 import munch.api.services.ServiceModule;
 import munch.data.dynamodb.DynamoModule;
 import munch.data.elastic.ElasticModule;
-import munch.restful.server.JsonService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by: Fuxing
@@ -20,18 +19,13 @@ import munch.restful.server.JsonService;
  * Project: munch-core
  */
 public class ApiModule extends AbstractModule {
+    private static final Logger logger = LoggerFactory.getLogger(ApiModule.class);
 
     @Override
     protected void configure() {
-        install(new ClientModule());
         install(new ServiceModule());
         install(new DynamoModule());
         install(new ElasticModule());
-    }
-
-    @Provides
-    ObjectMapper provideObjectMapper() {
-        return JsonService.objectMapper;
     }
 
     @Provides
@@ -45,7 +39,12 @@ public class ApiModule extends AbstractModule {
      * @param args not required
      */
     public static void main(String[] args) {
-        Injector injector = Guice.createInjector(new ApiModule());
-        injector.getInstance(ApiServer.class).start();
+        try {
+            Injector injector = Guice.createInjector(new ApiModule());
+            injector.getInstance(ApiServer.class).start();
+        } catch (Exception e) {
+            logger.error("Error Starting ApiModule", e);
+            throw e;
+        }
     }
 }

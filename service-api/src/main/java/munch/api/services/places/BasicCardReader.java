@@ -6,10 +6,10 @@ import com.google.common.collect.ImmutableSet;
 import munch.api.services.places.cards.*;
 import munch.data.structure.Place;
 import munch.data.structure.PlaceCard;
+import munch.restful.core.JsonUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
-import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,12 +24,7 @@ import java.util.stream.Collectors;
  */
 @Singleton
 public final class BasicCardReader {
-    private final ObjectMapper objectMapper;
-
-    @Inject
-    public BasicCardReader(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
+    private static final ObjectMapper objectMapper = JsonUtils.objectMapper;
 
     /**
      * @param place place to generate from

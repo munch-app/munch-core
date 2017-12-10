@@ -5,11 +5,11 @@ allprojects {
     apply plugin: 'maven-publish'
 
     group 'munch.core'
-    version '0.4.1'
+    version '0.5.0'
 
     ext.restfulVersion = '1.1.1'
-    ext.ccVersion = '2.1.2'
-    ext.dataVersion = '1.2.0-SNAPSHOT'
+    ext.ccVersion = '2.1.3'
+    ext.dataVersion = '1.3.0-SNAPSHOT'
 
     sourceCompatibility = 1.9
     targetCompatibility = 1.9

@@ -54,7 +54,8 @@ public class SearchService extends AbstractService {
      * @param call json call
      * @return list of Place result
      */
-    private List<SearchResult> suggest(JsonCall call, JsonNode request) {
+    private List<SearchResult> suggest(JsonCall call) {
+        JsonNode request = call.bodyAsJson();
         int size = request.get("size").asInt();
         String text = request.get("text").asText();
         return searchClient.suggest(text, null, size);

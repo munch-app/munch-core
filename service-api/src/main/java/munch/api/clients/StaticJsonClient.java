@@ -3,8 +3,8 @@ package munch.api.clients;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import munch.restful.core.JsonUtils;
 
 import java.io.IOException;
 import java.net.URL;
@@ -19,12 +19,7 @@ import java.net.URL;
  */
 @Singleton
 public final class StaticJsonClient {
-    private final ObjectMapper objectMapper;
-
-    @Inject
-    public StaticJsonClient(ObjectMapper objectMapper) throws IOException {
-        this.objectMapper = objectMapper;
-    }
+    private static final ObjectMapper objectMapper = JsonUtils.objectMapper;
 
     /**
      * @param resource resource name with extension

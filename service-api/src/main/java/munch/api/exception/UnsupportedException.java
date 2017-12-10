@@ -11,6 +11,6 @@ import munch.restful.core.exception.StructuredException;
 public class UnsupportedException extends StructuredException {
 
     public UnsupportedException() {
-        super(401, "UnsupportedException", "Your application version or build is not supported. Please update your app.");
+        super(401, "UnsupportedException", "Your application version is not supported. Please update your app.");
     }
 }
