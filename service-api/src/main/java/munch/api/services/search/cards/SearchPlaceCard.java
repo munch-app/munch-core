@@ -2,6 +2,7 @@ package munch.api.services.search.cards;
 
 
 import munch.data.structure.Place;
+import munch.data.structure.SourcedImage;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ public final class SearchPlaceCard implements SearchCard {
     private Place.Location location;
 
     private List<String> tags;
-    private List<Place.Image> images;
+    private List<SourcedImage> images;
     private List<Place.Hour> hours;
     private Place.Review review;
 
@@ -39,11 +40,11 @@ public final class SearchPlaceCard implements SearchCard {
         this.placeId = placeId;
     }
 
-    public List<Place.Image> getImages() {
+    public List<SourcedImage> getImages() {
         return images;
     }
 
-    public void setImages(List<Place.Image> images) {
+    public void setImages(List<SourcedImage> images) {
         this.images = images;
     }
 
