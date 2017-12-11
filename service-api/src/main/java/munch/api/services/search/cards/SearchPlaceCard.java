@@ -19,10 +19,11 @@ public final class SearchPlaceCard implements SearchCard {
     private List<String> tags;
     private List<Place.Image> images;
     private List<Place.Hour> hours;
+    private Place.Review review;
 
     @Override
     public String getCardId() {
-        return "basic_Place_20171018";
+        return "basic_Place_20171211";
     }
 
     @Override
@@ -76,5 +77,13 @@ public final class SearchPlaceCard implements SearchCard {
 
     public void setHours(List<Place.Hour> hours) {
         this.hours = hours;
+    }
+
+    public Place.Review getReview() {
+        return review;
+    }
+
+    public void setReview(Place.Review review) {
+        this.review = review;
     }
 }
