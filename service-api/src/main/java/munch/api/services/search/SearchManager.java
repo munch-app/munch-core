@@ -35,9 +35,17 @@ public final class SearchManager {
      * @return List of SearchCard
      */
     public List<SearchCard> search(SearchQuery query) {
+        query.setRadius(resolveRadius(query));
         List<Place> places = placeClient.search(query);
         List<SearchCard> cards = cardParser.parseCards(places);
         injectedCardManager.inject(cards, query);
         return cards;
+    }
+
+    private static double resolveRadius(SearchQuery query) {
+        Double radius = query.getRadius();
+        if (radius == null) return 800; // Default radius
+        if (radius > 3000) return 3000; // Max radius for nearby search
+        return radius;
     }
 }
