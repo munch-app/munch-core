@@ -48,7 +48,7 @@ public final class InjectedCardManager {
         }
 
         if (isContainerAllowed(query)) {
-            List<Container> containers = containerClient.search(query.getLatLng(), 1000, 8);
+            List<Container> containers = containerClient.search(query.getLatLng(), 800, 15);
             if (!containers.isEmpty()) {
                 injectedList.add(new SearchContainersCard(containers));
             }
