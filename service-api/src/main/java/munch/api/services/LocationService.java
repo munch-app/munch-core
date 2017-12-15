@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.clients.StaticJsonClient;
-import munch.data.clients.LocationClient;
-import munch.data.structure.Location;
+import munch.data.clients.SearchClient;
+import munch.data.structure.SearchResult;
 import munch.restful.server.JsonCall;
 
 import java.io.IOException;
@@ -20,12 +20,12 @@ import java.util.List;
 @Singleton
 public class LocationService extends AbstractService {
 
-    private final LocationClient locationClient;
+    private final SearchClient searchClient;
     private final StaticJsonClient jsonResource;
 
     @Inject
-    public LocationService(LocationClient locationClient, StaticJsonClient jsonResource) {
-        this.locationClient = locationClient;
+    public LocationService(SearchClient searchClient, StaticJsonClient jsonResource) {
+        this.searchClient = searchClient;
         this.jsonResource = jsonResource;
     }
 
@@ -61,10 +61,10 @@ public class LocationService extends AbstractService {
      * @return List of Location or empty
      * code: 200 = ok
      */
-    private List<Location> suggest(JsonCall call) {
+    private List<SearchResult> suggest(JsonCall call) {
         String text = call.queryString("text");
         int size = call.queryInt("size", 10);
-        return locationClient.suggest(text, size);
+        return searchClient.suggest(List.of("Location", "Container"), text, null, size);
     }
 
     /**
@@ -74,9 +74,9 @@ public class LocationService extends AbstractService {
      * @return List of Location or empty
      * code: 200 = ok
      */
-    private List<Location> search(JsonCall call) {
+    private List<SearchResult> search(JsonCall call) {
         String text = call.queryString("text");
         int size = call.queryInt("size", 10);
-        return locationClient.search(text, size);
+        return searchClient.search(List.of("Location", "Container"), text, size);
     }
 }
