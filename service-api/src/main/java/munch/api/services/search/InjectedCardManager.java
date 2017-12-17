@@ -11,7 +11,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Created by: Fuxing
@@ -64,9 +63,9 @@ public final class InjectedCardManager {
 
                 // Inject No Result Location Card with location name
                 SearchNoResultLocationCard card = new SearchNoResultLocationCard();
-                Optional.ofNullable(query.getFilter().getLocation())
-                        .ifPresent(loc -> card.setLocationName(loc.getName()));
+                card.setLocationName(getLocationName(query));
                 query.getFilter().setLocation(LOCATION_SINGAPORE);
+                query.getFilter().setContainers(List.of());
                 card.setSearchQuery(query);
 
                 injectedList.add(card);
@@ -74,6 +73,18 @@ public final class InjectedCardManager {
         }
 
         return injectedList;
+    }
+
+    private static String getLocationName(SearchQuery query) {
+        if (query.getFilter().getContainers() != null) {
+            if (!query.getFilter().getContainers().isEmpty()) {
+                return query.getFilter().getContainers().get(0).getName();
+            }
+        }
+        if (query.getFilter().getLocation() != null) {
+            return query.getFilter().getLocation().getName();
+        }
+        return null;
     }
 
     private static boolean isContainerAllowed(SearchQuery query) {
@@ -98,6 +109,10 @@ public final class InjectedCardManager {
         return true;
     }
 
+    /**
+     * @param query search query
+     * @return is location is anywhere
+     */
     private static boolean isLocationAnywhere(SearchQuery query) {
         if (query.getLatLng() == null) {
             // No current lat lng given hence
