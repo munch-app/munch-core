@@ -26,6 +26,7 @@ public final class PlaceCardSorter {
 
             CardGroup.ofHeader("header_About_20171112",
                     "basic_Description_20171109",
+                    "basic_Price_20171219",
                     "basic_Phone_20171117",
                     "basic_Website_20171109"),
 

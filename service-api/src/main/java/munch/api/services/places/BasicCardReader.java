@@ -38,6 +38,7 @@ public final class BasicCardReader {
         cards.add(createDescription(place));
         cards.add(createWebsite(place));
         cards.add(createPhone(place));
+        cards.add(createPrice(place));
         cards.add(createBusinessHour(place));
         cards.add(createLocation(place));
 
@@ -86,6 +87,16 @@ public final class BasicCardReader {
 
         PlacePhoneCard card = new PlacePhoneCard();
         card.setPhone(phone);
+        return card;
+    }
+
+    @Nullable
+    private PlacePriceCard createPrice(Place place) {
+        if (place.getPrice() == null) return null;
+        if (place.getPrice().getMiddle() == null) return null;
+
+        PlacePriceCard card = new PlacePriceCard();
+        card.setPrice(place.getPrice().getMiddle());
         return card;
     }
 
