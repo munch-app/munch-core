@@ -46,8 +46,9 @@ public final class InjectedCardManager {
             injectedList.add(CARD_NO_LOCATION);
         }
 
-        if (isContainerAllowed(query)) {
-            List<Container> containers = containerClient.search(query.getLatLng(), 800, 15);
+        String containerLatLng = getContainerLocation(query);
+        if (containerLatLng != null) {
+            List<Container> containers = containerClient.search(containerLatLng, 800, 15);
             if (!containers.isEmpty()) {
                 injectedList.add(new SearchContainersCard(containers));
             }
@@ -87,26 +88,28 @@ public final class InjectedCardManager {
         return null;
     }
 
-    private static boolean isContainerAllowed(SearchQuery query) {
-        if (query.getLatLng() == null) return false;
-        if (StringUtils.isNotBlank(query.getQuery())) return false;
+    private static String getContainerLocation(SearchQuery query) {
+        // Condition checks
+        if (StringUtils.isNotBlank(query.getQuery())) return null;
+        if (query.getSort() != null) {
+            String sortType = query.getSort().getType();
+            if (StringUtils.isNotBlank(sortType) && !SearchQuery.Sort.TYPE_MUNCH_RANK.equals(sortType)) {
+                return null;
+            }
+        }
 
         if (query.getFilter() != null) {
             SearchQuery.Filter filter = query.getFilter();
             if (filter.getContainers() != null) {
-                if (!filter.getContainers().isEmpty()) return false;
+                if (!filter.getContainers().isEmpty()) return null;
             }
 
-            if (filter.getLocation() != null) return false;
-        }
-
-        if (query.getSort() != null) {
-            if (SearchQuery.Sort.TYPE_MUNCH_RANK.equals(query.getSort().getType())) {
-                return false;
+            if (filter.getLocation() != null) {
+                return filter.getLocation().getLatLng();
             }
         }
 
-        return true;
+        return query.getLatLng();
     }
 
     /**
