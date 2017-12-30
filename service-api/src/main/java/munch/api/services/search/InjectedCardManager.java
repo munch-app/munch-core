@@ -105,6 +105,7 @@ public final class InjectedCardManager {
             }
 
             if (filter.getLocation() != null) {
+                if ("singapore".equals(filter.getLocation().getId())) return null;
                 return filter.getLocation().getLatLng();
             }
         }
