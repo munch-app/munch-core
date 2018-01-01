@@ -5,7 +5,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.services.search.SearchManager;
 import munch.api.services.search.cards.SearchCard;
-import munch.data.clients.PlaceClient;
 import munch.data.clients.SearchClient;
 import munch.data.structure.SearchQuery;
 import munch.data.structure.SearchResult;
@@ -23,13 +22,11 @@ import java.util.List;
 public class SearchService extends AbstractService {
 
     private final SearchClient searchClient;
-    private final PlaceClient placeClient;
     private final SearchManager searchManager;
 
     @Inject
-    public SearchService(SearchClient searchClient, PlaceClient placeClient, SearchManager searchManager) {
+    public SearchService(SearchClient searchClient, SearchManager searchManager) {
         this.searchClient = searchClient;
-        this.placeClient = placeClient;
         this.searchManager = searchManager;
     }
 
@@ -39,6 +36,8 @@ public class SearchService extends AbstractService {
             POST("/suggest", this::suggest);
             POST("/search", this::search);
             POST("/count", this::count);
+
+            POST("/filter/price_range", this::filterPriceRange);
         });
     }
 
@@ -62,7 +61,7 @@ public class SearchService extends AbstractService {
     }
 
     /**
-     * @param call json call
+     * @param call json call with search query
      * @return list of Place
      * @see SearchQuery
      */
@@ -77,6 +76,15 @@ public class SearchService extends AbstractService {
      */
     private Long count(JsonCall call) {
         SearchQuery query = call.bodyAsObject(SearchQuery.class);
-        return placeClient.count(query);
+        return searchManager.count(query);
+    }
+
+    /**
+     * @param call json call with search query
+     * @return price range aggregations
+     */
+    private JsonNode filterPriceRange(JsonCall call) {
+        SearchQuery query = call.bodyAsObject(SearchQuery.class);
+        return nodes(200, searchManager.priceAggregation(query));
     }
 }
