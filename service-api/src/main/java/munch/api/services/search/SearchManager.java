@@ -95,15 +95,15 @@ public final class SearchManager {
         result.put("min", percentValues.path("0.0").asDouble());
         result.put("max", percentValues.path("100.0").asDouble());
 
-        result.putObject("cheap")
+        result.putObject("cheapRange")
                 .put("min", percentValues.path("0.0").asDouble())
                 .put("max", percentValues.path("30.0").asDouble());
 
-        result.putObject("average")
+        result.putObject("averageRange")
                 .put("min", percentValues.path("30.0").asDouble())
                 .put("max", percentValues.path("70.0").asDouble());
 
-        result.putObject("expensive")
+        result.putObject("expensiveRange")
                 .put("min", percentValues.path("70.0").asDouble())
                 .put("max", percentValues.path("100.0").asDouble());
         return result;

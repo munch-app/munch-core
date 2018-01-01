@@ -46,8 +46,8 @@ public final class InjectedCardManager {
             injectedList.add(CARD_NO_LOCATION);
         }
 
-        String containerLatLng = getContainerLocation(query);
-        if (containerLatLng != null) {
+        String containerLatLng = getLocationForContainerCards(query);
+        if (!isEmpty && containerLatLng != null) {
             List<Container> containers = containerClient.search(containerLatLng, 800, 15);
             if (!containers.isEmpty()) {
                 injectedList.add(new SearchContainersCard(containers));
@@ -88,7 +88,7 @@ public final class InjectedCardManager {
         return null;
     }
 
-    private static String getContainerLocation(SearchQuery query) {
+    private static String getLocationForContainerCards(SearchQuery query) {
         // Condition checks
         if (StringUtils.isNotBlank(query.getQuery())) return null;
         if (query.getSort() != null) {
