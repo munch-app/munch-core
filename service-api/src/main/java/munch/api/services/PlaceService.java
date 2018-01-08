@@ -50,7 +50,6 @@ public class PlaceService extends AbstractService {
 
             // Additional sorted data
             PATH("/data", () -> {
-                GET("", this::getData);
                 GET("/article", this::getArticles);
                 GET("/instagram", this::getInstagramMedias);
                 // Reviews
@@ -87,19 +86,6 @@ public class PlaceService extends AbstractService {
         objectNode.set("cards", objectMapper.valueToTree(cards));
         objectNode.set("place", objectMapper.valueToTree(place));
         return nodes(200, objectNode);
-    }
-
-    private JsonNode getData(JsonCall call) {
-        String placeId = call.pathString("placeId");
-        int size = querySize(call);
-        List<Article> articleList = articleClient.list(placeId, null, null, size);
-        List<InstagramMedia> instagramMediaList = instagramMediaClient.listByPlace(placeId, null, null, size);
-
-        // DataNode
-        ObjectNode dataNode = objectMapper.createObjectNode();
-        dataNode.set("article", objectMapper.valueToTree(articleList));
-        dataNode.set("instagram", objectMapper.valueToTree(instagramMediaList));
-        return nodes(200, dataNode);
     }
 
     private List<Article> getArticles(JsonCall call) {
