@@ -1,5 +1,7 @@
 package munch.collections;
 
+import java.util.Date;
+
 /**
  * Created by: Fuxing
  * Date: 9/1/18
@@ -7,20 +9,11 @@ package munch.collections;
  * Project: munch-core
  */
 public final class AddedPlace {
-    private String userId;
     private String placeId;
 
     private String sortKey;
 
-    private String createdDate;
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
+    private Date createdDate;
 
     public String getPlaceId() {
         return placeId;
@@ -38,11 +31,12 @@ public final class AddedPlace {
         this.sortKey = sortKey;
     }
 
-    public String getCreatedDate() {
+
+    public Date getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(String createdDate) {
+    public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
     }
 }

@@ -12,11 +12,15 @@ public final class PlaceCollection {
     private String userId;
     private String collectionId;
 
+    private String sortKey;
+
     private String name;
     private String description;
 
-    private Date createdDate;
     private Date updatedDate;
+    private Date createdDate;
+
+    // TODO Thumbnail image
 
     public String getUserId() {
         return userId;
@@ -32,6 +36,14 @@ public final class PlaceCollection {
 
     public void setCollectionId(String collectionId) {
         this.collectionId = collectionId;
+    }
+
+    public String getSortKey() {
+        return sortKey;
+    }
+
+    public void setSortKey(String sortKey) {
+        this.sortKey = sortKey;
     }
 
     public String getName() {
