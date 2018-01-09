@@ -8,8 +8,9 @@ dependencies {
     compile group: 'facebook-corpus', name: 'instagram-client', version: '2.1.0-SNAPSHOT'
     compile group: 'munch.article', name: 'client-article', version: '1.1.1-SNAPSHOT'
 
-    // Injection
     compile group: 'fr.dudie', name: 'nominatim-api', version: '3.3'
+
+    // Injection
     compile group: 'com.google.inject', name: 'guice', version: '4.1.0'
     compile group: 'com.google.inject.extensions', name: 'guice-multibindings', version: '4.1.0'
 }
