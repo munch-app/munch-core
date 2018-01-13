@@ -45,10 +45,8 @@ public final class CollectionPlaceClient {
 
     public void add(String userId, String collectionId, String placeId) {
         Objects.requireNonNull(userId);
-        Objects.requireNonNull(collectionId);
-        Objects.requireNonNull(placeId);
-
-        // TODO Validate collectionId & placeId
+        CollectionClient.validateUUID(collectionId, "collectionId");
+        CollectionClient.validateUUID(placeId, "placeId");
 
         Item item = new Item();
         item.with("uc", createKey(userId, collectionId));
