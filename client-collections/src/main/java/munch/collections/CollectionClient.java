@@ -31,6 +31,11 @@ public final class CollectionClient {
         this.sortIndex = table.getIndex("sortKey-index");
     }
 
+    /**
+     * Leaky Bucket or similar solution should be added on other endpoint to either prevent too many collections or abuse of system
+     *
+     * @param collection collection to add
+     */
     public void put(PlaceCollection collection) {
         Objects.requireNonNull(collection.getUserId());
         Objects.requireNonNull(collection.getName());
@@ -47,7 +52,6 @@ public final class CollectionClient {
 
         collection.setUpdatedDate(new Date());
 
-        // TODO Many Collection
         validateUUID(collection.getCollectionId(), "collectionId");
 
         validateLength(collection.getName(), 100, "name");

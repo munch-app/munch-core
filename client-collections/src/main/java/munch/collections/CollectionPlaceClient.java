@@ -64,6 +64,7 @@ public final class CollectionPlaceClient {
     }
 
     public long count(String userId, String collectionId) {
+        // TODO count need more efficient method
         Objects.requireNonNull(userId);
         Objects.requireNonNull(collectionId);
 
