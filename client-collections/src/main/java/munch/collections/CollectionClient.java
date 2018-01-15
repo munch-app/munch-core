@@ -2,6 +2,8 @@ package munch.collections;
 
 import com.amazonaws.services.dynamodbv2.document.*;
 import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import munch.restful.core.JsonUtils;
 import munch.restful.core.exception.ParamException;
 import org.apache.commons.lang3.StringUtils;
 
@@ -22,12 +24,15 @@ public final class CollectionClient {
     private static final Pattern PATTERN_UUID = Pattern.compile("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
     private static final String DYNAMO_TABLE_NAME = "munch-core.PlaceCollection";
 
+    private static final ObjectMapper objectMapper = JsonUtils.objectMapper;
+
     private final Table table;
     private final Index sortIndex;
 
     @Inject
     public CollectionClient(DynamoDB dynamoDB) {
         this.table = dynamoDB.getTable(DYNAMO_TABLE_NAME);
+        // sortKey-index will only project, userId, collectionId, sortKey, name, description, updatedDate & createdDate
         this.sortIndex = table.getIndex("sortKey-index");
     }
 
@@ -40,47 +45,34 @@ public final class CollectionClient {
         Objects.requireNonNull(collection.getUserId());
         Objects.requireNonNull(collection.getName());
 
-        if (StringUtils.isBlank(collection.getCollectionId())) {
-            collection.setCollectionId(UUID.randomUUID().toString());
-        }
-        if (StringUtils.isBlank(collection.getSortKey())) {
+        // Optional Inject
+        if (StringUtils.isBlank(collection.getCollectionId())) collection.setCollectionId(UUID.randomUUID().toString());
+        if (StringUtils.isBlank(collection.getSortKey()))
             collection.setSortKey(String.valueOf(System.currentTimeMillis()));
-        }
-        if (collection.getCreatedDate() == null) {
-            collection.setCreatedDate(new Date());
-        }
+        if (collection.getCreatedDate() == null) collection.setCreatedDate(new Date());
 
+        // Mandatory Inject
         collection.setUpdatedDate(new Date());
 
+        // Validate
         validateUUID(collection.getCollectionId(), "collectionId");
-
         validateLength(collection.getName(), 100, "name");
         validateLength(collection.getDescription(), 500, "description");
 
-        Item item = new Item();
-        item.with("userId", collection.getUserId());
-        item.with("collectionId", collection.getCollectionId());
-        item.with("sortKey", collection.getSortKey());
-
-        item.with("name", collection.getName());
-        item.with("description", collection.getDescription());
-
-        item.with("updatedDate", collection.getUpdatedDate().getTime());
-        item.with("createdDate", collection.getCreatedDate().getTime());
-        table.putItem(item);
+        table.putItem(toItem(collection));
     }
 
     public void delete(String userId, String collectionId) {
         Objects.requireNonNull(userId);
         Objects.requireNonNull(collectionId);
-        table.deleteItem("userId", userId, "collectionId", collectionId);
+        table.deleteItem("u", userId, "c", collectionId);
     }
 
     public PlaceCollection get(String userId, String collectionId) {
         Objects.requireNonNull(userId);
         Objects.requireNonNull(collectionId);
 
-        Item item = table.getItem("userId", userId, "collectionId", collectionId);
+        Item item = table.getItem("u", userId, "c", collectionId);
         if (item == null) return null;
         return fromItem(item);
     }
@@ -89,14 +81,14 @@ public final class CollectionClient {
         Objects.requireNonNull(userId);
 
         QuerySpec query = new QuerySpec()
-                .withHashKey("userId", userId)
+                .withHashKey("u", userId)
                 .withScanIndexForward(false)
                 .withMaxResultSize(size);
 
 
         // Set min, max place sort
         if (maxSortKey != null) {
-            query.withRangeKeyCondition(new RangeKeyCondition("sortKey").lt(maxSortKey));
+            query.withRangeKeyCondition(new RangeKeyCondition("s").lt(maxSortKey));
         }
 
         ItemCollection<QueryOutcome> collection = sortIndex.query(query);
@@ -107,18 +99,38 @@ public final class CollectionClient {
         return collections;
     }
 
+    private Item toItem(PlaceCollection collection) {
+        Item item = new Item();
+        item.with("u", collection.getUserId());
+        item.with("c", collection.getCollectionId());
+        item.with("s", collection.getSortKey());
+
+        item.with("n", collection.getName());
+        item.with("d", collection.getDescription());
+
+        item.with("t", collection.getThumbnail());
+        item.withJSON("p", JsonUtils.toString(collection.getAddedPlaces()));
+
+        item.with("ud", collection.getUpdatedDate().getTime());
+        item.with("cd", collection.getCreatedDate().getTime());
+        return item;
+    }
+
     private PlaceCollection fromItem(Item item) {
-        PlaceCollection placeCollection = new PlaceCollection();
-        placeCollection.setUserId(item.getString("userId"));
-        placeCollection.setCollectionId(item.getString("collectionId"));
-        placeCollection.setSortKey(item.getString("sortKey"));
+        PlaceCollection collection = new PlaceCollection();
+        collection.setUserId(item.getString("u"));
+        collection.setCollectionId(item.getString("c"));
+        collection.setSortKey(item.getString("s"));
 
-        placeCollection.setName(item.getString("name"));
-        placeCollection.setDescription(item.getString("description"));
+        collection.setName(item.getString("n"));
+        collection.setDescription(item.getString("d"));
 
-        placeCollection.setUpdatedDate(new Date(item.getLong("updatedDate")));
-        placeCollection.setCreatedDate(new Date(item.getLong("createdDate")));
-        return placeCollection;
+        collection.setThumbnail(item.getMap("t"));
+        collection.setAddedPlaces(JsonUtils.toList(item.getJSON("p"), PlaceCollection.AddedPlace.class));
+
+        collection.setUpdatedDate(new Date(item.getLong("ud")));
+        collection.setCreatedDate(new Date(item.getLong("cd")));
+        return collection;
     }
 
     public static void validateLength(String text, int length, String type) {

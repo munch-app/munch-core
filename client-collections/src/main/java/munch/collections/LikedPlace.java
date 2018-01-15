@@ -1,6 +1,7 @@
 package munch.collections;
 
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * Created by: Fuxing
@@ -8,11 +9,9 @@ import java.util.Date;
  * Time: 4:29 PM
  * Project: munch-core
  */
-public final class AddedPlace {
+public final class LikedPlace {
     private String placeId;
-
     private String sortKey;
-
     private Date createdDate;
 
     public String getPlaceId() {
@@ -31,12 +30,24 @@ public final class AddedPlace {
         this.sortKey = sortKey;
     }
 
-
     public Date getCreatedDate() {
         return createdDate;
     }
 
     public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LikedPlace that = (LikedPlace) o;
+        return Objects.equals(placeId, that.placeId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(placeId);
     }
 }

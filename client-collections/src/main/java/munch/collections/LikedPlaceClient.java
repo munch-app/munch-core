@@ -1,9 +1,16 @@
 package munch.collections;
 
+import com.amazonaws.services.dynamodbv2.document.*;
+import com.amazonaws.services.dynamodbv2.document.spec.GetItemSpec;
+import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
+
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by: Fuxing
@@ -13,13 +20,15 @@ import java.util.List;
  */
 @Singleton
 public final class LikedPlaceClient {
-    private static final String COLLECTION_ID = "liked";
+    private static final String DYNAMO_TABLE_NAME = "munch-core.LikedPlace";
 
-    private final CollectionPlaceClient collectionPlaceClient;
+    private final Table table;
+    private final Index sortIndex;
 
     @Inject
-    public LikedPlaceClient(CollectionPlaceClient collectionPlaceClient) {
-        this.collectionPlaceClient = collectionPlaceClient;
+    public LikedPlaceClient(DynamoDB dynamoDB) {
+        this.table = dynamoDB.getTable(DYNAMO_TABLE_NAME);
+        this.sortIndex = table.getIndex("sortKey-index");
     }
 
     /**
@@ -28,7 +37,13 @@ public final class LikedPlaceClient {
      * @return whether the user liked to place
      */
     public boolean isLiked(String userId, String placeId) {
-        return collectionPlaceClient.isAdded(userId, COLLECTION_ID, placeId);
+        Objects.requireNonNull(userId);
+        CollectionClient.validateUUID(placeId, "placeId");
+
+        GetItemSpec getSpec = new GetItemSpec();
+        getSpec.withPrimaryKey("u", userId, "p", placeId);
+        getSpec.withAttributesToGet("u", "p");
+        return table.getItem(getSpec) != null;
     }
 
     /**
@@ -38,7 +53,15 @@ public final class LikedPlaceClient {
      * @param placeId id of place
      */
     public void add(String userId, String placeId) {
-        collectionPlaceClient.add(userId, COLLECTION_ID, placeId);
+        Objects.requireNonNull(userId);
+        CollectionClient.validateUUID(placeId, "placeId");
+
+        Item item = new Item();
+        item.with("u", userId);
+        item.with("p", placeId);
+        item.with("s", String.valueOf(System.currentTimeMillis()));
+        item.with("c", System.currentTimeMillis());
+        table.putItem(item);
     }
 
     /**
@@ -48,24 +71,43 @@ public final class LikedPlaceClient {
      * @param placeId id of place
      */
     public void remove(String userId, String placeId) {
-        collectionPlaceClient.remove(userId, COLLECTION_ID, placeId);
-    }
+        Objects.requireNonNull(userId);
+        CollectionClient.validateUUID(placeId, "placeId");
 
-    /**
-     * @param userId user id of person
-     * @return number of place in collection
-     */
-    public long count(String userId) {
-        return collectionPlaceClient.count(userId, COLLECTION_ID);
+        table.deleteItem("u", userId, "p", placeId);
     }
 
     /**
      * @param userId     user id of person
-     * @param maxPlaceId max id of place, don't show result after this id
+     * @param maxSortKey max id of place, don't show result after this id
      * @param size       size per query
      * @return List of Place liked by the user
      */
-    public List<AddedPlace> list(String userId, @Nullable String maxPlaceId, int size) {
-        return collectionPlaceClient.list(userId, COLLECTION_ID, maxPlaceId, size);
+    public List<LikedPlace> list(String userId, @Nullable String maxSortKey, int size) {
+        Objects.requireNonNull(userId);
+
+        QuerySpec query = new QuerySpec()
+                .withHashKey("u", userId)
+                .withScanIndexForward(false)
+                .withMaxResultSize(size);
+
+
+        // Set min, max place sort
+        if (maxSortKey != null) {
+            query.withRangeKeyCondition(new RangeKeyCondition("s").lt(maxSortKey));
+        }
+
+        ItemCollection<QueryOutcome> collection = sortIndex.query(query);
+
+        // Collect results
+        List<LikedPlace> addedPlaces = new ArrayList<>();
+        collection.forEach(item -> {
+            LikedPlace addedPlace = new LikedPlace();
+            addedPlace.setPlaceId(item.getString("p"));
+            addedPlace.setSortKey(item.getString("s"));
+            addedPlace.setCreatedDate(new Date(item.getLong("c")));
+            addedPlaces.add(addedPlace);
+        });
+        return addedPlaces;
     }
 }
