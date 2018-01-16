@@ -78,6 +78,7 @@ public final class CollectionService extends AbstractService {
             for (LikedPlace likedPlace : likedPlaceClient.list(subject, maxSortKey, size)) {
                 likes.addObject()
                         .put("sortKey", likedPlace.getSortKey())
+                        .put("createdDate", likedPlace.getCreatedDate().getTime())
                         .set("place", objectMapper.valueToTree(placeClient.get(likedPlace.getPlaceId())));
             }
             return nodes(200, likes);

@@ -96,6 +96,7 @@ public final class PlaceCollection {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class AddedPlace {
         private String placeId;
+        private String sortKey;
         private Date createdDate;
 
         public String getPlaceId() {
@@ -104,6 +105,14 @@ public final class PlaceCollection {
 
         public void setPlaceId(String placeId) {
             this.placeId = placeId;
+        }
+
+        public String getSortKey() {
+            return sortKey;
+        }
+
+        public void setSortKey(String sortKey) {
+            this.sortKey = sortKey;
         }
 
         public Date getCreatedDate() {
