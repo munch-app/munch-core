@@ -59,13 +59,13 @@ public final class CollectionClient {
 
     public void delete(String userId, String collectionId) {
         Objects.requireNonNull(userId);
-        Objects.requireNonNull(collectionId);
+        validateUUID(collectionId, "collectionId");
         table.deleteItem("u", userId, "c", collectionId);
     }
 
     public PlaceCollection get(String userId, String collectionId) {
         Objects.requireNonNull(userId);
-        Objects.requireNonNull(collectionId);
+        validateUUID(collectionId, "collectionId");
 
         Item item = table.getItem("u", userId, "c", collectionId);
         if (item == null) return null;

@@ -1,7 +1,6 @@
 package munch.collections;
 
 import com.amazonaws.services.dynamodbv2.document.*;
-import com.amazonaws.services.dynamodbv2.document.spec.GetItemSpec;
 import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
 import com.amazonaws.services.dynamodbv2.model.Select;
 
@@ -13,6 +12,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import static munch.collections.CollectionClient.validateUUID;
+
 /**
  * Created by: Fuxing
  * Date: 16/1/2018
@@ -21,7 +22,7 @@ import java.util.Objects;
  */
 @Singleton
 public final class CollectionPlaceClient {
-    private static final String DYNAMO_TABLE_NAME = "munch-core.AddedPlace";
+    private static final String DYNAMO_TABLE_NAME = "munch-core.PlaceCollection.AddedPlace";
 
     private final Table table;
     private final Index sortIndex;
@@ -32,42 +33,27 @@ public final class CollectionPlaceClient {
         this.sortIndex = table.getIndex("sortKey-index");
     }
 
-    public boolean isAdded(String userId, String collectionId, String placeId) {
-        Objects.requireNonNull(userId);
-        Objects.requireNonNull(collectionId);
-        Objects.requireNonNull(placeId);
-
-        GetItemSpec getSpec = new GetItemSpec();
-        getSpec.withPrimaryKey("uc", createKey(userId, collectionId), "p", placeId);
-        getSpec.withAttributesToGet("uc", "p");
-        return table.getItem(getSpec) != null;
-    }
-
     public void add(String userId, String collectionId, String placeId) {
         Objects.requireNonNull(userId);
-        Objects.requireNonNull(collectionId);
-        Objects.requireNonNull(placeId);
-
-        // TODO Validate collectionId & placeId
+        validateUUID(placeId, "placeId");
 
         Item item = new Item();
         item.with("uc", createKey(userId, collectionId));
         item.with("p", placeId);
-        item.with("s", String.valueOf(System.currentTimeMillis()));
+        item.with("s", System.currentTimeMillis());
         item.with("c", System.currentTimeMillis());
         table.putItem(item);
     }
 
     public void remove(String userId, String collectionId, String placeId) {
         Objects.requireNonNull(userId);
-        Objects.requireNonNull(collectionId);
-        Objects.requireNonNull(placeId);
+        validateUUID(placeId, "placeId");
+
         table.deleteItem("uc", createKey(userId, collectionId), "p", placeId);
     }
 
     public long count(String userId, String collectionId) {
         Objects.requireNonNull(userId);
-        Objects.requireNonNull(collectionId);
 
         QuerySpec query = new QuerySpec()
                 .withHashKey("uc", createKey(userId, collectionId))
@@ -77,7 +63,6 @@ public final class CollectionPlaceClient {
 
     public List<PlaceCollection.AddedPlace> list(String userId, String collectionId, @Nullable String maxSortKey, int size) {
         Objects.requireNonNull(userId);
-        Objects.requireNonNull(collectionId);
 
         QuerySpec query = new QuerySpec()
                 .withHashKey("uc", createKey(userId, collectionId))
@@ -99,6 +84,7 @@ public final class CollectionPlaceClient {
     }
 
     private static String createKey(String userId, String collectionId) {
+        validateUUID(collectionId, "collectionId");
         return userId + "_" + collectionId;
     }
 
@@ -108,5 +94,4 @@ public final class CollectionPlaceClient {
         addedPlace.setCreatedDate(new Date(item.getLong("c")));
         return addedPlace;
     }
-
 }

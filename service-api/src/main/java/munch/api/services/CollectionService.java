@@ -2,18 +2,14 @@ package munch.api.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import munch.collections.CollectionClient;
-import munch.collections.LikedPlace;
-import munch.collections.LikedPlaceClient;
-import munch.collections.PlaceCollection;
+import munch.collections.*;
 import munch.data.clients.PlaceClient;
-import munch.restful.core.RestfulMeta;
+import munch.data.structure.Place;
 import munch.restful.server.JsonCall;
 import munch.restful.server.auth0.authenticate.JwtAuthenticator;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -24,18 +20,20 @@ import java.util.List;
  */
 @Singleton
 public final class CollectionService extends AbstractService {
-
     private final JwtAuthenticator authenticator;
-    private final CollectionClient collectionClient;
     private final LikedPlaceClient likedPlaceClient;
+
+    private final CollectionClient collectionClient;
+    private final CollectionPlaceClient collectionPlaceClient;
 
     private final PlaceClient placeClient;
 
     @Inject
-    public CollectionService(JwtAuthenticator authenticator, CollectionClient collectionClient, LikedPlaceClient likedPlaceClient, PlaceClient placeClient) {
+    public CollectionService(JwtAuthenticator authenticator, CollectionClient collectionClient, LikedPlaceClient likedPlaceClient, CollectionPlaceClient collectionPlaceClient, PlaceClient placeClient) {
         this.authenticator = authenticator;
         this.collectionClient = collectionClient;
         this.likedPlaceClient = likedPlaceClient;
+        this.collectionPlaceClient = collectionPlaceClient;
         this.placeClient = placeClient;
     }
 
@@ -46,8 +44,8 @@ public final class CollectionService extends AbstractService {
         PATH("/collections", () -> {
             PATH("/likes", () -> {
                 GET("/list", this::listLiked);
-                PUT("/:placeId", this::like);
-                DELETE("/:placeId", this::unlike);
+                PUT("/:placeId", this::putLike);
+                DELETE("/:placeId", this::removeLike);
             });
 
             GET("/list", this::listCollection);
@@ -80,14 +78,14 @@ public final class CollectionService extends AbstractService {
         return nodes(200, likes);
     }
 
-    private JsonNode like(JsonCall call) {
+    private JsonNode putLike(JsonCall call) {
         String placeId = call.pathString("placeId");
         String subject = call.getJWT().getSubject();
         likedPlaceClient.add(subject, placeId);
         return Meta200;
     }
 
-    private JsonNode unlike(JsonCall call) {
+    private JsonNode removeLike(JsonCall call) {
         String placeId = call.pathString("placeId");
         String subject = call.getJWT().getSubject();
         likedPlaceClient.remove(subject, placeId);
@@ -112,12 +110,27 @@ public final class CollectionService extends AbstractService {
         return placeCollection;
     }
 
-    private JsonNode getCollection(JsonCall call) {
+    private PlaceCollection getCollection(JsonCall call) {
         String subject = call.getJWT().getSubject();
         String collectionId = call.pathString("collectionId");
-        PlaceCollection collection = collectionClient.get(subject, collectionId);
-        // TODO Query Style
-        return null;
+        return collectionClient.get(subject, collectionId);
+    }
+
+    private JsonNode listPlaceCollection(JsonCall call) {
+        String subject = call.getJWT().getSubject();
+        String collectionId = call.pathString("collectionId");
+
+        String maxSortKey = call.queryString("maxSortKey", null);
+        int size = call.queryInt("size", 10);
+
+        ArrayNode arrayNode = objectMapper.createArrayNode();
+        collectionPlaceClient.list(subject, collectionId, maxSortKey, size).forEach(addedPlace -> {
+            arrayNode.addObject()
+                    .put("createdDate", addedPlace.getCreatedDate().getTime())
+                    .put("placeId", addedPlace.getPlaceId())
+                    .set("place", objectMapper.valueToTree(placeClient.get(addedPlace.getPlaceId())));
+        });
+        return nodes(200, arrayNode);
     }
 
     private PlaceCollection putCollection(JsonCall call) {
@@ -147,22 +160,17 @@ public final class CollectionService extends AbstractService {
 
         PlaceCollection collection = collectionClient.get(subject, collectionId);
         if (collection == null) return Meta404;
-        collection.getAddedPlaces().removeIf(addedPlace -> addedPlace.getPlaceId().equalsIgnoreCase(placeId));
 
-        if (collection.getAddedPlaces().size() >= 100) {
-            return nodes(RestfulMeta.builder()
-                    .code(400)
-                    .errorType("LimitException")
-                    .errorMessage("You can only have 100 places in your collection")
-                    .build());
+        Place place = placeClient.get(placeId);
+        if (place == null) return Meta404;
+
+        // Put Thumbnail if need to
+        if (collection.getThumbnail() == null) {
+            collection.setThumbnail(place.getImages().get(0).getImages());
+            collectionClient.put(collection);
         }
 
-        PlaceCollection.AddedPlace addedPlace = new PlaceCollection.AddedPlace();
-        addedPlace.setPlaceId(placeId);
-        addedPlace.setCreatedDate(new Date());
-        collection.getAddedPlaces().add(addedPlace);
-
-        collectionClient.put(collection);
+        collectionPlaceClient.add(subject, collectionId, placeId);
         return Meta200;
     }
 
@@ -171,11 +179,7 @@ public final class CollectionService extends AbstractService {
         String collectionId = call.pathString("collectionId");
         String placeId = call.pathString("placeId");
 
-        PlaceCollection collection = collectionClient.get(subject, collectionId);
-        if (collection == null) return Meta404;
-        collection.getAddedPlaces()
-                .removeIf(addedPlace -> addedPlace.getPlaceId().equalsIgnoreCase(placeId));
-        collectionClient.put(collection);
+        collectionPlaceClient.remove(subject, collectionId, placeId);
         return Meta200;
     }
 }
