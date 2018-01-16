@@ -31,7 +31,7 @@ public class ApiModule extends AbstractModule {
         Config config = ConfigFactory.load();
         final String issuer = config.getString("services.auth0.issuer");
 
-        install(new Auth0AuthenticationModule("https://api.partner.munchapp.co/", issuer));
+        install(new Auth0AuthenticationModule("https://api.munchapp.co/", issuer));
     }
 
     @Provides
