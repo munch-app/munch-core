@@ -21,12 +21,12 @@ import java.util.List;
 @Singleton
 public final class CollectionService extends AbstractService {
     private final JwtAuthenticator authenticator;
-    private final LikedPlaceClient likedPlaceClient;
-
-    private final CollectionClient collectionClient;
-    private final CollectionPlaceClient collectionPlaceClient;
 
     private final PlaceClient placeClient;
+
+    private final LikedPlaceClient likedPlaceClient;
+    private final CollectionClient collectionClient;
+    private final CollectionPlaceClient collectionPlaceClient;
 
     @Inject
     public CollectionService(JwtAuthenticator authenticator, CollectionClient collectionClient, LikedPlaceClient likedPlaceClient, CollectionPlaceClient collectionPlaceClient, PlaceClient placeClient) {
@@ -39,57 +39,139 @@ public final class CollectionService extends AbstractService {
 
     @Override
     public void route() {
+        BEFORE("/collections", authenticator::authenticate);
         BEFORE("/collections/*", authenticator::authenticate);
 
         PATH("/collections", () -> {
             PATH("/likes", () -> {
-                GET("/list", this::listLiked);
-                PUT("/:placeId", this::putLike);
-                DELETE("/:placeId", this::removeLike);
+                Liked liked = new Liked();
+                GET("", liked::list);
+                PUT("/:placeId", liked::put);
+                DELETE("/:placeId", liked::delete);
             });
 
-            GET("/list", this::listCollection);
-            POST("/new", this::postCollection);
+            GET("", this::listCollection);
+            POST("", this::createCollection);
 
             PATH("/:collectionId", () -> {
-                GET("", this::getCollection);
-                PUT("", this::putCollection);
-                DELETE("", this::deleteCollection);
+                CollectionId collectionId = new CollectionId();
+                GET("", collectionId::get);
+                PUT("", collectionId::put);
+                DELETE("", collectionId::delete);
 
-                PATH("/:placeId", () -> {
-                    PUT("", this::addPlace);
-                    DELETE("", this::removePlace);
+                PATH("/places", () -> {
+                    GET("", collectionId::listPlace);
+                    PUT("/:placeId", collectionId::addPlace);
+                    DELETE("/:placeId", collectionId::removePlace);
                 });
             });
         });
     }
 
-    private JsonNode listLiked(JsonCall call) {
-        String subject = call.getJWT().getSubject();
-        String maxSortKey = call.queryString("maxSortKey", null);
-        int size = call.queryInt("size", 20);
+    private class Liked {
+        private JsonNode list(JsonCall call) {
+            String subject = call.getJWT().getSubject();
+            String maxSortKey = call.queryString("maxSortKey", null);
+            int size = call.queryInt("size", 20);
 
-        ArrayNode likes = objectMapper.createArrayNode();
-        for (LikedPlace likedPlace : likedPlaceClient.list(subject, maxSortKey, size)) {
-            likes.addObject()
-                    .put("sortKey", likedPlace.getSortKey())
-                    .set("place", objectMapper.valueToTree(placeClient.get(likedPlace.getPlaceId())));
+            ArrayNode likes = objectMapper.createArrayNode();
+            for (LikedPlace likedPlace : likedPlaceClient.list(subject, maxSortKey, size)) {
+                likes.addObject()
+                        .put("sortKey", likedPlace.getSortKey())
+                        .set("place", objectMapper.valueToTree(placeClient.get(likedPlace.getPlaceId())));
+            }
+            return nodes(200, likes);
         }
-        return nodes(200, likes);
+
+        private JsonNode put(JsonCall call) {
+            String subject = call.getJWT().getSubject();
+            String placeId = call.pathString("placeId");
+
+            likedPlaceClient.add(subject, placeId);
+            return Meta200;
+        }
+
+        private JsonNode delete(JsonCall call) {
+            String subject = call.getJWT().getSubject();
+            String placeId = call.pathString("placeId");
+
+            likedPlaceClient.remove(subject, placeId);
+            return Meta200;
+        }
     }
 
-    private JsonNode putLike(JsonCall call) {
-        String placeId = call.pathString("placeId");
-        String subject = call.getJWT().getSubject();
-        likedPlaceClient.add(subject, placeId);
-        return Meta200;
-    }
+    private class CollectionId {
+        private PlaceCollection get(JsonCall call) {
+            String subject = call.getJWT().getSubject();
+            String collectionId = call.pathString("collectionId");
+            return collectionClient.get(subject, collectionId);
+        }
 
-    private JsonNode removeLike(JsonCall call) {
-        String placeId = call.pathString("placeId");
-        String subject = call.getJWT().getSubject();
-        likedPlaceClient.remove(subject, placeId);
-        return Meta200;
+        private PlaceCollection put(JsonCall call) {
+            String subject = call.getJWT().getSubject();
+            String collectionId = call.pathString("collectionId");
+
+            PlaceCollection placeCollection = call.bodyAsObject(PlaceCollection.class);
+            placeCollection.setUserId(subject);
+            placeCollection.setCollectionId(collectionId);
+
+            collectionClient.put(placeCollection);
+            return placeCollection;
+        }
+
+        private JsonNode delete(JsonCall call) {
+            String subject = call.getJWT().getSubject();
+            String collectionId = call.pathString("collectionId");
+
+            collectionClient.delete(subject, collectionId);
+            return Meta200;
+        }
+
+        private JsonNode listPlace(JsonCall call) {
+            String subject = call.getJWT().getSubject();
+            String collectionId = call.pathString("collectionId");
+            String maxSortKey = call.queryString("maxSortKey", null);
+            int size = call.queryInt("size", 10);
+
+            ArrayNode arrayNode = objectMapper.createArrayNode();
+            collectionPlaceClient.list(subject, collectionId, maxSortKey, size).forEach(addedPlace -> {
+                arrayNode.addObject()
+                        .put("createdDate", addedPlace.getCreatedDate().getTime())
+                        .put("placeId", addedPlace.getPlaceId())
+                        .set("place", objectMapper.valueToTree(placeClient.get(addedPlace.getPlaceId())));
+            });
+            return nodes(200, arrayNode);
+        }
+
+        private JsonNode addPlace(JsonCall call) {
+            String subject = call.getJWT().getSubject();
+            String collectionId = call.pathString("collectionId");
+            String placeId = call.pathString("placeId");
+
+            PlaceCollection collection = collectionClient.get(subject, collectionId);
+            if (collection == null) return Meta404;
+
+            Place place = placeClient.get(placeId);
+            if (place == null) return Meta404;
+
+            // Put Thumbnail if need to
+            if (collection.getThumbnail() == null) {
+                collection.setThumbnail(place.getImages().get(0).getImages());
+                collectionClient.put(collection);
+            }
+
+            collectionPlaceClient.add(subject, collectionId, placeId);
+            return Meta200;
+        }
+
+        private JsonNode removePlace(JsonCall call) {
+            String subject = call.getJWT().getSubject();
+            String collectionId = call.pathString("collectionId");
+            String placeId = call.pathString("placeId");
+
+            collectionPlaceClient.remove(subject, collectionId, placeId);
+            return Meta200;
+        }
     }
 
     private List<PlaceCollection> listCollection(JsonCall call) {
@@ -100,7 +182,7 @@ public final class CollectionService extends AbstractService {
         return collectionClient.list(subject, maxSortKey, size);
     }
 
-    private PlaceCollection postCollection(JsonCall call) {
+    private PlaceCollection createCollection(JsonCall call) {
         String subject = call.getJWT().getSubject();
 
         PlaceCollection placeCollection = call.bodyAsObject(PlaceCollection.class);
@@ -108,78 +190,5 @@ public final class CollectionService extends AbstractService {
 
         collectionClient.put(placeCollection);
         return placeCollection;
-    }
-
-    private PlaceCollection getCollection(JsonCall call) {
-        String subject = call.getJWT().getSubject();
-        String collectionId = call.pathString("collectionId");
-        return collectionClient.get(subject, collectionId);
-    }
-
-    private JsonNode listPlaceCollection(JsonCall call) {
-        String subject = call.getJWT().getSubject();
-        String collectionId = call.pathString("collectionId");
-
-        String maxSortKey = call.queryString("maxSortKey", null);
-        int size = call.queryInt("size", 10);
-
-        ArrayNode arrayNode = objectMapper.createArrayNode();
-        collectionPlaceClient.list(subject, collectionId, maxSortKey, size).forEach(addedPlace -> {
-            arrayNode.addObject()
-                    .put("createdDate", addedPlace.getCreatedDate().getTime())
-                    .put("placeId", addedPlace.getPlaceId())
-                    .set("place", objectMapper.valueToTree(placeClient.get(addedPlace.getPlaceId())));
-        });
-        return nodes(200, arrayNode);
-    }
-
-    private PlaceCollection putCollection(JsonCall call) {
-        String subject = call.getJWT().getSubject();
-        String collectionId = call.pathString("collectionId");
-
-        PlaceCollection placeCollection = call.bodyAsObject(PlaceCollection.class);
-        placeCollection.setUserId(subject);
-        placeCollection.setCollectionId(collectionId);
-
-        collectionClient.put(placeCollection);
-        return placeCollection;
-    }
-
-    private JsonNode deleteCollection(JsonCall call) {
-        String subject = call.getJWT().getSubject();
-        String collectionId = call.pathString("collectionId");
-
-        collectionClient.delete(subject, collectionId);
-        return Meta200;
-    }
-
-    private JsonNode addPlace(JsonCall call) {
-        String subject = call.getJWT().getSubject();
-        String collectionId = call.pathString("collectionId");
-        String placeId = call.pathString("placeId");
-
-        PlaceCollection collection = collectionClient.get(subject, collectionId);
-        if (collection == null) return Meta404;
-
-        Place place = placeClient.get(placeId);
-        if (place == null) return Meta404;
-
-        // Put Thumbnail if need to
-        if (collection.getThumbnail() == null) {
-            collection.setThumbnail(place.getImages().get(0).getImages());
-            collectionClient.put(collection);
-        }
-
-        collectionPlaceClient.add(subject, collectionId, placeId);
-        return Meta200;
-    }
-
-    private JsonNode removePlace(JsonCall call) {
-        String subject = call.getJWT().getSubject();
-        String collectionId = call.pathString("collectionId");
-        String placeId = call.pathString("placeId");
-
-        collectionPlaceClient.remove(subject, collectionId, placeId);
-        return Meta200;
     }
 }
