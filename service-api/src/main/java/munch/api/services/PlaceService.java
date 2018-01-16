@@ -18,6 +18,7 @@ import munch.restful.server.auth0.authenticate.AuthenticatedJWT;
 import munch.restful.server.auth0.authenticate.JwtAuthenticator;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by: Fuxing
@@ -83,6 +84,7 @@ public class PlaceService extends AbstractService {
      * @return {cards: List of PlaceCard, place: Place}
      */
     private JsonNode cards(JsonCall call) {
+        Optional<AuthenticatedJWT> optionalJwt = authenticator.optional(call);
         String placeId = call.pathString("placeId");
         Place place = dataClient.get(placeId);
         if (place == null) return null;
@@ -94,12 +96,11 @@ public class PlaceService extends AbstractService {
         objectNode.set("cards", objectMapper.valueToTree(cards));
         objectNode.set("place", objectMapper.valueToTree(place));
 
-        // Put user data
-        AuthenticatedJWT jwt = authenticator.authenticate(call, false);
-        if (jwt.isAuthenticated()) {
+        // Put user data if user exist
+        optionalJwt.ifPresent(jwt -> {
             objectNode.putObject("user")
                     .put("liked", likedPlaceClient.isLiked(jwt.getSubject(), placeId));
-        }
+        });
 
         return nodes(200, objectNode);
     }
