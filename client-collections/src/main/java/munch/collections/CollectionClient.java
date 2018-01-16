@@ -2,8 +2,6 @@ package munch.collections;
 
 import com.amazonaws.services.dynamodbv2.document.*;
 import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import munch.restful.core.JsonUtils;
 import munch.restful.core.exception.ParamException;
 import org.apache.commons.lang3.StringUtils;
 
@@ -24,15 +22,12 @@ public final class CollectionClient {
     private static final Pattern PATTERN_UUID = Pattern.compile("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
     private static final String DYNAMO_TABLE_NAME = "munch-core.PlaceCollection";
 
-    private static final ObjectMapper objectMapper = JsonUtils.objectMapper;
-
     private final Table table;
     private final Index sortIndex;
 
     @Inject
     public CollectionClient(DynamoDB dynamoDB) {
         this.table = dynamoDB.getTable(DYNAMO_TABLE_NAME);
-        // sortKey-index will only project, userId, collectionId, sortKey, name, description, updatedDate & createdDate
         this.sortIndex = table.getIndex("sortKey-index");
     }
 
@@ -56,8 +51,8 @@ public final class CollectionClient {
 
         // Validate
         validateUUID(collection.getCollectionId(), "collectionId");
-        validateLength(collection.getName(), 100, "name");
-        validateLength(collection.getDescription(), 500, "description");
+        validateLength(collection.getName(), false, 100, "name");
+        validateLength(collection.getDescription(), true, 500, "description");
 
         table.putItem(toItem(collection));
     }
@@ -109,7 +104,6 @@ public final class CollectionClient {
         item.with("d", collection.getDescription());
 
         item.with("t", collection.getThumbnail());
-        item.withJSON("p", JsonUtils.toString(collection.getAddedPlaces()));
 
         item.with("ud", collection.getUpdatedDate().getTime());
         item.with("cd", collection.getCreatedDate().getTime());
@@ -126,14 +120,14 @@ public final class CollectionClient {
         collection.setDescription(item.getString("d"));
 
         collection.setThumbnail(item.getMap("t"));
-        collection.setAddedPlaces(JsonUtils.toList(item.getJSON("p"), PlaceCollection.AddedPlace.class));
 
         collection.setUpdatedDate(new Date(item.getLong("ud")));
         collection.setCreatedDate(new Date(item.getLong("cd")));
         return collection;
     }
 
-    public static void validateLength(String text, int length, String type) {
+    public static void validateLength(String text, boolean nullable, int length, String type) {
+        if (nullable && text == null) return;
         Objects.requireNonNull(text);
         if (text.length() < length) return;
         throw new ParamException("Failed Text Length Validation for " + type);

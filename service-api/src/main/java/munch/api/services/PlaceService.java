@@ -7,12 +7,15 @@ import com.google.inject.Singleton;
 import munch.api.services.places.PlaceCardReader;
 import munch.article.clients.Article;
 import munch.article.clients.ArticleClient;
+import munch.collections.LikedPlaceClient;
 import munch.corpus.instagram.InstagramMedia;
 import munch.corpus.instagram.InstagramMediaClient;
 import munch.data.clients.PlaceClient;
 import munch.data.structure.Place;
 import munch.data.structure.PlaceCard;
 import munch.restful.server.JsonCall;
+import munch.restful.server.auth0.authenticate.AuthenticatedJWT;
+import munch.restful.server.auth0.authenticate.JwtAuthenticator;
 
 import java.util.List;
 
@@ -29,12 +32,17 @@ public class PlaceService extends AbstractService {
     private final InstagramMediaClient instagramMediaClient;
     private final PlaceCardReader cardReader;
 
+    private final JwtAuthenticator authenticator;
+    private final LikedPlaceClient likedPlaceClient;
+
     @Inject
-    public PlaceService(PlaceClient placeClient, ArticleClient articleClient, InstagramMediaClient instagramMediaClient, PlaceCardReader cardReader) {
+    public PlaceService(PlaceClient placeClient, ArticleClient articleClient, InstagramMediaClient instagramMediaClient, PlaceCardReader cardReader, JwtAuthenticator authenticator, LikedPlaceClient likedPlaceClient) {
         this.dataClient = placeClient;
         this.articleClient = articleClient;
         this.instagramMediaClient = instagramMediaClient;
         this.cardReader = cardReader;
+        this.authenticator = authenticator;
+        this.likedPlaceClient = likedPlaceClient;
     }
 
     /**
@@ -43,7 +51,7 @@ public class PlaceService extends AbstractService {
      */
     @Override
     public void route() {
-        // Single place endpoint
+        // Places Endpoint
         PATH("/places/:placeId", () -> {
             GET("", this::get);
             GET("/cards", this::cards);
@@ -81,10 +89,18 @@ public class PlaceService extends AbstractService {
 
         List<PlaceCard> cards = cardReader.get(place);
 
-        // Put into node and return
+        // Put cards & place data
         ObjectNode objectNode = objectMapper.createObjectNode();
         objectNode.set("cards", objectMapper.valueToTree(cards));
         objectNode.set("place", objectMapper.valueToTree(place));
+
+        // Put user data
+        AuthenticatedJWT jwt = authenticator.authenticate(call, false);
+        if (jwt.isAuthenticated()) {
+            objectNode.putObject("user")
+                    .put("liked", likedPlaceClient.isLiked(jwt.getSubject(), placeId));
+        }
+
         return nodes(200, objectNode);
     }
 

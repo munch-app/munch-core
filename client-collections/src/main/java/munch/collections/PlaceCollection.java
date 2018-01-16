@@ -1,6 +1,11 @@
 package munch.collections;
 
-import java.util.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import java.util.Date;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by: Fuxing
@@ -8,6 +13,8 @@ import java.util.*;
  * Time: 4:20 PM
  * Project: munch-core
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public final class PlaceCollection {
     private String userId;
     private String collectionId;
@@ -18,8 +25,6 @@ public final class PlaceCollection {
     private String description;
 
     private Map<String, String> thumbnail;
-    private List<AddedPlace> addedPlaces = new ArrayList<>();
-
     private Date updatedDate;
     private Date createdDate;
 
@@ -71,14 +76,6 @@ public final class PlaceCollection {
         this.thumbnail = thumbnail;
     }
 
-    public List<AddedPlace> getAddedPlaces() {
-        return addedPlaces;
-    }
-
-    public void setAddedPlaces(List<AddedPlace> addedPlaces) {
-        this.addedPlaces = addedPlaces;
-    }
-
     public Date getCreatedDate() {
         return createdDate;
     }
@@ -95,6 +92,8 @@ public final class PlaceCollection {
         this.updatedDate = updatedDate;
     }
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class AddedPlace {
         private String placeId;
         private Date createdDate;

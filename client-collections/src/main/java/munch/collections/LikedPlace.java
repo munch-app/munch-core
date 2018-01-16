@@ -1,5 +1,8 @@
 package munch.collections;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.Date;
 import java.util.Objects;
 
@@ -9,6 +12,8 @@ import java.util.Objects;
  * Time: 4:29 PM
  * Project: munch-core
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public final class LikedPlace {
     private String placeId;
     private String sortKey;

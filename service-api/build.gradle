@@ -1,6 +1,9 @@
 dependencies {
+    compile project(':client-collections')
+
     compile group: 'munch.restful', name: 'restful-server', version: restfulVersion
     compile group: 'munch.restful', name: 'restful-client', version: restfulVersion
+    compile group: 'munch.restful', name: 'restful-auth0', version: restfulVersion
 
     compile group: 'catalyst', name: 'retriable-utils', version: ccVersion
     compile group: 'munch.data', name: 'data-client', version: dataVersion
