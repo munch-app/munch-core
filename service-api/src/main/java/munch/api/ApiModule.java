@@ -9,6 +9,7 @@ import com.typesafe.config.ConfigFactory;
 import munch.api.services.ServiceModule;
 import munch.data.dynamodb.DynamoModule;
 import munch.data.elastic.ElasticModule;
+import munch.restful.server.auth0.Auth0AuthenticationModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +27,11 @@ public class ApiModule extends AbstractModule {
         install(new ServiceModule());
         install(new DynamoModule());
         install(new ElasticModule());
+
+        Config config = ConfigFactory.load();
+        final String issuer = config.getString("services.auth0.issuer");
+
+        install(new Auth0AuthenticationModule("https://api.partner.munchapp.co/", issuer));
     }
 
     @Provides
@@ -39,12 +45,7 @@ public class ApiModule extends AbstractModule {
      * @param args not required
      */
     public static void main(String[] args) {
-        try {
-            Injector injector = Guice.createInjector(new ApiModule());
-            injector.getInstance(ApiServer.class).start();
-        } catch (Exception e) {
-            logger.error("Error Starting ApiModule", e);
-            throw e;
-        }
+        Injector injector = Guice.createInjector(new ApiModule());
+        injector.getInstance(ApiServer.class).start();
     }
 }
