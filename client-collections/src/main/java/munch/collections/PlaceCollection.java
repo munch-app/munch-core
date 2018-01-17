@@ -23,6 +23,7 @@ public final class PlaceCollection {
 
     private String name;
     private String description;
+    private long count;
 
     private Map<String, String> thumbnail;
     private Date updatedDate;
@@ -66,6 +67,14 @@ public final class PlaceCollection {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public long getCount() {
+        return count;
+    }
+
+    public void setCount(long count) {
+        this.count = count;
     }
 
     public Map<String, String> getThumbnail() {
@@ -135,6 +144,15 @@ public final class PlaceCollection {
         public int hashCode() {
             return Objects.hash(placeId);
         }
+
+        @Override
+        public String toString() {
+            return "AddedPlace{" +
+                    "placeId='" + placeId + '\'' +
+                    ", sortKey='" + sortKey + '\'' +
+                    ", createdDate=" + createdDate +
+                    '}';
+        }
     }
 
     @Override
@@ -149,5 +167,20 @@ public final class PlaceCollection {
     @Override
     public int hashCode() {
         return Objects.hash(userId, collectionId);
+    }
+
+    @Override
+    public String toString() {
+        return "PlaceCollection{" +
+                "userId='" + userId + '\'' +
+                ", collectionId='" + collectionId + '\'' +
+                ", sortKey='" + sortKey + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", count=" + count +
+                ", thumbnail=" + thumbnail +
+                ", updatedDate=" + updatedDate +
+                ", createdDate=" + createdDate +
+                '}';
     }
 }

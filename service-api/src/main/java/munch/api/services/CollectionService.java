@@ -158,9 +158,12 @@ public final class CollectionService extends AbstractService {
             // Put Thumbnail if need to
             if (collection.getThumbnail() == null) {
                 collection.setThumbnail(place.getImages().get(0).getImages());
-                collectionClient.put(collection);
             }
 
+            // Update Count after update
+            collection.setCount(collectionPlaceClient.count(subject, collectionId));
+
+            collectionClient.put(collection);
             collectionPlaceClient.add(subject, collectionId, placeId);
             return Meta200;
         }
@@ -170,6 +173,13 @@ public final class CollectionService extends AbstractService {
             String collectionId = call.pathString("collectionId");
             String placeId = call.pathString("placeId");
 
+            PlaceCollection collection = collectionClient.get(subject, collectionId);
+            if (collection == null) return Meta404;
+
+            // Update Count after update
+            collection.setCount(collectionPlaceClient.count(subject, collectionId));
+
+            collectionClient.put(collection);
             collectionPlaceClient.remove(subject, collectionId, placeId);
             return Meta200;
         }

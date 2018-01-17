@@ -102,6 +102,7 @@ public final class CollectionClient {
 
         item.with("n", collection.getName());
         item.with("d", collection.getDescription());
+        item.with("pc", collection.getCount());
 
         item.with("t", collection.getThumbnail());
 
@@ -118,6 +119,7 @@ public final class CollectionClient {
 
         collection.setName(item.getString("n"));
         collection.setDescription(item.getString("d"));
+        collection.setCount(item.getLong("pc"));
 
         collection.setThumbnail(item.getMap("t"));
 
