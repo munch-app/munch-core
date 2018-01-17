@@ -54,6 +54,7 @@ public final class CardParser {
         card.setTags(place.getTag().getExplicits());
         card.setLocation(place.getLocation());
         card.setHours(place.getHours());
+        card.setContainers(place.getContainers());
         card.setReview(place.getReview());
         return card;
     }

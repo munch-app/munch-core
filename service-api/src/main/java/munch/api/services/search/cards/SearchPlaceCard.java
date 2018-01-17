@@ -14,12 +14,15 @@ import java.util.List;
  */
 public final class SearchPlaceCard implements SearchCard {
     private String placeId;
+
     private String name;
     private Place.Location location;
 
     private List<String> tags;
     private List<SourcedImage> images;
     private List<Place.Hour> hours;
+    private List<Place.Container> containers;
+
     private Place.Review review;
 
     @Override
@@ -78,6 +81,14 @@ public final class SearchPlaceCard implements SearchCard {
 
     public void setHours(List<Place.Hour> hours) {
         this.hours = hours;
+    }
+
+    public List<Place.Container> getContainers() {
+        return containers;
+    }
+
+    public void setContainers(List<Place.Container> containers) {
+        this.containers = containers;
     }
 
     public Place.Review getReview() {
