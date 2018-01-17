@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import munch.collections.*;
 import munch.data.clients.PlaceClient;
 import munch.data.structure.Place;
+import munch.restful.core.RestfulMeta;
 import munch.restful.server.JsonCall;
 import munch.restful.server.auth0.authenticate.JwtAuthenticator;
 
@@ -108,7 +109,7 @@ public final class CollectionService extends AbstractService {
             return collectionClient.get(subject, collectionId);
         }
 
-        private PlaceCollection put(JsonCall call) {
+        private JsonNode put(JsonCall call) {
             String subject = call.getJWT().getSubject();
             String collectionId = call.pathString("collectionId");
 
@@ -117,7 +118,7 @@ public final class CollectionService extends AbstractService {
             placeCollection.setCollectionId(collectionId);
 
             collectionClient.put(placeCollection);
-            return placeCollection;
+            return nodes(200, placeCollection);
         }
 
         private JsonNode delete(JsonCall call) {
@@ -155,13 +156,19 @@ public final class CollectionService extends AbstractService {
             Place place = placeClient.get(placeId);
             if (place == null) return Meta404;
 
+            // Update Count after update
+            collection.setCount(collectionPlaceClient.count(subject, collectionId));
+            if (collection.getCount() >= 100) {
+                return nodes(RestfulMeta.builder()
+                        .errorType("LimitException")
+                        .errorMessage("You can only have 100 places in a collection.")
+                        .build());
+            }
+
             // Put Thumbnail if need to
             if (collection.getThumbnail() == null) {
                 collection.setThumbnail(place.getImages().get(0).getImages());
             }
-
-            // Update Count after update
-            collection.setCount(collectionPlaceClient.count(subject, collectionId));
 
             collectionClient.put(collection);
             collectionPlaceClient.add(subject, collectionId, placeId);
@@ -176,11 +183,11 @@ public final class CollectionService extends AbstractService {
             PlaceCollection collection = collectionClient.get(subject, collectionId);
             if (collection == null) return Meta404;
 
-            // Update Count after update
-            collection.setCount(collectionPlaceClient.count(subject, collectionId));
-
-            collectionClient.put(collection);
             collectionPlaceClient.remove(subject, collectionId, placeId);
+
+            // Update Count after update, (might need consistent read)
+            collection.setCount(collectionPlaceClient.count(subject, collectionId));
+            collectionClient.put(collection);
             return Meta200;
         }
     }

@@ -3,6 +3,9 @@ package munch.collections;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
@@ -16,6 +19,7 @@ import java.util.Objects;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class PlaceCollection {
+
     private String userId;
     private String collectionId;
 
@@ -29,6 +33,7 @@ public final class PlaceCollection {
     private Date updatedDate;
     private Date createdDate;
 
+    @NotNull
     public String getUserId() {
         return userId;
     }
@@ -37,6 +42,8 @@ public final class PlaceCollection {
         this.userId = userId;
     }
 
+    @NotNull
+    @Pattern(regexp = "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
     public String getCollectionId() {
         return collectionId;
     }
@@ -45,6 +52,7 @@ public final class PlaceCollection {
         this.collectionId = collectionId;
     }
 
+    @NotNull
     public String getSortKey() {
         return sortKey;
     }
@@ -53,6 +61,9 @@ public final class PlaceCollection {
         this.sortKey = sortKey;
     }
 
+    @NotNull
+    @Size(min = 3, max = 100, message = "Name length must be more then 2 and less then 100.")
+    @Pattern(regexp = "^[\\p{L} .'-]+$", flags = Pattern.Flag.CASE_INSENSITIVE)
     public String getName() {
         return name;
     }
@@ -61,6 +72,9 @@ public final class PlaceCollection {
         this.name = name;
     }
 
+    @NotNull
+    @Size(min = 3, max = 500, message = "Description length must be more then 2 and less then 500.")
+    @Pattern(regexp = "^[\\p{L} .'-]+$", flags = Pattern.Flag.CASE_INSENSITIVE, message = "")
     public String getDescription() {
         return description;
     }
@@ -85,6 +99,7 @@ public final class PlaceCollection {
         this.thumbnail = thumbnail;
     }
 
+    @NotNull
     public Date getCreatedDate() {
         return createdDate;
     }
@@ -93,6 +108,7 @@ public final class PlaceCollection {
         this.createdDate = createdDate;
     }
 
+    @NotNull
     public Date getUpdatedDate() {
         return updatedDate;
     }

@@ -3,6 +3,7 @@ package munch.collections;
 import com.amazonaws.services.dynamodbv2.document.*;
 import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
 import munch.restful.core.exception.ParamException;
+import munch.restful.core.exception.ValidationException;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
@@ -49,10 +50,8 @@ public final class CollectionClient {
         // Mandatory Inject
         collection.setUpdatedDate(new Date());
 
-        // Validate
-        validateUUID(collection.getCollectionId(), "collectionId");
-        validateLength(collection.getName(), false, 100, "name");
-        validateLength(collection.getDescription(), true, 500, "description");
+        // Validate PlaceCollection based on bean validator
+        ValidationException.validate(collection);
 
         table.putItem(toItem(collection));
     }
@@ -126,13 +125,6 @@ public final class CollectionClient {
         collection.setUpdatedDate(new Date(item.getLong("ud")));
         collection.setCreatedDate(new Date(item.getLong("cd")));
         return collection;
-    }
-
-    public static void validateLength(String text, boolean nullable, int length, String type) {
-        if (nullable && text == null) return;
-        Objects.requireNonNull(text);
-        if (text.length() < length) return;
-        throw new ParamException("Failed Text Length Validation for " + type);
     }
 
     public static void validateUUID(String id, String type) {
