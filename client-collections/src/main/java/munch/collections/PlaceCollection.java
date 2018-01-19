@@ -24,7 +24,7 @@ public final class PlaceCollection {
     private String userId;
     private String collectionId;
 
-    private String sortKey;
+    private long sortKey;
 
     private String name;
     private String description;
@@ -53,12 +53,11 @@ public final class PlaceCollection {
         this.collectionId = collectionId;
     }
 
-    @NotNull(message = "Internal Error (sortKey)")
-    public String getSortKey() {
+    public long getSortKey() {
         return sortKey;
     }
 
-    public void setSortKey(String sortKey) {
+    public void setSortKey(long sortKey) {
         this.sortKey = sortKey;
     }
 
@@ -122,7 +121,7 @@ public final class PlaceCollection {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class AddedPlace {
         private String placeId;
-        private String sortKey;
+        private long sortKey;
         private Date createdDate;
 
         public String getPlaceId() {
@@ -133,11 +132,11 @@ public final class PlaceCollection {
             this.placeId = placeId;
         }
 
-        public String getSortKey() {
+        public long getSortKey() {
             return sortKey;
         }
 
-        public void setSortKey(String sortKey) {
+        public void setSortKey(long sortKey) {
             this.sortKey = sortKey;
         }
 

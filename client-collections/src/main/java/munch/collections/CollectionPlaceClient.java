@@ -91,7 +91,7 @@ public final class CollectionPlaceClient {
     private static PlaceCollection.AddedPlace fromItem(Item item) {
         PlaceCollection.AddedPlace addedPlace = new PlaceCollection.AddedPlace();
         addedPlace.setPlaceId(item.getString("p"));
-        addedPlace.setSortKey(item.getString("s"));
+        addedPlace.setSortKey(item.getLong("s"));
         addedPlace.setCreatedDate(new Date(item.getLong("c")));
         return addedPlace;
     }

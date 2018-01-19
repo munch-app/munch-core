@@ -16,7 +16,7 @@ import java.util.Objects;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class LikedPlace {
     private String placeId;
-    private String sortKey;
+    private long sortKey;
     private Date createdDate;
 
     public String getPlaceId() {
@@ -27,11 +27,11 @@ public final class LikedPlace {
         this.placeId = placeId;
     }
 
-    public String getSortKey() {
+    public long getSortKey() {
         return sortKey;
     }
 
-    public void setSortKey(String sortKey) {
+    public void setSortKey(long sortKey) {
         this.sortKey = sortKey;
     }
 

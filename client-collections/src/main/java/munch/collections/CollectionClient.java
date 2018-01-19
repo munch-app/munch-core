@@ -43,8 +43,7 @@ public final class CollectionClient {
 
         // Optional Inject
         if (StringUtils.isBlank(collection.getCollectionId())) collection.setCollectionId(UUID.randomUUID().toString());
-        if (StringUtils.isBlank(collection.getSortKey()))
-            collection.setSortKey(String.valueOf(System.currentTimeMillis()));
+        if (collection.getSortKey() == 0) collection.setSortKey(System.currentTimeMillis());
         if (collection.getCreatedDate() == null) collection.setCreatedDate(new Date());
 
         // Mandatory Inject
@@ -114,7 +113,7 @@ public final class CollectionClient {
         PlaceCollection collection = new PlaceCollection();
         collection.setUserId(item.getString("u"));
         collection.setCollectionId(item.getString("c"));
-        collection.setSortKey(item.getString("s"));
+        collection.setSortKey(item.getLong("s"));
 
         collection.setName(item.getString("n"));
         collection.setDescription(item.getString("d"));

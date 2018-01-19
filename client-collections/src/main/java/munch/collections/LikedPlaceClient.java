@@ -59,7 +59,7 @@ public final class LikedPlaceClient {
         Item item = new Item();
         item.with("u", userId);
         item.with("p", placeId);
-        item.with("s", String.valueOf(System.currentTimeMillis()));
+        item.with("s", System.currentTimeMillis());
         item.with("c", System.currentTimeMillis());
         table.putItem(item);
     }
@@ -104,7 +104,7 @@ public final class LikedPlaceClient {
         collection.forEach(item -> {
             LikedPlace addedPlace = new LikedPlace();
             addedPlace.setPlaceId(item.getString("p"));
-            addedPlace.setSortKey(item.getString("s"));
+            addedPlace.setSortKey(item.getLong("s"));
             addedPlace.setCreatedDate(new Date(item.getLong("c")));
             addedPlaces.add(addedPlace);
         });
