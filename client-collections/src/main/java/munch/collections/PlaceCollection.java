@@ -3,6 +3,7 @@ package munch.collections;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -33,7 +34,7 @@ public final class PlaceCollection {
     private Date updatedDate;
     private Date createdDate;
 
-    @NotNull
+    @NotNull(message = "Internal Error (userId)")
     public String getUserId() {
         return userId;
     }
@@ -42,8 +43,8 @@ public final class PlaceCollection {
         this.userId = userId;
     }
 
-    @NotNull
-    @Pattern(regexp = "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
+    @NotNull(message = "Internal Error (collectionId)")
+    @Pattern(regexp = "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", message = "Internal Error (collectionId)")
     public String getCollectionId() {
         return collectionId;
     }
@@ -52,7 +53,7 @@ public final class PlaceCollection {
         this.collectionId = collectionId;
     }
 
-    @NotNull
+    @NotNull(message = "Internal Error (sortKey)")
     public String getSortKey() {
         return sortKey;
     }
@@ -61,9 +62,9 @@ public final class PlaceCollection {
         this.sortKey = sortKey;
     }
 
-    @NotNull
+    @NotNull(message = "Name cannot be empty.")
     @Size(min = 3, max = 100, message = "Name length must be more then 2 and less then 100.")
-    @Pattern(regexp = "^[\\p{L} .'-]+$", flags = Pattern.Flag.CASE_INSENSITIVE)
+    @Pattern(regexp = "^[\\p{L} .'-]+$", flags = Pattern.Flag.CASE_INSENSITIVE, message = "Name contains illegal characters.")
     public String getName() {
         return name;
     }
@@ -72,9 +73,9 @@ public final class PlaceCollection {
         this.name = name;
     }
 
-    @NotNull
+    @Nullable
     @Size(min = 3, max = 500, message = "Description length must be more then 2 and less then 500.")
-    @Pattern(regexp = "^[\\p{L} .'-]+$", flags = Pattern.Flag.CASE_INSENSITIVE, message = "")
+    @Pattern(regexp = "^[\\p{L} .'-]+$", flags = Pattern.Flag.CASE_INSENSITIVE, message = "Description contains illegal characters.")
     public String getDescription() {
         return description;
     }
@@ -99,7 +100,7 @@ public final class PlaceCollection {
         this.thumbnail = thumbnail;
     }
 
-    @NotNull
+    @NotNull(message = "Internal Error (createdDate)")
     public Date getCreatedDate() {
         return createdDate;
     }
@@ -108,7 +109,7 @@ public final class PlaceCollection {
         this.createdDate = createdDate;
     }
 
-    @NotNull
+    @NotNull(message = "Internal Error (updatedDate)")
     public Date getUpdatedDate() {
         return updatedDate;
     }
