@@ -1,7 +1,13 @@
 package munch.collections;
 
 import com.amazonaws.services.dynamodbv2.document.*;
+import com.amazonaws.services.dynamodbv2.document.internal.ItemValueConformer;
 import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
+import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec;
+import com.amazonaws.util.json.Jackson;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import munch.restful.core.JsonUtils;
+import munch.restful.core.exception.JsonException;
 import munch.restful.core.exception.ParamException;
 import munch.restful.core.exception.ValidationException;
 import org.apache.commons.lang3.StringUtils;
@@ -9,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.io.IOException;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -22,6 +29,9 @@ import java.util.regex.Pattern;
 public final class CollectionClient {
     private static final Pattern PATTERN_UUID = Pattern.compile("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
     private static final String DYNAMO_TABLE_NAME = "munch-core.PlaceCollection";
+
+    private static final ItemValueConformer valueConformer = new ItemValueConformer();
+    private static final ObjectMapper objectMapper = JsonUtils.objectMapper;
 
     private final Table table;
     private final Index sortIndex;
@@ -52,7 +62,34 @@ public final class CollectionClient {
         // Validate PlaceCollection based on bean validator
         ValidationException.validate(collection);
 
-        table.putItem(toItem(collection));
+
+        List<AttributeUpdate> attributeUpdateList = new ArrayList<>();
+        attributeUpdateList.add(new AttributeUpdate("s").put(collection.getSortKey()));
+        attributeUpdateList.add(new AttributeUpdate("n").put(collection.getName()));
+
+        if (collection.getDescription() != null) {
+            attributeUpdateList.add(new AttributeUpdate("d").put(collection.getDescription()));
+        } else {
+            attributeUpdateList.add(new AttributeUpdate("d").delete());
+        }
+
+        if (collection.getCount() != null) {
+            attributeUpdateList.add(new AttributeUpdate("pc").put(collection.getCount()));
+        }
+        if (collection.getThumbnail() != null) {
+            attributeUpdateList.add(new AttributeUpdate("t").put(writeValue(collection.getThumbnail())));
+        }
+
+        if (collection.getUpdatedDate() != null) {
+            attributeUpdateList.add(new AttributeUpdate("ud").put(collection.getUpdatedDate().getTime()));
+        }
+        if (collection.getCreatedDate() != null) {
+            attributeUpdateList.add(new AttributeUpdate("cd").put(collection.getCreatedDate().getTime()));
+        }
+
+        table.updateItem(new UpdateItemSpec()
+                .withPrimaryKey("u", collection.getUserId(), "c", collection.getCollectionId())
+                .withAttributeUpdate(attributeUpdateList));
     }
 
     public void delete(String userId, String collectionId) {
@@ -92,23 +129,6 @@ public final class CollectionClient {
         return collections;
     }
 
-    private Item toItem(PlaceCollection collection) {
-        Item item = new Item();
-        item.with("u", collection.getUserId());
-        item.with("c", collection.getCollectionId());
-        item.with("s", collection.getSortKey());
-
-        item.with("n", collection.getName());
-        item.with("d", collection.getDescription());
-        item.with("pc", collection.getCount());
-
-        item.with("t", collection.getThumbnail());
-
-        item.with("ud", collection.getUpdatedDate().getTime());
-        item.with("cd", collection.getCreatedDate().getTime());
-        return item;
-    }
-
     private PlaceCollection fromItem(Item item) {
         PlaceCollection collection = new PlaceCollection();
         collection.setUserId(item.getString("u"));
@@ -130,5 +150,15 @@ public final class CollectionClient {
         Objects.requireNonNull(id, "Id Requires non null");
         if (PATTERN_UUID.matcher(id).matches()) return;
         throw new ParamException("Failed Id Validation for " + type);
+    }
+
+    private static Object writeValue(Object object) {
+        try {
+            if (object == null) return null;
+            String json = objectMapper.writeValueAsString(object);
+            return valueConformer.transform(Jackson.fromJsonString(json, Object.class));
+        } catch (IOException e) {
+            throw new JsonException(e);
+        }
     }
 }

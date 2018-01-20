@@ -28,7 +28,7 @@ public final class PlaceCollection {
 
     private String name;
     private String description;
-    private long count;
+    private Long count;
 
     private Map<String, String> thumbnail;
     private Date updatedDate;
@@ -83,11 +83,11 @@ public final class PlaceCollection {
         this.description = description;
     }
 
-    public long getCount() {
+    public Long getCount() {
         return count;
     }
 
-    public void setCount(long count) {
+    public void setCount(Long count) {
         this.count = count;
     }
 
