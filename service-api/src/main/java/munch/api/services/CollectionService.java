@@ -158,8 +158,6 @@ public final class CollectionService extends AbstractService {
             Place place = placeClient.get(placeId);
             if (place == null) return Meta404;
 
-            // Update Count after update
-            collection.setCount(collectionPlaceClient.count(subject, collectionId));
             if (collection.getCount() >= 100) {
                 return nodes(RestfulMeta.builder()
                         .errorType("LimitException")
@@ -172,8 +170,10 @@ public final class CollectionService extends AbstractService {
                 collection.setThumbnail(place.getImages().get(0).getImages());
             }
 
-            collectionClient.put(collection);
+            // Get Count After Put
             collectionPlaceClient.add(subject, collectionId, placeId);
+            collection.setCount(collectionPlaceClient.count(subject, collectionId));
+            collectionClient.put(collection);
             return Meta200;
         }
 

@@ -58,7 +58,10 @@ public final class CollectionPlaceClient {
         QuerySpec query = new QuerySpec()
                 .withHashKey("uc", createKey(userId, collectionId))
                 .withSelect(Select.COUNT);
-        return table.query(query).getAccumulatedScannedCount();
+        ItemCollection<QueryOutcome> outcome = table.query(query);
+        for (Item item : outcome) {
+        }
+        return outcome.getAccumulatedItemCount();
     }
 
     public List<PlaceCollection.AddedPlace> list(String userId, String collectionId, @Nullable Long maxSortKey, int size) {
