@@ -1,5 +1,9 @@
 package munch.api.services.places.cards;
 
+import munch.data.structure.Place;
+
+import java.util.List;
+
 /**
  * Created by: Fuxing
  * Date: 24/9/2017
@@ -11,12 +15,15 @@ public final class PlaceAddressCard extends AbstractPlaceCard {
 
     private String street;
     private String unitNumber;
+
+    private List<Place.Location.Landmark> landmarks;
+    private String neighbourhood;
+
     private String city;
     private String country;
     private String postal;
 
     private String latLng;
-    private String nearestTrain;
 
     @Override
     public String getCardId() {
@@ -79,11 +86,19 @@ public final class PlaceAddressCard extends AbstractPlaceCard {
         this.latLng = latLng;
     }
 
-    public String getNearestTrain() {
-        return nearestTrain;
+    public List<Place.Location.Landmark> getLandmarks() {
+        return landmarks;
     }
 
-    public void setNearestTrain(String nearestTrain) {
-        this.nearestTrain = nearestTrain;
+    public void setLandmarks(List<Place.Location.Landmark> landmarks) {
+        this.landmarks = landmarks;
+    }
+
+    public String getNeighbourhood() {
+        return neighbourhood;
+    }
+
+    public void setNeighbourhood(String neighbourhood) {
+        this.neighbourhood = neighbourhood;
     }
 }

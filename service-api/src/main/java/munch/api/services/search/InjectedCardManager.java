@@ -71,6 +71,16 @@ public final class InjectedCardManager {
 
                 injectedList.add(card);
             }
+        } else if (!isComplexQuery(query)) {
+            // Contains search result & query is not complex
+            SearchHeaderCard headerCard = new SearchHeaderCard();
+
+            if (isLocationAnywhere(query)) {
+                headerCard.setTitle("Popular In Singapore");
+            } else if (isLocationNearby(query)) {
+                headerCard.setTitle("Places Near You");
+            }
+            injectedList.add(headerCard);
         }
 
         return injectedList;
@@ -130,6 +140,17 @@ public final class InjectedCardManager {
         }
     }
 
+    private static boolean isLocationNearby(SearchQuery query) {
+        if (query.getLatLng() == null) return false;
+        if (query.getFilter() == null) return true;
+        // Location Exist == false
+        if (query.getFilter().getLocation() != null) return false;
+        if (query.getFilter().getContainers() == null) return true;
+        // Container Exist == false
+        if (query.getFilter().getContainers().isEmpty()) return true;
+        return true;
+    }
+
     private static Location createSingapore() {
         Location location = new Location();
         location.setId("singapore");
@@ -139,5 +160,35 @@ public final class InjectedCardManager {
         location.setLatLng("1.290270, 103.851959");
         location.setPoints(List.of("1.26675774823,103.603134155", "1.32442122318,103.617553711", "1.38963424766,103.653259277", "1.41434608581,103.666305542", "1.42944763543,103.671798706", "1.43905766081,103.682785034", "1.44386265833,103.695831299", "1.45896401284,103.720550537", "1.45827758983,103.737716675", "1.44935407163,103.754196167", "1.45004049736,103.760375977", "1.47887018872,103.803634644", "1.4754381021,103.826980591", "1.45827758983,103.86680603", "1.43219336108,103.892211914", "1.4287612035,103.897018433", "1.42670190649,103.915557861", "1.43219336108,103.934783936", "1.42189687297,103.960189819", "1.42464260763,103.985595703", "1.42121043879,104.000701904", "1.43974408965,104.02130127", "1.44592193988,104.043960571", "1.42464260763,104.087219238", "1.39718511473,104.094772339", "1.35737118164,104.081039429", "1.29009788407,104.127044678", "1.277741368,104.127044678", "1.25371463932,103.982162476", "1.17545464492,103.812561035", "1.13014521522,103.736343384", "1.19055762617,103.653945923", "1.1960495989,103.565368652", "1.26675774823,103.603134155"));
         return location;
+    }
+
+    private static boolean isComplexQuery(SearchQuery query) {
+        if (StringUtils.isNotBlank(query.getQuery())) return true;
+        if (query.getSort() != null) {
+            if (query.getSort().getType() != null)
+                if (!query.getSort().getType().equals(SearchQuery.Sort.TYPE_MUNCH_RANK)) return true;
+        }
+        if (query.getFilter() != null) {
+            if (query.getFilter().getContainers() != null) {
+                if (!query.getFilter().getContainers().isEmpty()) return true;
+            }
+            if (query.getFilter().getHour() != null) {
+                if (query.getFilter().getHour().getDay() != null) return true;
+            }
+            if (query.getFilter().getPrice() != null) {
+                if (query.getFilter().getPrice().getMin() != null) return true;
+                if (query.getFilter().getPrice().getMax() != null) return true;
+            }
+            if (query.getFilter().getTag() != null) {
+                if (query.getFilter().getTag().getPositives() != null) {
+                    if (!query.getFilter().getTag().getPositives().isEmpty()) return true;
+                }
+                if (query.getFilter().getTag().getNegatives() != null) {
+                    if (!query.getFilter().getTag().getNegatives().isEmpty()) return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

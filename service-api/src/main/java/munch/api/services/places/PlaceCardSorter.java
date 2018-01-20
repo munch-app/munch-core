@@ -24,12 +24,6 @@ public final class PlaceCardSorter {
                     "basic_Address_20170924",
                     "basic_BusinessHour_20170907"),
 
-            CardGroup.ofHeader("header_Instagram_20171208",
-                    "vendor_InstagramMedia_20171204"),
-
-            CardGroup.ofHeader("header_Article_20171112",
-                    "vendor_Article_20171029"),
-
             CardGroup.ofHeader("header_About_20171112",
                     "basic_Description_20171109",
                     "basic_Price_20171219",
@@ -39,8 +33,14 @@ public final class PlaceCardSorter {
             CardGroup.ofHeader("header_Menu_20171220",
                     "vendor_MenuImage_20171219"),
 
+            CardGroup.ofHeader("header_Instagram_20171208",
+                    "vendor_InstagramMedia_20171204"),
+
             CardGroup.ofHeader("header_Review_20171020",
                     "vendor_FacebookReview_20171017"),
+
+            CardGroup.ofHeader("header_Article_20171112",
+                    "vendor_Article_20171029"),
 
             CardGroup.ofHeader("header_Location_20171112",
                     "basic_Location_20171112"),

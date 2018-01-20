@@ -121,7 +121,8 @@ public final class BasicCardReader {
         card.setPostal(place.getLocation().getPostal());
 
         card.setLatLng(place.getLocation().getLatLng());
-        card.setNearestTrain(place.getLocation().getNearestTrain());
+        card.setNeighbourhood(place.getLocation().getNeighbourhood());
+        card.setLandmarks(place.getLocation().getLandmarks());
         return card;
     }
 
@@ -138,7 +139,8 @@ public final class BasicCardReader {
         card.setPostal(place.getLocation().getPostal());
 
         card.setLatLng(place.getLocation().getLatLng());
-        card.setNearestTrain(place.getLocation().getNearestTrain());
+        card.setNeighbourhood(place.getLocation().getNeighbourhood());
+        card.setLandmarks(place.getLocation().getLandmarks());
         return card;
     }
 
