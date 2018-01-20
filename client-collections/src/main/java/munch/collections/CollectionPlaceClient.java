@@ -61,7 +61,7 @@ public final class CollectionPlaceClient {
         return table.query(query).getAccumulatedItemCount();
     }
 
-    public List<PlaceCollection.AddedPlace> list(String userId, String collectionId, @Nullable String maxSortKey, int size) {
+    public List<PlaceCollection.AddedPlace> list(String userId, String collectionId, @Nullable Long maxSortKey, int size) {
         Objects.requireNonNull(userId);
 
         QuerySpec query = new QuerySpec()

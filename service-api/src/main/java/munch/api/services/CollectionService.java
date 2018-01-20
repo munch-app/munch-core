@@ -6,9 +6,11 @@ import munch.collections.*;
 import munch.data.clients.PlaceClient;
 import munch.data.structure.Place;
 import munch.restful.core.RestfulMeta;
+import munch.restful.core.exception.ParamException;
 import munch.restful.server.JsonCall;
 import munch.restful.server.auth0.authenticate.JwtAuthenticator;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.List;
@@ -72,7 +74,7 @@ public final class CollectionService extends AbstractService {
     private class Liked {
         private JsonNode list(JsonCall call) {
             String subject = call.getJWT().getSubject();
-            String maxSortKey = call.queryString("maxSortKey", null);
+            Long maxSortKey = queryLong(call, "maxSortKey");
             int size = call.queryInt("size", 20);
 
             ArrayNode likes = objectMapper.createArrayNode();
@@ -132,7 +134,7 @@ public final class CollectionService extends AbstractService {
         private JsonNode listPlace(JsonCall call) {
             String subject = call.getJWT().getSubject();
             String collectionId = call.pathString("collectionId");
-            String maxSortKey = call.queryString("maxSortKey", null);
+            Long maxSortKey = queryLong(call, "maxSortKey");
             int size = call.queryInt("size", 10);
 
             ArrayNode arrayNode = objectMapper.createArrayNode();
@@ -194,7 +196,7 @@ public final class CollectionService extends AbstractService {
 
     private List<PlaceCollection> listCollection(JsonCall call) {
         String subject = call.getJWT().getSubject();
-        String maxSortKey = call.queryString("maxSortKey", null);
+        Long maxSortKey = queryLong(call, "maxSortKey");
         int size = call.queryInt("size", 20);
 
         return collectionClient.list(subject, maxSortKey, size);
@@ -208,5 +210,16 @@ public final class CollectionService extends AbstractService {
 
         collectionClient.put(placeCollection);
         return placeCollection;
+    }
+
+    @Nullable
+    private static Long queryLong(JsonCall call, String name) {
+        String value = call.queryString(name, null);
+        if (value == null) return null;
+        try {
+            return Long.parseLong(value);
+        } catch (NumberFormatException e) {
+            throw new ParamException(name + " must be a number.");
+        }
     }
 }

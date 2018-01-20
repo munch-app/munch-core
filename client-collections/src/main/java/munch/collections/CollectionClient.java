@@ -70,7 +70,7 @@ public final class CollectionClient {
         return fromItem(item);
     }
 
-    public List<PlaceCollection> list(String userId, @Nullable String maxSortKey, int size) {
+    public List<PlaceCollection> list(String userId, @Nullable Long maxSortKey, int size) {
         Objects.requireNonNull(userId);
 
         QuerySpec query = new QuerySpec()

@@ -83,7 +83,7 @@ public final class LikedPlaceClient {
      * @param size       size per query
      * @return List of Place liked by the user
      */
-    public List<LikedPlace> list(String userId, @Nullable String maxSortKey, int size) {
+    public List<LikedPlace> list(String userId, @Nullable Long maxSortKey, int size) {
         Objects.requireNonNull(userId);
 
         QuerySpec query = new QuerySpec()
