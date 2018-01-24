@@ -80,12 +80,8 @@ public final class CollectionClient {
             attributeUpdateList.add(new AttributeUpdate("t").put(writeValue(collection.getThumbnail())));
         }
 
-        if (collection.getUpdatedDate() != null) {
-            attributeUpdateList.add(new AttributeUpdate("ud").put(collection.getUpdatedDate().getTime()));
-        }
-        if (collection.getCreatedDate() != null) {
-            attributeUpdateList.add(new AttributeUpdate("cd").put(collection.getCreatedDate().getTime()));
-        }
+        attributeUpdateList.add(new AttributeUpdate("ud").put(System.currentTimeMillis()));
+        attributeUpdateList.add(new AttributeUpdate("cd").put(collection.getCreatedDate().getTime()));
 
         table.updateItem(new UpdateItemSpec()
                 .withPrimaryKey("u", collection.getUserId(), "c", collection.getCollectionId())
@@ -137,7 +133,11 @@ public final class CollectionClient {
 
         collection.setName(item.getString("n"));
         collection.setDescription(item.getString("d"));
-        collection.setCount(item.getLong("pc"));
+        if (item.hasAttribute("pc")) {
+            collection.setCount(item.getLong("pc"));
+        }else {
+            collection.setCount(0L);
+        }
 
         collection.setThumbnail(item.getMap("t"));
 
