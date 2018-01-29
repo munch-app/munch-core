@@ -57,7 +57,8 @@ public class SearchService extends AbstractService {
         JsonNode request = call.bodyAsJson();
         int size = request.get("size").asInt();
         String text = request.get("text").asText();
-        return searchClient.suggest(text, null, size);
+        String latLng = request.path("latLng").asText(null);
+        return searchClient.suggest(text, latLng, size);
     }
 
     /**

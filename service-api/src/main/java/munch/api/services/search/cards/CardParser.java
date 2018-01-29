@@ -40,13 +40,32 @@ public final class CardParser {
     @Nullable
     public SearchCard parseCard(SearchResult result) {
         if (result instanceof Place) {
-            return parse((Place) result);
+            Place place = (Place) result;
+            if (place.getImages().isEmpty()) {
+                return parseSmall(place);
+            } else {
+                return parse(place);
+            }
         }
         return null;
     }
 
     private SearchCard parse(Place place) {
         SearchPlaceCard card = new SearchPlaceCard();
+        card.setPlaceId(place.getId());
+        card.setImages(place.getImages());
+        card.setName(place.getName());
+
+        card.setTags(place.getTag().getExplicits());
+        card.setLocation(place.getLocation());
+        card.setHours(place.getHours());
+        card.setContainers(place.getContainers());
+        card.setReview(place.getReview());
+        return card;
+    }
+
+    private SearchCard parseSmall(Place place) {
+        SearchSmallPlaceCard card = new SearchSmallPlaceCard();
         card.setPlaceId(place.getId());
         card.setImages(place.getImages());
         card.setName(place.getName());
