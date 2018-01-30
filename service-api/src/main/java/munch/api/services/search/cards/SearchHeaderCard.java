@@ -25,6 +25,6 @@ public final class SearchHeaderCard implements SearchCard {
 
     @Override
     public String getUniqueId() {
-        return getTitle();
+        return String.valueOf(System.currentTimeMillis());
     }
 }

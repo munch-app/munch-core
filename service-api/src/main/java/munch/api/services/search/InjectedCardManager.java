@@ -61,15 +61,18 @@ public final class InjectedCardManager {
                 injectedList.add(CARD_NO_RESULT);
             } else {
                 if (query.getFilter() == null) query.setFilter(new SearchQuery.Filter());
-
                 // Inject No Result Location Card with location name
-                SearchNoResultLocationCard card = new SearchNoResultLocationCard();
-                card.setLocationName(getLocationName(query));
+                SearchNoResultLocationCard noResultCard = new SearchNoResultLocationCard();
+                noResultCard.setLocationName(getLocationName(query));
                 query.getFilter().setLocation(LOCATION_SINGAPORE);
                 query.getFilter().setContainers(List.of());
-                card.setSearchQuery(query);
+                noResultCard.setSearchQuery(query); // TODO Remove After Build get blocked
 
-                injectedList.add(card);
+                SearchQueryReplaceCard replaceCard = new SearchQueryReplaceCard();
+                replaceCard.setSearchQuery(query);
+
+                injectedList.add(noResultCard);
+                injectedList.add(replaceCard);
             }
         } else if (!isComplexQuery(query)) {
             // Contains search result & query is not complex
