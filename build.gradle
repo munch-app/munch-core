@@ -9,7 +9,7 @@ allprojects {
 
     ext.restfulVersion = '1.2.10'
     ext.ccVersion = '2.3.0-SNAPSHOT'
-    ext.dataVersion = '2.3.0-SNAPSHOT'
+    ext.dataVersion = '2.4.0-SNAPSHOT'
 
     sourceCompatibility = 1.9
     targetCompatibility = 1.9

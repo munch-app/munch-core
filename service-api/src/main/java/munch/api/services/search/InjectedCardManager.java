@@ -1,9 +1,9 @@
 package munch.api.services.search;
 
 import munch.api.services.search.cards.*;
-import munch.data.clients.ContainerClient;
 import munch.data.structure.Container;
 import munch.data.structure.Location;
+import munch.data.structure.Place;
 import munch.data.structure.SearchQuery;
 import org.apache.commons.lang3.StringUtils;
 
@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by: Fuxing
@@ -24,11 +25,11 @@ public final class InjectedCardManager {
     private static final SearchNoResultCard CARD_NO_RESULT = new SearchNoResultCard();
     private static final SearchNoLocationCard CARD_NO_LOCATION = new SearchNoLocationCard();
 
-    private final ContainerClient containerClient;
+    private final MunchAssistManager assistManager;
 
     @Inject
-    public InjectedCardManager(ContainerClient containerClient) {
-        this.containerClient = containerClient;
+    public InjectedCardManager(MunchAssistManager assistManager) {
+        this.assistManager = assistManager;
     }
 
     public void inject(List<SearchCard> cards, SearchQuery query) {
@@ -41,52 +42,72 @@ public final class InjectedCardManager {
     private List<SearchCard> getLeadingInjectedCards(boolean isEmpty, SearchQuery query) {
         List<SearchCard> injectedList = new ArrayList<>();
 
-        // if noLatLng = NoLocationCard
-        if (query.getLatLng() == null) {
-            injectedList.add(CARD_NO_LOCATION);
-        }
-
-        String containerLatLng = getLocationForContainerCards(query);
-        if (!isEmpty && containerLatLng != null) {
-            List<Container> containers = containerClient.search(containerLatLng, 800, 15);
-            if (!containers.isEmpty()) {
-                injectedList.add(new SearchContainersCard(containers));
-            }
-        }
-
-        // others = NoResultCards
-        if (isEmpty) {
-            if (isLocationAnywhere(query)) {
-                // Inject No Result Card
-                injectedList.add(CARD_NO_RESULT);
-            } else {
-                if (query.getFilter() == null) query.setFilter(new SearchQuery.Filter());
-                // Inject No Result Location Card with location name
-                SearchNoResultLocationCard noResultCard = new SearchNoResultLocationCard();
-                noResultCard.setLocationName(getLocationName(query));
-                query.getFilter().setLocation(LOCATION_SINGAPORE);
-                query.getFilter().setContainers(List.of());
-                noResultCard.setSearchQuery(query); // TODO Remove After Build get blocked
-
-                SearchQueryReplaceCard replaceCard = new SearchQueryReplaceCard();
-                replaceCard.setSearchQuery(query);
-
-                injectedList.add(noResultCard);
-                injectedList.add(replaceCard);
-            }
-        } else if (!isComplexQuery(query)) {
-            // Contains search result & query is not complex
-            SearchHeaderCard headerCard = new SearchHeaderCard();
-
-            if (isLocationAnywhere(query)) {
-                headerCard.setTitle("Popular In Singapore");
-            } else if (isLocationNearby(query)) {
-                headerCard.setTitle("Places Near You");
-            }
-            injectedList.add(headerCard);
-        }
-
+        injectNoLocationCard(isEmpty, query).ifPresent(injectedList::add);
+        injectContainerCard(isEmpty, query).ifPresent(injectedList::add);
+        injectNewestPlaceCard(isEmpty, query).ifPresent(injectedList::add);
+        injectedList.addAll(injectNoResultCard(isEmpty, query));
+        injectHeaderCard(isEmpty, query).ifPresent(injectedList::add);
         return injectedList;
+    }
+
+    private Optional<SearchCard> injectNoLocationCard(boolean isEmpty, SearchQuery query) {
+        // if noLatLng = NoLocationCard
+        if (query.getLatLng() != null) return Optional.empty();
+        return Optional.of(CARD_NO_LOCATION);
+    }
+
+    private Optional<SearchCard> injectContainerCard(boolean isEmpty, SearchQuery query) {
+        if (isEmpty) return Optional.empty();
+        String latLng = getLatLngContext(query);
+        if (latLng == null) return Optional.empty();
+
+        List<Container> containers = assistManager.getNearbyContainer(latLng, 800, 15);
+        if (containers.isEmpty()) return Optional.empty();
+
+        return Optional.of(new SearchContainersCard(containers));
+    }
+
+    private Optional<SearchCard> injectNewestPlaceCard(boolean isEmpty, SearchQuery query) {
+        if (isEmpty) return Optional.empty();
+        String latLng = getLatLngContext(query);
+        if (latLng == null) return Optional.empty();
+
+        List<Place> newestPlaces = assistManager.getNewestPlaces(latLng, 1000, 20);
+        if (newestPlaces.isEmpty()) return Optional.empty();
+
+        return Optional.of(new SearchNewestPlacesCard(newestPlaces));
+    }
+
+    private List<SearchCard> injectNoResultCard(boolean isEmpty, SearchQuery query) {
+        if (!isEmpty) return List.of();
+        if (isLocationAnywhere(query)) return List.of(CARD_NO_RESULT);
+
+        if (query.getFilter() == null) query.setFilter(new SearchQuery.Filter());
+        // Inject No Result Location Card with location name
+        SearchNoResultLocationCard noResultCard = new SearchNoResultLocationCard();
+        noResultCard.setLocationName(getLocationName(query));
+        query.getFilter().setLocation(LOCATION_SINGAPORE);
+        query.getFilter().setContainers(List.of());
+        noResultCard.setSearchQuery(query);
+
+        SearchQueryReplaceCard replaceCard = new SearchQueryReplaceCard();
+        replaceCard.setSearchQuery(query);
+        return List.of(noResultCard, replaceCard);
+    }
+
+    private Optional<SearchCard> injectHeaderCard(boolean isEmpty, SearchQuery query) {
+        if (isEmpty) return Optional.empty();
+        if (isComplexQuery(query)) return Optional.empty();
+
+        // Contains search result & query is not complex
+        SearchHeaderCard headerCard = new SearchHeaderCard();
+
+        if (isLocationAnywhere(query)) {
+            headerCard.setTitle("Popular In Singapore");
+        } else if (isLocationNearby(query)) {
+            headerCard.setTitle("Popular Near You");
+        }
+        return Optional.of(headerCard);
     }
 
     private static String getLocationName(SearchQuery query) {
@@ -101,7 +122,11 @@ public final class InjectedCardManager {
         return null;
     }
 
-    private static String getLocationForContainerCards(SearchQuery query) {
+    /**
+     * @param query query to find latlng
+     * @return latLng of where the search is applied
+     */
+    private static String getLatLngContext(SearchQuery query) {
         // Condition checks
         if (StringUtils.isNotBlank(query.getQuery())) return null;
         if (query.getSort() != null) {

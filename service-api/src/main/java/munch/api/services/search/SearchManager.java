@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import munch.api.services.search.cards.CardParser;
 import munch.api.services.search.cards.SearchCard;
 import munch.data.clients.PlaceClient;
+import munch.data.elastic.ElasticClient;
 import munch.data.elastic.query.BoolQuery;
 import munch.data.structure.Place;
 import munch.data.structure.SearchQuery;
@@ -24,13 +25,15 @@ import java.util.List;
 @Singleton
 public final class SearchManager {
     private final PlaceClient placeClient;
+    private final ElasticClient elasticClient;
     private final CardParser cardParser;
 
     private final InjectedCardManager injectedCardManager;
 
     @Inject
-    public SearchManager(PlaceClient placeClient, CardParser cardParser, InjectedCardManager injectedCardManager) {
+    public SearchManager(PlaceClient placeClient, ElasticClient elasticClient, CardParser cardParser, InjectedCardManager injectedCardManager) {
         this.placeClient = placeClient;
+        this.elasticClient = elasticClient;
         this.cardParser = cardParser;
         this.injectedCardManager = injectedCardManager;
     }
@@ -83,7 +86,7 @@ public final class SearchManager {
                 .add(0.0).add(30.0).add(70.0).add(100.0);
 
 
-        JsonNode aggregationResult = placeClient.getSearchClient().search(rootNode)
+        JsonNode aggregationResult = elasticClient.postSearch(rootNode)
                 .path("aggregations")
                 .path("price_range");
 
