@@ -66,7 +66,7 @@ public final class MunchAssistManager {
         ArrayNode filterArray = mapper.createArrayNode();
         filterArray.add(BoolQuery.filterTerm("dataType", "Place"));
         filterArray.add(BoolQuery.filterDistance(latLng, metres));
-        filterArray.add(BoolQuery.filterRange("ranking", "gt", 1));
+        // filterArray.add(BoolQuery.filterRange("ranking", "gt", 1));
 
         // Filter Array
         boolQuery.set("filter", filterArray);
