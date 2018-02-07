@@ -79,10 +79,12 @@ public final class CollectionService extends AbstractService {
 
             ArrayNode likes = objectMapper.createArrayNode();
             for (LikedPlace likedPlace : likedPlaceClient.list(subject, maxSortKey, size)) {
-                likes.addObject()
-                        .put("sortKey", likedPlace.getSortKey())
-                        .put("createdDate", likedPlace.getCreatedDate().getTime())
-                        .set("place", objectMapper.valueToTree(placeClient.get(likedPlace.getPlaceId())));
+                Place place = placeClient.get(likedPlace.getPlaceId());
+                if (place != null)
+                    likes.addObject()
+                            .put("sortKey", likedPlace.getSortKey())
+                            .put("createdDate", likedPlace.getCreatedDate().getTime())
+                            .set("place", objectMapper.valueToTree(place));
             }
             return nodes(200, likes);
         }
