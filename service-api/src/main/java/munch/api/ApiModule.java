@@ -1,5 +1,10 @@
 package munch.api;
 
+import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagement;
+import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagementClientBuilder;
+import com.amazonaws.services.simplesystemsmanagement.model.GetParameterRequest;
+import com.amazonaws.services.simplesystemsmanagement.model.GetParameterResult;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -9,9 +14,13 @@ import com.typesafe.config.ConfigFactory;
 import munch.api.services.ServiceModule;
 import munch.data.dynamodb.DynamoModule;
 import munch.data.elastic.ElasticModule;
-import munch.restful.server.auth0.Auth0AuthenticationModule;
+import munch.restful.server.firebase.FirebaseAuthenticationModule;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Created by: Fuxing
@@ -28,10 +37,27 @@ public class ApiModule extends AbstractModule {
         install(new DynamoModule());
         install(new ElasticModule());
 
-        Config config = ConfigFactory.load();
-        final String issuer = config.getString("services.auth0.issuer");
+        install(getAuthenticationModule());
+    }
 
-        install(new Auth0AuthenticationModule("https://api.munchapp.co/", issuer));
+    private FirebaseAuthenticationModule getAuthenticationModule() {
+        Config config = ConfigFactory.load();
+        final String projectId = config.getString("services.firebase.projectId");
+        final String ssmKey = config.getString("services.firebase.ssmKey");
+
+        try {
+            AWSSimpleSystemsManagement client = AWSSimpleSystemsManagementClientBuilder.defaultClient();
+            GetParameterResult result = client.getParameter(new GetParameterRequest()
+                    .withName(ssmKey)
+                    .withWithDecryption(true));
+
+            String value = result.getParameter().getValue();
+            InputStream inputStream = IOUtils.toInputStream(value, "utf-8");
+            GoogleCredentials credentials = GoogleCredentials.fromStream(inputStream);
+            return new FirebaseAuthenticationModule(projectId, credentials);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Provides
@@ -45,6 +71,10 @@ public class ApiModule extends AbstractModule {
      * @param args not required
      */
     public static void main(String[] args) {
+        Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
+            logger.error("Uncaught Exceptions: ", e.getCause());
+        });
+
         Injector injector = Guice.createInjector(new ApiModule());
         injector.getInstance(ApiServer.class).start();
     }

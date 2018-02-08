@@ -1,9 +1,11 @@
 dependencies {
     compile project(':client-collections')
 
-    compile group: 'munch.restful', name: 'restful-server', version: restfulVersion
     compile group: 'munch.restful', name: 'restful-client', version: restfulVersion
-    compile group: 'munch.restful', name: 'restful-auth0', version: restfulVersion
+    compile group: 'munch.restful', name: 'restful-server', version: restfulVersion
+    compile group: 'munch.restful', name: 'restful-server-jwt', version: restfulVersion
+    compile group: 'munch.restful', name: 'restful-server-firebase', version: restfulVersion
+    compile group: 'com.amazonaws', name: 'aws-java-sdk-ssm', version: '1.11.273'
 
     compile group: 'catalyst', name: 'retriable-utils', version: ccVersion
     compile group: 'munch.data', name: 'data-client', version: dataVersion

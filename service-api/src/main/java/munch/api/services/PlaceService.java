@@ -14,8 +14,8 @@ import munch.data.clients.PlaceClient;
 import munch.data.structure.Place;
 import munch.data.structure.PlaceCard;
 import munch.restful.server.JsonCall;
-import munch.restful.server.auth0.authenticate.AuthenticatedJWT;
-import munch.restful.server.auth0.authenticate.JwtAuthenticator;
+import munch.restful.server.jwt.AuthenticatedToken;
+import munch.restful.server.jwt.TokenAuthenticator;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,11 +33,11 @@ public class PlaceService extends AbstractService {
     private final InstagramMediaClient instagramMediaClient;
     private final PlaceCardReader cardReader;
 
-    private final JwtAuthenticator authenticator;
+    private final TokenAuthenticator authenticator;
     private final LikedPlaceClient likedPlaceClient;
 
     @Inject
-    public PlaceService(PlaceClient placeClient, ArticleClient articleClient, InstagramMediaClient instagramMediaClient, PlaceCardReader cardReader, JwtAuthenticator authenticator, LikedPlaceClient likedPlaceClient) {
+    public PlaceService(PlaceClient placeClient, ArticleClient articleClient, InstagramMediaClient instagramMediaClient, PlaceCardReader cardReader, TokenAuthenticator authenticator, LikedPlaceClient likedPlaceClient) {
         this.dataClient = placeClient;
         this.articleClient = articleClient;
         this.instagramMediaClient = instagramMediaClient;
@@ -84,7 +84,7 @@ public class PlaceService extends AbstractService {
      * @return {cards: List of PlaceCard, place: Place}
      */
     private JsonNode cards(JsonCall call) {
-        Optional<AuthenticatedJWT> optionalJwt = authenticator.optional(call);
+        Optional<AuthenticatedToken> optionalJwt = authenticator.optional(call);
         String placeId = call.pathString("placeId");
         Place place = dataClient.get(placeId);
         if (place == null) return null;

@@ -8,7 +8,7 @@ import munch.data.structure.Place;
 import munch.restful.core.RestfulMeta;
 import munch.restful.core.exception.ParamException;
 import munch.restful.server.JsonCall;
-import munch.restful.server.auth0.authenticate.JwtAuthenticator;
+import munch.restful.server.jwt.TokenAuthenticator;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -23,7 +23,7 @@ import java.util.List;
  */
 @Singleton
 public final class CollectionService extends AbstractService {
-    private final JwtAuthenticator authenticator;
+    private final TokenAuthenticator authenticator;
 
     private final PlaceClient placeClient;
 
@@ -32,7 +32,7 @@ public final class CollectionService extends AbstractService {
     private final CollectionPlaceClient collectionPlaceClient;
 
     @Inject
-    public CollectionService(JwtAuthenticator authenticator, CollectionClient collectionClient, LikedPlaceClient likedPlaceClient, CollectionPlaceClient collectionPlaceClient, PlaceClient placeClient) {
+    public CollectionService(TokenAuthenticator authenticator, CollectionClient collectionClient, LikedPlaceClient likedPlaceClient, CollectionPlaceClient collectionPlaceClient, PlaceClient placeClient) {
         this.authenticator = authenticator;
         this.collectionClient = collectionClient;
         this.likedPlaceClient = likedPlaceClient;
