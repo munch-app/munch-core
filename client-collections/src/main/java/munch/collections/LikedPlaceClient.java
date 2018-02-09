@@ -8,7 +8,6 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -105,7 +104,7 @@ public final class LikedPlaceClient {
             LikedPlace addedPlace = new LikedPlace();
             addedPlace.setPlaceId(item.getString("p"));
             addedPlace.setSortKey(item.getLong("s"));
-            addedPlace.setCreatedDate(new Date(item.getLong("c")));
+            addedPlace.setCreatedDate(item.getLong("c"));
             addedPlaces.add(addedPlace);
         });
         return addedPlaces;

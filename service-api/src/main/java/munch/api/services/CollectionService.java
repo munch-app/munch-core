@@ -2,6 +2,7 @@ package munch.api.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import munch.collections.*;
 import munch.data.clients.PlaceClient;
 import munch.data.structure.Place;
@@ -28,16 +29,18 @@ public final class CollectionService extends AbstractService {
     private final PlaceClient placeClient;
 
     private final LikedPlaceClient likedPlaceClient;
+    private final RecentPlaceClient recentPlaceClient;
     private final CollectionClient collectionClient;
     private final CollectionPlaceClient collectionPlaceClient;
 
     @Inject
-    public CollectionService(TokenAuthenticator authenticator, CollectionClient collectionClient, LikedPlaceClient likedPlaceClient, CollectionPlaceClient collectionPlaceClient, PlaceClient placeClient) {
+    public CollectionService(TokenAuthenticator authenticator, CollectionClient collectionClient, LikedPlaceClient likedPlaceClient, CollectionPlaceClient collectionPlaceClient, PlaceClient placeClient, RecentPlaceClient recentPlaceClient) {
         this.authenticator = authenticator;
         this.collectionClient = collectionClient;
         this.likedPlaceClient = likedPlaceClient;
         this.collectionPlaceClient = collectionPlaceClient;
         this.placeClient = placeClient;
+        this.recentPlaceClient = recentPlaceClient;
     }
 
     @Override
@@ -51,6 +54,11 @@ public final class CollectionService extends AbstractService {
                 GET("", liked::list);
                 PUT("/:placeId", liked::put);
                 DELETE("/:placeId", liked::delete);
+            });
+
+            PATH("/recents", () -> {
+                Recent recent = new Recent();
+                PUT("/:placeId", recent::put);
             });
 
             GET("", this::listCollection);
@@ -77,16 +85,21 @@ public final class CollectionService extends AbstractService {
             Long maxSortKey = queryLong(call, "maxSortKey");
             int size = call.queryInt("size", 20);
 
-            ArrayNode likes = objectMapper.createArrayNode();
-            for (LikedPlace likedPlace : likedPlaceClient.list(subject, maxSortKey, size)) {
-                Place place = placeClient.get(likedPlace.getPlaceId());
-                if (place != null)
-                    likes.addObject()
-                            .put("sortKey", likedPlace.getSortKey())
-                            .put("createdDate", likedPlace.getCreatedDate().getTime())
-                            .set("place", objectMapper.valueToTree(place));
+            List<LikedPlace> likedPlaces = likedPlaceClient.list(subject, maxSortKey, size);
+            List<JsonNode> results = placeClient.batchGetAs(likedPlaces, LikedPlace::getPlaceId, (likedPlace, place) -> {
+                return place.map(place1 -> objectMapper.createObjectNode()
+                        .put("sortKey", likedPlace.getSortKey())
+                        .put("createdDate", likedPlace.getCreatedDate())
+                        .set("place", objectMapper.valueToTree(place1)));
+            });
+
+            ObjectNode nodes = nodes(200, results);
+            // Add nextMaxSortKey if there is more to get
+            if (likedPlaces.size() == size) {
+                LikedPlace last = likedPlaces.get(size - 1);
+                nodes.put("nextMaxSortKey", last.getPlaceId());
             }
-            return nodes(200, likes);
+            return nodes;
         }
 
         private JsonNode put(JsonCall call) {
@@ -102,6 +115,16 @@ public final class CollectionService extends AbstractService {
             String placeId = call.pathString("placeId");
 
             likedPlaceClient.remove(subject, placeId);
+            return Meta200;
+        }
+    }
+
+    private class Recent {
+        private JsonNode put(JsonCall call) {
+            String subject = call.getJWT().getSubject();
+            String placeId = call.pathString("placeId");
+
+            recentPlaceClient.add(subject, placeId);
             return Meta200;
         }
     }

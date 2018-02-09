@@ -53,7 +53,7 @@ public final class ApiServer extends RestfulServer {
         Spark.before((req, res) -> versionValidator.validate(req));
         logger.info("Added version validator to all routes");
 
-        super.setupRouters();
+        Spark.path("/*", () -> super.setupRouters());
 
         healthService.start();
         logger.info("Started SparkRouter: VersionService");

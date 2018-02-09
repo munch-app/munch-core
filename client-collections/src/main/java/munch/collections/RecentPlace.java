@@ -7,15 +7,14 @@ import java.util.Objects;
 
 /**
  * Created by: Fuxing
- * Date: 9/1/18
- * Time: 4:29 PM
+ * Date: 9/2/18
+ * Time: 1:15 PM
  * Project: munch-core
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class LikedPlace {
+public final class RecentPlace {
     private String placeId;
-    private long sortKey;
     private long createdDate;
 
     public String getPlaceId() {
@@ -24,14 +23,6 @@ public final class LikedPlace {
 
     public void setPlaceId(String placeId) {
         this.placeId = placeId;
-    }
-
-    public long getSortKey() {
-        return sortKey;
-    }
-
-    public void setSortKey(long sortKey) {
-        this.sortKey = sortKey;
     }
 
     public long getCreatedDate() {
@@ -46,12 +37,13 @@ public final class LikedPlace {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        LikedPlace that = (LikedPlace) o;
+        RecentPlace that = (RecentPlace) o;
         return Objects.equals(placeId, that.placeId);
     }
 
     @Override
     public int hashCode() {
+
         return Objects.hash(placeId);
     }
 }

@@ -3,6 +3,8 @@ package munch.api.services.search;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import munch.collections.RecentPlace;
+import munch.collections.RecentPlaceClient;
 import munch.data.clients.ContainerClient;
 import munch.data.clients.PlaceClient;
 import munch.data.elastic.query.BoolQuery;
@@ -25,11 +27,13 @@ import java.util.List;
 public final class MunchAssistManager {
     private final ObjectMapper mapper = JsonUtils.objectMapper;
     private final PlaceClient placeClient;
+    private final RecentPlaceClient recentClient;
     private final ContainerClient containerClient;
 
     @Inject
-    public MunchAssistManager(PlaceClient placeClient, ContainerClient containerClient) {
+    public MunchAssistManager(PlaceClient placeClient, RecentPlaceClient recentClient, ContainerClient containerClient) {
         this.placeClient = placeClient;
+        this.recentClient = recentClient;
         this.containerClient = containerClient;
     }
 
@@ -53,6 +57,7 @@ public final class MunchAssistManager {
     }
 
     public List<Place> getRecentPlaces(String userId, int size) {
+        List<RecentPlace> list = recentClient.list(userId, null, 10);
         return null;
     }
 
