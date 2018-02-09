@@ -10,17 +10,17 @@ import java.util.List;
  * Time: 4:41 PM
  * Project: munch-core
  */
-public final class SearchNewestPlacesCard implements SearchCard {
+public final class SearchNewPlaceCard implements SearchCard {
 
     private List<Place> places;
 
-    public SearchNewestPlacesCard(List<Place> places) {
+    public SearchNewPlaceCard(List<Place> places) {
         this.places = places;
     }
 
     @Override
     public String getCardId() {
-        return "injected_NewestPlaces_20180205";
+        return "injected_NewPlace_20180209";
     }
 
     @Override

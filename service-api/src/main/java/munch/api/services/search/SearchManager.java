@@ -12,6 +12,7 @@ import munch.data.structure.Place;
 import munch.data.structure.SearchQuery;
 import munch.restful.core.JsonUtils;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.List;
@@ -39,14 +40,15 @@ public final class SearchManager {
     }
 
     /**
-     * @param query query to search
+     * @param query  query to search
+     * @param userId nullable user id
      * @return List of SearchCard
      */
-    public List<SearchCard> search(SearchQuery query) {
+    public List<SearchCard> search(SearchQuery query, @Nullable String userId) {
         query.setRadius(resolveRadius(query));
         List<Place> places = placeClient.getSearchClient().search(query);
         List<SearchCard> cards = cardParser.parseCards(places);
-        injectedCardManager.inject(cards, query);
+        injectedCardManager.inject(cards, query, userId);
         return cards;
     }
 

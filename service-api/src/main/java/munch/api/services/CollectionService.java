@@ -86,14 +86,16 @@ public final class CollectionService extends AbstractService {
             int size = call.queryInt("size", 20);
 
             List<LikedPlace> likedPlaces = likedPlaceClient.list(subject, maxSortKey, size);
-            List<JsonNode> results = placeClient.batchGetAs(likedPlaces, LikedPlace::getPlaceId, (likedPlace, place) -> {
-                return place.map(place1 -> objectMapper.createObjectNode()
+            ArrayNode arrayNode = objectMapper.createArrayNode();
+            placeClient.batchGetForEach(likedPlaces, LikedPlace::getPlaceId, (likedPlace, place) -> {
+                if (place == null) return;
+                arrayNode.addObject()
                         .put("sortKey", likedPlace.getSortKey())
                         .put("createdDate", likedPlace.getCreatedDate())
-                        .set("place", objectMapper.valueToTree(place1)));
+                        .set("place", objectMapper.valueToTree(place));
             });
 
-            ObjectNode nodes = nodes(200, results);
+            ObjectNode nodes = nodes(200, arrayNode);
             // Add nextMaxSortKey if there is more to get
             if (likedPlaces.size() == size) {
                 LikedPlace last = likedPlaces.get(size - 1);
@@ -163,13 +165,21 @@ public final class CollectionService extends AbstractService {
             int size = call.queryInt("size", 10);
 
             ArrayNode arrayNode = objectMapper.createArrayNode();
-            collectionPlaceClient.list(subject, collectionId, maxSortKey, size).forEach(addedPlace -> {
+            List<PlaceCollection.AddedPlace> addedPlaces = collectionPlaceClient.list(subject, collectionId, maxSortKey, size);
+            placeClient.batchGetForEach(addedPlaces, PlaceCollection.AddedPlace::getPlaceId, (addedPlace, place) -> {
+                if (place == null) return;
                 arrayNode.addObject()
                         .put("createdDate", addedPlace.getCreatedDate().getTime())
                         .put("placeId", addedPlace.getPlaceId())
-                        .set("place", objectMapper.valueToTree(placeClient.get(addedPlace.getPlaceId())));
+                        .set("place", objectMapper.valueToTree(place));
             });
-            return nodes(200, arrayNode);
+            ObjectNode nodes = nodes(200, arrayNode);
+            // Add nextMaxSortKey if there is more to get
+            if (addedPlaces.size() == size) {
+                PlaceCollection.AddedPlace last = addedPlaces.get(size - 1);
+                nodes.put("nextMaxSortKey", last.getPlaceId());
+            }
+            return nodes;
         }
 
         private JsonNode addPlace(JsonCall call) {
@@ -219,14 +229,6 @@ public final class CollectionService extends AbstractService {
         }
     }
 
-    private List<PlaceCollection> listCollection(JsonCall call) {
-        String subject = call.getJWT().getSubject();
-        Long maxSortKey = queryLong(call, "maxSortKey");
-        int size = call.queryInt("size", 20);
-
-        return collectionClient.list(subject, maxSortKey, size);
-    }
-
     private PlaceCollection createCollection(JsonCall call) {
         String subject = call.getJWT().getSubject();
 
@@ -235,6 +237,22 @@ public final class CollectionService extends AbstractService {
 
         collectionClient.put(placeCollection);
         return placeCollection;
+    }
+
+    private JsonNode listCollection(JsonCall call) {
+        String subject = call.getJWT().getSubject();
+        Long maxSortKey = queryLong(call, "maxSortKey");
+        int size = call.queryInt("size", 20);
+
+        List<PlaceCollection> list = collectionClient.list(subject, maxSortKey, size);
+
+        ObjectNode nodes = nodes(200, list);
+        // Add nextMaxSortKey if there is more to get
+        if (list.size() == size) {
+            PlaceCollection last = list.get(size - 1);
+            nodes.put("nextMaxSortKey", last.getSortKey());
+        }
+        return nodes;
     }
 
     @Nullable

@@ -16,6 +16,7 @@ import munch.restful.core.JsonUtils;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by: Fuxing
@@ -37,7 +38,7 @@ public final class MunchAssistManager {
         this.containerClient = containerClient;
     }
 
-    public List<Container> getNearbyContainer(String latLng, double metres, int size) {
+    public List<Container> getNearbyContainer(String latLng, int size) {
         ObjectNode root = mapper.createObjectNode();
         root.put("from", 0);
         root.put("size", size);
@@ -57,8 +58,11 @@ public final class MunchAssistManager {
     }
 
     public List<Place> getRecentPlaces(String userId, int size) {
-        List<RecentPlace> list = recentClient.list(userId, null, 10);
-        return null;
+        Objects.requireNonNull(userId);
+
+        List<RecentPlace> list = recentClient.list(userId, null, size);
+        if (list.size() < 4) return List.of();
+        return placeClient.batchGetMap(list, RecentPlace::getPlaceId, (recentPlace, place) -> place);
     }
 
     public List<Place> getNewestPlaces(String latLng, double metres, int size) {
