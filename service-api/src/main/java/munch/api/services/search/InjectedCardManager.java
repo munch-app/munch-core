@@ -114,6 +114,7 @@ public final class InjectedCardManager {
     private Optional<SearchCard> injectHeaderCard(boolean isEmpty, SearchQuery query) {
         if (isEmpty) return Optional.empty();
         if (isComplexQuery(query)) return Optional.empty();
+        if (query.getFrom() != 0) return Optional.empty();
 
         // Contains search result & query is not complex
         SearchHeaderCard headerCard = new SearchHeaderCard();
@@ -195,7 +196,7 @@ public final class InjectedCardManager {
         if (query.getFilter().getContainers() == null) return true;
         // Container Exist == false
         if (query.getFilter().getContainers().isEmpty()) return true;
-        return true;
+        return false;
     }
 
     private static Location createSingapore() {
