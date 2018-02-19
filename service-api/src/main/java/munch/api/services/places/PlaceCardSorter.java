@@ -42,11 +42,11 @@ public final class PlaceCardSorter {
             CardGroup.ofHeader("header_Article_20171112",
                     "vendor_Article_20171029"),
 
-            CardGroup.ofHeader("header_Location_20171112",
-                    "basic_Location_20171112"),
-
             CardGroup.ofHeader("header_UGC_20180219",
                     "ugc_SuggestedTag_20180219"),
+
+            CardGroup.ofHeader("header_Location_20171112",
+                    "basic_Location_20171112"),
     };
 
     /**
