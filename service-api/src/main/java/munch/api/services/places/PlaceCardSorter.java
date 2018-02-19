@@ -44,6 +44,9 @@ public final class PlaceCardSorter {
 
             CardGroup.ofHeader("header_Location_20171112",
                     "basic_Location_20171112"),
+
+            CardGroup.ofHeader("header_UGC_20180219",
+                    "ugc_SuggestedTag_20180219"),
     };
 
     /**
@@ -112,10 +115,20 @@ public final class PlaceCardSorter {
             return new CardGroup(null, contentIds);
         }
 
+        /**
+         * @param headerCard header card to deliver
+         * @param contentIds id of context card
+         * @return CardGroup
+         */
         private static CardGroup ofHeader(PlaceCard headerCard, String... contentIds) {
             return new CardGroup(headerCard, contentIds);
         }
 
+        /**
+         * @param headerId   header card with id to deliver if any of the content card exists
+         * @param contentIds id of context card
+         * @return CardGroup
+         */
         private static CardGroup ofHeader(String headerId, String... contentIds) {
             return new CardGroup(new PlaceHeaderCard(headerId), contentIds);
         }
