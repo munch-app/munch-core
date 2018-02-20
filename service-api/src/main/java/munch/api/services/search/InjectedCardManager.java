@@ -45,7 +45,8 @@ public final class InjectedCardManager {
 
         injectNoLocationCard(isEmpty, query).ifPresent(injectedList::add);
         injectContainerCard(isEmpty, query).ifPresent(injectedList::add);
-        injectNewestPlaceCard(isEmpty, query).ifPresent(injectedList::add);
+        // Remove Newest Place Card from Search
+        // injectNewestPlaceCard(isEmpty, query).ifPresent(injectedList::add);
         injectRecentPlaceCard(isEmpty, query, userId).ifPresent(injectedList::add);
         injectedList.addAll(injectNoResultCard(isEmpty, query));
         injectHeaderCard(isEmpty, query).ifPresent(injectedList::add);
