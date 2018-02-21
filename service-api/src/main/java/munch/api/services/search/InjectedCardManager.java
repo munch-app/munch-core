@@ -121,12 +121,12 @@ public final class InjectedCardManager {
         SearchHeaderCard headerCard = new SearchHeaderCard();
 
         if (isLocationAnywhere(query)) {
-            headerCard.setTitle("Popular In Singapore");
+            headerCard.setTitle("Discover Singapore");
         } else if (isLocationNearby(query)) {
-            headerCard.setTitle("Popular Near You");
+            headerCard.setTitle("Discover Near You");
         } else {
             String location = getLocationName(query, "Location");
-            headerCard.setTitle("Popular In " + location);
+            headerCard.setTitle("Discover " + location);
         }
         return Optional.of(headerCard);
     }
