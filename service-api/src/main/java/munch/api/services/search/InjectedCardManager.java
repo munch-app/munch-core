@@ -200,6 +200,7 @@ public final class InjectedCardManager {
         return false;
     }
 
+    @Deprecated
     private static Location createSingapore() {
         Location location = new Location();
         location.setId("singapore");
