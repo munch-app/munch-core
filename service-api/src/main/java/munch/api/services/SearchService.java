@@ -8,11 +8,14 @@ import munch.api.services.search.cards.SearchCard;
 import munch.data.clients.SearchClient;
 import munch.data.structure.SearchQuery;
 import munch.data.structure.SearchResult;
+import munch.restful.core.exception.ParamException;
 import munch.restful.server.JsonCall;
 import munch.restful.server.jwt.AuthenticatedToken;
 import munch.restful.server.jwt.TokenAuthenticator;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created By: Fuxing Loh
@@ -37,32 +40,36 @@ public class SearchService extends AbstractService {
     @Override
     public void route() {
         PATH("/search", () -> {
-            POST("/suggest", this::suggest);
-            POST("/search", this::search);
+            POST("", this::search);
             POST("/count", this::count);
 
-            POST("/filter/price_range", this::filterPriceRange);
+            POST("/suggest", this::suggest);
+            POST("/suggest/place", this::suggestPlace);
+            POST("/suggest/price/range", this::suggestPriceRange);
         });
     }
 
     /**
      * <pre>
      *  {
-     *      size: 10,
-     *      text: "",
-     *      latLng: "" // Optional
+     *      "types": {"Location": 5, "Place": 20},
+     *      "text": "",
+     *      "latLng": "" // Optional
      *  }
      * </pre>
      *
      * @param call json call
-     * @return list of Place result
+     * @return Map of (type: List of SearchResult)
      */
-    private List<SearchResult> suggest(JsonCall call) {
+    private Map<String, List<SearchResult>> suggest(JsonCall call) {
         JsonNode request = call.bodyAsJson();
-        int size = request.get("size").asInt();
-        String text = request.get("text").asText();
-        String latLng = request.path("latLng").asText(null);
-        return searchClient.suggest(text, latLng, size);
+        final String latLng = request.path("latLng").asText(null);
+        final String text = ParamException.requireNonNull("text", request.get("text").asText());
+        final JsonNode typesNode = ParamException.requireNonNull("types", request.get("types"));
+
+        Map<String, Integer> types = new HashMap<>();
+        typesNode.fields().forEachRemaining(e -> types.put(e.getKey(), e.getValue().asInt()));
+        return searchClient.multiSuggest(types, text);
     }
 
     /**
@@ -89,8 +96,13 @@ public class SearchService extends AbstractService {
      * @param call json call with search query
      * @return price range aggregations
      */
-    private JsonNode filterPriceRange(JsonCall call) {
+    private JsonNode suggestPriceRange(JsonCall call) {
         SearchQuery query = call.bodyAsObject(SearchQuery.class);
         return nodes(200, searchManager.priceAggregation(query));
+    }
+
+    private JsonNode suggestPlace(JsonCall call) {
+        // TODO Implement This
+        return null;
     }
 }
