@@ -76,7 +76,11 @@ public class SearchService extends AbstractService {
         typesNode.fields().forEachRemaining(e -> types.put(e.getKey(), e.getValue().asInt()));
 
         Map<String, Object> resultMap = new HashMap<>();
-        searchClient.multiSuggest(types, text.toLowerCase()).forEach(resultMap::put);
+        searchClient.multiSuggest(types, text.toLowerCase()).forEach((type, results) -> {
+            if (!results.isEmpty()) {
+                resultMap.put(type, results);
+            }
+        });
 
         assumptionEngine.assume(prevQuery, text).ifPresent(assumedSearchQuery -> {
             resultMap.put("Assumption", assumedSearchQuery);
