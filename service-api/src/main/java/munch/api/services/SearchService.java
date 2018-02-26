@@ -9,6 +9,7 @@ import munch.api.services.search.cards.SearchCard;
 import munch.data.assumption.AssumptionEngine;
 import munch.data.clients.SearchClient;
 import munch.data.structure.SearchQuery;
+import munch.data.structure.SearchResult;
 import munch.restful.core.exception.ParamException;
 import munch.restful.server.JsonCall;
 import munch.restful.server.jwt.AuthenticatedToken;
@@ -76,7 +77,7 @@ public class SearchService extends AbstractService {
         typesNode.fields().forEachRemaining(e -> types.put(e.getKey(), e.getValue().asInt()));
 
         Map<String, Object> resultMap = new HashMap<>();
-        searchClient.multiSuggest(types, text.toLowerCase()).forEach((type, results) -> {
+        searchClient.multiSearch(types, text.toLowerCase()).forEach((type, results) -> {
             if (!results.isEmpty()) {
                 resultMap.put(type, results);
             }
@@ -117,8 +118,13 @@ public class SearchService extends AbstractService {
         return nodes(200, searchManager.priceAggregation(query));
     }
 
-    private JsonNode suggestPlace(JsonCall call) {
-        // TODO Implement This
-        return null;
+    private List<SearchResult> suggestPlace(JsonCall call) {
+        JsonNode request = call.bodyAsJson();
+        final int from = request.path("from").asInt(0);
+        final int size = request.path("size").asInt(20);
+        final String latLng = request.path("latLng").asText(null);
+        final String text = ParamException.requireNonNull("text", request.get("text").asText());
+
+        return searchClient.search(List.of("Place"), text, from, size);
     }
 }
