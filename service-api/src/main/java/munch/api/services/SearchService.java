@@ -1,13 +1,14 @@
 package munch.api.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.services.search.SearchManager;
 import munch.api.services.search.cards.SearchCard;
+import munch.data.assumption.AssumptionEngine;
 import munch.data.clients.SearchClient;
 import munch.data.structure.SearchQuery;
-import munch.data.structure.SearchResult;
 import munch.restful.core.exception.ParamException;
 import munch.restful.server.JsonCall;
 import munch.restful.server.jwt.AuthenticatedToken;
@@ -30,11 +31,14 @@ public class SearchService extends AbstractService {
     private final SearchClient searchClient;
     private final SearchManager searchManager;
 
+    private final AssumptionEngine assumptionEngine;
+
     @Inject
-    public SearchService(TokenAuthenticator authenticator, SearchClient searchClient, SearchManager searchManager) {
+    public SearchService(TokenAuthenticator authenticator, SearchClient searchClient, SearchManager searchManager, AssumptionEngine assumptionEngine) {
         this.authenticator = authenticator;
         this.searchClient = searchClient;
         this.searchManager = searchManager;
+        this.assumptionEngine = assumptionEngine;
     }
 
     @Override
@@ -61,15 +65,23 @@ public class SearchService extends AbstractService {
      * @param call json call
      * @return Map of (type: List of SearchResult)
      */
-    private Map<String, List<SearchResult>> suggest(JsonCall call) {
+    private Map<String, Object> suggest(JsonCall call) throws JsonProcessingException {
         JsonNode request = call.bodyAsJson();
         final String latLng = request.path("latLng").asText(null);
         final String text = ParamException.requireNonNull("text", request.get("text").asText());
         final JsonNode typesNode = ParamException.requireNonNull("types", request.get("types"));
+        final SearchQuery prevQuery = objectMapper.treeToValue(request.path("query"), SearchQuery.class);
 
         Map<String, Integer> types = new HashMap<>();
         typesNode.fields().forEachRemaining(e -> types.put(e.getKey(), e.getValue().asInt()));
-        return searchClient.multiSuggest(types, text);
+
+        Map<String, Object> resultMap = new HashMap<>();
+        searchClient.multiSuggest(types, text.toLowerCase()).forEach(resultMap::put);
+
+        assumptionEngine.assume(prevQuery, text).ifPresent(assumedSearchQuery -> {
+            resultMap.put("Assumption", assumedSearchQuery);
+        });
+        return resultMap;
     }
 
     /**
