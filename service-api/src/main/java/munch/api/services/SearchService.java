@@ -77,7 +77,7 @@ public class SearchService extends AbstractService {
         typesNode.fields().forEachRemaining(e -> types.put(e.getKey(), e.getValue().asInt()));
 
         Map<String, Object> resultMap = new HashMap<>();
-        searchClient.multiSearch(types, text.toLowerCase()).forEach((type, results) -> {
+        searchClient.multiSearch(types, latLng, text.toLowerCase()).forEach((type, results) -> {
             if (!results.isEmpty()) {
                 resultMap.put(type, results);
             }
@@ -125,6 +125,6 @@ public class SearchService extends AbstractService {
         final String latLng = request.path("latLng").asText(null);
         final String text = ParamException.requireNonNull("text", request.get("text").asText());
 
-        return searchClient.search(List.of("Place"), text, from, size);
+        return searchClient.search(List.of("Place"), text, latLng, from, size);
     }
 }

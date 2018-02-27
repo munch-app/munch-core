@@ -18,6 +18,7 @@ import java.util.List;
  * Project: munch-core
  */
 @Singleton
+@Deprecated
 public class LocationService extends AbstractService {
 
     private final SearchClient searchClient;
@@ -77,6 +78,6 @@ public class LocationService extends AbstractService {
     private List<SearchResult> search(JsonCall call) {
         String text = call.queryString("text");
         int size = call.queryInt("size", 10);
-        return searchClient.search(List.of("Location", "Container"), text, size);
+        return searchClient.search(List.of("Location", "Container"), text, null, 0, size);
     }
 }
