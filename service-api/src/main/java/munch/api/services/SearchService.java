@@ -6,8 +6,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.services.search.SearchManager;
 import munch.api.services.search.cards.SearchCard;
-import munch.data.assumption.AssumptionEngine;
-import munch.data.clients.SearchClient;
 import munch.data.structure.SearchQuery;
 import munch.data.structure.SearchResult;
 import munch.restful.core.exception.ParamException;
@@ -27,19 +25,15 @@ import java.util.Map;
  */
 @Singleton
 public class SearchService extends AbstractService {
+
     private final TokenAuthenticator authenticator;
 
-    private final SearchClient searchClient;
     private final SearchManager searchManager;
 
-    private final AssumptionEngine assumptionEngine;
-
     @Inject
-    public SearchService(TokenAuthenticator authenticator, SearchClient searchClient, SearchManager searchManager, AssumptionEngine assumptionEngine) {
+    public SearchService(TokenAuthenticator authenticator, SearchManager searchManager) {
         this.authenticator = authenticator;
-        this.searchClient = searchClient;
         this.searchManager = searchManager;
-        this.assumptionEngine = assumptionEngine;
     }
 
     @Override
@@ -76,17 +70,7 @@ public class SearchService extends AbstractService {
         Map<String, Integer> types = new HashMap<>();
         typesNode.fields().forEachRemaining(e -> types.put(e.getKey(), e.getValue().asInt()));
 
-        Map<String, Object> resultMap = new HashMap<>();
-        searchClient.multiSearch(types, latLng, text.toLowerCase()).forEach((type, results) -> {
-            if (!results.isEmpty()) {
-                resultMap.put(type, results);
-            }
-        });
-
-        assumptionEngine.assume(prevQuery, text).ifPresent(assumedSearchQuery -> {
-            resultMap.put("Assumption", assumedSearchQuery);
-        });
-        return resultMap;
+        return searchManager.suggest(types, text, latLng, prevQuery);
     }
 
     /**
@@ -125,6 +109,6 @@ public class SearchService extends AbstractService {
         final String latLng = request.path("latLng").asText(null);
         final String text = ParamException.requireNonNull("text", request.get("text").asText());
 
-        return searchClient.search(List.of("Place"), text, latLng, from, size);
+        return searchManager.suggestPlace(text, latLng, from, size);
     }
 }
