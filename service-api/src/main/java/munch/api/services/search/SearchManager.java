@@ -73,7 +73,7 @@ public final class SearchManager {
 
     public Map<String, Object> suggest(Map<String, Integer> types, String text, @Nullable String latLng, SearchQuery prevQuery) {
         Map<String, Object> resultMap = new HashMap<>();
-        searchClient.multiSearch(types, latLng, text.toLowerCase()).forEach((type, results) -> {
+        searchClient.multiSearch(types, text.toLowerCase(), latLng).forEach((type, results) -> {
             if (!results.isEmpty()) {
                 resultMap.put(type, results);
             }
