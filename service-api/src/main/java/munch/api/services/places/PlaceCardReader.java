@@ -4,7 +4,6 @@ import munch.data.clients.PlaceCardClient;
 import munch.data.structure.Place;
 import munch.data.structure.PlaceCard;
 
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.ArrayList;
@@ -22,12 +21,14 @@ public final class PlaceCardReader {
     private final PlaceCardClient cardClient;
 
     private final BasicCardReader basicReader;
+    private final PlaceCardLoader cardLoader;
     private final PlaceCardSorter cardSorter;
 
     @Inject
-    public PlaceCardReader(PlaceCardClient cardClient, BasicCardReader basicReader, PlaceCardSorter cardSorter) {
+    public PlaceCardReader(PlaceCardClient cardClient, BasicCardReader basicReader, PlaceCardLoader cardLoader, PlaceCardSorter cardSorter) {
         this.cardClient = cardClient;
         this.basicReader = basicReader;
+        this.cardLoader = cardLoader;
         this.cardSorter = cardSorter;
     }
 
@@ -37,12 +38,12 @@ public final class PlaceCardReader {
      * @param place with placeId
      * @return List of AbstractCard, or null if place cannot be found
      */
-    @Nullable
     public List<PlaceCard> get(Place place) {
         Objects.requireNonNull(place.getId());
 
         List<PlaceCard> cards = new ArrayList<>();
         cards.addAll(basicReader.generateCards(place));
+        cards.addAll(cardLoader.load(place));
         cards.addAll(cardClient.list(place.getId()));
         return cardSorter.sort(cards);
     }

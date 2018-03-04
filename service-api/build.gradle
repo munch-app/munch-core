@@ -8,6 +8,7 @@ dependencies {
     compile group: 'catalyst', name: 'retriable-utils', version: ccVersion
     compile group: 'munch.data', name: 'data-client', version: dataVersion
     compile group: 'munch.data', name: 'client-collections', version: dataVersion
+    compile group: 'munch.data', name: 'client-awards', version: dataVersion
 
     compile group: 'facebook-corpus', name: 'instagram-client', version: '2.1.0-SNAPSHOT'
     compile group: 'munch.article', name: 'client-article', version: '1.1.1-SNAPSHOT'
