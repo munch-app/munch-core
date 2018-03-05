@@ -9,6 +9,7 @@ import munch.data.structure.Place;
 import munch.restful.core.RestfulMeta;
 import munch.restful.core.exception.ParamException;
 import munch.restful.server.JsonCall;
+import munch.restful.server.jwt.AuthenticationException;
 import munch.restful.server.jwt.TokenAuthenticator;
 
 import javax.annotation.Nullable;
@@ -76,6 +77,13 @@ public final class CollectionService extends AbstractService {
                     DELETE("/:placeId", collectionId::removePlace);
                 });
             });
+        });
+
+        PATH("/public/collections/:userId/:collectionId", () -> {
+            PublicCollection publicCollection = new PublicCollection();
+
+            GET("", publicCollection::get);
+            GET("/places", publicCollection::listPlace);
         });
     }
 
@@ -226,6 +234,49 @@ public final class CollectionService extends AbstractService {
             collection.setCount(collectionPlaceClient.count(subject, collectionId));
             collectionClient.put(collection);
             return Meta200;
+        }
+    }
+
+    private class PublicCollection {
+        private PlaceCollection get(JsonCall call) {
+            String userId = call.pathString("userId");
+            String collectionId = call.pathString("collectionId");
+
+            PlaceCollection collection = collectionClient.get(userId, collectionId);
+            validatePrivacy(collection);
+            return collection;
+        }
+
+        private JsonNode listPlace(JsonCall call) {
+            String userId = call.pathString("userId");
+            String collectionId = call.pathString("collectionId");
+            Long maxSortKey = queryLong(call, "maxSortKey");
+            int size = call.queryInt("size", 10);
+
+            PlaceCollection collection = collectionClient.get(userId, collectionId);
+            validatePrivacy(collection);
+
+            ArrayNode arrayNode = objectMapper.createArrayNode();
+            List<PlaceCollection.AddedPlace> addedPlaces = collectionPlaceClient.list(userId, collectionId, maxSortKey, size);
+            placeClient.batchGetForEach(addedPlaces, PlaceCollection.AddedPlace::getPlaceId, (addedPlace, place) -> {
+                if (place == null) return;
+                arrayNode.addObject()
+                        .put("createdDate", addedPlace.getCreatedDate().getTime())
+                        .put("placeId", addedPlace.getPlaceId())
+                        .set("place", objectMapper.valueToTree(place));
+            });
+            ObjectNode nodes = nodes(200, arrayNode);
+            // Add nextMaxSortKey if there is more to get
+            if (addedPlaces.size() == size) {
+                PlaceCollection.AddedPlace last = addedPlaces.get(size - 1);
+                nodes.put("nextMaxSortKey", last.getPlaceId());
+            }
+            return nodes;
+        }
+
+        private void validatePrivacy(PlaceCollection collection) throws AuthenticationException {
+            if (collection.getPrivacy().equals(PlaceCollection.PRIVACY_PUBLIC)) return;
+            throw new AuthenticationException("Collection Protected");
         }
     }
 

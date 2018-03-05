@@ -22,10 +22,10 @@ public final class PlaceCardSorter {
             CardGroup.of("basic_ImageBanner_20170915",
                     "basic_NameTag_20170912",
                     "basic_Address_20170924",
-                    "basic_BusinessHour_20170907",
-                    "extended_PlaceAward_20180305"),
+                    "basic_BusinessHour_20170907"),
 
             CardGroup.ofHeader("header_About_20171112",
+                    "extended_PlaceAward_20180305",
                     "basic_Description_20171109",
                     "basic_Price_20171219",
                     "basic_Phone_20171117",
