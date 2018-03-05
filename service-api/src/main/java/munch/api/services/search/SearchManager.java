@@ -18,6 +18,8 @@ import munch.restful.core.JsonUtils;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.time.Duration;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +41,8 @@ public final class SearchManager {
     private final AssumptionEngine assumptionEngine;
     private final InjectedCardManager injectedCardManager;
 
+    private final FixedRandomSorter placeSorter = new FixedRandomSorter(Duration.ofHours(24 + 18));
+
     @Inject
     public SearchManager(PlaceClient placeClient, ElasticClient elasticClient, SearchClient searchClient, CardParser cardParser, AssumptionEngine assumptionEngine, InjectedCardManager injectedCardManager) {
         this.placeClient = placeClient;
@@ -57,9 +61,24 @@ public final class SearchManager {
     public List<SearchCard> search(SearchQuery query, @Nullable String userId) {
         query.setRadius(resolveRadius(query));
         List<Place> places = placeClient.getSearchClient().search(query);
-        List<SearchCard> cards = cardParser.parseCards(places);
+        List<SearchCard> cards = cardParser.parseCards(sort(places));
         injectedCardManager.inject(cards, query, userId);
         return cards;
+    }
+
+    private List<Place> sort(List<Place> places) {
+        List<Place> finalList = new ArrayList<>();
+        List<Place> sortList = new ArrayList<>();
+        for (Place place : places) {
+            if (place.getImages() == null || place.getImages().isEmpty()) {
+                finalList.add(place);
+            } else {
+                sortList.add(place);
+            }
+        }
+        placeSorter.sort(sortList);
+        finalList.addAll(0, sortList);
+        return finalList;
     }
 
     /**
