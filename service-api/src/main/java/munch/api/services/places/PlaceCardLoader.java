@@ -1,6 +1,8 @@
 package munch.api.services.places;
 
+import munch.api.services.places.loader.PlaceAwardCardLoader;
 import munch.api.services.places.loader.PlaceDataCardLoader;
+import munch.api.services.places.loader.PlaceMenuCardLoader;
 import munch.data.structure.Place;
 import munch.data.structure.PlaceCard;
 
@@ -8,7 +10,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Improvement Timeline
@@ -25,11 +26,14 @@ import java.util.Set;
  */
 @Singleton
 public final class PlaceCardLoader {
-    private final Set<PlaceDataCardLoader<?, ?>> dataCardLoaders;
+    private final List<PlaceDataCardLoader<?, ?>> dataCardLoaders;
 
     @Inject
-    public PlaceCardLoader(Set<PlaceDataCardLoader<?, ?>> dataCardLoaders) {
-        this.dataCardLoaders = dataCardLoaders;
+    public PlaceCardLoader(PlaceMenuCardLoader placeMenuCardLoader, PlaceAwardCardLoader placeAwardCardLoader) {
+        this.dataCardLoaders = List.of(
+                placeMenuCardLoader,
+                placeAwardCardLoader
+        );
     }
 
     public List<PlaceCard> load(Place place) {

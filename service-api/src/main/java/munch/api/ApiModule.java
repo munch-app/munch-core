@@ -12,7 +12,6 @@ import com.google.inject.Provides;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import munch.api.services.ServiceModule;
-import munch.api.services.places.loader.PlaceDataLoaderModule;
 import munch.data.dynamodb.DynamoModule;
 import munch.data.elastic.ElasticModule;
 import munch.restful.server.firebase.FirebaseAuthenticationModule;
@@ -34,7 +33,6 @@ public class ApiModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        install(new PlaceDataLoaderModule());
         install(new ServiceModule());
         install(new DynamoModule());
         install(new ElasticModule());
@@ -73,10 +71,6 @@ public class ApiModule extends AbstractModule {
      * @param args not required
      */
     public static void main(String[] args) {
-        Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
-            logger.error("Uncaught Exceptions: ", e.getCause());
-        });
-
         Injector injector = Guice.createInjector(new ApiModule());
         injector.getInstance(ApiServer.class).start();
     }
