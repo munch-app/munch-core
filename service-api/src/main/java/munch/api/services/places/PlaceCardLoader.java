@@ -1,15 +1,14 @@
 package munch.api.services.places;
 
-import munch.awards.PlaceAward;
-import munch.awards.PlaceAwardClient;
+import munch.api.services.places.loader.PlaceDataCardLoader;
 import munch.data.structure.Place;
 import munch.data.structure.PlaceCard;
-import munch.data.structure.PlaceJsonCard;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Improvement Timeline
@@ -26,26 +25,18 @@ import java.util.List;
  */
 @Singleton
 public final class PlaceCardLoader {
-
-    private final PlaceAwardClient placeAwardClient;
+    private final Set<PlaceDataCardLoader<?, ?>> dataCardLoaders;
 
     @Inject
-    public PlaceCardLoader(PlaceAwardClient placeAwardClient) {
-        this.placeAwardClient = placeAwardClient;
+    public PlaceCardLoader(Set<PlaceDataCardLoader<?, ?>> dataCardLoaders) {
+        this.dataCardLoaders = dataCardLoaders;
     }
 
     public List<PlaceCard> load(Place place) {
-        List<PlaceAward> placeAwardList = placeAwardClient.list(place.getId(), null, 10);
-        if (placeAwardList.isEmpty()) return Collections.emptyList();
-
-        return List.of(
-                new PlaceAwardCard(placeAwardList)
-        );
-    }
-
-    public class PlaceAwardCard extends PlaceJsonCard {
-        public PlaceAwardCard(List<PlaceAward> placeAwardList) {
-            super("extended_PlaceAward_20180305", placeAwardList);
+        List<PlaceCard> cards = new ArrayList<>();
+        for (PlaceDataCardLoader<?, ?> loader : dataCardLoaders) {
+            loader.load(place).ifPresent(cards::add);
         }
+        return cards;
     }
 }

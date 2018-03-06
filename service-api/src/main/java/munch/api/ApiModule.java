@@ -12,6 +12,7 @@ import com.google.inject.Provides;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import munch.api.services.ServiceModule;
+import munch.api.services.places.loader.PlaceDataLoaderModule;
 import munch.data.dynamodb.DynamoModule;
 import munch.data.elastic.ElasticModule;
 import munch.restful.server.firebase.FirebaseAuthenticationModule;
@@ -33,6 +34,7 @@ public class ApiModule extends AbstractModule {
 
     @Override
     protected void configure() {
+        install(new PlaceDataLoaderModule());
         install(new ServiceModule());
         install(new DynamoModule());
         install(new ElasticModule());

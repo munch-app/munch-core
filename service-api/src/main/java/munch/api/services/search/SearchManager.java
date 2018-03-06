@@ -98,9 +98,7 @@ public final class SearchManager {
             }
         });
 
-        assumptionEngine.assume(prevQuery, text).ifPresent(assumedSearchQuery -> {
-            resultMap.put("Assumption", assumedSearchQuery);
-        });
+        resultMap.put("Assumption", assumptionEngine.assume(prevQuery, text));
         return resultMap;
     }
 
