@@ -7,8 +7,18 @@ package munch.api.services.places.cards;
  * Project: munch-core
  */
 public final class PlaceClosedCard extends AbstractPlaceCard {
+    private String reason;
+
     @Override
     public String getCardId() {
         return "basic_Closed_20180311";
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
     }
 }

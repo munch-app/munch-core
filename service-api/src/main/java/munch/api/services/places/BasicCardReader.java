@@ -33,6 +33,7 @@ public final class BasicCardReader {
     public List<PlaceCard> generateCards(Place place) {
         List<AbstractPlaceCard> cards = new ArrayList<>();
         cards.add(createImageBanner(place));
+        cards.add(createClosed(place));
         cards.add(createNameTag(place));
         cards.add(createAddress(place));
         cards.add(createDescription(place));
@@ -61,8 +62,11 @@ public final class BasicCardReader {
     }
 
     private PlaceClosedCard createClosed(Place place) {
-        if (!place.isOpen()) return null;
-        return new PlaceClosedCard();
+        if (place.isOpen()) return null;
+
+        PlaceClosedCard card = new PlaceClosedCard();
+        card.setReason("Permanently Closed");
+        return card;
     }
 
     @Nullable
