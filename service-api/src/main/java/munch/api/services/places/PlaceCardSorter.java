@@ -20,6 +20,7 @@ public final class PlaceCardSorter {
     private static final CardGroup[] CARD_GROUPS = new CardGroup[]{
             // NOTE: CardId must be updated when it is updated on the card site
             CardGroup.of("basic_ImageBanner_20170915",
+                    "basic_Closed_20180311",
                     "basic_NameTag_20170912",
                     "basic_Address_20170924",
                     "basic_BusinessHour_20170907"),
