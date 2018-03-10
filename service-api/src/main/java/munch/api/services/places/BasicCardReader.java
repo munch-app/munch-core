@@ -60,6 +60,11 @@ public final class BasicCardReader {
         return card;
     }
 
+    private PlaceClosedCard createClosed(Place place) {
+        if (!place.isOpen()) return null;
+        return new PlaceClosedCard();
+    }
+
     @Nullable
     private PlaceDescriptionCard createDescription(Place place) {
         String description = place.getDescription();
