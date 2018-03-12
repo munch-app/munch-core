@@ -67,18 +67,25 @@ public final class SearchManager {
     }
 
     private List<Place> sort(List<Place> places) {
-        List<Place> finalList = new ArrayList<>();
-        List<Place> sortList = new ArrayList<>();
+        List<Place> topSortList = new ArrayList<>();
+        List<Place> botSortList = new ArrayList<>();
+        List<Place> noImageList = new ArrayList<>();
+
         for (Place place : places) {
             if (place.getImages() == null || place.getImages().isEmpty()) {
-                finalList.add(place);
+                noImageList.add(place);
+            } else if (place.getRanking() > 1010){
+                topSortList.add(place);
             } else {
-                sortList.add(place);
+                botSortList.add(place);
             }
         }
-        placeSorter.sort(sortList);
-        finalList.addAll(0, sortList);
-        return finalList;
+        placeSorter.sort(topSortList);
+        placeSorter.sort(botSortList);
+
+        noImageList.addAll(0, botSortList);
+        noImageList.addAll(0, topSortList);
+        return noImageList;
     }
 
     /**

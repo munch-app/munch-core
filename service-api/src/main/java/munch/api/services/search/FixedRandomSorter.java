@@ -28,6 +28,8 @@ public class FixedRandomSorter {
     }
 
     public <T> void sort(List<T> dataList) {
+        if (dataList.isEmpty()) return;
+
         Random random = getRandom();
         Collections.shuffle(dataList, random);
     }
