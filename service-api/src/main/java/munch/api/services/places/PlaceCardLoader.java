@@ -29,7 +29,8 @@ public final class PlaceCardLoader {
     private final List<PlaceDataCardLoader<?, ?>> dataCardLoaders;
 
     @Inject
-    public PlaceCardLoader(PlaceMenuCardLoader placeMenuCardLoader, PlaceAwardCardLoader placeAwardCardLoader) {
+    public PlaceCardLoader(PlaceMenuCardLoader placeMenuCardLoader,
+                           PlaceAwardCardLoader placeAwardCardLoader) {
         this.dataCardLoaders = List.of(
                 placeMenuCardLoader,
                 placeAwardCardLoader

@@ -42,6 +42,7 @@ public final class BasicCardReader {
         cards.add(createPrice(place));
         cards.add(createBusinessHour(place));
         cards.add(createLocation(place));
+        cards.add(createMenu(place));
 
         return cards.stream().filter(Objects::nonNull)
                 .map(card -> new BasicPlaceCard(card.getCardId(), objectMapper.valueToTree(card)))
@@ -66,6 +67,14 @@ public final class BasicCardReader {
 
         PlaceClosedCard card = new PlaceClosedCard();
         card.setReason("Permanently Closed");
+        return card;
+    }
+
+    private PlaceHeaderMenuCard createMenu(Place place) {
+        if (place.getMenuUrl() == null) return null;
+
+        PlaceHeaderMenuCard card = new PlaceHeaderMenuCard();
+        card.setMenuUrl(place.getMenuUrl());
         return card;
     }
 

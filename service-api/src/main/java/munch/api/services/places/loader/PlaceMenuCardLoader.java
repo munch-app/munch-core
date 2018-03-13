@@ -22,18 +22,15 @@ public final class PlaceMenuCardLoader extends PlaceDataCardLoader<PlaceMenu, Pl
 
     @Inject
     public PlaceMenuCardLoader(PlaceMenuClient client) {
-        super("extended_PlaceMenu_20180306", client, 15);
+        super("extended_PlaceMenu_20180313", client, 15);
     }
 
     @Override
     public Optional<PlaceDataCard> load(Place place) {
         List<PlaceMenu> dataList = query(place.getId());
-
-        String menuUrl = place.getMenuUrl();
-        if (menuUrl == null && dataList.isEmpty()) return Optional.empty();
+        if (dataList.isEmpty()) return Optional.empty();
 
         ObjectNode objectNode = objectMapper.createObjectNode();
-        objectNode.put("menuUrl", menuUrl);
         objectNode.set("images", JsonUtils.toTree(dataList));
 
         return Optional.of(new PlaceDataCard(objectNode));

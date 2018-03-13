@@ -32,8 +32,8 @@ public final class PlaceCardSorter {
                     "basic_Phone_20171117",
                     "basic_Website_20171109"),
 
-            CardGroup.ofHeader("header_Menu_20171220",
-                    "extended_PlaceMenu_20180306"),
+            CardGroup.of("header_Menu_20180313",
+                    "extended_PlaceMenu_20180313"),
 
             CardGroup.ofHeader("header_Instagram_20171208",
                     "vendor_InstagramMedia_20171204"),
