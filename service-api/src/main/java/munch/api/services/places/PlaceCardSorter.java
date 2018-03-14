@@ -145,6 +145,7 @@ public final class PlaceCardSorter {
             PlaceCard dataCard = find("extended_PlaceMenu_20180313", cards);
 
             if (dataCard == null && headerCard == null) return List.of();
+            if (dataCard != null && headerCard != null) return List.of(headerCard, dataCard);
             if (headerCard != null) return List.of(headerCard);
             return List.of(HEADER_CARD, dataCard);
         }
