@@ -32,8 +32,7 @@ public final class PlaceCardSorter {
                     "basic_Phone_20171117",
                     "basic_Website_20171109"),
 
-            CardGroup.of("header_Menu_20180313",
-                    "extended_PlaceMenu_20180313"),
+            new MenuCardGroup(),
 
             CardGroup.ofHeader("header_Instagram_20171208",
                     "vendor_InstagramMedia_20171204"),
@@ -65,8 +64,8 @@ public final class PlaceCardSorter {
      * CardGroup with header to group card together by their id
      */
     private static class CardGroup {
-        private final PlaceCard headerCard;
-        private final String[] contentCardIds;
+        protected final PlaceCard headerCard;
+        protected final String[] contentCardIds;
 
         private CardGroup(@Nullable PlaceCard headerCard, String... contentCardIds) {
             this.headerCard = headerCard;
@@ -77,7 +76,7 @@ public final class PlaceCardSorter {
          * @param cards card source to collect from
          * @return empty or contain cards
          */
-        private List<PlaceCard> collect(List<PlaceCard> cards) {
+        protected List<PlaceCard> collect(List<PlaceCard> cards) {
             List<PlaceCard> contentCards = new ArrayList<>();
             for (String cardId : contentCardIds) {
                 PlaceCard placeCard = find(cardId, cards);
@@ -101,7 +100,7 @@ public final class PlaceCardSorter {
         }
 
         @Nullable
-        private PlaceCard find(String cardId, List<PlaceCard> cards) {
+        protected PlaceCard find(String cardId, List<PlaceCard> cards) {
             for (PlaceCard card : cards) {
                 if (card.getCardId().equals(cardId)) {
                     return card;
@@ -130,6 +129,24 @@ public final class PlaceCardSorter {
          */
         private static CardGroup ofHeader(String headerId, String... contentIds) {
             return new CardGroup(new PlaceHeaderCard(headerId), contentIds);
+        }
+    }
+
+    private static class MenuCardGroup extends CardGroup {
+        private static final PlaceHeaderCard HEADER_CARD = new PlaceHeaderCard("header_Menu_20180313");
+
+        private MenuCardGroup() {
+            super(null, "header_Menu_20180313", "extended_PlaceMenu_20180313");
+        }
+
+        @Override
+        protected List<PlaceCard> collect(List<PlaceCard> cards) {
+            PlaceCard headerCard = find("header_Menu_20180313", cards);
+            PlaceCard dataCard = find("extended_PlaceMenu_20180313", cards);
+
+            if (dataCard == null && headerCard == null) return List.of();
+            if (headerCard != null) return List.of(headerCard);
+            return List.of(HEADER_CARD, dataCard);
         }
     }
 }
