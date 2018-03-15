@@ -104,8 +104,6 @@ public final class SearchManager {
                 resultMap.put(type, results);
             }
         });
-
-        resultMap.put("Assumption", assumptionEngine.assume(prevQuery, text));
         return resultMap;
     }
 
