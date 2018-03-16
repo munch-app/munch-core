@@ -12,7 +12,6 @@ import munch.restful.server.jwt.TokenAuthenticator;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,9 +23,14 @@ import java.util.Map;
  */
 @Singleton
 public final class DiscoverService extends AbstractService {
+    private static final Map<String, Integer> SUGGEST_TYPES = Map.of(
+            "Location,Container", 10,
+            "Tag", 10
+    );
 
     private final TokenAuthenticator authenticator;
     private final SearchManager searchManager;
+
 
     @Inject
     public DiscoverService(TokenAuthenticator authenticator, SearchManager searchManager) {
@@ -39,8 +43,8 @@ public final class DiscoverService extends AbstractService {
         PATH("/discover", () -> {
             POST("", this::discover);
 
-            POST("/filter/count", this::filterCount);
             POST("/filter/suggest", this::filterSuggest);
+            POST("/filter/count", this::filterCount);
             POST("/filter/price/range", this::filterPriceRange);
         });
     }
@@ -79,15 +83,11 @@ public final class DiscoverService extends AbstractService {
      */
     private Map<String, Object> filterSuggest(JsonCall call) throws JsonProcessingException {
         JsonNode request = call.bodyAsJson();
-        final String latLng = request.path("latLng").asText(null);
         final String text = ParamException.requireNonNull("text", request.get("text").asText());
-        final JsonNode typesNode = ParamException.requireNonNull("types", request.get("types"));
+        final String latLng = request.path("latLng").asText(null);
         final SearchQuery prevQuery = objectMapper.treeToValue(request.path("query"), SearchQuery.class);
 
-        Map<String, Integer> types = new HashMap<>();
-        typesNode.fields().forEachRemaining(e -> types.put(e.getKey(), e.getValue().asInt()));
-
-        return searchManager.suggest(types, text, latLng, prevQuery);
+        return searchManager.suggest(SUGGEST_TYPES, text, latLng, prevQuery);
     }
 
     /**

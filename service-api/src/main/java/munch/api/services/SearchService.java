@@ -1,15 +1,20 @@
 package munch.api.services;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import munch.api.services.search.SearchManager;
-import munch.api.services.search.cards.SearchCard;
+import munch.data.assumption.AssumedSearchQuery;
+import munch.data.assumption.AssumptionEngine;
+import munch.data.clients.PlaceClient;
+import munch.data.structure.Place;
 import munch.data.structure.SearchQuery;
+import munch.restful.core.JsonUtils;
+import munch.restful.core.exception.ParamException;
 import munch.restful.server.JsonCall;
-import munch.restful.server.jwt.AuthenticatedToken;
-import munch.restful.server.jwt.TokenAuthenticator;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created By: Fuxing Loh
@@ -20,14 +25,13 @@ import java.util.List;
 @Singleton
 public class SearchService extends AbstractService {
 
-    private final TokenAuthenticator authenticator;
-
-    private final SearchManager searchManager;
+    private final AssumptionEngine assumptionEngine;
+    private final PlaceClient.SearchClient searchClient;
 
     @Inject
-    public SearchService(TokenAuthenticator authenticator, SearchManager searchManager) {
-        this.authenticator = authenticator;
-        this.searchManager = searchManager;
+    public SearchService(AssumptionEngine assumptionEngine, PlaceClient.SearchClient searchClient) {
+        this.assumptionEngine = assumptionEngine;
+        this.searchClient = searchClient;
     }
 
     @Override
@@ -42,12 +46,49 @@ public class SearchService extends AbstractService {
      * @return list of Place
      * @see SearchQuery
      */
-    private List<SearchCard> search(JsonCall call) {
-        SearchQuery query = call.bodyAsObject(SearchQuery.class);
-        String userId = authenticator.optional(call).map(AuthenticatedToken::getSubject).orElse(null);
+    private Map<String, JsonNode> search(JsonCall call) {
+        JsonNode request = call.bodyAsJson();
+        final String text = ParamException.requireNonNull("text", request.get("text").asText());
+        final SearchQuery prevQuery = JsonUtils.toObject(request.path("query"), SearchQuery.class);
 
-        // TODO Assumption, Location & Tag
-        //
-        return searchManager.search(query, userId);
+        List<AssumptionQueryResult> assumptions = new ArrayList<>();
+        for (AssumedSearchQuery query : assumptionEngine.assume(prevQuery, text)) {
+            List<Place> places = searchClient.search(query.getSearchQuery());
+            if (!places.isEmpty()) {
+                AssumptionQueryResult result = new AssumptionQueryResult();
+                result.setPlaces(places);
+                result.setTokens(query.getTokens());
+                assumptions.add(result);
+                break;
+            }
+        }
+
+        List<Place> places = searchClient.search(prevQuery);
+
+        return Map.of(
+                "assumptions", JsonUtils.toTree(assumptions),
+                "places", JsonUtils.toTree(places)
+        );
+    }
+
+    public static class AssumptionQueryResult {
+        private List<AssumedSearchQuery.Token> tokens;
+        private List<Place> places;
+
+        public List<AssumedSearchQuery.Token> getTokens() {
+            return tokens;
+        }
+
+        public void setTokens(List<AssumedSearchQuery.Token> tokens) {
+            this.tokens = tokens;
+        }
+
+        public List<Place> getPlaces() {
+            return places;
+        }
+
+        public void setPlaces(List<Place> places) {
+            this.places = places;
+        }
     }
 }

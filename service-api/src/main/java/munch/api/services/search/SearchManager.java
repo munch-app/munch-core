@@ -5,14 +5,12 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import munch.api.services.search.cards.CardParser;
 import munch.api.services.search.cards.SearchCard;
-import munch.data.assumption.AssumptionEngine;
 import munch.data.clients.PlaceClient;
 import munch.data.clients.SearchClient;
 import munch.data.elastic.ElasticClient;
 import munch.data.elastic.query.BoolQuery;
 import munch.data.structure.Place;
 import munch.data.structure.SearchQuery;
-import munch.data.structure.SearchResult;
 import munch.restful.core.JsonUtils;
 
 import javax.annotation.Nullable;
@@ -38,18 +36,16 @@ public final class SearchManager {
     private final SearchClient searchClient;
     private final CardParser cardParser;
 
-    private final AssumptionEngine assumptionEngine;
     private final InjectedCardManager injectedCardManager;
 
     private final FixedRandomSorter placeSorter = new FixedRandomSorter(Duration.ofHours(24 + 18));
 
     @Inject
-    public SearchManager(PlaceClient placeClient, ElasticClient elasticClient, SearchClient searchClient, CardParser cardParser, AssumptionEngine assumptionEngine, InjectedCardManager injectedCardManager) {
+    public SearchManager(PlaceClient placeClient, ElasticClient elasticClient, SearchClient searchClient, CardParser cardParser, InjectedCardManager injectedCardManager) {
         this.placeClient = placeClient;
         this.elasticClient = elasticClient;
         this.searchClient = searchClient;
         this.cardParser = cardParser;
-        this.assumptionEngine = assumptionEngine;
         this.injectedCardManager = injectedCardManager;
     }
 
@@ -105,10 +101,6 @@ public final class SearchManager {
             }
         });
         return resultMap;
-    }
-
-    public List<SearchResult> suggestPlace(String text, @Nullable String latLng, int from, int size) {
-        return searchClient.search(List.of("Place"), text, latLng, from, size);
     }
 
     public JsonNode priceAggregation(SearchQuery query) {
