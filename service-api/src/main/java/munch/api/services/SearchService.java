@@ -3,9 +3,13 @@ package munch.api.services;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import munch.data.assumption.AssumedSearchQuery;
+import io.searchbox.core.Search;
 import munch.data.assumption.AssumptionEngine;
+import munch.data.assumption.AssumptionQuery;
+import munch.data.assumption.AssumptionToken;
 import munch.data.clients.PlaceClient;
+import munch.data.clients.SearchClient;
+import munch.data.elastic.ElasticClient;
 import munch.data.structure.Place;
 import munch.data.structure.SearchQuery;
 import munch.restful.core.JsonUtils;
@@ -26,11 +30,13 @@ import java.util.Map;
 public class SearchService extends AbstractService {
 
     private final AssumptionEngine assumptionEngine;
-    private final PlaceClient.SearchClient searchClient;
+    private final PlaceClient.SearchClient placeSearchClient;
+    private final SearchClient searchClient;
 
     @Inject
-    public SearchService(AssumptionEngine assumptionEngine, PlaceClient.SearchClient searchClient) {
+    public SearchService(AssumptionEngine assumptionEngine, PlaceClient.SearchClient placeSearchClient, SearchClient searchClient) {
         this.assumptionEngine = assumptionEngine;
+        this.placeSearchClient = placeSearchClient;
         this.searchClient = searchClient;
     }
 
@@ -49,13 +55,15 @@ public class SearchService extends AbstractService {
     private Map<String, JsonNode> search(JsonCall call) {
         JsonNode request = call.bodyAsJson();
         final String text = ParamException.requireNonNull("text", request.get("text").asText());
+        final String latLng = request.path("latLng").asText(null);
         final SearchQuery prevQuery = JsonUtils.toObject(request.path("query"), SearchQuery.class);
 
         List<AssumptionQueryResult> assumptions = new ArrayList<>();
-        for (AssumedSearchQuery query : assumptionEngine.assume(prevQuery, text)) {
-            List<Place> places = searchClient.search(query.getSearchQuery());
+        for (AssumptionQuery query : assumptionEngine.assume(prevQuery, text)) {
+            List<Place> places = placeSearchClient.search(query.getSearchQuery());
             if (!places.isEmpty()) {
                 AssumptionQueryResult result = new AssumptionQueryResult();
+                result.setSearchQuery(query.getSearchQuery());
                 result.setPlaces(places);
                 result.setTokens(query.getTokens());
                 assumptions.add(result);
@@ -63,8 +71,8 @@ public class SearchService extends AbstractService {
             }
         }
 
-        List<Place> places = searchClient.search(prevQuery);
-
+        Search search = ElasticClient.createSearch(List.of("Place"), List.of("name^2", "allNames"), text, latLng, 0, 40);
+        List<Place> places = searchClient.search(search);
         return Map.of(
                 "assumptions", JsonUtils.toTree(assumptions),
                 "places", JsonUtils.toTree(places)
@@ -72,14 +80,23 @@ public class SearchService extends AbstractService {
     }
 
     public static class AssumptionQueryResult {
-        private List<AssumedSearchQuery.Token> tokens;
+        private SearchQuery searchQuery;
+        private List<AssumptionToken> tokens;
         private List<Place> places;
 
-        public List<AssumedSearchQuery.Token> getTokens() {
+        public SearchQuery getSearchQuery() {
+            return searchQuery;
+        }
+
+        public void setSearchQuery(SearchQuery searchQuery) {
+            this.searchQuery = searchQuery;
+        }
+
+        public List<AssumptionToken> getTokens() {
             return tokens;
         }
 
-        public void setTokens(List<AssumedSearchQuery.Token> tokens) {
+        public void setTokens(List<AssumptionToken> tokens) {
             this.tokens = tokens;
         }
 
