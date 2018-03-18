@@ -66,6 +66,7 @@ public class SearchService extends AbstractService {
                 result.setSearchQuery(query.getSearchQuery());
                 result.setPlaces(places);
                 result.setTokens(query.getTokens());
+                result.setCount(placeSearchClient.count(query.getSearchQuery()));
                 assumptions.add(result);
                 break;
             }
@@ -83,6 +84,7 @@ public class SearchService extends AbstractService {
         private SearchQuery searchQuery;
         private List<AssumptionToken> tokens;
         private List<Place> places;
+        private long count;
 
         public SearchQuery getSearchQuery() {
             return searchQuery;
@@ -106,6 +108,14 @@ public class SearchService extends AbstractService {
 
         public void setPlaces(List<Place> places) {
             this.places = places;
+        }
+
+        public long getCount() {
+            return count;
+        }
+
+        public void setCount(long count) {
+            this.count = count;
         }
     }
 }
