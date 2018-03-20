@@ -64,7 +64,7 @@ public final class InjectedCardManager {
         String latLng = getLatLngContext(query);
         if (latLng == null) return Optional.empty();
 
-        List<Container> containers = assistManager.getNearbyContainer(latLng, 15);
+        List<Container> containers = assistManager.getNearbyContainer(latLng, 6);
         if (containers.isEmpty()) return Optional.empty();
 
         return Optional.of(new SearchContainersCard(containers));
