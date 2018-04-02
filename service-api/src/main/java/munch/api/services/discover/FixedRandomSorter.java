@@ -1,4 +1,4 @@
-package munch.api.services.search;
+package munch.api.services.discover;
 
 import java.time.Duration;
 import java.util.Collections;

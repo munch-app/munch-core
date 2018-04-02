@@ -1,10 +1,15 @@
 package munch.api.services;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import munch.api.services.search.SearchManager;
-import munch.api.services.search.cards.SearchCard;
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
+import munch.api.services.discover.FilterData;
+import munch.api.services.discover.FilterManager;
+import munch.api.services.discover.SearchManager;
+import munch.api.services.discover.cards.SearchCard;
+import munch.data.clients.SearchClient;
+import munch.data.elastic.ElasticIndex;
 import munch.data.structure.SearchQuery;
+import munch.data.structure.SearchResult;
 import munch.restful.core.exception.ParamException;
 import munch.restful.server.JsonCall;
 import munch.restful.server.jwt.AuthenticatedToken;
@@ -12,8 +17,10 @@ import munch.restful.server.jwt.TokenAuthenticator;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by: Fuxing
@@ -23,29 +30,45 @@ import java.util.Map;
  */
 @Singleton
 public final class DiscoverService extends AbstractService {
-    private static final Map<String, Integer> SUGGEST_TYPES = Map.of(
-            "Location,Container", 10,
-            "Tag", 10
-    );
+
+    private final Supplier<List<SearchResult>> locationSupplier;
 
     private final TokenAuthenticator authenticator;
-    private final SearchManager searchManager;
 
+    private final SearchClient searchClient;
+    private final SearchManager searchManager;
+    private final FilterManager filterManager;
 
     @Inject
-    public DiscoverService(TokenAuthenticator authenticator, SearchManager searchManager) {
+    public DiscoverService(TokenAuthenticator authenticator, SearchManager searchManager, SearchClient searchClient, ElasticIndex elasticIndex, FilterManager filterManager) {
         this.authenticator = authenticator;
         this.searchManager = searchManager;
+        this.searchClient = searchClient;
+        this.filterManager = filterManager;
+
+        // Every 12 hours, refresh the cache
+        this.locationSupplier = Suppliers.memoizeWithExpiration(() -> {
+            List<SearchResult> results = new ArrayList<>();
+            Iterator<SearchResult> locations = elasticIndex.scroll("Location", "1m");
+            locations.forEachRemaining(results::add);
+
+            Iterator<SearchResult> containers = elasticIndex.scroll("Container", "1m");
+            containers.forEachRemaining(results::add);
+            return results;
+        }, 12, TimeUnit.HOURS);
+        // Preload
+        this.locationSupplier.get();
     }
 
     @Override
     public void route() {
         PATH("/discover", () -> {
             POST("", this::discover);
+            POST("/filter", this::filter);
 
-            POST("/filter/suggest", this::filterSuggest);
-            POST("/filter/count", this::filterCount);
-            POST("/filter/price/range", this::filterPriceRange);
+            Location location = new Location();
+            GET("/filter/locations/list", location::list);
+            GET("/filter/locations/search", location::search);
         });
     }
 
@@ -60,42 +83,21 @@ public final class DiscoverService extends AbstractService {
         return searchManager.search(query, userId);
     }
 
-    /**
-     * @param call json call with search query
-     * @return price range aggregations
-     */
-    private JsonNode filterPriceRange(JsonCall call) {
+    private FilterData filter(JsonCall call) {
         SearchQuery query = call.bodyAsObject(SearchQuery.class);
-        return nodes(200, searchManager.priceAggregation(query));
+        return filterManager.filter(query);
     }
 
-    /**
-     * <pre>
-     *  {
-     *      "types": {"Location": 5, "Place": 20},
-     *      "text": "",
-     *      "latLng": "" // Optional
-     *  }
-     * </pre>
-     *
-     * @param call json call
-     * @return Map of (type: List of SearchResult)
-     */
-    private Map<String, Object> filterSuggest(JsonCall call) throws JsonProcessingException {
-        JsonNode request = call.bodyAsJson();
-        final String text = ParamException.requireNonNull("text", request.get("text").asText());
-        final String latLng = request.path("latLng").asText(null);
-        final SearchQuery prevQuery = objectMapper.treeToValue(request.path("query"), SearchQuery.class);
+    private class Location {
+        private List<SearchResult> list(JsonCall call) {
+            return locationSupplier.get();
+        }
 
-        return searchManager.suggest(SUGGEST_TYPES, text, latLng, prevQuery);
-    }
+        private List<SearchResult> search(JsonCall call) {
+            final String text = ParamException.requireNonNull("text", call.queryString("text"));
+            final String latLng = call.queryString("latLng");
 
-    /**
-     * @param call json call
-     * @return total possible place result count
-     */
-    private Long filterCount(JsonCall call) {
-        SearchQuery query = call.bodyAsObject(SearchQuery.class);
-        return searchManager.count(query);
+            return searchClient.search(List.of("Location", "Container"), text, latLng, 0, 20);
+        }
     }
 }

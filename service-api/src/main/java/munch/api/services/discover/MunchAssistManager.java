@@ -1,4 +1,4 @@
-package munch.api.services.search;
+package munch.api.services.discover;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;

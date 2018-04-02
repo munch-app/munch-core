@@ -1,4 +1,4 @@
-package munch.api.services.search.cards;
+package munch.api.services.discover.cards;
 
 import munch.data.structure.SearchQuery;
 

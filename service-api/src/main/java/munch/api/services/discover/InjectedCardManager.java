@@ -1,6 +1,6 @@
-package munch.api.services.search;
+package munch.api.services.discover;
 
-import munch.api.services.search.cards.*;
+import munch.api.services.discover.cards.*;
 import munch.data.clients.LocationUtils;
 import munch.data.structure.Container;
 import munch.data.structure.Place;
