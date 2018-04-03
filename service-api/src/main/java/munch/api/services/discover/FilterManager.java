@@ -2,6 +2,7 @@ package munch.api.services.discover;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import munch.data.clients.PlaceClient;
 import munch.data.elastic.ElasticClient;
@@ -38,7 +39,7 @@ public class FilterManager {
         this.elasticClient = elasticClient;
     }
 
-    public FilterData filter(SearchQuery query) {
+    public FilterCount filterCount(SearchQuery query) {
         query.setRadius(SearchManager.resolveRadius(query));
 
         ObjectNode rootNode = objectMapper.createObjectNode();
@@ -46,25 +47,44 @@ public class FilterManager {
         rootNode.putObject("query").set("bool", boolQuery.make(query));
         ObjectNode aggs = rootNode.putObject("aggs");
         aggs.set("tags", aggTags());
+
+        JsonNode result = elasticClient.postSearch(rootNode);
+
+        FilterCount filterCount = new FilterCount();
+        filterCount.setCount(placeClient.getSearchClient().count(query));
+        filterCount.setTags(parseTag(result.path("aggregations").path("tags")));
+        return filterCount;
+    }
+
+    public FilterPriceRange filterPriceRange(SearchQuery query) {
+        query.setRadius(SearchManager.resolveRadius(query));
+
+
+        ObjectNode rootNode = objectMapper.createObjectNode();
+        rootNode.put("size", 0);
+
+        ArrayNode must = rootNode.putObject("filter")
+                .putObject("bool")
+                .putArray("must");
+        must.add(BoolQuery.filterTerm("dataType", "Place"));
+        BoolQuery.filterLocation(query).ifPresent(must::add);
+
+
+        ObjectNode aggs = rootNode.putObject("aggs");
         aggs.set("prices", aggPrices());
         aggs.set("price_range", aggPriceRange());
 
         JsonNode result = elasticClient.postSearch(rootNode);
 
-        FilterData filterData = new FilterData();
-        filterData.setCount(placeClient.getSearchClient().count(query));
-        filterData.setTag(parseTag(result.path("aggregations").path("tags")));
-
-        FilterData.PriceRange priceRange = parsePriceRanges(result.path("aggregations").path("price_range"));
+        FilterPriceRange priceRange = parsePriceRanges(result.path("aggregations").path("price_range"));
         priceRange.setFrequency(parsePriceFrequency(result.path("aggregations").path("prices")));
-        filterData.setPriceRange(priceRange);
-        return filterData;
+        return priceRange;
     }
+
 
     private static JsonNode aggTags() {
         ObjectNode tag = objectMapper.createObjectNode();
-        tag.putObject("terms")
-                .put("field", "tag.explicits");
+        tag.putObject("terms").put("field", "tag.explicits");
         return tag;
     }
 
@@ -90,7 +110,7 @@ public class FilterManager {
         return priceRange;
     }
 
-    private static FilterData.Tag parseTag(JsonNode terms) {
+    private static Map<String, Integer> parseTag(JsonNode terms) {
         Map<String, Integer> counts = new HashMap<>();
 
         for (JsonNode object : terms.path("buckets")) {
@@ -99,9 +119,7 @@ public class FilterManager {
             counts.put(key, count);
         }
 
-        FilterData.Tag tag = new FilterData.Tag();
-        tag.setCounts(counts);
-        return tag;
+        return counts;
     }
 
     private static Map<Double, Integer> parsePriceFrequency(JsonNode prices) {
@@ -116,8 +134,8 @@ public class FilterManager {
         return frequency;
     }
 
-    private static FilterData.PriceRange parsePriceRanges(JsonNode node) {
-        FilterData.PriceRange priceRange = new FilterData.PriceRange();
+    private static FilterPriceRange parsePriceRanges(JsonNode node) {
+        FilterPriceRange priceRange = new FilterPriceRange();
 
         JsonNode values = node.path("values");
         double f0 = values.path("0.0").asDouble();
@@ -125,10 +143,10 @@ public class FilterManager {
         double f70 = values.path("70.0").asDouble();
         double f100 = values.path("100.0").asDouble();
 
-        priceRange.setAll(new FilterData.PriceRange.Segment(f0, f100));
-        priceRange.setCheap(new FilterData.PriceRange.Segment(f0, f40));
-        priceRange.setAverage(new FilterData.PriceRange.Segment(f40, f70));
-        priceRange.setExpensive(new FilterData.PriceRange.Segment(f70, f100));
+        priceRange.setAll(new FilterPriceRange.Segment(f0, f100));
+        priceRange.setCheap(new FilterPriceRange.Segment(f0, f40));
+        priceRange.setAverage(new FilterPriceRange.Segment(f40, f70));
+        priceRange.setExpensive(new FilterPriceRange.Segment(f70, f100));
         return priceRange;
     }
 }

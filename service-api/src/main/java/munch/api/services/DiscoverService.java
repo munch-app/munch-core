@@ -2,8 +2,9 @@ package munch.api.services;
 
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
-import munch.api.services.discover.FilterData;
+import munch.api.services.discover.FilterCount;
 import munch.api.services.discover.FilterManager;
+import munch.api.services.discover.FilterPriceRange;
 import munch.api.services.discover.SearchManager;
 import munch.api.services.discover.cards.SearchCard;
 import munch.data.clients.SearchClient;
@@ -64,7 +65,8 @@ public final class DiscoverService extends AbstractService {
     public void route() {
         PATH("/discover", () -> {
             POST("", this::discover);
-            POST("/filter", this::filter);
+            POST("/filter/count", this::filterCount);
+            POST("/filter/price/range", this::filterPriceRange);
 
             Location location = new Location();
             GET("/filter/locations/list", location::list);
@@ -83,9 +85,14 @@ public final class DiscoverService extends AbstractService {
         return searchManager.search(query, userId);
     }
 
-    private FilterData filter(JsonCall call) {
+    private FilterCount filterCount(JsonCall call) {
         SearchQuery query = call.bodyAsObject(SearchQuery.class);
-        return filterManager.filter(query);
+        return filterManager.filterCount(query);
+    }
+
+    private FilterPriceRange filterPriceRange(JsonCall call) {
+        SearchQuery query = call.bodyAsObject(SearchQuery.class);
+        return filterManager.filterPriceRange(query);
     }
 
     private class Location {
