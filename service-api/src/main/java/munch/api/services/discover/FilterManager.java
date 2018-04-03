@@ -45,15 +45,19 @@ public class FilterManager {
         rootNode.put("size", 0);
         rootNode.putObject("query").set("bool", boolQuery.make(query));
         ObjectNode aggs = rootNode.putObject("aggs");
-        aggs.set("prices", aggPrices());
         aggs.set("tags", aggTags());
+        aggs.set("prices", aggPrices());
+        aggs.set("price_range", aggPriceRange());
 
         JsonNode result = elasticClient.postSearch(rootNode);
 
         FilterData filterData = new FilterData();
         filterData.setCount(placeClient.getSearchClient().count(query));
-        filterData.setPriceRange(parsePrices(result.path("aggregations").path("prices")));
-        filterData.setTag(parseTag(result.path("aggregations").path("prices")));
+        filterData.setTag(parseTag(result.path("aggregations").path("tags")));
+
+        FilterData.PriceRange priceRange = parsePriceRanges(result.path("aggregations").path("price_range"));
+        priceRange.setFrequency(parsePriceFrequency(result.path("aggregations").path("prices")));
+        filterData.setPriceRange(priceRange);
         return filterData;
     }
 
@@ -77,23 +81,12 @@ public class FilterManager {
         return priceRange;
     }
 
-    private static FilterData.PriceRange parsePrices(JsonNode prices) {
-        Map<Double, Integer> frequency = new HashMap<>();
-        int sum = 0;
-
-        for (JsonNode object : prices.path("buckets")) {
-            double key = object.path("key").asDouble();
-            int count = object.path("doc_count").asInt();
-            frequency.put(key, count);
-            sum += count;
-        }
-
-        FilterData.PriceRange priceRange = new FilterData.PriceRange();
-        priceRange.setFrequency(frequency);
-        // TODO
-        // 1 - 40
-        // 40 - 70
-        // 70 - 100
+    private static JsonNode aggPriceRange() {
+        ObjectNode priceRange = objectMapper.createObjectNode();
+        priceRange.putObject("percentiles")
+                .put("field", "price.middle")
+                .putArray("percents")
+                .add(0.0).add(40.0).add(70.0).add(100.0);
         return priceRange;
     }
 
@@ -109,5 +102,33 @@ public class FilterManager {
         FilterData.Tag tag = new FilterData.Tag();
         tag.setCounts(counts);
         return tag;
+    }
+
+    private static Map<Double, Integer> parsePriceFrequency(JsonNode prices) {
+        Map<Double, Integer> frequency = new HashMap<>();
+
+        for (JsonNode object : prices.path("buckets")) {
+            double key = object.path("key").asDouble();
+            int count = object.path("doc_count").asInt();
+            frequency.put(key, count);
+        }
+
+        return frequency;
+    }
+
+    private static FilterData.PriceRange parsePriceRanges(JsonNode node) {
+        FilterData.PriceRange priceRange = new FilterData.PriceRange();
+
+        JsonNode values = node.path("values");
+        double f0 = values.path("0.0").asDouble();
+        double f40 = values.path("40.0").asDouble();
+        double f70 = values.path("70.0").asDouble();
+        double f100 = values.path("100.0").asDouble();
+
+        priceRange.setAll(new FilterData.PriceRange.Segment(f0, f100));
+        priceRange.setCheap(new FilterData.PriceRange.Segment(f0, f40));
+        priceRange.setAverage(new FilterData.PriceRange.Segment(f40, f70));
+        priceRange.setExpensive(new FilterData.PriceRange.Segment(f70, f100));
+        return priceRange;
     }
 }

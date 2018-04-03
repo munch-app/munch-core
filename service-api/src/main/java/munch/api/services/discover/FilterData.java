@@ -105,6 +105,11 @@ public final class FilterData {
             private double min;
             private double max;
 
+            public Segment(double min, double max) {
+                this.min = min;
+                this.max = max;
+            }
+
             public double getMin() {
                 return min;
             }
