@@ -63,11 +63,12 @@ public class FilterManager {
         ObjectNode rootNode = objectMapper.createObjectNode();
         rootNode.put("size", 0);
 
-        ArrayNode must = rootNode.putObject("filter")
+        ArrayNode filter = rootNode.putObject("query")
                 .putObject("bool")
-                .putArray("must");
-        must.add(BoolQuery.filterTerm("dataType", "Place"));
-        BoolQuery.filterLocation(query).ifPresent(must::add);
+                .putArray("filter");
+        filter.add(BoolQuery.filterTerm("dataType", "Place"));
+        filter.add(BoolQuery.filterTerm("open", true));
+        BoolQuery.filterLocation(query).ifPresent(filter::add);
 
 
         ObjectNode aggs = rootNode.putObject("aggs");
@@ -84,7 +85,9 @@ public class FilterManager {
 
     private static JsonNode aggTags() {
         ObjectNode tag = objectMapper.createObjectNode();
-        tag.putObject("terms").put("field", "tag.explicits");
+        tag.putObject("terms")
+                .put("field", "tag.explicits")
+                .put("size", 10000);
         return tag;
     }
 

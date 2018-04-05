@@ -66,7 +66,7 @@ public final class DiscoverService extends AbstractService {
         PATH("/discover", () -> {
             POST("", this::discover);
             POST("/filter/count", this::filterCount);
-            POST("/filter/price/range", this::filterPriceRange);
+            POST("/filter/price", this::filterPriceRange);
 
             Location location = new Location();
             GET("/filter/locations/list", location::list);
@@ -102,9 +102,8 @@ public final class DiscoverService extends AbstractService {
 
         private List<SearchResult> search(JsonCall call) {
             final String text = ParamException.requireNonNull("text", call.queryString("text"));
-            final String latLng = call.queryString("latLng");
 
-            return searchClient.search(List.of("Location", "Container"), text, latLng, 0, 20);
+            return searchClient.search(List.of("Location", "Container"), text, null, 0, 20);
         }
     }
 }
