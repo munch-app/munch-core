@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
  */
 @Singleton
 public final class PartnerContentManager {
+    private static final Pattern PATTERN_DESCRIPTION_CLEAN = Pattern.compile(" *\n+ *");
 
     private final InstagramMediaClient mediaClient;
     private final ArticleClient articleClient;
@@ -108,10 +110,15 @@ public final class PartnerContentManager {
         content.setDate(createdDate.getTime() == 0 ? null : createdDate);
         content.setAuthor(article.getBrand());
         content.setTitle(article.getTitle());
-        content.setDescription(article.getDescription());
+
+        content.setDescription(cleanDescription(article.getDescription()));
 
         content.setArticle(article);
         return content;
+    }
+
+    private static String cleanDescription(String description) {
+        return PATTERN_DESCRIPTION_CLEAN.matcher(description).replaceAll(" ");
     }
 
     public class PartnerContentResult {
