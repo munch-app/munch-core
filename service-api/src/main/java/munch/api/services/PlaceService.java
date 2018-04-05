@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.services.places.PlaceCardReader;
+import munch.api.services.places.partner.PartnerContentManager;
 import munch.article.clients.Article;
 import munch.article.clients.ArticleClient;
 import munch.collections.LikedPlaceClient;
@@ -13,6 +14,7 @@ import munch.corpus.instagram.InstagramMediaClient;
 import munch.data.clients.PlaceClient;
 import munch.data.structure.Place;
 import munch.data.structure.PlaceCard;
+import munch.restful.core.JsonUtils;
 import munch.restful.server.JsonCall;
 import munch.restful.server.jwt.AuthenticatedToken;
 import munch.restful.server.jwt.TokenAuthenticator;
@@ -28,19 +30,22 @@ import java.util.Optional;
  */
 @Singleton
 public class PlaceService extends AbstractService {
+
     private final PlaceClient dataClient;
     private final ArticleClient articleClient;
     private final InstagramMediaClient instagramMediaClient;
+    private final PartnerContentManager partnerContentManager;
     private final PlaceCardReader cardReader;
 
     private final TokenAuthenticator authenticator;
     private final LikedPlaceClient likedPlaceClient;
 
     @Inject
-    public PlaceService(PlaceClient placeClient, ArticleClient articleClient, InstagramMediaClient instagramMediaClient, PlaceCardReader cardReader, TokenAuthenticator authenticator, LikedPlaceClient likedPlaceClient) {
+    public PlaceService(PlaceClient placeClient, ArticleClient articleClient, InstagramMediaClient instagramMediaClient, PartnerContentManager partnerContentManager, PlaceCardReader cardReader, TokenAuthenticator authenticator, LikedPlaceClient likedPlaceClient) {
         this.dataClient = placeClient;
         this.articleClient = articleClient;
         this.instagramMediaClient = instagramMediaClient;
+        this.partnerContentManager = partnerContentManager;
         this.cardReader = cardReader;
         this.authenticator = authenticator;
         this.likedPlaceClient = likedPlaceClient;
@@ -61,8 +66,9 @@ public class PlaceService extends AbstractService {
             PATH("/data", () -> {
                 GET("/article", this::getArticles);
                 GET("/instagram", this::getInstagramMedias);
-                // Reviews
             });
+
+            GET("/partners/content", this::getPartnerContent);
         });
     }
 
@@ -115,6 +121,19 @@ public class PlaceService extends AbstractService {
         String placeId = call.pathString("placeId");
         String maxSort = call.queryString("maxSort", null);
         return instagramMediaClient.listByPlace(placeId, null, maxSort, querySize(call));
+    }
+
+    private JsonNode getPartnerContent(JsonCall call) {
+        String placeId = call.pathString("placeId");
+        String articleMaxSort = call.queryString("articleMaxSort", null);
+        String mediaMaxSort = call.queryString("mediaMaxSort", null);
+
+        PartnerContentManager.PartnerContentResult result = partnerContentManager.query(placeId, articleMaxSort, mediaMaxSort);
+        ObjectNode objectNode = JsonUtils.objectMapper.createObjectNode();
+        objectNode.set("list", JsonUtils.toTree(result.contents));
+        objectNode.put("mediaMaxSort", result.mediaMaxSort);
+        objectNode.put("articleMaxSort", result.articleMaxSort);
+        return objectNode;
     }
 
     private static int querySize(JsonCall call) {

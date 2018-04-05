@@ -34,14 +34,11 @@ public final class PlaceCardSorter {
 
             new MenuCardGroup(),
 
-            CardGroup.ofHeader("header_Instagram_20171208",
-                    "vendor_InstagramMedia_20171204"),
-
             CardGroup.ofHeader("header_Review_20171020",
                     "vendor_FacebookReview_20171017"),
 
-            CardGroup.ofHeader("header_Article_20171112",
-                    "vendor_Article_20171029"),
+            CardGroup.ofHeader("header_PartnerContent_20180405",
+                    "extended_PartnerContent_20180405"),
 
             CardGroup.ofHeader("header_Location_20171112",
                     "basic_Location_20171112"),

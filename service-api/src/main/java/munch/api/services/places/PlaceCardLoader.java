@@ -3,6 +3,7 @@ package munch.api.services.places;
 import munch.api.services.places.loader.PlaceAwardCardLoader;
 import munch.api.services.places.loader.PlaceDataCardLoader;
 import munch.api.services.places.loader.PlaceMenuCardLoader;
+import munch.api.services.places.loader.PlacePartnerContentCardLoader;
 import munch.data.structure.Place;
 import munch.data.structure.PlaceCard;
 
@@ -27,10 +28,15 @@ import java.util.List;
 @Singleton
 public final class PlaceCardLoader {
     private final List<PlaceDataCardLoader<?, ?>> dataCardLoaders;
+    private final PlacePartnerContentCardLoader partnerContentCardLoader;
+
 
     @Inject
     public PlaceCardLoader(PlaceMenuCardLoader placeMenuCardLoader,
-                           PlaceAwardCardLoader placeAwardCardLoader) {
+                           PlaceAwardCardLoader placeAwardCardLoader,
+
+                           PlacePartnerContentCardLoader partnerContentCardLoader) {
+        this.partnerContentCardLoader = partnerContentCardLoader;
         this.dataCardLoaders = List.of(
                 placeMenuCardLoader,
                 placeAwardCardLoader
@@ -42,6 +48,8 @@ public final class PlaceCardLoader {
         for (PlaceDataCardLoader<?, ?> loader : dataCardLoaders) {
             loader.load(place).ifPresent(cards::add);
         }
+
+        partnerContentCardLoader.load(place).ifPresent(cards::add);
         return cards;
     }
 }
