@@ -14,7 +14,6 @@ import munch.corpus.instagram.InstagramMediaClient;
 import munch.data.clients.PlaceClient;
 import munch.data.structure.Place;
 import munch.data.structure.PlaceCard;
-import munch.restful.core.JsonUtils;
 import munch.restful.server.JsonCall;
 import munch.restful.server.jwt.AuthenticatedToken;
 import munch.restful.server.jwt.TokenAuthenticator;
@@ -123,17 +122,12 @@ public class PlaceService extends AbstractService {
         return instagramMediaClient.listByPlace(placeId, null, maxSort, querySize(call));
     }
 
-    private JsonNode getPartnerContent(JsonCall call) {
+    private PartnerContentManager.PartnerContentResult getPartnerContent(JsonCall call) {
         String placeId = call.pathString("placeId");
         String articleMaxSort = call.queryString("articleMaxSort", null);
         String mediaMaxSort = call.queryString("mediaMaxSort", null);
 
-        PartnerContentManager.PartnerContentResult result = partnerContentManager.query(placeId, articleMaxSort, mediaMaxSort);
-        ObjectNode objectNode = JsonUtils.objectMapper.createObjectNode();
-        objectNode.set("list", JsonUtils.toTree(result.contents));
-        objectNode.put("mediaMaxSort", result.mediaMaxSort);
-        objectNode.put("articleMaxSort", result.articleMaxSort);
-        return objectNode;
+        return partnerContentManager.query(placeId, articleMaxSort, mediaMaxSort);
     }
 
     private static int querySize(JsonCall call) {

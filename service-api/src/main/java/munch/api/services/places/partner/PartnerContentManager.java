@@ -121,16 +121,27 @@ public final class PartnerContentManager {
         return PATTERN_DESCRIPTION_CLEAN.matcher(description).replaceAll(" ");
     }
 
-    public class PartnerContentResult {
+    public static class PartnerContentResult {
         public final List<PartnerContent> contents;
         public final String mediaMaxSort;
         public final String articleMaxSort;
-
 
         public PartnerContentResult(List<PartnerContent> contents, String mediaMaxSort, String articleMaxSort) {
             this.contents = contents;
             this.mediaMaxSort = mediaMaxSort;
             this.articleMaxSort = articleMaxSort;
+        }
+
+        public List<PartnerContent> getContents() {
+            return contents;
+        }
+
+        public String getMediaMaxSort() {
+            return mediaMaxSort;
+        }
+
+        public String getArticleMaxSort() {
+            return articleMaxSort;
         }
     }
 }
