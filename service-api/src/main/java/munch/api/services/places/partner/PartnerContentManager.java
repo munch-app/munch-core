@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  */
 @Singleton
 public final class PartnerContentManager {
-    private static final Pattern PATTERN_DESCRIPTION_CLEAN = Pattern.compile(" *\n+ *");
+    private static final Pattern PATTERN_DESCRIPTION_CLEAN = Pattern.compile(" *(\\\\n|\\\\r|\\\\n\\\\r|\\r)+ *");
 
     private final InstagramMediaClient mediaClient;
     private final ArticleClient articleClient;
@@ -108,7 +108,7 @@ public final class PartnerContentManager {
 
         Date createdDate = article.getCreatedDate();
         content.setDate(createdDate.getTime() == 0 ? null : createdDate);
-        content.setAuthor(article.getBrand());
+        content.setAuthor(article.getBrand().toUpperCase());
         content.setTitle(article.getTitle());
 
         content.setDescription(cleanDescription(article.getDescription()));
@@ -118,6 +118,7 @@ public final class PartnerContentManager {
     }
 
     private static String cleanDescription(String description) {
+        if (description == null) return null;
         return PATTERN_DESCRIPTION_CLEAN.matcher(description).replaceAll(" ");
     }
 
