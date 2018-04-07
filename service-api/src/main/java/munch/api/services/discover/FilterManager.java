@@ -99,7 +99,7 @@ public class FilterManager {
     private static JsonNode aggPrices() {
         ObjectNode priceRange = objectMapper.createObjectNode();
         priceRange.putObject("histogram")
-                .put("interval", 1)
+                .put("interval", 3)
                 .put("field", "price.middle");
         return priceRange;
     }

@@ -4,6 +4,7 @@ import munch.article.clients.Article;
 import munch.article.clients.ArticleClient;
 import munch.corpus.instagram.InstagramMedia;
 import munch.corpus.instagram.InstagramMediaClient;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -37,13 +38,13 @@ public final class PartnerContentManager {
 
     /**
      * @param placeId        place id
-     * @param articleMaxSort article  place max sort
+     * @param articleMaxSort article place max sort
      * @param mediaMaxSort   media place max sort
      * @return Page of data
      */
     public PartnerContentResult query(String placeId, @Nullable String articleMaxSort, @Nullable String mediaMaxSort) {
-        List<InstagramMedia> mediaList = mediaClient.listByPlace(placeId, null, mediaMaxSort, 30);
-        List<Article> articleList = articleClient.list(placeId, null, articleMaxSort, 30);
+        List<InstagramMedia> mediaList = mediaMaxSort == null && articleMaxSort != null ? List.of() : mediaClient.listByPlace(placeId, null, mediaMaxSort, 30);
+        List<Article> articleList = articleMaxSort == null && mediaMaxSort != null ? List.of() : articleClient.list(placeId, null, articleMaxSort, 30);
 
         return new PartnerContentResult(
                 capture(mediaList, articleList),
@@ -82,6 +83,7 @@ public final class PartnerContentManager {
     @Nullable
     public PartnerContent parse(InstagramMedia media) {
         if (media.getImages() == null || media.getImages().isEmpty()) return null;
+        if (StringUtils.isBlank(media.getCaption())) return null;
 
         PartnerContent content = new PartnerContent();
         content.setUniqueId("instagram|" + media.getMediaId());
@@ -100,6 +102,8 @@ public final class PartnerContentManager {
     @Nullable
     public PartnerContent parse(Article article) {
         if (article.getThumbnail() == null || article.getThumbnail().isEmpty()) return null;
+        String description = cleanDescription(article.getDescription());
+        if (StringUtils.isBlank(description)) return null;
 
         PartnerContent content = new PartnerContent();
         content.setUniqueId("article|" + article.getArticleId());
@@ -110,8 +114,7 @@ public final class PartnerContentManager {
         content.setDate(createdDate.getTime() == 0 ? null : createdDate);
         content.setAuthor(article.getBrand().toUpperCase());
         content.setTitle(article.getTitle());
-
-        content.setDescription(cleanDescription(article.getDescription()));
+        content.setDescription(description);
 
         content.setArticle(article);
         return content;
