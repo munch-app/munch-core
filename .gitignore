@@ -42,3 +42,5 @@ gradle-app.setting
 
 classes/
 */var/
+
+node_modules/
