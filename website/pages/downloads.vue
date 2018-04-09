@@ -4,7 +4,7 @@
       <section class="Banner">
         <b-container>
           <b-row style="text-align: left">
-            <b-col md="5" offset-md="1" col="12">
+            <b-col md="5" offset-md="1" cols="12">
               <h1 style="margin-top: 30px">DISCOVER DELICIOUS</h1>
               <h6 style="margin-top: 30px; font-size: 120%">
                 Whether you're looking for the perfect date spot or the hottest bar in town - Munch helps you answer the
@@ -19,7 +19,7 @@
                 </a>
               </div>
             </b-col>
-            <b-col md="4" col="12" class="d-none d-md-block">
+            <b-col md="4" cols="12" class="d-none d-md-block">
               <b-img right style="max-height: 500px;" src="/img/downloads/munch_app.png"/>
             </b-col>
           </b-row>

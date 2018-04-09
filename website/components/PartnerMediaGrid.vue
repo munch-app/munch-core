@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-container class="InstagramImage">
-      <b-row no-gutters="true">
+      <b-row no-gutters>
         <b-col cols="4" md="3" v-for="media in parsed" :key="media.mediaId">
           <a target="_blank" :href="media.url">
             <b-img :src="media.image" :title="media.caption" fluid/>
