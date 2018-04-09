@@ -25,15 +25,11 @@ public final class ApiServer extends RestfulServer {
     private static final Logger logger = LoggerFactory.getLogger(ApiServer.class);
 
     private final HealthService healthService;
-    private final VersionService versionService;
-    private final VersionService.Validator versionValidator;
 
     @Inject
-    public ApiServer(Set<RestfulService> routers, HealthService healthService, VersionService versionService, VersionService.Validator versionValidator) {
+    public ApiServer(Set<RestfulService> routers, HealthService healthService) {
         super(routers);
         this.healthService = healthService;
-        this.versionService = versionService;
-        this.versionValidator = versionValidator;
     }
 
     @Override
@@ -49,18 +45,11 @@ public final class ApiServer extends RestfulServer {
 
     @Override
     protected void setupRouters() {
-        // Validate that version is supported
-        Spark.before((req, res) -> versionValidator.validate(req));
-        logger.info("Added version validator to all routes");
-
-        // /* because beginning of path has version number
+        // Added /* because beginning of path has version number
         Spark.path("/*", () -> super.setupRouters());
 
         healthService.start();
         logger.info("Started SparkRouter: VersionService");
-
-        versionService.start();
-        logger.info("Started SparkRouter: HealthService");
     }
 
     @Override
