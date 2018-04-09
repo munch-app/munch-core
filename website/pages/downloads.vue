@@ -14,7 +14,8 @@
                 'What do you want to eat?'
               </h6>
               <div style="margin-top: 30px">
-                <a href="https://itunes.apple.com/us/app/munch-food-discovery/id1255436754?ls=1&mt=8">
+                <a href="https://itunes.apple.com/us/app/munch-food-discovery/id1255436754?ls=1&mt=8"
+                   rel="noopener noreferrer">
                   <b-img style="height: 50px" src="/img/downloads/app_store.svg"/>
                 </a>
               </div>
@@ -150,7 +151,9 @@
               </tr>
               <tr>
                 <td class="PlatformTitle">INSTAGRAM:</td>
-                <td class="PlatformLink"><a target="_blank" href="https://www.instagram.com/munch.app">@munch.app</a>
+                <td class="PlatformLink"><a target="_blank" href="https://www.instagram.com/munch.app"
+                                            rel="noopener noreferrer"
+                >@munch.app</a>
                 </td>
               </tr>
               </tbody>

@@ -3,7 +3,7 @@
     <b-container class="InstagramImage">
       <b-row no-gutters>
         <b-col cols="4" md="3" v-for="media in parsed" :key="media.mediaId">
-          <a target="_blank" :href="media.url">
+          <a target="_blank" :href="media.url" rel="noopener noreferrer">
             <b-img :src="media.image" :title="media.caption" fluid/>
           </a>
         </b-col>
