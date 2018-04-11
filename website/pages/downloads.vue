@@ -68,15 +68,15 @@
 
         <b-container>
           <b-row>
-            <b-col cols="12" md="4" class="Content">
-              <b-card title="Save Your Spot" img-src="" img-top>
+            <b-col cols="12" md="4" class="Content d-flex align-items-stretch">
+              <b-card title="Save Your Spot" img-src="/img/downloads/icons8-open.svg" img-top>
                 <p class="card-text">
                   Save places that you want to check out or create themed lists to keep track of places.
                 </p>
               </b-card>
             </b-col>
-            <b-col cols="12" md="4" class="Content">
-              <b-card title="True Discovery" img-src="" img-top>
+            <b-col cols="12" md="4" class="Content d-flex align-items-stretch">
+              <b-card title="True Discovery" img-src="/img/downloads/icons8-compass.svg" img-top>
                 <p class="card-text">
                   Explore thousands of restaurants, bars and hawkers in the app. Find places nearby or on the other end
                   of
@@ -84,8 +84,8 @@
                 </p>
               </b-card>
             </b-col>
-            <b-col cols="12" md="4" class="Content">
-              <b-card title="Good or Not" img-src="" img-top>
+            <b-col cols="12" md="4" class="Content d-flex align-items-stretch">
+              <b-card title="Good or Not" img-src="/img/downloads/icons8-news.svg" img-top>
                 <p class="card-text">
                   Read the latest articles from bloggers such as DanielFoodDiary, MissTamChiak & Eatbook.
                 </p>
@@ -94,8 +94,8 @@
           </b-row>
 
           <b-row>
-            <b-col cols="12" md="4" offset-md="2" class="Content">
-              <b-card title="We Eat With You*" img-src="" img-top>
+            <b-col cols="12" md="4" offset-md="2" class="Content d-flex align-items-stretch">
+              <b-card title="We Eat With You*" img-src="/img/downloads/icons8-mind-map.svg" img-top>
                 <p style="font-size: 75%"><b>*This feature is in Beta mode and will be released to the public soon.</b>
                 </p>
                 <p>
@@ -103,8 +103,8 @@
                 </p>
               </b-card>
             </b-col>
-            <b-col cols="12" md="4" class="Content">
-              <b-card title="Tell the world*" img-src="" img-top>
+            <b-col cols="12" md="4" class="Content d-flex align-items-stretch">
+              <b-card title="Tell the world*" img-src="/img/downloads/icons8-very-popular-topic.svg" img-top>
                 <p style="font-size: 75%"><b>*This feature is in Beta mode and will be released to the public at a later
                   date.​</b></p>
                 <p class="card-text">
@@ -196,8 +196,16 @@
     margin-bottom: 20px;
   }
 
+  .Banner {
+    background-color: #00000060;
+  }
+
   .OverlayBanner {
-    background: #efefef;
+    background: url("/img/downloads/banner.jpg");
+    background-position: center center;
+    background-size: cover;
+
+    color: white;
   }
 
   .OverlayFeatures {
@@ -210,6 +218,12 @@
 
   .Features .Content p, h4 {
     text-align: center;
+  }
+
+  .Features .Content img {
+    height: 60px;
+    width: 60px;
+    margin: 30px auto 0 auto;
   }
 
   .Features .Content {

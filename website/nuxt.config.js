@@ -42,5 +42,8 @@ module.exports = {
   },
   modules: [
     'bootstrap-vue/nuxt'
+  ],
+  serverMiddleware: [
+    {path: '/_health', handler: '~/service/health.js'},
   ]
 };
