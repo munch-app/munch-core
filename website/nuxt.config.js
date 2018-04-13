@@ -41,7 +41,10 @@ module.exports = {
     }
   },
   modules: [
-    'bootstrap-vue/nuxt'
+    'bootstrap-vue/nuxt',
+    ['@nuxtjs/google-analytics', {
+      id: 'UA-117480436-1'
+    }]
   ],
   serverMiddleware: [
     {path: '/_health', handler: '~/service/health.js'},
