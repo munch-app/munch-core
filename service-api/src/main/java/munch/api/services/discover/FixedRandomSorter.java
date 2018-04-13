@@ -1,5 +1,7 @@
 package munch.api.services.discover;
 
+import munch.data.structure.Place;
+
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
@@ -27,10 +29,18 @@ public class FixedRandomSorter {
         return new Random(getSeed());
     }
 
-    public <T> void sort(List<T> dataList) {
+    public void sort(List<Place> dataList) {
         if (dataList.isEmpty()) return;
 
         Random random = getRandom();
+
+        for (Place place : dataList) {
+            double next = (random.nextDouble() * 10.0) - 5.0;
+            double ranking = place.getRanking() * next;
+            // TODO Adjust due to opening hours
+        }
+
+
         Collections.shuffle(dataList, random);
     }
 }
