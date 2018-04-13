@@ -14,11 +14,10 @@
                 'What do you want to eat?'
               </h6>
               <div style="margin-top: 30px">
-                <h5 style="text-align: left">Coming to App Store Soon</h5>
-                <!--<a href="https://itunes.apple.com/us/app/munch-food-discovery/id1255436754?ls=1&mt=8"-->
-                   <!--rel="noopener noreferrer">-->
-                  <!--<b-img style="height: 50px" src="/img/downloads/app_store.svg"/>-->
-                <!--</a>-->
+                <a href="https://itunes.apple.com/sg/app/munch-food-discovery/id1255436754?ls=1&mt=8"
+                   rel="noopener noreferrer">
+                  <b-img style="height: 50px" src="/img/downloads/app_store.svg"/>
+                </a>
               </div>
             </b-col>
             <b-col md="4" cols="12" class="d-none d-md-block">
