@@ -87,7 +87,7 @@ public class FixedRandomSorter {
                     }
                 });
 
-        return isOpen ? 1.25 : 0.8;
+        return isOpen ? 1.10 : 0.925;
     }
 
     private static int timeAsInt(String time) throws ParseException {
