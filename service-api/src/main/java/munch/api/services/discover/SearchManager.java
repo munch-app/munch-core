@@ -11,7 +11,6 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,31 +48,14 @@ public final class SearchManager {
     public List<SearchCard> search(SearchQuery query, @Nullable String userId) {
         query.setRadius(resolveRadius(query));
         List<Place> places = placeClient.getSearchClient().search(query);
-        List<SearchCard> cards = cardParser.parseCards(sort(places));
+        List<SearchCard> cards = cardParser.parseCards(sort(places, query));
         injectedCardManager.inject(cards, query, userId);
         return cards;
     }
 
-    private List<Place> sort(List<Place> places) {
-        List<Place> topSortList = new ArrayList<>();
-        List<Place> botSortList = new ArrayList<>();
-        List<Place> noImageList = new ArrayList<>();
-
-        for (Place place : places) {
-            if (place.getImages() == null || place.getImages().isEmpty()) {
-                noImageList.add(place);
-            } else if (place.getRanking() > 1015) {
-                topSortList.add(place);
-            } else {
-                botSortList.add(place);
-            }
-        }
-        placeSorter.sort(topSortList);
-        placeSorter.sort(botSortList);
-
-        noImageList.addAll(0, botSortList);
-        noImageList.addAll(0, topSortList);
-        return noImageList;
+    private List<Place> sort(List<Place> places, SearchQuery query) {
+        placeSorter.sort(places, query);
+        return places;
     }
 
     public Map<String, Object> suggest(Map<String, Integer> types, String text, @Nullable String latLng, SearchQuery prevQuery) {
