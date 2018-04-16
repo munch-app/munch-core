@@ -87,7 +87,7 @@
             <b-col cols="12" md="4" class="Content d-flex align-items-stretch">
               <b-card title="Good or Not" img-src="/img/downloads/icons8-news.svg" img-top>
                 <p class="card-text">
-                  Read the latest articles from bloggers such as DanielFoodDiary, MissTamChiak & Eatbook.
+                  Read the latest articles from bloggers such as MissTamChiak & Eatbook.
                 </p>
               </b-card>
             </b-col>
