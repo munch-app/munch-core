@@ -146,6 +146,15 @@ public class FilterManager {
         double f70 = values.path("70.0").asDouble();
         double f100 = values.path("100.0").asDouble();
 
+        if (Double.isNaN(f0)) {
+            FilterPriceRange.Segment segment = new FilterPriceRange.Segment(0, 0);
+            priceRange.setAll(segment);
+            priceRange.setCheap(segment);
+            priceRange.setAverage(segment);
+            priceRange.setExpensive(segment);
+            return priceRange;
+        }
+
         priceRange.setAll(new FilterPriceRange.Segment(f0, f100));
         priceRange.setCheap(new FilterPriceRange.Segment(f0, f40));
         priceRange.setAverage(new FilterPriceRange.Segment(f40, f70));
