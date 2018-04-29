@@ -13,7 +13,7 @@ import javax.inject.Singleton;
  * Project: munch-core
  */
 @Singleton
-public final class PlaceAwardCardLoader extends PlaceDataCardLoader<PlaceAward, PlaceAwardClient> {
+public final class PlaceAwardCardLoader extends PlaceDataCardLoader.Extended<PlaceAward, PlaceAwardClient> {
 
     @Inject
     public PlaceAwardCardLoader(PlaceAwardClient client) {

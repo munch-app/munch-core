@@ -10,36 +10,45 @@ import munch.restful.core.JsonUtils;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * Created by: Fuxing
- * Date: 6/3/18
- * Time: 8:30 PM
+ * Date: 27/4/2018
+ * Time: 7:36 PM
  * Project: munch-core
  */
-public abstract class PlaceDataCardLoader<T extends ExtendedData, C extends ExtendedDataClient<T>> {
+public abstract class PlaceDataCardLoader<T> {
     protected static final ObjectMapper objectMapper = JsonUtils.objectMapper;
 
-    protected final C client;
     protected final String cardId;
-    protected final int size;
 
-    public PlaceDataCardLoader(String cardId, C client, int size) {
+    public PlaceDataCardLoader(String cardId) {
         this.cardId = cardId;
-        this.client = client;
-        this.size = size;
     }
 
-    protected List<T> query(String placeId) {
-        return client.list(placeId, null, size);
-    }
+    protected abstract List<T> query(String placeId);
 
-    public Optional<PlaceDataCard> load(Place place) {
+    public List<? extends PlaceJsonCard> load(Place place) {
         List<T> list = query(place.getId());
 
-        if (list.isEmpty()) return Optional.empty();
-        return Optional.of(new PlaceDataCard(list));
+        if (list.isEmpty()) return List.of();
+        return List.of(new PlaceDataCard(list));
+    }
+
+    public static class Extended<T extends ExtendedData, C extends ExtendedDataClient<T>> extends PlaceDataCardLoader<T> {
+        protected final C client;
+        protected final int size;
+
+        public Extended(String cardId, C client, int size) {
+            super(cardId);
+            this.client = client;
+            this.size = size;
+        }
+
+        protected List<T> query(String placeId) {
+            return client.list(placeId, null, size);
+        }
+
     }
 
     public class PlaceDataCard extends PlaceJsonCard {

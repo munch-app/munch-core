@@ -9,7 +9,6 @@ import munch.restful.core.JsonUtils;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Created by: Fuxing
@@ -18,7 +17,7 @@ import java.util.Optional;
  * Project: munch-core
  */
 @Singleton
-public final class PlaceMenuCardLoader extends PlaceDataCardLoader<PlaceMenu, PlaceMenuClient> {
+public final class PlaceMenuCardLoader extends PlaceDataCardLoader.Extended<PlaceMenu, PlaceMenuClient> {
 
     @Inject
     public PlaceMenuCardLoader(PlaceMenuClient client) {
@@ -26,13 +25,13 @@ public final class PlaceMenuCardLoader extends PlaceDataCardLoader<PlaceMenu, Pl
     }
 
     @Override
-    public Optional<PlaceDataCard> load(Place place) {
+    public List<PlaceDataCard> load(Place place) {
         List<PlaceMenu> dataList = query(place.getId());
-        if (dataList.isEmpty()) return Optional.empty();
+        if (dataList.isEmpty()) return List.of();
 
         ObjectNode objectNode = objectMapper.createObjectNode();
         objectNode.set("images", JsonUtils.toTree(dataList));
 
-        return Optional.of(new PlaceDataCard(objectNode));
+        return List.of(new PlaceDataCard(objectNode));
     }
 }

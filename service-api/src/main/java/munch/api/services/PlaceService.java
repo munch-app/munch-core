@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.services.places.PlaceCardReader;
-import munch.api.services.places.partner.PartnerContentManager;
 import munch.article.clients.Article;
 import munch.article.clients.ArticleClient;
 import munch.collections.LikedPlaceClient;
@@ -33,18 +32,16 @@ public class PlaceService extends AbstractService {
     private final PlaceClient dataClient;
     private final ArticleClient articleClient;
     private final InstagramMediaClient instagramMediaClient;
-    private final PartnerContentManager partnerContentManager;
     private final PlaceCardReader cardReader;
 
     private final TokenAuthenticator authenticator;
     private final LikedPlaceClient likedPlaceClient;
 
     @Inject
-    public PlaceService(PlaceClient placeClient, ArticleClient articleClient, InstagramMediaClient instagramMediaClient, PartnerContentManager partnerContentManager, PlaceCardReader cardReader, TokenAuthenticator authenticator, LikedPlaceClient likedPlaceClient) {
+    public PlaceService(PlaceClient placeClient, ArticleClient articleClient, InstagramMediaClient instagramMediaClient, PlaceCardReader cardReader, TokenAuthenticator authenticator, LikedPlaceClient likedPlaceClient) {
         this.dataClient = placeClient;
         this.articleClient = articleClient;
         this.instagramMediaClient = instagramMediaClient;
-        this.partnerContentManager = partnerContentManager;
         this.cardReader = cardReader;
         this.authenticator = authenticator;
         this.likedPlaceClient = likedPlaceClient;
@@ -61,13 +58,11 @@ public class PlaceService extends AbstractService {
             GET("", this::get);
             GET("/cards", this::cards);
 
-            // Additional sorted data
-            PATH("/data", () -> {
+            // Partners Instagram & Article content
+            PATH("/partners", () -> {
                 GET("/article", this::getArticles);
                 GET("/instagram", this::getInstagramMedias);
             });
-
-            GET("/partners/content", this::getPartnerContent);
         });
     }
 
@@ -110,24 +105,26 @@ public class PlaceService extends AbstractService {
         return nodes(200, objectNode);
     }
 
-    private List<Article> getArticles(JsonCall call) {
+    private JsonNode getArticles(JsonCall call) {
+        int size = querySize(call);
         String placeId = call.pathString("placeId");
         String maxSort = call.queryString("maxSort", null);
-        return articleClient.list(placeId, null, maxSort, querySize(call));
+
+        List<Article> articles = articleClient.list(placeId, null, maxSort, size);
+
+        return nodes(200, articles)
+                .put("nextMaxSort", size == articles.size() ? articles.get(size - 1).getPlaceSort() : null);
     }
 
-    private List<InstagramMedia> getInstagramMedias(JsonCall call) {
+    private JsonNode getInstagramMedias(JsonCall call) {
+        int size = querySize(call);
         String placeId = call.pathString("placeId");
         String maxSort = call.queryString("maxSort", null);
-        return instagramMediaClient.listByPlace(placeId, null, maxSort, querySize(call));
-    }
 
-    private PartnerContentManager.PartnerContentResult getPartnerContent(JsonCall call) {
-        String placeId = call.pathString("placeId");
-        String articleMaxSort = call.queryString("articleMaxSort", null);
-        String mediaMaxSort = call.queryString("mediaMaxSort", null);
+        List<InstagramMedia> mediaList = instagramMediaClient.listByPlace(placeId, null, maxSort, size);
 
-        return partnerContentManager.query(placeId, articleMaxSort, mediaMaxSort);
+        return nodes(200, mediaList)
+                .put("nextMaxSort", size == mediaList.size() ? mediaList.get(size - 1).getPlaceSort() : null);
     }
 
     private static int querySize(JsonCall call) {

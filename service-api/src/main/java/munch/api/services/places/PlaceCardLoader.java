@@ -1,9 +1,6 @@
 package munch.api.services.places;
 
-import munch.api.services.places.loader.PlaceAwardCardLoader;
-import munch.api.services.places.loader.PlaceDataCardLoader;
-import munch.api.services.places.loader.PlaceMenuCardLoader;
-import munch.api.services.places.loader.PlacePartnerContentCardLoader;
+import munch.api.services.places.loader.*;
 import munch.data.structure.Place;
 import munch.data.structure.PlaceCard;
 
@@ -27,29 +24,29 @@ import java.util.List;
  */
 @Singleton
 public final class PlaceCardLoader {
-    private final List<PlaceDataCardLoader<?, ?>> dataCardLoaders;
-    private final PlacePartnerContentCardLoader partnerContentCardLoader;
-
+    private final List<PlaceDataCardLoader<?>> dataCardLoaders;
 
     @Inject
     public PlaceCardLoader(PlaceMenuCardLoader placeMenuCardLoader,
                            PlaceAwardCardLoader placeAwardCardLoader,
 
-                           PlacePartnerContentCardLoader partnerContentCardLoader) {
-        this.partnerContentCardLoader = partnerContentCardLoader;
+                           PlaceArticleCardLoader placeArticleCardLoader,
+                           PlaceInstagramCardLoader placeInstagramCardLoader) {
+
         this.dataCardLoaders = List.of(
                 placeMenuCardLoader,
-                placeAwardCardLoader
+                placeAwardCardLoader,
+                placeArticleCardLoader,
+                placeInstagramCardLoader
         );
     }
 
     public List<PlaceCard> load(Place place) {
         List<PlaceCard> cards = new ArrayList<>();
-        for (PlaceDataCardLoader<?, ?> loader : dataCardLoaders) {
-            loader.load(place).ifPresent(cards::add);
+        for (PlaceDataCardLoader<?> loader : dataCardLoaders) {
+            cards.addAll(loader.load(place));
         }
 
-        partnerContentCardLoader.load(place).ifPresent(cards::add);
         return cards;
     }
 }

@@ -43,6 +43,7 @@ public final class BasicCardReader {
         cards.add(createBusinessHour(place));
         cards.add(createLocation(place));
         cards.add(createMenu(place));
+        cards.add(createSuggestEdit(place));
 
         return cards.stream().filter(Objects::nonNull)
                 .map(card -> new BasicPlaceCard(card.getCardId(), objectMapper.valueToTree(card)))
@@ -159,6 +160,14 @@ public final class BasicCardReader {
         card.setLatLng(place.getLocation().getLatLng());
         card.setNeighbourhood(place.getLocation().getNeighbourhood());
         card.setLandmarks(place.getLocation().getLandmarks());
+        return card;
+    }
+
+    private PlaceSuggestEditCard createSuggestEdit(Place place) {
+        PlaceSuggestEditCard card = new PlaceSuggestEditCard();
+        card.setPlaceId(place.getId());
+        card.setName(place.getName());
+        card.setAddress(place.getLocation().getAddress());
         return card;
     }
 

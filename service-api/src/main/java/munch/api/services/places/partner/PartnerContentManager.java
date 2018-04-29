@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
  * Project: munch-core
  */
 @Singleton
+@Deprecated
 public final class PartnerContentManager {
     private static final Pattern PATTERN_DESCRIPTION_CLEAN = Pattern.compile(" *(\\\\n|\\\\r|\\\\n\\\\r|\\r)+ *");
 
