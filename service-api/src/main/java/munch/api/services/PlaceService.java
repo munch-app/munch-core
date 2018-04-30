@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.services.places.PlaceCardReader;
+import munch.api.services.places.loader.PlaceArticleCardLoader;
 import munch.article.clients.Article;
 import munch.article.clients.ArticleClient;
 import munch.collections.LikedPlaceClient;
@@ -111,9 +112,11 @@ public class PlaceService extends AbstractService {
         String maxSort = call.queryString("maxSort", null);
 
         List<Article> articles = articleClient.list(placeId, null, maxSort, size);
+        String next = size == articles.size() ? articles.get(size - 1).getPlaceSort() : null;
+        PlaceArticleCardLoader.removeDuplicate(articles);
 
         return nodes(200, articles)
-                .put("nextMaxSort", size == articles.size() ? articles.get(size - 1).getPlaceSort() : null);
+                .put("nextMaxSort", next);
     }
 
     private JsonNode getInstagramMedias(JsonCall call) {

@@ -5,7 +5,9 @@ import munch.article.clients.ArticleClient;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by: Fuxing
@@ -26,6 +28,20 @@ public final class PlaceArticleCardLoader extends PlaceDataCardLoader<Article> {
 
     @Override
     protected List<Article> query(String placeId) {
-        return client.list(placeId, null, null, 10);
+        List<Article> articleList = client.list(placeId, null, null, 10);
+        removeDuplicate(articleList);
+        return articleList;
+    }
+
+    public static void removeDuplicate(List<Article> articles) {
+        Set<String> articleIdList = new HashSet<>();
+
+        articles.removeIf(article -> {
+            if (articleIdList.contains(article.getArticleId())) {
+                return true;
+            }
+            articleIdList.add(article.getArticleId());
+            return false;
+        });
     }
 }

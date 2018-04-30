@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableSet;
 import munch.api.services.places.cards.*;
 import munch.data.structure.Place;
 import munch.data.structure.PlaceCard;
+import munch.data.website.DomainBlocked;
 import munch.restful.core.JsonUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -95,6 +96,7 @@ public final class BasicCardReader {
         if (StringUtils.isBlank(website)) return null;
 
         PlaceWebsiteCard card = new PlaceWebsiteCard();
+        card.setDomain(StringUtils.lowerCase(DomainBlocked.getTLD(website)));
         card.setWebsite(website);
         return card;
     }

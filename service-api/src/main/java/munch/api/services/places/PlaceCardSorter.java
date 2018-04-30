@@ -22,7 +22,7 @@ public final class PlaceCardSorter {
             CardGroup.of("basic_ImageBanner_20170915",
                     "basic_Closed_20180311",
                     "basic_NameTag_20170912",
-//                    "basic_Address_20170924",
+                    "basic_Address_20170924",
                     "basic_BusinessHour_20170907"),
 
             CardGroup.ofHeader("header_About_20171112",
@@ -31,6 +31,8 @@ public final class PlaceCardSorter {
                     "basic_Price_20171219",
                     "basic_Phone_20171117",
                     "basic_Website_20171109"),
+
+            CardGroup.of("ugc_SuggestEdit_20180428"),
 
             new MenuCardGroup(),
 
@@ -42,9 +44,7 @@ public final class PlaceCardSorter {
                     "vendor_FacebookReview_20171017"),
 
             CardGroup.ofHeader("header_Location_20171112",
-                    "basic_Location_20171112"),
-
-            CardGroup.of("ugc_SuggestEdit_20180428")
+                    "basic_Location_20171112")
     };
 
     /**

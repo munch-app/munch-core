@@ -7,11 +7,20 @@ package munch.api.services.places.cards;
  * Project: munch-core
  */
 public final class PlaceWebsiteCard extends AbstractPlaceCard {
+    private String domain;
     private String website;
 
     @Override
     public String getCardId() {
         return "basic_Website_20171109";
+    }
+
+    public String getDomain() {
+        return domain;
+    }
+
+    public void setDomain(String domain) {
+        this.domain = domain;
     }
 
     public String getWebsite() {
