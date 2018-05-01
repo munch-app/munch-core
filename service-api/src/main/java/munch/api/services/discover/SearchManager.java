@@ -48,7 +48,7 @@ public final class SearchManager {
     public List<SearchCard> search(SearchQuery query, @Nullable String userId) {
         query.setRadius(resolveRadius(query));
         List<Place> places = placeClient.getSearchClient().search(query);
-        List<SearchCard> cards = cardParser.parseCards(sort(places, query));
+        List<SearchCard> cards = cardParser.parseCards(sort(places, query), userId);
         injectedCardManager.inject(cards, query, userId);
         return cards;
     }

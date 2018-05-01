@@ -25,6 +25,8 @@ public final class SearchPlaceCard implements SearchCard {
 
     private Place.Review review;
 
+    private boolean liked;
+
     @Override
     public String getCardId() {
         return "basic_Place_20171211";
@@ -97,5 +99,13 @@ public final class SearchPlaceCard implements SearchCard {
 
     public void setReview(Place.Review review) {
         this.review = review;
+    }
+
+    public boolean isLiked() {
+        return liked;
+    }
+
+    public void setLiked(boolean liked) {
+        this.liked = liked;
     }
 }

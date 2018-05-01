@@ -74,7 +74,10 @@ public class SearchService extends AbstractService {
 
         Search search = ElasticClient.createSearch(List.of("Place"), List.of("name^2", "allNames"), text, latLng, 0, 40);
         List<Place> places = searchClient.search(search);
+        List<String> suggests = searchClient.suggestText(text, 6);
+
         return Map.of(
+                "suggests", JsonUtils.toTree(suggests),
                 "assumptions", JsonUtils.toTree(assumptions),
                 "places", JsonUtils.toTree(places)
         );
