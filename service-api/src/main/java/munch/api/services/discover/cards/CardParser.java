@@ -55,11 +55,13 @@ public final class CardParser {
                 }
             }
 
-            // Set all liked card
-            Set<String> likedIds = likedPlaceClient.getIsLiked(userId, placeIds);
-            for (SearchPlaceCard placeCard : placeCards) {
-                if (likedIds.contains(placeCard.getPlaceId())) {
-                    placeCard.setLiked(true);
+            if (!placeIds.isEmpty()) {
+                // Set all liked card
+                Set<String> likedIds = likedPlaceClient.getIsLiked(userId, placeIds);
+                for (SearchPlaceCard placeCard : placeCards) {
+                    if (likedIds.contains(placeCard.getPlaceId())) {
+                        placeCard.setLiked(true);
+                    }
                 }
             }
         }
