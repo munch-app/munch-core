@@ -1,5 +1,10 @@
 package munch.api.services.discover.cards;
 
+import munch.data.structure.Place;
+
+import java.util.List;
+import java.util.Map;
+
 /**
  * Created by: Fuxing
  * Date: 1/5/18
@@ -8,15 +13,99 @@ package munch.api.services.discover.cards;
  */
 public final class SearchPartnerInstagramCard implements SearchCard {
 
-    // TODO Data Presentation
+    private String userId;
+    private String username;
+    private String title;
+    private List<MediaContent> contents;
 
     @Override
     public String getCardId() {
-        return "injected_PartnerInstagram_20180501";
+        return "injected_PartnerInstagram_20180505";
     }
 
     @Override
     public String getUniqueId() {
         return getCardId();
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public List<MediaContent> getContents() {
+        return contents;
+    }
+
+    public void setContents(List<MediaContent> contents) {
+        this.contents = contents;
+    }
+
+    public static class MediaContent {
+        private Place place;
+
+        private String caption;
+        private String mediaId;
+        private String locationId;
+        private Map<String, String> images;
+
+        public Place getPlace() {
+            return place;
+        }
+
+        public void setPlace(Place place) {
+            this.place = place;
+        }
+
+        public String getCaption() {
+            return caption;
+        }
+
+        public void setCaption(String caption) {
+            this.caption = caption;
+        }
+
+        public String getMediaId() {
+            return mediaId;
+        }
+
+        public void setMediaId(String mediaId) {
+            this.mediaId = mediaId;
+        }
+
+        public String getLocationId() {
+            return locationId;
+        }
+
+        public void setLocationId(String locationId) {
+            this.locationId = locationId;
+        }
+
+        public Map<String, String> getImages() {
+            return images;
+        }
+
+        public void setImages(Map<String, String> images) {
+            this.images = images;
+        }
     }
 }

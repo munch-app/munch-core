@@ -2,6 +2,7 @@ package munch.api.services.discover;
 
 import munch.api.services.discover.cards.CardParser;
 import munch.api.services.discover.cards.SearchCard;
+import munch.api.services.discover.inject.InjectedCardManager;
 import munch.data.clients.PlaceClient;
 import munch.data.clients.SearchClient;
 import munch.data.structure.Place;

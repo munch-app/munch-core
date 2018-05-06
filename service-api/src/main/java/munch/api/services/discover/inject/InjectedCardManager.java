@@ -1,4 +1,4 @@
-package munch.api.services.discover;
+package munch.api.services.discover.inject;
 
 import munch.api.services.discover.cards.*;
 import munch.data.clients.LocationUtils;
@@ -27,51 +27,61 @@ public final class InjectedCardManager {
 
     private final MunchAssistManager assistManager;
 
+
+    private final DiscoveryInstagramCardLoader instagramCardLoader;
+
     @Inject
-    public InjectedCardManager(MunchAssistManager assistManager) {
+    public InjectedCardManager(MunchAssistManager assistManager, DiscoveryInstagramCardLoader instagramCardLoader) {
         this.assistManager = assistManager;
+        this.instagramCardLoader = instagramCardLoader;
     }
 
     public void inject(List<SearchCard> cards, SearchQuery query, @Nullable String userId) {
+        int cardCount = cards.size();
+
         // Leading injected cards
         if (query.getFrom() == 0) {
-            cards.addAll(0, getLeadingInjectedCards(cards.isEmpty(), query, userId));
+            if (cardCount > 10) {
+                // TODO Before Release change to 6
+                // Also: Before Release change api.beta.munchapp.co to correct domain
+                cards.addAll(1, instagramCardLoader.load());
+            }
+
+            cards.addAll(0, getLeadingInjectedCards(cardCount, query, userId));
         }
     }
 
-    private List<SearchCard> getLeadingInjectedCards(boolean isEmpty, SearchQuery query, @Nullable String userId) {
+    private List<SearchCard> getLeadingInjectedCards(int cardCount, SearchQuery query, @Nullable String userId) {
         List<SearchCard> injectedList = new ArrayList<>();
 
-        injectNoLocationCard(isEmpty, query).ifPresent(injectedList::add);
-        injectContainerCard(isEmpty, query).ifPresent(injectedList::add);
-        // Remove Newest Place Card from Search
-        // injectNewestPlaceCard(isEmpty, query).ifPresent(injectedList::add);
-        // injectRecentPlaceCard(isEmpty, query, userId).ifPresent(injectedList::add);
-        injectedList.addAll(injectNoResultCard(isEmpty, query));
-        injectHeaderCard(isEmpty, query).ifPresent(injectedList::add);
+        injectedList.addAll(injectNoLocationCard(cardCount, query));
+        injectedList.addAll(injectContainerCard(cardCount, query));
+        injectedList.addAll(injectNoResultCard(cardCount, query));
+        injectedList.addAll(injectHeaderCard(cardCount, query));
         return injectedList;
     }
 
-    private Optional<SearchCard> injectNoLocationCard(boolean isEmpty, SearchQuery query) {
+    private List<SearchCard> injectNoLocationCard(int cardCount, SearchQuery query) {
         // if noLatLng = NoLocationCard
-        if (query.getLatLng() != null) return Optional.empty();
-        return Optional.of(CARD_NO_LOCATION);
+        if (query.getLatLng() != null) return List.of();
+        return List.of(CARD_NO_LOCATION);
     }
 
-    private Optional<SearchCard> injectContainerCard(boolean isEmpty, SearchQuery query) {
-        if (isEmpty) return Optional.empty();
-        if (isComplexQuery(query)) return Optional.empty();
+    private List<SearchCard> injectContainerCard(int cardCount, SearchQuery query) {
+        if (cardCount == 0) return List.of();
+        if (isComplexQuery(query)) return List.of();
+
         String latLng = getLatLngContext(query);
-        if (latLng == null) return Optional.empty();
+        if (latLng == null) return List.of();
 
         List<Container> containers = assistManager.getNearbyContainer(latLng, 6);
-        if (containers.isEmpty()) return Optional.empty();
+        if (containers.isEmpty()) return List.of();
 
-        return Optional.of(new SearchContainersCard(containers));
+        return List.of(new SearchContainersCard(containers));
     }
 
-    private Optional<SearchCard> injectNewestPlaceCard(boolean isEmpty, SearchQuery query) {
-        if (isEmpty) return Optional.empty();
+    private Optional<SearchCard> injectNewestPlaceCard(int cardCount, SearchQuery query) {
+        if (cardCount == 0) return Optional.empty();
         String latLng = getLatLngContext(query);
         if (latLng == null) return Optional.empty();
         if (isComplexQuery(query)) return Optional.empty();
@@ -82,9 +92,9 @@ public final class InjectedCardManager {
         return Optional.of(new SearchNewPlaceCard(newestPlaces));
     }
 
-    private Optional<SearchCard> injectRecentPlaceCard(boolean isEmpty, SearchQuery query, @Nullable String userId) {
+    private Optional<SearchCard> injectRecentPlaceCard(int cardCount, SearchQuery query, @Nullable String userId) {
         if (userId == null) return Optional.empty();
-        if (isEmpty) return Optional.empty();
+        if (cardCount == 0) return Optional.empty();
         if (!LocationUtils.isNearby(query)) return Optional.empty();
         if (isComplexQuery(query)) return Optional.empty();
 
@@ -94,8 +104,8 @@ public final class InjectedCardManager {
         return Optional.of(new SearchRecentPlaceCard(recentPlaces));
     }
 
-    private List<SearchCard> injectNoResultCard(boolean isEmpty, SearchQuery query) {
-        if (!isEmpty) return List.of();
+    private List<SearchCard> injectNoResultCard(int cardCount, SearchQuery query) {
+        if (cardCount != 0) return List.of();
         if (LocationUtils.isAnywhere(query)) return List.of(CARD_NO_RESULT);
 
         if (query.getFilter() == null) query.setFilter(new SearchQuery.Filter());
@@ -111,10 +121,10 @@ public final class InjectedCardManager {
         return List.of(noResultCard, replaceCard);
     }
 
-    private Optional<SearchCard> injectHeaderCard(boolean isEmpty, SearchQuery query) {
-        if (isEmpty) return Optional.empty();
-        if (isComplexQuery(query)) return Optional.empty();
-        if (query.getFrom() != 0) return Optional.empty();
+    private List<SearchCard> injectHeaderCard(int cardCount, SearchQuery query) {
+        if (cardCount == 0) return List.of();
+        if (isComplexQuery(query)) return List.of();
+        if (query.getFrom() != 0) return List.of();
 
         // Contains search result & query is not complex
         SearchHeaderCard headerCard = new SearchHeaderCard();
@@ -127,7 +137,7 @@ public final class InjectedCardManager {
             String location = getLocationName(query, "Location");
             headerCard.setTitle("Discover " + location);
         }
-        return Optional.of(headerCard);
+        return List.of(headerCard);
     }
 
     private static String getLocationName(SearchQuery query, String defaultName) {

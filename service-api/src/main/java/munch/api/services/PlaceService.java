@@ -124,7 +124,7 @@ public class PlaceService extends AbstractService {
         String placeId = call.pathString("placeId");
         String maxSort = call.queryString("maxSort", null);
 
-        List<InstagramMedia> mediaList = instagramMediaClient.listByPlace(placeId, null, maxSort, size);
+        List<InstagramMedia> mediaList = instagramMediaClient.listByPlace(placeId, maxSort, size);
 
         return nodes(200, mediaList)
                 .put("nextMaxSort", size == mediaList.size() ? mediaList.get(size - 1).getPlaceSort() : null);
