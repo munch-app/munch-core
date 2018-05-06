@@ -20,7 +20,7 @@ public final class PlaceInstagramCardLoader extends PlaceDataCardLoader<Instagra
 
     @Inject
     public PlaceInstagramCardLoader(InstagramMediaClient client) {
-        super("extended_PartnerInstagramMedia_20180427");
+        super("extended_PartnerInstagramMedia_20180506");
         this.client = client;
     }
 

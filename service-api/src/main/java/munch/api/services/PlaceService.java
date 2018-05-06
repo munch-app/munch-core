@@ -14,6 +14,7 @@ import munch.corpus.instagram.InstagramMediaClient;
 import munch.data.clients.PlaceClient;
 import munch.data.structure.Place;
 import munch.data.structure.PlaceCard;
+import munch.restful.client.dynamodb.NextNodeList;
 import munch.restful.server.JsonCall;
 import munch.restful.server.jwt.AuthenticatedToken;
 import munch.restful.server.jwt.TokenAuthenticator;
@@ -61,8 +62,8 @@ public class PlaceService extends AbstractService {
 
             // Partners Instagram & Article content
             PATH("/partners", () -> {
-                GET("/article", this::getArticles);
-                GET("/instagram", this::getInstagramMedias);
+                GET("/articles", this::getArticles);
+                GET("/instagram/medias", this::getInstagramMedias);
             });
         });
     }
@@ -109,25 +110,27 @@ public class PlaceService extends AbstractService {
     private JsonNode getArticles(JsonCall call) {
         int size = querySize(call);
         String placeId = call.pathString("placeId");
-        String maxSort = call.queryString("maxSort", null);
+        String nextPlaceSort = call.queryString("next.placeSort", null);
 
-        List<Article> articles = articleClient.list(placeId, null, maxSort, size);
-        String next = size == articles.size() ? articles.get(size - 1).getPlaceSort() : null;
-        PlaceArticleCardLoader.removeDuplicate(articles);
 
-        return nodes(200, articles)
-                .put("nextMaxSort", next);
+        NextNodeList<Article> nextNodeList = articleClient.list(placeId, nextPlaceSort, size);
+        PlaceArticleCardLoader.removeDuplicate(nextNodeList);
+
+        ObjectNode node = nodes(200, nextNodeList);
+        if (nextNodeList.hasNext()) node.set("next", nextNodeList.getNext());
+        return node;
     }
 
     private JsonNode getInstagramMedias(JsonCall call) {
         int size = querySize(call);
         String placeId = call.pathString("placeId");
-        String maxSort = call.queryString("maxSort", null);
+        String nextPlaceSort = call.queryString("next.placeSort", null);
 
-        List<InstagramMedia> mediaList = instagramMediaClient.listByPlace(placeId, maxSort, size);
+        NextNodeList<InstagramMedia> nextNodeList = instagramMediaClient.listByPlace(placeId, nextPlaceSort, size);
 
-        return nodes(200, mediaList)
-                .put("nextMaxSort", size == mediaList.size() ? mediaList.get(size - 1).getPlaceSort() : null);
+        ObjectNode node = nodes(200, nextNodeList);
+        if (nextNodeList.hasNext()) node.set("next", nextNodeList.getNext());
+        return node;
     }
 
     private static int querySize(JsonCall call) {

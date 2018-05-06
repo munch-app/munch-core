@@ -17,6 +17,6 @@ public final class PlaceAwardCardLoader extends PlaceDataCardLoader.Extended<Pla
 
     @Inject
     public PlaceAwardCardLoader(PlaceAwardClient client) {
-        super("extended_PlaceAward_20180305", client, 20);
+        super("extended_PlaceAward_20180506", client, 20);
     }
 }

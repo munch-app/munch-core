@@ -26,7 +26,7 @@ public final class PlaceCardSorter {
                     "basic_BusinessHour_20170907"),
 
             CardGroup.ofHeader("header_About_20171112",
-                    "extended_PlaceAward_20180305",
+                    "extended_PlaceAward_20180506",
                     "basic_Description_20171109",
                     "basic_Price_20171219",
                     "basic_Phone_20171117",
@@ -37,8 +37,8 @@ public final class PlaceCardSorter {
             new MenuCardGroup(),
 
             CardGroup.ofHeader("header_PartnerContent_20180405",
-                    "extended_PartnerInstagramMedia_20180427",
-                    "extended_PartnerArticle_20180427"),
+                    "extended_PartnerInstagramMedia_20180506",
+                    "extended_PartnerArticle_20180506"),
 
             CardGroup.ofHeader("header_Review_20171020",
                     "vendor_FacebookReview_20171017"),

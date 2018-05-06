@@ -22,13 +22,13 @@ public final class PlaceArticleCardLoader extends PlaceDataCardLoader<Article> {
 
     @Inject
     public PlaceArticleCardLoader(ArticleClient client) {
-        super("extended_PartnerArticle_20180427");
+        super("extended_PartnerArticle_20180506");
         this.client = client;
     }
 
     @Override
     protected List<Article> query(String placeId) {
-        List<Article> articleList = client.list(placeId, null, null, 10);
+        List<Article> articleList = client.list(placeId, null, 10);
         removeDuplicate(articleList);
         return articleList;
     }
