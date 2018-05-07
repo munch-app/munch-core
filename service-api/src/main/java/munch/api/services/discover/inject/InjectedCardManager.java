@@ -41,7 +41,7 @@ public final class InjectedCardManager {
 
         // Leading injected cards
         if (query.getFrom() == 0) {
-            if (cardCount > 10 && isComplexQuery(query)) {
+            if (cardCount > 10 && (isAnywhere(query) || isNearby(query))) {
                 cards.addAll(6, instagramCardLoader.load());
             }
 
@@ -202,5 +202,13 @@ public final class InjectedCardManager {
         }
 
         return false;
+    }
+
+    private static boolean isAnywhere(SearchQuery query) {
+        return LocationUtils.isAnywhere(query);
+    }
+
+    private static boolean isNearby(SearchQuery query) {
+        return LocationUtils.isNearby(query);
     }
 }

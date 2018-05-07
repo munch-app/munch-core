@@ -33,7 +33,7 @@ public final class DiscoveryInstagramCardLoader {
 
     public List<SearchCard> load() {
         switch (RandomUtils.nextInt(0, 2)) {
-            case 1:
+            case 0:
                 return get();
             default:
                 return List.of();
