@@ -47,7 +47,7 @@ public final class DiscoveryInstagramCardLoader {
         if (card == null) {
             // Reset
             counter = 0;
-            return null;
+            return List.of();
         }
 
         counter++;

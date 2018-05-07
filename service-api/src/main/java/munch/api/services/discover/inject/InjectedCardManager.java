@@ -41,9 +41,8 @@ public final class InjectedCardManager {
 
         // Leading injected cards
         if (query.getFrom() == 0) {
-            if (cardCount > 10) {
+            if (cardCount > 10 && isComplexQuery(query)) {
                 // TODO Before Release change to 6
-                // Also: Before Release change api.beta.munchapp.co to correct domain
                 cards.addAll(1, instagramCardLoader.load());
             }
 
