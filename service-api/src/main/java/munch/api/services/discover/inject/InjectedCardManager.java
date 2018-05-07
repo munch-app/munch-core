@@ -42,8 +42,7 @@ public final class InjectedCardManager {
         // Leading injected cards
         if (query.getFrom() == 0) {
             if (cardCount > 10 && isComplexQuery(query)) {
-                // TODO Before Release change to 6
-                cards.addAll(1, instagramCardLoader.load());
+                cards.addAll(6, instagramCardLoader.load());
             }
 
             cards.addAll(0, getLeadingInjectedCards(cardCount, query, userId));

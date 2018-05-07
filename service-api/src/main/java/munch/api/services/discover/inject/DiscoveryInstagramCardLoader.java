@@ -34,10 +34,9 @@ public final class DiscoveryInstagramCardLoader {
     public List<SearchCard> load() {
         switch (RandomUtils.nextInt(0, 2)) {
             case 1:
-            default:
                 return get();
-                // TODO Before Release
-//                return List.of();
+            default:
+                return List.of();
         }
     }
 
