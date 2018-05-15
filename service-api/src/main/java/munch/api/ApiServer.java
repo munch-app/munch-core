@@ -1,7 +1,5 @@
 package munch.api;
 
-import munch.api.exception.UnsupportedException;
-import munch.restful.core.exception.StructuredException;
 import munch.restful.server.RestfulServer;
 import munch.restful.server.RestfulService;
 import org.slf4j.Logger;
@@ -50,15 +48,5 @@ public final class ApiServer extends RestfulServer {
 
         healthService.start();
         logger.info("Started SparkRouter: VersionService");
-    }
-
-    @Override
-    protected void handleException() {
-        // UnsupportedException is handled but not logged
-        logger.info("Adding exception handling for UnsupportedException.");
-        Spark.exception(UnsupportedException.class, (exception, request, response) -> {
-            handleException(response, (StructuredException) exception);
-        });
-        super.handleException();
     }
 }

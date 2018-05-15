@@ -18,6 +18,5 @@ public class ServiceModule extends AbstractModule {
         routerBinder.addBinding().to(SearchService.class);
         routerBinder.addBinding().to(PlaceService.class);
         routerBinder.addBinding().to(CollectionService.class);
-        routerBinder.addBinding().to(DiscoverService.class);
     }
 }
