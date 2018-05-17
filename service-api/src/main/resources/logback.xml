@@ -38,7 +38,7 @@
         <appender-ref ref="ASYNC_STDOUT"/>
     </logger>
 
-    <logger name="munch.api.ApiServer" level="TRACE" additivity="false">
+    <logger name="munch.restful.server.RestfulServer" level="TRACE" additivity="false">
         <appender-ref ref="ASYNC_STDOUT"/>
     </logger>
 

@@ -28,17 +28,8 @@ public final class ApiServer extends RestfulServer {
     public ApiServer(Set<RestfulService> routers, HealthService healthService) {
         super(routers);
         this.healthService = healthService;
-    }
 
-    @Override
-    public void start() {
-        super.start();
-
-        // Only log non health check path
-        Spark.before((request, response) -> {
-            if (!request.pathInfo().equals("/health/check"))
-                logger.trace("{}: {}", request.requestMethod(), request.pathInfo());
-        });
+        setDebug(false);
     }
 
     @Override
@@ -47,6 +38,6 @@ public final class ApiServer extends RestfulServer {
         Spark.path("/*", () -> super.setupRouters());
 
         healthService.start();
-        logger.info("Started SparkRouter: VersionService");
+        logger.info("Started SparkRouter: HealthService");
     }
 }
