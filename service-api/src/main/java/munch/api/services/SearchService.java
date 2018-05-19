@@ -18,7 +18,6 @@ import munch.data.structure.SearchResult;
 import munch.restful.core.JsonUtils;
 import munch.restful.core.exception.ParamException;
 import munch.restful.server.JsonCall;
-import munch.restful.server.jwt.AuthenticatedToken;
 import munch.restful.server.jwt.TokenAuthenticator;
 
 import javax.inject.Inject;
@@ -38,7 +37,7 @@ import java.util.concurrent.TimeUnit;
 @Singleton
 public final class SearchService extends AbstractService {
 
-    private final TokenAuthenticator authenticator;
+    private final TokenAuthenticator<?> authenticator;
 
     private final SearchClient searchClient;
     private final SearchManager searchManager;
@@ -82,7 +81,8 @@ public final class SearchService extends AbstractService {
      */
     private List<SearchCard> search(JsonCall call) {
         SearchQuery query = call.bodyAsObject(SearchQuery.class);
-        String userId = authenticator.optional(call).map(AuthenticatedToken::getSubject).orElse(null);
+        authenticator.optionalSubject(call);
+        String userId = authenticator.optionalSubject(call).orElse(null);
         return searchManager.search(query, userId);
     }
 
