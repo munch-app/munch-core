@@ -175,9 +175,12 @@
     },
     async asyncData() {
       let instagramReq = axios.get('https://api.partner.munchapp.co/v1/instagram/public/medias/12')
-
-      let instagramRes = await instagramReq
-      return {partner_12_media: instagramRes.data.data}
+      try {
+        let instagramRes = await instagramReq
+        return {partner_12_media: instagramRes.data.data}
+      } catch (e) {
+        return {partner_12_media: []}
+      }
     }
   }
 </script>
