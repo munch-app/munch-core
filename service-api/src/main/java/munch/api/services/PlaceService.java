@@ -36,11 +36,11 @@ public class PlaceService extends AbstractService {
     private final InstagramMediaClient instagramMediaClient;
     private final PlaceCardReader cardReader;
 
-    private final TokenAuthenticator authenticator;
+    private final TokenAuthenticator<AuthenticatedToken> authenticator;
     private final LikedPlaceClient likedPlaceClient;
 
     @Inject
-    public PlaceService(PlaceClient placeClient, ArticleClient articleClient, InstagramMediaClient instagramMediaClient, PlaceCardReader cardReader, TokenAuthenticator authenticator, LikedPlaceClient likedPlaceClient) {
+    public PlaceService(PlaceClient placeClient, ArticleClient articleClient, InstagramMediaClient instagramMediaClient, PlaceCardReader cardReader, TokenAuthenticator<AuthenticatedToken> authenticator, LikedPlaceClient likedPlaceClient) {
         this.dataClient = placeClient;
         this.articleClient = articleClient;
         this.instagramMediaClient = instagramMediaClient;
@@ -86,7 +86,7 @@ public class PlaceService extends AbstractService {
      * @return {cards: List of PlaceCard, place: Place}
      */
     private JsonNode cards(JsonCall call) {
-        Optional<AuthenticatedToken> optionalJwt = authenticator.optional(call);
+        Optional<String> userId = authenticator.optionalSubject(call);
         String placeId = call.pathString("placeId");
         Place place = dataClient.get(placeId);
         if (place == null) return null;
@@ -99,9 +99,9 @@ public class PlaceService extends AbstractService {
         objectNode.set("place", objectMapper.valueToTree(place));
 
         // Put user data if user exist
-        optionalJwt.ifPresent(jwt -> {
+        userId.ifPresent(id -> {
             objectNode.putObject("user")
-                    .put("liked", likedPlaceClient.isLiked(jwt.getSubject(), placeId));
+                    .put("liked", likedPlaceClient.isLiked(id, placeId));
         });
 
         return nodes(200, objectNode);

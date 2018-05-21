@@ -53,6 +53,7 @@ public class FixedRandomSorter {
 
                 for (Place place : dataList) {
                     double ranking = place.getRanking() * getHourBoost(place, day, time);
+                    ranking = ranking * getTagBoost(place, time);
                     place.setRanking(ranking);
                 }
             } catch (ParseException e) {
@@ -88,6 +89,19 @@ public class FixedRandomSorter {
                 });
 
         return isOpen ? 1.10 : 0.925;
+    }
+
+    /**
+     * PM-128
+     * De-prioritise establishments that are only tagged with 'Desserts' during 12.00pm - 13.30pm and 18.00pm - 19.30pm daily.
+     */
+    private static double getTagBoost(Place place, int time) {
+        if (time < 720) return 1.0;
+        if (time < 1080 && time > 810) return 1.0;
+        if (time > 1170) return 1.0;
+
+        if (place.getTag().getImplicits().contains("Dessert")) return 0.9;
+        return 1.0;
     }
 
     private static int timeAsInt(String time) throws ParseException {

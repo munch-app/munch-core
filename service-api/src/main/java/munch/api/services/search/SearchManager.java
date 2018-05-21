@@ -72,8 +72,8 @@ public final class SearchManager {
 
     public static double resolveRadius(SearchQuery query) {
         Double radius = query.getRadius();
-        if (radius == null) return 800; // Default radius
-        if (radius > 3000) return 3000; // Max radius for nearby search
+        if (radius == null) return 750; // Default radius
+        if (radius > 2500) return 2500; // Max radius for nearby search
         return radius;
     }
 }
