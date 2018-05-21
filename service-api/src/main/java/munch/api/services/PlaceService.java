@@ -113,7 +113,7 @@ public class PlaceService extends AbstractService {
 
 
         NextNodeList<Article> nextNodeList = articleClient.list(placeId, nextPlaceSort, size);
-        PlaceArticleCardLoader.removeDuplicate(nextNodeList);
+        PlaceArticleCardLoader.removeBadData(nextNodeList);
 
         ObjectNode node = nodes(200, nextNodeList);
         if (nextNodeList.hasNext()) node.set("next", nextNodeList.getNext());

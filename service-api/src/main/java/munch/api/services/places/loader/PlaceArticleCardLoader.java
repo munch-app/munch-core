@@ -29,18 +29,21 @@ public final class PlaceArticleCardLoader extends PlaceDataCardLoader<Article> {
     @Override
     protected List<Article> query(String placeId) {
         List<Article> articleList = client.list(placeId, null, 10);
-        removeDuplicate(articleList);
+        removeBadData(articleList);
         return articleList;
     }
 
-    public static void removeDuplicate(List<Article> articles) {
-        Set<String> articleIdList = new HashSet<>();
+    public static void removeBadData(List<Article> articles) {
+        Set<String> uniquePairs = new HashSet<>();
 
         articles.removeIf(article -> {
-            if (articleIdList.contains(article.getArticleId())) {
-                return true;
-            }
-            articleIdList.add(article.getArticleId());
+            // No description article will be removed for now
+            if (article.getDescription() == null) return true;
+
+            String pair = article.getBrand() + "|" + article.getTitle();
+            if (uniquePairs.contains(pair)) return true;
+
+            uniquePairs.add(pair);
             return false;
         });
     }
