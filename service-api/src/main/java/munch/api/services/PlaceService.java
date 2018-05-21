@@ -16,7 +16,6 @@ import munch.data.structure.Place;
 import munch.data.structure.PlaceCard;
 import munch.restful.client.dynamodb.NextNodeList;
 import munch.restful.server.JsonCall;
-import munch.restful.server.jwt.AuthenticatedToken;
 import munch.restful.server.jwt.TokenAuthenticator;
 
 import java.util.List;
@@ -36,11 +35,11 @@ public class PlaceService extends AbstractService {
     private final InstagramMediaClient instagramMediaClient;
     private final PlaceCardReader cardReader;
 
-    private final TokenAuthenticator<AuthenticatedToken> authenticator;
+    private final TokenAuthenticator<?> authenticator;
     private final LikedPlaceClient likedPlaceClient;
 
     @Inject
-    public PlaceService(PlaceClient placeClient, ArticleClient articleClient, InstagramMediaClient instagramMediaClient, PlaceCardReader cardReader, TokenAuthenticator<AuthenticatedToken> authenticator, LikedPlaceClient likedPlaceClient) {
+    public PlaceService(PlaceClient placeClient, ArticleClient articleClient, InstagramMediaClient instagramMediaClient, PlaceCardReader cardReader, TokenAuthenticator authenticator, LikedPlaceClient likedPlaceClient) {
         this.dataClient = placeClient;
         this.articleClient = articleClient;
         this.instagramMediaClient = instagramMediaClient;
