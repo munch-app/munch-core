@@ -87,7 +87,7 @@ public class FilterManager {
         ObjectNode tag = objectMapper.createObjectNode();
         tag.putObject("terms")
                 .put("field", "tag.explicits")
-                .put("size", 10000);
+                .put("size", 3000);
         return tag;
     }
 
