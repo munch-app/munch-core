@@ -7,14 +7,17 @@ import munch.data.clients.PlaceClient;
 import munch.data.clients.SearchClient;
 import munch.data.structure.Place;
 import munch.data.structure.SearchQuery;
+import munch.user.data.UserSetting;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.validation.constraints.NotNull;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by: Fuxing
@@ -42,15 +45,16 @@ public final class SearchManager {
     }
 
     /**
-     * @param query  query to search
-     * @param userId nullable user id
+     * @param query   query to search
+     * @param setting nullable user setting
      * @return List of SearchCard
      */
-    public List<SearchCard> search(SearchQuery query, @Nullable String userId) {
-        query.setRadius(resolveRadius(query));
+    public List<SearchCard> search(SearchQuery query, @Nullable UserSetting setting) {
+        resolve(query, setting);
+
         List<Place> places = placeClient.getSearchClient().search(query);
-        List<SearchCard> cards = cardParser.parseCards(sort(places, query), userId);
-        searchCardInjector.inject(cards, query, userId);
+        List<SearchCard> cards = cardParser.parseCards(sort(places, query), setting);
+        searchCardInjector.inject(cards, query, setting);
         return cards;
     }
 
@@ -68,6 +72,20 @@ public final class SearchManager {
         });
 
         return resultMap;
+    }
+
+    public static SearchQuery resolve(SearchQuery query, @Nullable UserSetting setting) {
+        query.setRadius(resolveRadius(query));
+        if (setting != null) {
+            @NotNull Set<String> tags = setting.getSearch().getTags();
+            if (!tags.isEmpty()) {
+                if (query.getFilter() == null) query.setFilter(new SearchQuery.Filter());
+                if (query.getFilter().getTag() == null) query.getFilter().setTag(new SearchQuery.Filter.Tag());
+                query.getFilter().getTag().getPositives().addAll(tags);
+            }
+        }
+
+        return query;
     }
 
     public static double resolveRadius(SearchQuery query) {

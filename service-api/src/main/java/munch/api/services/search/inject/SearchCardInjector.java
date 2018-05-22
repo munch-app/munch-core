@@ -4,6 +4,7 @@ import munch.api.services.search.cards.SearchCard;
 import munch.data.clients.LocationUtils;
 import munch.data.structure.SearchQuery;
 import munch.restful.core.JsonUtils;
+import munch.user.data.UserSetting;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
@@ -32,10 +33,10 @@ public final class SearchCardInjector {
     /**
      * @param cards  to inject into
      * @param query  to read from
-     * @param userId of user to read from
+     * @param setting of user to read from
      */
-    public void inject(List<SearchCard> cards, SearchQuery query, @Nullable String userId) {
-        Loader.Request request = new Loader.Request(cards, query, userId);
+    public void inject(List<SearchCard> cards, SearchQuery query, @Nullable UserSetting setting) {
+        Loader.Request request = new Loader.Request(cards, query, setting);
 
         List<Loader.Position> negatives = new ArrayList<>();
         List<Loader.Position> positives = new ArrayList<>();
@@ -117,13 +118,15 @@ public final class SearchCardInjector {
             private final List<SearchCard> cards;
             private final SearchQuery query;
             private final String userId;
+            private final UserSetting setting;
 
             private final boolean complex;
 
-            public Request(List<SearchCard> cards, SearchQuery query, String userId) {
+            public Request(List<SearchCard> cards, SearchQuery query, @Nullable UserSetting setting) {
                 this.cards = new ArrayList<>(cards);
                 this.query = query;
-                this.userId = userId;
+                this.setting = setting;
+                this.userId = setting == null ? null : setting.getUserId();
 
                 this.complex = isComplexQuery(query);
             }
@@ -157,6 +160,10 @@ public final class SearchCardInjector {
                 }
 
                 return query.getLatLng();
+            }
+
+            public UserSetting getSetting() {
+                return setting;
             }
 
             public List<SearchCard> getCards() {

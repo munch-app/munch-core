@@ -3,14 +3,12 @@ package munch.api.services.search.cards;
 import munch.collections.LikedPlaceClient;
 import munch.data.structure.Place;
 import munch.data.structure.SearchResult;
+import munch.user.data.UserSetting;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by: Fuxing
@@ -34,7 +32,7 @@ public final class CardParser {
      * @param results search results
      * @return List of Parsed SearchCard
      */
-    public List<SearchCard> parseCards(List<? extends SearchResult> results, @Nullable String userId) {
+    public List<SearchCard> parseCards(List<? extends SearchResult> results, @Nullable UserSetting setting) {
         List<SearchCard> cards = new ArrayList<>();
         for (SearchResult result : results) {
             // Since now there is only one card type, simple method to address the problem
@@ -43,7 +41,9 @@ public final class CardParser {
         }
 
         // Batch Resolve Liked Place
-        if (userId != null) {
+        if (setting != null) {
+            Objects.requireNonNull(setting.getUserId());
+
             List<SearchPlaceCard> placeCards = new ArrayList<>();
             Set<String> placeIds = new HashSet<>();
 
@@ -57,7 +57,7 @@ public final class CardParser {
 
             if (!placeIds.isEmpty()) {
                 // Set all liked card
-                Set<String> likedIds = likedPlaceClient.getIsLiked(userId, placeIds);
+                Set<String> likedIds = likedPlaceClient.getIsLiked(setting.getUserId(), placeIds);
                 for (SearchPlaceCard placeCard : placeCards) {
                     if (likedIds.contains(placeCard.getPlaceId())) {
                         placeCard.setLiked(true);

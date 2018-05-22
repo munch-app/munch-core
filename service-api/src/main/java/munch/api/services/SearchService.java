@@ -19,6 +19,8 @@ import munch.restful.core.JsonUtils;
 import munch.restful.core.exception.ParamException;
 import munch.restful.server.JsonCall;
 import munch.restful.server.jwt.TokenAuthenticator;
+import munch.user.client.UserSettingClient;
+import munch.user.data.UserSetting;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -44,12 +46,13 @@ public final class SearchService extends AbstractService {
 
     private final AssumptionEngine assumptionEngine;
     private final PlaceClient.SearchClient placeSearchClient;
+    private final UserSettingClient settingClient;
 
     private final Filter filter;
     private final Location location;
 
     @Inject
-    public SearchService(TokenAuthenticator authenticator, SearchManager searchManager, SearchClient searchClient, AssumptionEngine assumptionEngine, PlaceClient.SearchClient placeSearchClient, Filter filter, Location location) {
+    public SearchService(TokenAuthenticator authenticator, SearchManager searchManager, SearchClient searchClient, AssumptionEngine assumptionEngine, PlaceClient.SearchClient placeSearchClient, Filter filter, Location location, UserSettingClient settingClient) {
         this.authenticator = authenticator;
         this.searchManager = searchManager;
         this.searchClient = searchClient;
@@ -58,6 +61,7 @@ public final class SearchService extends AbstractService {
 
         this.filter = filter;
         this.location = location;
+        this.settingClient = settingClient;
     }
 
     @Override
@@ -82,8 +86,10 @@ public final class SearchService extends AbstractService {
     private List<SearchCard> search(JsonCall call) {
         SearchQuery query = call.bodyAsObject(SearchQuery.class);
         authenticator.optionalSubject(call);
-        String userId = authenticator.optionalSubject(call).orElse(null);
-        return searchManager.search(query, userId);
+        UserSetting setting = authenticator.optionalSubject(call)
+                .map(settingClient::get)
+                .orElse(null);
+        return searchManager.search(query, setting);
     }
 
     /**

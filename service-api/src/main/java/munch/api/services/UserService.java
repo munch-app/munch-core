@@ -125,7 +125,7 @@ public final class UserService extends AbstractService {
         if (setting == null) setting = new UserSetting();
 
         setting.setSearch(call.bodyAsObject(UserSetting.Search.class));
-
-        return settingClient.put(userId, setting);
+        settingClient.put(userId, setting);
+        return setting;
     }
 }
