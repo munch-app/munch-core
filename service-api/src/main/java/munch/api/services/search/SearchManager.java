@@ -12,12 +12,10 @@ import munch.user.data.UserSetting;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.validation.constraints.NotNull;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by: Fuxing
@@ -50,7 +48,7 @@ public final class SearchManager {
      * @return List of SearchCard
      */
     public List<SearchCard> search(SearchQuery query, @Nullable UserSetting setting) {
-        resolve(query, setting);
+        resolve(query);
 
         List<Place> places = placeClient.getSearchClient().search(query);
         List<SearchCard> cards = cardParser.parseCards(sort(places, query), setting);
@@ -74,18 +72,8 @@ public final class SearchManager {
         return resultMap;
     }
 
-    public static SearchQuery resolve(SearchQuery query, @Nullable UserSetting setting) {
+    public static void resolve(SearchQuery query) {
         query.setRadius(resolveRadius(query));
-        if (setting != null) {
-            @NotNull Set<String> tags = setting.getSearch().getTags();
-            if (!tags.isEmpty()) {
-                if (query.getFilter() == null) query.setFilter(new SearchQuery.Filter());
-                if (query.getFilter().getTag() == null) query.getFilter().setTag(new SearchQuery.Filter.Tag());
-                query.getFilter().getTag().getPositives().addAll(tags);
-            }
-        }
-
-        return query;
     }
 
     public static double resolveRadius(SearchQuery query) {

@@ -86,7 +86,7 @@ public class FilterManager {
     public static JsonNode aggTags() {
         ObjectNode tag = objectMapper.createObjectNode();
         tag.putObject("terms")
-                .put("field", "tag.explicits")
+                .put("field", "tag.implicits")
                 .put("size", 3000);
         return tag;
     }

@@ -72,7 +72,6 @@ public final class SearchService extends AbstractService {
 
             POST("/filter/count", filter::count);
             POST("/filter/price", filter::priceRange);
-
             GET("/filter/locations/list", location::list);
             GET("/filter/locations/search", location::search);
         });
