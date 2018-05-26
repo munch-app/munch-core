@@ -167,20 +167,10 @@
 
 <script>
   import PartnerMediaGrid from '~/components/PartnerMediaGrid.vue'
-  import axios from 'axios';
 
   export default {
     components: {
       PartnerMediaGrid
-    },
-    async asyncData() {
-      let instagramReq = axios.get('https://api.partner.munchapp.co/v1/instagram/public/medias/12')
-      try {
-        let instagramRes = await instagramReq
-        return {partner_12_media: instagramRes.data.data}
-      } catch (e) {
-        return {partner_12_media: []}
-      }
     }
   }
 </script>
