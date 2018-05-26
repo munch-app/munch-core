@@ -13,6 +13,8 @@
 </template>
 
 <script>
+  import axios from 'axios';
+
   function parseImage(media) {
     for (const imageKey in media.images) {
       if (imageKey.startsWith('320x')) {
@@ -23,17 +25,22 @@
   }
 
   export default {
-    props: ['medias'],
-    computed: {
-      parsed: function () {
-        return this.medias.map(function (media) {
-          return {
-            url: "https://www.instagram.com/" + media.username + "/",
-            image: parseImage(media),
-            caption: media.caption
-          }
-        });
+    data: function () {
+      return {
+        parsed: []
       }
+    },
+    async mounted() {
+      let instagramReq = axios.get('https://api.partner.munchapp.co/v1/instagram/public/medias/12')
+      let instagramRes = await instagramReq
+      this.parsed = instagramRes.data.data.map(function (media) {
+        return {
+          url: "https://www.instagram.com/" + media.username + "/",
+          image: parseImage(media),
+          caption: media.caption
+        }
+      });
+
     }
   }
 </script>
