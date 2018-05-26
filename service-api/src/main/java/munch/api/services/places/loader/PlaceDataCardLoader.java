@@ -6,6 +6,7 @@ import munch.data.extended.ExtendedData;
 import munch.data.extended.ExtendedDataClient;
 import munch.data.structure.Place;
 import munch.data.structure.PlaceJsonCard;
+import munch.restful.client.dynamodb.NextNodeList;
 import munch.restful.core.JsonUtils;
 
 import java.util.List;
@@ -30,9 +31,17 @@ public abstract class PlaceDataCardLoader<T> {
 
     public List<? extends PlaceJsonCard> load(Place place) {
         List<T> list = query(place.getId());
-
         if (list.isEmpty()) return List.of();
-        return List.of(new PlaceDataCard(list));
+
+
+        if (list instanceof NextNodeList && ((NextNodeList<T>) list).hasNext()) {
+            return List.of(new PlaceDataCard(Map.of(
+                    "contents", list,
+                    "next", ((NextNodeList<T>) list).getNext())
+            ));
+        }
+
+        return List.of(new PlaceDataCard(Map.of("contents", list)));
     }
 
     public static class Extended<T extends ExtendedData, C extends ExtendedDataClient<T>> extends PlaceDataCardLoader<T> {
@@ -52,10 +61,6 @@ public abstract class PlaceDataCardLoader<T> {
     }
 
     public class PlaceDataCard extends PlaceJsonCard {
-        public PlaceDataCard(List dataList) {
-            super(cardId, dataList);
-        }
-
         public PlaceDataCard(Map<String, Object> map) {
             super(cardId, JsonUtils.toTree(map));
         }

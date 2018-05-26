@@ -5,9 +5,11 @@ allprojects {
     apply plugin: 'maven-publish'
 
     group 'munch.core'
-    version '0.9.0'
+    version '0.11.0'
 
-    ext.restfulVersion = '1.3.4'
+    ext.restfulVersion = '1.4.28'
+    ext.guiceVersion = '4.2.0'
+    ext.awsVersion = '1.11.313'
     ext.ccVersion = '2.5.0-SNAPSHOT'
     ext.dataVersion = '3.0.0-SNAPSHOT'
 
@@ -76,7 +78,7 @@ configure(subprojects.findAll { it.name.matches("service-(.+)") }) {
 buildscript {
     repositories {
         maven {
-            url 'http://artifactory.fxloh.com/artifactory/munch-repos'
+            url 'http://fx.artifactory.munchapp.co/artifactory/munch-repos'
             credentials {
                 username = "${artifactory_user}"
                 password = "${artifactory_password}"

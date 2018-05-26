@@ -20,12 +20,12 @@ public final class PlaceInstagramCardLoader extends PlaceDataCardLoader<Instagra
 
     @Inject
     public PlaceInstagramCardLoader(InstagramMediaClient client) {
-        super("extended_PartnerInstagramMedia_20180427");
+        super("extended_PartnerInstagramMedia_20180506");
         this.client = client;
     }
 
     @Override
     protected List<InstagramMedia> query(String placeId) {
-        return client.listByPlace(placeId, null, null, 10);
+        return client.listByPlace(placeId, null, 10);
     }
 }

@@ -1,7 +1,5 @@
 package munch.api;
 
-import munch.api.exception.UnsupportedException;
-import munch.restful.core.exception.StructuredException;
 import munch.restful.server.RestfulServer;
 import munch.restful.server.RestfulService;
 import org.slf4j.Logger;
@@ -30,17 +28,8 @@ public final class ApiServer extends RestfulServer {
     public ApiServer(Set<RestfulService> routers, HealthService healthService) {
         super(routers);
         this.healthService = healthService;
-    }
 
-    @Override
-    public void start() {
-        super.start();
-
-        // Only log non health check path
-        Spark.before((request, response) -> {
-            if (!request.pathInfo().equals("/health/check"))
-                logger.trace("{}: {}", request.requestMethod(), request.pathInfo());
-        });
+        setDebug(false);
     }
 
     @Override
@@ -49,16 +38,6 @@ public final class ApiServer extends RestfulServer {
         Spark.path("/*", () -> super.setupRouters());
 
         healthService.start();
-        logger.info("Started SparkRouter: VersionService");
-    }
-
-    @Override
-    protected void handleException() {
-        // UnsupportedException is handled but not logged
-        logger.info("Adding exception handling for UnsupportedException.");
-        Spark.exception(UnsupportedException.class, (exception, request, response) -> {
-            handleException(response, (StructuredException) exception);
-        });
-        super.handleException();
+        logger.info("Started SparkRouter: HealthService");
     }
 }

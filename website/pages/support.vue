@@ -7,7 +7,7 @@
 
         <h6 style="margin-top: 60px">Here is our <a
           href="https://s3-ap-southeast-1.amazonaws.com/munch-static/privacy-policy.pdf">privacy policy</a> and <a
-          href="https://s3-ap-southeast-1.amazonaws.com/munch-static/terms-of-use.pdf">terms of use</a>.</h6>
+          href="https://s3-ap-southeast-1.amazonaws.com/munch-static/terms-of-use_2018-05-22.pdf">terms of use</a>.</h6>
       </section>
     </div>
   </div>
