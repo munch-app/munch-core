@@ -61,7 +61,6 @@ public class FilterPriceRange {
     }
 
     public static class Segment {
-
         private double min;
         private double max;
 

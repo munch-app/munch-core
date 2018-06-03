@@ -19,6 +19,8 @@ public class ServiceModule extends AbstractModule {
         routerBinder.addBinding().to(PlaceService.class);
         routerBinder.addBinding().to(CollectionService.class);
         routerBinder.addBinding().to(UserService.class);
+
+        // TODO Whitelist Object
     }
 
 
