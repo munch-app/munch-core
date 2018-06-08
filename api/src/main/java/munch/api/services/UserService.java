@@ -1,10 +1,11 @@
 package munch.api.services;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.google.firebase.auth.FirebaseToken;
+import munch.api.ApiService;
 import munch.notification.MunchMailingListClient;
 import munch.restful.core.exception.StructuredException;
 import munch.restful.server.JsonCall;
+import munch.restful.server.JsonResult;
 import munch.restful.server.firebase.FirebaseAuthenticatedToken;
 import munch.restful.server.firebase.FirebaseAuthenticator;
 import munch.restful.server.jwt.AuthenticationException;
@@ -26,7 +27,7 @@ import java.util.Map;
  * Project: munch-core
  */
 @Singleton
-public final class UserService extends AbstractService {
+public final class UserService extends ApiService {
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     private final FirebaseAuthenticator authenticator;
@@ -47,26 +48,39 @@ public final class UserService extends AbstractService {
     @Override
     public void route() {
         PATH("/users", () -> {
-            POST("/authenticate", this::authenticate);
-
             GET("/profile", this::getProfile);
             GET("/setting", this::getSetting);
 
+            POST("/authenticate", this::authenticate);
             PATCH("/setting/search", this::patchSearchSetting);
         });
+    }
+
+    private UserProfile getProfile(JsonCall call) {
+        String userId = authenticator.getSubject(call);
+        return profileClient.get(userId);
+    }
+
+    private UserSetting getSetting(JsonCall call) throws AuthenticationException {
+        String userId = authenticator.getSubject(call);
+        UserSetting setting = settingClient.get(userId);
+
+        if (setting != null) return setting;
+        return new UserSetting();
     }
 
     /**
      * @param call json call
      * @return UserProfile & UserSetting after authentication
      */
-    private JsonNode authenticate(JsonCall call) {
+    private JsonResult authenticate(JsonCall call) {
         FirebaseAuthenticatedToken token = authenticator.authenticate(call);
         String userId = token.getSubject();
 
         UserProfile profile = updateProfile(userId, token.getFirebaseToken());
         UserSetting setting = updateSetting(userId, profile);
-        return nodes(200, Map.of(
+
+        return result(200, Map.of(
                 "profile", profile,
                 "setting", setting
         ));
@@ -104,19 +118,6 @@ public final class UserService extends AbstractService {
         setting.setSearch(new UserSetting.Search());
         settingClient.put(userId, setting);
         return setting;
-    }
-
-    private UserProfile getProfile(JsonCall call) {
-        String userId = authenticator.getSubject(call);
-        return profileClient.get(userId);
-    }
-
-    private UserSetting getSetting(JsonCall call) throws AuthenticationException {
-        String userId = authenticator.getSubject(call);
-        UserSetting setting = settingClient.get(userId);
-
-        if (setting != null) return setting;
-        return new UserSetting();
     }
 
     private UserSetting patchSearchSetting(JsonCall call) {

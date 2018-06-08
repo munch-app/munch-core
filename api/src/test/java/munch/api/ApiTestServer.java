@@ -3,7 +3,6 @@ package munch.api;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import munch.api.services.AbstractService;
 import munch.restful.server.RestfulServer;
 
 /**
@@ -22,7 +21,7 @@ public interface ApiTestServer {
         return Guice.createInjector(modules);
     }
 
-    static <T extends AbstractService> void start(Class<T> type, AbstractModule... modules) {
+    static <T extends ApiService> void start(Class<T> type, AbstractModule... modules) {
         System.setProperty("http.port", "8888");
 
         Injector injector = injector(modules);

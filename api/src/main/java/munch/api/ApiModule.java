@@ -9,16 +9,16 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
+import com.google.inject.multibindings.Multibinder;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import munch.api.services.ServiceModule;
+import munch.api.services.*;
 import munch.api.services.search.inject.SearchCardModule;
 import munch.data.dynamodb.DynamoModule;
 import munch.data.elastic.ElasticModule;
+import munch.restful.server.RestfulService;
 import munch.restful.server.firebase.FirebaseAuthenticationModule;
 import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,18 +29,25 @@ import java.io.InputStream;
  * Time: 7:45 PM
  * Project: munch-core
  */
-public class ApiModule extends AbstractModule {
-    private static final Logger logger = LoggerFactory.getLogger(ApiModule.class);
+public final class ApiModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        install(new ServiceModule());
         install(new SearchCardModule());
 
         install(new DynamoModule());
         install(new ElasticModule());
 
         install(getAuthenticationModule());
+
+        Multibinder<RestfulService> routerBinder = Multibinder.newSetBinder(binder(), RestfulService.class);
+        routerBinder.addBinding().to(SearchService.class);
+        routerBinder.addBinding().to(PlaceService.class);
+
+        // User Service Binding
+        routerBinder.addBinding().to(UserService.class);
+        routerBinder.addBinding().to(UserPlaceCollectionService.class);
+        routerBinder.addBinding().to(UserPlaceActivityService.class);
     }
 
     private FirebaseAuthenticationModule getAuthenticationModule() {

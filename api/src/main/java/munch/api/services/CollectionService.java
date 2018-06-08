@@ -3,6 +3,7 @@ package munch.api.services;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import munch.api.ApiService;
 import munch.collections.*;
 import munch.data.clients.PlaceClient;
 import munch.data.structure.Place;
@@ -24,7 +25,8 @@ import java.util.List;
  * Project: munch-core
  */
 @Singleton
-public final class CollectionService extends AbstractService {
+@Deprecated
+public final class CollectionService extends ApiService {
     private final TokenAuthenticator authenticator;
 
     private final PlaceClient placeClient;

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.AbstractModule;
+import munch.api.ApiService;
 import munch.api.ApiTestServer;
 import munch.restful.client.RestfulClient;
 
@@ -18,7 +19,7 @@ public abstract class AbstractEndpointTest extends RestfulClient
 
     protected static final ObjectMapper mapper = new ObjectMapper();
 
-    public <T extends AbstractService> AbstractEndpointTest(Class<T> type, AbstractModule... modules) {
+    public <T extends ApiService> AbstractEndpointTest(Class<T> type, AbstractModule... modules) {
         super("http://localhost:8888/v1");
         ApiTestServer.start(type, modules);
     }

@@ -1,9 +1,9 @@
 package munch.api.services;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import munch.api.ApiService;
 import munch.api.services.places.PlaceCardReader;
 import munch.api.services.places.loader.PlaceArticleCardLoader;
 import munch.article.clients.Article;
@@ -16,6 +16,7 @@ import munch.data.structure.Place;
 import munch.data.structure.PlaceCard;
 import munch.restful.client.dynamodb.NextNodeList;
 import munch.restful.server.JsonCall;
+import munch.restful.server.JsonResult;
 import munch.restful.server.jwt.TokenAuthenticator;
 
 import java.util.List;
@@ -28,7 +29,7 @@ import java.util.Optional;
  * Project: munch-core
  */
 @Singleton
-public class PlaceService extends AbstractService {
+public class PlaceService extends ApiService {
 
     private final PlaceClient dataClient;
     private final ArticleClient articleClient;
@@ -84,7 +85,7 @@ public class PlaceService extends AbstractService {
      * @param call json call
      * @return {cards: List of PlaceCard, place: Place}
      */
-    private JsonNode cards(JsonCall call) {
+    private JsonResult cards(JsonCall call) {
         Optional<String> userId = authenticator.optionalSubject(call);
         String placeId = call.pathString("placeId");
         Place place = dataClient.get(placeId);
@@ -99,37 +100,35 @@ public class PlaceService extends AbstractService {
 
         // Put user data if user exist
         userId.ifPresent(id -> {
-            objectNode.putObject("user")
-                    .put("liked", likedPlaceClient.isLiked(id, placeId));
+            objectNode.putObject("user").put("liked", likedPlaceClient.isLiked(id, placeId));
         });
 
-        return nodes(200, objectNode);
+        return JsonResult.ok(objectNode);
     }
 
-    private JsonNode getArticles(JsonCall call) {
+    private JsonResult getArticles(JsonCall call) {
         int size = querySize(call);
         String placeId = call.pathString("placeId");
         String nextPlaceSort = call.queryString("next.placeSort", null);
 
-
         NextNodeList<Article> nextNodeList = articleClient.list(placeId, nextPlaceSort, size);
         PlaceArticleCardLoader.removeBadData(nextNodeList);
 
-        ObjectNode node = nodes(200, nextNodeList);
-        if (nextNodeList.hasNext()) node.set("next", nextNodeList.getNext());
-        return node;
+        JsonResult result = result(200, nextNodeList);
+        if (nextNodeList.hasNext()) result.put("next", nextNodeList.getNext());
+        return result;
     }
 
-    private JsonNode getInstagramMedias(JsonCall call) {
+    private JsonResult getInstagramMedias(JsonCall call) {
         int size = querySize(call);
         String placeId = call.pathString("placeId");
         String nextPlaceSort = call.queryString("next.placeSort", null);
 
         NextNodeList<InstagramMedia> nextNodeList = instagramMediaClient.listByPlace(placeId, nextPlaceSort, size);
 
-        ObjectNode node = nodes(200, nextNodeList);
-        if (nextNodeList.hasNext()) node.set("next", nextNodeList.getNext());
-        return node;
+        JsonResult result = result(200, nextNodeList);
+        if (nextNodeList.hasNext()) result.put("next", nextNodeList.getNext());
+        return result;
     }
 
     private static int querySize(JsonCall call) {

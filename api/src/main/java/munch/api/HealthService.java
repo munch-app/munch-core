@@ -1,8 +1,7 @@
 package munch.api;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import munch.restful.client.RestfulClient;
-import munch.restful.server.JsonCall;
+import munch.restful.server.JsonResult;
 import munch.restful.server.JsonService;
 
 import javax.inject.Inject;
@@ -27,14 +26,12 @@ public final class HealthService implements JsonService {
 
     @Override
     public void route() {
-        GET("/health/check", this::check);
-    }
-
-    private JsonNode check(JsonCall call) {
-        for (HealthCheck healthCheck : healthChecks) {
-            healthCheck.check();
-        }
-        return Meta200;
+        GET("/health/check", call -> {
+            for (HealthCheck healthCheck : healthChecks) {
+                healthCheck.check();
+            }
+            return JsonResult.ok();
+        });
     }
 
     private class HealthCheck extends RestfulClient {

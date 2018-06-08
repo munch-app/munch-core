@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import io.searchbox.core.Search;
+import munch.api.ApiService;
 import munch.api.services.search.*;
 import munch.api.services.search.cards.SearchCard;
 import munch.data.assumption.AssumptionEngine;
@@ -37,7 +38,7 @@ import java.util.concurrent.TimeUnit;
  * Project: munch-core
  */
 @Singleton
-public final class SearchService extends AbstractService {
+public final class SearchService extends ApiService {
 
     private final TokenAuthenticator<?> authenticator;
 

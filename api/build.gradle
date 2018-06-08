@@ -1,0 +1,52 @@
+dependencies {
+    // Frameworks & Tools
+    compile group: 'com.google.inject', name: 'guice', version: guiceVersion
+    compile group: 'catalyst', name: 'retriable-utils', version: ccVersion
+
+    // Munch Restful
+    compile group: 'munch.restful', name: 'restful-client', version: restfulVersion
+    compile group: 'munch.restful', name: 'restful-server', version: restfulVersion
+    compile group: 'munch.restful', name: 'restful-server-jwt', version: restfulVersion
+    compile group: 'munch.restful', name: 'restful-server-firebase', version: restfulVersion
+
+    compile group: 'com.amazonaws', name: 'aws-java-sdk-ssm', version: awsVersion
+
+    // munch.api Clients
+//    compile group: 'munch-data', name: 'client', version: '4.0'
+    compile group: 'munch-user', name: 'client', version: '1.4'
+    compile group: 'munch-notification', name: 'client', version: '1.4'
+
+    // Deprecating Clients
+    compile group: 'facebook-corpus', name: 'instagram-client', version: '2.1.0-SNAPSHOT'
+    compile group: 'munch.article', name: 'client-article', version: '1.2.0-SNAPSHOT'
+    compile group: 'munch.data', name: 'data-client', version: dataVersion
+    compile group: 'munch.data', name: 'client-collections', version: dataVersion
+}
+
+apply plugin: 'application'
+apply plugin: 'com.bmuschko.docker-java-application'
+
+mainClassName = 'munch.api.ApiModule'
+
+ext.dockerTag = 'munch-core/' + project.name + ':' + rootProject.version
+ext.dockerHost = '197547471367.dkr.ecr.ap-southeast-1.amazonaws.com/' + dockerTag
+
+docker {
+    javaApplication {
+        baseImage = 'openjdk:9-jdk-slim'
+        maintainer = 'Fuxing'
+        ports = [8000]
+        tag = dockerTag
+    }
+}
+
+task publishDocker {
+    dependsOn 'clean'
+    dependsOn 'dockerBuildImage'
+    tasks.findByName('dockerBuildImage').mustRunAfter 'clean'
+
+    doLast {
+        exec { commandLine "docker", "tag", dockerTag, dockerHost }
+        exec { commandLine "docker", "push", dockerHost }
+    }
+}

@@ -1,4 +1,4 @@
 rootProject.name = 'munch-core'
 
-include 'service-api'
+include 'api'
 
