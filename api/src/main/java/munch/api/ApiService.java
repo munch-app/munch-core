@@ -1,6 +1,5 @@
 package munch.api;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import munch.restful.server.JsonService;
 import munch.restful.server.JsonTransformer;
 
@@ -38,9 +37,8 @@ public abstract class ApiService implements JsonService {
         }
 
         @Override
-        protected JsonNode toTree(Object object) {
+        protected void clean(Object object) {
             objectWhitelist.purge(object);
-            return super.toTree(object);
         }
     }
 }

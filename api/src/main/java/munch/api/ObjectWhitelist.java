@@ -1,5 +1,8 @@
 package munch.api;
 
+import munch.data.location.Area;
+import munch.data.tag.Tag;
+
 import javax.inject.Singleton;
 import java.util.Collection;
 import java.util.Map;
@@ -27,6 +30,20 @@ public final class ObjectWhitelist {
     }
 
     private void purgeEach(Object object) {
-        // TODO MunchData, UserData to purge
+        if (object instanceof Tag) {
+            purgeType((Tag) object);
+        } else if (object instanceof Area) {
+            purgeType((Area) object);
+        }
+    }
+
+    private void purgeType(Tag tag) {
+        tag.setCounts(null);
+        tag.setSearch(null);
+        tag.setPlace(null);
+    }
+
+    private void purgeType(Area area) {
+        area.setLocationCondition(null);
     }
 }

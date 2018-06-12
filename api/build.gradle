@@ -12,7 +12,7 @@ dependencies {
     compile group: 'com.amazonaws', name: 'aws-java-sdk-ssm', version: awsVersion
 
     // munch.api Clients
-//    compile group: 'munch-data', name: 'client', version: '4.0'
+    compile group: 'munch-data', name: 'client', version: '4.0'
     compile group: 'munch-user', name: 'client', version: '1.4'
     compile group: 'munch-notification', name: 'client', version: '1.4'
 
