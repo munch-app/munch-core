@@ -1,0 +1,22 @@
+package munch.api.place.query;
+
+import munch.data.extended.PlaceAward;
+import munch.data.extended.PlaceAwardClient;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+/**
+ * Created by: Fuxing
+ * Date: 6/3/18
+ * Time: 8:37 PM
+ * Project: munch-core
+ */
+@Singleton
+public final class PlaceAwardCardLoader extends PlaceDataCardLoader.Extended<PlaceAward, PlaceAwardClient> {
+
+    @Inject
+    public PlaceAwardCardLoader(PlaceAwardClient client) {
+        super("extended_PlaceAward_20180506", client, 20);
+    }
+}

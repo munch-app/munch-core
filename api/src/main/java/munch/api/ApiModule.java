@@ -9,14 +9,13 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
-import com.google.inject.multibindings.Multibinder;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import munch.api.services.*;
-import munch.api.services.search.inject.SearchCardModule;
-import munch.data.dynamodb.DynamoModule;
-import munch.data.elastic.ElasticModule;
-import munch.restful.server.RestfulService;
+import munch.api.core.CoreModule;
+import munch.api.place.PlaceModule;
+import munch.api.search.SearchModule;
+import munch.api.user.UserModule;
+import munch.corpus.instagram.dynamodb.DynamoModule;
 import munch.restful.server.firebase.FirebaseAuthenticationModule;
 import org.apache.commons.io.IOUtils;
 
@@ -33,21 +32,14 @@ public final class ApiModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        install(new SearchCardModule());
-
-        install(new DynamoModule());
-        install(new ElasticModule());
-
         install(getAuthenticationModule());
+        install(new DynamoModule());
 
-        Multibinder<RestfulService> routerBinder = Multibinder.newSetBinder(binder(), RestfulService.class);
-        routerBinder.addBinding().to(SearchService.class);
-        routerBinder.addBinding().to(PlaceService.class);
-
-        // User Service Binding
-        routerBinder.addBinding().to(UserService.class);
-        routerBinder.addBinding().to(UserPlaceCollectionService.class);
-        routerBinder.addBinding().to(UserPlaceActivityService.class);
+        // Service Module
+        install(new CoreModule());
+        install(new UserModule());
+        install(new PlaceModule());
+        install(new SearchModule());
     }
 
     private FirebaseAuthenticationModule getAuthenticationModule() {
@@ -59,7 +51,8 @@ public final class ApiModule extends AbstractModule {
             AWSSimpleSystemsManagement client = AWSSimpleSystemsManagementClientBuilder.defaultClient();
             GetParameterResult result = client.getParameter(new GetParameterRequest()
                     .withName(ssmKey)
-                    .withWithDecryption(true));
+                    .withWithDecryption(true)
+            );
 
             String value = result.getParameter().getValue();
             InputStream inputStream = IOUtils.toInputStream(value, "utf-8");

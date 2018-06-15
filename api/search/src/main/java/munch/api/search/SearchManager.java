@@ -1,0 +1,86 @@
+package munch.api.search;
+
+import munch.api.search.cards.CardParser;
+import munch.api.search.cards.SearchCard;
+import munch.api.search.data.SearchQuery;
+import munch.api.search.inject.SearchCardInjector;
+import munch.data.client.ElasticClient;
+import munch.data.client.PlaceClient;
+import munch.data.place.Place;
+import munch.user.data.UserSetting;
+
+import javax.annotation.Nullable;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.time.Duration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by: Fuxing
+ * Date: 18/10/2017
+ * Time: 1:39 AM
+ * Project: munch-core
+ */
+@Singleton
+public final class SearchManager {
+
+    private final PlaceClient placeClient;
+    private final ElasticClient elasticClient;
+    private final CardParser cardParser;
+
+    private final SearchCardInjector searchCardInjector;
+
+    private final FixedRandomSorter placeSorter = new FixedRandomSorter(Duration.ofHours(24 + 18));
+
+    @Inject
+    public SearchManager(PlaceClient placeClient, ElasticClient elasticClient, CardParser cardParser, SearchCardInjector searchCardInjector) {
+        this.placeClient = placeClient;
+        this.elasticClient = elasticClient;
+        this.cardParser = cardParser;
+        this.searchCardInjector = searchCardInjector;
+    }
+
+    /**
+     * @param query   query to search
+     * @param setting nullable user setting
+     * @return List of SearchCard
+     */
+    public List<SearchCard> search(SearchQuery query, @Nullable UserSetting setting) {
+        resolve(query);
+
+
+        List<Place> places = placeClient.getSearchClient().search(query);
+        List<SearchCard> cards = cardParser.parseCards(sort(places, query), setting);
+        searchCardInjector.inject(cards, query, setting);
+        return cards;
+    }
+
+    private List<Place> sort(List<Place> places, SearchQuery query) {
+        placeSorter.sort(places, query);
+        return places;
+    }
+
+    public Map<String, Object> suggest(Map<String, Integer> types, String text, @Nullable String latLng, SearchQuery prevQuery) {
+        Map<String, Object> resultMap = new HashMap<>();
+        elasticClient.multiSearch(types, text.toLowerCase(), latLng).forEach((type, results) -> {
+            if (!results.isEmpty()) {
+                resultMap.put(type, results);
+            }
+        });
+
+        return resultMap;
+    }
+
+    public static void resolve(SearchQuery query) {
+        query.setRadius(resolveRadius(query));
+    }
+
+    public static double resolveRadius(SearchQuery query) {
+        Double radius = query.getRadius();
+        if (radius == null) return 750; // Default radius
+        if (radius > 2500) return 2500; // Max radius for nearby search
+        return radius;
+    }
+}

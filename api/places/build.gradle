@@ -1,0 +1,7 @@
+dependencies {
+    compile group: 'facebook-corpus', name: 'instagram-client', version: '2.1.0-SNAPSHOT'
+    compile group: 'munch.article', name: 'client-article', version: '1.2.0-SNAPSHOT'
+
+    compile group: 'munch.data', name: 'data-utils', version: dataVersion
+    compile group: 'munch.data', name: 'data-client', version: dataVersion
+}

@@ -1,4 +1,8 @@
 rootProject.name = 'munch-core'
 
 include 'api'
+include 'api:core'
 
+include 'api:places'
+include 'api:search'
+include 'api:users'

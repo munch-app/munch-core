@@ -1,5 +1,6 @@
 package munch.api.services.search;
 
+import munch.api.search.data.FilterPriceRange;
 import munch.restful.core.JsonUtils;
 import org.junit.jupiter.api.Test;
 
