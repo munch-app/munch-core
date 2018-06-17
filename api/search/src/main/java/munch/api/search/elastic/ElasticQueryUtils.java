@@ -5,8 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Singleton;
+import munch.api.search.SearchRequest;
 import munch.api.search.data.SearchQuery;
+import munch.data.location.Area;
 import munch.restful.core.JsonUtils;
+import munch.restful.core.exception.ParamException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +18,7 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 /**
  * Created By: Fuxing Loh
@@ -23,22 +27,24 @@ import java.util.Optional;
  * Project: munch-core
  */
 @Singleton
-public final class BoolQuery {
-    private static final Logger logger = LoggerFactory.getLogger(BoolQuery.class);
+public final class ElasticQueryUtils {
+    private static final Logger logger = LoggerFactory.getLogger(ElasticQueryUtils.class);
     private static final ObjectMapper mapper = JsonUtils.objectMapper;
 
+    private static final Pattern TIME_PATTERN = Pattern.compile(":");
+
     /**
-     * NOTE: This BoolQuery is only for Place data type
+     * NOTE: This ElasticQueryUtils is only for Place data type
      *
-     * @param query SearchQuery for place
+     * @param request SearchRequest
      * @return created bool node
      */
-    public JsonNode make(SearchQuery query) {
+    public static JsonNode make(SearchRequest request) {
         ObjectNode bool = mapper.createObjectNode();
         bool.set("must", mustMatchAll());
-        bool.set("must_not", mustNot(query.getFilter()));
-        bool.set("filter", filter(query));
-        return bool;
+        bool.set("must_not", mustNot(request));
+        bool.set("filter", filter(request));
+        return mapper.createObjectNode().set("bool", bool);
     }
 
     /**
@@ -55,10 +61,12 @@ public final class BoolQuery {
     /**
      * Filter to must not
      *
-     * @param filter filters
+     * @param request SearchRequest.SearchQuery.Filter
      * @return JsonNode must_not filter
      */
-    private JsonNode mustNot(SearchQuery.Filter filter) {
+    private static JsonNode mustNot(SearchRequest request) {
+        SearchQuery.Filter filter = request.getSearchQuery().getFilter();
+
         ArrayNode notArray = mapper.createArrayNode();
         if (filter == null) return notArray;
         if (filter.getTag() == null) return notArray;
@@ -66,22 +74,24 @@ public final class BoolQuery {
 
         // Must not filters
         for (String tag : filter.getTag().getNegatives()) {
-            notArray.add(filterTerm("tag.implicits", tag.toLowerCase()));
+            notArray.add(filterTerm("tags.name", tag.toLowerCase()));
         }
         return notArray;
     }
 
     /**
-     * @param searchQuery search query
+     * @param request SearchRequest.SearchQuery.Filter
      * @return JsonNode bool filter
      */
-    private JsonNode filter(SearchQuery searchQuery) {
+    private static JsonNode filter(SearchRequest request) {
+        SearchQuery searchQuery = request.getSearchQuery();
+
         ArrayNode filterArray = mapper.createArrayNode();
         filterArray.add(filterTerm("dataType", "Place"));
-        filterArray.add(filterTerm("open", true));
+        filterArray.add(filterTerm("status.type", "open"));
 
         // Filter 'Container' else 'Location' else 'LatLng' else none
-        filterLocation(searchQuery).ifPresent(filterArray::add);
+        filterLocation(request).ifPresent(filterArray::add);
 
         // Check if filter is not null before continuing
         SearchQuery.Filter filter = searchQuery.getFilter();
@@ -90,7 +100,7 @@ public final class BoolQuery {
         // Filter to positive tags
         if (filter.getTag() != null && filter.getTag().getPositives() != null) {
             for (String tag : filter.getTag().getPositives()) {
-                filterArray.add(filterTerm("tag.implicits", tag.toLowerCase()));
+                filterArray.add(filterTerm("tags.name", tag.toLowerCase()));
             }
         }
 
@@ -106,7 +116,7 @@ public final class BoolQuery {
      * @param price SearchQuery.Filter.Price filters
      * @return Filter Price Json
      */
-    private Optional<JsonNode> filterPrice(SearchQuery.Filter.Price price) {
+    private static Optional<JsonNode> filterPrice(SearchQuery.Filter.Price price) {
         if (price == null) return Optional.empty();
 
         ObjectNode range = mapper.createObjectNode();
@@ -122,7 +132,7 @@ public final class BoolQuery {
         if (range.size() > 0) {
             // Filter is applied on middle
             ObjectNode rangeFilter = mapper.createObjectNode();
-            rangeFilter.putObject("range").set("price.middle", range);
+            rangeFilter.putObject("range").set("price.perPax", range);
             return Optional.of(rangeFilter);
         }
 
@@ -133,7 +143,7 @@ public final class BoolQuery {
      * @param hour SearchQuery.Filter.Hour hour filters estimation
      * @return Filter Hour for Json
      */
-    private Optional<JsonNode> filterHour(SearchQuery.Filter.Hour hour) {
+    private static Optional<JsonNode> filterHour(SearchQuery.Filter.Hour hour) {
         if (hour == null) return Optional.empty();
         if (StringUtils.isAnyBlank(hour.getOpen(), hour.getClose(), hour.getDay())) return Optional.empty();
 
@@ -142,73 +152,50 @@ public final class BoolQuery {
         rangeFilter.putObject("range")
                 .putObject("hour." + hour.getDay() + ".open_close")
                 .put("relation", "intersects")
-                .put("gte", ElasticMarshaller.serializeTime(hour.getOpen()))
-                .put("lte", ElasticMarshaller.serializeTime(hour.getClose()));
+                .put("gte", ElasticQueryUtils.timeAsInt(hour.getOpen()))
+                .put("lte", ElasticQueryUtils.timeAsInt(hour.getClose()));
         return Optional.of(rangeFilter);
     }
 
     /**
-     * @param searchQuery searchQuery
+     * @param request SearchRequest
      * @return Filter Location Json
      */
-    public static Optional<JsonNode> filterLocation(SearchQuery searchQuery) {
+    public static Optional<JsonNode> filterLocation(SearchRequest request) {
+        SearchQuery searchQuery = request.getSearchQuery();
         SearchQuery.Filter filter = searchQuery.getFilter();
 
-        JsonNode locationFilter = filterContainer(filter);
-        if (locationFilter != null) return Optional.of(locationFilter);
+        JsonNode areaFilter = filterArea(filter.getArea());
+        if (areaFilter != null) return Optional.of(areaFilter);
 
-        locationFilter = filterPolygon(filter);
-        if (locationFilter != null) return Optional.of(locationFilter);
-
-        if (searchQuery.getLatLng() != null) {
-            double radius = searchQuery.getRadius() != null ? searchQuery.getRadius() : 1000;
-            JsonNode filtered = filterDistance(searchQuery.getLatLng(), radius);
+        if (request.getLatLng() != null) {
+            JsonNode filtered = filterDistance(request.getLatLng(), request.getRadius());
             return Optional.of(filtered);
         }
 
         return Optional.empty();
     }
 
-    /**
-     * https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-terms-query.html
-     *
-     * @param filter object containing containers object for filtering
-     * @return { "terms" : { "containers.id" : ["id1", "id2"] } }
-     */
     @Nullable
-    public static JsonNode filterContainer(SearchQuery.Filter filter) {
-        if (filter == null) return null;
+    public static JsonNode filterArea(Area area) {
+        if (area == null) return null;
+        if (area.getAreaId() == null) return null;
+        if (area.getLocation() == null) return null;
+        if (area.getLocation().getPolygon() == null) return null;
 
-        List<Container> containers = filter.getContainers();
-        if (containers == null) return null;
-        if (containers.isEmpty()) return null;
-
-        ObjectNode filterObject = mapper.createObjectNode();
-        ArrayNode values = filterObject.putObject("terms").putArray("containers.id");
-        for (Container container : containers) {
-            // Malformed == return also
-            if (StringUtils.isEmpty(container.getId())) {
-                logger.warn("SearchQuery.Filter.Containers.id is blank. SearchQuery.Filter: {}", filter);
-                return null;
-            }
-            values.add(container.getId());
+        if (area.getType() == Area.Type.Cluster) {
+            return filterTerm("areas.areaId", area.getAreaId());
         }
-        return filterObject;
-    }
 
-    @Nullable
-    public static JsonNode filterPolygon(SearchQuery.Filter filter) {
-        if (filter == null) return null;
+        List<String> points = area.getLocation().getPolygon().getPoints();
+        if (points == null) return null;
 
-        Location location = filter.getLocation();
-        if (location == null) return null;
-        if (location.getPoints() == null) return null;
-        if (location.getPoints().size() < 3) {
-            logger.warn("SearchQuery.Filter.Location.points < 3. SearchQuery.Filter: {}", filter);
+        if (points.size() < 3) {
+            logger.warn("SearchQuery.Filter.Location.points < 3. SearchQuery.Filter: {}", area.getLocation().getPolygon());
             return null;
         }
 
-        return filterPolygon(location.getPoints());
+        return filterPolygon(points);
     }
 
     /**
@@ -302,5 +289,16 @@ public final class BoolQuery {
                 .putObject(name)
                 .put(operator, value);
         return filter;
+    }
+
+    public static int timeAsInt(String time) throws ParamException {
+        try {
+            String[] split = TIME_PATTERN.split(time);
+            int hour = Integer.parseInt(split[0]);
+            int min = Integer.parseInt(split[1]);
+            return (hour * 60) + min;
+        } catch (NumberFormatException | ArrayIndexOutOfBoundsException | NullPointerException e) {
+            throw new ParamException("time");
+        }
     }
 }

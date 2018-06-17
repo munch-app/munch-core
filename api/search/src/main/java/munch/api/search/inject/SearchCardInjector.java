@@ -1,12 +1,11 @@
 package munch.api.search.inject;
 
-import munch.api.search.data.SearchQuery;
+import munch.api.search.SearchRequest;
 import munch.api.search.cards.SearchCard;
+import munch.api.search.data.SearchQuery;
 import munch.restful.core.JsonUtils;
-import munch.user.data.UserSetting;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.ArrayList;
@@ -30,12 +29,12 @@ public final class SearchCardInjector {
     }
 
     /**
-     * @param cards   to inject into
-     * @param query   to read from
-     * @param setting of user to read from
+     * @param cards         to inject into
+     * @param searchRequest SearchRequest
      */
-    public void inject(List<SearchCard> cards, SearchQuery query, @Nullable UserSetting setting) {
-        Loader.Request request = new Loader.Request(cards, query, setting);
+    public void inject(List<SearchCard> cards, SearchRequest searchRequest) {
+        SearchQuery query = searchRequest.getSearchQuery();
+        Loader.Request request = new Loader.Request(cards, searchRequest);
 
         List<Loader.Position> negatives = new ArrayList<>();
         List<Loader.Position> positives = new ArrayList<>();
@@ -116,18 +115,20 @@ public final class SearchCardInjector {
         class Request {
             private final List<SearchCard> cards;
             private final SearchQuery query;
-            private final String userId;
-            private final UserSetting setting;
+            private final SearchRequest request;
 
             private final boolean complex;
 
-            public Request(List<SearchCard> cards, SearchQuery query, @Nullable UserSetting setting) {
+            public Request(List<SearchCard> cards, SearchRequest request) {
                 this.cards = new ArrayList<>(cards);
-                this.query = query;
-                this.setting = setting;
-                this.userId = setting == null ? null : setting.getUserId();
+                this.query = request.getSearchQuery();
 
+                this.request = request;
                 this.complex = isComplexQuery(query);
+            }
+
+            public SearchRequest getRequest() {
+                return request;
             }
 
             public String getLocationName(String defaultName) {
@@ -139,7 +140,7 @@ public final class SearchCardInjector {
             }
 
             /**
-             * @return latLng of where the search is applied
+             * @return latLng of where the search is actually applied
              */
             public String getLatLngContext() {
                 // Condition checks
@@ -150,28 +151,15 @@ public final class SearchCardInjector {
                     }
                 }
 
-                if (query.getFilter() != null) {
-                    SearchQuery.Filter filter = query.getFilter();
-                    if (filter.getArea() != null) {
-                        if (filter.getArea().getLocation() != null) {
-                            return filter.getArea().getLocation().getLatLng();
-                        }
-                    }
-                    if (filter.getContainers() != null) {
-                        if (!filter.getContainers().isEmpty()) return null;
-                    }
-
-                    if (filter.getLocation() != null) {
-                        if ("singapore".equals(filter.getLocation().getId())) return null;
-                        return filter.getLocation().getLatLng();
+                // Area latLng
+                SearchQuery.Filter filter = query.getFilter();
+                if (filter.getArea() != null) {
+                    if (filter.getArea().getLocation() != null) {
+                        return filter.getArea().getLocation().getLatLng();
                     }
                 }
 
-                return query.getLatLng();
-            }
-
-            public UserSetting getSetting() {
-                return setting;
+                return request.getLatLng();
             }
 
             public List<SearchCard> getCards() {
@@ -183,7 +171,7 @@ public final class SearchCardInjector {
             }
 
             public int getFrom() {
-                return query.getFrom();
+                return request.getCall().queryInt("from");
             }
 
             public boolean isCardsMore(int count) {
@@ -199,7 +187,7 @@ public final class SearchCardInjector {
             }
 
             public String getUserId() {
-                return userId;
+                return request.getUserId();
             }
 
             public boolean isComplex() {
@@ -207,20 +195,13 @@ public final class SearchCardInjector {
             }
 
             public boolean isAnywhere() {
-                if (query.getLatLng() == null) {
-                    // No current lat lng given hence
-                    if (query.getFilter() == null) return true;
-                    if (query.getFilter().getArea() == null) return true;
-                    return "singapore".equals(query.getFilter().getLocation().getId());
-                } else {
-                    if (query.getFilter() == null) return false;
-                    if (query.getFilter().getLocation() == null) return false;
-                    return "singapore".equals(query.getFilter().getLocation().getId());
-                }
+                if (hasUserLocation()) return false;
+                if (hasArea()) return false;
+                return true;
             }
 
             public boolean isNearby() {
-                if (query.getLatLng() == null) return false;
+                if (!hasUserLocation()) return false;
                 if (query.getFilter() == null) return true;
                 return query.getFilter().getArea() == null;
             }
@@ -228,6 +209,10 @@ public final class SearchCardInjector {
             public boolean hasArea() {
                 if (query.getFilter() == null) return false;
                 return query.getFilter().getArea() != null;
+            }
+
+            public boolean hasUserLocation() {
+                return request.hasUserLatLng();
             }
 
             /**

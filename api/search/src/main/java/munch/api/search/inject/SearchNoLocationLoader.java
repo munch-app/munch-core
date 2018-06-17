@@ -16,7 +16,7 @@ public final class SearchNoLocationLoader implements SearchCardInjector.Loader {
     @Override
     public List<Position> load(Request request) {
         // if noLatLng = NoLocationCard
-        if (request.getQuery().getLatLng() != null) return List.of();
+        if (request.hasUserLocation()) return List.of();
 
         return of(-10_000, CARD_NO_LOCATION);
     }

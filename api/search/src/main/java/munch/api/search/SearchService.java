@@ -1,32 +1,34 @@
 package munch.api.search;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import munch.api.ApiService;
-import munch.api.search.cards.SearchCard;
+import munch.api.search.assumption.AssumptionEngine;
+import munch.api.search.assumption.AssumptionQuery;
 import munch.api.search.assumption.AssumptionQueryResult;
-import munch.api.search.data.FilterCount;
-import munch.api.search.data.FilterPriceRange;
 import munch.api.search.data.SearchQuery;
-import munch.data.assumption.AssumptionEngine;
-import munch.data.assumption.AssumptionQuery;
+import munch.api.search.elastic.ElasticQueryUtils;
+import munch.api.search.elastic.ElasticSortUtils;
+import munch.api.search.elastic.ElasticSuggestUtils;
 import munch.data.client.ElasticClient;
-import munch.data.client.PlaceClient;
+import munch.data.place.Place;
 import munch.restful.core.JsonUtils;
 import munch.restful.core.exception.ParamException;
 import munch.restful.server.JsonCall;
-import munch.user.client.UserSettingClient;
-import munch.user.data.UserSetting;
+import munch.restful.server.JsonResult;
+import munch.user.client.UserSearchHistoryClient;
+import munch.user.data.UserSearchHistory;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.naming.directory.SearchResult;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 /**
  * Created by: Fuxing
@@ -36,27 +38,23 @@ import java.util.concurrent.TimeUnit;
  */
 @Singleton
 public final class SearchService extends ApiService {
+    private static final Logger logger = LoggerFactory.getLogger(SearchService.class);
 
-    private final SearchClient searchClient;
-    private final SearchManager searchManager;
-
+    private final ElasticClient elasticClient;
     private final AssumptionEngine assumptionEngine;
-    private final PlaceClient.SearchClient placeSearchClient;
-    private final UserSettingClient settingClient;
 
-    private final Filter filter;
-    private final Location location;
+    private final SearchRequest.Factory searchRequestFactory;
+    private final SearchRequest.Delegator searchRequestDelegator;
+
+    private final UserSearchHistoryClient historyClient;
 
     @Inject
-    public SearchService(SearchManager searchManager, SearchClient searchClient, AssumptionEngine assumptionEngine, PlaceClient.SearchClient placeSearchClient, Filter filter, Location location, UserSettingClient settingClient) {
-        this.searchManager = searchManager;
-        this.searchClient = searchClient;
+    public SearchService(ElasticClient elasticClient, AssumptionEngine assumptionEngine, SearchRequest.Factory searchRequestFactory, SearchRequest.Delegator searchRequestDelegator, UserSearchHistoryClient historyClient) {
+        this.elasticClient = elasticClient;
         this.assumptionEngine = assumptionEngine;
-        this.placeSearchClient = placeSearchClient;
-
-        this.filter = filter;
-        this.location = location;
-        this.settingClient = settingClient;
+        this.searchRequestFactory = searchRequestFactory;
+        this.searchRequestDelegator = searchRequestDelegator;
+        this.historyClient = historyClient;
     }
 
     @Override
@@ -64,11 +62,6 @@ public final class SearchService extends ApiService {
         PATH("/search", () -> {
             POST("", this::search);
             POST("/search", this::searchSearch);
-
-            POST("/filter/count", filter::count);
-            POST("/filter/price", filter::priceRange);
-            GET("/filter/locations/list", location::list);
-            GET("/filter/locations/search", location::search);
         });
     }
 
@@ -77,13 +70,23 @@ public final class SearchService extends ApiService {
      * @return list of Place
      * @see SearchQuery
      */
-    private List<SearchCard> search(JsonCall call) {
-        SearchQuery query = call.bodyAsObject(SearchQuery.class);
-        authenticator.optionalSubject(call);
-        UserSetting setting = authenticator.optionalSubject(call)
-                .map(settingClient::get)
-                .orElse(null);
-        return searchManager.search(query, setting);
+    private JsonResult search(JsonCall call) {
+        SearchRequest searchRequest = searchRequestFactory.create(call);
+
+        // Save UserSearchHistory
+        CompletableFuture.runAsync(() -> {
+            String userId = searchRequest.getUserId();
+            if (userId == null) return;
+
+            try {
+                UserSearchHistory history = new UserSearchHistory();
+                history.setSearchQuery(JsonUtils.toTree(searchRequest.getSearchQuery()));
+                historyClient.put(userId, System.currentTimeMillis(), history);
+            } catch (Exception e) {
+                logger.warn("Failed to persist SearchHistory userId: {}, history: {}", userId, searchRequest.getSearchQuery());
+            }
+        });
+        return searchRequestDelegator.delegate(searchRequest);
     }
 
     /**
@@ -91,87 +94,130 @@ public final class SearchService extends ApiService {
      * @return list of Place
      * @see SearchQuery
      */
-    private Map<String, JsonNode> searchSearch(JsonCall call) {
+    private Map<String, Object> searchSearch(JsonCall call) {
         JsonNode request = call.bodyAsJson();
-        final String text = ParamException.requireNonNull("text", request.get("text").asText());
-        final String latLng = request.path("latLng").asText(null);
-        final SearchQuery prevQuery = JsonUtils.toObject(request.path("query"), SearchQuery.class);
-
-        List<AssumptionQueryResult> assumptions = new ArrayList<>();
-        for (AssumptionQuery query : assumptionEngine.assume(prevQuery, text)) {
-            List<Place> places = placeSearchClient.search(query.getSearchQuery());
-            if (!places.isEmpty()) {
-                AssumptionQueryResult result = new AssumptionQueryResult();
-                result.setSearchQuery(query.getSearchQuery());
-                result.setPlaces(places);
-                result.setTokens(query.getTokens());
-                result.setCount(placeSearchClient.count(query.getSearchQuery()));
-                assumptions.add(result);
-                break;
-            }
-        }
-
-        Search search = ElasticClient.createSearch(List.of("Place"), List.of("name^2", "allNames"), text, latLng, 0, 40);
-        List<Place> places = searchClient.search(search);
-        List<String> suggests = searchClient.suggestText(text, 6);
+        String text = ParamException.requireNonNull("text", request.path("text").asText());
+        SearchQuery query = JsonUtils.toObject(request.path("query"), SearchQuery.class);
 
         return Map.of(
-                "suggests", JsonUtils.toTree(suggests),
-                "assumptions", JsonUtils.toTree(assumptions),
-                "places", JsonUtils.toTree(places)
+                "suggests", suggestNames(text, 6, call),
+                "assumptions", assumeQuery(query, text, call),
+                "places", searchPlaces(0, 40, text, call)
         );
     }
 
-    public static class Filter {
-        private final FilterManager filterManager;
-
-        @Inject
-        public Filter(FilterManager filterManager) {
-            this.filterManager = filterManager;
-        }
-
-        private FilterCount count(JsonCall call) {
-            SearchQuery query = call.bodyAsObject(SearchQuery.class);
-            return filterManager.filterCount(query);
-        }
-
-        private FilterPriceRange priceRange(JsonCall call) {
-            SearchQuery query = call.bodyAsObject(SearchQuery.class);
-            return filterManager.filterPriceRange(query);
-        }
+    private List<Place> searchPlaces(int from, int size, SearchRequest request) {
+        ObjectNode root = JsonUtils.createObjectNode();
+        root.put("from", from);
+        root.put("size", size);
+        root.set("query", ElasticQueryUtils.make(request));
+        root.set("sort", ElasticSortUtils.make(request));
+        return elasticClient.searchHitsHits(root);
     }
 
-    private static class Location {
-        private final SearchClient searchClient;
-        private final Supplier<List<SearchResult>> locationSupplier;
+    private List<Place> searchPlaces(int from, int size, String text, JsonCall call) {
+        ObjectNode root = JsonUtils.createObjectNode();
+        root.put("from", from);
+        root.put("size", size);
+        ObjectNode queryNode = root.putObject("query");
+        ObjectNode boolNode = queryNode.putObject("bool");
 
-        @Inject
-        public Location(SearchClient searchClient, ElasticIndex elasticIndex) {
-            this.searchClient = searchClient;
+        // must: {?}
+        JsonNode must = multiMatchNameNames(text);
+        String latLng = optionalUserLatLng(call).orElse(null);
+        boolNode.set("must", withFunctionScoreMust(latLng, must));
 
-            // Every 12 hours, refresh the cache
-            this.locationSupplier = Suppliers.memoizeWithExpiration(() -> {
-                List<SearchResult> results = new ArrayList<>();
-                Iterator<SearchResult> locations = elasticIndex.scroll("Location", "1m");
-                locations.forEachRemaining(results::add);
+        // filter: [{"term": {"dataType": "Place"}}]
+        boolNode.putArray("filter")
+                .addObject()
+                .putObject("term")
+                .put("dataType", "Place");
 
-                Iterator<SearchResult> containers = elasticIndex.scroll("Container", "1m");
-                containers.forEachRemaining(results::add);
-                return results;
-            }, 12, TimeUnit.HOURS);
-
-            // Preload
-            this.locationSupplier.get();
-        }
-
-        private List<SearchResult> list(JsonCall call) {
-            return locationSupplier.get();
-        }
-
-        private List<SearchResult> search(JsonCall call) {
-            final String text = ParamException.requireNonNull("text", call.queryString("text"));
-
-            return searchClient.search(List.of("Location", "Container"), text, null, 0, 20);
-        }
+        return elasticClient.searchHitsHits(root);
     }
+
+    private List<String> suggestNames(String text, int size, JsonCall call) {
+        String latLng = optionalUserLatLng(call).orElse(null);
+
+        JsonNode results = elasticClient.search(ElasticSuggestUtils.make(text, latLng, size))
+                .path("suggest")
+                .path("suggestions")
+                .path(0)
+                .path("options");
+        if (results.isMissingNode()) return List.of();
+
+        Set<String> texts = new HashSet<>();
+        for (JsonNode result : results) {
+            String name = result.path("_source").path("name").asText();
+            if (StringUtils.isBlank(name)) continue;
+            if (text.equalsIgnoreCase(name)) continue;
+            texts.add(name);
+        }
+
+        return texts.stream()
+                .sorted(Comparator.comparingInt(String::length))
+                .collect(Collectors.toList());
+    }
+
+    private List<AssumptionQueryResult> assumeQuery(SearchQuery query, String text, JsonCall call) {
+        SearchRequest originalRequest = searchRequestFactory.create(call, query);
+        for (AssumptionQuery assumptionQuery : assumptionEngine.assume(originalRequest, text)) {
+            SearchRequest request = searchRequestFactory.create(call, assumptionQuery.getSearchQuery());
+
+            List<Place> places = searchPlaces(0, 20, request);
+            if (places.isEmpty()) continue;
+
+            AssumptionQueryResult result = new AssumptionQueryResult();
+            result.setPlaces(places);
+            result.setSearchQuery(assumptionQuery.getSearchQuery());
+            result.setTokens(assumptionQuery.getTokens());
+
+            ObjectNode root = JsonUtils.createObjectNode();
+            root.put("size", 0);
+            root.set("query", ElasticQueryUtils.make(request));
+            root.set("sort", ElasticSortUtils.make(request));
+            Long count = elasticClient.count(root);
+            result.setCount(count == null ? 0 : count);
+
+            return List.of(result);
+        }
+
+        return List.of();
+    }
+
+    private static JsonNode multiMatchNameNames(String query) {
+        ObjectNode root = JsonUtils.createObjectNode();
+        ObjectNode match = root.putObject("multi_match");
+
+        match.put("query", query);
+        match.put("type", "phrase_prefix");
+        match.putArray("fields")
+                .add("name")
+                .add("names");
+        return root;
+    }
+
+    private static JsonNode withFunctionScoreMust(@Nullable String latLng, JsonNode must) {
+        ObjectNode root = JsonUtils.createObjectNode();
+        ObjectNode function = root.putObject("function_score");
+        function.put("score_mode", "multiply");
+        function.set("query", must);
+        ArrayNode functions = function.putArray("functions");
+        functions.addObject()
+                .putObject("gauss")
+                .putObject("ranking")
+                .put("scale", "1000")
+                .put("origin", "2000");
+
+        if (latLng != null) {
+            functions.addObject()
+                    .putObject("gauss")
+                    .putObject("location.latLng")
+                    .put("scale", "3km")
+                    .put("origin", latLng);
+        }
+        return root;
+    }
+
+
 }

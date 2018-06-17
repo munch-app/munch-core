@@ -26,8 +26,6 @@ public final class SearchNoResultLoader implements SearchCardInjector.Loader {
         SearchQuery query = request.cloneQuery();
         if (query.getFilter() == null) query.setFilter(new SearchQuery.Filter());
 
-        // TODO SearchQuery Don't replace
-        // TODO Location Name
         // Inject No Result Location Card with location name
         SearchNoResultLocationCard card = new SearchNoResultLocationCard();
         card.setLocationName(request.getLocationName("Nearby"));

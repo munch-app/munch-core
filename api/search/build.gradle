@@ -1,3 +1,5 @@
 dependencies {
     compile group: 'facebook-corpus', name: 'instagram-client', version: '2.1.0-SNAPSHOT'
+
+    compile group: 'munch.data', name: 'data-utils', version: dataVersion
 }

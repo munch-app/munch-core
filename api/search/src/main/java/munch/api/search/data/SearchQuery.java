@@ -2,13 +2,10 @@ package munch.api.search.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.JsonNode;
 import munch.data.location.Area;
-import munch.restful.core.JsonUtils;
 
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
+import javax.annotation.Nullable;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 /**
@@ -24,58 +21,10 @@ import java.util.Set;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class SearchQuery {
-    public static final String VERSION = "2018-05-28";
-
-    private Integer from;
-    private Integer size;
-
-    private String latLng;
-    private Double radius;
+    public static final String VERSION = "2018-06-16";
 
     private Filter filter;
     private Sort sort;
-
-    private UserInfo userInfo;
-
-    public Integer getFrom() {
-        return from;
-    }
-
-    public void setFrom(Integer from) {
-        this.from = from;
-    }
-
-    public Integer getSize() {
-        return size;
-    }
-
-    public void setSize(Integer size) {
-        this.size = size;
-    }
-
-    /**
-     * Location is Polygon, latLng is user location
-     *
-     * @return latLng of user location
-     */
-    public String getLatLng() {
-        return latLng;
-    }
-
-    public void setLatLng(String latLng) {
-        this.latLng = latLng;
-    }
-
-    /**
-     * @return radius if latLng query is used
-     */
-    public Double getRadius() {
-        return radius;
-    }
-
-    public void setRadius(Double radius) {
-        this.radius = radius;
-    }
 
     /**
      * Optional
@@ -96,21 +45,6 @@ public final class SearchQuery {
 
     public void setSort(Sort sort) {
         this.sort = sort;
-    }
-
-    public UserInfo getUserInfo() {
-        return userInfo;
-    }
-
-    public void setUserInfo(UserInfo userInfo) {
-        this.userInfo = userInfo;
-    }
-
-    /**
-     * @return version of SearchQuery
-     */
-    public String getVersion() {
-        return VERSION;
     }
 
     /**
@@ -162,6 +96,7 @@ public final class SearchQuery {
             private Double min;
             private Double max;
 
+            @Nullable
             public String getName() {
                 return name;
             }
@@ -201,6 +136,7 @@ public final class SearchQuery {
             private Set<String> positives;
             private Set<String> negatives;
 
+            @NotNull
             public Set<String> getPositives() {
                 return positives;
             }
@@ -209,6 +145,7 @@ public final class SearchQuery {
                 this.positives = positives;
             }
 
+            @NotNull
             public Set<String> getNegatives() {
                 return negatives;
             }
@@ -228,8 +165,6 @@ public final class SearchQuery {
 
         @JsonIgnoreProperties(ignoreUnknown = true)
         public static class Hour {
-            private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
-
             private String name;
 
             private String day;
@@ -239,6 +174,7 @@ public final class SearchQuery {
             /**
              * @return name of hour filter
              */
+            @Nullable
             public String getName() {
                 return name;
             }
@@ -250,6 +186,7 @@ public final class SearchQuery {
             /**
              * @return day which it is open
              */
+            @NotNull
             public String getDay() {
                 return day;
             }
@@ -258,6 +195,7 @@ public final class SearchQuery {
                 this.day = day;
             }
 
+            @NotNull
             public String getOpen() {
                 return open;
             }
@@ -266,6 +204,7 @@ public final class SearchQuery {
                 this.open = open;
             }
 
+            @NotNull
             public String getClose() {
                 return close;
             }
@@ -282,11 +221,6 @@ public final class SearchQuery {
                         ", open='" + open + '\'' +
                         ", close='" + close + '\'' +
                         '}';
-            }
-
-            public static String addMin(String time, int minutes) {
-                LocalTime localTime = LocalTime.parse(time, TIME_FORMATTER);
-                return localTime.plus(minutes, ChronoUnit.MINUTES).format(TIME_FORMATTER);
             }
         }
 
@@ -340,71 +274,23 @@ public final class SearchQuery {
     }
 
     /**
-     * User Info send from client
+     * @return version of SearchQuery
      */
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class UserInfo {
-        private String day;
-        private String time; // HH:mm
-        private String latLng;
-
-        /**
-         * @return day of search
-         */
-        public String getDay() {
-            return day;
-        }
-
-        public void setDay(String day) {
-            this.day = day;
-        }
-
-        /**
-         * @return time of search
-         */
-        public String getTime() {
-            return time;
-        }
-
-        public void setTime(String time) {
-            this.time = time;
-        }
-
-        /**
-         * @return user location at search
-         */
-        public String getLatLng() {
-            return latLng;
-        }
-
-        public void setLatLng(String latLng) {
-            this.latLng = latLng;
-        }
-
-        @Override
-        public String toString() {
-            return "UserInfo{" +
-                    "day='" + day + '\'' +
-                    ", time='" + time + '\'' +
-                    ", latLng='" + latLng + '\'' +
-                    '}';
-        }
+    public String getVersion() {
+        return VERSION;
     }
 
     @Override
     public String toString() {
         return "SearchQuery{" +
-                "from=" + from +
-                ", size=" + size +
-                ", latLng='" + latLng + '\'' +
-                ", radius=" + radius +
-                ", filter=" + filter +
+                "filter=" + filter +
                 ", sort=" + sort +
+                ", version=" + getVersion() +
                 '}';
     }
 
-    public SearchQuery deepCopy() {
-        JsonNode node = JsonUtils.toTree(this);
-        return JsonUtils.toObject(node, SearchQuery.class);
+    public static void fix(SearchQuery query) {
+        if (query.getFilter() == null) query.setFilter(new Filter());
+        if (query.getSort() == null) query.setSort(new Sort());
     }
 }

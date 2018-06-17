@@ -4,20 +4,17 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
-import munch.api.search.FilterManager;
-import munch.api.search.SearchManager;
+import munch.api.search.SearchRequest;
 import munch.api.search.cards.SearchSuggestedTagCard;
-import munch.api.search.data.SearchQuery;
-import munch.api.search.elastic.BoolQuery;
+import munch.api.search.elastic.ElasticQueryUtils;
 import munch.data.client.ElasticClient;
+import munch.data.client.TagClient;
 import munch.data.tag.Tag;
 import munch.restful.core.JsonUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -31,23 +28,22 @@ import java.util.stream.Collectors;
 @Singleton
 public final class SearchSuggestionTagLoader implements SearchCardInjector.Loader {
 
-    private final BoolQuery boolQuery;
     private final ElasticClient elasticClient;
 
     private final Supplier<Map<String, Tag>> supplier;
 
     @Inject
-    public SearchSuggestionTagLoader(BoolQuery boolQuery, ElasticIndex elasticIndex, ElasticClient elasticClient) {
-        this.boolQuery = boolQuery;
+    public SearchSuggestionTagLoader(TagClient tagClient, ElasticClient elasticClient) {
         this.elasticClient = elasticClient;
 
         supplier = Suppliers.memoize(() -> {
-            Iterator<Tag> iterator = elasticIndex.scroll("Tag", "2m");
-
             Map<String, Tag> map = new HashMap<>();
-            iterator.forEachRemaining(tag -> {
-                if (StringUtils.containsAny(tag.getType().toLowerCase(), "amenities", "occasion", "cuisine")) {
-                    map.put(tag.getName().toLowerCase(), tag);
+            tagClient.iterator().forEachRemaining(tag -> {
+                switch (tag.getType()) {
+                    case Amenities:
+                    case Cuisine:
+                        map.put(tag.getName().toLowerCase(), tag);
+
                 }
             });
             return map;
@@ -60,7 +56,7 @@ public final class SearchSuggestionTagLoader implements SearchCardInjector.Loade
         if (!request.isCardsMore(25)) return List.of();
         if (!request.isNatural()) return List.of();
 
-        Map<String, Integer> tagMap = aggTags(request.getQuery());
+        Map<String, Integer> tagMap = aggTags(request.getRequest());
         if (tagMap.isEmpty()) return List.of();
 
         List<SearchSuggestedTagCard.Tag> tags = tagMap.entrySet().stream()
@@ -83,17 +79,37 @@ public final class SearchSuggestionTagLoader implements SearchCardInjector.Loade
         return supplier.get().containsKey(entry.getKey().toLowerCase());
     }
 
-    private Map<String, Integer> aggTags(SearchQuery query) {
-        query.setRadius(SearchManager.resolveRadius(query));
-
+    private Map<String, Integer> aggTags(SearchRequest request) {
         ObjectNode rootNode = JsonUtils.createObjectNode();
         rootNode.put("size", 0);
-        rootNode.putObject("query").set("bool", boolQuery.make(query));
+        rootNode.set("query", ElasticQueryUtils.make(request));
+
         ObjectNode aggs = rootNode.putObject("aggs");
-        aggs.set("tags", FilterManager.aggTags());
+        aggs.set("tags", aggTags());
 
-        JsonNode result = elasticClient.postSearch(rootNode);
+        ;
+        JsonNode result = elasticClient.search(rootNode);
 
-        return FilterManager.parseTag(result.path("aggregations").path("tags"));
+        return parseTagCounts(result.path("aggregations").path("tags"));
+    }
+
+    private static JsonNode aggTags() {
+        ObjectNode tag = JsonUtils.createObjectNode();
+        tag.putObject("terms")
+                .put("field", "tags.name")
+                .put("size", 3000);
+        return tag;
+    }
+
+    private static Map<String, Integer> parseTagCounts(JsonNode terms) {
+        Map<String, Integer> counts = new HashMap<>();
+
+        for (JsonNode object : terms.path("buckets")) {
+            String key = object.path("key").asText();
+            int count = object.path("doc_count").asInt();
+            counts.put(key, count);
+        }
+
+        return counts;
     }
 }

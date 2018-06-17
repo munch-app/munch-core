@@ -28,7 +28,7 @@ import java.io.InputStream;
  * Time: 7:45 PM
  * Project: munch-core
  */
-public final class ApiModule extends AbstractModule {
+public class ApiModule extends AbstractModule {
 
     @Override
     protected void configure() {

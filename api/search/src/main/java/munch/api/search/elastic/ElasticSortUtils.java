@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import munch.api.search.SearchRequest;
 import munch.api.search.data.SearchQuery;
 import munch.restful.core.JsonUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -20,30 +21,32 @@ import java.util.Objects;
  * Project: munch-core
  */
 @Singleton
-public final class SortQuery {
-    private static final Logger logger = LoggerFactory.getLogger(SortQuery.class);
+public final class ElasticSortUtils {
+    private static final Logger logger = LoggerFactory.getLogger(ElasticSortUtils.class);
     private static final ObjectMapper mapper = JsonUtils.objectMapper;
 
     /**
-     * @param query SearchQuery for place
+     * @param request SearchRequest
      * @return created bool node
      */
-    public JsonNode make(SearchQuery query) {
+    public static JsonNode make(SearchRequest request) {
+        SearchQuery query = request.getSearchQuery();
+
         ArrayNode sortArray = mapper.createArrayNode();
         // If it is null or blank, default to munchRank
         String type = query.getSort() == null ? "" : StringUtils.trimToEmpty(query.getSort().getType());
 
         switch (type) {
             case SearchQuery.Sort.TYPE_PRICE_LOWEST:
-                sortArray.add(sortField("price.middle", "asc"));
+                sortArray.add(sortField("price.perPax", "asc"));
                 break;
             case SearchQuery.Sort.TYPE_PRICE_HIGHEST:
-                sortArray.add(sortField("price.middle", "desc"));
+                sortArray.add(sortField("price.perPax", "desc"));
                 break;
             case SearchQuery.Sort.TYPE_DISTANCE_NEAREST:
-                if (StringUtils.isNotBlank(query.getLatLng())) {
+                if (StringUtils.isNotBlank(request.getLatLng())) {
                     logger.warn("Sort by distance by latLng not provided in query.latLng");
-                    sortArray.add(sortDistance(query.getLatLng()));
+                    sortArray.add(sortDistance(request.getLatLng()));
                 }
                 break;
             case SearchQuery.Sort.TYPE_RATING_HIGHEST:
