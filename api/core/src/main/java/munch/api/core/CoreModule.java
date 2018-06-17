@@ -11,6 +11,8 @@ import munch.api.ApiServiceModule;
 public final class CoreModule extends ApiServiceModule {
     @Override
     protected void configure() {
+        addHealth(DefaultHealthCheck.class);
+
         addCleaner(AreaCleaner.class);
         addCleaner(TagCleaner.class);
     }

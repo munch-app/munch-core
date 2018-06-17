@@ -2,6 +2,7 @@ package munch.api;
 
 import munch.restful.server.JsonTransformer;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.Collection;
 import java.util.Map;
@@ -15,10 +16,11 @@ import java.util.stream.Collectors;
  * Project: munch-core
  */
 @Singleton
-public class WhitelistTransformer extends JsonTransformer {
+public final class WhitelistTransformer extends JsonTransformer {
 
     private final Map<String, ObjectCleaner> cleanerMap;
 
+    @Inject
     public WhitelistTransformer(Set<ObjectCleaner> cleaners) {
         this.cleanerMap = cleaners.stream()
                 .collect(Collectors.toMap(o -> o.getClazz().getName(), o -> o));

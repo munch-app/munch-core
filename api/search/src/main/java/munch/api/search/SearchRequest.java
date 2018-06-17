@@ -142,7 +142,7 @@ public final class SearchRequest {
         private final TokenAuthenticator<?> authenticator;
 
         @Inject
-        public Factory(TokenAuthenticator<?> authenticator) {
+        public Factory(TokenAuthenticator authenticator) {
             this.authenticator = authenticator;
         }
 

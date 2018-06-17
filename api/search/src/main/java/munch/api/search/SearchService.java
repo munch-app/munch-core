@@ -218,6 +218,4 @@ public final class SearchService extends ApiService {
         }
         return root;
     }
-
-
 }
