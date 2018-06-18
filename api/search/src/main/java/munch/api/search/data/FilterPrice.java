@@ -51,5 +51,21 @@ public final class FilterPrice {
         public void setPrice(double price) {
             this.price = price;
         }
+
+        @Override
+        public String toString() {
+            return "Percentile{" +
+                    "percent=" + percent +
+                    ", price=" + price +
+                    '}';
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "FilterPrice{" +
+                "frequency=" + frequency +
+                ", percentiles=" + percentiles +
+                '}';
     }
 }

@@ -23,8 +23,8 @@ import java.util.Set;
 public final class SearchQuery {
     public static final String VERSION = "2018-06-16";
 
-    private Filter filter;
-    private Sort sort;
+    private Filter filter = new Filter();
+    private Sort sort = new Sort();
 
     /**
      * Optional

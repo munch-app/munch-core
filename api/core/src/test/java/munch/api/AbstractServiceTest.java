@@ -22,17 +22,11 @@ public class AbstractServiceTest {
         client = new Client();
     }
 
-    public static void assertPath(JsonNode node, String path) {
-        Assertions.assertTrue(node.has(path));
-    }
-
-    public static <T> void assertClass(JsonNode dataNode, String path, Class<T> clazz) {
-        JsonNode data = dataNode.path(path);
-        assertClass(data, clazz);
+    public static void assertHas(JsonNode node) {
+        Assertions.assertTrue(!node.isMissingNode());
     }
 
     public static <T> void assertClass(JsonNode dataNode, Class<T> clazz) {
-        if (dataNode.isMissingNode()) return;
         JsonUtils.validate(dataNode, clazz);
     }
 

@@ -1,14 +1,18 @@
 package munch.api.place;
 
 import munch.api.AbstractServiceTest;
-import munch.api.TestResult;
+import munch.api.TestCase;
 import munch.article.clients.Article;
+import munch.corpus.instagram.InstagramMedia;
 import munch.data.place.Place;
+import munch.restful.client.RestfulRequest;
 import munch.restful.client.RestfulResponse;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
+
+import static org.fest.assertions.Assertions.assertThat;
 
 /**
  * Created by: Fuxing
@@ -20,54 +24,76 @@ public class PlaceServiceTest extends AbstractServiceTest {
 
     @ParameterizedTest
     @MethodSource("provider")
-    void get(TestResult result) {
-        RestfulResponse response = client.get("/places/:placeId")
-                .path("placeId", result.params.get("placeId"))
-                .asResponse();
+    void get(TestCase result) {
+        RestfulRequest request = client.get("/places/:placeId");
+        RestfulResponse response = result.asResponse(request);
 
-        result.validate(response);
-        assertClass(response.getDataNode(), Place.class);
-    }
-
-    @ParameterizedTest
-    @MethodSource("provider")
-    void getCards(TestResult result) {
-        RestfulResponse response = client.get("/places/:placeId/cards")
-                .path("placeId", result.params.get("placeId"))
-                .asResponse();
-
-        result.validate(response);
-
-        if (result.code == 200) {
-            assertClass(response.getDataNode(), "place", Place.class);
-            assertPath(response.getDataNode(), "cards");
+        if (result.isOk()) {
+            assertClass(response.getDataNode(), Place.class);
         }
     }
 
     @ParameterizedTest
     @MethodSource("provider")
-    void getArticles(TestResult result) {
-        RestfulResponse response = client.get("/places/:placeId/partners/articles")
-                .path("placeId", result.params.get("placeId"))
-                .asResponse();
+    void getCards(TestCase result) {
+        RestfulRequest request = client.get("/places/:placeId/cards");
+        RestfulResponse response = result.asResponse(request);
+
+        if (result.isOk()) {
+            assertClass(response.getDataNode().path("place"), Place.class);
+            assertHas(response.getDataNode().path("cards"));
+        }
+    }
+
+    @ParameterizedTest
+    @MethodSource("providerList")
+    void getArticles(TestCase result) {
+        RestfulRequest request = client.get("/places/:placeId/partners/articles");
+        RestfulResponse response = result.asResponse(request);
 
         assertListClass(response.getDataNode(), Article.class);
     }
 
     @ParameterizedTest
-    @MethodSource("provider")
-    void getInstagramMedias(TestResult result) {
-        RestfulResponse response = client.get("/places/:placeId/partners/instagram/medias")
-                .path("placeId", result.params.get("placeId"))
-                .asResponse();
+    @MethodSource("providerList")
+    void getInstagramMedias(TestCase result) {
+        RestfulRequest request = client.get("/places/:placeId/partners/instagram/medias");
+        RestfulResponse response = result.asResponse(request);
 
-        assertListClass(response.getDataNode(), Article.class);
+        assertListClass(response.getDataNode(), InstagramMedia.class);
     }
 
-    static Stream<TestResult> provider() {
+    static Stream<TestCase> provider() {
         return Stream.of(
-                TestResult.of(200, "placeId", "f36422cb-2186-4821-a3f3-13b8cb26ebe7"),
-                TestResult.of(404, "placeId", "f36422cb-2186-4821-a3f3-13b8cb26ebe8")
+                TestCase.of(200)
+                        .request(request -> {
+                            request.path("placeId", "cdbd564c-45fc-439c-ba3e-8636729c1a4c");
+                        }),
+                TestCase.of(404)
+                        .request(request -> {
+                            request.path("placeId", "f36422cb-2186-4821-a3f3-13b8cb26ebe8");
+                        })
+        );
+    }
+
+    static Stream<TestCase> providerList() {
+        return Stream.of(
+                TestCase.of(200)
+                        .request(request -> {
+                            request.path("placeId", "cdbd564c-45fc-439c-ba3e-8636729c1a4c");
+                        })
+                        .response(response -> {
+                            assertThat(response.getDataNode().isArray()).isTrue();
+                            assertThat(response.getDataNode().size()).isGreaterThan(0);
+                        }),
+                TestCase.of(200)
+                        .request(request -> {
+                            request.path("placeId", "f36422cb-2186-4821-a3f3-13b8cb26ebe8");
+                        })
+                        .response(response -> {
+                            assertThat(response.getDataNode().isArray()).isTrue();
+                            assertThat(response.getDataNode().size()).isZero();
+                        })
         );
     }
 }

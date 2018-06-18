@@ -36,6 +36,7 @@ public final class SearchRequest {
     private final SearchQuery searchQuery;
 
     private final String latLng;
+    private final LocalDateTime localDateTime;
 
     private SearchRequest(JsonCall call, @Nullable String userId, SearchQuery searchQuery) {
         this(call, userId, searchQuery, ApiService.optionalUserLatLng(call).orElse(null));
@@ -46,6 +47,8 @@ public final class SearchRequest {
         this.userId = userId;
         this.searchQuery = searchQuery;
         this.latLng = latLng;
+
+        this.localDateTime = ApiService.optionalUserLocalTime(call).orElse(null);
     }
 
     /**
@@ -126,7 +129,7 @@ public final class SearchRequest {
      */
     @Nullable
     public LocalDateTime getLocalTime() {
-        return ApiService.optionalUserLocalTime(call).orElse(null);
+        return localDateTime;
     }
 
     /**

@@ -50,7 +50,7 @@ public final class SearchFilterService extends ApiService {
         FilterCount filterCount = new FilterCount();
 
         // Set Count
-        Long count = elasticClient.count(queryNode);
+        Long count = elasticClient.count(JsonUtils.createObjectNode().set("query", queryNode));
         filterCount.setCount(count == null ? 0 : count);
 
         // Set Tags Count
