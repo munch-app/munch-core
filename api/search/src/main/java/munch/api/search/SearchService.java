@@ -173,9 +173,7 @@ public final class SearchService extends ApiService {
             result.setTokens(assumptionQuery.getTokens());
 
             ObjectNode root = JsonUtils.createObjectNode();
-            root.put("size", 0);
             root.set("query", ElasticQueryUtils.make(request));
-            root.set("sort", ElasticSortUtils.make(request));
             Long count = elasticClient.count(root);
             result.setCount(count == null ? 0 : count);
 

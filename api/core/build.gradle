@@ -12,6 +12,6 @@ dependencies {
     compile group: 'munch-data', name: 'client', version: '4.5'
     compile group: 'munch-user', name: 'client', version: '1.6'
 
-    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.0.0'
-    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.0.0'
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: jUnitVersion
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: jUnitVersion
 }

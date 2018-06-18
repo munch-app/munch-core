@@ -63,8 +63,7 @@ class SearchFilterServiceTest extends AbstractServiceTest {
                         })
                         .response(response -> {
                             assertThat(response.asDataObject(FilterCount.class).getCount())
-                                    .isGreaterThan(0)
-                                    .isLessThan(100);
+                                    .isGreaterThan(100);
                         }),
                 TestCase.of(200, "Area")
                         .request(request -> {
@@ -79,7 +78,9 @@ class SearchFilterServiceTest extends AbstractServiceTest {
                                     .map(Map.Entry::getValue)
                                     .orElse(Integer.MAX_VALUE);
 
-                            assertThat(max).isLessThan(100);
+                            assertThat(max)
+                                    .isGreaterThan(0)
+                                    .isLessThan(100);
                         })
         );
     }
