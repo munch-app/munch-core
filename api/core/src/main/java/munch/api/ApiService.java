@@ -55,7 +55,8 @@ public abstract class ApiService implements JsonService {
 
     /**
      * LocalDateTime is validated and returned if exists
-     * Formatted as such: '2011-12-03T10:15:30'
+     * Using Format: ISO_LOCAL_DATE_TIME
+     * Example: '2011-12-03T10:15:30'
      *
      * @param call JsonCall
      * @return Optional String of User Local Time if exists
