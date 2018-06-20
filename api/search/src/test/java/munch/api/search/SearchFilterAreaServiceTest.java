@@ -17,11 +17,11 @@ import java.util.List;
  * Time: 2:04 PM
  * Project: munch-core
  */
-class SearchFilterLocationServiceTest extends AbstractServiceTest {
+class SearchFilterAreaServiceTest extends AbstractServiceTest {
 
     @Test
     void head() {
-        RestfulResponse response = client.head("/search/filter/locations").asResponse();
+        RestfulResponse response = client.head("/search/filter/areas").asResponse();
         response.hasCode(200);
 
         String header = response.getHeader("Last-Modified-Millis");
@@ -31,7 +31,7 @@ class SearchFilterLocationServiceTest extends AbstractServiceTest {
 
     @Test
     void get() {
-        RestfulResponse response = client.get("/search/filter/locations").asResponse();
+        RestfulResponse response = client.get("/search/filter/areas").asResponse();
         response.hasCode(200);
 
         String header = response.getHeader("Last-Modified-Millis");

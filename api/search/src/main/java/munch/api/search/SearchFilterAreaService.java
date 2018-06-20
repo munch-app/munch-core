@@ -22,13 +22,13 @@ import java.util.concurrent.TimeUnit;
  * Project: munch-core
  */
 @Singleton
-public final class SearchFilterLocationService extends ApiService {
+public final class SearchFilterAreaService extends ApiService {
 
     private final Supplier<List<Area>> locationSupplier;
     private Long millis;
 
     @Inject
-    public SearchFilterLocationService(AreaClient areaClient) {
+    public SearchFilterAreaService(AreaClient areaClient) {
         this.locationSupplier = Suppliers.memoizeWithExpiration(() -> {
             List<Area> areas = Lists.newArrayList(areaClient.iterator());
             millis = areas.stream()
@@ -44,7 +44,7 @@ public final class SearchFilterLocationService extends ApiService {
 
     @Override
     public void route() {
-        PATH("/search/filter/locations", () -> {
+        PATH("/search/filter/areas", () -> {
             GET("", this::get);
             HEAD("", this::head);
         });

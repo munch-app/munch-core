@@ -24,6 +24,6 @@ public final class SearchModule extends ApiServiceModule {
 
         addService(SearchService.class);
         addService(SearchFilterService.class);
-        addService(SearchFilterLocationService.class);
+        addService(SearchFilterAreaService.class);
     }
 }
