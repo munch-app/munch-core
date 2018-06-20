@@ -7,13 +7,16 @@ WORKDIR /usr/src/app
 # Install app dependencies
 RUN apk update && apk upgrade && apk add git
 
-COPY . /usr/src/app/
+COPY package.json /usr/src/app/package.json
 RUN npm install
+
+COPY . /usr/src/app/
 
 # Build app
 RUN npm run build
 
 ENV HOST 0.0.0.0
+ENV NODE_ENV production
 EXPOSE 3000
 
 # start command
