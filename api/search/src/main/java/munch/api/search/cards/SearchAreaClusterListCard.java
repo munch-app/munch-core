@@ -20,7 +20,7 @@ public final class SearchAreaClusterListCard implements SearchCard {
 
     @Override
     public String getCardId() {
-        return "injected_Containers_20171211";
+        return "injected_AreaClusterList_20180621";
     }
 
     @Override

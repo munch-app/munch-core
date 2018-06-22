@@ -51,7 +51,7 @@ public final class SearchAreaClusterListLoader implements SearchCardInjector.Loa
         boolQuery.set("filter", mapper.createArrayNode()
                 .add(ElasticUtils.filterTerm("dataType", "Area"))
                 .add(ElasticUtils.filterTerm("type", "Cluster"))
-                .add(ElasticUtils.filterRange("count", "gte", 4))
+                .add(ElasticUtils.filterRange("counts.total", "gte", 4))
         );
         root.putObject("query").set("bool", boolQuery);
 

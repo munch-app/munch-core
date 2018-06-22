@@ -61,7 +61,7 @@ public final class SearchService extends ApiService {
     public void route() {
         PATH("/search", () -> {
             POST("", this::search);
-            POST("/search", this::searchSearch);
+            POST("/suggest", this::suggest);
         });
     }
 
@@ -94,10 +94,10 @@ public final class SearchService extends ApiService {
      * @return list of Place
      * @see SearchQuery
      */
-    private Map<String, Object> searchSearch(JsonCall call) {
+    private Map<String, Object> suggest(JsonCall call) {
         JsonNode request = call.bodyAsJson();
         String text = ParamException.requireNonNull("text", request.path("text").asText());
-        SearchQuery query = JsonUtils.toObject(request.path("query"), SearchQuery.class);
+        SearchQuery query = JsonUtils.toObject(request.path("searchQuery"), SearchQuery.class);
 
         return Map.of(
                 "suggests", suggestNames(text, 6, call),

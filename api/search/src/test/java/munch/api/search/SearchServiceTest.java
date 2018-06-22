@@ -35,9 +35,9 @@ class SearchServiceTest extends AbstractServiceTest {
     }
 
     @ParameterizedTest
-    @MethodSource("searchSearchProvider")
-    void searchSearch(TestCase test) {
-        RestfulRequest request = client.post("/search/search");
+    @MethodSource("suggestProvider")
+    void suggest(TestCase test) {
+        RestfulRequest request = client.post("/search/suggest");
         test.asResponse(request);
     }
 
@@ -104,13 +104,13 @@ class SearchServiceTest extends AbstractServiceTest {
         );
     }
 
-    static Stream<TestCase> searchSearchProvider() {
+    static Stream<TestCase> suggestProvider() {
         return Stream.of(
                 TestCase.of(200, "Text & Suggestion")
                         .request(request -> {
                             ObjectNode body = JsonUtils.createObjectNode();
                             body.put("text", "chicke");
-                            body.set("query", JsonUtils.toTree(new SearchQuery()));
+                            body.set("searchQuery", JsonUtils.toTree(new SearchQuery()));
                             request.body(body);
 
                             request.header(ApiService.HEADER_USER_LAT_LNG, "1.290270, 103.851959");
@@ -129,7 +129,7 @@ class SearchServiceTest extends AbstractServiceTest {
                         .request(request -> {
                             ObjectNode body = JsonUtils.createObjectNode();
                             body.put("text", "Chicken");
-                            body.set("query", JsonUtils.toTree(new SearchQuery()));
+                            body.set("searchQuery", JsonUtils.toTree(new SearchQuery()));
                             request.body(body);
 
                             request.header(ApiService.HEADER_USER_LOCAL_TIME, "2011-12-03T10:15:30");
@@ -150,7 +150,7 @@ class SearchServiceTest extends AbstractServiceTest {
                             SearchQuery areaQuery = new SearchQuery();
                             areaQuery.getFilter().setArea(SearchQueryTestUtils.SMALL_AREA);
                             request.body(areaQuery);
-                            body.set("query", JsonUtils.toTree(areaQuery));
+                            body.set("searchQuery", JsonUtils.toTree(areaQuery));
                             request.body(body);
 
                             request.header(ApiService.HEADER_USER_LAT_LNG, "1.290270, 103.851959");

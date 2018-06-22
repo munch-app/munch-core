@@ -24,12 +24,12 @@ import java.util.concurrent.TimeUnit;
 @Singleton
 public final class SearchFilterAreaService extends ApiService {
 
-    private final Supplier<List<Area>> locationSupplier;
+    private final Supplier<List<Area>> supplier;
     private Long millis;
 
     @Inject
     public SearchFilterAreaService(AreaClient areaClient) {
-        this.locationSupplier = Suppliers.memoizeWithExpiration(() -> {
+        this.supplier = Suppliers.memoizeWithExpiration(() -> {
             List<Area> areas = Lists.newArrayList(areaClient.iterator());
             millis = areas.stream()
                     .max(Comparator.comparingLong(Area::getUpdatedMillis))
@@ -39,7 +39,7 @@ public final class SearchFilterAreaService extends ApiService {
         }, 12, TimeUnit.HOURS);
 
         // Preload
-        this.locationSupplier.get();
+        this.supplier.get();
     }
 
     @Override
@@ -51,13 +51,13 @@ public final class SearchFilterAreaService extends ApiService {
     }
 
     private List<Area> get(JsonCall call) {
-        List<Area> areas = locationSupplier.get();
+        List<Area> areas = supplier.get();
         call.response().header("Last-Modified-Millis", String.valueOf(millis));
         return areas;
     }
 
     private JsonResult head(JsonCall call) {
-        locationSupplier.get();
+        supplier.get();
         call.response().header("Last-Modified-Millis", String.valueOf(millis));
         return JsonResult.ok();
     }

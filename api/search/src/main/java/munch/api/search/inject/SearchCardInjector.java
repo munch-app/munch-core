@@ -33,7 +33,6 @@ public final class SearchCardInjector {
      * @param searchRequest SearchRequest
      */
     public void inject(List<SearchCard> cards, SearchRequest searchRequest) {
-        SearchQuery query = searchRequest.getSearchQuery();
         Loader.Request request = new Loader.Request(cards, searchRequest);
 
         List<Loader.Position> negatives = new ArrayList<>();
