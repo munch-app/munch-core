@@ -25,7 +25,7 @@ public class PlaceServiceTest extends AbstractServiceTest {
         RestfulResponse response = result.asResponse(request);
 
         if (result.isOk()) {
-            assertClass(response.getDataNode(), Place.class);
+            assertClass(response.getDataNode().path("place"), Place.class);
         }
     }
 

@@ -6,7 +6,11 @@ import munch.api.ApiService;
 import munch.api.place.basic.BasicCardLoader;
 import munch.api.place.card.PlaceCard;
 import munch.api.place.query.QueryCardLoader;
+import munch.article.clients.ArticleClient;
+import munch.corpus.instagram.InstagramMediaClient;
 import munch.data.client.PlaceClient;
+import munch.data.extended.PlaceAwardClient;
+import munch.data.extended.PlaceMenuClient;
 import munch.data.place.Place;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonResult;
@@ -29,12 +33,22 @@ public class PlaceService extends ApiService {
     private final QueryCardLoader cardLoader;
     private final PlaceCardSorter cardSorter;
 
+    private final ArticleClient articleClient;
+    private final InstagramMediaClient instagramMediaClient;
+    private final PlaceMenuClient placeMenuClient;
+    private final PlaceAwardClient placeAwardClient;
+
     @Inject
-    public PlaceService(PlaceClient placeClient, BasicCardLoader basicReader, QueryCardLoader cardLoader, PlaceCardSorter cardSorter) {
+    public PlaceService(PlaceClient placeClient, BasicCardLoader basicReader, QueryCardLoader cardLoader, PlaceCardSorter cardSorter, ArticleClient articleClient, InstagramMediaClient instagramMediaClient, PlaceMenuClient placeMenuClient, PlaceAwardClient placeAwardClient) {
         this.placeClient = placeClient;
         this.basicReader = basicReader;
         this.cardLoader = cardLoader;
         this.cardSorter = cardSorter;
+
+        this.articleClient = articleClient;
+        this.instagramMediaClient = instagramMediaClient;
+        this.placeMenuClient = placeMenuClient;
+        this.placeAwardClient = placeAwardClient;
     }
 
     /**
@@ -55,8 +69,20 @@ public class PlaceService extends ApiService {
      * @param call json call
      * @return Place or Null
      */
-    private Place get(JsonCall call) {
-        return placeClient.get(call.pathString("placeId"));
+    private JsonResult get(JsonCall call) {
+        String placeId = call.pathString("placeId");
+        Place place = placeClient.get(placeId);
+
+        if (place == null) return JsonResult.notFound();
+        return JsonResult.ok(Map.of(
+                "place", place,
+                "articles", articleClient.list(placeId, null, 10),
+                "instagram", Map.of(
+                        "medias", instagramMediaClient.listByPlace(placeId, null, 10)
+                ),
+                "menus", placeMenuClient.list(placeId, null, 10),
+                "awards", placeAwardClient.list(placeId, null, 10)
+        ));
     }
 
     /**
