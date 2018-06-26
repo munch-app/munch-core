@@ -13,9 +13,7 @@ import munch.restful.server.JsonCall;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -73,13 +71,11 @@ public final class SearchFilterService extends ApiService {
 
         ObjectNode aggsNode = JsonUtils.createObjectNode();
         aggsNode.set("prices", ElasticInput.aggPrices());
-        aggsNode.set("price_range", ElasticInput.aggPriceRange());
 
         JsonNode aggregations = postElasticAggs(queryNode, aggsNode);
 
         FilterPrice filterPrice = new FilterPrice();
         filterPrice.setFrequency(ElasticOutput.parsePriceFrequency(aggregations.path("prices")));
-        filterPrice.setPercentiles(ElasticOutput.parsePriceRanges(aggregations.path("price_range")));
         return filterPrice;
     }
 
@@ -114,15 +110,6 @@ public final class SearchFilterService extends ApiService {
                     .put("field", "price.perPax");
             return priceRange;
         }
-
-        private static JsonNode aggPriceRange() {
-            ObjectNode priceRange = objectMapper.createObjectNode();
-            priceRange.putObject("percentiles")
-                    .put("field", "price.perPax")
-                    .putArray("percents")
-                    .add(0.0).add(40.0).add(70.0).add(100.0);
-            return priceRange;
-        }
     }
 
     private static final class ElasticOutput {
@@ -148,24 +135,6 @@ public final class SearchFilterService extends ApiService {
             }
 
             return frequency;
-        }
-
-        private static List<FilterPrice.Percentile> parsePriceRanges(JsonNode node) {
-            List<FilterPrice.Percentile> percentiles = new ArrayList<>();
-
-            node.path("values").fields().forEachRemaining(entry -> {
-                double key = Double.parseDouble(entry.getKey());
-                double price = entry.getValue().asDouble();
-
-                if (!Double.isNaN(price)) {
-                    FilterPrice.Percentile percentile = new FilterPrice.Percentile();
-                    percentile.setPercent(key);
-                    percentile.setPrice(price);
-                    percentiles.add(percentile);
-                }
-
-            });
-            return percentiles;
         }
     }
 }

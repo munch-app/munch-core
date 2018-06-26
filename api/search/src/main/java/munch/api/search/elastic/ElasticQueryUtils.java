@@ -150,7 +150,7 @@ public final class ElasticQueryUtils {
         ObjectNode rangeFilter = mapper.createObjectNode();
         // Open/Close time intersects
         rangeFilter.putObject("range")
-                .putObject("hour." + hour.getDay() + ".open_close")
+                .putObject("hour." + hour.getDay().toLowerCase() + ".open_close")
                 .put("relation", "intersects")
                 .put("gte", ElasticQueryUtils.timeAsInt(hour.getOpen()))
                 .put("lte", ElasticQueryUtils.timeAsInt(hour.getClose()));

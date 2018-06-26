@@ -27,7 +27,7 @@ public final class UserPlaceActivityService extends ApiService {
 
     @Override
     public void route() {
-        PATH("/users/place/activities", () -> {
+        PATH("/users/places/activities", () -> {
             PUT("/:placeId/:startedMillis", this::put);
         });
     }

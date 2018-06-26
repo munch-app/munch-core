@@ -30,7 +30,7 @@ public final class UserPlaceCollectionService extends ApiService {
 
     @Override
     public void route() {
-        PATH("/users/place/collections", () -> {
+        PATH("/users/places/collections", () -> {
             GET("", this::list);
             GET("/:collectionId", this::get);
 
