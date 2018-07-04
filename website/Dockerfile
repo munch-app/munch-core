@@ -17,6 +17,7 @@ RUN npm run build
 
 ENV HOST 0.0.0.0
 ENV NODE_ENV production
+ENV API_URL_BROWSER https://www.munch.app/
 EXPOSE 3000
 
 # start command

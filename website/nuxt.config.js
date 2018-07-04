@@ -44,9 +44,17 @@ module.exports = {
     'bootstrap-vue/nuxt',
     ['@nuxtjs/google-analytics', {
       id: 'UA-117480436-1'
-    }]
+    }],
+    '@nuxtjs/axios',
   ],
+  axios: {
+    // proxyHeaders: false
+  },
   serverMiddleware: [
-    {path: '/_health', handler: '~/service/health.js'},
+    {
+      path: '/_health', handler: function (req, res, next) {
+        res.end('ok')
+      }
+    }
   ]
 };
