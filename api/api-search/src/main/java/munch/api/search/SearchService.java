@@ -79,11 +79,10 @@ public final class SearchService extends ApiService {
             if (userId == null) return;
 
             try {
-                UserSearchHistory history = new UserSearchHistory();
-                history.setSearchQuery(JsonUtils.toTree(searchRequest.getSearchQuery()));
-                historyClient.put(userId, System.currentTimeMillis(), history);
+                UserSearchHistory history = UserSearchHistory.from(userId, System.currentTimeMillis(), searchRequest.getSearchQuery());
+                historyClient.put(history.getUserId(), history.getCreatedMillis(), history);
             } catch (Exception e) {
-                logger.warn("Failed to persist SearchHistory userId: {}, history: {}", userId, searchRequest.getSearchQuery());
+                logger.warn("Failed to persist SearchHistory userId: {}, history: {}", userId, searchRequest.getSearchQuery(), e);
             }
         });
         return searchRequestDelegator.delegate(searchRequest);
