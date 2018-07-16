@@ -3,6 +3,7 @@ package munch.api.user;
 import munch.api.ApiService;
 import munch.restful.core.NextNodeList;
 import munch.restful.core.exception.CodeException;
+import munch.restful.core.exception.ForbiddenException;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonResult;
 import munch.user.client.UserPlaceCollectionClient;
@@ -70,6 +71,7 @@ public final class UserPlaceCollectionService extends ApiService {
         String userId = getUserId(call);
 
         UserPlaceCollection collection = call.bodyAsObject(UserPlaceCollection.class);
+        collection.setCreatedBy(UserPlaceCollection.CreatedBy.User);
         collection.setUserId(userId);
 
         return collectionClient.post(collection);
@@ -79,8 +81,7 @@ public final class UserPlaceCollectionService extends ApiService {
         String userId = getUserId(call);
         String collectionId = call.pathString("collectionId");
 
-        UserPlaceCollection collection = collectionClient.get(collectionId);
-        validateUser(collection, userId);
+        requiredUserValidation(collectionClient.get(collectionId), userId);
 
         return collectionClient.patch(collectionId, call.bodyAsJson());
     }
@@ -89,8 +90,7 @@ public final class UserPlaceCollectionService extends ApiService {
         String userId = getUserId(call);
         String collectionId = call.pathString("collectionId");
 
-        UserPlaceCollection collection = collectionClient.get(collectionId);
-        validateUser(collection, userId);
+        requiredUserValidation(collectionClient.get(collectionId), userId);
 
         return collectionClient.delete(collectionId);
     }
@@ -112,8 +112,7 @@ public final class UserPlaceCollectionService extends ApiService {
         String collectionId = call.pathString("collectionId");
         String placeId = call.pathString("placeId");
 
-        UserPlaceCollection collection = collectionClient.get(collectionId);
-        validateUser(collection, userId);
+        requiredUserValidation(collectionClient.get(collectionId), userId);
 
         UserPlaceCollection.Item item = collectionClient.getItem(collectionId, placeId);
         if (item != null) {
@@ -129,22 +128,26 @@ public final class UserPlaceCollectionService extends ApiService {
         String collectionId = call.pathString("collectionId");
         String placeId = call.pathString("placeId");
 
-        UserPlaceCollection collection = collectionClient.get(collectionId);
-        validateUser(collection, userId);
+        requiredUserValidation(collectionClient.get(collectionId), userId);
 
         return collectionClient.deleteItem(collectionId, placeId);
     }
 
-    private static void validateUser(UserPlaceCollection collection, String userId) {
+    private static UserPlaceCollection requiredUserValidation(UserPlaceCollection collection, String userId) {
         if (collection == null) throw new CodeException(404);
         if (!collection.getUserId().equals(userId)) throw new CodeException(503);
+
+        if (collection.getCreatedBy() != UserPlaceCollection.CreatedBy.User) {
+            throw new ForbiddenException("createdBy = User prevent you from updating Collection.");
+        }
+        return collection;
     }
 
     private static UserPlaceCollection reduceCollection(UserPlaceCollection collection, @Nullable String userId) {
         if (collection == null) return null;
         if (collection.getUserId().equals(userId)) return collection;
 
-        if (collection.getVisibility() == UserPlaceCollection.Visibility.anyone) return collection;
+        if (collection.getAccess() == UserPlaceCollection.Access.Public) return collection;
         return null;
     }
 }

@@ -30,7 +30,7 @@ project('api-core') {
 
         // Core Clients
         compile group: 'munch-data', name: 'client', version: '4.7'
-        compile group: 'munch-user', name: 'client', version: '1.11'
+        compile group: 'munch-user', name: 'client', version: '1.12'
 
         testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: jUnitVersion
         testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: jUnitVersion
