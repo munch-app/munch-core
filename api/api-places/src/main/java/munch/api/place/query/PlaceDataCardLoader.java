@@ -6,8 +6,8 @@ import munch.api.place.card.PlaceJsonCard;
 import munch.data.extended.ExtendedData;
 import munch.data.extended.ExtendedDataClient;
 import munch.data.place.Place;
-import munch.restful.client.dynamodb.NextNodeList;
 import munch.restful.core.JsonUtils;
+import munch.restful.core.NextNodeList;
 
 import java.util.List;
 import java.util.Map;

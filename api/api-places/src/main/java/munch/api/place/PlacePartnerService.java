@@ -6,7 +6,7 @@ import munch.article.clients.Article;
 import munch.article.clients.ArticleClient;
 import munch.corpus.instagram.InstagramMedia;
 import munch.corpus.instagram.InstagramMediaClient;
-import munch.restful.client.dynamodb.NextNodeList;
+import munch.restful.core.NextNodeList;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonResult;
 

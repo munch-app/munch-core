@@ -76,7 +76,6 @@ public final class SearchService extends ApiService {
         // Save UserSearchHistory
         CompletableFuture.runAsync(() -> {
             String userId = searchRequest.getUserId();
-            logger.info("Saving search history: {}", userId);
             if (userId == null) return;
 
             try {

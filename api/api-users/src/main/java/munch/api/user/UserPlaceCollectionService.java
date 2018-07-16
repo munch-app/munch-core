@@ -1,7 +1,7 @@
 package munch.api.user;
 
 import munch.api.ApiService;
-import munch.restful.client.dynamodb.NextNodeList;
+import munch.restful.core.NextNodeList;
 import munch.restful.core.exception.CodeException;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonResult;
