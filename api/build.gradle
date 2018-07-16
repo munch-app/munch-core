@@ -1,45 +1,92 @@
+configure(subprojects.findAll { !it.name.matches("api-core") }) {
+    dependencies {
+        compile project(':api:api-core')
+        testCompile project(':api:api-core').sourceSets.test.output
+        testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: jUnitVersion
+        testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: jUnitVersion
+    }
+}
+
 dependencies {
     compile group: 'com.amazonaws', name: 'aws-java-sdk-ssm', version: awsVersion
 
-    compile project(':api:users')
-    compile project(':api:places')
-    compile project(':api:search')
+    compile project(':api:api-core')
+    compile project(':api:api-users')
+    compile project(':api:api-places')
+    compile project(':api:api-search')
 }
 
-configure(subprojects.findAll { !it.name.matches("core") }) {
-    dependencies {
-        compile project(':api:core')
 
-        testCompile project(':api:core').sourceSets.test.output
+project('api-core') {
+    dependencies {
+        // Frameworks & Tools
+        compile group: 'com.google.inject', name: 'guice', version: guiceVersion
+
+        // Munch Restful
+        compile group: 'munch.restful', name: 'restful-client', version: restfulVersion
+        compile group: 'munch.restful', name: 'restful-server', version: restfulVersion
+        compile group: 'munch.restful', name: 'restful-server-jwt', version: restfulVersion
+        compile group: 'munch.restful', name: 'restful-server-firebase', version: restfulVersion
+
+        // Core Clients
+        compile group: 'munch-data', name: 'client', version: '4.5'
+        compile group: 'munch-user', name: 'client', version: '1.8'
+
         testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: jUnitVersion
         testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: jUnitVersion
+    }
+}
+
+project('api-places') {
+    dependencies {
+        compile group: 'facebook-corpus', name: 'instagram-client', version: '2.1.0-SNAPSHOT'
+        compile group: 'munch.article', name: 'client-article', version: '1.2.0-SNAPSHOT'
+
+        compile group: 'munch.data', name: 'data-utils', version: dataVersion
+        compile group: 'munch.data', name: 'data-client', version: dataVersion
+    }
+}
+
+project('api-search') {
+    dependencies {
+        compile group: 'facebook-corpus', name: 'instagram-client', version: '2.1.0-SNAPSHOT'
+
+        compile group: 'munch.data', name: 'data-utils', version: dataVersion
+    }
+}
+
+project('api-users') {
+    dependencies {
+        compile group: 'munch-notification', name: 'client', version: '1.4'
     }
 }
 
 apply plugin: 'application'
 apply plugin: 'com.bmuschko.docker-java-application'
 
-mainClassName = 'munch.api.ApiModule'
+ext.dockerTag = dockerRegistryUrl + rootProject.name + '/' + project.name + ':'
 
-ext.dockerTag = 'munch-core/api:' + rootProject.version
-ext.dockerHost = '197547471367.dkr.ecr.ap-southeast-1.amazonaws.com/' + dockerTag
+mainClassName = 'munch.api.ApiModule'
 
 docker {
     javaApplication {
         baseImage = 'openjdk:9-jdk-slim'
         maintainer = 'Fuxing'
         ports = [8000]
-        tag = dockerTag
+        tag = dockerTag + version
     }
 }
 
-task publishDocker {
+task buildImage {
     dependsOn 'clean'
     dependsOn 'dockerBuildImage'
     tasks.findByName('dockerBuildImage').mustRunAfter 'clean'
+}
+
+task publishDockerApi {
+    dependsOn 'buildImage'
 
     doLast {
-        exec { commandLine "docker", "tag", dockerTag, dockerHost }
-        exec { commandLine "docker", "push", dockerHost }
+        exec { commandLine "docker", "push", dockerTag + version }
     }
 }
