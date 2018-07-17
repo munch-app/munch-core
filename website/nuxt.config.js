@@ -18,6 +18,16 @@ module.exports = {
       {rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Open+Sans|Roboto'}
     ]
   },
+  css: [
+    '~/assets/global.less'
+  ],
+  render: {
+    bundleRenderer: {
+      shouldPreload: (file, type) => {
+        return ['script', 'style', 'font'].includes(type)
+      }
+    }
+  },
   /*
   ** Customize the progress bar color
   */
@@ -60,12 +70,14 @@ module.exports = {
   ],
   axios: {
     // proxyHeaders: false
+
   },
   serverMiddleware: [
     {
       path: '/_health', handler: function (req, res, next) {
         res.end('ok')
       }
-    }
+    },
+    '~/server/index.js'
   ]
 };

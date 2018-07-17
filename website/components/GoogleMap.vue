@@ -53,7 +53,7 @@
 
 </script>
 
-<style scoped>
+<style scoped lang="less">
   .google-map {
     width: 1170px;
     height: 223px;

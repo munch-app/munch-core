@@ -18,8 +18,5 @@
   }
 </script>
 
-<style>
-  body {
-    font-family: 'Open Sans', sans-serif;
-  }
+<style lang="less">
 </style>
