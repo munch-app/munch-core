@@ -28,6 +28,7 @@
   }
   Vue.use(VueGoogleMaps, {
     load: {
+      // TODO: Replace with correct key
       key: 'AIzaSyBG09Xl-gyy4sIOLF8vPqWwBFy1Zi-nHA0',
       libraries: 'places', // This is required if you use the Autocomplete plugin
       // OR: libraries: 'places,drawing'

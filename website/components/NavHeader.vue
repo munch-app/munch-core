@@ -1,57 +1,57 @@
 <template>
-  <b-navbar toggleable="md" variant="light">
-    <div class="container">
+  <div class="NavHeader NavBg Elevation1">
+    <b-container class="Row">
+      <a href="/"><img class="MunchLogo" src="/img/MunchLogo32.svg"></a>
 
-      <b-navbar-brand>
-        <img class="MunchLogo" src="/img/logo-placeholder.png"  href="/">
-        <input type="text" class="search-bar" placeholder="Search e.g. Italian in Marina Bay">
-        <img class="face-160-x-160" src="/img/profile-placeholder.png">
-      </b-navbar-brand>
-
-      <b-collapse is-nav id="nav_collapse">
-
-        <!-- Right aligned nav items -->
-        <b-navbar-nav class="ml-auto">
-
-
-        </b-navbar-nav>
-      </b-collapse>
-    </div>
-  </b-navbar>
+      <input class="SearchBar Elevation1 Border24" type="text" placeholder="Search e.g. Italian in Marina Bay">
+    </b-container>
+  </div>
 </template>
 
-<style>
+<style lang="less" scoped>
+  .NavHeader {
+    height: 64px;
 
-  .container{
-    color: rgba(0,0,0,0.6);
+    .Row {
+      display: flex;
+      flex-direction: row;
+    }
   }
 
   .MunchLogo {
-    position: absolute;
-    left: 24px;
-    top: 17px;
+    margin-top: 16px;
+    margin-bottom: 16px;
     height: 32px;
     width: 32px;
   }
 
-  .search-bar {
-    position: absolute;
-    left: 80px;
-    height: 32px;
-    width: 360px;
-    background-color: #FFFFFF;
-    box-shadow: inset 0 1px 1px 0 rgba(0,0,0,0.5), 0 1px 2px 0 rgba(0,0,0,0.5);
-    color: rgba(0,0,0,0.6);
-    font-family: "Open Sans";
+  .SearchBar {
+    margin-top: 16px;
+    margin-bottom: 16px;
     font-size: 13px;
-    line-height: 18px;
+    background-color: #FFFFFF;
+    height: 32px;
+    margin-left: 24px;
+    color: rgba(0, 0, 0, 0.6);
+
+    border: none transparent;
+    padding: 7px 12px;
+
+    &:focus {
+      outline: none;
+    }
   }
 
-  .face-160-x-160 {
-    position: absolute;
-    right: 24px;
-    top:16px;
-    height: 32px;
-    width: 32px;
+  @media only screen and (max-width: 499.8px) {
+    .SearchBar {
+      flex-grow: 2;
+      margin-right: 24px;
+    }
+  }
+
+  @media only screen and (min-width: 500px) {
+    .SearchBar {
+      width: 360px;
+    }
   }
 </style>

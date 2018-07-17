@@ -1,27 +1,43 @@
 <template>
-  <b-container>
-    <google-map/>
-    <b-row class="justify-content-md-center">
-      <p class="partner-s-content">PARTNER'S CONTENT</p>
-    </b-row>
-    <b-row>
-      <b-col>
-        <p class="title">ARTICLES</p>
-      </b-col>
-    </b-row>
-    <b-row>
-      <article-row :articles="data.articles"></article-row>
-    </b-row>
-    <b-row>
-      <b-col>
-        <p class="title">INSTAGRAM</p>
-      </b-col>
-    </b-row>
-    <b-row>
-      <image-row :images="data.place.images"></image-row>
-    </b-row>
-
-  </b-container>
+  <div>
+    <section class="Info">
+      <b-container>
+        <b-row>
+          <b-col cols="5">
+            <h2>{{data.place.name}}</h2>
+          </b-col>
+          <b-col cols="7">
+            <p>Image</p>
+          </b-col>
+        </b-row>
+      </b-container>
+    </section>
+    <section class="Detail">
+      <b-container>
+        <b-row>
+          <b-col>
+            <h4>About</h4>
+            <p>{{data.place.description}}</p>
+          </b-col>
+          <b-col>
+            <h4>Menu</h4>
+          </b-col>
+        </b-row>
+      </b-container>
+    </section>
+    <section class="Map"></section>
+    <h3 class="text-center">PARTNER’S CONTENT</h3>
+    <section class="Article">
+      <b-container>
+        <h4>Articles</h4>
+      </b-container>
+    </section>
+    <section class="Instagram">
+      <b-container>
+        <h4>Instagram</h4>
+      </b-container>
+    </section>
+  </div>
 </template>
 
 <script>
@@ -48,6 +64,6 @@
 </script>
 
 
-<style lang="less">
+<style lang="less" scoped>
 
 </style>
