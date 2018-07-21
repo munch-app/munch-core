@@ -1,4 +1,3 @@
 User-Agent: *
 
 Disallow: /_health/
-Disallow: /places/
