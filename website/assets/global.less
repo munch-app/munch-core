@@ -29,6 +29,13 @@ html {
   font-family: 'Open Sans', 'Roboto', sans-serif;
 }
 
+a {
+  color: black;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
 .Heading {
   font-family: 'Open Sans', 'Roboto', sans-serif;
   font-weight: 600;
@@ -74,11 +81,16 @@ h4:extend(.Heading4) {
 .Large:extend(.Text) {
   font-size: 19px;
   line-height: 26px;
+  font-weight: 600;
 }
 
 .Regular:extend(.Text) {
   font-size: 16px;
   line-height: 22px;
+}
+
+p:extend(.Regular) {
+
 }
 
 .Small:extend(.Text) {
@@ -88,10 +100,24 @@ h4:extend(.Heading4) {
 
 .Border24, .Border3 {
   border-radius: 3px;
+
+  &Top {
+    border-radius: 3px 3px 0 0;
+  }
+  &Bottom {
+    border-radius: 0 0 3px 3px;
+  }
 }
 
 .Border48, .Border4 {
   border-radius: 4px;
+
+  &Top {
+    border-radius: 4px 4px 0 0;
+  }
+  &Bottom {
+    border-radius: 0 0 4px 4px;
+  }
 }
 
 .Elevation1 {
@@ -274,7 +300,7 @@ p.Secondary900, h1.Secondary900, h2.Secondary900, h3.Secondary900, h4.Secondary9
   background-color: @Nav;
 }
 
-p.Open, h1.Open, h2.Open, h3.Open, h4.Open, h5.Open, h6.Open {
+p.Open, h1.Open, h2.Open, h3.Open, h4.Open, h5.Open, h6.Open, div.Open {
   color: @Open;
 }
 
@@ -282,7 +308,7 @@ p.Open, h1.Open, h2.Open, h3.Open, h4.Open, h5.Open, h6.Open {
   background-color: @Open;
 }
 
-p.Close, h1.Close, h2.Close, h3.Close, h4.Close, h5.Close, h6.Close {
+p.Close, h1.Close, h2.Close, h3.Close, h4.Close, h5.Close, h6.Close, div.Close {
   color: @Close;
 }
 

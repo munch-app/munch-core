@@ -1,16 +1,32 @@
 ext.dockerTag = dockerRegistryUrl + rootProject.name + '/' + project.name + ':'
 
 task buildImage {
-    doLast {
-        exec { commandLine "docker", "build", "-t", dockerTag + version, '.' }
-        exec { commandLine "docker", "tag", dockerTag + version, dockerTag + dockerRegistryVersion }
-    }
+  doLast {
+    exec { commandLine "docker", "build", "-t", dockerTag + version, '.' }
+    exec { commandLine "docker", "tag", dockerTag + version, dockerTag + dockerRegistryVersion }
+  }
 }
-task publishDockerWebsite {
-    dependsOn 'buildImage'
 
-    doLast {
-        exec { commandLine "docker", "push", dockerTag + version }
-        exec { commandLine "docker", "push", dockerTag + dockerRegistryVersion }
+task publishProduction {
+  doLast {
+    exec {
+      commandLine "docker", "build",
+        "--build-arg", "deployment=production",
+        "--build-arg", "url=https://www.munch.app/",
+        "-t", dockerTag + 'staging', '.'
     }
+    exec { commandLine "docker", "push", dockerTag + 'production' }
+  }
+}
+
+task publishStaging {
+  doLast {
+    exec {
+      commandLine "docker", "build",
+        "--build-arg", "deployment=staging",
+        "--build-arg", "url=https://staging.munch.app/",
+        "-t", dockerTag + 'staging', '.'
+    }
+    exec { commandLine "docker", "push", dockerTag + 'staging' }
+  }
 }

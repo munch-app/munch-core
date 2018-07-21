@@ -1,16 +1,34 @@
 <template>
   <div class="NavHeader NavBg Elevation1">
     <b-container class="Row">
-      <a href="/"><img class="MunchLogo" src="/img/MunchLogo32.svg"></a>
-
-      <input class="SearchBar Elevation1 Border24" type="text" placeholder="Search e.g. Italian in Marina Bay">
+      <a href="/"><img class="MunchLogo" src="/img/MunchLogo.svg"></a>
+      <search-bar v-if="searchEnabled" class="SearchTextBar"/>
     </b-container>
   </div>
 </template>
 
+<script>
+  import SearchBar from "./SearchBar";
+
+  export default {
+    components: {SearchBar},
+    props: {
+      searchEnabled: {
+        required: false,
+        type: Boolean,
+        default() {
+          return true
+        }
+      }
+    }
+  }
+</script>
+
+
 <style lang="less" scoped>
   .NavHeader {
     height: 64px;
+    z-index: 1000;
 
     .Row {
       display: flex;
@@ -25,33 +43,22 @@
     width: 32px;
   }
 
-  .SearchBar {
+  .SearchTextBar {
     margin-top: 16px;
     margin-bottom: 16px;
-    font-size: 13px;
-    background-color: #FFFFFF;
-    height: 32px;
     margin-left: 24px;
-    color: rgba(0, 0, 0, 0.6);
-
-    border: none transparent;
-    padding: 7px 12px;
-
-    &:focus {
-      outline: none;
-    }
   }
 
-  @media only screen and (max-width: 499.8px) {
-    .SearchBar {
+  @media only screen and (max-width: 600px) {
+    .SearchTextBar {
       flex-grow: 2;
       margin-right: 24px;
     }
   }
 
-  @media only screen and (min-width: 500px) {
-    .SearchBar {
-      width: 360px;
+  @media only screen and (min-width: 600px) {
+    .SearchTextBar {
+      width: 480px;
     }
   }
 </style>
