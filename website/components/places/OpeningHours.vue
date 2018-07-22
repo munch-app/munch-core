@@ -78,6 +78,7 @@
         case 6:
           return Day.sat
         case 7:
+        case 0:
           return Day.sun
         default:
           return Day.other

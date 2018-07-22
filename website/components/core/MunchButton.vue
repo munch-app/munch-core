@@ -1,5 +1,5 @@
 <template>
-  <button class="Button Elevation1 Border48" :class="[variant.toLowerCase(), size.toLowerCase()]">
+  <button class="Button Elevation1 Border48" :class="[variant.toLowerCase(), size.toLowerCase()]" @click="$emit('click')">
     <div class="Body">
       <div class="Text">{{text}}</div>
       <simple-svg v-if="icon" class="Icon" :fill="fillColor" :filepath="icon"/>
@@ -54,6 +54,10 @@
   .Button {
     border: 0;
 
+    &:hover {
+      cursor: pointer;
+    }
+
     .Text {
       margin: 0;
       float: left;
@@ -92,7 +96,7 @@
 
     &.small {
       font-size: 12px;
-      padding: 6px 12px;
+      padding: 6px 16px;
     }
 
     &.medium {

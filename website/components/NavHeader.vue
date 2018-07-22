@@ -8,7 +8,7 @@
 </template>
 
 <script>
-  import SearchBar from "./SearchBar";
+  import SearchBar from "./search/SearchBar";
 
   export default {
     components: {SearchBar},
@@ -16,9 +16,7 @@
       searchEnabled: {
         required: false,
         type: Boolean,
-        default() {
-          return true
-        }
+        default: true
       }
     }
   }
