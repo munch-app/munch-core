@@ -1,8 +1,6 @@
 <template>
   <a class="ArticleCard Elevation1 Border48" :href="article.url" target="_blank" rel="nofollow">
-    <image-size class="Image" :size-urls="article.thumbnail" background>
-      <div class="Container"></div>
-    </image-size>
+    <image-size class="Image Border48Top BorderImage" :image="article.thumbnail"/>
 
     <div class="Content">
       <p class="Title Large" v-line-clamp="{lines: 2, text: article.title}"></p>
@@ -29,10 +27,8 @@
     }
 
     .Image {
-      .Container {
-        width: 100%;
-        padding-top: 60%;
-      }
+      width: 100%;
+      padding-top: 60%;
     }
 
     .Content {

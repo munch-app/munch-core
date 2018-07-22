@@ -1,10 +1,8 @@
 <template>
-  <a class="InstagramMediaCard" :href="'https://instagram.com/' + media.username" target="_blank" rel="nofollow">
-    <image-size class="Elevation1 Border48" :size-urls="media.images" background>
+  <a class="InstagramMediaCard" :href="href" target="_blank" rel="nofollow">
+    <image-size class="Image Elevation1 Border48 BorderImage" :image="media.images">
       <div class="Container">
-        <div class="Content">
-          <div class="Small SourceButton Border24 Elevation1">@{{media.username}}</div>
-        </div>
+        <div class="Small SourceButton Border24 Elevation1">@{{media.username}}</div>
       </div>
     </image-size>
   </a>
@@ -15,33 +13,51 @@
 
   export default {
     name: "InstagramMediaCard",
-    props: ['media'],
-    components: {ImageSize}
+    components: {ImageSize},
+    props: {
+      media: {
+        required: true,
+        type: Object
+      }
+    },
+    computed: {
+      href() {
+        return 'https://instagram.com/' + this.media.username
+      }
+    }
   }
 </script>
 
 <style scoped lang="less">
   .InstagramMediaCard {
-    .Container {
-      width: 100%;
-      padding-bottom: 100%;
+    &:hover {
+      cursor: pointer;
     }
 
-    .Content {
-      position: absolute;
+    .Image {
       width: 100%;
-      height: 100%;
+      padding-top: 100%;
+
+      position: relative;
+    }
+
+    .Container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
 
       display: flex;
-      justify-content: flex-start;
+      justify-content: flex-end;
       align-items: flex-end;
+    }
 
-      .SourceButton {
-        background-color: rgba(255, 255, 255, 0.75);
-        padding: 6px 10px;
-        margin-left: 8px;
-        margin-bottom: 8px;
-      }
+    .SourceButton {
+      background-color: rgba(255, 255, 255, 0.75);
+      padding: 6px 10px;
+      margin-right: 8px;
+      margin-bottom: 8px;
     }
   }
 </style>

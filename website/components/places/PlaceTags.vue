@@ -10,8 +10,15 @@
   export default {
     name: "PlaceTags",
     props: {
-      tags: Array,
-      max: Number,
+      tags: {
+        required: true,
+        type: Array
+      },
+      max: {
+        required: false,
+        type: Number,
+        default: () => 5
+      },
     },
     computed: {
       tagMax() {

@@ -101,22 +101,58 @@ p:extend(.Regular) {
 .Border24, .Border3 {
   border-radius: 3px;
 
+  &.BorderImage {
+    img {
+      border-radius: 3px;
+    }
+  }
+
   &Top {
     border-radius: 3px 3px 0 0;
+
+    &.BorderImage {
+      img {
+        border-radius: 3px 3px 0 0;
+      }
+    }
   }
   &Bottom {
     border-radius: 0 0 3px 3px;
+
+    &.BorderImage {
+      img {
+        border-radius: 0 0 3px 3px;
+      }
+    }
   }
 }
 
 .Border48, .Border4 {
   border-radius: 4px;
 
+  &.BorderImage {
+    img {
+      border-radius: 4px;
+    }
+  }
+
   &Top {
     border-radius: 4px 4px 0 0;
+
+    &.BorderImage {
+      img {
+        border-radius: 4px 4px 0 0;
+      }
+    }
   }
   &Bottom {
     border-radius: 0 0 4px 4px;
+
+    &.BorderImage {
+      img {
+        border-radius: 0 0 4px 4px;
+      }
+    }
   }
 }
 

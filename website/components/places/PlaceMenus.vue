@@ -3,10 +3,10 @@
     <b-row>
       <b-col cols="4" v-for="data in list" :key="data.key">
         <a :href="data.href" target="_blank" rel="nofollow">
-          <div v-if="data.key === 'url'" class="Elevation1 Web Border48">
+          <div v-if="data.key === 'url'" class="Elevation1 Web Border48 BorderImage">
             <img src="/img/places/web_page.svg">
           </div>
-          <image-size v-else class="Elevation1 Image" :size-urls="data.image" background>
+          <image-size v-else class="Elevation1 Image Border48 BorderImage" :image="data.image">
             <div class="Container">
               <div v-if="data.source" class="Small SourceButton Border24 Elevation1">{{data.source}}</div>
             </div>
@@ -70,17 +70,19 @@
     }
 
     .Image {
-      .Container {
-        display: flex;
-        width: 100%;
-        padding-top: 100%;
+      position: relative;
+      width: 100%;
+      padding-top: 100%;
 
+      .Container {
+        position: absolute;
+
+        display: flex;
         justify-content: flex-end;
         align-items: flex-end;
       }
 
       .SourceButton {
-        display: inline;
         background-color: rgba(255, 255, 255, 0.75);
         padding: 6px 10px;
         margin-right: 8px;

@@ -1,9 +1,7 @@
 <template>
-  <div>
-    <div v-if="background" :style="backgroundStyle">
-      <slot></slot>
-    </div>
-    <b-img v-else :style="imageStyle" center fluid-grow :src="url" :alt="alt"/>
+  <div class="ImageSize">
+    <slot class="Container"></slot>
+    <b-img class="Image" center fluid-grow :src="url" :alt="alt"/>
   </div>
 </template>
 
@@ -11,36 +9,42 @@
   export default {
     name: "ImageSize",
     props: {
-      background: Boolean,
-      min: Number,
-      max: Number,
-      height: Number,
+      min: {
+        require: false,
+        type: Number,
+        default: () => 600
+      },
+      max: {
+        require: false,
+        type: Number,
+        default: () => 800
+      },
       alt: String,
-      image: Object,
-      sizeUrls: Object
-
+      image: Object
     },
     computed: {
       sizes() {
-        if (this.image && this.image) {
+        if (this.image && this.image.sizes && Array.isArray(this.image.sizes)) {
           return this.image.sizes
-        } else if (this.sizeUrls) {
+        }
+
+        if (this.image) {
           let sizes = []
-          for (const size in this.sizeUrls) {
-            if (this.sizeUrls.hasOwnProperty(size)) {
+          for (const size in this.image) {
+            if (this.image.hasOwnProperty(size)) {
               let wh = size.split('x')
-              sizes.push({width: parseInt(wh[0]), height: parseInt(wh[1]), url: this.sizeUrls[size]})
+              sizes.push({width: parseInt(wh[0]), height: parseInt(wh[1]), url: this.image[size]})
             }
           }
           return sizes
-        } else {
-          return []
         }
+
+        return []
       },
 
       url() {
-        const min = parseInt(this.min) || 600
-        const max = parseInt(this.max) || 800
+        const min = this.min
+        const max = this.max
         const sizes = this.sizes
 
         let maxUrl = ''
@@ -60,22 +64,35 @@
         }
 
         return maxUrl
-      },
-      imageStyle() {
-        return {
-          'object-fit': 'cover',
-          'height': this.height + 'px'
-        }
-      },
-      backgroundStyle() {
-        return {
-          'background': 'url("' + this.url + '") no-repeat center center',
-          'background-size': 'cover'
-        }
       }
     }
   }
 </script>
 
 <style scoped lang="less">
+  .ImageSize {
+    position: relative;
+    background-color: transparent;
+
+    .Container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 0;
+    }
+
+    .Image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: -1;
+
+      height: 100%;
+      object-fit: cover;
+    }
+  }
 </style>

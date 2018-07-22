@@ -260,6 +260,7 @@
         margin-bottom: 15px;
       }
     }
+
     .Instagram {
       margin: 48px 0;
 

@@ -1,6 +1,6 @@
 <template>
   <div class="PlaceImages">
-    <image-size class="Elevation2" :image="current" background>
+    <image-size class="Image Elevation2 Border3 BorderImage" :image="current">
       <div class="Container">
         <div v-if="source" class="Small SourceButton Border24 Elevation1">{{source}}</div>
       </div>
@@ -38,10 +38,19 @@
 
 <style scoped lang="less">
   .PlaceImages {
-    .Container {
-      width: 100%;
-      padding-top: 62.5%;
+    width: 100%;
+    padding-top: 62.5%;
+    position: relative;
 
+    .Image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
+
+    .Container {
       display: flex;
       justify-content: flex-end;
       align-items: flex-end;
