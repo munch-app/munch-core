@@ -5,7 +5,7 @@
       <div class="HourData">
         <div>{{Day.today().text}}:</div>
         <div>{{timeRange}}</div>
-        <div class="CarretDown"><img src="/img/places/carret_down.svg"></div>
+        <div class="CaretDown"><img src="/img/places/caret_down.svg"></div>
       </div>
     </div>
     <div class="HourAll" v-else>
@@ -282,7 +282,7 @@
       margin-right: 8px;
     }
 
-    .CarretDown img {
+    .CaretDown img {
       margin-top: -2px;
       width: 20px;
       height: 20px;

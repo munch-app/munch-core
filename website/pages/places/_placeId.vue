@@ -67,25 +67,14 @@
       <section class="Article" v-if="articles">
         <b-container>
           <h4>Articles</h4>
-
-          <b-row>
-            <b-col class="ArticleCol d-flex align-items-stretch" cols="12" md="4" v-for="article in articles"
-                   :key="article.articleId">
-              <article-card :article="article"/>
-            </b-col>
-          </b-row>
+          <article-collection :place-id="placeId" :articles="articles"/>
         </b-container>
       </section>
 
       <section class="Instagram" v-if="instagramMedias">
         <b-container>
           <h4>Instagram</h4>
-
-          <b-row>
-            <b-col class="InstagramCol" cols="6" md="3" v-for="media in instagramMedias" :key="media.mediaId">
-              <instagram-media-card :media="media"/>
-            </b-col>
-          </b-row>
+          <instagram-media-collection :place-id="placeId" :medias="instagramMedias"/>
         </b-container>
       </section>
     </section>
@@ -104,9 +93,13 @@
   import OpeningHours from "../../components/places/OpeningHours";
   import MunchButton from "../../components/core/MunchButton";
   import PlaceMenus from "../../components/places/PlaceMenus";
+  import InstagramMediaCollection from "../../components/places/InstagramMediaCollection";
+  import ArticleCollection from "../../components/places/ArticleCollection";
 
   export default {
     components: {
+      ArticleCollection,
+      InstagramMediaCollection,
       PlaceMenus, MunchButton, OpeningHours, PlaceImages, ImageSize, PlaceTags, InstagramMediaCard, ArticleCard
     },
     head() {
@@ -128,6 +121,9 @@
         });
     },
     computed: {
+      placeId() {
+        return this.data.place.placeId
+      },
       detailRows() {
         let rows = []
         if (this.data.place.website) rows.push({icon: '/img/places/website.svg', text: this.data.place.website})
@@ -170,12 +166,12 @@
       },
       articles() {
         if (this.data.articles && this.data.articles.length > 0) {
-          return this.data.articles.slice(0, 3)
+          return this.data.articles
         }
       },
       instagramMedias() {
         if (this.data.instagram.medias && this.data.instagram.medias.length > 0) {
-          return this.data.instagram.medias.slice(0, 4)
+          return this.data.instagram.medias
         }
       },
       coordinate() {
@@ -252,22 +248,13 @@
 
   .Partner {
     margin: 48px 0;
+
     .Article {
       margin: 24px 0;
-
-      .ArticleCol {
-        margin-top: 15px;
-        margin-bottom: 15px;
-      }
     }
 
     .Instagram {
       margin: 48px 0;
-
-      .InstagramCol {
-        margin-top: 15px;
-        margin-bottom: 15px;
-      }
     }
   }
 
