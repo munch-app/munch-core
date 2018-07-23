@@ -6,6 +6,20 @@ const service = require('axios').create({
   baseURL: 'https://api.munch.app/v0.12.0'
 });
 
+service.interceptors.response.use(function (response) {
+  return response;
+}, function (error) {
+  let message = error.response &&
+    error.response.data &&
+    error.response.data.meta &&
+    error.response.data.meta.error &&
+    error.response.data.meta.error.message
+  if (message) {
+    return Promise.reject(new Error(message))
+  }
+  return Promise.reject(error);
+});
+
 /**
  * Request:
  * ['task-name-1', 'task-nane-2']

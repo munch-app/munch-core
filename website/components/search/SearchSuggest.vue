@@ -66,7 +66,9 @@
             this.$emit('action')
             break
           case 'assumption':
-            // TODO
+            this.$store.commit('search/update', item.assumption.searchQuery)
+            this.$emit('action')
+            this.$router.push({path: '/search'})
             break
         }
       }

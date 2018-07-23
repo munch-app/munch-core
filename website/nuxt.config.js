@@ -58,6 +58,10 @@ module.exports = {
           }
         })
       }
+
+      if (isDev) {
+        config.devtool = 'eval-source-map'
+      }
     }
   },
   serverMiddleware: [
@@ -74,7 +78,10 @@ module.exports = {
     '@nuxtjs/axios',
     '@nuxtjs/sitemap'
   ],
-  plugins: ['~/plugins/global.js'],
+  plugins: [
+    '~/plugins/axios',
+    '~/plugins/global'
+  ],
   axios: {
     // proxyHeaders: false
   },

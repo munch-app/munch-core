@@ -5,7 +5,7 @@
            :style="style" type="text" :placeholder="placeholder" v-model="text" @keyup="onKeyUp" @focus="onFocus">
     <div class="SearchDropDown Elevation2 Border24Bottom">
       <search-suggest :results="results" v-if="isSuggest" @action="onSuggestAction"/>
-      <search-filter v-if="isFilter"/>
+      <search-filter v-if="isFilter" @action="onFilterAction"/>
     </div>
   </div>
 </template>
@@ -62,7 +62,8 @@
         this.isSuggest = !!(this.text && this.text.length > 0)
         this.isFilter = this.text === ''
         if (e.keyCode === 13) {
-          // TODO select first
+          this.$router.push({path: '/search', query: {query: this.text}})
+          this.onSuggestAction('')
         }
       },
       onFocus() {
@@ -72,6 +73,9 @@
       onSuggestAction(text) {
         this.text = text || ''
         this.isSuggest = this.text !== ''
+      },
+      onFilterAction() {
+        this.isFilter = false
       }
     },
     subscriptions() {

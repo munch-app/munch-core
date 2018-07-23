@@ -93,7 +93,9 @@
         this.selected.amenities = []
       },
       onApply() {
-        // TODO Forward to search.vue
+        this.$store.commit('search/update', this.searchQuery)
+        this.$emit('action')
+        this.$router.push({path: '/search'})
       }
     },
     subscriptions() {

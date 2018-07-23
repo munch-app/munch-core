@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-row>
-      <b-col class="ArticleCol d-flex align-items-stretch" cols="12" md="4" v-for="article in display"
+      <b-col class="ArticleCol d-flex align-items-stretch flex-wrap" cols="12" md="4" v-for="article in display"
              :key="article.articleId">
         <article-card :article="article"/>
       </b-col>
