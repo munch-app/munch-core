@@ -1,57 +1,62 @@
 <template>
-  <b-navbar toggleable="md" variant="light">
-    <div class="container">
-
-      <b-navbar-brand>
-        <img class="MunchLogo" src="/img/logo-placeholder.png"  href="/">
-        <input type="text" class="search-bar" placeholder="Search e.g. Italian in Marina Bay">
-        <img class="face-160-x-160" src="/img/profile-placeholder.png">
-      </b-navbar-brand>
-
-      <b-collapse is-nav id="nav_collapse">
-
-        <!-- Right aligned nav items -->
-        <b-navbar-nav class="ml-auto">
-
-
-        </b-navbar-nav>
-      </b-collapse>
-    </div>
-  </b-navbar>
+  <div class="NavHeader NavBg Elevation1">
+    <b-container class="Row">
+      <a href="/"><img class="MunchLogo" src="/img/MunchLogo.svg"></a>
+      <search-bar v-if="searchEnabled" class="SearchTextBar"/>
+    </b-container>
+  </div>
 </template>
 
-<style>
+<script>
+  import SearchBar from "./search/SearchBar";
 
-  .container{
-    color: rgba(0,0,0,0.6);
+  export default {
+    components: {SearchBar},
+    props: {
+      searchEnabled: {
+        required: false,
+        type: Boolean,
+        default: true
+      }
+    }
+  }
+</script>
+
+
+<style lang="less" scoped>
+  .NavHeader {
+    height: 64px;
+    z-index: 1000;
+
+    .Row {
+      display: flex;
+      flex-direction: row;
+    }
   }
 
   .MunchLogo {
-    position: absolute;
-    left: 24px;
-    top: 17px;
+    margin-top: 16px;
+    margin-bottom: 16px;
     height: 32px;
     width: 32px;
   }
 
-  .search-bar {
-    position: absolute;
-    left: 80px;
-    height: 32px;
-    width: 360px;
-    background-color: #FFFFFF;
-    box-shadow: inset 0 1px 1px 0 rgba(0,0,0,0.5), 0 1px 2px 0 rgba(0,0,0,0.5);
-    color: rgba(0,0,0,0.6);
-    font-family: "Open Sans";
-    font-size: 13px;
-    line-height: 18px;
+  .SearchTextBar {
+    margin-top: 16px;
+    margin-bottom: 16px;
+    margin-left: 24px;
   }
 
-  .face-160-x-160 {
-    position: absolute;
-    right: 24px;
-    top:16px;
-    height: 32px;
-    width: 32px;
+  @media only screen and (max-width: 600px) {
+    .SearchTextBar {
+      flex-grow: 2;
+      margin-right: 24px;
+    }
+  }
+
+  @media only screen and (min-width: 600px) {
+    .SearchTextBar {
+      width: 480px;
+    }
   }
 </style>

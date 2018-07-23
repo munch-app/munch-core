@@ -1,8 +1,8 @@
 <template>
   <div>
-    <nav-header></nav-header>
+    <nav-header class="Header"></nav-header>
     <nuxt/>
-    <nav-bottom></nav-bottom>
+    <nav-bottom class="Bottom"></nav-bottom>
   </div>
 </template>
 
@@ -18,8 +18,12 @@
   }
 </script>
 
-<style>
-  body {
-    font-family: 'Open Sans', sans-serif;
+<style lang="less" scoped>
+  .Header {
+    z-index: 1000;
+  }
+
+  .Bottom {
+    z-index: 1000;
   }
 </style>

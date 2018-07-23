@@ -3,13 +3,12 @@ module.exports = {
   ** Headers of the page
   */
   head: {
-    title: 'Munch - Discover Delicious',
+    title: 'Discover Delicious - Munch',
     meta: [
       {charset: 'utf-8'},
       {name: 'viewport', content: 'width=device-width, initial-scale=1'},
       {
-        hid: 'description',
-        name: 'description',
+        hid: 'description', name: 'description',
         content: 'Munch helps users discover the perfect place to eat whether it’s the hottest new bar in town or a tasty hawker meal in the heartlands. Read the latest food articles and view mouth-watering images. With Munch always be able to discover delicious!'
       }
     ],
@@ -17,6 +16,16 @@ module.exports = {
       {rel: 'icon', type: 'image/x-icon', href: '/favicon.ico'},
       {rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Open+Sans|Roboto'}
     ]
+  },
+  css: [
+    '~/assets/global.less'
+  ],
+  render: {
+    bundleRenderer: {
+      shouldPreload: (file, type) => {
+        return ['script', 'style', 'font'].includes(type)
+      }
+    }
   },
   /*
   ** Customize the progress bar color
@@ -49,23 +58,40 @@ module.exports = {
           }
         })
       }
+
+      if (isDev) {
+        config.devtool = 'eval-source-map'
+      }
     }
   },
+  serverMiddleware: [
+    {
+      path: '/_health', handler: (req, res) => res.end('ok')
+    },
+    '~/server/index.js'
+  ],
   modules: [
     'bootstrap-vue/nuxt',
     ['@nuxtjs/google-analytics', {
       id: 'UA-117480436-1'
     }],
     '@nuxtjs/axios',
+    '@nuxtjs/sitemap'
+  ],
+  plugins: [
+    '~/plugins/axios',
+    '~/plugins/global'
   ],
   axios: {
     // proxyHeaders: false
   },
-  serverMiddleware: [
-    {
-      path: '/_health', handler: function (req, res, next) {
-        res.end('ok')
-      }
-    }
-  ]
+  sitemap: {
+    path: '/sitemap.xml',
+    hostname: 'https://www.munch.app',
+    cacheTime: 1000 * 60 * 15,
+    exclude: [],
+    routes: [
+      '/places/a3e9f12b-5b30-4226-be91-fe4421cfe39f'
+    ]
+  }
 };
