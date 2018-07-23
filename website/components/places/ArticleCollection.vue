@@ -37,13 +37,14 @@
       }
     },
     data() {
+      const max = 3
       return {
-        per: 3,
+        per: max,
         index: 0,
         list: this.articles,
-        display: this.articles.slice(0, 3),
+        display: this.articles.slice(0, max),
         hasLeft: false,
-        hasRight: true
+        hasRight: this.articles.length > max
       }
     },
     computed: {

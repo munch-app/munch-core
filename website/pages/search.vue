@@ -62,6 +62,7 @@
           }
 
           return {
+            cards: [],
             places: places
           };
         })

@@ -37,12 +37,13 @@
       }
     },
     data() {
+      const max = 4
       return {
-        per: 4,
+        per: max,
         index: 0,
         list: this.medias,
-        display: this.medias.slice(0, 4),hasLeft: false,
-        hasRight: true
+        display: this.medias.slice(0, max),hasLeft: false,
+        hasRight: this.medias.length > max
       }
     },
     computed: {
