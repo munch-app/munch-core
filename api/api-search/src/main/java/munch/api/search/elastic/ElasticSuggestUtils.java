@@ -40,6 +40,11 @@ public final class ElasticSuggestUtils {
                     .putObject("context")
                     .put("lat", lat)
                     .put("lon", lng);
+
+            ArrayNode dataTypeArray = contexts.putArray("dataType");
+            dataTypeArray.add("Place");
+            dataTypeArray.add("Area");
+            dataTypeArray.add("Tag");
         }
         ObjectNode root = JsonUtils.createObjectNode();
         root.putObject("suggest")

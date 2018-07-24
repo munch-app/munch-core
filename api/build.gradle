@@ -83,7 +83,7 @@ task buildImage {
     tasks.findByName('dockerBuildImage').mustRunAfter 'clean'
 }
 
-task publishDockerApi {
+task publishApi {
     dependsOn 'buildImage'
 
     doLast {
