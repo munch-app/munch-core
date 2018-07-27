@@ -83,7 +83,7 @@
         results: this.$watchAsObservable('text').pipe(
           pluck('newValue'),
           filter(text => text.length > 2),
-          debounceTime(500),
+          debounceTime(250),
           distinctUntilChanged(),
           switchMap((text) => {
             return this.$axios.$post('/api/search/suggest', {

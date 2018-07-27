@@ -103,7 +103,7 @@
 
       return {
         count: this.click$.pipe(
-          debounceTime(500),
+          debounceTime(250),
           switchMap(() => {
             return this.$axios.$post('/api/search/filter/count', this.searchQuery, {progress: false})
           }),
