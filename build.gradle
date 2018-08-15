@@ -14,8 +14,6 @@ allprojects {
     ext.awsVersion = '1.11.367'
 
     ext.restfulVersion = '2.4.10'
-    ext.ccVersion = '2.5.0-SNAPSHOT'
-    ext.dataVersion = '3.0.0-SNAPSHOT'
 
     sourceCompatibility = 1.9
     targetCompatibility = 1.9

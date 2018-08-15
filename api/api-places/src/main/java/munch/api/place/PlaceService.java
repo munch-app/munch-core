@@ -9,8 +9,6 @@ import munch.api.place.query.QueryCardLoader;
 import munch.article.clients.ArticleClient;
 import munch.corpus.instagram.InstagramMediaClient;
 import munch.data.client.PlaceClient;
-import munch.data.extended.PlaceAwardClient;
-import munch.data.extended.PlaceMenuClient;
 import munch.data.place.Place;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonResult;
@@ -35,11 +33,11 @@ public class PlaceService extends ApiService {
 
     private final ArticleClient articleClient;
     private final InstagramMediaClient instagramMediaClient;
-    private final PlaceMenuClient placeMenuClient;
-    private final PlaceAwardClient placeAwardClient;
+
+    private final PlaceCatalystV2Support v2Support;
 
     @Inject
-    public PlaceService(PlaceClient placeClient, BasicCardLoader basicReader, QueryCardLoader cardLoader, PlaceCardSorter cardSorter, ArticleClient articleClient, InstagramMediaClient instagramMediaClient, PlaceMenuClient placeMenuClient, PlaceAwardClient placeAwardClient) {
+    public PlaceService(PlaceClient placeClient, BasicCardLoader basicReader, QueryCardLoader cardLoader, PlaceCardSorter cardSorter, ArticleClient articleClient, InstagramMediaClient instagramMediaClient, PlaceCatalystV2Support v2Support) {
         this.placeClient = placeClient;
         this.basicReader = basicReader;
         this.cardLoader = cardLoader;
@@ -47,8 +45,7 @@ public class PlaceService extends ApiService {
 
         this.articleClient = articleClient;
         this.instagramMediaClient = instagramMediaClient;
-        this.placeMenuClient = placeMenuClient;
-        this.placeAwardClient = placeAwardClient;
+        this.v2Support = v2Support;
     }
 
     /**
@@ -76,12 +73,11 @@ public class PlaceService extends ApiService {
         if (place == null) return JsonResult.notFound();
         return JsonResult.ok(Map.of(
                 "place", place,
-                "articles", articleClient.list(placeId, null, 10),
+                "articles", articleClient.list(v2Support.resolve(placeId), null, 10),
                 "instagram", Map.of(
-                        "medias", instagramMediaClient.listByPlace(placeId, null, 10)
-                ),
-                "menus", placeMenuClient.list(placeId, null, 10),
-                "awards", placeAwardClient.list(placeId, null, 10)
+                        "medias", instagramMediaClient.listByPlace(v2Support.resolve(placeId), null, 10)
+                )
+                // Implement: Awards back
         ));
     }
 

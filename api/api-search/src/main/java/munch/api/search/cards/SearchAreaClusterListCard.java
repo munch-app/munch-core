@@ -10,6 +10,7 @@ import java.util.List;
  * Time: 4:13 AM
  * Project: munch-core
  */
+
 public final class SearchAreaClusterListCard implements SearchCard {
 
     private List<Area> areas;

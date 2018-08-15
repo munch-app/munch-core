@@ -1,11 +1,11 @@
 package munch.api.search.assumption;
 
 import com.google.common.base.Joiner;
+import edit.utils.PatternSplit;
 import munch.api.search.SearchRequest;
 import munch.api.search.data.SearchQuery;
 import munch.data.Location;
 import munch.data.location.Area;
-import munch.data.utils.PatternSplit;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
 

@@ -24,10 +24,13 @@ public final class PlacePartnerService extends ApiService {
     private final ArticleClient articleClient;
     private final InstagramMediaClient instagramMediaClient;
 
+    private final PlaceCatalystV2Support v2Support;
+
     @Inject
-    public PlacePartnerService(ArticleClient articleClient, InstagramMediaClient instagramMediaClient) {
+    public PlacePartnerService(ArticleClient articleClient, InstagramMediaClient instagramMediaClient, PlaceCatalystV2Support v2Support) {
         this.articleClient = articleClient;
         this.instagramMediaClient = instagramMediaClient;
+        this.v2Support = v2Support;
     }
 
     @Override
@@ -43,7 +46,7 @@ public final class PlacePartnerService extends ApiService {
         String placeId = call.pathString("placeId");
         String nextPlaceSort = call.queryString("next.placeSort", null);
 
-        NextNodeList<Article> nextNodeList = articleClient.list(placeId, nextPlaceSort, size);
+        NextNodeList<Article> nextNodeList = articleClient.list(v2Support.resolve(placeId), nextPlaceSort, size);
         PlaceArticleCardLoader.removeBadData(nextNodeList);
 
         JsonResult result = result(200, nextNodeList);
@@ -56,7 +59,7 @@ public final class PlacePartnerService extends ApiService {
         String placeId = call.pathString("placeId");
         String nextPlaceSort = call.queryString("next.placeSort", null);
 
-        NextNodeList<InstagramMedia> nextNodeList = instagramMediaClient.listByPlace(placeId, nextPlaceSort, size);
+        NextNodeList<InstagramMedia> nextNodeList = instagramMediaClient.listByPlace(v2Support.resolve(placeId), nextPlaceSort, size);
 
         JsonResult result = result(200, nextNodeList);
         if (nextNodeList.hasNext()) result.put("next", nextNodeList.getNext());

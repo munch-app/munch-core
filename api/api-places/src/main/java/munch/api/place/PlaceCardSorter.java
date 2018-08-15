@@ -27,7 +27,7 @@ public final class PlaceCardSorter {
                     "basic_BusinessHour_20170907"),
 
             CardGroup.ofHeader("header_About_20171112",
-                    "extended_PlaceAward_20180506",
+//                    "extended_PlaceAward_20180506",
                     "basic_Description_20171109",
                     "basic_Price_20171219",
                     "basic_Phone_20171117",
@@ -35,7 +35,8 @@ public final class PlaceCardSorter {
 
             CardGroup.of("ugc_SuggestEdit_20180428"),
 
-            new MenuCardGroup(),
+            CardGroup.of("header_Menu_20180313",
+                    "basic_Menu_20180816"),
 
             CardGroup.ofHeader("header_PartnerContent_20180405",
                     "extended_PartnerInstagramMedia_20180506",
@@ -130,25 +131,6 @@ public final class PlaceCardSorter {
          */
         private static CardGroup ofHeader(String headerId, String... contentIds) {
             return new CardGroup(new PlaceHeaderCard(headerId), contentIds);
-        }
-    }
-
-    private static class MenuCardGroup extends CardGroup {
-        private static final PlaceHeaderCard HEADER_CARD = new PlaceHeaderCard("header_Menu_20180313");
-
-        private MenuCardGroup() {
-            super(null, "header_Menu_20180313", "extended_PlaceMenu_20180313");
-        }
-
-        @Override
-        protected List<PlaceCard> collect(List<PlaceCard> cards) {
-            PlaceCard headerCard = find("header_Menu_20180313", cards);
-            PlaceCard dataCard = find("extended_PlaceMenu_20180313", cards);
-
-            if (dataCard == null && headerCard == null) return List.of();
-            if (dataCard != null && headerCard != null) return List.of(headerCard, dataCard);
-            if (headerCard != null) return List.of(headerCard);
-            return List.of(HEADER_CARD, dataCard);
         }
     }
 }

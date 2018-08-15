@@ -2,9 +2,9 @@ package munch.api.place.basic;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edit.utils.website.DomainBlocked;
 import munch.api.place.card.PlaceCard;
 import munch.data.place.Place;
-import munch.data.website.DomainBlocked;
 import munch.restful.core.JsonUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -87,15 +87,6 @@ public final class BasicCardLoader {
         }
     }
 
-    private PlaceHeaderMenuCard createMenu(Place place) {
-        if (place.getMenu() == null) return null;
-        if (place.getMenu().getUrl() == null) return null;
-
-        PlaceHeaderMenuCard card = new PlaceHeaderMenuCard();
-        card.setMenuUrl(place.getMenu().getUrl());
-        return card;
-    }
-
     @Nullable
     private PlaceDescriptionCard createDescription(Place place) {
         String description = place.getDescription();
@@ -133,6 +124,16 @@ public final class BasicCardLoader {
 
         PlacePriceCard card = new PlacePriceCard();
         card.setPrice(place.getPrice().getPerPax());
+        return card;
+    }
+
+    @Nullable
+    private PlaceMenuCard createMenu(Place place) {
+        if (place.getMenu() == null) return null;
+        if (place.getMenu().getUrl() == null && (place.getMenu().getImages() == null || place.getMenu().getImages().isEmpty())) return null;
+
+        PlaceMenuCard card = new PlaceMenuCard();
+        card.setMenu(place.getMenu());
         return card;
     }
 

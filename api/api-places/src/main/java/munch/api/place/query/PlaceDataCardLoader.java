@@ -1,10 +1,7 @@
 package munch.api.place.query;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import munch.api.place.card.PlaceJsonCard;
-import munch.data.extended.ExtendedData;
-import munch.data.extended.ExtendedDataClient;
 import munch.data.place.Place;
 import munch.restful.core.JsonUtils;
 import munch.restful.core.NextNodeList;
@@ -19,8 +16,6 @@ import java.util.Map;
  * Project: munch-core
  */
 public abstract class PlaceDataCardLoader<T> {
-    protected static final ObjectMapper objectMapper = JsonUtils.objectMapper;
-
     protected final String cardId;
 
     public PlaceDataCardLoader(String cardId) {
@@ -42,22 +37,6 @@ public abstract class PlaceDataCardLoader<T> {
         }
 
         return List.of(new PlaceDataCard(Map.of("contents", list)));
-    }
-
-    public static class Extended<T extends ExtendedData, C extends ExtendedDataClient<T>> extends PlaceDataCardLoader<T> {
-        protected final C client;
-        protected final int size;
-
-        public Extended(String cardId, C client, int size) {
-            super(cardId);
-            this.client = client;
-            this.size = size;
-        }
-
-        protected List<T> query(String placeId) {
-            return client.list(placeId, null, size);
-        }
-
     }
 
     public class PlaceDataCard extends PlaceJsonCard {
