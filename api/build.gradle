@@ -1,12 +1,3 @@
-configure(subprojects.findAll { !it.name.matches("api-core") }) {
-    dependencies {
-        compile project(':api:api-core')
-        testCompile project(':api:api-core').sourceSets.test.output
-        testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: jUnitVersion
-        testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: jUnitVersion
-    }
-}
-
 dependencies {
     compile group: 'com.amazonaws', name: 'aws-java-sdk-ssm', version: awsVersion
 
@@ -32,6 +23,15 @@ project('api-core') {
         compile group: 'munch-data', name: 'client', version: '4.7'
         compile group: 'munch-user', name: 'client', version: '1.12'
 
+        testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: jUnitVersion
+        testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: jUnitVersion
+    }
+}
+
+configure(subprojects.findAll { !it.name.matches("api-core") }) {
+    dependencies {
+        compile project(':api:api-core')
+        testCompile project(':api:api-core').sourceSets.test.output
         testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: jUnitVersion
         testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: jUnitVersion
     }

@@ -6,5 +6,4 @@ include 'api:api-places'
 include 'api:api-search'
 include 'api:api-users'
 
-include 'proxy'
 include 'website'
