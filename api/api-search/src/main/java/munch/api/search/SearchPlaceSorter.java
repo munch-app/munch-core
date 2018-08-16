@@ -2,6 +2,7 @@ package munch.api.search;
 
 import munch.api.search.elastic.ElasticQueryUtils;
 import munch.data.Hour;
+import munch.data.client.TagClient;
 import munch.data.place.Place;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,10 +12,10 @@ import javax.inject.Singleton;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.regex.Pattern;
+import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * Created by: Fuxing
@@ -25,25 +26,32 @@ import java.util.regex.Pattern;
 @Singleton
 public final class SearchPlaceSorter {
     private static final Logger logger = LoggerFactory.getLogger(SearchPlaceSorter.class);
-    private static final Pattern TIME_PATTERN = Pattern.compile(":");
+    private final long interval = Duration.ofHours(24 + 18).toMillis();
 
-    private final long interval;
+    private Set<String> tagLevel2 = new HashSet<>();
+    private Set<String> tagLevel3 = new HashSet<>();
 
     @Inject
-    public SearchPlaceSorter() {
-        this(Duration.ofHours(24 + 18));
-    }
+    public SearchPlaceSorter(TagClient tagClient) {
+        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
+            Set<String> level2 = new HashSet<>();
+            Set<String> level3 = new HashSet<>();
 
-    public SearchPlaceSorter(Duration interval) {
-        this.interval = interval.toMillis();
-    }
+            tagClient.iterator().forEachRemaining(tag -> {
+                if (tag.getPlace().getLevel() == 2) {
+                    tagLevel2.add(tag.getTagId());
+                } else if (tag.getPlace().getLevel() == 3) {
+                    tagLevel3.add(tag.getTagId());
+                }
+            });
 
-    private long getSeed() {
-        return System.currentTimeMillis() / interval;
+            tagLevel2 = level2;
+            tagLevel3 = level3;
+        }, 0, 24, TimeUnit.HOURS);
     }
 
     private Random getRandom() {
-        return new Random(getSeed());
+        return new Random(System.currentTimeMillis() / interval);
     }
 
     public List<Place> sort(List<Place> dataList, SearchRequest request) {
@@ -59,22 +67,24 @@ public final class SearchPlaceSorter {
         }
 
         LocalDateTime localTime = request.getLocalTime();
-        if (localTime != null) {
-            DayOfWeek dayOfWeek = localTime.getDayOfWeek();
-            int time = localTime.getHour() + (localTime.getMinute() * 60);
-
-            for (Place place : dataList) {
-                double ranking = place.getRanking() * getHourBoost(place, dayOfWeek, time);
-                ranking = ranking * getTagBoost(place, time);
-                place.setRanking(ranking);
-            }
-        }
+        if (localTime != null) sort(dataList, localTime);
 
         dataList.sort((o1, o2) -> Double.compare(o2.getRanking(), o1.getRanking()));
         return dataList;
     }
 
-    private static double getHourBoost(Place place, DayOfWeek dayOfWeek, int time) {
+    public void sort(List<Place> dataList, LocalDateTime localTime) {
+        DayOfWeek dayOfWeek = localTime.getDayOfWeek();
+        int time = localTime.getHour() + (localTime.getMinute() * 60);
+
+        for (Place place : dataList) {
+            double ranking = place.getRanking() * getHourBoost(place, dayOfWeek, time);
+            ranking = ranking * getTagBoost(place, time);
+            place.setRanking(ranking);
+        }
+    }
+
+    private double getHourBoost(Place place, DayOfWeek dayOfWeek, int time) {
         if (place.getHours() == null || place.getHours().isEmpty()) return 1.0;
 
         boolean isOpen = place.getHours().stream()
@@ -89,17 +99,58 @@ public final class SearchPlaceSorter {
     }
 
     /**
-     * PM-128
-     * De-prioritise establishments that are only tagged with 'Desserts' during 12.00pm - 13.30pm and 18.00pm - 19.30pm daily.
+     * PM-133
+     * Level 2:
+     * 1. Places that are only tagged with 'Snacks' or 'Bakery' will be deprioritized during 12.00pm - 1.30pm (lunch hours) and 6.00pm - 7.30pm (dinner hours).
+     * - If a place has more than one tag within the same category (e.g. Bakery and Cafe), it will not be deprioritized.
+     * <p>
+     * Level 3:
+     * 2. Places that are only tagged with 'Alcohol' will be deprioritized until after 8.30pm.
      */
-    private static double getTagBoost(Place place, int time) {
-        if (time < 720) return 1.0;
-        if (time < 1080 && time > 810) return 1.0;
-        if (time > 1170) return 1.0;
-
-        for (Place.Tag tag : place.getTags()) {
-            if ("Dessert".equalsIgnoreCase(tag.getName())) return 0.9;
+    private double getTagBoost(Place place, int time) {
+        // 12:00-13:00, 18:00-19:30
+        if ((time >= 720 && time <= 780) || (time >= 1080 && time <= 1170)) {
+            if (containsTag(place, tagLevel2, "950870d5-416f-42df-96f5-cf207bb02aea", "c0507377-11a2-4ab3-a933-d2d41392c6d9")) {
+                return 0.8;
+            }
         }
+
+        // 01:00 - 20:30
+        if (time >= 60 && time <= 1230) {
+            if (containsTag(place, tagLevel3, "8e8ac48d-0052-4732-9f69-969cf9c5d109")) {
+                return 0.8;
+            }
+        }
+
         return 1.0;
+    }
+
+    private static boolean containsTag(Place place, Set<String> levels, String... tagIds) {
+        Set<String> filtered = place.getTags().stream()
+                .filter(tag -> levels.contains(tag.getTagId()))
+                .map(Place.Tag::getTagId)
+                .collect(Collectors.toSet());
+
+        // No Filtered = completely empty
+        if (filtered.isEmpty()) return false;
+
+        if (contains(filtered, tagIds)) {
+            filtered.removeIf(s -> {
+                for (String tagId : tagIds) {
+                    if (s.equals(tagId)) return true;
+                }
+                return false;
+            });
+            return filtered.isEmpty();
+        }
+
+        return false;
+    }
+
+    private static boolean contains(Set<String> filtered, String... tagIds) {
+        for (String tagId : tagIds) {
+            if (filtered.contains(tagId)) return true;
+        }
+        return false;
     }
 }
