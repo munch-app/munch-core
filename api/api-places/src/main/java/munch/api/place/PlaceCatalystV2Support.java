@@ -41,8 +41,10 @@ public final class PlaceCatalystV2Support {
     }
 
     private String load(String placeId) {
-        NextNodeList<PlaceLink> links = linkClient.listSourceId("v2.catalyst.munch.space", placeId, null, 1);
-        if (links.isEmpty()) return placeId;
-        return links.get(0).getId();
+        NextNodeList<PlaceLink> links = linkClient.listPlaceIdSource(placeId, "v2.catalyst.munch.space", null, 1);
+        for (PlaceLink link : links) {
+            if (link.getSource().equals("v2.catalyst.munch.space")) return link.getId();
+        }
+        return placeId;
     }
 }
