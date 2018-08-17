@@ -61,6 +61,8 @@ public final class SearchPlaceSorter {
         Random random = getRandom();
 
         for (Place place : dataList) {
+            fix(place);
+
             double next = 1.05 - (random.nextDouble() * 0.1);
             double ranking = place.getRanking() * next;
             place.setRanking(ranking);
@@ -73,7 +75,19 @@ public final class SearchPlaceSorter {
         return dataList;
     }
 
-    public void sort(List<Place> dataList, LocalDateTime localTime) {
+    private void fix(Place place) {
+        // Fix Images problem
+        if (place.getRanking() >= 1000 && place.getImages().isEmpty()) {
+            place.setRanking(place.getRanking() - 1000);
+            return;
+        }
+
+        if (place.getRanking() >= 800 && place.getImages().isEmpty()) {
+            place.setRanking(place.getRanking() - 800);
+        }
+    }
+
+    private void sort(List<Place> dataList, LocalDateTime localTime) {
         DayOfWeek dayOfWeek = localTime.getDayOfWeek();
         int time = localTime.getHour() + (localTime.getMinute() * 60);
 
