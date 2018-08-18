@@ -67,7 +67,7 @@ public abstract class ApiService implements JsonService {
     }
 
     /**
-     * @param call JsonCall
+     * @param call JsonCall to authenticate
      * @return UserId
      */
     @NotNull

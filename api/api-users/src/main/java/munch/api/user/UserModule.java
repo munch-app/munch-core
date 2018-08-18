@@ -13,6 +13,7 @@ public final class UserModule extends ApiServiceModule {
     protected void configure() {
         addService(UserService.class);
         addService(UserPlaceCollectionService.class);
+        addService(UserPlaceCollectionItemService.class);
         addService(UserPlaceActivityService.class);
     }
 }

@@ -1,6 +1,9 @@
 package munch.api.user;
 
 import munch.api.ApiService;
+import munch.data.client.PlaceClient;
+import munch.data.place.Place;
+import munch.file.Image;
 import munch.restful.core.JsonUtils;
 import munch.restful.core.NextNodeList;
 import munch.restful.core.exception.CodeException;
@@ -10,7 +13,6 @@ import munch.restful.server.JsonResult;
 import munch.user.client.UserPlaceCollectionClient;
 import munch.user.data.UserPlaceCollection;
 
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.List;
@@ -25,29 +27,23 @@ import java.util.List;
 public final class UserPlaceCollectionService extends ApiService {
 
     private final UserPlaceCollectionClient collectionClient;
+    private final PlaceClient placeClient;
 
     @Inject
-    public UserPlaceCollectionService(UserPlaceCollectionClient collectionClient) {
+    public UserPlaceCollectionService(UserPlaceCollectionClient collectionClient, PlaceClient placeClient) {
         this.collectionClient = collectionClient;
+        this.placeClient = placeClient;
     }
 
     @Override
     public void route() {
         PATH("/users/places/collections", () -> {
             GET("", this::list);
-            GET("/:collectionId", this::get);
-
             POST("", this::post);
+
+            GET("/:collectionId", this::get);
             PATCH("/:collectionId", this::patch);
             DELETE("/:collectionId", this::delete);
-
-
-            PATH("/:collectionId/items", () -> {
-                GET("", this::listItems);
-                GET("/:placeId", this::getItem);
-                PUT("/:placeId", this::putItem);
-                DELETE("/:placeId", this::deleteItem);
-            });
         });
     }
 
@@ -70,10 +66,13 @@ public final class UserPlaceCollectionService extends ApiService {
         return new NextNodeList<>(List.of(favourites, saved), JsonUtils.createObjectNode());
     }
 
+    /**
+     * @return List of UserPlaceCollection owned by current user
+     */
     public JsonResult list(JsonCall call) {
         String userId = getUserId(call);
         Long sort = call.queryObject("next.sort", null, Long.class);
-        int size = call.querySize(20, 20);
+        int size = call.querySize(10, 20);
 
         NextNodeList<UserPlaceCollection> nodeList = collectionClient.list(userId, sort, size);
 
@@ -82,17 +81,50 @@ public final class UserPlaceCollectionService extends ApiService {
             nodeList = createDefaultCollections(userId);
         }
 
-        JsonResult result = JsonResult.ok(nodeList);
+        for (UserPlaceCollection collection : nodeList) {
+            resolveImage(collection);
+        }
 
+        JsonResult result = JsonResult.ok(nodeList);
         if (nodeList.hasNext()) result.put("next", nodeList.getNext());
         return result;
     }
 
+    /**
+     * Whether the user has access to view the entire collection
+     * - Check whether user owns the collection = Always can view
+     * - Check collection is public, Always can view
+     *
+     * @return the same UserPlaceCollection
+     */
     public UserPlaceCollection get(JsonCall call) {
         String collectionId = call.pathString("collectionId");
+        String userId = optionalUserId(call).orElse(null);
 
         UserPlaceCollection collection = collectionClient.get(collectionId);
-        return reduceCollection(collection, optionalUserId(call).orElse(null));
+        if (collection == null) return null;
+        if (collection.getUserId().equals(userId)) return collection;
+        if (collection.getAccess() == UserPlaceCollection.Access.Public) return collection;
+        resolveImage(collection);
+        return null;
+    }
+
+    /**
+     * @param collection add image if don't exist
+     */
+    private void resolveImage(UserPlaceCollection collection) {
+        if (collection.getImage() != null) return;
+
+        for (UserPlaceCollection.Item item : collectionClient.listItems(collection.getCollectionId(), null, 10)) {
+            Place place = placeClient.get(item.getPlaceId());
+            if (place == null) continue;
+
+            List<Image> images = place.getImages();
+            if (!images.isEmpty()) {
+                collection.setImage(images.get(0));
+                return;
+            }
+        }
     }
 
     public UserPlaceCollection post(JsonCall call) {
@@ -101,7 +133,6 @@ public final class UserPlaceCollectionService extends ApiService {
         UserPlaceCollection collection = call.bodyAsObject(UserPlaceCollection.class);
         collection.setCreatedBy(UserPlaceCollection.CreatedBy.User);
         collection.setUserId(userId);
-
         return collectionClient.post(collection);
     }
 
@@ -109,7 +140,7 @@ public final class UserPlaceCollectionService extends ApiService {
         String userId = getUserId(call);
         String collectionId = call.pathString("collectionId");
 
-        requiredUserValidation(collectionClient.get(collectionId), userId);
+        validateAccess(collectionClient.get(collectionId), userId);
 
         return collectionClient.patch(collectionId, call.bodyAsJson());
     }
@@ -118,54 +149,9 @@ public final class UserPlaceCollectionService extends ApiService {
         String userId = getUserId(call);
         String collectionId = call.pathString("collectionId");
 
-        requiredUserValidation(collectionClient.get(collectionId), userId);
+        validateAccess(collectionClient.get(collectionId), userId);
 
         return collectionClient.delete(collectionId);
-    }
-
-    public JsonResult listItems(JsonCall call) {
-        String collectionId = call.pathString("collectionId");
-        Long sort = call.queryObject("next.sort", null, Long.class);
-        int size = call.querySize(20, 40);
-
-        NextNodeList<UserPlaceCollection.Item> nodeList = collectionClient.listItems(collectionId, sort, size);
-        JsonResult result = JsonResult.ok(nodeList);
-
-        if (nodeList.hasNext()) result.put("next", nodeList.getNext());
-        return result;
-    }
-
-    public UserPlaceCollection.Item getItem(JsonCall call) {
-        String userId = getUserId(call);
-        String collectionId = call.pathString("collectionId");
-        String placeId = call.pathString("placeId");
-
-        return collectionClient.getItem(collectionId, placeId);
-    }
-
-    public UserPlaceCollection.Item putItem(JsonCall call) throws ItemAlreadyExistInPlaceCollection {
-        String userId = getUserId(call);
-        String collectionId = call.pathString("collectionId");
-        String placeId = call.pathString("placeId");
-
-        requiredUserValidation(collectionClient.get(collectionId), userId, UserPlaceCollection.CreatedBy.Default);
-
-        UserPlaceCollection.Item item = collectionClient.getItem(collectionId, placeId);
-        if (item != null) {
-            throw new ItemAlreadyExistInPlaceCollection(placeId);
-        }
-
-        return collectionClient.addItem(collectionId, placeId, new UserPlaceCollection.Item());
-    }
-
-    public UserPlaceCollection.Item deleteItem(JsonCall call) {
-        String userId = getUserId(call);
-        String collectionId = call.pathString("collectionId");
-        String placeId = call.pathString("placeId");
-
-        requiredUserValidation(collectionClient.get(collectionId), userId, UserPlaceCollection.CreatedBy.Default);
-
-        return collectionClient.deleteItem(collectionId, placeId);
     }
 
     /**
@@ -176,36 +162,17 @@ public final class UserPlaceCollectionService extends ApiService {
      * @param collection UserPlaceCollection
      * @param userId     user id operating the collection
      * @param ignores    CreatedBy to ignore when validating
-     * @return the same UserPlaceCollection
      */
-    private static UserPlaceCollection requiredUserValidation(UserPlaceCollection collection, String userId, UserPlaceCollection.CreatedBy... ignores) {
+    static void validateAccess(UserPlaceCollection collection, String userId, UserPlaceCollection.CreatedBy... ignores) {
         if (collection == null) throw new CodeException(404);
         if (!collection.getUserId().equals(userId)) throw new CodeException(503);
 
         for (UserPlaceCollection.CreatedBy ignore : ignores) {
-            if (collection.getCreatedBy() == ignore) return collection;
+            if (collection.getCreatedBy() == ignore) return;
         }
 
         if (collection.getCreatedBy() != UserPlaceCollection.CreatedBy.User) {
             throw new ForbiddenException("createdBy != User prevent you from updating Collection.");
         }
-        return collection;
-    }
-
-    /**
-     * Whether the user has access to view the entire collection
-     * - Check whether user owns the collection = Always can view
-     * - Check collection is public, Always can view
-     *
-     * @param collection UserPlaceCollection
-     * @param userId     user id wanting access to collection
-     * @return the same UserPlaceCollection
-     */
-    private static UserPlaceCollection reduceCollection(UserPlaceCollection collection, @Nullable String userId) {
-        if (collection == null) return null;
-        if (collection.getUserId().equals(userId)) return collection;
-
-        if (collection.getAccess() == UserPlaceCollection.Access.Public) return collection;
-        return null;
     }
 }

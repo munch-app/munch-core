@@ -53,7 +53,6 @@ public class PlaceService extends ApiService {
      */
     @Override
     public void route() {
-        // Places Endpoint
         PATH("/places/:placeId", () -> {
             GET("", this::get);
             GET("/cards", this::getCards);
