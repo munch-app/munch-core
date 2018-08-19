@@ -84,9 +84,10 @@ public final class UserPlaceCollectionService extends ApiService {
 
         UserPlaceCollection collection = collectionClient.get(collectionId);
         if (collection == null) return null;
-        if (collection.getUserId().equals(userId)) return collection;
-        if (collection.getAccess() == UserPlaceCollection.Access.Public) return collection;
-        resolveImage(collection);
+        if (collection.getUserId().equals(userId) || collection.getAccess() == UserPlaceCollection.Access.Public) {
+            resolveImage(collection);
+            return collection;
+        }
         return null;
     }
 
