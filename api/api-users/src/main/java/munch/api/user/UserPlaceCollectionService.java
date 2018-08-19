@@ -61,11 +61,10 @@ public final class UserPlaceCollectionService extends ApiService {
         // Create DefaultCollections if sort is 0 and nodeList is 0
         if (sort == null && size > 0 && nodeList.size() == 0) {
             nodeList = defaultUserPlaceCollection.create(userId);
+            return JsonResult.ok(nodeList);
         }
 
-        for (UserPlaceCollection collection : nodeList) {
-            resolveImage(collection);
-        }
+        nodeList.forEach(this::resolveImage);
 
         JsonResult result = JsonResult.ok(nodeList);
         if (nodeList.hasNext()) result.put("next", nodeList.getNext());
