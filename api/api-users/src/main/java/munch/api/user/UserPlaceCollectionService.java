@@ -4,7 +4,6 @@ import munch.api.ApiService;
 import munch.data.client.PlaceClient;
 import munch.data.place.Place;
 import munch.file.Image;
-import munch.restful.core.JsonUtils;
 import munch.restful.core.NextNodeList;
 import munch.restful.core.exception.CodeException;
 import munch.restful.core.exception.ForbiddenException;
@@ -27,11 +26,13 @@ import java.util.List;
 public final class UserPlaceCollectionService extends ApiService {
 
     private final UserPlaceCollectionClient collectionClient;
+    private final DefaultUserPlaceCollection defaultUserPlaceCollection;
     private final PlaceClient placeClient;
 
     @Inject
-    public UserPlaceCollectionService(UserPlaceCollectionClient collectionClient, PlaceClient placeClient) {
+    public UserPlaceCollectionService(UserPlaceCollectionClient collectionClient, DefaultUserPlaceCollection defaultUserPlaceCollection, PlaceClient placeClient) {
         this.collectionClient = collectionClient;
+        this.defaultUserPlaceCollection = defaultUserPlaceCollection;
         this.placeClient = placeClient;
     }
 
@@ -47,25 +48,6 @@ public final class UserPlaceCollectionService extends ApiService {
         });
     }
 
-    private UserPlaceCollection createDefault(String userId, String name, String description) {
-        UserPlaceCollection collection = new UserPlaceCollection();
-        collection.setUserId(userId);
-        collection.setAccess(UserPlaceCollection.Access.Public);
-        collection.setCreatedBy(UserPlaceCollection.CreatedBy.Default);
-        collection.setName(name);
-        collection.setDescription(description);
-        return collectionClient.post(collection);
-    }
-
-    /**
-     * @return 2 Newly create default UserPlaceCollection for User
-     */
-    private NextNodeList<UserPlaceCollection> createDefaultCollections(String userId) {
-        UserPlaceCollection favourites = createDefault(userId, "Favourites", "Your top spots");
-        UserPlaceCollection saved = createDefault(userId, "Saved for later", "There’s always next time");
-        return new NextNodeList<>(List.of(favourites, saved), JsonUtils.createObjectNode());
-    }
-
     /**
      * @return List of UserPlaceCollection owned by current user
      */
@@ -78,7 +60,7 @@ public final class UserPlaceCollectionService extends ApiService {
 
         // Create DefaultCollections if sort is 0 and nodeList is 0
         if (sort == null && size > 0 && nodeList.size() == 0) {
-            nodeList = createDefaultCollections(userId);
+            nodeList = defaultUserPlaceCollection.create(userId);
         }
 
         for (UserPlaceCollection collection : nodeList) {
