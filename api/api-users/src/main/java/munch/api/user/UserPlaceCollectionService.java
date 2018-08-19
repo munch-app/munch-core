@@ -91,24 +91,6 @@ public final class UserPlaceCollectionService extends ApiService {
         return null;
     }
 
-    /**
-     * @param collection add image if don't exist
-     */
-    private void resolveImage(UserPlaceCollection collection) {
-        if (collection.getImage() != null) return;
-
-        for (UserPlaceCollection.Item item : collectionClient.listItems(collection.getCollectionId(), null, 10)) {
-            Place place = placeClient.get(item.getPlaceId());
-            if (place == null) continue;
-
-            List<Image> images = place.getImages();
-            if (!images.isEmpty()) {
-                collection.setImage(images.get(0));
-                return;
-            }
-        }
-    }
-
     public UserPlaceCollection post(JsonCall call) {
         String userId = getUserId(call);
 
@@ -124,7 +106,9 @@ public final class UserPlaceCollectionService extends ApiService {
 
         validateAccess(collectionClient.get(collectionId), userId);
 
-        return collectionClient.patch(collectionId, call.bodyAsJson());
+        UserPlaceCollection collection = collectionClient.patch(collectionId, call.bodyAsJson());
+        resolveImage(collection);
+        return collection;
     }
 
     public UserPlaceCollection delete(JsonCall call) {
@@ -134,6 +118,25 @@ public final class UserPlaceCollectionService extends ApiService {
         validateAccess(collectionClient.get(collectionId), userId);
 
         return collectionClient.delete(collectionId);
+    }
+
+    /**
+     * @param collection add image if don't exist
+     */
+    private void resolveImage(UserPlaceCollection collection) {
+        if (collection == null) return;
+        if (collection.getImage() != null) return;
+
+        for (UserPlaceCollection.Item item : collectionClient.listItems(collection.getCollectionId(), null, 10)) {
+            Place place = placeClient.get(item.getPlaceId());
+            if (place == null) continue;
+
+            List<Image> images = place.getImages();
+            if (!images.isEmpty()) {
+                collection.setImage(images.get(0));
+                return;
+            }
+        }
     }
 
     /**
