@@ -91,6 +91,7 @@ module.exports = {
     cacheTime: 1000 * 60 * 15,
     exclude: [],
     routes: [
+      // TODO Update to real routes
       '/places/a3e9f12b-5b30-4226-be91-fe4421cfe39f'
     ]
   }

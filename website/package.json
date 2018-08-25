@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "dev": "nuxt",
-    "dev-debug":"node_modules/nuxt/bin/nuxt-dev",
+    "dev-debug": "node_modules/nuxt/bin/nuxt-dev",
     "build": "nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate",
@@ -31,6 +31,7 @@
     "prismic-dom": "^2.1.0",
     "prismic-javascript": "^1.5.0-beta.2",
     "rxjs": "^6.2.2",
+    "underscore": "^1.9.1",
     "vue": "latest",
     "vue-line-clamp-extended": "^1.0.0",
     "vue-rx": "^6.0.0",
