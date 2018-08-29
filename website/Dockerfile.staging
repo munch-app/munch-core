@@ -12,18 +12,12 @@ RUN npm install
 
 COPY . /usr/src/app/
 
-ARG deployment
-RUN if [ "$deployment" = "staging" ] ; then echo "Disallow: /" >> /usr/src/app/static/robots.txt ; fi
-
-ARG url
-ENV API_URL_BROWSER $url
+RUN echo "Disallow: /" >> /usr/src/app/static/robots.txt ; fi
+ENV API_URL_BROWSER https://staging.munch.app/
 
 ENV HOST 0.0.0.0
 ENV NODE_ENV production
-
-# Build app
-RUN npm run build
 EXPOSE 3000
 
-# start command
-CMD [ "npm", "start" ]
+RUN npm run-script build
+CMD [ "npm", "run-script", "start" ]
