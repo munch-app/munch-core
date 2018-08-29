@@ -121,12 +121,12 @@
     <section class="Partners text-center container">
       <h3>INSTAGRAM PARTNERS</h3>
       <h6>Always causing people to drool on their phone? </h6>
-      <h6>Share your work on <a target="_blank" href="http://partner.munchapp.co">partner.munchapp.co</a></h6>
+      <h6>Share your work on <a class="Primary500" target="_blank" href="https://partner.munch.app">partner.munch.app</a></h6>
 
       <h6 style="margin-top: 50px; margin-bottom: 25px">Some of the mouth-watering images from our partner
         community.</h6>
 
-      <partner-media-grid :medias="partner_12_media"/>
+      <partner-instagram-grid/>
     </section>
 
     <div class="OverlayContact">
@@ -166,12 +166,9 @@
 </template>
 
 <script>
-  import PartnerMediaGrid from '~/components/PartnerMediaGrid.vue'
-
+  import PartnerInstagramGrid from "../components/PartnerInstagramGrid";
   export default {
-    components: {
-      PartnerMediaGrid
-    }
+    components: {PartnerInstagramGrid}
   }
 </script>
 
