@@ -12,7 +12,6 @@ RUN npm install
 
 COPY . /usr/src/app/
 
-
 ENV API_URL_BROWSER https://munch.app/
 
 ENV HOST 0.0.0.0
@@ -20,4 +19,4 @@ ENV NODE_ENV production
 EXPOSE 3000
 
 RUN npm run-script build
-CMD [ "npm", "run-script", "start" ]
+CMD [ "npm", "run-script", "production" ]
