@@ -1,6 +1,7 @@
 package munch.api.place;
 
 import munch.api.ApiServiceModule;
+import munch.instagram.InstagramCleaner;
 
 /**
  * Created by: Fuxing
@@ -11,6 +12,8 @@ import munch.api.ApiServiceModule;
 public final class PlaceModule extends ApiServiceModule {
     @Override
     protected void configure() {
+        addCleaner(InstagramCleaner.class);
+
         addService(PlaceService.class);
         addService(PlacePartnerService.class);
     }

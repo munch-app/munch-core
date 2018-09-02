@@ -16,12 +16,12 @@ import java.util.stream.Collectors;
  * Project: munch-core
  */
 @Singleton
-public final class WhitelistTransformer extends JsonTransformer {
+public final class CleanerTransformer extends JsonTransformer {
 
     private final Map<String, ObjectCleaner> cleanerMap;
 
     @Inject
-    public WhitelistTransformer(Set<ObjectCleaner> cleaners) {
+    public CleanerTransformer(Set<ObjectCleaner> cleaners) {
         this.cleanerMap = cleaners.stream()
                 .collect(Collectors.toMap(o -> o.getClazz().getName(), o -> o));
     }

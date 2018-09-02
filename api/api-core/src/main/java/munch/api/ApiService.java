@@ -20,7 +20,7 @@ public abstract class ApiService implements JsonService {
     public static final String HEADER_USER_LAT_LNG = "User-Lat-Lng";
     public static final String HEADER_USER_LOCAL_TIME = "User-Local-Time";
 
-    private WhitelistTransformer transformer;
+    private CleanerTransformer transformer;
     protected TokenAuthenticator<?> authenticator;
 
     /**
@@ -28,7 +28,7 @@ public abstract class ApiService implements JsonService {
      * @param authenticator authenticator to authenticate user
      */
     @Inject
-    void injectWhitelist(WhitelistTransformer transformer, TokenAuthenticator authenticator) {
+    void injectWhitelist(CleanerTransformer transformer, TokenAuthenticator authenticator) {
         this.transformer = transformer;
         this.authenticator = authenticator;
     }
