@@ -12,7 +12,7 @@ RUN npm install
 
 COPY . /usr/src/app/
 
-RUN echo "Disallow: /" >> /usr/src/app/static/robots.txt ; fi
+RUN echo "Disallow: /" >> /usr/src/app/static/robots.txt
 ENV API_URL_BROWSER https://staging.munch.app/
 
 ENV HOST 0.0.0.0

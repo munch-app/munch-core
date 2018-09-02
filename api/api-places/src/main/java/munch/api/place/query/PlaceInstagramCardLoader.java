@@ -1,8 +1,7 @@
 package munch.api.place.query;
 
-import munch.api.place.PlaceCatalystV2Support;
-import munch.corpus.instagram.InstagramMedia;
-import munch.corpus.instagram.InstagramMediaClient;
+import munch.instagram.InstagramLinkClient;
+import munch.instagram.data.InstagramMedia;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -17,18 +16,16 @@ import java.util.List;
 @Singleton
 public final class PlaceInstagramCardLoader extends PlaceDataCardLoader<InstagramMedia> {
 
-    private final InstagramMediaClient client;
-    private final PlaceCatalystV2Support v2Support;
+    private final InstagramLinkClient instagramLinkClient;
 
     @Inject
-    public PlaceInstagramCardLoader(InstagramMediaClient client, PlaceCatalystV2Support v2Support) {
+    public PlaceInstagramCardLoader(InstagramLinkClient instagramLinkClient) {
         super("extended_PartnerInstagramMedia_20180506");
-        this.client = client;
-        this.v2Support = v2Support;
+        this.instagramLinkClient = instagramLinkClient;
     }
 
     @Override
     protected List<InstagramMedia> query(String placeId) {
-        return client.listByPlace(v2Support.resolve(placeId), null, 10);
+        return instagramLinkClient.list(placeId, null, 10);
     }
 }

@@ -3,12 +3,10 @@ package munch.api.place;
 import munch.api.ApiService;
 import munch.api.place.query.PlaceArticleCardLoader;
 import munch.article.clients.Article;
-import munch.article.clients.ArticleClient;
-import munch.corpus.instagram.InstagramMedia;
-import munch.corpus.instagram.InstagramMediaClient;
+import munch.instagram.InstagramLinkClient;
+import munch.instagram.data.InstagramMedia;
 import munch.restful.core.NextNodeList;
 import munch.restful.server.JsonCall;
-import munch.restful.server.JsonResult;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -21,15 +19,13 @@ import javax.inject.Singleton;
  */
 @Singleton
 public final class PlacePartnerService extends ApiService {
-    private final ArticleClient articleClient;
-    private final InstagramMediaClient instagramMediaClient;
+    private final InstagramLinkClient instagramLinkClient;
 
-    private final PlaceCatalystV2Support v2Support;
+    private final CatalystV2Support v2Support;
 
     @Inject
-    public PlacePartnerService(ArticleClient articleClient, InstagramMediaClient instagramMediaClient, PlaceCatalystV2Support v2Support) {
-        this.articleClient = articleClient;
-        this.instagramMediaClient = instagramMediaClient;
+    public PlacePartnerService(InstagramLinkClient instagramLinkClient, CatalystV2Support v2Support) {
+        this.instagramLinkClient = instagramLinkClient;
         this.v2Support = v2Support;
     }
 
@@ -41,28 +37,27 @@ public final class PlacePartnerService extends ApiService {
         });
     }
 
-    private JsonResult getArticles(JsonCall call) {
+    private NextNodeList<Article> getArticles(JsonCall call) {
         int size = call.querySize(20, 40);
         String placeId = call.pathString("placeId");
         String nextPlaceSort = call.queryString("next.placeSort", null);
 
-        NextNodeList<Article> nextNodeList = articleClient.list(v2Support.resolve(placeId), nextPlaceSort, size);
-        PlaceArticleCardLoader.removeBadData(nextNodeList);
 
-        JsonResult result = result(200, nextNodeList);
-        if (nextNodeList.hasNext()) result.put("next", nextNodeList.getNext());
-        return result;
+        NextNodeList<Article> nextNodeList = v2Support.getArticles(placeId, nextPlaceSort, size);
+        PlaceArticleCardLoader.removeBadData(nextNodeList);
+        return nextNodeList;
     }
 
-    private JsonResult getInstagramMedias(JsonCall call) {
+    /**
+     * if next = null no more data to query,
+     * if next != null pass it into queryString ?next.sort=abc
+     *
+     * @return {'data': [...], 'next': {'sort': ''}, 'meta': {...}}
+     */
+    private NextNodeList<InstagramMedia> getInstagramMedias(JsonCall call) {
         int size = call.querySize(20, 40);
         String placeId = call.pathString("placeId");
-        String nextPlaceSort = call.queryString("next.placeSort", null);
-
-        NextNodeList<InstagramMedia> nextNodeList = instagramMediaClient.listByPlace(v2Support.resolve(placeId), nextPlaceSort, size);
-
-        JsonResult result = result(200, nextNodeList);
-        if (nextNodeList.hasNext()) result.put("next", nextNodeList.getNext());
-        return result;
+        String nextSort = call.queryString("next.sort", null);
+        return instagramLinkClient.list(placeId, nextSort, size);
     }
 }

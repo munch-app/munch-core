@@ -5,8 +5,11 @@ import catalyst.link.PlaceLinkClient;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import munch.article.clients.Article;
+import munch.article.clients.ArticleClient;
 import munch.restful.core.NextNodeList;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.concurrent.TimeUnit;
@@ -18,25 +21,31 @@ import java.util.concurrent.TimeUnit;
  * Project: munch-core
  */
 @Singleton
-public final class PlaceCatalystV2Support {
+public final class CatalystV2Support {
 
     private final LoadingCache<String, String> cache = CacheBuilder.newBuilder()
             .maximumSize(35000)
             .expireAfterWrite(2, TimeUnit.DAYS)
             .build(new CacheLoader<>() {
                 public String load(String placeId) {
-                    return PlaceCatalystV2Support.this.load(placeId);
+                    return CatalystV2Support.this.load(placeId);
                 }
             });
 
     private final PlaceLinkClient linkClient;
+    private final ArticleClient articleClient;
 
     @Inject
-    public PlaceCatalystV2Support(PlaceLinkClient linkClient) {
+    public CatalystV2Support(PlaceLinkClient linkClient, ArticleClient articleClient) {
         this.linkClient = linkClient;
+        this.articleClient = articleClient;
     }
 
-    public String resolve(String placeId) {
+    public NextNodeList<Article> getArticles(String placeId, @Nullable String nextPlaceSort, int size) {
+        return articleClient.list(resolve(placeId), nextPlaceSort, size);
+    }
+
+    private String resolve(String placeId) {
         return cache.getUnchecked(placeId);
     }
 

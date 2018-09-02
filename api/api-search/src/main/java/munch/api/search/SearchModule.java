@@ -16,7 +16,6 @@ public final class SearchModule extends ApiServiceModule {
         Multibinder<SearchCardInjector.Loader> loaderBinder = Multibinder.newSetBinder(binder(), SearchCardInjector.Loader.class);
         loaderBinder.addBinding().to(SearchAreaClusterListLoader.class);
         loaderBinder.addBinding().to(SearchAreaClusterHeaderLoader.class);
-//        loaderBinder.addBinding().to(SearchInstagramLoader.class); Temporary Disabled
         loaderBinder.addBinding().to(SearchNoResultLoader.class);
         loaderBinder.addBinding().to(SearchNoLocationLoader.class);
         loaderBinder.addBinding().to(SearchHeaderLoader.class);

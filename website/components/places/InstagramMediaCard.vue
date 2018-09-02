@@ -1,8 +1,8 @@
 <template>
   <a class="InstagramMediaCard" :href="href" target="_blank" rel="nofollow">
-    <image-size class="Image Elevation1 Border48 BorderImage" :image="media.images">
+    <image-size class="Image Elevation1 Border48 BorderImage" :image="media.image">
       <div class="Container">
-        <div class="Small SourceButton Border24 Elevation1">@{{media.username}}</div>
+        <div class="Small SourceButton Border24 Elevation1">@{{media.user.username}}</div>
       </div>
     </image-size>
   </a>
@@ -22,7 +22,7 @@
     },
     computed: {
       href() {
-        return 'https://instagram.com/' + this.media.username
+        return this.media.link
       }
     }
   }

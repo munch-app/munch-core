@@ -1,8 +1,7 @@
 package munch.api.place.query;
 
-import munch.api.place.PlaceCatalystV2Support;
+import munch.api.place.CatalystV2Support;
 import munch.article.clients.Article;
-import munch.article.clients.ArticleClient;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -19,19 +18,17 @@ import java.util.Set;
 @Singleton
 public final class PlaceArticleCardLoader extends PlaceDataCardLoader<Article> {
 
-    private final ArticleClient client;
-    private final PlaceCatalystV2Support v2Support;
+    private final CatalystV2Support v2Support;
 
     @Inject
-    public PlaceArticleCardLoader(ArticleClient client, PlaceCatalystV2Support v2Support) {
+    public PlaceArticleCardLoader(CatalystV2Support v2Support) {
         super("extended_PartnerArticle_20180506");
-        this.client = client;
         this.v2Support = v2Support;
     }
 
     @Override
     protected List<Article> query(String placeId) {
-        List<Article> articleList = client.list(v2Support.resolve(placeId), null, 10);
+        List<Article> articleList = v2Support.getArticles(placeId, null, 10);
         removeBadData(articleList);
         return articleList;
     }

@@ -148,12 +148,14 @@
           })
         }
 
-        this.data.menus.forEach(function (menu) {
-          menus.push({
-            data: menu,
-            type: 'image'
+        if (this.data.place.menu && this.data.place.menu.images) {
+          this.data.place.menu.images.forEach(function (menu) {
+            menus.push({
+              data: menu,
+              type: 'image'
+            })
           })
-        })
+        }
 
         if (menus.length > 0) {
           return menus

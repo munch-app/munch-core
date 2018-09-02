@@ -3,7 +3,7 @@ package munch.api.place;
 import munch.api.AbstractServiceTest;
 import munch.api.TestCase;
 import munch.article.clients.Article;
-import munch.corpus.instagram.InstagramMedia;
+import munch.instagram.data.InstagramMedia;
 import munch.restful.client.RestfulRequest;
 import munch.restful.client.RestfulResponse;
 import org.junit.jupiter.params.ParameterizedTest;

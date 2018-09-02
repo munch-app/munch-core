@@ -29,5 +29,10 @@ task publishWebsiteStaging {
         "-t", dockerTag + 'staging', '.'
     }
     exec { commandLine "docker", "push", dockerTag + 'staging' }
+    exec { commandLine 'aws', 'ecs', 'update-service',
+      '--cluster', 'munch-core',
+      '--service', 'Website_Staging',
+      '--force-new-deployment'
+    }
   }
 }

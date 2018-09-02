@@ -1,5 +1,7 @@
 package munch.api;
 
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
+import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagement;
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagementClientBuilder;
 import com.amazonaws.services.simplesystemsmanagement.model.GetParameterRequest;
@@ -15,10 +17,10 @@ import munch.api.core.CoreModule;
 import munch.api.place.PlaceModule;
 import munch.api.search.SearchModule;
 import munch.api.user.UserModule;
-import munch.corpus.instagram.dynamodb.DynamoModule;
 import munch.restful.server.firebase.FirebaseAuthenticationModule;
 import org.apache.commons.io.IOUtils;
 
+import javax.inject.Singleton;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -33,7 +35,6 @@ public class ApiModule extends AbstractModule {
     @Override
     protected void configure() {
         install(getAuthenticationModule());
-        install(new DynamoModule());
 
         // Service Module
         install(new CoreModule());
@@ -61,6 +62,12 @@ public class ApiModule extends AbstractModule {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Provides
+    @Singleton
+    DynamoDB provideDynamoDB() {
+        return new DynamoDB(AmazonDynamoDBClientBuilder.defaultClient());
     }
 
     @Provides
