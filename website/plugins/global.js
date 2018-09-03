@@ -9,10 +9,9 @@ Vue.use(VueSimpleSVG)
 import VueRx from 'vue-rx'
 Vue.use(VueRx)
 
-import * as VueGoogleMaps from 'vue2-google-maps'
-Vue.use(VueGoogleMaps, {
-  load: {
-    key: 'AIzaSyCpV-NwmrL6SfeWacF5xHEhCLniiTzZS3c',
-    libraries: 'places',
-  },
-})
+// import * as VueGoogleMaps from 'vue2-google-maps'
+// Vue.use(VueGoogleMaps, {
+//   load: {
+//     key: 'AIzaSyDnaI9tCw54qWibZ7MMA_tYZF121Mw2h5E'
+//   },
+// })

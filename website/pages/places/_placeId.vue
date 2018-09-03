@@ -47,17 +47,7 @@
           270 Orchard Road Singapore 238857
         </div>
 
-        <GmapMap class="GoogleMap" :options="{
-                  mapTypeControl: false,
-                  gestureHandling: 'none',
-                  keyboardShortcuts: true,
-                  zoomControl: false,
-                  streetViewControl: false,
-                  fullscreenControl: false
-        }" :center="coordinate" :zoom="17" map-type-id="terrain">
-          <GmapMarker class="GoogleMapMarker" :position="coordinate" :clickable="false" :draggable="false"
-                      @click="center=m.position"/>
-        </GmapMap>
+        <GoogleEmbedMap :lat-lng="data.place.location.latLng" height="224"/>
       </b-container>
     </section>
 
@@ -95,9 +85,11 @@
   import PlaceMenus from "../../components/places/PlaceMenus";
   import InstagramMediaCollection from "../../components/places/InstagramMediaCollection";
   import ArticleCollection from "../../components/places/ArticleCollection";
+  import GoogleEmbedMap from "../../components/core/GoogleEmbedMap";
 
   export default {
     components: {
+      GoogleEmbedMap,
       ArticleCollection,
       InstagramMediaCollection,
       PlaceMenus, MunchButton, OpeningHours, PlaceImages, ImageSize, PlaceTags, InstagramMediaCard, ArticleCard
