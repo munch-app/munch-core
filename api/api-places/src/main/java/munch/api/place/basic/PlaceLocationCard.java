@@ -1,6 +1,7 @@
 package munch.api.place.basic;
 
-import munch.data.Location;
+
+import munch.data.location.Location;
 
 /**
  * Created by: Fuxing

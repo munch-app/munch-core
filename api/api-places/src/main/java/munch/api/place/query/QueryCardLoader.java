@@ -28,11 +28,13 @@ public final class QueryCardLoader {
     @Inject
     public QueryCardLoader(
             PlaceArticleCardLoader placeArticleCardLoader,
-            PlaceInstagramCardLoader placeInstagramCardLoader) {
+            PlaceInstagramCardLoader placeInstagramCardLoader,
+            PlaceAwardCardLoader placeAwardCardLoader) {
 
         this.dataCardLoaders = List.of(
                 placeArticleCardLoader,
-                placeInstagramCardLoader
+                placeInstagramCardLoader,
+                placeAwardCardLoader
         );
     }
 

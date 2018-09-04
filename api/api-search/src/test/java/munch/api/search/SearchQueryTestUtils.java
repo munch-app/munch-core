@@ -1,7 +1,7 @@
 package munch.api.search;
 
-import munch.data.Location;
 import munch.data.location.Area;
+import munch.data.location.Location;
 
 import java.util.List;
 

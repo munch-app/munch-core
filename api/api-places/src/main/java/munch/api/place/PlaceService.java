@@ -11,6 +11,7 @@ import munch.data.place.Place;
 import munch.instagram.InstagramLinkClient;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonResult;
+import munch.user.client.AwardCollectionClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,16 +32,18 @@ public class PlaceService extends ApiService {
     private final PlaceCardSorter cardSorter;
 
     private final InstagramLinkClient instagramLinkClient;
+    private final AwardCollectionClient awardCollectionClient;
 
     private final CatalystV2Support v2Support;
 
     @Inject
-    public PlaceService(PlaceClient placeClient, BasicCardLoader basicReader, QueryCardLoader cardLoader, PlaceCardSorter cardSorter, InstagramLinkClient instagramLinkClient, CatalystV2Support v2Support) {
+    public PlaceService(PlaceClient placeClient, BasicCardLoader basicReader, QueryCardLoader cardLoader, PlaceCardSorter cardSorter, InstagramLinkClient instagramLinkClient, AwardCollectionClient awardCollectionClient, CatalystV2Support v2Support) {
         this.placeClient = placeClient;
         this.basicReader = basicReader;
         this.cardLoader = cardLoader;
         this.cardSorter = cardSorter;
         this.instagramLinkClient = instagramLinkClient;
+        this.awardCollectionClient = awardCollectionClient;
 
         this.v2Support = v2Support;
     }
@@ -69,7 +72,7 @@ public class PlaceService extends ApiService {
 
         return JsonResult.ok(Map.of(
                 "place", place,
-                "awards", List.of(), // Implement: Awards back
+                "awards", awardCollectionClient.list(placeId, null, 10),
                 "articles", v2Support.getArticles(placeId, null, 10),
                 "instagram", Map.of(
                         "medias", instagramLinkClient.list(placeId, null, 10)
