@@ -1,8 +1,6 @@
 <template>
-  <div class="HeaderProfile">
-    <div @click="$emit('click')">
-      <img class="ProfileImage">
-    </div>
+  <div class="HeaderProfile" @click="$emit('click')">
+    <div class="ProfileImage"/>
   </div>
 </template>
 
@@ -17,13 +15,15 @@
     margin-top: 16px;
     margin-bottom: 16px;
 
+    &:hover {
+      cursor: pointer;
+    }
 
     .ProfileImage {
       height: 32px;
       width: 32px;
-      border: 0;
       background-color: black;
-      border-radius: 16px;
+      border-radius: 50%;
     }
   }
 </style>

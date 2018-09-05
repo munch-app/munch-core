@@ -1,44 +1,24 @@
 <template>
   <div class="SearchBar">
-    <input class="SearchTextBar Elevation1"
-           :class="{'Border24': !(this.isSuggest || this.isFilter), 'Border24Top': this.isSuggest || this.isFilter}"
-           :style="style" type="text" :placeholder="placeholder" v-model="text" @keyup="onKeyUp" @focus="onFocus">
-    <div class="SearchDropDown Elevation2 Border24Bottom">
-      <search-suggest :results="results" v-if="isSuggest" @action="onSuggestAction"/>
-      <search-filter v-if="isFilter" @action="onFilterAction"/>
-    </div>
+    <input class="SearchTextBar Elevation1 Border3" type="text" :placeholder="placeholder" v-model="text"
+           @keyup="onKeyUp" @focus="onFocus">
   </div>
 </template>
 
 <script>
   import MunchButton from "../core/MunchButton";
   import {pluck, filter, debounceTime, distinctUntilChanged, switchMap, map} from 'rxjs/operators'
-  import SearchSuggest from "./SearchSuggest";
-  import SearchFilter from "./SearchFilter";
+  import SearchSuggest from "../layouts/SearchSuggest";
+  import SearchFilter from "../layouts/SearchFilter";
 
   export default {
     name: "SearchBar",
     components: {SearchFilter, SearchSuggest, MunchButton},
     props: {
       placeholder: {
-        required: false,
         type: String,
-        default: 'Search e.g. Italian in Marina Bay'
-      },
-      fontSize: {
         required: false,
-        type: Number,
-        default: 13
-      },
-      height: {
-        required: false,
-        type: Number,
-        default: 32
-      },
-      padding: {
-        required: false,
-        type: String,
-        default: '7px 12px'
+        default: () => 'Search e.g. Italian in Marina Bay'
       }
     },
     data() {
@@ -48,15 +28,7 @@
         isFilter: false
       }
     },
-    computed: {
-      style() {
-        return {
-          'font-size': this.fontSize + 'px',
-          'height': this.height + 'px',
-          'padding': this.padding
-        }
-      }
-    },
+    computed: {},
     methods: {
       onKeyUp(e) {
         this.isSuggest = !!(this.text && this.text.length > 0)
@@ -102,15 +74,18 @@
 </script>
 
 <style scoped lang="less">
-  div.SearchBar {
+  .SearchBar {
 
   }
 
-  input.SearchTextBar {
+  .SearchTextBar {
     background-color: #FFFFFF;
     border: none transparent;
     width: 100%;
     z-index: 1000;
+    font-size: 13px;
+    padding: 7px 12px;
+    height: 32px;
 
     color: rgba(0, 0, 0, 0.6);
 

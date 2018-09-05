@@ -1,57 +1,89 @@
 <template>
   <div>
-    <div class="NavHeader NavBg Elevation1">
-      <b-container class="Row">
-        <a href="/"><img class="Logo" src="/img/MunchLogo.svg"></a>
-        <search-bar class="SearchTextBar"/>
-      </b-container>
-    </div>
+    <nav class="Header NavBg Elevation1">
+      <div class="HeaderRow container clearfix">
+        <header-logo class="Logo" @click="onClickLogo"/>
+        <div class="Search">
+          <search-bar class="SearchBar"/>
+        </div>
+        <header-profile class="Profile float-right" @click="onClickProfile"/>
+      </div>
+
+      <header-menu class="Menu" :show="isMenu" @onHidden="isMenu = false"/>
+    </nav>
     <nuxt/>
+    <nav class="Footer">
+    </nav>
   </div>
 </template>
 
 <script>
-  import SearchBar from "../components/layouts/SearchBar";
+  import HeaderLogo from "../components/layouts/HeaderLogo";
+  import HeaderProfile from "../components/layouts/HeaderProfile";
+  import HeaderMenu from "../components/layouts/HeaderMenu";
+  import SearchBar from "../components/search/SearchBar";
 
   export default {
-    components: {SearchBar}
+    components: {
+      SearchBar,
+      HeaderMenu,
+      HeaderProfile,
+      HeaderLogo
+    },
+    data() {
+      return {isMenu: false}
+    },
+    methods: {
+      onClickLogo() {
+        if (window.innerWidth < 768) {
+          this.isMenu = !this.isMenu
+        } else {
+          this.$router.push({path: '/'})
+        }
+      },
+      onClickProfile() {
+        this.isMenu = !this.isMenu
+      }
+    }
   }
 </script>
 
-<style scoped lang="less">
-  .NavHeader {
+<style lang="less" scoped>
+  .Header {
     height: 64px;
-    z-index: 1000;
 
-    .Row {
+    .Logo {
+    }
+
+    .HeaderRow {
       display: flex;
-      flex-direction: row;
+    }
+
+    .Search {
+      margin: 16px 8px 16px 24px;
+      flex-grow: 1;
+
+      .SearchBar {
+        @media (min-width: 768px) {
+          width: 440px;
+        }
+      }
+    }
+
+    .Profile {
+      display: none;
+
+      @media (min-width: 768px) {
+        display: block;
+      }
+    }
+
+    .Menu {
+
     }
   }
 
-  .Logo {
-    margin-top: 16px;
-    margin-bottom: 16px;
-    height: 32px;
-    width: 32px;
-  }
+  .Footer {
 
-  .SearchTextBar {
-    margin-top: 16px;
-    margin-bottom: 16px;
-    margin-left: 24px;
-  }
-
-  @media only screen and (max-width: 600px) {
-    .SearchTextBar {
-      flex-grow: 2;
-      margin-right: 24px;
-    }
-  }
-
-  @media only screen and (min-width: 600px) {
-    .SearchTextBar {
-      width: 480px;
-    }
   }
 </style>

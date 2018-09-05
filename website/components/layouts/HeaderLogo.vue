@@ -19,6 +19,10 @@
     width: 32px;
 
     display: flex;
+
+    &:hover {
+      cursor: pointer;
+    }
   }
 
   .HeaderIndicator {

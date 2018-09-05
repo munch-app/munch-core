@@ -26,6 +26,7 @@
   import SearchPlaceCard from "../components/search/SearchPlaceCard";
 
   export default {
+    layout: 'search',
     components: {SearchPlaceCard},
     head() {
       return {

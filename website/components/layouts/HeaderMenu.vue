@@ -12,8 +12,8 @@
       <hr>
       <div><a href="https://partner.munch.app" target="_blank">Content Partners</a></div>
       <hr>
-      <div>Terms of Use</div>
-      <div>Privacy Policy</div>
+      <div @click="onMenuClick('/kb/terms-of-use')">Terms of Use</div>
+      <div @click="onMenuClick('/kb/privacy-policy')">Privacy Policy</div>
       <hr>
       <div @click="onMenuClick('/logout')">Logout</div>
     </div>
