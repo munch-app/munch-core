@@ -2,8 +2,7 @@ const {Router} = require('express');
 const router = Router();
 
 const service = require('axios').create({
-  // TODO: Change to internal routing to save cost
-  baseURL: 'https://api.munch.app/v0.13.0'
+  baseURL: process.env.API_MUNCH_APP
 });
 
 service.interceptors.response.use(function (response) {

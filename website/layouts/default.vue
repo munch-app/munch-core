@@ -1,29 +1,69 @@
 <template>
   <div>
-    <nav-header class="Header"></nav-header>
+    <nav class="Header NavBg Elevation1">
+      <div class="container clearfix">
+        <header-logo class="Logo float-left" @click="onClickLogo"/>
+        <header-profile class="Profile float-right" @click="onClickProfile"/>
+      </div>
+
+      <header-menu class="Menu" :show="isMenu" @onHidden="isMenu = false"/>
+    </nav>
     <nuxt/>
-    <nav-bottom class="Bottom"></nav-bottom>
+    <nav class="Footer">
+    </nav>
   </div>
 </template>
 
 <script>
-  import NavHeader from '~/components/NavHeader.vue'
-  import NavBottom from '~/components/NavBottom.vue'
+  import HeaderLogo from "../components/layouts/HeaderLogo";
+  import HeaderProfile from "../components/layouts/HeaderProfile";
+  import HeaderMenu from "../components/layouts/HeaderMenu";
 
   export default {
     components: {
-      NavHeader,
-      NavBottom
+      HeaderMenu,
+      HeaderProfile,
+      HeaderLogo
+    },
+    data() {
+      return {isMenu: false}
+    },
+    methods: {
+      onClickLogo() {
+        if (window.innerWidth < 768) {
+          this.isMenu = !this.isMenu
+        } else {
+          this.$router.push({path: '/'})
+        }
+      },
+      onClickProfile() {
+        this.isMenu = !this.isMenu
+      }
     }
   }
 </script>
 
 <style lang="less" scoped>
   .Header {
-    z-index: 1000;
+    height: 64px;
+
+    .Logo {
+    }
+
+    .Profile {
+      display: none;
+
+      @media (min-width: 768px) {
+        display: block;
+      }
+    }
+
+    .Menu {
+
+    }
   }
 
-  .Bottom {
-    z-index: 1000;
+  .Footer {
+
   }
 </style>

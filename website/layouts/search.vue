@@ -1,29 +1,24 @@
 <template>
-  <div class="NavHeader NavBg Elevation1">
-    <b-container class="Row">
-      <a href="/"><img class="MunchLogo" src="/img/MunchLogo.svg"></a>
-      <search-bar v-if="searchEnabled" class="SearchTextBar"/>
-    </b-container>
+  <div>
+    <div class="NavHeader NavBg Elevation1">
+      <b-container class="Row">
+        <a href="/"><img class="Logo" src="/img/MunchLogo.svg"></a>
+        <search-bar class="SearchTextBar"/>
+      </b-container>
+    </div>
+    <nuxt/>
   </div>
 </template>
 
 <script>
-  import SearchBar from "./search/SearchBar";
+  import SearchBar from "../components/layouts/SearchBar";
 
   export default {
-    components: {SearchBar},
-    props: {
-      searchEnabled: {
-        required: false,
-        type: Boolean,
-        default: true
-      }
-    }
+    components: {SearchBar}
   }
 </script>
 
-
-<style lang="less" scoped>
+<style scoped lang="less">
   .NavHeader {
     height: 64px;
     z-index: 1000;
@@ -34,7 +29,7 @@
     }
   }
 
-  .MunchLogo {
+  .Logo {
     margin-top: 16px;
     margin-bottom: 16px;
     height: 32px;

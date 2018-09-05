@@ -59,7 +59,6 @@
       },
       hour() {
         return {
-          // TODO Hours
         }
       },
       searchQuery() {
