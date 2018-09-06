@@ -1,73 +1,60 @@
 <template>
   <div class="SearchBar">
-    <input class="SearchTextBar Elevation1 Border3" type="text" :placeholder="placeholder" v-model="text"
-           @keyup="onKeyUp" @focus="onFocus">
+    <input ref="input" class="TextBar Elevation1 Border3Top" type="text" :placeholder="placeholder" v-model="text"
+           @keyup="onKeyUp" @focus="onFocus" @blur="onBlur" :class="{'Extended': !extended}">
+    <div class="Clear" :style="clearStyle" @click="onClear">
+      <simple-svg fill="black" filepath="/img/search/close.svg"/>
+    </div>
   </div>
 </template>
 
 <script>
-  import MunchButton from "../core/MunchButton";
-  import {pluck, filter, debounceTime, distinctUntilChanged, switchMap, map} from 'rxjs/operators'
-  import SearchSuggest from "../layouts/SearchSuggest";
-  import SearchFilter from "../layouts/SearchFilter";
-
   export default {
     name: "SearchBar",
-    components: {SearchFilter, SearchSuggest, MunchButton},
+    components: {},
     props: {
       placeholder: {
         type: String,
         required: false,
         default: () => 'Search e.g. Italian in Marina Bay'
+      },
+      extended: {
+        type: Boolean,
+        required: true
       }
     },
     data() {
       return {
-        text: "",
-        isSuggest: false,
-        isFilter: false
+        text: this.$route.query.q || ""
       }
     },
-    computed: {},
-    methods: {
-      onKeyUp(e) {
-        this.isSuggest = !!(this.text && this.text.length > 0)
-        this.isFilter = this.text === ''
-        if (e.keyCode === 13) {
-          this.$router.push({path: '/search', query: {query: this.text}})
-          this.onSuggestAction('')
+    mounted() {
+      this.$emit('onText', this.text)
+    },
+    computed: {
+      clearStyle() {
+        return {
+          'display': this.text.length > 0 ? 'block' : 'none'
         }
+      }
+    },
+    methods: {
+      onKeyUp() {
+        this.$emit('onText', this.text)
       },
       onFocus() {
-        this.isSuggest = this.text !== ''
-        this.isFilter = this.text === ''
+        this.$emit('onFocus', this.text)
       },
-      onSuggestAction(text) {
-        this.text = text || ''
-        this.isSuggest = this.text !== ''
+      onBlur() {
+        this.$emit('onBlur', this.text)
       },
-      onFilterAction() {
-        this.isFilter = false
-      }
-    },
-    subscriptions() {
-      return {
-        results: this.$watchAsObservable('text').pipe(
-          pluck('newValue'),
-          filter(text => text.length > 2),
-          debounceTime(250),
-          distinctUntilChanged(),
-          switchMap((text) => {
-            return this.$axios.$post('/api/search/suggest', {
-              "text": text,
-              "searchQuery": {
-                "filter": {},
-                "sort": {}
-              }
-            }, {progress: false})
-          }),
-          map(({data}) => data)
-        )
+      onClear() {
+        console.log('clear')
+        this.text = ''
+        this.$emit('onText', this.text)
+      },
+      blur() {
+        this.$refs.input.blur()
       }
     }
   }
@@ -75,17 +62,19 @@
 
 <style scoped lang="less">
   .SearchBar {
-
+    position: relative;
+    width: 100%;
+    height: 40px;
   }
 
-  .SearchTextBar {
+  .TextBar {
+    position: absolute;
     background-color: #FFFFFF;
     border: none transparent;
     width: 100%;
-    z-index: 1000;
-    font-size: 13px;
-    padding: 7px 12px;
-    height: 32px;
+    font-size: 17px;
+    height: 40px;
+    padding: 0 16px;
 
     color: rgba(0, 0, 0, 0.6);
 
@@ -93,12 +82,25 @@
       outline: none;
       color: black;
     }
+
+    &.Extended {
+      border-radius: 3px 3px 0 0;
+
+      @media (min-width: 768px) {
+        border-radius: 3px;
+      }
+    }
   }
 
-  .SearchDropDown {
-    position: relative;
-    width: 100%;
-    z-index: 1000;
-    background: white;
+  .Clear {
+    position: absolute;
+    right: 0;
+    width: 40px;
+    height: 40px;
+    padding: 10px;
+
+    &:hover {
+      cursor: pointer;
+    }
   }
 </style>

@@ -1,5 +1,4 @@
 export const state = () => ({
-  text: '',
   query: {
     filter: {},
     sort: {}

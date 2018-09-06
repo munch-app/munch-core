@@ -35,11 +35,15 @@
       list() {
         return this.menus.map(function (menu) {
           if (menu.type === 'image') {
+            const url = menu.data.sizes.sort(function (a, b) {
+              return b.width - a.width
+            })[0].url
+
             return {
-              key: menu.data.sortKey,
-              image: menu.data.thumbnail,
-              source: menu.data.sourceName,
-              href: menu.data.url,
+              key: menu.data.imageId,
+              image: menu.data,
+              source: menu.data.profile && menu.data.profile.name, // If blank, source is internal
+              href: url,
             }
           } else if (menu.type === 'url') {
             return {

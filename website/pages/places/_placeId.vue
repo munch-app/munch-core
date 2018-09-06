@@ -88,6 +88,7 @@
   import GoogleEmbedMap from "../../components/core/GoogleEmbedMap";
 
   export default {
+    layout: 'search',
     components: {
       GoogleEmbedMap,
       ArticleCollection,

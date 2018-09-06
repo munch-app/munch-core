@@ -40,6 +40,8 @@
 
 <style scoped lang="less">
   .HeaderMenu {
+    z-index: 1000;
+
     @media (min-width: 768px) {
       max-width: 720px;
       padding-right: 15px;
@@ -62,6 +64,7 @@
   }
 
   .NavLink {
+    z-index: 1000;
     position: absolute;
     background: white;
     padding: 8px 0;
@@ -87,6 +90,7 @@
   }
 
   .Triangle {
+    position: absolute;
     width: 0;
     height: 0;
     border-left: 12px solid transparent;

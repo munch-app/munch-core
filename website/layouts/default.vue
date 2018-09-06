@@ -8,6 +8,8 @@
 
       <header-menu class="Menu" :show="isMenu" @onHidden="isMenu = false"/>
     </nav>
+    <div class="HeaderSpace"/>
+
     <nuxt/>
     <nav class="Footer">
     </nav>
@@ -44,8 +46,15 @@
 </script>
 
 <style lang="less" scoped>
-  .Header {
+  .HeaderSpace {
     height: 64px;
+  }
+
+  .Header {
+    position: fixed;
+    top: 0;
+    height: 64px;
+    width: 100%;
 
     .Logo {
     }
