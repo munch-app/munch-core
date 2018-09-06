@@ -51,6 +51,7 @@
   }
 
   .Header {
+    z-index: 1000;
     position: fixed;
     top: 0;
     height: 64px;

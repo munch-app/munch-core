@@ -1,7 +1,4 @@
 module.exports = {
-  /*
-  ** Headers of the page
-  */
   head: {
     title: 'Discover Delicious - Munch',
     meta: [
@@ -27,17 +24,13 @@ module.exports = {
       }
     }
   },
-  /*
-  ** Customize the progress bar color
-  */
   loading: {color: '#3B8070'},
-  /*
-  ** Build configuration
-  */
+  router: {
+    scrollBehavior: function (to, from, savedPosition) {
+      return {x: 0, y: 0}
+    }
+  },
   build: {
-    /*
-    ** Run ESLint on save
-    */
     extend(config, {isDev, isClient}) {
       if (isDev && isClient) {
         config.module.rules.push({
@@ -62,8 +55,24 @@ module.exports = {
       if (isDev) {
         config.devtool = 'eval-source-map'
       }
-    }
+    },
+    vendor: [
+      'vue-line-clamp-extended',
+      'vue-clickaway',
+      'vue-simple-svg',
+      'vue-rx',
+      'prismic-vue'
+    ]
   },
+  plugins: [
+    '~/plugins/axios',
+    '~/plugins/global',
+    '~/plugins/vue-line-clamp-extended',
+    '~/plugins/vue-clickaway',
+    '~/plugins/vue-simple-svg',
+    '~/plugins/vue-rx',
+    '~/plugins/prismic-vue',
+  ],
   serverMiddleware: [
     {
       path: '/_health', handler: (req, res) => res.end('ok')
@@ -72,15 +81,11 @@ module.exports = {
   ],
   modules: [
     'bootstrap-vue/nuxt',
+    '@nuxtjs/axios',
+    '@nuxtjs/sitemap',
     ['@nuxtjs/google-analytics', {
       id: 'UA-117480436-1'
     }],
-    '@nuxtjs/axios',
-    '@nuxtjs/sitemap'
-  ],
-  plugins: [
-    '~/plugins/axios',
-    '~/plugins/global'
   ],
   axios: {
     // proxyHeaders: false
@@ -94,6 +99,8 @@ module.exports = {
       '/',
       '/downloads',
       '/support',
+      '/search',
+      '/about',
     ]
   }
 };

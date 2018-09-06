@@ -20,6 +20,7 @@
   export default {
     layout: 'search',
     components: {SearchPlaceCard, SearchBarSuggest, SearchBarFilter},
+    loading: false,
     head() {
       return {
         title: 'Search | Munch',

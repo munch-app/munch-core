@@ -1,5 +1,5 @@
 <template>
-  <div class="HeaderMenu" v-if="show">
+  <div class="HeaderMenu" v-if="show" v-on-clickaway="onClickAway">
     <div class="Triangle"/>
 
     <div class="NavLink Elevation1">
@@ -12,8 +12,8 @@
       <hr>
       <div><a href="https://partner.munch.app" target="_blank">Content Partners</a></div>
       <hr>
-      <div @click="onMenuClick('/kb/terms-of-use')">Terms of Use</div>
-      <div @click="onMenuClick('/kb/privacy-policy')">Privacy Policy</div>
+      <div @click="onMenuClick('/support/terms-of-use')">Terms of Use</div>
+      <div @click="onMenuClick('/support/privacy-policy')">Privacy Policy</div>
       <hr>
       <div @click="onMenuClick('/logout')">Logout</div>
     </div>
@@ -33,6 +33,11 @@
       onMenuClick(to) {
         this.$emit('onHidden')
         this.$router.push({'path': to})
+      },
+      onClickAway() {
+        if (this.show) {
+          this.show = false
+        }
       }
     }
   }
@@ -86,6 +91,7 @@
     @media (min-width: 768px) {
       width: 200px;
       border-radius: 3px;
+      margin-top: -1px;
     }
   }
 
@@ -100,6 +106,7 @@
     display: none;
 
     @media (min-width: 768px) {
+      z-index: 1500;
       display: block;
       margin-top: -10px;
       margin-right: 4px;
