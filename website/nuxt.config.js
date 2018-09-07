@@ -62,7 +62,7 @@ module.exports = {
       'vue-simple-svg',
       'vue-rx',
       'prismic-vue',
-      'portal-vue'
+      'portal-vue',
     ]
   },
   plugins: [

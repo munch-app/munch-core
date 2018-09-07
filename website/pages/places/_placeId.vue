@@ -42,12 +42,12 @@
 
     <section class="Map">
       <b-container class="MapContainer">
-        <div class="GoogleMapDetail Elevation1 Border48 TagBg">
-          Level 4 Grand Park Orchard,
-          270 Orchard Road Singapore 238857
-        </div>
+        <!--<div class="GoogleMapDetail Elevation1 Border48 TagBg">-->
+          <!--Level 4 Grand Park Orchard,-->
+          <!--270 Orchard Road Singapore 238857-->
+        <!--</div>-->
 
-        <GoogleEmbedMap :lat-lng="data.place.location.latLng" height="224"/>
+        <google-embed-map :lat-lng="data.place.location.latLng" height="224"/>
       </b-container>
     </section>
 
@@ -68,7 +68,6 @@
         </b-container>
       </section>
     </section>
-
     <section class="End">
     </section>
   </div>

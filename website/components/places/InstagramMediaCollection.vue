@@ -42,8 +42,9 @@
         per: max,
         index: 0,
         list: this.medias,
-        display: this.medias.slice(0, max),hasLeft: false,
-        hasRight: this.medias.length > max
+        display: this.medias.slice(0, max), hasLeft: false,
+        hasRight: this.medias.length > max,
+        sort: null
       }
     },
     computed: {
@@ -71,10 +72,15 @@
 
         if ((this.list.length - (this.index + this.per)) < this.per) {
           // Load more
-          let nextPlaceSort = this.list[this.list.length - 1].placeSort
-          this.$axios.$get('/api/places/' + this.placeId + '/partners/instagram/medias?next.placeSort=' + nextPlaceSort, {progress: false}
-          ).then(({data}) => {
+          this.$axios.$get('/api/places/' + this.placeId + '/partners/instagram/medias?next.sort=' + this.sort, {progress: false}
+          ).then(({data, next}) => {
             [].push.apply(this.list, data);
+
+            if (next && next.sort) {
+              this.sort = next.sort
+            } else {
+              this.sort = null
+            }
             this.updateDisplay()
           })
         }
