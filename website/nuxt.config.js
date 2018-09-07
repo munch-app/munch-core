@@ -61,7 +61,8 @@ module.exports = {
       'vue-clickaway',
       'vue-simple-svg',
       'vue-rx',
-      'prismic-vue'
+      'prismic-vue',
+      'portal-vue'
     ]
   },
   plugins: [
@@ -72,6 +73,7 @@ module.exports = {
     '~/plugins/vue-simple-svg',
     '~/plugins/vue-rx',
     '~/plugins/prismic-vue',
+    '~/plugins/portal-vue',
   ],
   serverMiddleware: [
     {

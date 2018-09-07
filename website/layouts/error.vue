@@ -3,7 +3,7 @@
     <h1 v-if="error.statusCode === 404">Page Not Found</h1>
     <h1 v-else>An error occurred</h1>
 
-    <nuxt-link to="/">Munch</nuxt-link>
+    <nuxt-link to="/">Home Page</nuxt-link>
   </div>
 </template>
 
@@ -15,6 +15,6 @@
 
 <style scoped lang="less">
   .Error {
-    margin-top: 50px;
+    margin-top: 24px;
   }
 </style>

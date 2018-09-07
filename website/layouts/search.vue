@@ -11,7 +11,7 @@
         </div>
         <header-profile class="Profile float-right" @click="onClickProfile"/>
       </div>
-      <header-menu class="Menu" :show="isMenu" @onHidden="isMenu = false"/>
+      <header-menu class="Menu"/>
       <search-bar-filter class="SearchBarFilter" v-if="isFilter"/>
     </nav>
     <div class="HeaderSpace"/>
@@ -42,7 +42,6 @@
     },
     data() {
       return {
-        isMenu: false,
         isSuggest: false,
         text: "",
         suggestions: []
@@ -51,13 +50,13 @@
     methods: {
       onClickLogo() {
         if (window.innerWidth < 768) {
-          this.isMenu = !this.isMenu
+          this.$store.commit('layout/toggleMenu')
         } else {
           this.$router.push({path: '/'})
         }
       },
       onClickProfile() {
-        this.isMenu = !this.isMenu
+        this.$store.commit('layout/toggleMenu')
       },
       onText(text) {
         if (text.length === 0) {

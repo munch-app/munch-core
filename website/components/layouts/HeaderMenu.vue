@@ -1,5 +1,5 @@
 <template>
-  <div class="HeaderMenu" v-if="show" v-on-clickaway="onClickAway">
+  <div class="HeaderMenu" v-if="$store.state.layout.menu" v-on-clickaway="onClickAway">
     <div class="Triangle"/>
 
     <div class="NavLink Elevation1">
@@ -12,8 +12,7 @@
       <hr>
       <div><a href="https://partner.munch.app" target="_blank">Content Partners</a></div>
       <hr>
-      <div @click="onMenuClick('/support/terms-of-use')">Terms of Use</div>
-      <div @click="onMenuClick('/support/privacy-policy')">Privacy Policy</div>
+      <div @click="onMenuClick('/support')">Support</div>
       <hr>
       <div @click="onMenuClick('/logout')">Logout</div>
     </div>
@@ -23,20 +22,15 @@
 <script>
   export default {
     name: "HeaderMenu",
-    props: {
-      show: {
-        type: Boolean,
-        required: true
-      }
-    },
     methods: {
       onMenuClick(to) {
-        this.$emit('onHidden')
+        this.$store.commit('layout/showMenu', false)
+
         this.$router.push({'path': to})
       },
       onClickAway() {
-        if (this.show) {
-          this.show = false
+        if (this.$store.state.layout.menu) {
+          this.$store.commit('layout/showMenu', false)
         }
       }
     }

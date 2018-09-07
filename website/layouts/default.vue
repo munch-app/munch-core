@@ -6,7 +6,7 @@
         <header-profile class="Profile float-right" @click="onClickProfile"/>
       </div>
 
-      <header-menu class="Menu" :show="isMenu" @onHidden="isMenu = false"/>
+      <header-menu class="Menu"/>
     </nav>
     <div class="HeaderSpace"/>
 
@@ -27,19 +27,16 @@
       HeaderProfile,
       HeaderLogo
     },
-    data() {
-      return {isMenu: false}
-    },
     methods: {
       onClickLogo() {
         if (window.innerWidth < 768) {
-          this.isMenu = !this.isMenu
+          this.$store.commit('layout/toggleMenu')
         } else {
           this.$router.push({path: '/'})
         }
       },
       onClickProfile() {
-        this.isMenu = !this.isMenu
+        this.$store.commit('layout/toggleMenu')
       }
     }
   }

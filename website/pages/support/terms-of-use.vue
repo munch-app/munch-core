@@ -3,6 +3,7 @@
     <b-row>
       <b-col class="Content" cols="12" md="9" v-html="content"/>
       <b-col cols="12" md="3">
+        <hr class="d-md-none d-block">
         <h4>Support articles</h4>
         <ul>
           <li>
@@ -19,10 +20,10 @@
 
 <script>
   export default {
-    asyncData({Prismic, PrismicDOM}) {
+    asyncData({Prismic}) {
       return Prismic.getSingle('terms_of_use')
         .then((document) => {
-          return {content: PrismicDOM.RichText.asHtml(document.data.content)}
+          return {content: Prismic.asHtml(document.data.content)}
         })
     }
   }
@@ -30,7 +31,7 @@
 
 <style lang="less" scoped>
   .Support {
-    margin-top: 32px;
-    margin-bottom: 32px;
+    margin-top: 24px;
+    margin-bottom: 24px;
   }
 </style>
