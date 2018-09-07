@@ -1,5 +1,5 @@
 <template>
-  <div class="SearchFilterBar Elevation1">
+  <div class="SearchFilterBar Elevation1 NoSelect">
     <div class="FilterBar">
       <div class="Buttons container">
         <div v-for="button in buttons" :key="button" class="TagBg Button Border3" @click="onButton(button)">

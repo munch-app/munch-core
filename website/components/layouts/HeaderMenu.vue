@@ -1,5 +1,5 @@
 <template>
-  <div class="HeaderMenu" v-if="$store.state.layout.menu" v-on-clickaway="onClickAway">
+  <div class="HeaderMenu NoSelect" v-if="$store.state.layout.menu" v-on-clickaway="onClickAway">
     <div class="Triangle"/>
 
     <div class="NavLink Elevation1">
@@ -54,7 +54,6 @@
 
     @media (min-width: 992px) {
       max-width: 960px;
-
     }
 
     @media (min-width: 1200px) {
@@ -85,7 +84,7 @@
     @media (min-width: 768px) {
       width: 200px;
       border-radius: 3px;
-      margin-top: -1px;
+      margin-top: -8px;
     }
   }
 

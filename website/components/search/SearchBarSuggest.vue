@@ -1,5 +1,5 @@
 <template>
-  <div class="SearchSuggest" v-if="items">
+  <div class="SearchSuggest NoSelect" v-if="items">
     <div class="Results">
 
       <div class="Item" :class="{'OnPosition': position === item.position}" v-for="item in items"

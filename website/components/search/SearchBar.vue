@@ -1,5 +1,5 @@
 <template>
-  <div class="SearchBar">
+  <div class="SearchBar NoSelect">
     <input ref="input" class="TextBar Elevation1 Border3Top" type="text" :placeholder="placeholder" v-model="text"
            @keyup="onKeyUp" @focus="onFocus" @blur="onBlur" :class="{'Extended': !extended}">
     <div class="Clear" :style="clearStyle" @click="onClear">
