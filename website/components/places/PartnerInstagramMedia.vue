@@ -1,6 +1,6 @@
 <template>
   <div class="PartnerInstagramMedia">
-    <slick class="Slick" ref="slick" :options="options">
+    <slick class="Slick NoSelect" ref="slick" :options="options">
       <a class="MediaCard" v-for="media in medias" :key="media.mediaId" :href="media.link" target="_blank"
          rel="nofollow">
         <image-size class="Image Elevation1 Border48 BorderImage" :image="media.image">
@@ -91,6 +91,11 @@
     &:hover {
       cursor: pointer;
     }
+  }
+
+  a {
+    text-decoration: none;
+    color: black;
   }
 
   /* < 576 Condition */

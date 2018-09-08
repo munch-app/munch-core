@@ -55,10 +55,8 @@
       <h2 class="text-center">Partner’s Content</h2>
 
       <section class="Article" v-if="articles">
-        <b-container>
-          <h2>Articles</h2>
-          <article-collection :place-id="placeId" :articles="articles"/>
-        </b-container>
+        <h2 class="container">Articles</h2>
+        <partner-article :place-id="placeId" :preload="articles"/>
       </section>
 
       <section class="Instagram" v-if="instagramMedias">
@@ -84,10 +82,12 @@
   import ArticleCollection from "../../components/places/ArticleCollection";
   import GoogleEmbedMap from "../../components/core/GoogleEmbedMap";
   import PartnerInstagramMedia from "../../components/places/PartnerInstagramMedia";
+  import PartnerArticle from "../../components/places/PartnerArticle";
 
   export default {
     layout: 'search',
     components: {
+      PartnerArticle,
       PartnerInstagramMedia,
       GoogleEmbedMap,
       ArticleCollection,

@@ -35,15 +35,18 @@ public final class PlaceArticleCardLoader extends PlaceDataCardLoader<Article> {
 
     public static void removeBadData(List<Article> articles) {
         Set<String> uniquePairs = new HashSet<>();
+        Set<String> uniqueUrls = new HashSet<>();
 
         articles.removeIf(article -> {
             // No description article will be removed for now
             if (article.getDescription() == null) return true;
+            if (uniqueUrls.contains(article.getUrl())) return true;
 
             String pair = article.getBrand() + "|" + article.getTitle();
             if (uniquePairs.contains(pair)) return true;
 
             uniquePairs.add(pair);
+            uniqueUrls.add(article.getUrl());
             return false;
         });
     }
