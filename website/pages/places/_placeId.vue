@@ -1,9 +1,15 @@
 <template>
   <div>
+    <section class="Banner">
+      <place-images :images="images"/>
+    </section>
+
+
+
     <section class="Info">
       <b-container>
         <b-row>
-          <b-col cols="12" md="8" lg="6" class="Detail">
+          <b-col cols="12" md="8" lg="6" order="2" class="Detail">
             <h2>{{data.place.name}}</h2>
             <p class="Location Large">{{data.place.location.street || data.place.location.address}}</p>
             <place-tags class="Tags" :tags="data.place.tags" :max="5"/>
@@ -17,9 +23,6 @@
             <div class="Hour" v-if="hours">
               <opening-hours :hours="hours"/>
             </div>
-          </b-col>
-          <b-col class="d-none d-sm-block d-md-block" md="4" lg="6" v-if="images">
-            <place-images :images="images"/>
           </b-col>
         </b-row>
       </b-container>
@@ -55,12 +58,12 @@
       <h2 class="text-center">Partner’s Content</h2>
 
       <section class="Article" v-if="articles">
-        <h2 class="container">Articles</h2>
+        <h3 class="container mb-0">Articles</h3>
         <partner-article :place-id="placeId" :preload="articles"/>
       </section>
 
       <section class="Instagram" v-if="instagramMedias">
-        <h2 class="container">Instagram</h2>
+        <h3 class="container mb-0">Instagram</h3>
         <partner-instagram-media :place-id="placeId" :preload="instagramMedias"/>
       </section>
     </section>
@@ -70,16 +73,12 @@
 </template>
 
 <script>
-  import ArticleCard from "../../components/places/ArticleCard";
-  import InstagramMediaCard from "../../components/places/InstagramMediaCard";
   import PlaceTags from "../../components/places/PlaceTags";
   import ImageSize from "../../components/core/ImageSize";
   import PlaceImages from "../../components/places/PlaceImages";
   import OpeningHours from "../../components/places/OpeningHours";
   import MunchButton from "../../components/core/MunchButton";
   import PlaceMenus from "../../components/places/PlaceMenus";
-  import InstagramMediaCollection from "../../components/places/InstagramMediaCollection";
-  import ArticleCollection from "../../components/places/ArticleCollection";
   import GoogleEmbedMap from "../../components/core/GoogleEmbedMap";
   import PartnerInstagramMedia from "../../components/places/PartnerInstagramMedia";
   import PartnerArticle from "../../components/places/PartnerArticle";
@@ -90,9 +89,7 @@
       PartnerArticle,
       PartnerInstagramMedia,
       GoogleEmbedMap,
-      ArticleCollection,
-      InstagramMediaCollection,
-      PlaceMenus, MunchButton, OpeningHours, PlaceImages, ImageSize, PlaceTags, InstagramMediaCard, ArticleCard
+      PlaceMenus, MunchButton, OpeningHours, PlaceImages, ImageSize, PlaceTags
     },
     head() {
       const description = this.data.place.description
@@ -238,12 +235,11 @@
     margin: 48px 0;
 
     .Article {
-      margin: 24px 0;
+      margin: 12px 0;
     }
 
     .Instagram {
-      margin-top: 48px;
-      margin-bottom: 48px;
+      margin: 12px 0;
     }
   }
 

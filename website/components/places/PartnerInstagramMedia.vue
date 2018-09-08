@@ -1,6 +1,6 @@
 <template>
   <div class="PartnerInstagramMedia">
-    <slick class="Slick NoSelect" ref="slick" :options="options">
+    <slick class="Slick NoSelect" ref="slick" :options="options" @afterChange="onAfterChange">
       <a class="MediaCard" v-for="media in medias" :key="media.mediaId" :href="media.link" target="_blank"
          rel="nofollow">
         <image-size class="Image Elevation1 Border48 BorderImage" :image="media.image">
@@ -11,6 +11,17 @@
         <div class="Small UsernameLabel">@{{media.user.username}}</div>
       </a>
     </slick>
+
+    <div class="Controls">
+      <div class="Left Elevation1 Border24" @click="onPrev"
+           :class="{'Primary200Bg': hasPrev, 'Secondary050Bg': !hasPrev}">
+        <simple-svg class="Icon" fill="white" filepath="/img/places/caret_left.svg"/>
+      </div>
+      <div class="Right Elevation1 Border24" @click="onNext"
+           :class="{'Primary200Bg': hasNext, 'Secondary050Bg': !hasNext}">
+        <simple-svg class="Icon" fill="white" filepath="/img/places/caret_right.svg"/>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -52,16 +63,35 @@
           ]
         },
         medias: this.preload,
+        currentSlide: 0,
         next: null,
       }
     },
-    methods: {}
+    computed: {
+      hasPrev() {
+        return this.currentSlide > 0
+      },
+      hasNext() {
+        return this.currentSlide + 1 < this.medias.length
+      }
+    },
+    methods: {
+      onNext() {
+        this.$refs.slick.next();
+      },
+      onPrev() {
+        this.$refs.slick.prev();
+      },
+      onAfterChange(event, slick, currentSlide) {
+        this.currentSlide = currentSlide
+      }
+    }
   }
 </script>
 
 <style scoped lang="less">
   .PartnerInstagramMedia {
-    .Slick {
+    .Slick, .Controls {
       padding-left: 15px;
       width: 100%;
       margin-left: auto;
@@ -87,7 +117,36 @@
     }
   }
 
+  .Controls {
+    display: none;
+    justify-content: flex-end;
+    align-items: flex-end;
+
+    .Page, .Left, .Right {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+
+      width: 40px;
+      height: 40px;
+      margin-left: 16px;
+
+      .Icon {
+        width: 20px;
+        height: 20px;
+      }
+    }
+
+    @media (min-width: 576px) {
+      display: flex;
+    }
+  }
+
   .MediaCard {
+     margin-top: 18px;
+     margin-bottom: 12px; // Unable to find the invisible 6px 
+
     &:hover {
       cursor: pointer;
     }

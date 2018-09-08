@@ -1,7 +1,7 @@
 <template>
   <div class="PartnerArticle">
-    <slick class="Slick" ref="slick" :options="options">
-      <a class="" v-for="article in articles" :key="article.url" :href="article.url" target="_blank"
+    <slick class="Slick" ref="slick" :options="options" @afterChange="onAfterChange">
+      <a v-for="article in articles" :key="article.url" :href="article.url" target="_blank"
          rel="nofollow">
         <div class="ArticleCard NoSelect Elevation1 Border48">
           <image-size class="Image Border48Top BorderImage" :image="article.thumbnail"/>
@@ -14,6 +14,16 @@
         </div>
       </a>
     </slick>
+    <div class="Controls">
+      <div class="Left Elevation1 Border24" @click="onPrev"
+           :class="{'Primary200Bg': hasPrev, 'Secondary050Bg': !hasPrev}">
+        <simple-svg class="Icon" fill="white" filepath="/img/places/caret_left.svg"/>
+      </div>
+      <div class="Right Elevation1 Border24" @click="onNext"
+           :class="{'Primary200Bg': hasNext, 'Secondary050Bg': !hasNext}">
+        <simple-svg class="Icon" fill="white" filepath="/img/places/caret_right.svg"/>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -63,16 +73,35 @@
           ]
         },
         articles: this.preload,
+        currentSlide: 0,
         next: null,
       }
     },
-    methods: {}
+    computed: {
+      hasPrev() {
+        return this.currentSlide > 0
+      },
+      hasNext() {
+        return this.currentSlide + 1 < this.articles.length
+      }
+    },
+    methods: {
+      onNext() {
+        this.$refs.slick.next();
+      },
+      onPrev() {
+        this.$refs.slick.prev();
+      },
+      onAfterChange(event, slick, currentSlide) {
+        this.currentSlide = currentSlide
+      }
+    }
   }
 </script>
 
 <style scoped lang="less">
   .PartnerArticle {
-    .Slick {
+    .Slick, .Controls {
       padding-left: 15px;
       width: 100%;
       margin-left: auto;
@@ -94,6 +123,32 @@
       @media (min-width: 1200px) {
         max-width: 1140px;
       }
+    }
+  }
+
+  .Controls {
+    display: none;
+    justify-content: flex-end;
+    align-items: flex-end;
+
+    .Page, .Left, .Right {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+
+      width: 40px;
+      height: 40px;
+      margin-left: 16px;
+
+      .Icon {
+        width: 20px;
+        height: 20px;
+      }
+    }
+
+    @media (min-width: 576px) {
+      display: flex;
     }
   }
 

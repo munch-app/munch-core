@@ -57,8 +57,8 @@
     }
 
     .UsernameButton {
-      background-color: rgba(255, 255, 255, 0.75);
-      padding: 6px 10px;
+      background-color: rgba(255, 255, 255, 0.85);
+      padding: 4px 9px;
       margin-right: 8px;
       margin-bottom: 8px;
     }

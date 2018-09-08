@@ -1,7 +1,7 @@
 <template>
   <div class="SearchBar NoSelect">
-    <input ref="input" class="TextBar Elevation1 Border3Top" type="text" :placeholder="placeholder" v-model="text"
-           @keyup="onKeyUp" @focus="onFocus" @blur="onBlur" :class="{'Extended': !extended}">
+    <input ref="input" class="TextBar Elevation1" type="text" :placeholder="placeholder" v-model="text"
+           @keyup="onKeyUp" @focus="onFocus" @blur="onBlur" :class="{'Extended': extended}">
     <div class="Clear" :style="clearStyle" @click="onClear">
       <simple-svg fill="black" filepath="/img/search/close.svg"/>
     </div>
@@ -68,6 +68,7 @@
   }
 
   .TextBar {
+    border-radius: 3px;
     position: absolute;
     background-color: #FFFFFF;
     border: none transparent;
@@ -84,10 +85,10 @@
     }
 
     &.Extended {
-      border-radius: 3px 3px 0 0;
+      border-radius: 3px;
 
       @media (min-width: 768px) {
-        border-radius: 3px;
+        border-radius: 3px 3px 0 0;
       }
     }
   }

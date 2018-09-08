@@ -5,10 +5,13 @@ import com.google.inject.Singleton;
 import munch.api.ApiService;
 import munch.api.place.basic.BasicCardLoader;
 import munch.api.place.card.PlaceCard;
+import munch.api.place.query.PlaceArticleCardLoader;
 import munch.api.place.query.QueryCardLoader;
+import munch.article.clients.Article;
 import munch.data.client.PlaceClient;
 import munch.data.place.Place;
 import munch.instagram.InstagramLinkClient;
+import munch.restful.core.NextNodeList;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonResult;
 import munch.user.client.AwardCollectionClient;
@@ -70,10 +73,13 @@ public class PlaceService extends ApiService {
         Place place = placeClient.get(placeId);
         if (place == null) return JsonResult.notFound();
 
+        NextNodeList<Article> articles = v2Support.getArticles(placeId, null, 10);
+        PlaceArticleCardLoader.removeBadData(articles);
+
         return JsonResult.ok(Map.of(
                 "place", place,
                 "awards", awardCollectionClient.list(placeId, null, 10),
-                "articles", v2Support.getArticles(placeId, null, 10),
+                "articles", articles,
                 "instagram", Map.of(
                         "medias", instagramLinkClient.list(placeId, null, 10)
                 )
