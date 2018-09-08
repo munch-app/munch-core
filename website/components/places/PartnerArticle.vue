@@ -4,7 +4,7 @@
       <a v-for="article in articles" :key="article.url" :href="article.url" target="_blank"
          rel="nofollow">
         <div class="ArticleCard NoSelect Elevation1 Border48">
-          <image-size class="Image Border48Top BorderImage" :image="article.thumbnail"/>
+          <image-size class="Image Border48Top" :image="article.thumbnail"/>
 
           <div class="Content">
             <div class="Title Large">{{article.title}}</div>
@@ -130,6 +130,7 @@
     display: none;
     justify-content: flex-end;
     align-items: flex-end;
+    margin-top: 8px;
 
     .Page, .Left, .Right {
       display: flex;
@@ -170,7 +171,7 @@
 
   /* < 576 Condition & Normal Condition */
   .ArticleCard {
-    margin: 18px 18px 18px 1px;
+    margin: 8px 18px 8px 1px;
     width: 244px;
     height: 310px;
   }

@@ -3,7 +3,7 @@
     <slick class="Slick NoSelect" ref="slick" :options="options" @afterChange="onAfterChange">
       <a class="MediaCard" v-for="media in medias" :key="media.mediaId" :href="media.link" target="_blank"
          rel="nofollow">
-        <image-size class="Image Elevation1 Border48 BorderImage" :image="media.image">
+        <image-size class="Image Elevation1 Border48" :image="media.image">
           <div class="ImageBox">
             <div class="Small UsernameButton Border24 Elevation1">@{{media.user.username}}</div>
           </div>
@@ -121,6 +121,7 @@
     display: none;
     justify-content: flex-end;
     align-items: flex-end;
+    margin-top: 8px;
 
     .Page, .Left, .Right {
       display: flex;
@@ -144,8 +145,8 @@
   }
 
   .MediaCard {
-     margin-top: 18px;
-     margin-bottom: 12px; // Unable to find the invisible 6px 
+     margin-top: 8px;
+     margin-bottom: 8px;
 
     &:hover {
       cursor: pointer;
@@ -159,9 +160,9 @@
 
   /* < 576 Condition */
   .Image {
-    margin-right: 12px;
-    height: 28vw;
-    width: 28vw;
+    margin-right: 16px;
+    height: 33vw;
+    width: 33vw;
   }
 
   .UsernameButton {
@@ -189,8 +190,8 @@
   @media (min-width: 768px) {
     .Image {
       margin-right: 24px;
-      height: 20vw;
-      width: 20vw;
+      height: 22vw;
+      width: 22vw;
     }
 
     .UsernameButton {

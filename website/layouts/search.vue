@@ -132,9 +132,13 @@
     }
 
     .Search {
-      margin: 12px 8px 12px 8px;
+      margin: 12px 0 12px 0;
       flex-grow: 1;
       z-index: 200;
+
+      @media (min-width: 768px) {
+        margin: 12px 8px 12px 8px;
+      }
 
       .SearchBar {
         z-index: 200;

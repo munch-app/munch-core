@@ -1,6 +1,6 @@
 <template>
   <div class="OpeningHours" @click="showAll = !showAll">
-    <div class="HourToday" v-if="!showAll">
+    <div class="HourToday Text" v-if="!showAll">
       <div class="HourHeading Large" :class="{'Open': isOpen, 'Close': !isOpen }">{{labelText}}</div>
       <div class="HourData">
         <div>{{Day.today().text}}:</div>
@@ -8,7 +8,7 @@
         <div class="CaretDown"><img src="/img/places/caret_down.svg"></div>
       </div>
     </div>
-    <div class="HourAll" v-else>
+    <div class="HourAll Text" v-else>
       <b-row class="Content" v-for="day in days" :key="day.text">
         <b-col cols="1" class="DayName Regular">{{day.text}}:</b-col>
         <b-col class="Regular"

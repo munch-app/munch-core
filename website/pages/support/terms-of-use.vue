@@ -1,5 +1,5 @@
 <template>
-  <div class="container Support">
+  <div class="Container Support">
     <b-row>
       <b-col class="Content" cols="12" md="9" v-html="content"/>
       <b-col cols="12" md="3">

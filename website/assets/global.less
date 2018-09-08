@@ -29,6 +29,10 @@ html {
   font-family: 'Open Sans', 'Roboto', sans-serif;
 }
 
+body {
+  line-height: 0;
+}
+
 a {
   color: black;
   margin: 0;
@@ -72,6 +76,12 @@ h4:extend(.Heading4) {
 .Text {
   font-family: 'Open Sans', 'Roboto', sans-serif;
   font-weight: normal;
+  line-height: 1.5;
+}
+
+a, h1, h2, h3, h4, h5, h6, p, ul, li {
+  font-family: 'Open Sans', 'Roboto', sans-serif;
+  line-height: 1.5;
 }
 
 .Large:extend(.Text) {
@@ -94,58 +104,22 @@ p:extend(.Regular) {
 .Border24, .Border3 {
   border-radius: 3px;
 
-  &.BorderImage {
-    img {
-      border-radius: 3px;
-    }
-  }
-
   &Top {
     border-radius: 3px 3px 0 0;
-
-    &.BorderImage {
-      img {
-        border-radius: 3px 3px 0 0;
-      }
-    }
   }
   &Bottom {
     border-radius: 0 0 3px 3px;
-
-    &.BorderImage {
-      img {
-        border-radius: 0 0 3px 3px;
-      }
-    }
   }
 }
 
 .Border48, .Border4 {
   border-radius: 4px;
 
-  &.BorderImage {
-    img {
-      border-radius: 4px;
-    }
-  }
-
   &Top {
     border-radius: 4px 4px 0 0;
-
-    &.BorderImage {
-      img {
-        border-radius: 4px 4px 0 0;
-      }
-    }
   }
   &Bottom {
     border-radius: 0 0 4px 4px;
-
-    &.BorderImage {
-      img {
-        border-radius: 0 0 4px 4px;
-      }
-    }
   }
 }
 
@@ -345,6 +319,14 @@ p.Clear, h1.Clear, h2.Clear, h3.Clear, h4.Clear, h5.Clear, h6.Clear, div.Clear {
   background-color: @Close;
 }
 
+.White {
+  color: white;
+}
+
+.WhiteBg {
+  background: white;
+}
+
 .NoSelect {
   -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none; /* Safari */
@@ -354,17 +336,28 @@ p.Clear, h1.Clear, h2.Clear, h3.Clear, h4.Clear, h5.Clear, h6.Clear, div.Clear {
   user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
 }
 
-.Container768 {
+/**
+ Forces you to define the sizing of every object
+ */
+.ZeroSizing {
+  h1, h2, h3, h4, h5, h6, p {
+    margin: 0;
+    padding: 0;
+  }
+}
+
+/**
+ Munch default Container width
+ */
+.Container {
   width: 100%;
-  margin-left: auto;
-  margin-right: auto;
+  padding-right: 15px;
   padding-left: 15px;
-  padding-right: 0;
+  margin-right: auto;
+  margin-left: auto;
 
   @media (min-width: 576px) {
     max-width: 540px;
-    padding-left: 15px;
-    padding-right: 15px;
   }
 
   @media (min-width: 768px) {

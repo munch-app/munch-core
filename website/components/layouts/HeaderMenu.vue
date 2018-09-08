@@ -2,7 +2,7 @@
   <div class="HeaderMenu NoSelect" v-if="$store.state.layout.menu" v-on-clickaway="onClickAway">
     <div class="Triangle"/>
 
-    <div class="NavLink Elevation1">
+    <div class="NavLink Elevation1 Text">
       <div @click="onMenuClick('/login')">Login</div>
       <div @click="onMenuClick('/')">Home</div>
       <div @click="onMenuClick('/profile')">View Profile</div>

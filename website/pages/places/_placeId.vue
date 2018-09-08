@@ -1,72 +1,94 @@
 <template>
-  <div>
+  <div class="ZeroSizing">
     <section class="Banner">
-      <place-images :images="images"/>
+      <place-banner-image :images="images"/>
     </section>
 
-
-
-    <section class="Info">
-      <b-container>
-        <b-row>
-          <b-col cols="12" md="8" lg="6" order="2" class="Detail">
-            <h2>{{data.place.name}}</h2>
-            <p class="Location Large">{{data.place.location.street || data.place.location.address}}</p>
-            <place-tags class="Tags" :tags="data.place.tags" :max="5"/>
-
-            <div class="IconList">
-              <b-row class="IconRow" v-for="row in detailRows" :key="row.text">
-                <b-col cols="1"><img :src="row.icon" width="24px" height="24px"></b-col>
-                <b-col cols="11">{{row.text}}</b-col>
-              </b-row>
-            </div>
-            <div class="Hour" v-if="hours">
-              <opening-hours :hours="hours"/>
-            </div>
-          </b-col>
-        </b-row>
-      </b-container>
+    <section class="PlaceNavigation NavBg Container">
+      <div class="Text" :class="{'Primary300Bg White': tab === 'information'}"
+           @click="tab = 'information'">
+        Information
+      </div>
+      <div class="Text" :class="{'Primary300Bg White': tab === 'partner'}"
+           v-if="hasPartner" @click="tab = 'partner'">
+        Partner's Content
+      </div>
     </section>
 
-    <section class="About" v-if="data.place.description || menus">
-      <b-container>
-        <b-row>
-          <b-col cols="12" md="6" class="Description" v-if="data.place.description">
-            <h4>About</h4>
-            <p>{{data.place.description}}</p>
-          </b-col>
-          <b-col cols="12" md="6" class="Menu" v-if="menus">
-            <h4>Menu</h4>
-            <place-menus :menus="menus"/>
-          </b-col>
-        </b-row>
-      </b-container>
-    </section>
+    <section class="Information PlaceNavigationTab" :class="{'SelectedTab': tab === 'information'}">
+      <section class="Name Container">
+        <h2>{{data.place.name}}</h2>
+        <div class="Regular">{{data.place.location.street || data.place.location.address}}</div>
+        <place-tags class="Tag" :tags="data.place.tags" :max="6"/>
+      </section>
 
-    <section class="Map">
-      <b-container class="MapContainer">
-        <!--<div class="GoogleMapDetail Elevation1 Border48 TagBg">-->
-          <!--Level 4 Grand Park Orchard,-->
-          <!--270 Orchard Road Singapore 238857-->
+      <section class="Info">
+        <b-container>
+          <b-row>
+            <b-col cols="12" md="8" lg="6" class="Detail">
+
+            </b-col>
+          </b-row>
+        </b-container>
+      </section>
+
+      <!--<div class="IconList">
+                <b-row class="IconRow" v-for="row in detailRows" :key="row.text">
+                  <b-col cols="1"><img :src="row.icon" width="24px" height="24px"></b-col>
+                  <b-col cols="11">{{row.text}}</b-col>
+                </b-row>
+              </div>
+              <div class="Hour" v-if="hours">
+                <opening-hours :hours="hours"/>
+              </div>-->
+
+      <section class="About" v-if="data.place.description || menus">
+        <b-container>
+          <b-row>
+            <b-col cols="12" md="6" class="Description" v-if="data.place.description">
+              <h4>About</h4>
+              <p>{{data.place.description}}</p>
+            </b-col>
+            <b-col cols="12" md="6" class="Menu" v-if="menus">
+              <h4>Menu</h4>
+              <place-menus :menus="menus"/>
+            </b-col>
+          </b-row>
+        </b-container>
+      </section>
+
+      <section class="Map">
+        <!--<div class="GoogleMapDetail Text Elevation1 Border48 TagBg">-->
+        <!--Level 4 Grand Park Orchard,-->
+        <!--270 Orchard Road Singapore 238857-->
         <!--</div>-->
 
-        <google-embed-map :lat-lng="data.place.location.latLng" height="224"/>
-      </b-container>
+        <div class="Container">
+          <google-embed-map :lat-lng="data.place.location.latLng" height="224"/>
+        </div>
+      </section>
     </section>
 
-    <section class="Partner" v-if="instagramMedias || articles">
-      <h2 class="text-center">Partner’s Content</h2>
+    <section class="Partner PlaceNavigationTab" v-if="hasPartner" :class="{'SelectedTab': tab === 'partner'}">
+      <div class="Container">
+        <h2 class="text-md-center">Partner's Content</h2>
+      </div>
 
       <section class="Article" v-if="articles">
-        <h3 class="container mb-0">Articles</h3>
+        <div class="Container">
+          <h3>Articles</h3>
+        </div>
         <partner-article :place-id="placeId" :preload="articles"/>
       </section>
 
       <section class="Instagram" v-if="instagramMedias">
-        <h3 class="container mb-0">Instagram</h3>
+        <div class="Container">
+          <h3>Instagram</h3>
+        </div>
         <partner-instagram-media :place-id="placeId" :preload="instagramMedias"/>
       </section>
     </section>
+
     <section class="End">
     </section>
   </div>
@@ -75,21 +97,22 @@
 <script>
   import PlaceTags from "../../components/places/PlaceTags";
   import ImageSize from "../../components/core/ImageSize";
-  import PlaceImages from "../../components/places/PlaceImages";
   import OpeningHours from "../../components/places/OpeningHours";
   import MunchButton from "../../components/core/MunchButton";
   import PlaceMenus from "../../components/places/PlaceMenus";
   import GoogleEmbedMap from "../../components/core/GoogleEmbedMap";
   import PartnerInstagramMedia from "../../components/places/PartnerInstagramMedia";
   import PartnerArticle from "../../components/places/PartnerArticle";
+  import PlaceBannerImage from "../../components/places/PlaceBannerImage";
 
   export default {
     layout: 'search',
     components: {
+      PlaceBannerImage,
       PartnerArticle,
       PartnerInstagramMedia,
       GoogleEmbedMap,
-      PlaceMenus, MunchButton, OpeningHours, PlaceImages, ImageSize, PlaceTags
+      PlaceMenus, MunchButton, OpeningHours, ImageSize, PlaceTags
     },
     head() {
       const description = this.data.place.description
@@ -103,6 +126,11 @@
         title: this.data.place.name + ' | Munch',
       }
     },
+    data() {
+      return {
+        tab: 'information'
+      }
+    },
     asyncData({$axios, params}) {
       return $axios.$get('/api/places/' + params.placeId)
         .then(({data}) => {
@@ -112,6 +140,9 @@
     computed: {
       placeId() {
         return this.data.place.placeId
+      },
+      hasPartner() {
+        return this.instagramMedias || this.articles
       },
       detailRows() {
         let rows = []
@@ -171,6 +202,70 @@
 
 
 <style lang="less" scoped>
+  /**
+   Feature is only enable if < 576
+   */
+  section.PlaceNavigation {
+    display: flex;
+    margin-bottom: 16px;
+
+    @media (min-width: 576px) {
+      display: none;
+    }
+
+    & > div {
+      font-size: 14px;
+      margin: 10px 10px 10px 0;
+      padding: 7px 10px;
+      border-radius: 3px;
+    }
+  }
+
+  /**
+   Feature is only enable if < 576
+   */
+  section.PlaceNavigationTab {
+    display: none;
+
+    &.SelectedTab {
+      display: block;
+    }
+
+    @media (min-width: 576px) {
+      &.Information, &.Partner {
+        display: block;
+      }
+    }
+  }
+
+  section.Name {
+    .Tag {
+      margin-top: 8px;
+    }
+  }
+
+  section.Partner {
+    h2 {
+      display: none;
+    }
+
+    @media (min-width: 576px) {
+      margin: 48px 0;
+
+      h2 {
+        display: block;
+      }
+    }
+
+    .Article {
+      margin: 12px 0;
+    }
+
+    .Instagram {
+      margin: 12px 0;
+    }
+  }
+
   .Info {
     margin-top: 16px;
 
@@ -231,20 +326,7 @@
     }
   }
 
-  .Partner {
-    margin: 48px 0;
-
-    .Article {
-      margin: 12px 0;
-    }
-
-    .Instagram {
-      margin: 12px 0;
-    }
-  }
-
   .End {
     margin-top: 48px;
   }
-
 </style>

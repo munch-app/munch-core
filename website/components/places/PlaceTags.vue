@@ -1,6 +1,6 @@
 <template>
   <div class="PlaceTags">
-    <div class="Tag TagBg Border24" v-for="tag in tagMax" :key="tag.tagId">
+    <div class="Text Tag TagBg Border24" v-for="tag in tagMax" :key="tag.tagId">
       {{tag.name}}
     </div>
   </div>
@@ -35,8 +35,9 @@
     margin-bottom: -8px;
 
     .Tag {
-      font-size: 12px;
-      padding: 8px 10px;
+      font-size: 14px;
+      font-weight: 900;
+      padding: 6px 8px;
       margin-right: 8px;
       margin-bottom: 8px;
     }

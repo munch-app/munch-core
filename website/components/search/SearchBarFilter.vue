@@ -1,12 +1,12 @@
 <template>
   <div class="SearchFilterBar Elevation1 NoSelect">
     <div class="FilterBar">
-      <div class="Buttons container">
+      <div class="Text Buttons container">
         <div v-for="button in buttons" :key="button" class="TagBg Button Border3" @click="onButton(button)">
           {{button}}
         </div>
 
-        <div class="Combined TagBg Button Border3" @click="onButton('Combined')">
+        <div class="Text Combined TagBg Button Border3" @click="onButton('Combined')">
           Filters
         </div>
       </div>

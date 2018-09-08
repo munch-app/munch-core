@@ -1,7 +1,7 @@
 <template>
   <div>
     <nav class="Header NavBg Elevation1">
-      <div class="container clearfix">
+      <div class="Container clearfix">
         <header-logo class="Logo float-left" @click="onClickLogo"/>
         <header-profile class="Profile float-right" @click="onClickProfile"/>
       </div>

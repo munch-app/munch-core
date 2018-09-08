@@ -73,6 +73,7 @@
   .ImageSize {
     position: relative;
     background-color: transparent;
+    overflow: hidden;
 
     .ImageBox {
       position: absolute;

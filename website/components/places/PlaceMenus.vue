@@ -3,10 +3,10 @@
     <b-row>
       <b-col cols="4" v-for="data in list" :key="data.key">
         <a :href="data.href" target="_blank" rel="nofollow">
-          <div v-if="data.key === 'url'" class="Elevation1 Web Border48 BorderImage">
+          <div v-if="data.key === 'url'" class="Elevation1 Web Border48">
             <img src="/img/places/web_page.svg">
           </div>
-          <image-size v-else class="Elevation1 Image Border48 BorderImage" :image="data.image">
+          <image-size v-else class="Elevation1 Image Border48" :image="data.image">
             <div class="ImageBox">
               <div v-if="data.source" class="Small UsernameButton Border24 Elevation1">{{data.source}}</div>
             </div>

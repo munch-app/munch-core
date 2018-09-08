@@ -1,7 +1,7 @@
 <template>
   <a class="Card Border48" :href="'/places/' + place.placeId">
     <div class="Elevation1">
-      <image-size class="Image Border48Top BorderImage" :image="images" :alt="place.name"/>
+      <image-size class="Image Border48Top" :image="images" :alt="place.name"/>
 
       <div class="Content">
         <div class="Name Title Large">{{place.name}}</div>

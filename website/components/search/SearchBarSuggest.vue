@@ -7,12 +7,12 @@
         <simple-svg class="Icon" fill="black" :filepath="`/img/search/${item.type}.svg`"/>
 
         <div class="Content">
-          <div class="Place" v-if="item.type === 'place'">
+          <div class="Place Text" v-if="item.type === 'place'">
             <span class="Name">{{item.place.name}}</span>
             <span class="Location">, {{item.place.location.neighbourhood}}</span>
           </div>
 
-          <div class="Assumption" v-if="item.type === 'assumption'">
+          <div class="Assumption Text" v-if="item.type === 'assumption'">
             <div class="Token Border24 TagBg" v-if="item.type === 'assumption'"
                  v-for="token in item.assumption.tokens" :key="token.type + token.text">
               <span class="TokenText">{{token.text}}</span>
