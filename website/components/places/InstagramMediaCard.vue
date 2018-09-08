@@ -1,8 +1,8 @@
 <template>
   <a class="InstagramMediaCard" :href="href" target="_blank" rel="nofollow">
     <image-size class="Image Elevation1 Border48 BorderImage" :image="media.image">
-      <div class="Container">
-        <div class="Small SourceButton Border24 Elevation1">@{{media.user.username}}</div>
+      <div class="ImageBox">
+        <div class="Small UsernameButton Border24 Elevation1">@{{media.user.username}}</div>
       </div>
     </image-size>
   </a>
@@ -41,7 +41,7 @@
       position: relative;
     }
 
-    .Container {
+    .ImageBox {
       position: absolute;
       top: 0;
       left: 0;
@@ -53,7 +53,7 @@
       align-items: flex-end;
     }
 
-    .SourceButton {
+    .UsernameButton {
       background-color: rgba(255, 255, 255, 0.75);
       padding: 6px 10px;
       margin-right: 8px;

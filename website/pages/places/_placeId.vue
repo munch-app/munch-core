@@ -52,20 +52,18 @@
     </section>
 
     <section class="Partner" v-if="instagramMedias || articles">
-      <h3 class="text-center">Partner’s Content</h3>
+      <h2 class="text-center">Partner’s Content</h2>
 
       <section class="Article" v-if="articles">
         <b-container>
-          <h4>Articles</h4>
+          <h2>Articles</h2>
           <article-collection :place-id="placeId" :articles="articles"/>
         </b-container>
       </section>
 
       <section class="Instagram" v-if="instagramMedias">
-        <b-container>
-          <h4>Instagram</h4>
-          <instagram-media-collection :place-id="placeId" :medias="instagramMedias"/>
-        </b-container>
+        <h2 class="container">Instagram</h2>
+        <partner-instagram-media :place-id="placeId" :preload="instagramMedias"/>
       </section>
     </section>
     <section class="End">
@@ -85,10 +83,12 @@
   import InstagramMediaCollection from "../../components/places/InstagramMediaCollection";
   import ArticleCollection from "../../components/places/ArticleCollection";
   import GoogleEmbedMap from "../../components/core/GoogleEmbedMap";
+  import PartnerInstagramMedia from "../../components/places/PartnerInstagramMedia";
 
   export default {
     layout: 'search',
     components: {
+      PartnerInstagramMedia,
       GoogleEmbedMap,
       ArticleCollection,
       InstagramMediaCollection,
@@ -118,7 +118,7 @@
       },
       detailRows() {
         let rows = []
-        if (this.data.place.website) rows.push({icon: '/img/places/website.svg', text: this.data.place.website})
+        // if (this.data.place.website) rows.push({icon: '/img/places/website.svg', text: this.data.place.website})
         if (this.data.place.phone) rows.push({icon: '/img/places/phone.svg', text: this.data.place.phone})
         if (this.data.place.price && this.data.place.price.perPax) rows.push({
           icon: '/img/places/price.svg',
@@ -166,12 +166,6 @@
       instagramMedias() {
         if (this.data.instagram.medias && this.data.instagram.medias.length > 0) {
           return this.data.instagram.medias
-        }
-      },
-      coordinate() {
-        let latLng = this.data.place.location.latLng.split(',')
-        return {
-          lat: parseFloat(latLng[0]), lng: parseFloat(latLng[1])
         }
       }
     }
@@ -248,7 +242,8 @@
     }
 
     .Instagram {
-      margin: 48px 0;
+      margin-top: 48px;
+      margin-bottom: 48px;
     }
   }
 

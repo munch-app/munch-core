@@ -352,6 +352,31 @@ p.Clear, h1.Clear, h2.Clear, h3.Clear, h4.Clear, h5.Clear, h6.Clear, div.Clear {
   -khtml-user-select: none; /* Konqueror HTML */
   -moz-user-select: none; /* Firefox */
   -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none; /* Non-prefixed version, currently
-                                  supported by Chrome and Opera */
+  user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+}
+
+.Container768 {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 15px;
+  padding-right: 0;
+
+  @media (min-width: 576px) {
+    max-width: 540px;
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  @media (min-width: 768px) {
+    max-width: 720px;
+  }
+
+  @media (min-width: 992px) {
+    max-width: 960px;
+  }
+
+  @media (min-width: 1200px) {
+    max-width: 1140px;
+  }
 }

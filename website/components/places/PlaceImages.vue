@@ -1,8 +1,8 @@
 <template>
   <div class="PlaceImages">
     <image-size class="Image Elevation2 Border3 BorderImage" :image="current">
-      <div class="Container">
-        <div v-if="source" class="Small SourceButton Border24 Elevation1">{{source}}</div>
+      <div class="ImageBox">
+        <div v-if="source" class="Small UsernameButton Border24 Elevation1">{{source}}</div>
       </div>
     </image-size>
   </div>
@@ -50,13 +50,13 @@
       bottom: 0;
     }
 
-    .Container {
+    .ImageBox {
       display: flex;
       justify-content: flex-end;
       align-items: flex-end;
     }
 
-    .SourceButton {
+    .UsernameButton {
       background-color: rgba(255, 255, 255, 0.75);
       padding: 6px 10px;
       margin-right: 8px;

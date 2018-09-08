@@ -1,6 +1,6 @@
 <template>
   <div class="ImageSize">
-    <slot class="Container"></slot>
+    <slot class="ImageBox"></slot>
     <b-img class="Image" center fluid-grow :src="url" :alt="alt"/>
   </div>
 </template>
@@ -74,7 +74,7 @@
     position: relative;
     background-color: transparent;
 
-    .Container {
+    .ImageBox {
       position: absolute;
       top: 0;
       left: 0;

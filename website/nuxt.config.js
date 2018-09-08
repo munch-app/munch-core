@@ -1,3 +1,5 @@
+const webpack = require('webpack')
+
 module.exports = {
   head: {
     title: 'Discover Delicious - Munch',
@@ -26,12 +28,10 @@ module.exports = {
   },
   loading: {color: '#3B8070'},
   router: {
-    scrollBehavior: function (to, from, savedPosition) {
-      return {x: 0, y: 0}
-    }
+    scrollBehavior: () => ({x: 0, y: 0})
   },
   build: {
-    extend(config, {isDev, isClient}) {
+    extend(config, {isDev, isClient, isServer}) {
       if (isDev && isClient) {
         config.module.rules.push({
           enforce: 'pre',
@@ -40,16 +40,13 @@ module.exports = {
           exclude: /(node_modules)/
         })
       }
-      if (!isClient) {
-        // This instructs Webpack to include `vue2-google-maps`'s Vue files
-        // for server-side rendering
-        config.externals.splice(0, 0, function (context, request, callback) {
-          if (/^vue2-google-maps($|\/)/.test(request)) {
-            callback(null, false)
-          } else {
-            callback()
-          }
-        })
+
+      if (isServer) {
+        config.externals += [
+          require('webpack-node-externals')({
+            whitelist: [/^vue-slick/]
+          })
+        ]
       }
 
       if (isDev) {
@@ -57,12 +54,18 @@ module.exports = {
       }
     },
     vendor: [
+      'jquery',
       'vue-line-clamp-extended',
       'vue-clickaway',
       'vue-simple-svg',
       'vue-rx',
       'prismic-vue',
       'portal-vue',
+    ],
+    plugins: [
+      new webpack.ProvidePlugin({
+        '$': 'jquery'
+      })
     ]
   },
   plugins: [

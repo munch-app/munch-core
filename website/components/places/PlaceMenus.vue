@@ -7,8 +7,8 @@
             <img src="/img/places/web_page.svg">
           </div>
           <image-size v-else class="Elevation1 Image Border48 BorderImage" :image="data.image">
-            <div class="Container">
-              <div v-if="data.source" class="Small SourceButton Border24 Elevation1">{{data.source}}</div>
+            <div class="ImageBox">
+              <div v-if="data.source" class="Small UsernameButton Border24 Elevation1">{{data.source}}</div>
             </div>
           </image-size>
         </a>
@@ -78,7 +78,7 @@
       width: 100%;
       padding-top: 100%;
 
-      .Container {
+      .ImageBox {
         position: absolute;
 
         display: flex;
@@ -86,7 +86,7 @@
         align-items: flex-end;
       }
 
-      .SourceButton {
+      .UsernameButton {
         background-color: rgba(255, 255, 255, 0.75);
         padding: 6px 10px;
         margin-right: 8px;
