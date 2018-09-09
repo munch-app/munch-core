@@ -27,7 +27,7 @@
     },
     computed: {
       url() {
-        return `https://www.google.com/maps/embed/v1/place?q=${this.latLng}&zoom=17&key=${this.key}`
+        return `https://www.google.com/maps/embed/v1/place?q=${this.latLng}&zoom=16&key=${this.key}`
       },
       anchor() {
         return `https://www.google.com/maps?q=${this.latLng}`

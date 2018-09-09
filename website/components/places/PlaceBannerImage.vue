@@ -111,7 +111,7 @@
   /* > 576 Condition */
   @media (min-width: 576px) {
     .BannerImage {
-      margin: 18px 24px 16px 0;
+      margin-right: 24px;
       width: 290px;
 
       .Image {

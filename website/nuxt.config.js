@@ -13,11 +13,12 @@ module.exports = {
     ],
     link: [
       {rel: 'icon', type: 'image/x-icon', href: '/favicon.ico'},
-      {rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800|Roboto'}
+      {rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700|Roboto'}
     ]
   },
   css: [
-    '~/assets/global.less'
+    '~/assets/global.less',
+    '~/assets/colors.less',
   ],
   render: {
     bundleRenderer: {

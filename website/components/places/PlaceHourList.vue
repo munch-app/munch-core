@@ -1,5 +1,5 @@
 <template>
-  <div class="OpeningHours" @click="showAll = !showAll">
+  <div class="PlaceHourList" @click="showAll = !showAll">
     <div class="HourToday Text" v-if="!showAll">
       <div class="HourHeading Large" :class="{'Open': isOpen, 'Close': !isOpen }">{{labelText}}</div>
       <div class="HourData">
@@ -216,7 +216,7 @@
   }
 
   export default {
-    name: "OpeningHours",
+    name: "PlaceHourList",
     props: {
       hours: {
         required: true,
@@ -271,7 +271,7 @@
 </script>
 
 <style scoped lang="less">
-  .OpeningHours:hover {
+  .PlaceHourList:hover {
     cursor: pointer;
   }
 

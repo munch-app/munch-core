@@ -1,5 +1,5 @@
 <template>
-  <div class="PlaceMenus">
+  <div class="PlaceMenuList">
     <b-row>
       <b-col cols="4" v-for="data in list" :key="data.key">
         <a :href="data.href" target="_blank" rel="nofollow">
@@ -22,7 +22,7 @@
   import MunchButton from "../core/MunchButton";
 
   export default {
-    name: "PlaceMenus",
+    name: "PlaceMenuList",
     components: {MunchButton, ImageSize},
     props: {
       menus: {
@@ -58,7 +58,7 @@
 </script>
 
 <style scoped lang="less">
-  .PlaceMenus {
+  .PlaceMenuList {
     .Web {
       height: 170px;
       width: 170px;

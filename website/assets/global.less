@@ -1,31 +1,3 @@
-@Primary050: #F69771;
-@Primary100: #F5885D;
-@Primary200: #F47949;
-@Primary300: #F36B35;
-@Primary400: #F36730;
-@Primary500: #F15213;
-@Primary600: #E34A0D;
-@Primary700: #CF430C;
-@Primary800: #BC3D0B;
-@Primary900: #963008;
-
-@Secondary050: #BEC9D0;
-@Secondary100: #ABB6BF;
-@Secondary200: #96A3B0;
-@Secondary300: #8895A5;
-@Secondary400: #7C8C9C;
-@Secondary500: #718094;
-@Secondary600: #5C697A;
-@Secondary700: #46505D;
-@Secondary800: #353C46;
-@Secondary900: #23262F;
-
-@Tag: #F0F0F7;
-//@Nav2: #EFF2F7;
-@Nav: #F4F5F7;
-@Open: #20A700;
-@Close: #EC152C;
-
 html {
   font-family: 'Open Sans', 'Roboto', sans-serif;
 }
@@ -44,12 +16,13 @@ a {
 h5, h6, a, p, ul, li {
   font-family: 'Open Sans', 'Roboto', sans-serif;
   line-height: 1.5;
+  font-weight: 400;
 }
 
 .Text {
   font-family: 'Open Sans', 'Roboto', sans-serif;
   line-height: 1.5;
-  font-weight: normal;
+  font-weight: 400;
 }
 
 .Heading {
@@ -90,6 +63,11 @@ p:extend(.Text), .Regular:extend(.Text) {
   font-size: 12px;
 }
 
+.SmallBold:extend(.Text) {
+  font-size: 12px;
+  font-weight: 600;
+}
+
 .Border24, .Border3 {
   border-radius: 3px;
 
@@ -122,205 +100,6 @@ p:extend(.Text), .Regular:extend(.Text) {
 
 .Elevation3 {
   box-shadow: 0 6px 6px 0 rgba(0, 0, 0, 0.26), 0 10px 20px 0 rgba(0, 0, 0, 0.19);
-}
-
-.loop(@counter) when (@counter > 0) {
-  .loop((@counter - 1));    // next iteration
-  width: (10px * @counter); // code for each iteration
-}
-
-p, a, h1, h2, h3, h4, h5, h6 {
-  &.Primary050 {
-    color: @Primary050;
-  }
-
-  &.Primary100 {
-    color: @Primary100;
-  }
-
-  &.Primary200 {
-    color: @Primary200;
-  }
-
-  &.Primary300 {
-    color: @Primary300;
-  }
-
-  &.Primary400 {
-    color: @Primary400;
-  }
-
-  &.Primary500 {
-    color: @Primary500;
-  }
-
-  &.Primary600 {
-    color: @Primary600;
-  }
-
-  &.Primary700 {
-    color: @Primary700;
-  }
-
-  &.Primary800 {
-    color: @Primary800;
-  }
-
-  &.Primary900 {
-    color: @Primary900;
-  }
-
-  &.Secondary050 {
-    color: @Secondary050;
-  }
-
-  &.Secondary100 {
-    color: @Secondary100;
-  }
-
-  &.Secondary200 {
-    color: @Secondary200;
-  }
-
-  &.Secondary300 {
-    color: @Secondary300;
-  }
-
-  &.Secondary400 {
-    color: @Secondary400;
-  }
-
-  &.Secondary500 {
-    color: @Secondary500;
-  }
-
-  &.Secondary600 {
-    color: @Secondary600;
-  }
-
-  &.Secondary700 {
-    color: @Secondary700;
-  }
-
-  &.Secondary800 {
-    color: @Secondary800;
-  }
-
-  &.Secondary900 {
-    color: @Secondary900;
-  }
-}
-
-.Primary050Bg {
-  background-color: @Primary050;
-}
-
-.Primary100Bg {
-  background-color: @Primary100;
-}
-
-.Primary200Bg {
-  background-color: @Primary200;
-}
-
-.Primary300Bg {
-  background-color: @Primary300;
-}
-
-.Primary400Bg {
-  background-color: @Primary400;
-}
-
-.Primary500Bg {
-  background-color: @Primary500;
-}
-
-.Primary600Bg {
-  background-color: @Primary600;
-}
-
-.Primary700Bg {
-  background-color: @Primary700;
-}
-
-.Primary800Bg {
-  background-color: @Primary800;
-}
-
-.Primary900Bg {
-  background-color: @Primary900;
-}
-
-.Secondary050Bg {
-  background-color: @Secondary050;
-}
-
-.Secondary100Bg {
-  background-color: @Secondary100;
-}
-
-.Secondary200Bg {
-  background-color: @Secondary200;
-}
-
-.Secondary300Bg {
-  background-color: @Secondary300;
-}
-
-.Secondary400Bg {
-  background-color: @Secondary400;
-}
-
-.Secondary500Bg {
-  background-color: @Secondary500;
-}
-
-.Secondary600Bg {
-  background-color: @Secondary600;
-}
-
-.Secondary700Bg {
-  background-color: @Secondary700;
-}
-
-.Secondary800Bg {
-  background-color: @Secondary800;
-}
-
-.Secondary900Bg {
-  background-color: @Secondary900;
-}
-
-.TagBg {
-  background-color: @Tag;
-}
-
-.NavBg {
-  background-color: @Nav;
-}
-
-.Open {
-  color: @Open;
-}
-
-.OpenBg {
-  background-color: @Open;
-}
-
-.Close {
-  color: @Close;
-}
-
-.CloseBg {
-  background-color: @Close;
-}
-
-.White {
-  color: white;
-}
-
-.WhiteBg {
-  background: white;
 }
 
 .NoSelect {

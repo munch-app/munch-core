@@ -19,61 +19,49 @@
       <div class="Container">
         <section class="Name ContentBody">
           <h1>{{place.name}}</h1>
-          <div class="Regular">{{place.location.street || place.location.address}}</div>
+          <div class="Regular Street">{{place.location.street || place.location.address}}</div>
           <place-tag-list class="Tag" :tags="place.tags" :max="6"/>
         </section>
 
+        <section class="MainDetail ContentBody">
+          <place-hour-list :hours="hours"/>
+        </section>
+
+        <section class="About ContentBody">
+          <h2>About</h2>
+          <p>{{place.description}}</p>
+        </section>
+
+        <section class="Menu ContentBody">
+          <h2>Menu</h2>
+          <place-menu-list :menus="menus"/>
+        </section>
+
         <section class="Location ContentBody">
-          <h1>Location</h1>
+          <h2>Location</h2>
           <div class="Text">{{place.location.address}}</div>
-          <google-embed-map :lat-lng="data.place.location.latLng" height="224"/>
+          <google-embed-map :lat-lng="place.location.latLng" height="224"/>
         </section>
       </div>
-
-
-      <!--<div class="IconList">
-                <b-row class="IconRow" v-for="row in detailRows" :key="row.text">
-                  <b-col cols="1"><img :src="row.icon" width="24px" height="24px"></b-col>
-                  <b-col cols="11">{{row.text}}</b-col>
-                </b-row>
-              </div>
-              <div class="Hour" v-if="hours">
-                <opening-hours :hours="hours"/>
-              </div>-->
-
-      <!--<section class="About" v-if="data.place.description || menus">-->
-      <!--<div>-->
-      <!--<b-row>-->
-      <!--<b-col cols="12" md="6" class="Description" v-if="data.place.description">-->
-      <!--<h4>About</h4>-->
-      <!--<p>{{data.place.description}}</p>-->
-      <!--</b-col>-->
-      <!--<b-col cols="12" md="6" class="Menu" v-if="menus">-->
-      <!--<h4>Menu</h4>-->
-      <!--<place-menus :menus="menus"/>-->
-      <!--</b-col>-->
-      <!--</b-row>-->
-      <!--</div>-->
-      <!--</section>-->
     </section>
 
     <section class="Partner PlaceNavigationTab" v-if="hasPartner" :class="{'SelectedTab': tab === 'partner'}">
       <div class="Container">
-        <h2 class="text-md-center">Partner's Content</h2>
+        <h2 class="Primary">Partner's Content</h2>
       </div>
 
-      <section class="Article" v-if="articles">
+      <section class="Article" v-if="data.articles.length > 0">
         <div class="Container">
-          <h2>Articles</h2>
+          <h3>Articles</h3>
         </div>
-        <partner-article :place-id="placeId" :preload="articles"/>
+        <partner-article :place-id="placeId" :preload="data.articles"/>
       </section>
 
-      <section class="Instagram" v-if="instagramMedias">
+      <section class="Instagram" v-if="data.instagram.medias.length > 0">
         <div class="Container">
-          <h2>Instagram</h2>
+          <h3>Instagram</h3>
         </div>
-        <partner-instagram-media :place-id="placeId" :preload="instagramMedias"/>
+        <partner-instagram-media :place-id="placeId" :preload="data.instagram.medias"/>
       </section>
     </section>
 
@@ -85,9 +73,9 @@
 <script>
   import PlaceTagList from "../../components/places/PlaceTagList";
   import ImageSize from "../../components/core/ImageSize";
-  import OpeningHours from "../../components/places/OpeningHours";
+  import PlaceHourList from "../../components/places/PlaceHourList";
   import MunchButton from "../../components/core/MunchButton";
-  import PlaceMenus from "../../components/places/PlaceMenus";
+  import PlaceMenuList from "../../components/places/PlaceMenuList";
   import GoogleEmbedMap from "../../components/core/GoogleEmbedMap";
   import PartnerInstagramMedia from "../../components/places/PartnerInstagramMedia";
   import PartnerArticle from "../../components/places/PartnerArticle";
@@ -100,7 +88,7 @@
       PartnerArticle,
       PartnerInstagramMedia,
       GoogleEmbedMap,
-      PlaceMenus, MunchButton, OpeningHours, ImageSize, PlaceTagList
+      PlaceMenuList, MunchButton, PlaceHourList, ImageSize, PlaceTagList
     },
     head() {
       const description = this.data.place.description
@@ -133,7 +121,7 @@
         return this.data.place
       },
       hasPartner() {
-        return this.instagramMedias || this.articles
+        return this.data.articles.length > 0 || this.data.instagram.medias.length > 0
       },
       detailRows() {
         let rows = []
@@ -171,21 +159,6 @@
         if (menus.length > 0) {
           return menus
         }
-      },
-      images() {
-        if (this.data.place.images && this.data.place.images.length > 0) {
-          return this.data.place.images
-        }
-      },
-      articles() {
-        if (this.data.articles && this.data.articles.length > 0) {
-          return this.data.articles
-        }
-      },
-      instagramMedias() {
-        if (this.data.instagram.medias && this.data.instagram.medias.length > 0) {
-          return this.data.instagram.medias
-        }
       }
     }
   }
@@ -193,12 +166,21 @@
 
 
 <style lang="less" scoped>
+  h2, h3 {
+    margin-bottom: 16px;
+  }
+
+  section.Banner {
+    @media (min-width: 576px) {
+      margin-top: 16px;
+    }
+  }
+
   /**
    Feature is only enable if < 576
    */
   section.PlaceNavigation {
     display: flex;
-    margin-bottom: 16px;
 
     @media (min-width: 576px) {
       display: none;
@@ -242,12 +224,31 @@
   }
 
   section.Name {
+    margin-top: 16px;
+
+    .Street {
+      margin-top: 8px;
+    }
+
     .Tag {
       margin-top: 8px;
     }
   }
 
+  section.MainDetail {
+    margin-top: 16px;
+  }
+
+  section.About {
+    margin-top: 16px;
+  }
+
+  section.Menu {
+    margin-top: 16px;
+  }
+
   section.Location {
+    margin-top: 16px;
 
   }
 
@@ -273,67 +274,7 @@
     }
   }
 
-  .Info {
-    margin-top: 16px;
-
-    .Detail {
-      .Location {
-        margin-top: -10px;
-        margin-bottom: 8px;
-      }
-
-      .Tags {
-        margin-top: 8px;
-      }
-
-      .IconList {
-        margin-top: 16px;
-
-        .IconRow {
-          margin-bottom: 8px;
-        }
-      }
-
-      .Hour {
-        margin-top: 16px;
-      }
-    }
-  }
-
-  .About {
-    margin: 48px 0;
-
-    .Description {
-
-    }
-
-    .Menu {
-    }
-  }
-
-  .Map {
-    margin: 48px 0;
-
-    .GoogleMap {
-      z-index: -1;
-      height: 224px;
-    }
-
-    .GoogleMapMarker {
-    }
-
-    .GoogleMapDetail {
-      z-index: 0;
-      padding: 10px 12px;
-      width: 320px;
-
-      margin-left: 16px;
-      margin-top: 16px;
-      position: absolute;
-    }
-  }
-
-  .End {
+  section.End {
     margin-top: 48px;
   }
 </style>
