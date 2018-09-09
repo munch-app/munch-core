@@ -1,13 +1,10 @@
 <template>
   <div>
     <nav class="Header NavBg Elevation1">
-      <div class="HeaderRow container clearfix">
+      <div class="HeaderRow Container clearfix">
         <header-logo class="Logo" :class="{'IsSuggest': isSuggest}" @click="onClickLogo"/>
         <div class="Search">
-          <search-bar class="SearchBar" :extended="isSuggest" @onText="onText" @onFocus="onFocus" @onBlur="onBlur" ref="searchBar"/>
-          <search-bar-suggest v-if="isSuggest" class="SearchBarSuggest Elevation1 Border24Bottom"
-                              @onItem="onItem"
-                              :suggestions="suggestions"/>
+          <search-bar class="SearchBar" @onText="onText" @onFocus="onFocus" @onBlur="onBlur"/>
         </div>
         <header-profile class="Profile float-right" @click="onClickProfile"/>
       </div>
@@ -23,18 +20,15 @@
 </template>
 
 <script>
-  import {pluck, filter, debounceTime, distinctUntilChanged, switchMap, map} from 'rxjs/operators'
   import HeaderLogo from "../components/layouts/HeaderLogo";
   import HeaderProfile from "../components/layouts/HeaderProfile";
   import HeaderMenu from "../components/layouts/HeaderMenu";
   import SearchBar from "../components/search/SearchBar";
-  import SearchBarSuggest from "../components/search/SearchBarSuggest";
   import SearchBarFilter from "../components/search/SearchBarFilter";
 
   export default {
     components: {
       SearchBarFilter,
-      SearchBarSuggest,
       SearchBar,
       HeaderMenu,
       HeaderProfile,
@@ -43,8 +37,7 @@
     data() {
       return {
         isSuggest: false,
-        text: "",
-        suggestions: []
+        text: ""
       }
     },
     methods: {
@@ -59,9 +52,6 @@
         this.$store.commit('layout/toggleMenu')
       },
       onText(text) {
-        if (text.length === 0) {
-          this.suggestions = []
-        }
         this.text = text
       },
       onFocus() {
@@ -72,31 +62,12 @@
         this.isSuggest = false
       },
       onItem() {
-        this.$refs.searchBar.blur()
+        this.isSuggest = false
       }
     },
     computed: {
       isFilter() {
         return this.$route.name === 'search'
-      }
-    },
-    subscriptions() {
-      return {
-        suggestions: this.$watchAsObservable('text').pipe(
-          pluck('newValue'),
-          debounceTime(500),
-          distinctUntilChanged(),
-          switchMap((text) => {
-            return this.$axios.$post('/api/search/suggest', {
-              "text": text,
-              "searchQuery": {
-                "filter": {},
-                "sort": {}
-              }
-            }, {progress: false})
-          }),
-          map(({data}) => data)
-        )
       }
     }
   }
@@ -145,23 +116,6 @@
 
         @media (min-width: 768px) {
           width: 440px;
-        }
-      }
-
-      .SearchBarSuggest {
-        position: absolute;
-        z-index: 200;
-        background: white;
-
-        margin-top: 12px;
-        left: 0;
-        right: 0;
-
-        @media (min-width: 768px) {
-          width: 440px;
-          margin-top: 0;
-          left: initial;
-          right: initial;
         }
       }
     }

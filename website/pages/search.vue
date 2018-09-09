@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="SearchResult container">
+    <div class="SearchResult Container">
       <h3 class="TopResult">Top Results</h3>
       <b-row>
         <b-col class="Card" cols="12" md="4" lg="3" v-for="card in cards" :key="card['_uniqueId']"
@@ -14,12 +14,11 @@
 
 <script>
   import SearchBarFilter from "../components/search/SearchBarFilter";
-  import SearchBarSuggest from "../components/search/SearchBarSuggest";
   import SearchPlaceCard from "../components/search/SearchPlaceCard";
 
   export default {
     layout: 'search',
-    components: {SearchPlaceCard, SearchBarSuggest, SearchBarFilter},
+    components: {SearchPlaceCard, SearchBarFilter},
     loading: false,
     head() {
       return {

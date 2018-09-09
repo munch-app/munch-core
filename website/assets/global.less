@@ -21,6 +21,7 @@
 @Secondary900: #23262F;
 
 @Tag: #F0F0F7;
+//@Nav2: #EFF2F7;
 @Nav: #F4F5F7;
 @Open: #20A700;
 @Close: #EC152C;
@@ -40,47 +41,39 @@ a {
   border: 0;
 }
 
+h5, h6, a, p, ul, li {
+  font-family: 'Open Sans', 'Roboto', sans-serif;
+  line-height: 1.5;
+}
+
+.Text {
+  font-family: 'Open Sans', 'Roboto', sans-serif;
+  line-height: 1.5;
+  font-weight: normal;
+}
+
 .Heading {
   font-family: 'Open Sans', 'Roboto', sans-serif;
   font-weight: 600;
 }
 
-.Heading1:extend(.Heading) {
+h1:extend(.Heading), .Heading1:extend(.Heading) {
   font-size: 32px;
+  line-height: 1.3;
 }
 
-h1:extend(.Heading1) {
-}
-
-.Heading2:extend(.Heading) {
+h2:extend(.Heading), .Heading2:extend(.Heading) {
   font-size: 24px;
+  line-height: 1.3;
 }
 
-h2:extend(.Heading2) {
-}
-
-.Heading3:extend(.Heading) {
+h3:extend(.Heading), .Heading3:extend(.Heading) {
   font-size: 21px;
+  line-height: 1.4;
 }
 
-h3:extend(.Heading3) {
-}
-
-.Heading4:extend(.Heading) {
+h4:extend(.Heading), .Heading4:extend(.Heading) {
   font-size: 18px;
-}
-
-h4:extend(.Heading4) {
-}
-
-.Text {
-  font-family: 'Open Sans', 'Roboto', sans-serif;
-  font-weight: normal;
-  line-height: 1.5;
-}
-
-a, h1, h2, h3, h4, h5, h6, p, ul, li {
-  font-family: 'Open Sans', 'Roboto', sans-serif;
   line-height: 1.5;
 }
 
@@ -89,12 +82,8 @@ a, h1, h2, h3, h4, h5, h6, p, ul, li {
   font-weight: 600;
 }
 
-.Regular:extend(.Text) {
+p:extend(.Text), .Regular:extend(.Text) {
   font-size: 16px;
-}
-
-p:extend(.Regular) {
-
 }
 
 .Small:extend(.Text) {
@@ -135,160 +124,167 @@ p:extend(.Regular) {
   box-shadow: 0 6px 6px 0 rgba(0, 0, 0, 0.26), 0 10px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
-p.Primary050, h1.Primary050, h2.Primary050, h3.Primary050, h4.Primary050, h5.Primary050, h6.Primary050, a.Primary050 {
-  color: @Primary050;
+.loop(@counter) when (@counter > 0) {
+  .loop((@counter - 1));    // next iteration
+  width: (10px * @counter); // code for each iteration
+}
+
+p, a, h1, h2, h3, h4, h5, h6 {
+  &.Primary050 {
+    color: @Primary050;
+  }
+
+  &.Primary100 {
+    color: @Primary100;
+  }
+
+  &.Primary200 {
+    color: @Primary200;
+  }
+
+  &.Primary300 {
+    color: @Primary300;
+  }
+
+  &.Primary400 {
+    color: @Primary400;
+  }
+
+  &.Primary500 {
+    color: @Primary500;
+  }
+
+  &.Primary600 {
+    color: @Primary600;
+  }
+
+  &.Primary700 {
+    color: @Primary700;
+  }
+
+  &.Primary800 {
+    color: @Primary800;
+  }
+
+  &.Primary900 {
+    color: @Primary900;
+  }
+
+  &.Secondary050 {
+    color: @Secondary050;
+  }
+
+  &.Secondary100 {
+    color: @Secondary100;
+  }
+
+  &.Secondary200 {
+    color: @Secondary200;
+  }
+
+  &.Secondary300 {
+    color: @Secondary300;
+  }
+
+  &.Secondary400 {
+    color: @Secondary400;
+  }
+
+  &.Secondary500 {
+    color: @Secondary500;
+  }
+
+  &.Secondary600 {
+    color: @Secondary600;
+  }
+
+  &.Secondary700 {
+    color: @Secondary700;
+  }
+
+  &.Secondary800 {
+    color: @Secondary800;
+  }
+
+  &.Secondary900 {
+    color: @Secondary900;
+  }
 }
 
 .Primary050Bg {
   background-color: @Primary050;
 }
 
-p.Primary100, h1.Primary100, h2.Primary100, h3.Primary100, h4.Primary100, h5.Primary100, h6.Primary100, a.Primary100 {
-  color: @Primary100;
-}
-
 .Primary100Bg {
   background-color: @Primary100;
-}
-
-p.Primary200, h1.Primary200, h2.Primary200, h3.Primary200, h4.Primary200, h5.Primary200, h6.Primary200, a.Primary200 {
-  color: @Primary200;
 }
 
 .Primary200Bg {
   background-color: @Primary200;
 }
 
-p.Primary300, h1.Primary300, h2.Primary300, h3.Primary300, h4.Primary300, h5.Primary300, h6.Primary300, a.Primary300 {
-  color: @Primary300;
-}
-
 .Primary300Bg {
   background-color: @Primary300;
-}
-
-p.Primary400, h1.Primary400, h2.Primary400, h3.Primary400, h4.Primary400, h5.Primary400, h6.Primary400, a.Primary400 {
-  color: @Primary400;
 }
 
 .Primary400Bg {
   background-color: @Primary400;
 }
 
-p.Primary500, h1.Primary500, h2.Primary500, h3.Primary500, h4.Primary500, h5.Primary500, h6.Primary500, a.Primary500 {
-  color: @Primary500;
-}
-
 .Primary500Bg {
   background-color: @Primary500;
-}
-
-p.Primary600, h1.Primary600, h2.Primary600, h3.Primary600, h4.Primary600, h5.Primary600, h6.Primary600, a.Primary600 {
-  color: @Primary600;
 }
 
 .Primary600Bg {
   background-color: @Primary600;
 }
 
-p.Primary700, h1.Primary700, h2.Primary700, h3.Primary700, h4.Primary700, h5.Primary700, h6.Primary700, a.Primary700 {
-  color: @Primary700;
-}
-
 .Primary700Bg {
   background-color: @Primary700;
-}
-
-p.Primary800, h1.Primary800, h2.Primary800, h3.Primary800, h4.Primary800, h5.Primary800, h6.Primary800, a.Primary800 {
-  color: @Primary800;
 }
 
 .Primary800Bg {
   background-color: @Primary800;
 }
 
-p.Primary900, h1.Primary900, h2.Primary900, h3.Primary900, h4.Primary900, h5.Primary900, h6.Primary900, a.Primary900 {
-  color: @Primary900;
-}
-
 .Primary900Bg {
   background-color: @Primary900;
-}
-
-p.Secondary050, h1.Secondary050, h2.Secondary050, h3.Secondary050, h4.Secondary050, h5.Secondary050, h6.Secondary050, a.Secondary050 {
-  color: @Secondary050;
 }
 
 .Secondary050Bg {
   background-color: @Secondary050;
 }
 
-p.Secondary100, h1.Secondary100, h2.Secondary100, h3.Secondary100, h4.Secondary100, h5.Secondary100, h6.Secondary100, a.Secondary100 {
-  color: @Secondary100;
-}
-
 .Secondary100Bg {
   background-color: @Secondary100;
-}
-
-p.Secondary200, h1.Secondary200, h2.Secondary200, h3.Secondary200, h4.Secondary200, h5.Secondary200, h6.Secondary200, a.Secondary200 {
-  color: @Secondary200;
 }
 
 .Secondary200Bg {
   background-color: @Secondary200;
 }
 
-p.Secondary300, h1.Secondary300, h2.Secondary300, h3.Secondary300, h4.Secondary300, h5.Secondary300, h6.Secondary300, a.Secondary300 {
-  color: @Secondary300;
-}
-
 .Secondary300Bg {
   background-color: @Secondary300;
-}
-
-p.Secondary400, h1.Secondary400, h2.Secondary400, h3.Secondary400, h4.Secondary400, h5.Secondary400, h6.Secondary400, a.Secondary400 {
-  color: @Secondary400;
 }
 
 .Secondary400Bg {
   background-color: @Secondary400;
 }
 
-p.Secondary500, h1.Secondary500, h2.Secondary500, h3.Secondary500, h4.Secondary500, h5.Secondary500, h6.Secondary500, a.Secondary500 {
-  color: @Secondary500;
-}
-
 .Secondary500Bg {
   background-color: @Secondary500;
-}
-
-p.Secondary600, h1.Secondary600, h2.Secondary600, h3.Secondary600, h4.Secondary600, h5.Secondary600, h6.Secondary600, a.Secondary600 {
-  color: @Secondary600;
 }
 
 .Secondary600Bg {
   background-color: @Secondary600;
 }
 
-p.Secondary700, h1.Secondary700, h2.Secondary700, h3.Secondary700, h4.Secondary700, h5.Secondary700, h6.Secondary700, a.Secondary700 {
-  color: @Secondary700;
-}
-
 .Secondary700Bg {
   background-color: @Secondary700;
 }
 
-p.Secondary800, h1.Secondary800, h2.Secondary800, h3.Secondary800, h4.Secondary800, h5.Secondary800, h6.Secondary800, a.Secondary800 {
-  color: @Secondary800;
-}
-
 .Secondary800Bg {
   background-color: @Secondary800;
-}
-
-p.Secondary900, h1.Secondary900, h2.Secondary900, h3.Secondary900, h4.Secondary900, h5.Secondary900, h6.Secondary900, a.Secondary900 {
-  color: @Secondary900;
 }
 
 .Secondary900Bg {
@@ -303,7 +299,7 @@ p.Secondary900, h1.Secondary900, h2.Secondary900, h3.Secondary900, h4.Secondary9
   background-color: @Nav;
 }
 
-p.Open, h1.Open, h2.Open, h3.Open, h4.Open, h5.Open, h6.Open, div.Open {
+.Open {
   color: @Open;
 }
 
@@ -311,7 +307,7 @@ p.Open, h1.Open, h2.Open, h3.Open, h4.Open, h5.Open, h6.Open, div.Open {
   background-color: @Open;
 }
 
-p.Clear, h1.Clear, h2.Clear, h3.Clear, h4.Clear, h5.Clear, h6.Clear, div.Clear {
+.Close {
   color: @Close;
 }
 
@@ -337,10 +333,10 @@ p.Clear, h1.Clear, h2.Clear, h3.Clear, h4.Clear, h5.Clear, h6.Clear, div.Clear {
 }
 
 /**
- Forces you to define the sizing of every object
+ Forces you to define the sizing of every h1-h6 and p
  */
 .ZeroSizing {
-  h1, h2, h3, h4, h5, h6, p {
+  h1, h2, h3, h4, h5, h6, p, a {
     margin: 0;
     padding: 0;
   }

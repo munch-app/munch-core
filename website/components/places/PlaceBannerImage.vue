@@ -5,7 +5,7 @@
         <div class="BannerImage NoSelect">
           <image-size class="Image" :image="image">
             <div class="BannerContainer">
-              <div v-if="image.profile && image.profile.name" class="Small UsernameButton Border24 Elevation1">
+              <div v-if="image.profile && image.profile.name" class="Small UsernameButton Border4 Elevation1">
                 {{image.profile.name}}
               </div>
             </div>
@@ -40,6 +40,7 @@
           centerMode: false,
           arrows: false,
           slidesToScroll: 1,
+          dots: false,
           responsive: [
             {
               breakpoint: 1200,
@@ -93,6 +94,10 @@
     }
   }
 
+  .Slick {
+    display: flex;
+  }
+
   .Image {
     width: 100%;
     padding-top: 58%;
@@ -110,8 +115,6 @@
       width: 290px;
 
       .Image {
-        box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.23), 0 3px 6px 0 rgba(0, 0, 0, 0.16);
-        border-radius: 3px;
         padding-top: 60%;
       }
     }

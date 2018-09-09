@@ -1,5 +1,5 @@
 <template>
-  <div class="PlaceTags">
+  <div class="PlaceTagList">
     <div class="Text Tag TagBg Border24" v-for="tag in tagMax" :key="tag.tagId">
       {{tag.name}}
     </div>
@@ -8,7 +8,7 @@
 
 <script>
   export default {
-    name: "PlaceTags",
+    name: "PlaceTagList",
     props: {
       tags: {
         required: true,
@@ -29,15 +29,15 @@
 </script>
 
 <style scoped lang="less">
-  .PlaceTags {
+  .PlaceTagList {
     display: flex;
     flex-wrap: wrap;
     margin-bottom: -8px;
 
     .Tag {
       font-size: 14px;
-      font-weight: 900;
-      padding: 6px 8px;
+      font-weight: 600;
+      padding: 5px 9px;
       margin-right: 8px;
       margin-bottom: 8px;
     }

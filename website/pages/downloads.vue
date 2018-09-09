@@ -172,7 +172,7 @@
   }
 </script>
 
-<style>
+<style lang="less">
   .Downloads section {
     padding-top: 75px;
     padding-bottom: 75px;

@@ -117,6 +117,10 @@
     }
   }
 
+  .Slick {
+    display: flex;
+  }
+
   .Controls {
     display: none;
     justify-content: flex-end;

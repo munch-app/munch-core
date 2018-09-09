@@ -1,5 +1,5 @@
 <template>
-  <b-container>
+  <div class="Container">
     <h4 class="mt-3 mb-3">Landing Page</h4>
     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur arcu diam, facilisis vel viverra ac,
       scelerisque eget dui. Quisque venenatis justo eu metus vestibulum vehicula. Praesent auctor elementum diam eget
@@ -60,7 +60,7 @@
       odio. Ut nec turpis metus. Quisque posuere, dolor quis interdum convallis, ligula sem eleifend lorem, id faucibus
       sem arcu ac massa. Nam pharetra libero in mi rhoncus finibus. Suspendisse posuere vehicula est id efficitur. Donec
       dignissim vitae ex aliquam commodo.</p>
-  </b-container>
+  </div>
 </template>
 
 <script>

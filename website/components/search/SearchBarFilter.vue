@@ -1,7 +1,7 @@
 <template>
   <div class="SearchFilterBar Elevation1 NoSelect">
     <div class="FilterBar">
-      <div class="Text Buttons container">
+      <div class="Text Buttons Container">
         <div v-for="button in buttons" :key="button" class="TagBg Button Border3" @click="onButton(button)">
           {{button}}
         </div>

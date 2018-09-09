@@ -1,5 +1,8 @@
 <template>
-  <iframe width="100%" :height="height" frameborder="0" style="border:0" :src="url"/>
+  <div class="GoogleEmbedMap">
+    <a class="Interaction" target="_blank" :href="anchor" v-if="!interaction" :style="{'height': `${height}px`}"></a>
+    <iframe width="100%" :height="height" frameborder="0" style="border:0" :src="url" allowfullscreen/>
+  </div>
 </template>
 
 <script>
@@ -16,16 +19,35 @@
       latLng: {
         type: String,
         required: true
+      },
+      interaction: {
+        type: Boolean,
+        default: () => false
       }
     },
     computed: {
       url() {
         return `https://www.google.com/maps/embed/v1/place?q=${this.latLng}&zoom=17&key=${this.key}`
+      },
+      anchor() {
+        return `https://www.google.com/maps?q=${this.latLng}`
       }
     }
   }
 </script>
 
 <style scoped lang="less">
+  .GoogleEmbedMap {
+    position: relative;
+  }
 
+  .Interaction {
+    width: 100%;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0);
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
 </style>

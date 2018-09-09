@@ -1,7 +1,7 @@
 <template>
   <div class="ZeroSizing">
     <section class="Banner">
-      <place-banner-image :images="images"/>
+      <place-banner-image :images="place.images"/>
     </section>
 
     <section class="PlaceNavigation NavBg Container">
@@ -16,21 +16,20 @@
     </section>
 
     <section class="Information PlaceNavigationTab" :class="{'SelectedTab': tab === 'information'}">
-      <section class="Name Container">
-        <h2>{{data.place.name}}</h2>
-        <div class="Regular">{{data.place.location.street || data.place.location.address}}</div>
-        <place-tags class="Tag" :tags="data.place.tags" :max="6"/>
-      </section>
+      <div class="Container">
+        <section class="Name ContentBody">
+          <h1>{{place.name}}</h1>
+          <div class="Regular">{{place.location.street || place.location.address}}</div>
+          <place-tag-list class="Tag" :tags="place.tags" :max="6"/>
+        </section>
 
-      <section class="Info">
-        <b-container>
-          <b-row>
-            <b-col cols="12" md="8" lg="6" class="Detail">
+        <section class="Location ContentBody">
+          <h1>Location</h1>
+          <div class="Text">{{place.location.address}}</div>
+          <google-embed-map :lat-lng="data.place.location.latLng" height="224"/>
+        </section>
+      </div>
 
-            </b-col>
-          </b-row>
-        </b-container>
-      </section>
 
       <!--<div class="IconList">
                 <b-row class="IconRow" v-for="row in detailRows" :key="row.text">
@@ -42,31 +41,20 @@
                 <opening-hours :hours="hours"/>
               </div>-->
 
-      <section class="About" v-if="data.place.description || menus">
-        <b-container>
-          <b-row>
-            <b-col cols="12" md="6" class="Description" v-if="data.place.description">
-              <h4>About</h4>
-              <p>{{data.place.description}}</p>
-            </b-col>
-            <b-col cols="12" md="6" class="Menu" v-if="menus">
-              <h4>Menu</h4>
-              <place-menus :menus="menus"/>
-            </b-col>
-          </b-row>
-        </b-container>
-      </section>
-
-      <section class="Map">
-        <!--<div class="GoogleMapDetail Text Elevation1 Border48 TagBg">-->
-        <!--Level 4 Grand Park Orchard,-->
-        <!--270 Orchard Road Singapore 238857-->
-        <!--</div>-->
-
-        <div class="Container">
-          <google-embed-map :lat-lng="data.place.location.latLng" height="224"/>
-        </div>
-      </section>
+      <!--<section class="About" v-if="data.place.description || menus">-->
+      <!--<div>-->
+      <!--<b-row>-->
+      <!--<b-col cols="12" md="6" class="Description" v-if="data.place.description">-->
+      <!--<h4>About</h4>-->
+      <!--<p>{{data.place.description}}</p>-->
+      <!--</b-col>-->
+      <!--<b-col cols="12" md="6" class="Menu" v-if="menus">-->
+      <!--<h4>Menu</h4>-->
+      <!--<place-menus :menus="menus"/>-->
+      <!--</b-col>-->
+      <!--</b-row>-->
+      <!--</div>-->
+      <!--</section>-->
     </section>
 
     <section class="Partner PlaceNavigationTab" v-if="hasPartner" :class="{'SelectedTab': tab === 'partner'}">
@@ -76,14 +64,14 @@
 
       <section class="Article" v-if="articles">
         <div class="Container">
-          <h3>Articles</h3>
+          <h2>Articles</h2>
         </div>
         <partner-article :place-id="placeId" :preload="articles"/>
       </section>
 
       <section class="Instagram" v-if="instagramMedias">
         <div class="Container">
-          <h3>Instagram</h3>
+          <h2>Instagram</h2>
         </div>
         <partner-instagram-media :place-id="placeId" :preload="instagramMedias"/>
       </section>
@@ -95,7 +83,7 @@
 </template>
 
 <script>
-  import PlaceTags from "../../components/places/PlaceTags";
+  import PlaceTagList from "../../components/places/PlaceTagList";
   import ImageSize from "../../components/core/ImageSize";
   import OpeningHours from "../../components/places/OpeningHours";
   import MunchButton from "../../components/core/MunchButton";
@@ -112,7 +100,7 @@
       PartnerArticle,
       PartnerInstagramMedia,
       GoogleEmbedMap,
-      PlaceMenus, MunchButton, OpeningHours, ImageSize, PlaceTags
+      PlaceMenus, MunchButton, OpeningHours, ImageSize, PlaceTagList
     },
     head() {
       const description = this.data.place.description
@@ -140,6 +128,9 @@
     computed: {
       placeId() {
         return this.data.place.placeId
+      },
+      place() {
+        return this.data.place
       },
       hasPartner() {
         return this.instagramMedias || this.articles
@@ -218,6 +209,10 @@
       margin: 10px 10px 10px 0;
       padding: 7px 10px;
       border-radius: 3px;
+
+      &:hover {
+        cursor: pointer;
+      }
     }
   }
 
@@ -238,10 +233,22 @@
     }
   }
 
+  section.ContentBody {
+    width: 100%;
+
+    @media (min-width: 992px) {
+      width: 720px;
+    }
+  }
+
   section.Name {
     .Tag {
       margin-top: 8px;
     }
+  }
+
+  section.Location {
+
   }
 
   section.Partner {
