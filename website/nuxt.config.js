@@ -17,8 +17,7 @@ module.exports = {
     ]
   },
   css: [
-    '~/assets/global.less',
-    '~/assets/colors.less',
+    '~/assets/global.less'
   ],
   render: {
     bundleRenderer: {

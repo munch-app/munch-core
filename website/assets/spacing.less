@@ -1,0 +1,58 @@
+.Border24, .Border3 {
+  border-radius: 3px;
+
+  &Top {
+    border-radius: 3px 3px 0 0;
+  }
+  &Bottom {
+    border-radius: 0 0 3px 3px;
+  }
+}
+
+.Border48, .Border4 {
+  border-radius: 4px;
+
+  &Top {
+    border-radius: 4px 4px 0 0;
+  }
+  &Bottom {
+    border-radius: 0 0 4px 4px;
+  }
+}
+
+/**
+ Forces you to define the sizing of every h1-h6 and p
+ */
+.ZeroSpacing {
+  h1, h2, h3, h4, h5, h6, p, a {
+    margin: 0;
+    padding: 0;
+  }
+}
+
+/**
+ Munch default Container width
+ */
+.Container {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+
+  @media (min-width: 576px) {
+    max-width: 540px;
+  }
+
+  @media (min-width: 768px) {
+    max-width: 720px;
+  }
+
+  @media (min-width: 992px) {
+    max-width: 960px;
+  }
+
+  @media (min-width: 1200px) {
+    max-width: 1140px;
+  }
+}

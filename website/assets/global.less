@@ -13,95 +13,6 @@ a {
   border: 0;
 }
 
-h5, h6, a, p, ul, li {
-  font-family: 'Open Sans', 'Roboto', sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-}
-
-.Text {
-  font-family: 'Open Sans', 'Roboto', sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-}
-
-.Heading {
-  font-family: 'Open Sans', 'Roboto', sans-serif;
-  font-weight: 600;
-}
-
-h1:extend(.Heading), .Heading1:extend(.Heading) {
-  font-size: 32px;
-  line-height: 1.3;
-}
-
-h2:extend(.Heading), .Heading2:extend(.Heading) {
-  font-size: 24px;
-  line-height: 1.3;
-}
-
-h3:extend(.Heading), .Heading3:extend(.Heading) {
-  font-size: 21px;
-  line-height: 1.4;
-}
-
-h4:extend(.Heading), .Heading4:extend(.Heading) {
-  font-size: 18px;
-  line-height: 1.5;
-}
-
-.Large:extend(.Text) {
-  font-size: 19px;
-  font-weight: 600;
-}
-
-p:extend(.Text), .Regular:extend(.Text) {
-  font-size: 16px;
-}
-
-.Small:extend(.Text) {
-  font-size: 12px;
-}
-
-.SmallBold:extend(.Text) {
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.Border24, .Border3 {
-  border-radius: 3px;
-
-  &Top {
-    border-radius: 3px 3px 0 0;
-  }
-  &Bottom {
-    border-radius: 0 0 3px 3px;
-  }
-}
-
-.Border48, .Border4 {
-  border-radius: 4px;
-
-  &Top {
-    border-radius: 4px 4px 0 0;
-  }
-  &Bottom {
-    border-radius: 0 0 4px 4px;
-  }
-}
-
-.Elevation1 {
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-}
-
-.Elevation2 {
-  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.23), 0 3px 6px 0 rgba(0, 0, 0, 0.16);
-}
-
-.Elevation3 {
-  box-shadow: 0 6px 6px 0 rgba(0, 0, 0, 0.26), 0 10px 20px 0 rgba(0, 0, 0, 0.19);
-}
-
 .NoSelect {
   -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none; /* Safari */
@@ -111,39 +22,8 @@ p:extend(.Text), .Regular:extend(.Text) {
   user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
 }
 
-/**
- Forces you to define the sizing of every h1-h6 and p
- */
-.ZeroSizing {
-  h1, h2, h3, h4, h5, h6, p, a {
-    margin: 0;
-    padding: 0;
-  }
-}
+@import "colors";
+@import "elevation";
+@import "spacing";
+@import "text";
 
-/**
- Munch default Container width
- */
-.Container {
-  width: 100%;
-  padding-right: 15px;
-  padding-left: 15px;
-  margin-right: auto;
-  margin-left: auto;
-
-  @media (min-width: 576px) {
-    max-width: 540px;
-  }
-
-  @media (min-width: 768px) {
-    max-width: 720px;
-  }
-
-  @media (min-width: 992px) {
-    max-width: 960px;
-  }
-
-  @media (min-width: 1200px) {
-    max-width: 1140px;
-  }
-}

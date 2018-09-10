@@ -42,7 +42,6 @@ public final class PlacePartnerService extends ApiService {
         String placeId = call.pathString("placeId");
         String nextPlaceSort = call.queryString("next.placeSort", null);
 
-
         NextNodeList<Article> nextNodeList = v2Support.getArticles(placeId, nextPlaceSort, size);
         PlaceArticleCardLoader.removeBadData(nextNodeList);
         return nextNodeList;
