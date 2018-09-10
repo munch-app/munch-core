@@ -114,6 +114,10 @@
             break
 
           case 13: // Enter
+            if (this.items.length < 0) {
+              this.onBlur()
+              break
+            }
             this.onClick(this.items[this.position])
             break
         }
@@ -192,6 +196,7 @@
       font-size: 17px;
       height: 40px;
       padding: 0 16px;
+      line-height: 1;
 
       color: rgba(0, 0, 0, 0.6);
 

@@ -4,18 +4,7 @@
       <place-banner-image :images="place.images"/>
     </section>
 
-    <section class="PlaceNavigation NavBg Container">
-      <div class="Text" :class="{'Primary300Bg White': tab === 'information'}"
-           @click="tab = 'information'">
-        Information
-      </div>
-      <div class="Text" :class="{'Primary300Bg White': tab === 'partner'}"
-           v-if="hasPartner" @click="tab = 'partner'">
-        Partner's Content
-      </div>
-    </section>
-
-    <section class="Information PlaceNavigationTab" :class="{'SelectedTab': tab === 'information'}">
+    <section class="Information">
       <div class="Container">
         <section class="Name ContentBody">
           <h1>{{place.name}}</h1>
@@ -24,7 +13,7 @@
         </section>
 
         <section class="MainDetail ContentBody">
-          <!--<place-hour-list :hours="hours"/>-->
+          <place-detail :place="place"/>
         </section>
 
         <section class="About ContentBody">
@@ -37,7 +26,7 @@
       </div>
     </section>
 
-    <section class="Partner PlaceNavigationTab" v-if="hasPartner" :class="{'SelectedTab': tab === 'partner'}">
+    <section class="Partner" v-if="hasPartner">
       <div class="Container">
         <h2 class="Secondary500 Header">Partner's Content</h2>
       </div>
@@ -65,7 +54,6 @@
 <script>
   import PlaceTagList from "../../components/places/PlaceTagList";
   import ImageSize from "../../components/core/ImageSize";
-  import PlaceHourList from "../../components/places/PlaceHourList";
   import MunchButton from "../../components/core/MunchButton";
   import PlaceMenuList from "../../components/places/PlaceMenuList";
   import GoogleEmbedMap from "../../components/core/GoogleEmbedMap";
@@ -75,10 +63,12 @@
   import PlaceAwardList from "../../components/places/PlaceAwardList";
   import PlaceLocation from "../../components/places/PlaceLocation";
   import PlaceAbout from "../../components/places/PlaceAbout";
+  import PlaceDetail from "../../components/places/PlaceDetail";
 
   export default {
     layout: 'search',
     components: {
+      PlaceDetail,
       PlaceAbout,
       PlaceLocation,
       PlaceAwardList,
@@ -86,7 +76,7 @@
       PartnerArticle,
       PartnerInstagramMedia,
       GoogleEmbedMap,
-      PlaceMenuList, MunchButton, PlaceHourList, ImageSize, PlaceTagList
+      PlaceMenuList, MunchButton, ImageSize, PlaceTagList
     },
     head() {
       const description = this.data.place.description
@@ -138,45 +128,6 @@
     }
   }
 
-  /**
-   Feature is only enable if < 576
-   */
-  section.PlaceNavigation {
-    display: flex;
-
-    @media (min-width: 576px) {
-      display: none;
-    }
-
-    & > div {
-      font-size: 14px;
-      margin: 10px 10px 10px 0;
-      padding: 7px 10px;
-      border-radius: 3px;
-
-      &:hover {
-        cursor: pointer;
-      }
-    }
-  }
-
-  /**
-   Feature is only enable if < 576
-   */
-  section.PlaceNavigationTab {
-    display: none;
-
-    &.SelectedTab {
-      display: block;
-    }
-
-    @media (min-width: 576px) {
-      &.Information, &.Partner {
-        display: block;
-      }
-    }
-  }
-
   section.ContentBody {
     width: 100%;
 
@@ -198,22 +149,22 @@
   }
 
   section.MainDetail {
-    margin-top: 24px;
+    margin-top: 32px;
   }
 
   section.About {
-    margin-top: 24px;
+    margin-top: 32px;
   }
 
   section.Location {
-    margin-top: 24px;
+    margin-top: 32px;
   }
 
   section.Partner {
-    margin: 24px 0;
+    margin: 32px 0;
 
     .Header {
-      display: none;
+      margin-bottom: 16px;
     }
 
     .Article {
@@ -229,23 +180,6 @@
 
       h2 {
         margin-bottom: 8px;
-      }
-    }
-
-    @media (min-width: 576px) {
-      margin: 48px 0;
-
-      .Header {
-        display: block;
-        margin-bottom: 16px;
-      }
-
-      .Article {
-        margin: 8px 0;
-      }
-
-      .Instagram {
-        margin: 8px 0;
       }
     }
   }

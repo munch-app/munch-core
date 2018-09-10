@@ -1,21 +1,35 @@
 <template>
-  <div class="PlaceHourList" @click="showAll = !showAll">
-    <div class="HourToday Text" v-if="!showAll">
-      <div class="HourHeading Large" :class="{'Open': isOpen, 'Close': !isOpen }">{{labelText}}</div>
-      <div class="HourData">
-        <div>{{Day.today().text}}:</div>
-        <div>{{timeRange}}</div>
-        <div class="CaretDown"><img src="/img/places/caret_down.svg"></div>
-      </div>
+  <div class="PlaceHourList" >
+    <div class="HourToday" @click="popover = !popover">
+      <span class="TodayShort">
+        {{Day.today().text.substring(0, 3)}}:
+      </span>
+      <span class="TodayLong">
+        {{Day.today().text}}:
+      </span>
+      <span :class="{'Open': isDayOpen(), 'Close': !isDayOpen() }">
+        {{timeRange}}
+      </span>
     </div>
-    <div class="HourAll Text" v-else>
-      <b-row class="Content" v-for="day in days" :key="day.text">
-        <b-col cols="1" class="DayName Regular">{{day.text}}:</b-col>
-        <b-col class="Regular"
-               :class="{'Open': day.isToday() && isDayOpen(day), 'Close': day.isToday() && !isDayOpen(day) }">
-          {{group.getHour(day)}}
-        </b-col>
-      </b-row>
+
+    <div class="DialogContainer">
+      <div class="HourDialog Elevation2" v-if="popover" v-on-clickaway="onClickaway">
+        <div class="Content">
+          <div class="DialogRow" v-for="day in days" :key="day.text">
+            <div class="Day">{{day.text}}:</div>
+            <div class="Hour"
+                 :class="{'Open': day.isToday() && isDayOpen(day), 'Close': day.isToday() && !isDayOpen(day) }">
+              {{group.getHour(day)}}
+            </div>
+          </div>
+        </div>
+
+        <div class="BottomBar">
+          <div class="Primary500Bg White CloseButton Elevation1 Border3 text-center HoverPointer" @click="popover = false">
+            CLOSE
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -23,37 +37,37 @@
 <script>
   const Day = {
     mon: {
-      text: "Mon", isToday() {
+      text: "Monday", isToday() {
         return Day.isToday(Day.mon)
       }
     },
     tue: {
-      text: "Tue", isToday() {
+      text: "Tuesday", isToday() {
         return Day.isToday(Day.tue)
       }
     },
     wed: {
-      text: "Wed", isToday() {
+      text: "Wednesday", isToday() {
         return Day.isToday(Day.wed)
       }
     },
     thu: {
-      text: "Thu", isToday() {
+      text: "Thursday", isToday() {
         return Day.isToday(Day.thu)
       }
     },
     fri: {
-      text: "Fri", isToday() {
+      text: "Friday", isToday() {
         return Day.isToday(Day.fri)
       }
     },
     sat: {
-      text: "Sat", isToday() {
+      text: "Saturday", isToday() {
         return Day.isToday(Day.sat)
       }
     },
     sun: {
-      text: "Sun", isToday() {
+      text: "Sunday", isToday() {
         return Day.isToday(Day.sun)
       }
     },
@@ -142,7 +156,6 @@
     timeRange() {
       return parseTimeHuman(this.open) + ' - ' + parseTimeHuman(this.close)
     }
-
 
     isBetween(date, opening, closing) {
       let day = new Date()
@@ -247,6 +260,7 @@
           text = "Closing Soon"
           break
       }
+
       return {
         Day: Day,
         days: days,
@@ -254,17 +268,26 @@
         labelText: text,
         isOpen: isOpen,
         timeRange: group.todayTimeRange(),
-        showAll: false
+        popover: false
       }
     },
     methods: {
       isDayOpen(day) {
+        if (!day) {
+          day = Day.today()
+        }
+
         switch (this.group.isOpen(day)) {
           case 'open':
           case 'opening':
             return true
         }
         return false
+      },
+      onClickaway() {
+        if (this.popover) {
+          this.popover = false
+        }
       }
     }
   }
@@ -275,30 +298,101 @@
     cursor: pointer;
   }
 
-  .HourData {
-    display: flex;
-    flex-wrap: wrap;
+  .HourToday {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
 
-    div {
-      margin-right: 8px;
+  .HourDialog {
+    padding: 0 15px;
+    text-align: left;
+    z-index: 1000;
+    background: white;
+
+    width: 100%;
+    left: 0;
+    right: 0;
+
+    .Content {
+      margin-bottom: -6px;
+
+      .DialogRow {
+        margin-bottom: 6px;
+      }
     }
 
-    .CaretDown img {
-      margin-top: -2px;
-      width: 20px;
-      height: 20px;
+    .Day {
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 20px;
+    }
+
+    .Hour {
+      line-height: 20px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
     }
   }
 
-  .HourAll {
-    max-width: 100%;
+  .BottomBar {
+    display: flex;
+  }
 
-    .Content {
-      margin-top: 5px;
+  @media (max-width: 575.98px) {
+    .TodayLong {
+      display: none;
     }
 
-    .DayName {
-      margin-right: 8px;
+    .HourDialog {
+      background: white;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      margin-top: 64px;
+      padding: 10px 15px;
+    }
+
+    .CloseButton {
+      margin-top: 8px;
+      padding: 6px 12px;
+      flex-grow: 1;
+    }
+
+    .BottomBar {
+      flex-direction: row-reverse;
+    }
+  }
+
+  @media (min-width: 576px) {
+    .TodayShort {
+      display: none;
+    }
+
+    .DialogContainer {
+      margin-top: -30px;
+      position: absolute;
+      z-index: 1000;
+    }
+
+    .HourDialog {
+      border-radius: 4px;
+      z-index: 1000;
+      background: white;
+      padding: 10px 15px;
+    }
+
+    .CloseButton {
+      margin-top: 8px;
+      padding: 6px 12px;
+
+      width: 100px;
+    }
+
+    .BottomBar {
+      flex-direction: row-reverse;
     }
   }
 </style>
