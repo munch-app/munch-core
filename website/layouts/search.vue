@@ -11,8 +11,8 @@
       <header-menu class="Menu"/>
       <search-bar-filter class="SearchBarFilter" v-if="isFilter"/>
     </nav>
-    <div class="HeaderSpace"/>
-    <div class="HeaderSpace" v-if="isFilter"/>
+    <div style="height: 56px"/>
+    <div style="height: 48px" v-if="isFilter"/>
     <nuxt/>
     <nav class="Footer">
     </nav>
@@ -74,14 +74,10 @@
 </script>
 
 <style lang="less" scoped>
-  .HeaderSpace {
-    height: 64px;
-  }
-
   .Header {
     position: fixed;
     top: 0;
-    height: 64px;
+    height: 56px;
     width: 100%;
     z-index: 100;
 
@@ -103,12 +99,12 @@
     }
 
     .Search {
-      margin: 12px 0 12px 0;
+      margin: 8px 0 8px 0;
       flex-grow: 1;
       z-index: 200;
 
       @media (min-width: 768px) {
-        margin: 12px 8px 12px 8px;
+        margin: 8px 8px 8px 8px;
       }
 
       .SearchBar {

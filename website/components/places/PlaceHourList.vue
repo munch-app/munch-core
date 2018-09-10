@@ -351,7 +351,7 @@
       top: 0;
       left: 0;
       right: 0;
-      margin-top: 64px;
+      margin-top: 56px;
       padding: 10px 15px;
     }
 

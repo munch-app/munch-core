@@ -1,12 +1,12 @@
 <template>
   <div class="SearchFilterBar Elevation1 NoSelect">
     <div class="FilterBar">
-      <div class="Text Buttons Container">
-        <div v-for="button in buttons" :key="button" class="TagBg Button Border3" @click="onButton(button)">
+      <div class="Buttons Container">
+        <div v-for="button in buttons" :key="button" class="TagBg FilterButton" @click="onButton(button)">
           {{button}}
         </div>
 
-        <div class="Text Combined TagBg Button Border3" @click="onButton('Combined')">
+        <div class="Combined TagBg FilterButton" @click="onButton('Combined')">
           Filters
         </div>
       </div>
@@ -35,9 +35,13 @@
 <style scoped lang="less">
   .FilterBar {
     position: fixed;
-    height: 64px;
+    height: 48px;
     width: 100%;
     background-color: white;
+  }
+
+  .FilterBarSpace {
+    height: 48px;
   }
 
   .Buttons {
@@ -45,9 +49,15 @@
     display: flex;
     align-items: center;
 
-    .Button {
-      padding: 4px 12px;
-      margin-right: 18px;
+    .FilterButton {
+      color: rgba(0, 0, 0, 0.8);
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1;
+
+      border-radius: 3px;
+      padding: 7px 12px;
+      margin-right: 16px;
 
       &:hover {
         cursor: pointer;
@@ -65,9 +75,5 @@
         display: none;
       }
     }
-  }
-
-  .FilterBarSpace {
-    height: 64px;
   }
 </style>

@@ -8,7 +8,7 @@
 
       <header-menu class="Menu"/>
     </nav>
-    <div class="HeaderSpace"/>
+    <div style="height: 56px"/>
 
     <nuxt/>
     <nav class="Footer">
@@ -43,15 +43,11 @@
 </script>
 
 <style lang="less" scoped>
-  .HeaderSpace {
-    height: 64px;
-  }
-
   .Header {
     z-index: 1000;
     position: fixed;
     top: 0;
-    height: 64px;
+    height: 56px;
     width: 100%;
 
     .Logo {

@@ -13,8 +13,8 @@
 
 <style scoped lang="less">
   .HeaderLogo {
-    margin-top: 16px;
-    margin-bottom: 16px;
+    margin-top: 12px;
+    margin-bottom: 12px;
     height: 32px;
 
     display: flex;
