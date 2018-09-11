@@ -187,8 +187,10 @@
 
     .TextBar {
       border-radius: 3px;
+      overflow: visible;
       box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.20), 0 2px 3px 0 rgba(0, 0, 0, 0.13);
 
+      z-index: 1000;
       position: absolute;
       background-color: #FFFFFF;
       border: none transparent;
@@ -196,7 +198,7 @@
       font-size: 17px;
       height: 40px;
       padding: 0 16px;
-      line-height: 1;
+      line-height: 2;
 
       color: rgba(0, 0, 0, 0.6);
 

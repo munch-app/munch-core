@@ -42,7 +42,7 @@
     //find & remove "?"
     hostname = hostname.split('?')[0];
 
-    return hostname;
+    return hostname.toLowerCase();
   }
 
 
@@ -91,8 +91,8 @@
     }
 
     .Row .Left {
-      font-size: 15px;
-      font-weight: 600;
+      font-size: 14px;
+      font-weight: 700;
     }
 
     .Row .Right {

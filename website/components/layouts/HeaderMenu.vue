@@ -39,7 +39,7 @@
 
 <style scoped lang="less">
   .HeaderMenu {
-    z-index: 1000;
+    z-index: 1500;
 
     @media (min-width: 768px) {
       max-width: 720px;
@@ -62,8 +62,8 @@
   }
 
   .NavLink {
-    z-index: 1000;
-    position: absolute;
+    z-index: 1500;
+    position: fixed;
     background: white;
     padding: 8px 0;
 

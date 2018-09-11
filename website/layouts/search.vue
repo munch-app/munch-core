@@ -1,6 +1,6 @@
 <template>
   <div>
-    <nav class="Header NavBg Elevation1">
+    <nav class="Header NavBg" :class="{'Elevation1': !isFilter}">
       <div class="HeaderRow Container clearfix">
         <header-logo class="Logo" :class="{'IsSuggest': isSuggest}" @click="onClickLogo"/>
         <div class="Search">
@@ -8,11 +8,14 @@
         </div>
         <header-profile class="Profile float-right" @click="onClickProfile"/>
       </div>
-      <header-menu class="Menu"/>
-      <search-bar-filter class="SearchBarFilter" v-if="isFilter"/>
     </nav>
+
     <div style="height: 56px"/>
+    <header-menu class="Menu"/>
+
     <div style="height: 48px" v-if="isFilter"/>
+    <search-bar-filter class="Filter" v-if="isFilter"/>
+
     <nuxt/>
     <nav class="Footer">
     </nav>
@@ -123,13 +126,5 @@
         display: block;
       }
     }
-
-    .Menu {
-
-    }
-  }
-
-  .Footer {
-
   }
 </style>

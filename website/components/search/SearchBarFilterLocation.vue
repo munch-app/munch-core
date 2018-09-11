@@ -4,7 +4,7 @@
 
 <script>
     export default {
-        name: "SearchBarFilterPrice"
+        name: "SearchBarFilterLocation"
     }
 </script>
 
