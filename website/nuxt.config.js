@@ -63,6 +63,7 @@ module.exports = {
       'vue-rx',
       'prismic-vue',
       'portal-vue',
+      'vue-browser-geolocation',
     ],
     plugins: [
       new webpack.ProvidePlugin({
@@ -79,6 +80,7 @@ module.exports = {
     '~/plugins/vue-rx',
     '~/plugins/prismic-vue',
     '~/plugins/portal-vue',
+    '~/plugins/vue-browser-geolocation',
   ],
   serverMiddleware: [
     {

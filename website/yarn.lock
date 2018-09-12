@@ -1923,6 +1923,10 @@ date-now@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/date-now/-/date-now-0.1.4.tgz#eaf439fd4d4848ad74e5cc7dbef200672b9e345b"
 
+dateformat@^3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/dateformat/-/dateformat-3.0.3.tgz#a6e37499a4d9a9cf85ef5872044d62901c9889ae"
+
 de-indent@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/de-indent/-/de-indent-1.0.2.tgz#b2038e846dc33baa5796128d0804b455b8c1e21d"
@@ -6537,6 +6541,12 @@ vue-analytics@^5.4.0:
   version "5.10.2"
   resolved "https://registry.yarnpkg.com/vue-analytics/-/vue-analytics-5.10.2.tgz#0536bbb6fafe3dc111683143fc5d3347506c151f"
 
+vue-browser-geolocation@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/vue-browser-geolocation/-/vue-browser-geolocation-1.5.0.tgz#bbae3a01e8066c5526b921d7762aca8866cfd16f"
+  dependencies:
+    vue "^2.0.1"
+
 vue-clickaway@^2.2.2:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/vue-clickaway/-/vue-clickaway-2.2.2.tgz#cecf6839575e8b2afc5d3edb3efb616d293dbb44"
@@ -6653,6 +6663,10 @@ vue2-google-maps@^0.9.7:
   dependencies:
     babel-runtime "^5.8.0"
     marker-clusterer-plus "^2.1.4"
+
+vue@^2.0.1:
+  version "2.5.17"
+  resolved "https://registry.yarnpkg.com/vue/-/vue-2.5.17.tgz#0f8789ad718be68ca1872629832ed533589c6ada"
 
 vue@^2.5.13, vue@latest:
   version "2.5.16"

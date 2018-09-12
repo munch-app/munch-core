@@ -1,7 +1,7 @@
 <template>
   <div class="TagColumn">
-    <div class="TagRow" v-for="tag in display" :key="tag" @click="toggle(tag)"
-         :class="{Selected: isSelected(tag)}">
+    <div class="TagRow" v-for="tag in list" :key="tag" @click="toggle(tag)"
+         :class="{Selected: isSelectedTag(tag)}">
       <div class="Name">
         {{tag}}
       </div>
@@ -14,6 +14,8 @@
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
+
   const types = {
     'cuisine': {
       list: ['Singaporean', 'Japanese', 'Italian', 'Thai', 'Chinese', 'Korean', 'Mexican', 'Western', 'Indian', 'Cantonese', 'English', 'Fusion', 'Asian', 'Hainanese', 'American', 'French', 'Hong Kong', 'Teochew', 'Taiwanese', 'Malaysian', 'Shanghainese', 'Indonesian', 'Vietnamese', 'European', 'Peranakan', 'Sze Chuan', 'Spanish', 'Middle Eastern', 'Modern European', 'Filipino', 'Turkish', 'Hakka', 'German', 'Mediterranean', 'Swiss', 'Hawaiian', 'Australian'],
@@ -36,14 +38,13 @@
     },
     data() {
       return {
-        display: types[this.type].list,
         ...types[this.type]
       }
     },
+    computed: {
+      ...mapGetters('searchBar', ['isSelectedTag'])
+    },
     methods: {
-      isSelected(tag) {
-        return this.$store.getters['searchBar/isSelectedTag'](tag)
-      },
       count(tag) {
         return '100'
       },
@@ -136,17 +137,18 @@
     }
   }
 
-  @Primary600: #EE4C23;
+  @Primary500: #F05F3B;
 
   .TagRow.Selected {
 
     .Checkbox::after {
       content: "";
-      border-color: @Primary600;
+      border-color: white;
     }
 
     .Checkbox::before {
-      border-color: @Primary600;
+      border-color: @Primary500;
+      background-color: @Primary500;
     }
   }
 </style>

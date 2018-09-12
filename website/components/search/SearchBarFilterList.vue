@@ -7,6 +7,11 @@
           <search-bar-filter-tag type="cuisine"/>
         </div>
 
+        <div class="Group Location" :class="{'Selected': selected === 'location'}">
+          <h2 class="FilterName">Location</h2>
+          <search-bar-filter-location/>
+        </div>
+
         <div class="Group Amenities" :class="{'Selected': selected === 'amenities'}">
           <h2 class="FilterName">Amenities</h2>
           <search-bar-filter-tag type="amenities"/>
@@ -24,7 +29,7 @@
 
         <div class="BottomBar">
           <div class="Button Cancel" @click="onCancel">Cancel</div>
-          <div class="Button Apply Primary500Bg White" @click="onApply">Apply</div>
+          <div class="Button Apply Secondary500Bg White" @click="onApply">Apply</div>
         </div>
       </div>
     </div>
@@ -34,10 +39,11 @@
 <script>
   import SearchBarFilterTag from "./SearchBarFilterTag";
   import SearchBarFilterTiming from "./SearchBarFilterTiming";
+  import SearchBarFilterLocation from "./SearchBarFilterLocation";
 
   export default {
     name: "SearchBarFilterList",
-    components: {SearchBarFilterTiming, SearchBarFilterTag},
+    components: {SearchBarFilterLocation, SearchBarFilterTiming, SearchBarFilterTag},
     props: {
       selected: {
         required: true
@@ -79,10 +85,16 @@
     .Button {
       line-height: 1.5;
       border-radius: 3px;
+      font-size: 16px;
 
       &:hover {
         cursor: pointer;
       }
+    }
+
+    .Apply {
+      font-weight: 600;
+      font-size: 15px;
     }
   }
 
@@ -116,8 +128,6 @@
       }
 
       .Apply {
-        font-weight: 600;
-        font-size: 16px;
         height: 44px;
         line-height: 44px;
         text-align: center;

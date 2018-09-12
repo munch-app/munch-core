@@ -1,26 +1,26 @@
 <template>
-  <div class="TagColumn">
-    <div class="TagRow" v-for="timing in timings" :key="timing"
-         :class="isSelected(timing) ? 'Primary400Bg': 'Whisper100Bg'"
-         @click="toggle(timing)">
+  <div class="TimingCollection">
+    <div class="TimingCell" v-for="timing in timings" :key="timing" @click="toggle(timing)"
+         :class="{Primary400Bg: isSelectedTiming(timing), Whisper100Bg: !isSelectedTiming(timing)}">
       {{timing}}
     </div>
   </div>
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
+
   export default {
     name: "SearchBarFilterTiming",
     data() {
-      return {}
+      return {
+        timings: ['Open Now', 'Breakfast', 'Lunch', 'Dinner', 'Supper']
+      }
     },
     computed: {
-      timings: () => ['Open Now', 'Breakfast', 'Lunch', 'Dinner', 'Supper']
+      ...mapGetters('searchBar', ['isSelectedTiming'])
     },
     methods: {
-      isSelected(timing) {
-        return this.$store.getters['searchBar/isSelectedTiming'](timing)
-      },
       toggle(timing) {
         this.$store.commit('searchBar/toggleTiming', timing)
       }
@@ -29,7 +29,7 @@
 </script>
 
 <style scoped lang="less">
-  .TagColumn {
+  .TimingCollection {
     padding: 8px 0;
     display: flex;
     flex-flow: row nowrap;
@@ -38,8 +38,8 @@
     overflow-x: scroll;
   }
 
-  .TagRow {
-    font-size: 15px;
+  .TimingCell {
+    font-size: 13px;
     font-weight: 600;
     color: rgba(0, 0, 0, 0.75);
     white-space: nowrap;
