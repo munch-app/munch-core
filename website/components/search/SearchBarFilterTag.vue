@@ -21,7 +21,7 @@
       list: ['Singaporean', 'Japanese', 'Italian', 'Thai', 'Chinese', 'Korean', 'Mexican', 'Western', 'Indian', 'Cantonese', 'English', 'Fusion', 'Asian', 'Hainanese', 'American', 'French', 'Hong Kong', 'Teochew', 'Taiwanese', 'Malaysian', 'Shanghainese', 'Indonesian', 'Vietnamese', 'European', 'Peranakan', 'Sze Chuan', 'Spanish', 'Middle Eastern', 'Modern European', 'Filipino', 'Turkish', 'Hakka', 'German', 'Mediterranean', 'Swiss', 'Hawaiian', 'Australian'],
     },
     'amenities': {
-      list: ['Romantic', 'Supper', 'Brunch', 'Business Meal', 'Scenic View', 'Child-Friendly', 'Large Group', 'Vegetarian Options', 'Halal', 'Healthy', 'Alcohol', 'Vegetarian', 'Private Dining', 'Budget', 'Pet-Friendly', 'Live Music', 'Vegan', 'Vegan Options']
+      list: ['Romantic', 'Supper', 'Brunch', 'Business Meal', 'Scenic View', 'Child-Friendly', 'Large Group', 'Vegetarian Options', 'Halal', 'Healthy', 'Alcohol', 'Vegetarian', 'Private Dining', 'Value For Money', 'Pet-Friendly', 'Live Music', 'Vegan', 'Vegan Options']
     },
     'establishments': {
       list: ['Hawker', 'Drinks', 'Bakery', 'Dessert', 'Snacks', 'Cafe', 'Bars & Pubs', 'Fast Food', 'BBQ', 'Buffet', 'Hotpot & Steamboat', 'High Tea', 'Fine Dining']
@@ -42,14 +42,36 @@
       }
     },
     computed: {
-      ...mapGetters('searchBar', ['isSelectedTag'])
+      ...mapGetters('searchBar', ['isSelectedTag']),
+      tags() {
+        return this.$store.state.searchBar.count.tags
+      }
     },
     methods: {
       count(tag) {
-        return '100'
+        if (this.$store.state.searchBar.query.filter.tag.positives.length  === 0) return ''
+        if (this.isSelectedTag(tag)) return ''
+
+
+        const count = this.tags[tag.toLowerCase()]
+        if (count) {
+          if (count >= 100) return '100+'
+          else if (count <= 10) return `${count}`
+          else return `${count / 10 * 10}`
+        }
+        return '0'
       },
       toggle(tag) {
-        this.$store.commit('searchBar/toggleTag', tag)
+        this.$store.dispatch('searchBar/tag', tag)
+      }
+    },
+    watch: {
+      tags(tags) {
+        this.list.sort((a, b) => {
+          const as = tags[a.toLowerCase()] || 0
+          const bs = tags[b.toLowerCase()] || 0
+          return bs - as
+        })
       }
     }
   }
@@ -140,7 +162,6 @@
   @Primary500: #F05F3B;
 
   .TagRow.Selected {
-
     .Checkbox::after {
       content: "";
       border-color: white;

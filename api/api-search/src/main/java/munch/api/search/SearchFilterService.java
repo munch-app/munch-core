@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import munch.api.ApiService;
 import munch.api.search.data.FilterCount;
 import munch.api.search.data.FilterPrice;
+import munch.api.search.data.FilterPriceGraph;
 import munch.api.search.elastic.ElasticQueryUtils;
 import munch.data.client.ElasticClient;
 import munch.restful.core.JsonUtils;
@@ -38,6 +39,7 @@ public final class SearchFilterService extends ApiService {
         PATH("/search/filter", () -> {
             POST("/count", this::count);
             POST("/price", this::price);
+            POST("/price/graph", this::priceGraph);
         });
     }
 
@@ -60,6 +62,10 @@ public final class SearchFilterService extends ApiService {
         return filterCount;
     }
 
+    /**
+     * @deprecated use priceGraph instead, try to deprecate by 0.15
+     */
+    @Deprecated
     public FilterPrice price(JsonCall call) {
         SearchRequest request = searchRequestFactory.create(call);
 
@@ -77,6 +83,24 @@ public final class SearchFilterService extends ApiService {
         FilterPrice filterPrice = new FilterPrice();
         filterPrice.setFrequency(ElasticOutput.parsePriceFrequency(aggregations.path("prices")));
         return filterPrice;
+    }
+
+    public FilterPriceGraph priceGraph(JsonCall call) {
+        SearchRequest request = searchRequestFactory.create(call);
+
+        ObjectNode queryNode = JsonUtils.createObjectNode();
+        ArrayNode filter = queryNode.putObject("bool").putArray("filter");
+        filter.add(ElasticQueryUtils.filterTerm("dataType", "Place"));
+        filter.add(ElasticQueryUtils.filterTerm("status.type", "open"));
+        ElasticQueryUtils.filterLocation(request).ifPresent(filter::add);
+
+        ObjectNode aggsNode = JsonUtils.createObjectNode();
+        aggsNode.set("prices", ElasticInput.aggPrices());
+
+        JsonNode aggregations = postElasticAggs(queryNode, aggsNode);
+        JsonNode prices = aggregations.path("prices");
+        Map<Double, Integer> frequency = ElasticOutput.parsePriceFrequency(prices);
+        return FilterPriceGraph.fromFrequency(frequency);
     }
 
     private JsonNode postElasticAggs(JsonNode queryNode, JsonNode aggsNode) {

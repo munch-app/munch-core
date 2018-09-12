@@ -27,14 +27,18 @@
     methods: {
       toggle(location) {
         if (location === 'Nearby') {
+          this.$store.commit('searchBar/loading', true)
+
           return this.$getLocation()
             .then(coordinates => {
               this.$store.commit('searchBar/updateLatLng', `${coordinates.lat},${coordinates.lng}`)
-              this.$store.commit('searchBar/toggleLocation', location)
+              this.$store.dispatch('searchBar/location', location)
+            }).catch(error => {
+              this.$store.commit('searchBar/loading', false)
             });
         }
 
-        this.$store.commit('searchBar/toggleLocation', location)
+        this.$store.dispatch('searchBar/location', location)
       }
     }
   }
@@ -48,17 +52,18 @@
     margin-left: -16px;
 
     overflow-x: scroll;
+    -webkit-overflow-scrolling: touch;
   }
 
   .LocationCell {
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 600;
     color: rgba(0, 0, 0, 0.75);
     white-space: nowrap;
 
     line-height: 1.5;
     border-radius: 3px;
-    padding: 10px 20px;
+    padding: 12px 20px;
     margin-left: 16px;
 
     &.Primary400Bg {

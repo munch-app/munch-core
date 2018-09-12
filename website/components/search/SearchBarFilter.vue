@@ -1,5 +1,5 @@
 <template>
-  <div class="SearchFilterBar NoSelect">
+  <div class="SearchFilterBar NoSelect" v-on-clickaway="onClickAway">
     <div class="FilterBar Elevation1">
       <div class="Buttons Container">
         <div v-for="button in buttons" :key="button" class="FilterButton"
@@ -37,6 +37,9 @@
         } else {
           this.selected = null
         }
+      },
+      onClickAway() {
+        this.selected = null
       }
     }
   }

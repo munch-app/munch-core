@@ -22,7 +22,7 @@
     },
     methods: {
       toggle(timing) {
-        this.$store.commit('searchBar/toggleTiming', timing)
+        this.$store.dispatch('searchBar/timing', timing)
       }
     }
   }
@@ -36,10 +36,11 @@
     margin-left: -16px;
 
     overflow-x: scroll;
+    -webkit-overflow-scrolling: touch;
   }
 
   .TimingCell {
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 600;
     color: rgba(0, 0, 0, 0.75);
     white-space: nowrap;

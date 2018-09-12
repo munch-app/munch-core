@@ -1,7 +1,7 @@
 <template>
   <div v-on-clickaway="onBlur">
-    <div class="SearchBar NoSelect">
-      <input ref="input" class="TextBar" :class="{'Extended': isExtended}" type="text"
+    <div class="SearchTextBar NoSelect" :class="{'Extended': isExtended}">
+      <input ref="input" class="TextBar" type="text"
              :placeholder="placeholder" v-model="text" @keyup="onKeyUp" @focus="onFocus">
 
       <div class="Clear" :style="clearStyle" @click="onClear">
@@ -143,6 +143,7 @@
         this.$emit('onText', this.text)
       },
       onFocus() {
+        window.scrollTo(0, 0);
         this.searching = true
         this.position = 0
         this.$emit('onFocus', this.text)
@@ -180,15 +181,24 @@
 </script>
 
 <style scoped lang="less">
-  .SearchBar {
+  .SearchTextBar {
     position: relative;
     width: 100%;
     height: 40px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.20), 0 2px 3px 0 rgba(0, 0, 0, 0.13);
+    border-radius: 3px;
+
+    &.Extended {
+      border-radius: 3px;
+
+      @media (min-width: 768px) {
+        border-radius: 3px 3px 0 0;
+      }
+    }
 
     .TextBar {
       border-radius: 3px;
       overflow: visible;
-      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.20), 0 2px 3px 0 rgba(0, 0, 0, 0.13);
 
       z-index: 1500;
       position: absolute;
@@ -206,14 +216,6 @@
         outline: none;
         color: black;
       }
-
-      &.Extended {
-        border-radius: 3px;
-
-        @media (min-width: 768px) {
-          border-radius: 3px 3px 0 0;
-        }
-      }
     }
 
     .Clear {
@@ -230,7 +232,7 @@
   }
 
   .SearchSuggest {
-    z-index: 200;
+    z-index: 1200;
     background: white;
     position: absolute;
 

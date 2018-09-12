@@ -2,6 +2,11 @@
   <div class="Container" v-if="selected">
     <div class="FilterListContainer">
       <div class="FilterList">
+        <div class="Group Price" :class="{'Selected': selected === 'price'}">
+          <h2 class="FilterName">Price</h2>
+          <search-bar-filter-price/>
+        </div>
+
         <div class="Group Cuisine" :class="{'Selected': selected === 'cuisine'}">
           <h2 class="FilterName">Cuisine</h2>
           <search-bar-filter-tag type="cuisine"/>
@@ -29,7 +34,10 @@
 
         <div class="BottomBar">
           <div class="Button Cancel" @click="onCancel">Cancel</div>
-          <div class="Button Apply Secondary500Bg White" @click="onApply">Apply</div>
+          <div class="Button Apply" @click="onApply"
+          :class="{'Secondary500Bg White Weight400': result, 'Secondary050Bg BlackA85 Weight600': !result}">
+            {{applyText}}
+          </div>
         </div>
       </div>
     </div>
@@ -40,20 +48,53 @@
   import SearchBarFilterTag from "./SearchBarFilterTag";
   import SearchBarFilterTiming from "./SearchBarFilterTiming";
   import SearchBarFilterLocation from "./SearchBarFilterLocation";
+  import SearchBarFilterPrice from "./SearchBarFilterPrice";
 
   export default {
     name: "SearchBarFilterList",
-    components: {SearchBarFilterLocation, SearchBarFilterTiming, SearchBarFilterTag},
+    components: {SearchBarFilterPrice, SearchBarFilterLocation, SearchBarFilterTiming, SearchBarFilterTag},
     props: {
       selected: {
         required: true
       }
+    },
+    mounted() {
+      // LatLng need to be commited before mounting
+      this.$store.dispatch('searchBar/start')
+    },
+    computed: {
+      applyText() {
+        if (this.$store.state.searchBar.loading) {
+          return 'Loading...'
+        }
+
+        const count = this.$store.state.searchBar.count.count
+        if (count) {
+          if (count >= 100) return `See 100+ Restaurants`
+          else if (count <= 10) return `See ${count} Restaurants`
+          else {
+            const rounded = count / 10 * 10
+            return `See ${rounded}+ Restaurants`
+          }
+        }
+        return 'No Results'
+      },
+      result() {
+        if (this.$store.state.searchBar.loading) {
+          return true
+        }
+
+        const count = this.$store.state.searchBar.count.count
+        return !!count;
+
+      },
     },
     methods: {
       onCancel() {
         this.$emit('selected', this.selected)
       },
       onApply() {
+
         this.$emit('selected', this.selected)
       },
     }
@@ -93,7 +134,6 @@
     }
 
     .Apply {
-      font-weight: 600;
       font-size: 15px;
     }
   }
@@ -111,10 +151,12 @@
         margin-left: auto;
       }
 
-      padding-bottom: 8px;
+      padding-bottom: 24px;
+      margin-bottom: 64px; // Bottom Bar
     }
 
     .BottomBar {
+      height: 64px;
       position: fixed;
       left: 0;
       right: 0;
@@ -128,11 +170,11 @@
       }
 
       .Apply {
-        height: 44px;
-        line-height: 44px;
+        height: 48px;
+        line-height: 48px;
         text-align: center;
 
-        margin: 10px 15px;
+        margin: 8px 15px;
         flex-grow: 1;
       }
     }
@@ -166,8 +208,14 @@
     }
 
     .BottomBar {
-      .Button {
+      .Cancel {
         padding: 6px 24px;
+      }
+
+      .Apply {
+        text-align: center;
+        padding: 6px 0;
+        width: 200px;
         margin-left: 8px;
       }
     }

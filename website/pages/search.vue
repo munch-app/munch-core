@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="SearchResult Container">
+    <div class="SearchResult Container" v-if="cards.length > 0">
       <h3 class="TopResult">Top Results</h3>
       <b-row>
         <b-col class="Card" cols="12" md="4" lg="3" v-for="card in cards" :key="card['_uniqueId']"
