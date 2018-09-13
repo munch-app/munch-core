@@ -1,7 +1,9 @@
 <template>
   <div class="TimingCollection">
     <div class="TimingCell" v-for="timing in timings" :key="timing" @click="toggle(timing)"
-         :class="{Primary400Bg: isSelectedTiming(timing), Whisper100Bg: !isSelectedTiming(timing)}">
+         :class="{
+         'Primary500Bg White': isSelectedTiming(timing),
+         'Whisper100Bg BlackA75': !isSelectedTiming(timing)}">
       {{timing}}
     </div>
   </div>
@@ -42,21 +44,12 @@
   .TimingCell {
     font-size: 14px;
     font-weight: 600;
-    color: rgba(0, 0, 0, 0.75);
     white-space: nowrap;
 
     line-height: 1.5;
     border-radius: 3px;
     padding: 6px 20px;
     margin-left: 16px;
-
-    &.Primary400Bg {
-      color: white;
-    }
-
-    &.Whisper100Bg {
-      color: rgba(0, 0, 0, 0.75);
-    }
 
     &:hover {
       cursor: pointer;

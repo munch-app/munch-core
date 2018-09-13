@@ -13,7 +13,7 @@
     </div>
 
     <div class="DialogContainer">
-      <div class="HourDialog Elevation2" v-if="popover" v-on-clickaway="onClickaway">
+      <div class="HourDialog Elevation2" v-if="popover" v-on-clickaway="onClickAway">
         <div class="Content">
           <div class="DialogRow" v-for="day in days" :key="day.text">
             <div class="Day">{{day.text}}:</div>
@@ -284,7 +284,7 @@
         }
         return false
       },
-      onClickaway() {
+      onClickAway() {
         if (this.popover) {
           this.popover = false
         }

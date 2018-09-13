@@ -34,10 +34,11 @@
 
         <div class="BottomBar">
           <div class="Button Cancel" @click="onCancel">Cancel</div>
-          <div class="Button Apply" @click="onApply"
+          <div class="Button Apply" @click="onApply" v-if="applyText"
           :class="{'Secondary500Bg White Weight400': result, 'Secondary050Bg BlackA85 Weight600': !result}">
             {{applyText}}
           </div>
+          <beat-loader v-else class="Button Apply Secondary050Bg FlexCenter" color="#084E69" size="8px"/>
         </div>
       </div>
     </div>
@@ -49,10 +50,12 @@
   import SearchBarFilterTiming from "./SearchBarFilterTiming";
   import SearchBarFilterLocation from "./SearchBarFilterLocation";
   import SearchBarFilterPrice from "./SearchBarFilterPrice";
+  import BeatLoader from 'vue-spinner/src/BeatLoader.vue'
+
 
   export default {
     name: "SearchBarFilterList",
-    components: {SearchBarFilterPrice, SearchBarFilterLocation, SearchBarFilterTiming, SearchBarFilterTag},
+    components: {SearchBarFilterPrice, SearchBarFilterLocation, SearchBarFilterTiming, SearchBarFilterTag, BeatLoader},
     props: {
       selected: {
         required: true
@@ -64,9 +67,7 @@
     },
     computed: {
       applyText() {
-        if (this.$store.state.searchBar.loading) {
-          return 'Loading...'
-        }
+        if (this.$store.state.searchBar.loading) return
 
         const count = this.$store.state.searchBar.count.count
         if (count) {

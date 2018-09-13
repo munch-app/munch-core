@@ -1,3 +1,5 @@
+// TODO: Change name to filter.js
+
 const ANYWHERE = {
   areaId: 'singapore',
   type: 'City',
@@ -34,6 +36,7 @@ export const state = () => ({
     tags: {},
   },
   priceGraph: undefined,
+  startedLoading: null,
   loading: null, // true, false, null = not loaded before
   error: undefined, // any error object
 })
@@ -46,7 +49,6 @@ export const getters = {
   },
 
   isSelectedTiming: (state) => (timing) => {
-    timing = timing.toLowerCase()
     return state.query.filter.hour.name === timing
   },
 
@@ -65,9 +67,11 @@ export const getters = {
     return state.query.filter.area && state.query.filter.area.areaId === location.areaId
   },
 
-  isSelectedPrice: (state) => (range) => {
-    // TODO
-    return false
+  isSelectedPrice: (state) => (name) => {
+    return state.query.filter.price && state.query.filter.price.name === name
+  },
+  loading: (state) => {
+    return state.loading
   }
 }
 
@@ -100,9 +104,24 @@ export const mutations = {
    * @param timing tag to toggle in search bar
    */
   toggleTiming(state, timing) {
-    timing = timing.toLowerCase()
     if (state.query.filter.hour.name === timing) {
       state.query.filter.hour = {}
+    } else if (timing === 'Open Now') {
+      const date = new Date()
+      const day = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'][date.getDay()]
+      const hours = date.getHours() < 10 ? `0${date.getHours()}` : `${date.getHours()}`
+      const minutes = date.getMinutes() < 10 ? `0${date.getMinutes()}` : `${date.getMinutes()}`
+      const close = hours === '23'
+        ? '23:59' : minutes < 30
+          ? `${hours}:${minutes + 30}`
+          : `${hours + 1}:${minutes - 30}`
+
+      state.query.filter.hour = {
+        name: 'Open Now',
+        day: day,
+        open: `${hours}:${minutes}`,
+        close: close
+      }
     } else {
       state.query.filter.hour = {name: timing}
     }
@@ -112,7 +131,7 @@ export const mutations = {
    * @param state
    * @param location update to however you cannot turn off location
    */
-  toggleLocation(state, location) {
+  updateLocation(state, location) {
     if (location === 'Nearby') {
       // Might need to do a polygon due how inaccuracy of data
       state.query.filter.area = null
@@ -123,9 +142,12 @@ export const mutations = {
     }
   },
 
-  togglePrice(state, range) {
-    // Get name, check store
-    // TODO
+  updatePrice(state, {name, min, max}) {
+    if (state.query.filter.price.name === name) {
+      state.query.filter.price = {}
+    } else {
+      state.query.filter.price = {name, min, max}
+    }
   },
 
   /**
@@ -153,6 +175,7 @@ export const mutations = {
    */
   loading(state, loading) {
     state.loading = loading
+    state.startedLoading = new Date()
   },
 
   /**
@@ -165,6 +188,11 @@ export const mutations = {
   }
 }
 
+function loadingDeadline(commit, state) {
+  const timeout = (state.startedLoading.getTime() + 800) - new Date().getTime()
+  setTimeout(() => commit('loading', false), timeout)
+}
+
 export const actions = {
   start({commit, state}) {
     if (state.loading !== null) return
@@ -172,13 +200,13 @@ export const actions = {
 
     const graph = this.$axios.$post('/api/search/filter/price/graph', state.query, {progress: false})
       .then(({data}) => {
-        commit('priceGraph', data)
+        return commit('priceGraph', data)
       })
       .catch(error => commit('error', error))
 
     const count = this.$axios.$post('/api/search/filter/count', state.query, {progress: false})
       .then(({data}) => {
-        commit('count', data)
+        return commit('count', data)
       })
       .catch(error => commit('error', error))
 
@@ -188,8 +216,10 @@ export const actions = {
   },
 
   location({commit, state}, location) {
+    if (state.loading) return // Don't commit any changes if is already loading
+
     commit('loading', true)
-    commit('toggleLocation', location)
+    commit('updateLocation', location)
 
     const graph = this.$axios.$post('/api/search/filter/price/graph', state.query, {progress: false})
       .then(({data}) => {
@@ -205,37 +235,49 @@ export const actions = {
 
     return Promise
       .all([graph, count])
-      .finally(() => commit('loading', false))
+      .finally(() => loadingDeadline(commit, state))
   },
 
 
-  priceRange({commit, state}, range) {
-    commit('loading', true)
+  price({commit, state}, object) {
+    if (state.loading) return // Don't commit any changes if is already loading
 
-    this.$axios.$post('/api/search/filter/price/graph', state.query, {progress: false})
+    commit('loading', true)
+    commit('updatePrice', object)
+
+    return this.$axios.$post('/api/search/filter/count', state.query, {progress: false})
+      .then(({data}) => {
+        commit('count', data)
+        loadingDeadline(commit, state)
+      })
+      .catch(error => commit('error', error))
   },
 
 
   timing({commit, state}, timing) {
+    if (state.loading) return // Don't commit any changes if is already loading
+
     commit('loading', true)
     commit('toggleTiming', timing)
 
     return this.$axios.$post('/api/search/filter/count', state.query, {progress: false})
       .then(({data}) => {
         commit('count', data)
-        commit('loading', false)
+        loadingDeadline(commit, state)
       })
       .catch(error => commit('error', error))
   },
 
   tag({commit, state}, tag) {
+    if (state.loading) return // Don't commit any changes if is already loading
+
     commit('loading', true)
     commit('toggleTag', tag)
 
     return this.$axios.$post('/api/search/filter/count', state.query, {progress: false})
       .then(({data}) => {
         commit('count', data)
-        commit('loading', false)
+        loadingDeadline(commit, state)
       })
       .catch(error => commit('error', error))
   },

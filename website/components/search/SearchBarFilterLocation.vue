@@ -1,25 +1,38 @@
 <template>
   <div class="LocationCollection">
+    <div class="LocationCell FlexCenter" @click="toggle('Nearby')" :class="{
+         'Primary500Bg White': isSelectedLocation('Nearby'),
+         'Whisper100Bg BlackA75': !isSelectedLocation('Nearby')}">
+      <beat-loader v-if="loadingNearby" class="FlexCenter" color="#0A6284" size="6px"/>
+      <div v-else>Nearby</div>
+    </div>
     <div class="LocationCell" v-for="location in locations" :key="location" @click="toggle(location)"
-         :class="{Primary400Bg: isSelectedLocation(location), Whisper100Bg: !isSelectedLocation(location)}">
+         :class="{
+         'Primary500Bg White': isSelectedLocation(location),
+         'Whisper100Bg BlackA75': !isSelectedLocation(location)}">
       {{location}}
     </div>
   </div>
 </template>
 
 <script>
+  import BeatLoader from 'vue-spinner/src/BeatLoader.vue'
   import {mapGetters} from 'vuex'
 
   export default {
     name: "SearchBarFilterLocation",
+    components: {BeatLoader},
     data() {
-      return {locations: ['Nearby', 'Anywhere']}
+      return {
+        locations: ['Anywhere'],
+        loadingNearby: false
+      }
     },
     mounted() {
-      // this.$watchLocation()
-      //   .then(coordinates => {
-      //     this.$store.commit('searchBar/updateLatLng', `${coordinates.lat},${coordinates.lng}`)
-      //   })
+      this.$watchLocation()
+        .then(coordinates => {
+          this.$store.commit('searchBar/updateLatLng', `${coordinates.lat},${coordinates.lng}`)
+        })
     },
     computed: {
       ...mapGetters('searchBar', ['isSelectedLocation'])
@@ -27,18 +40,23 @@
     methods: {
       toggle(location) {
         if (location === 'Nearby') {
-          this.$store.commit('searchBar/loading', true)
-
-          return this.$getLocation()
+          this.loadingNearby = true
+          return this.$getLocation({
+            enableHighAccuracy: true,
+            timeout: 8000,
+            maximumAge: 15000
+          })
             .then(coordinates => {
               this.$store.commit('searchBar/updateLatLng', `${coordinates.lat},${coordinates.lng}`)
               this.$store.dispatch('searchBar/location', location)
             }).catch(error => {
-              this.$store.commit('searchBar/loading', false)
-            });
+              alert(error)
+            }).finally(() => {
+              this.loadingNearby = false
+            })
+        } else {
+          this.$store.dispatch('searchBar/location', location)
         }
-
-        this.$store.dispatch('searchBar/location', location)
       }
     }
   }
@@ -58,21 +76,12 @@
   .LocationCell {
     font-size: 14px;
     font-weight: 600;
-    color: rgba(0, 0, 0, 0.75);
     white-space: nowrap;
 
     line-height: 1.5;
     border-radius: 3px;
     padding: 12px 20px;
     margin-left: 16px;
-
-    &.Primary400Bg {
-      color: white;
-    }
-
-    &.Whisper100Bg {
-      color: rgba(0, 0, 0, 0.75);
-    }
 
     &:hover {
       cursor: pointer;

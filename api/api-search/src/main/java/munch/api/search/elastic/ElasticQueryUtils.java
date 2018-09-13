@@ -15,9 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -98,9 +96,11 @@ public final class ElasticQueryUtils {
         if (filter == null) return filterArray;
 
         // Filter to positive tags
+        Set<String> positives = new HashSet<>();
+
         if (filter.getTag() != null && filter.getTag().getPositives() != null) {
             for (String tag : filter.getTag().getPositives()) {
-                filterArray.add(filterTerm("tags.name", tag.toLowerCase()));
+                positives.add(tag.toLowerCase());
             }
         }
 
@@ -109,6 +109,14 @@ public final class ElasticQueryUtils {
 
         // Filter hour
         filterHour(filter.getHour()).ifPresent(filterArray::add);
+        if (StringUtils.isNotBlank(filter.getHour().getName()) && filter.getHour().getOpen() == null) {
+            positives.add(filter.getHour().getName().toLowerCase());
+        }
+
+        // Accumulate positive tags
+        positives.forEach(s -> {
+            filterArray.add(filterTerm("tags.name", s));
+        });
         return filterArray;
     }
 

@@ -1,13 +1,14 @@
 <template>
   <div class="TagColumn">
     <div class="TagRow" v-for="tag in list" :key="tag" @click="toggle(tag)"
-         :class="{Selected: isSelectedTag(tag)}">
+         :class="{Selected: isSelectedTag(tag), Loading: loading}">
       <div class="Name">
         {{tag}}
       </div>
       <div class="Control">
-        <div class="Count">{{count(tag)}}</div>
-        <div class="Checkbox"/>
+        <div v-if="!loading" class="Count">{{count(tag)}}</div>
+        <div v-if="!loading" class="Checkbox"/>
+        <beat-loader v-if="loading" class="FlexCenter" color="#0A6284" size="6px"/>
       </div>
     </div>
   </div>
@@ -15,6 +16,7 @@
 
 <script>
   import {mapGetters} from 'vuex'
+  import BeatLoader from 'vue-spinner/src/BeatLoader.vue'
 
   const types = {
     'cuisine': {
@@ -28,8 +30,20 @@
     }
   }
 
+  function reduce(query, type) {
+    let collector = []
+    types[type].list.forEach(name => {
+      if (query.filter.tag.positives.includes(name.toLowerCase())) {
+        collector.push(name)
+      }
+    })
+    return collector
+  }
+
   export default {
+    $$reduce: reduce,
     name: "SearchBarFilterTag",
+    components: {BeatLoader},
     props: {
       type: {
         type: String,
@@ -42,16 +56,15 @@
       }
     },
     computed: {
-      ...mapGetters('searchBar', ['isSelectedTag']),
+      ...mapGetters('searchBar', ['isSelectedTag', 'loading']),
       tags() {
         return this.$store.state.searchBar.count.tags
       }
     },
     methods: {
       count(tag) {
-        if (this.$store.state.searchBar.query.filter.tag.positives.length  === 0) return ''
+        if (this.$store.state.searchBar.query.filter.tag.positives.length === 0) return ''
         if (this.isSelectedTag(tag)) return ''
-
 
         const count = this.tags[tag.toLowerCase()]
         if (count) {
@@ -165,6 +178,11 @@
     .Checkbox::after {
       content: "";
       border-color: white;
+    }
+
+    .Checkbox::before {
+      border-color: @Primary500;
+      background-color: @Primary500;
     }
 
     .Checkbox::before {
