@@ -1,6 +1,6 @@
 <template>
   <div class="PlaceTagList">
-    <div class="Text Tag Whisper100Bg Border24" v-for="tag in tagMax" :key="tag.tagId">
+    <div class="Text Tag Whisper100Bg Border24" v-for="tag in tagMax" :key="tag.tagId" @click="onClick(tag)">
       {{tag.name}}
     </div>
   </div>
@@ -23,6 +23,13 @@
     computed: {
       tagMax() {
         return this.tags.slice(0, this.max)
+      }
+    },
+    action: {
+      onClick(tag) {
+        // TODO how to commit to search
+        // tag.name
+        // this.$store.state.filter.com
       }
     }
   }

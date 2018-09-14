@@ -56,14 +56,14 @@
       }
     },
     computed: {
-      ...mapGetters('searchBar', ['isSelectedTag', 'loading']),
+      ...mapGetters('filter', ['isSelectedTag', 'loading']),
       tags() {
-        return this.$store.state.searchBar.count.tags
+        return this.$store.state.filter.count.tags
       }
     },
     methods: {
       count(tag) {
-        if (this.$store.state.searchBar.query.filter.tag.positives.length === 0) return ''
+        if (this.$store.state.filter.query.filter.tag.positives.length === 0) return ''
         if (this.isSelectedTag(tag)) return ''
 
         const count = this.tags[tag.toLowerCase()]
@@ -75,7 +75,7 @@
         return '0'
       },
       toggle(tag) {
-        this.$store.dispatch('searchBar/tag', tag)
+        this.$store.dispatch('filter/tag', tag)
       }
     },
     watch: {

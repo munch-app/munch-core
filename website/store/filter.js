@@ -1,5 +1,3 @@
-// TODO: Change name to filter.js
-
 const ANYWHERE = {
   areaId: 'singapore',
   type: 'City',

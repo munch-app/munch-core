@@ -23,8 +23,8 @@
     name: "SearchBarFilterPrice",
     components: {SearchBarFilterPriceSlider, SearchBarFilterPriceGraph},
     data() {
-      const price = this.$store.state.searchBar.query.filter.price || {}
-      const priceGraph = this.$store.state.searchBar.priceGraph || {}
+      const price = this.$store.state.filter.query.filter.price || {}
+      const priceGraph = this.$store.state.filter.priceGraph || {}
 
       return {
         value: [price.min || 0, price.max || 200],
@@ -33,12 +33,12 @@
       }
     },
     computed: {
-      ...mapGetters('searchBar', ['isSelectedPrice']),
+      ...mapGetters('filter', ['isSelectedPrice']),
       priceGraph() {
-        return this.$store.state.searchBar.priceGraph
+        return this.$store.state.filter.priceGraph
       },
       price() {
-        return this.$store.state.searchBar.query.filter.price
+        return this.$store.state.filter.query.filter.price
       }
     },
     watch: {
@@ -53,15 +53,15 @@
     },
     methods: {
       toggle(name) {
-        const priceGraph = this.$store.state.searchBar.priceGraph
+        const priceGraph = this.$store.state.filter.priceGraph
         if (priceGraph && name) {
           const range = priceGraph.ranges[name]
           this.value = [range.min, range.max]
-          this.$store.dispatch('searchBar/price', {name, min: range.min, max: range.max})
+          this.$store.dispatch('filter/price', {name, min: range.min, max: range.max})
         }
       },
       onDragEnd() {
-        this.$store.dispatch('searchBar/price', {min: this.min, max: this.max})
+        this.$store.dispatch('filter/price', {min: this.min, max: this.max})
       }
     },
   }

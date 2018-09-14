@@ -65,14 +65,14 @@
     },
     mounted() {
       // LatLng need to be commited before mounting
-      this.$store.dispatch('searchBar/start')
+      this.$store.dispatch('filter/start')
     },
     computed: {
-      ...mapGetters('searchBar', ['count']),
+      ...mapGetters('filter', ['count']),
       applyText() {
-        if (this.$store.state.searchBar.loading) return
+        if (this.$store.state.filter.loading) return
 
-        const count = this.$store.state.searchBar.count.count
+        const count = this.$store.state.filter.count.count
         if (count) {
           if (count >= 100) return `See 100+ Restaurants`
           else if (count <= 10) return `See ${count} Restaurants`
@@ -84,7 +84,7 @@
         return 'No Results'
       },
       result() {
-        if (this.$store.state.searchBar.loading) {
+        if (this.$store.state.filter.loading) {
           return true
         }
 

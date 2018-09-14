@@ -34,7 +34,7 @@
     },
     computed: {
       buttons() {
-        const query = this.$store.state.searchBar.query
+        const query = this.$store.state.filter.query
         const price = query.filter.price
         const cuisine = SearchBarFilterTag.$$reduce(query, 'cuisine')
         const amenities = SearchBarFilterTag.$$reduce(query, 'amenities')

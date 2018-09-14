@@ -29,7 +29,7 @@
       }
     },
     computed: {
-      ...mapGetters('searchBar', ['isSelectedLocation'])
+      ...mapGetters('filter', ['isSelectedLocation'])
     },
     methods: {
       toggle(location) {
@@ -41,15 +41,15 @@
             maximumAge: 15000
           })
             .then(coordinates => {
-              this.$store.commit('searchBar/updateLatLng', `${coordinates.lat},${coordinates.lng}`)
-              this.$store.dispatch('searchBar/location', location)
+              this.$store.commit('filter/updateLatLng', `${coordinates.lat},${coordinates.lng}`)
+              this.$store.dispatch('filter/location', location)
             }).catch(error => {
               alert(error)
             }).finally(() => {
               this.loadingNearby = false
             })
         } else {
-          this.$store.dispatch('searchBar/location', location)
+          this.$store.dispatch('filter/location', location)
         }
       }
     }

@@ -20,11 +20,11 @@
       }
     },
     computed: {
-      ...mapGetters('searchBar', ['isSelectedTiming'])
+      ...mapGetters('filter', ['isSelectedTiming'])
     },
     methods: {
       toggle(timing) {
-        this.$store.dispatch('searchBar/timing', timing)
+        this.$store.dispatch('filter/timing', timing)
       }
     }
   }
