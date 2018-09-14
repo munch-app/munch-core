@@ -36,7 +36,8 @@ export const state = () => ({
   priceGraph: undefined,
   startedLoading: null,
   loading: null, // true, false, null = not loaded before
-  error: undefined, // any error object
+  error: undefined, // any error object,
+  selected: null
 })
 
 export const getters = {
@@ -73,10 +74,29 @@ export const getters = {
   },
   count: (state) => {
     return state.count.count
+  },
+  selected: (state) => {
+    return state.selected
   }
 }
 
 export const mutations = {
+  selected(state, selected) {
+    state.selected = selected
+  },
+
+  replace(state, query) {
+    state.query.sort = query.sort
+
+    state.query.filter.price = query.filter.price || {}
+    state.query.filter.hour = query.filter.hour || {}
+    state.query.filter.area = query.filter.area || null
+
+    state.query.filter.tag.positives = []
+    query.filter.tag.positives.forEach(value => {
+      state.query.filter.tag.positives.push(value.toLowerCase())
+    })
+  },
 
   /**
    * @param state
@@ -84,6 +104,14 @@ export const mutations = {
    */
   updateLatLng(state, latLng) {
     state.user.latLng = latLng
+  },
+
+  putTag(state, tag) {
+    tag = tag.toLowerCase()
+    const index = state.query.filter.tag.positives.indexOf(tag)
+    if (index === -1) {
+      state.query.filter.tag.positives.push(tag)
+    }
   },
 
   /**
@@ -196,7 +224,7 @@ function loadingDeadline(commit, state) {
 
 export const actions = {
   start({commit, state}) {
-    if (state.loading !== null) return
+    if (state.loading === true) return
     commit('loading', true)
 
     const graph = this.$axios.$post('/api/search/filter/price/graph', state.query, {progress: false})

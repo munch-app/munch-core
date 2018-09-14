@@ -12,8 +12,8 @@
       </span>
     </div>
 
-    <div class="DialogContainer">
-      <div class="HourDialog Elevation2" v-if="popover" v-on-clickaway="onClickAway">
+    <div class="DialogContainer IndexElevation">
+      <div class="HourDialog Elevation2 IndexElevation" v-if="popover" v-on-clickaway="onClickAway">
         <div class="Content">
           <div class="DialogRow" v-for="day in days" :key="day.text">
             <div class="Day">{{day.text}}:</div>
@@ -307,7 +307,6 @@
   .HourDialog {
     padding: 0 15px;
     text-align: left;
-    z-index: 1000;
     background: white;
 
     width: 100%;
@@ -374,13 +373,11 @@
     .DialogContainer {
       margin-top: -30px;
       position: absolute;
-      z-index: 1000;
     }
 
     .HourDialog {
       min-width: 264px;
       border-radius: 4px;
-      z-index: 1000;
       background: white;
       padding: 16px 20px;
     }

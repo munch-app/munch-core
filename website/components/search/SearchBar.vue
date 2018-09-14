@@ -9,8 +9,8 @@
       </div>
     </div>
 
-    <div class="SearchSuggest Elevation1 Border24Bottom NoSelect" v-if="isExtended">
-      <div class="Results">
+    <div class="SearchSuggest Elevation3 IndexElevation3 Border24Bottom NoSelect" v-if="isExtended">
+      <div class="Results IndexElevation3">
         <div class="Item" :class="{'OnPosition': position === item.position}" v-for="item in items"
              :key="item.position" @click="onClick(item)">
           <simple-svg class="Icon" fill="black" :filepath="`/img/search/${item.type}.svg`"/>
@@ -130,8 +130,10 @@
             break
 
           case 'assumption':
-            this.$store.commit('search/update', item.assumption.searchQuery)
-            this.$router.push({path: '/search'})
+            this.$store.dispatch('filter/start', item.assumption.searchQuery)
+            this.$store.dispatch('search/start', item.assumption.searchQuery)
+
+            if (this.$route.name !== 'search') this.$router.push({path: '/search'})
             this.onBlur()
             break
         }
@@ -162,7 +164,8 @@
       return {
         suggestions: this.$watchAsObservable('text').pipe(
           pluck('newValue'),
-          debounceTime(300),
+          map((text) => text.trim()),
+          debounceTime(300), // Change this
           distinctUntilChanged(),
           switchMap((text) => {
             return this.$axios.$post('/api/search/suggest', {
@@ -200,7 +203,6 @@
       border-radius: 3px;
       overflow: visible;
 
-      z-index: 1500;
       position: absolute;
       background-color: #FFFFFF;
       border: none transparent;
@@ -232,7 +234,6 @@
   }
 
   .SearchSuggest {
-    z-index: 1200;
     background: white;
     position: absolute;
 

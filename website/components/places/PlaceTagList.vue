@@ -25,11 +25,12 @@
         return this.tags.slice(0, this.max)
       }
     },
-    action: {
+    methods: {
       onClick(tag) {
-        // TODO how to commit to search
-        // tag.name
-        // this.$store.state.filter.com
+        this.$store.commit('filter/putTag', tag.name)
+        this.$store.dispatch('filter/start')
+        this.$store.dispatch('search/start', this.$store.state.filter.query)
+        if (this.$route.name !== 'search') this.$router.push({path: '/search'})
       }
     }
   }

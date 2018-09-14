@@ -1,7 +1,7 @@
 <template>
   <div class="ImageSize">
-    <slot class="ImageBox"></slot>
-    <b-img class="Image" center fluid-grow :src="url" :alt="alt"/>
+    <slot class="ImageBox Index0"></slot>
+    <b-img class="Image IndexImage" center fluid-grow :src="url" :alt="alt"/>
   </div>
 </template>
 
@@ -81,7 +81,6 @@
       left: 0;
       right: 0;
       bottom: 0;
-      z-index: 0;
     }
 
     .Image {
@@ -90,7 +89,6 @@
       left: 0;
       right: 0;
       bottom: 0;
-      z-index: -1;
 
       height: 100%;
       object-fit: cover;

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <nav class="Header NavBg Elevation1">
+    <nav class="Header NavBg Elevation1 IndexHeader">
       <div class="Container clearfix">
         <header-logo class="Logo float-left" @click="onClickLogo"/>
         <header-profile class="Profile float-right" @click="onClickProfile"/>
@@ -10,22 +10,25 @@
     </nav>
     <div style="height: 56px"/>
 
-    <nuxt/>
-    <nav class="Footer">
+    <div :class="{'ElevationOverlay IndexContentOverlay': isElevated}"></div>
+    <nuxt :class="{ElevationBlur: isElevated}"/>
+    <nav class="Footer IndexFooter">
     </nav>
   </div>
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
   import HeaderLogo from "../components/layouts/HeaderLogo";
   import HeaderProfile from "../components/layouts/HeaderProfile";
   import HeaderMenu from "../components/layouts/HeaderMenu";
 
   export default {
     components: {
-      HeaderMenu,
-      HeaderProfile,
-      HeaderLogo
+      HeaderMenu, HeaderProfile, HeaderLogo
+    },
+    computed: {
+      ...mapGetters('layout', ['isElevated']),
     },
     methods: {
       onClickLogo() {
@@ -44,7 +47,6 @@
 
 <style lang="less" scoped>
   .Header {
-    z-index: 1000;
     position: fixed;
     top: 0;
     height: 56px;

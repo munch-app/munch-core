@@ -80,11 +80,18 @@
     },
     watch: {
       tags(tags) {
-        this.list.sort((a, b) => {
-          const as = tags[a.toLowerCase()] || 0
-          const bs = tags[b.toLowerCase()] || 0
-          return bs - as
-        })
+        this.list
+          .sort((a, b) => {
+            const ta = this.isSelectedTag(a)
+            const tb = this.isSelectedTag(b)
+            if (ta || tb) {
+              return tb - ta
+            }
+
+            const as = tags[a.toLowerCase()] || 0
+            const bs = tags[b.toLowerCase()] || 0
+            return bs - as
+          })
       }
     }
   }

@@ -1,6 +1,6 @@
 <template>
   <div class="PlaceBannerImage">
-    <div class="NavigationRight" v-if="images.length > 3" @click="onNext"></div>
+    <div class="NavigationRight IndexNavigation" v-if="images.length > 3" @click="onNext"></div>
     <slick class="Slick" ref="slick" :options="options">
       <div v-for="image in images" :key="image.imageId">
         <div class="BannerImage NoSelect">
@@ -114,7 +114,6 @@
     height: 100%;
     right: 0;
     margin-right: 15px;
-    z-index: 1;
 
     background-color: rgba(108, 160, 181, 0.82);
 

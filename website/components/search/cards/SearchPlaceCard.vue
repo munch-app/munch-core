@@ -1,6 +1,6 @@
 <template>
-  <a class="Card Border48" :href="'/places/' + place.placeId">
-    <div class="Elevation1">
+  <nuxt-link class="col-12 col-md-4 col-lg-3" :to="'/places/' + place.placeId">
+    <div class="Elevation1 Card Border48">
       <image-size class="Image Border48Top" :image="images" :alt="place.name"/>
 
       <div class="Content">
@@ -13,11 +13,11 @@
         </div>
       </div>
     </div>
-  </a>
+  </nuxt-link>
 </template>
 
 <script>
-  import ImageSize from "../core/ImageSize";
+  import ImageSize from "../../core/ImageSize";
 
   export default {
     name: "SearchPlaceCard",
@@ -43,6 +43,9 @@
 
 <style scoped lang="less">
   .Card {
+    margin-top: 12px;
+    margin-bottom: 12px;
+
     &:hover {
       cursor: pointer;
     }
@@ -53,10 +56,7 @@
     }
 
     .Content {
-      padding-left: 16px;
-      padding-right: 16px;
-      padding-top: 8px;
-      padding-bottom: 16px;
+      padding: 8px 16px 16px 16px;
 
       .Name {
         height: 26px;

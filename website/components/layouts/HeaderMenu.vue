@@ -1,8 +1,6 @@
 <template>
-  <div class="HeaderMenu NoSelect" v-if="$store.state.layout.menu" v-on-clickaway="onClickAway">
-    <div class="Triangle"/>
-
-    <div class="NavLink Elevation1 Text">
+  <div class="HeaderMenu IndexElevation3 NoSelect" v-if="$store.state.layout.menu" v-on-clickaway="onClickAway">
+    <div class="NavLink Elevation3 Text IndexElevation3">
       <div @click="onMenuClick('/login')">Login</div>
       <div @click="onMenuClick('/')">Home</div>
       <div @click="onMenuClick('/profile')">View Profile</div>
@@ -39,8 +37,6 @@
 
 <style scoped lang="less">
   .HeaderMenu {
-    z-index: 1500;
-
     @media (min-width: 768px) {
       max-width: 720px;
       padding-right: 15px;
@@ -62,7 +58,6 @@
   }
 
   .NavLink {
-    z-index: 1500;
     position: fixed;
     background: white;
     padding: 8px 0;
@@ -83,26 +78,8 @@
 
     @media (min-width: 768px) {
       width: 200px;
-      border-radius: 3px;
-      margin-top: -8px;
-    }
-  }
-
-  .Triangle {
-    position: absolute;
-    width: 0;
-    height: 0;
-    border-left: 12px solid transparent;
-    border-right: 12px solid transparent;
-    border-bottom: 16px solid white;
-
-    display: none;
-
-    @media (min-width: 768px) {
-      z-index: 1500;
-      display: block;
-      margin-top: -10px;
-      margin-right: 4px;
+      border-radius: 4px;
+      margin-top: -6px;
     }
   }
 </style>

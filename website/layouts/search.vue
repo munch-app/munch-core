@@ -1,6 +1,6 @@
 <template>
   <div>
-    <nav class="Header NavBg" :class="{'Elevation1': !isFilter}">
+    <nav class="IndexHeader Header NavBg" :class="{'Elevation1': !isFilter}">
       <div class="HeaderRow Container clearfix">
         <header-logo class="Logo" :class="{'IsSuggest': isSuggest}" @click="onClickLogo"/>
         <div class="Search">
@@ -14,15 +14,17 @@
     <header-menu class="Menu"/>
 
     <div style="height: 48px" v-if="isFilter"/>
-    <search-bar-filter class="Filter" v-if="isFilter"/>
+    <search-bar-filter class="Filter IndexHeader" v-if="isFilter"/>
 
-    <nuxt/>
-    <nav class="Footer">
+    <div :class="{'ElevationOverlay IndexContentOverlay': isElevated}"></div>
+    <nuxt :class="{ElevationBlur: isElevated}"/>
+    <nav class="Footer IndexFooter">
     </nav>
   </div>
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
   import HeaderLogo from "../components/layouts/HeaderLogo";
   import HeaderProfile from "../components/layouts/HeaderProfile";
   import HeaderMenu from "../components/layouts/HeaderMenu";
@@ -31,17 +33,19 @@
 
   export default {
     components: {
-      SearchBarFilter,
-      SearchBar,
-      HeaderMenu,
-      HeaderProfile,
-      HeaderLogo
+      SearchBarFilter, SearchBar, HeaderMenu, HeaderProfile, HeaderLogo
     },
     data() {
       return {
         isSuggest: false,
         text: ""
       }
+    },
+    computed: {
+      ...mapGetters('layout', ['isElevated']),
+      isFilter() {
+        return this.$route.name === 'search'
+      },
     },
     methods: {
       onClickLogo() {
@@ -60,19 +64,15 @@
       onFocus() {
         this.$router.push({path: '/search', query: {q: this.text}})
         this.isSuggest = true
+        this.$store.commit('layout/elevationOn', 'suggest')
       },
       onBlur() {
-        this.isSuggest = false
-      },
-      onItem() {
-        this.isSuggest = false
+        if (this.isSuggest) {
+          this.$store.commit('layout/elevationOff', 'suggest')
+          this.isSuggest = false
+        }
       }
     },
-    computed: {
-      isFilter() {
-        return this.$route.name === 'search'
-      }
-    }
   }
 </script>
 
@@ -82,7 +82,6 @@
     top: 0;
     height: 56px;
     width: 100%;
-    z-index: 100;
 
     .Logo {
       display: block;
@@ -104,15 +103,12 @@
     .Search {
       margin: 8px 0 8px 0;
       flex-grow: 1;
-      z-index: 200;
 
       @media (min-width: 768px) {
         margin: 8px 8px 8px 8px;
       }
 
       .SearchBar {
-        z-index: 200;
-
         @media (min-width: 768px) {
           width: 440px;
         }
@@ -126,5 +122,19 @@
         display: block;
       }
     }
+  }
+
+  .ElevationOverlay {
+    background: rgba(255, 255, 255, 0.88);
+    position: fixed;
+    overflow: hidden;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
+
+  .ElevationBlur {
+    filter: blur(1px);
   }
 </style>

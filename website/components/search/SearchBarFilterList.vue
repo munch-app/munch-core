@@ -1,7 +1,7 @@
 <template>
   <div class="Container" v-if="selected">
-    <div class="FilterListContainer">
-      <div class="FilterList">
+    <div class="FilterListContainer IndexElevation">
+      <div class="FilterList IndexElevation">
         <div class="Group Price" :class="{'Selected': selected === 'price'}">
           <h2 class="FilterName">Price</h2>
           <search-bar-filter-price/>
@@ -58,17 +58,12 @@
   export default {
     name: "SearchBarFilterList",
     components: {SearchBarFilterPrice, SearchBarFilterLocation, SearchBarFilterTiming, SearchBarFilterTag, BeatLoader},
-    props: {
-      selected: {
-        required: true
-      }
-    },
     mounted() {
       // LatLng need to be commited before mounting
       this.$store.dispatch('filter/start')
     },
     computed: {
-      ...mapGetters('filter', ['count']),
+      ...mapGetters('filter', ['count', 'selected']),
       applyText() {
         if (this.$store.state.filter.loading) return
 
@@ -94,11 +89,14 @@
     },
     methods: {
       onCancel() {
-        this.$emit('selected', this.selected)
+        this.$store.commit('filter/selected', null)
+        this.$store.commit('layout/elevationOff', 'filter')
       },
       onApply() {
         if (this.count && this.count > 0) {
-          this.$emit('selected', this.selected)
+          this.$store.commit('filter/selected', null)
+          this.$store.commit('layout/elevationOff', 'filter')
+          this.$store.dispatch('search/start', this.$store.state.filter.query)
         }
       },
     }
@@ -110,7 +108,6 @@
   }
 
   .FilterList {
-    z-index: 800;
   }
 
   .FilterName {
@@ -144,7 +141,6 @@
 
   @media (max-width: 767.98px) {
     .FilterListContainer {
-      z-index: 100;
       background: white;
     }
 
@@ -186,17 +182,16 @@
 
   @media (min-width: 768px) {
     .FilterListContainer {
-      z-index: 1000;
-      position: absolute;
+      position: fixed;
     }
 
     .FilterList {
       padding: 16px 24px;
-      border-radius: 0 0 4px 4px;
-      box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.23), 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+      border-radius: 4px;
+      box-shadow: 0 6px 6px 0 rgba(0, 0, 0, 0.26), 0 10px 20px 0 rgba(0, 0, 0, 0.19);
 
       background: white;
-      margin-top: 1px;
+      margin-top: 8px;
     }
 
     .FilterName {

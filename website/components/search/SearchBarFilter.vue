@@ -1,6 +1,6 @@
 <template>
   <div class="SearchFilterBar NoSelect" v-on-clickaway="onClickAway">
-    <div class="FilterBar Elevation1">
+    <div class="FilterBar Elevation1 Index5">
       <div class="Buttons Container">
         <div v-for="button in buttons" :key="button.type" class="FilterButton" @click="onButton(button)"
              :class="{
@@ -16,23 +16,20 @@
       </div>
     </div>
 
-    <search-bar-filter-list :selected="selected" @selected="onButton"/>
+    <search-bar-filter-list @selected="onButton"/>
   </div>
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
   import SearchBarFilterList from "./SearchBarFilterList";
   import SearchBarFilterTag from "./SearchBarFilterTag";
 
   export default {
     name: "SearchBarFilter",
     components: {SearchBarFilterList},
-    data() {
-      return {
-        selected: null
-      }
-    },
     computed: {
+      ...mapGetters('filter', ['selected']),
       buttons() {
         const query = this.$store.state.filter.query
         const price = query.filter.price
@@ -93,14 +90,19 @@
     },
     methods: {
       onButton(button) {
-        if (this.selected !== button.type) {
-          this.selected = button.type
+        if (this.$store.state.filter.selected !== button.type) {
+          this.$store.commit('filter/selected', button.type)
+          this.$store.commit('layout/elevationOn', 'filter')
         } else {
-          this.selected = null
+          this.$store.commit('filter/selected', null)
+          this.$store.commit('layout/elevationOff', 'filter')
         }
       },
       onClickAway() {
-        this.selected = null
+        if (this.selected) {
+          this.$store.commit('filter/selected', null)
+          this.$store.commit('layout/elevationOff', 'filter')
+        }
       }
     }
   }
@@ -112,7 +114,6 @@
     top: 56px;
     height: 48px;
     width: 100%;
-    z-index: 50;
     background: white;
   }
 
