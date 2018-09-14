@@ -48,6 +48,7 @@
     data() {
       return {
         options: {
+          mobileFirst : true,
           speed: 300,
           infinite: false,
           slidesToShow: 1,

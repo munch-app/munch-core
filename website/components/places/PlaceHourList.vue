@@ -1,5 +1,5 @@
 <template>
-  <div class="PlaceHourList" >
+  <div class="PlaceHourList">
     <div class="HourToday" @click="popover = !popover">
       <span class="TodayShort">
         {{Day.today().text.substring(0, 3)}}:
@@ -25,7 +25,7 @@
         </div>
 
         <div class="BottomBar">
-          <div class="Primary500Bg White CloseButton Elevation1 Border3 text-center HoverPointer" @click="popover = false">
+          <div class="Secondary500Bg White CloseButton Elevation1 Border3 text-center HoverPointer" @click="popover = false">
             CLOSE
           </div>
         </div>
@@ -378,14 +378,15 @@
     }
 
     .HourDialog {
+      min-width: 264px;
       border-radius: 4px;
       z-index: 1000;
       background: white;
-      padding: 10px 15px;
+      padding: 16px 20px;
     }
 
     .CloseButton {
-      margin-top: 8px;
+      margin-top: 12px;
       padding: 6px 12px;
 
       width: 100px;

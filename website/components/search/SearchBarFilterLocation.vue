@@ -28,12 +28,6 @@
         loadingNearby: false
       }
     },
-    mounted() {
-      this.$watchLocation()
-        .then(coordinates => {
-          this.$store.commit('searchBar/updateLatLng', `${coordinates.lat},${coordinates.lng}`)
-        })
-    },
     computed: {
       ...mapGetters('searchBar', ['isSelectedLocation'])
     },

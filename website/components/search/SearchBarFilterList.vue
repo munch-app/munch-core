@@ -46,6 +46,8 @@
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
+
   import SearchBarFilterTag from "./SearchBarFilterTag";
   import SearchBarFilterTiming from "./SearchBarFilterTiming";
   import SearchBarFilterLocation from "./SearchBarFilterLocation";
@@ -66,6 +68,7 @@
       this.$store.dispatch('searchBar/start')
     },
     computed: {
+      ...mapGetters('searchBar', ['count']),
       applyText() {
         if (this.$store.state.searchBar.loading) return
 
@@ -85,8 +88,7 @@
           return true
         }
 
-        const count = this.$store.state.searchBar.count.count
-        return !!count;
+        return !!this.count;
 
       },
     },
@@ -95,8 +97,9 @@
         this.$emit('selected', this.selected)
       },
       onApply() {
-
-        this.$emit('selected', this.selected)
+        if (this.count && this.count > 0) {
+          this.$emit('selected', this.selected)
+        }
       },
     }
   }

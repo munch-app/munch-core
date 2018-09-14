@@ -16,7 +16,7 @@
       <div class="Left Secondary500">MENU</div>
       <div> class="Right"{{menuUrl}}</div>
     </div>
-    <div class="Row Hour" v-if="hours">
+    <div class="Row Hour" v-if="hours.length > 0">
       <div class="Left Secondary500">HOURS</div>
       <place-hour-list class="Right" :hours="hours"/>
     </div>

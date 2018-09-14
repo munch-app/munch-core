@@ -1,6 +1,6 @@
 <template>
   <div class="ZeroSpacing">
-    <section class="Banner">
+    <section class="Banner" v-if="place.images.length > 0">
       <place-banner-image :images="place.images"/>
     </section>
 

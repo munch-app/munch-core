@@ -7,8 +7,8 @@
       </div>
       <div class="Control">
         <div v-if="!loading" class="Count">{{count(tag)}}</div>
-        <div v-if="!loading" class="Checkbox"/>
-        <beat-loader v-if="loading" class="FlexCenter" color="#0A6284" size="6px"/>
+        <div v-if="!loading || isSelectedTag(tag)" class="Checkbox"/>
+        <beat-loader v-if="!isSelectedTag(tag) && loading" class="FlexCenter" color="#0A6284" size="6px"/>
       </div>
     </div>
   </div>
