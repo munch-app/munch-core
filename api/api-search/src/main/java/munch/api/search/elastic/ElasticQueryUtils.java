@@ -109,8 +109,10 @@ public final class ElasticQueryUtils {
 
         // Filter hour
         filterHour(filter.getHour()).ifPresent(filterArray::add);
-        if (StringUtils.isNotBlank(filter.getHour().getName()) && filter.getHour().getOpen() == null) {
-            positives.add(filter.getHour().getName().toLowerCase());
+        if (filter.getHour() != null) {
+            if (StringUtils.isNotBlank(filter.getHour().getName()) && filter.getHour().getOpen() == null) {
+                positives.add(filter.getHour().getName().toLowerCase());
+            }
         }
 
         // Accumulate positive tags
