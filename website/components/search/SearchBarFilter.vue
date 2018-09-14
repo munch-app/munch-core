@@ -79,7 +79,7 @@
           },
           {
             type: 'timing',
-            name: query.filter.hour && query.filter.hour.name || 'Timing',
+            name: query.filter.hour && query.filter.hour.name || 'Timings',
             applied: query.filter.hour && query.filter.hour.name
           },
           {

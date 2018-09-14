@@ -70,7 +70,7 @@
         if (count) {
           if (count >= 100) return '100+'
           else if (count <= 10) return `${count}`
-          else return `${count / 10 * 10}`
+          else return `${Math.round(count / 10) * 10}+`
         }
         return '0'
       },

@@ -77,7 +77,7 @@
           if (count >= 100) return `See 100+ Restaurants`
           else if (count <= 10) return `See ${count} Restaurants`
           else {
-            const rounded = count / 10 * 10
+            const rounded = Math.round(count / 10) * 10
             return `See ${rounded}+ Restaurants`
           }
         }
