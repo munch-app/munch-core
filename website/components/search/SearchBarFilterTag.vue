@@ -1,6 +1,7 @@
 <template>
   <div class="TagColumn">
     <div class="TagRow" v-for="tag in list" :key="tag" @click="toggle(tag)"
+         v-if="!isHidden(tag)"
          :class="{Selected: isSelectedTag(tag), Loading: loading}">
       <div class="Name">
         {{tag}}
@@ -10,6 +11,9 @@
         <div v-if="!loading || isSelectedTag(tag)" class="Checkbox"/>
         <beat-loader v-if="!isSelectedTag(tag) && loading" class="FlexCenter" color="#0A6284" size="6px"/>
       </div>
+    </div>
+    <div class="LastRow TagRow" v-if="hiddenCount > 0">
+      <div class="Name Disabled">And {{hiddenCount}} hidden without results</div>
     </div>
   </div>
 </template>
@@ -59,6 +63,11 @@
       ...mapGetters('filter', ['isSelectedTag', 'loading']),
       tags() {
         return this.$store.state.filter.count.tags
+      },
+      hiddenCount() {
+        return this.list
+          .filter(tag => this.isHidden(tag))
+          .length
       }
     },
     methods: {
@@ -73,6 +82,13 @@
           else return `${Math.round(count / 10) * 10}+`
         }
         return '0'
+      },
+      isHidden(tag) {
+        if (this.$store.state.filter.query.filter.tag.positives.length === 0) return false
+        if (this.isSelectedTag(tag)) return false
+        const count = this.tags[tag.toLowerCase()]
+        if (count) return count <= 2
+        return true
       },
       toggle(tag) {
         this.$store.dispatch('filter/tag', tag)
@@ -196,5 +212,9 @@
       border-color: @Primary500;
       background-color: @Primary500;
     }
+  }
+
+  .LastRow {
+
   }
 </style>

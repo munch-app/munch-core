@@ -35,7 +35,7 @@
         <div class="BottomBar">
           <div class="Button Cancel" @click="onCancel">Cancel</div>
           <div class="Button Apply" @click="onApply" v-if="applyText"
-          :class="{'Secondary500Bg White Weight400': result, 'Secondary050Bg BlackA85 Weight600': !result}">
+               :class="{'Secondary500Bg White Weight400': result, 'Secondary050Bg BlackA85 Weight600': !result}">
             {{applyText}}
           </div>
           <beat-loader v-else class="Button Apply Secondary050Bg FlexCenter" color="#084E69" size="8px"/>
@@ -105,6 +105,8 @@
 
 <style scoped lang="less">
   .FilterListContainer {
+    background: white;
+    position: fixed;
   }
 
   .FilterList {
@@ -115,7 +117,7 @@
     white-space: nowrap;
     overflow: hidden;
 
-    margin-top: 24px;
+    padding-top: 24px;
     margin-bottom: 8px;
   }
 
@@ -141,18 +143,23 @@
 
   @media (max-width: 767.98px) {
     .FilterListContainer {
-      background: white;
+      top: 104px;
+      bottom: 64px;
+      left: 0;
+      right: 0;
+      overflow-y: scroll;
+      overflow-x:hidden;
     }
 
     .FilterList {
+      margin: 0 15px 0 15px;
+      padding-bottom: 24px;
+
       @media (min-width: 576px) {
         max-width: 540px;
         margin-right: auto;
         margin-left: auto;
       }
-
-      padding-bottom: 24px;
-      margin-bottom: 64px; // Bottom Bar
     }
 
     .BottomBar {
@@ -181,10 +188,6 @@
   }
 
   @media (min-width: 768px) {
-    .FilterListContainer {
-      position: fixed;
-    }
-
     .FilterList {
       padding: 16px 24px;
       border-radius: 4px;
