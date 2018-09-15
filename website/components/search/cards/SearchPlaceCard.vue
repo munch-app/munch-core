@@ -1,10 +1,10 @@
 <template>
   <nuxt-link class="col-12 col-md-4 col-lg-3" :to="'/places/' + place.placeId">
-    <div class="Elevation1 Card Border48">
+    <div class="Elevation1 ElevationHover2 Card Border48">
       <image-size class="Image Border48Top" :image="images" :alt="place.name"/>
 
       <div class="Content">
-        <div class="Name Title Large">{{place.name}}</div>
+        <div class="Name Title Large Weight600">{{place.name}}</div>
         <div class="LocationDistanceTiming">Location + Distance + Timing</div>
         <div class="Tags">
           <div class="Tag TagBg Border24" v-for="tag in tags" :key="tag.tagId">
@@ -46,13 +46,9 @@
     margin-top: 12px;
     margin-bottom: 12px;
 
-    &:hover {
-      cursor: pointer;
-    }
-
     .Image {
       width: 100%;
-      padding-top: 55%;
+      padding-top: 60%;
     }
 
     .Content {
@@ -65,7 +61,6 @@
         overflow: hidden;
 
         margin-top: 8px;
-        font-weight: bolder !important;
       }
 
       .LocationDistanceTiming {
@@ -75,6 +70,7 @@
         white-space: nowrap;
         overflow: hidden;
       }
+
       .Tags {
         display: flex;
         flex-wrap: wrap;
@@ -95,5 +91,4 @@
 
     }
   }
-
 </style>

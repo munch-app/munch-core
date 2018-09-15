@@ -1,20 +1,28 @@
 <template>
-  <div class="Container">
-    <h4 class="mt-3 mb-3">Landing Page</h4>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur arcu diam, facilisis vel viverra ac,
-      scelerisque eget dui. Quisque venenatis justo eu metus vestibulum vehicula. Praesent auctor elementum diam eget
-      ultrices. Nulla elementum erat id elit cursus, non dignissim mi sodales. Phasellus vel tortor eget velit
-      condimentum eleifend. Sed vestibulum ante id eros consectetur, imperdiet consectetur elit sagittis. Nam sit amet
-      scelerisque lorem. Sed ipsum nibh, pretium ultrices posuere eu, egestas vitae tellus. Sed nec maximus dolor.
-      Suspendisse sodales odio et ex mattis, sed tincidunt ligula consequat. Sed gravida arcu sit amet orci pulvinar
-      dignissim. Sed eu sagittis purus, ut convallis diam. Donec magna dui, placerat eget dapibus eget, finibus in
-      metus. Nulla dictum posuere condimentum. Sed ultrices metus eu iaculis sodales. Praesent dignissim commodo tortor
-      vel aliquet.</p>
-    <p>Maecenas lectus ex, ornare eu mollis non, porta a mi. Suspendisse semper pulvinar tellus, non varius neque
-      iaculis eu. Aliquam sagittis nunc risus, vel commodo lectus efficitur nec. Integer quis ipsum et felis convallis
-      venenatis. Pellentesque vitae viverra neque. Donec sollicitudin, justo sit amet tincidunt porttitor, eros mi
-      mollis felis, at faucibus nibh turpis eu nunc. Fusce ultrices nisi a nisl euismod, et rhoncus sem interdum.
-      Quisque nec tempus magna. Sed ultricies eleifend elit et vehicula.</p>
+  <div class="Container ZeroSpacing LandingPage">
+    <section class="Profile">
+      <div class="Name">
+        <h1>Good morning, Samantha</h1>
+        <div class="Text Login">(not your name? <span class="LoginButton Primary500 Weight600">Log In</span> now!)</div>
+      </div>
+      <p>Discover the best wherever & whenever</p>
+    </section>
+
+    <section class="Timing">
+      <h2>Here & Now</h2>
+      <p>The best Breakfast spots near you.</p>
+    </section>
+
+    <section class="Location">
+      <h2>Day in, day out</h2>
+      <p>Your favourite places - rediscovered.</p>
+
+    </section>
+
+    <section class="General">
+      <h2>In the know</h2>
+      <p>What’s hot and edible</p>
+    </section>
   </div>
 </template>
 
@@ -24,6 +32,36 @@
   }
 </script>
 
-<style>
+<style scoped lang="less">
+  .LandingPage {
+    margin-top: 24px;
+    margin-bottom: 24px;
+  }
 
+  section {
+    margin-top: 24px;
+  }
+
+  section.Profile {
+    .Name {
+      display: flex;
+      align-items: flex-end;
+
+      h1 {
+
+      }
+
+      .Login {
+        margin-left: 24px;
+        line-height: 30px;
+
+        .LoginButton {
+          &:hover {
+            cursor: pointer;
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+  }
 </style>
