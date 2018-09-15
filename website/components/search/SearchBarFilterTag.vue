@@ -1,7 +1,7 @@
 <template>
   <div class="TagColumn">
     <div class="TagRow" v-for="tag in list" :key="tag" @click="toggle(tag)"
-         v-if="!isHidden(tag)"
+         v-if="!isHidden(tag) || !hidden"
          :class="{Selected: isSelectedTag(tag), Loading: loading}">
       <div class="Name">
         {{tag}}
@@ -12,8 +12,8 @@
         <beat-loader v-if="!isSelectedTag(tag) && loading" class="FlexCenter" color="#0A6284" size="6px"/>
       </div>
     </div>
-    <div class="LastRow TagRow" v-if="hiddenCount > 0">
-      <div class="Name Disabled">And {{hiddenCount}} hidden without results</div>
+    <div class="LastRow TagRow" v-if="hiddenCount > 0" @click="hidden = !hidden">
+      <div class="Name Secondary500">{{hidden ? 'See' : 'Hide'}} {{hiddenCount}} other filters with 0 results</div>
     </div>
   </div>
 </template>
@@ -56,7 +56,8 @@
     },
     data() {
       return {
-        ...types[this.type]
+        ...types[this.type],
+        hidden: true
       }
     },
     computed: {
@@ -87,7 +88,7 @@
         if (this.$store.state.filter.query.filter.tag.positives.length === 0) return false
         if (this.isSelectedTag(tag)) return false
         const count = this.tags[tag.toLowerCase()]
-        if (count) return count <= 2
+        if (count) return count === 0
         return true
       },
       toggle(tag) {
