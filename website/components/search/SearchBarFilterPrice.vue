@@ -33,9 +33,12 @@
       }
     },
     computed: {
-      ...mapGetters('filter', ['isSelectedPrice', 'priceGraph']),
+      ...mapGetters('filter', ['isSelectedPrice']),
       price() {
         return this.$store.state.filter.query.filter.price
+      },
+      priceGraph() {
+        return this.$store.state.filter.result.priceGraph
       }
     },
     watch: {
@@ -43,6 +46,12 @@
         this.value = [priceGraph.min, priceGraph.max]
         this.min = priceGraph.min
         this.max = priceGraph.max
+
+        if (this.price && this.price.name) {
+          const range = priceGraph.ranges[this.price.name]
+          this.value = [range.min, range.max]
+          this.$store.dispatch('filter/price', {name, min: range.min, max: range.max})
+        }
       },
       price(price) {
         this.value = [price.min || this.min, price.max || this.max]

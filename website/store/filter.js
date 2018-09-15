@@ -96,9 +96,6 @@ export const getters = {
   count: (state) => {
     return state.result.count
   },
-  priceGraph: (state) => {
-    return state.result.priceGraph
-  },
   selected: (state) => {
     return state.selected
   }
