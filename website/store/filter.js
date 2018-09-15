@@ -50,11 +50,11 @@ export const state = () => ({
   user: {
     latLng: null
   },
-  count: {
+  result: {
     count: null,
     tags: {},
+    priceGraph: undefined,
   },
-  priceGraph: undefined,
   startedLoading: null,
   loading: null, // true, false, null = not loaded before
   error: undefined, // any error object,
@@ -94,7 +94,10 @@ export const getters = {
     return state.loading
   },
   count: (state) => {
-    return state.count.count
+    return state.result.count
+  },
+  priceGraph: (state) => {
+    return state.result.priceGraph
   },
   selected: (state) => {
     return state.selected
@@ -233,21 +236,14 @@ export const mutations = {
   },
 
   /**
-   * Update count data from result of /search/filter/count
+   * Update result from result of /search/filter
    * @param state
-   * @param data to update
+   * @param result to update
    */
-  count(state, data) {
-    state.count = data
-  },
-
-  /**
-   * Update price data from result of /search/filter/price/graph
-   * @param state
-   * @param data, price graph to update
-   */
-  priceGraph(state, data) {
-    state.priceGraph = data
+  result(state, result) {
+    state.result.count = result && result.count
+    state.result.tags = result && result.tags
+    state.result.priceGraph = result && result.priceGraph
   },
 
   /**
@@ -270,9 +266,15 @@ export const mutations = {
   }
 }
 
-function loadingDeadline(commit, state) {
-  const timeout = (state.startedLoading.getTime() + 800) - new Date().getTime()
-  setTimeout(() => commit('loading', false), timeout)
+function post(commit, state, $axios) {
+  return $axios.$post('/api/search/filter', state.query, {progress: false})
+    .then(({data}) => {
+      commit('result', data)
+
+      const timeout = (state.startedLoading.getTime() + 800) - new Date().getTime()
+      setTimeout(() => commit('loading', false), timeout)
+    })
+    .catch(error => commit('error', error))
 }
 
 export const actions = {
@@ -280,48 +282,13 @@ export const actions = {
     if (state.loading === true) return
     commit('loading', true)
 
-    const graph = this.$axios.$post('/api/search/filter/price/graph', state.query, {progress: false})
-      .then(({data}) => {
-        return commit('priceGraph', data)
-      })
-      .catch(error => commit('error', error))
-
-    const count = this.$axios.$post('/api/search/filter/count', state.query, {progress: false})
-      .then(({data}) => {
-        return commit('count', data)
-      })
-      .catch(error => commit('error', error))
-
-    return Promise
-      .all([graph, count])
-      .finally(() => commit('loading', false))
+    return post(commit, state, this.$axios)
   },
 
   clear({commit, state}, payload) {
     commit('loading', true)
     commit('clear', payload)
-
-    switch (state.selected) {
-      case 'location':
-        return this.$axios.$post('/api/search/filter/count', state.query, {progress: false})
-          .then(({data}) => {
-            commit('count', data)
-            loadingDeadline(commit, state)
-          })
-          .catch(error => commit('error', error))
-
-      case 'price':
-      case 'cuisine':
-      case 'timings':
-      case 'amenities':
-      case 'establishments':
-        return this.$axios.$post('/api/search/filter/count', state.query, {progress: false})
-          .then(({data}) => {
-            commit('count', data)
-            loadingDeadline(commit, state)
-          })
-          .catch(error => commit('error', error))
-    }
+    return post(commit, state, this.$axios)
   },
 
   location({commit, state}, location) {
@@ -329,22 +296,7 @@ export const actions = {
 
     commit('loading', true)
     commit('updateLocation', location)
-
-    const graph = this.$axios.$post('/api/search/filter/price/graph', state.query, {progress: false})
-      .then(({data}) => {
-        commit('priceGraph', data)
-      })
-      .catch(error => commit('error', error))
-
-    const count = this.$axios.$post('/api/search/filter/count', state.query, {progress: false})
-      .then(({data}) => {
-        commit('count', data)
-      })
-      .catch(error => commit('error', error))
-
-    return Promise
-      .all([graph, count])
-      .finally(() => loadingDeadline(commit, state))
+    return post(commit, state, this.$axios)
   },
 
   price({commit, state}, object) {
@@ -352,13 +304,7 @@ export const actions = {
 
     commit('loading', true)
     commit('updatePrice', object)
-
-    return this.$axios.$post('/api/search/filter/count', state.query, {progress: false})
-      .then(({data}) => {
-        commit('count', data)
-        loadingDeadline(commit, state)
-      })
-      .catch(error => commit('error', error))
+    return post(commit, state, this.$axios)
   },
 
   timings({commit, state}, timing) {
@@ -366,13 +312,7 @@ export const actions = {
 
     commit('loading', true)
     commit('toggleTiming', timing)
-
-    return this.$axios.$post('/api/search/filter/count', state.query, {progress: false})
-      .then(({data}) => {
-        commit('count', data)
-        loadingDeadline(commit, state)
-      })
-      .catch(error => commit('error', error))
+    return post(commit, state, this.$axios)
   },
 
   tag({commit, state}, tag) {
@@ -380,12 +320,6 @@ export const actions = {
 
     commit('loading', true)
     commit('toggleTag', tag)
-
-    return this.$axios.$post('/api/search/filter/count', state.query, {progress: false})
-      .then(({data}) => {
-        commit('count', data)
-        loadingDeadline(commit, state)
-      })
-      .catch(error => commit('error', error))
+    return post(commit, state, this.$axios)
   },
 }

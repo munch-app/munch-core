@@ -32,6 +32,7 @@
       ...mapGetters('filter', ['selected']),
       buttons() {
         const query = this.$store.state.filter.query
+        const user = this.$store.state.filter.user
         const price = query.filter.price
         const cuisine = SearchBarFilterTag.$$reduce(query, 'cuisine')
         const amenities = SearchBarFilterTag.$$reduce(query, 'amenities')
@@ -60,7 +61,7 @@
           {
             type: 'location',
             name: query.filter.area && query.filter.area.type !== 'City' && query.filter.area.name || 'Location',
-            applied: query.filter.area == null || query.filter.area.type !== 'City'
+            applied: (query.filter.area == null && user.latLng) || (query.filter.area && query.filter.area.type !== 'City')
           },
           {
             type: 'amenities',

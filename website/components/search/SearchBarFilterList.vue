@@ -67,7 +67,7 @@
       applyText() {
         if (this.$store.state.filter.loading) return
 
-        const count = this.$store.state.filter.count.count
+        const count = this.$store.state.filter.result.count
         if (count) {
           if (count >= 100) return `See 100+ Restaurants`
           else if (count <= 10) return `See ${count} Restaurants`

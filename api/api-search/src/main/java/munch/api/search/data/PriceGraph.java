@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
  * Time: 3:53 PM
  * Project: munch-core
  */
-public final class FilterPriceGraph {
+public final class PriceGraph {
     private static final double INCREMENT = 5.0;
 
     private double min;
@@ -52,7 +52,7 @@ public final class FilterPriceGraph {
 
     @Override
     public String toString() {
-        return "FilterPriceGraph{" +
+        return "PriceGraph{" +
                 "min=" + min +
                 ", max=" + max +
                 ", points=" + points +
@@ -64,7 +64,7 @@ public final class FilterPriceGraph {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        FilterPriceGraph that = (FilterPriceGraph) o;
+        PriceGraph that = (PriceGraph) o;
         return Double.compare(that.min, min) == 0 &&
                 Double.compare(that.max, max) == 0 &&
                 Objects.equals(points, that.points) &&
@@ -162,7 +162,7 @@ public final class FilterPriceGraph {
         }
     }
 
-    public static FilterPriceGraph fromFrequency(Map<Double, Integer> frequency) {
+    public static PriceGraph fromFrequency(Map<Double, Integer> frequency) {
         if (frequency.isEmpty()) return null;
 
         List<Point> points = parsePoints(frequency);
@@ -195,7 +195,7 @@ public final class FilterPriceGraph {
                 "$$$", asRange(f70, max)
         );
 
-        FilterPriceGraph graph = new FilterPriceGraph();
+        PriceGraph graph = new PriceGraph();
         graph.setMin(min);
         graph.setMax(max);
         graph.setPoints(points);

@@ -24,7 +24,7 @@
     components: {SearchBarFilterPriceSlider, SearchBarFilterPriceGraph},
     data() {
       const price = this.$store.state.filter.query.filter.price || {}
-      const priceGraph = this.$store.state.filter.priceGraph || {}
+      const priceGraph = this.$store.state.filter.result.priceGraph || {}
 
       return {
         value: [price.min || 0, price.max || 200],
@@ -33,10 +33,7 @@
       }
     },
     computed: {
-      ...mapGetters('filter', ['isSelectedPrice']),
-      priceGraph() {
-        return this.$store.state.filter.priceGraph
-      },
+      ...mapGetters('filter', ['isSelectedPrice', 'priceGraph']),
       price() {
         return this.$store.state.filter.query.filter.price
       }
@@ -53,9 +50,8 @@
     },
     methods: {
       toggle(name) {
-        const priceGraph = this.$store.state.filter.priceGraph
-        if (priceGraph && name) {
-          const range = priceGraph.ranges[name]
+        if (this.priceGraph && name) {
+          const range = this.priceGraph.ranges[name]
           this.value = [range.min, range.max]
           this.$store.dispatch('filter/price', {name, min: range.min, max: range.max})
         }

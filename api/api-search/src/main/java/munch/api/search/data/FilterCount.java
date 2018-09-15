@@ -8,6 +8,7 @@ import java.util.Map;
  * Time: 4:15 AM
  * Project: munch-core
  */
+@Deprecated
 public final class FilterCount {
     private long count;
     private Map<String, Integer> tags;

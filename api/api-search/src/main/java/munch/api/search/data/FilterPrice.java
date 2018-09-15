@@ -9,6 +9,7 @@ import java.util.Map;
  * Time: 12:38 AM
  * Project: munch-core
  */
+@Deprecated
 public final class FilterPrice {
     private Map<Double, Integer> frequency;
     private List<Percentile> percentiles;

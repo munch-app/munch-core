@@ -63,7 +63,7 @@
     computed: {
       ...mapGetters('filter', ['isSelectedTag', 'loading']),
       tags() {
-        return this.$store.state.filter.count.tags
+        return this.$store.state.filter.result.tags
       },
       hiddenCount() {
         return this.list
@@ -76,7 +76,7 @@
         if (this.$store.state.filter.query.filter.tag.positives.length === 0) return ''
         if (this.isSelectedTag(tag)) return ''
 
-        const count = this.tags[tag.toLowerCase()]
+        const count = this.tags && this.tags[tag.toLowerCase()]
         if (count) {
           if (count >= 100) return '100+'
           else if (count <= 10) return `${count}`
@@ -87,7 +87,7 @@
       isHidden(tag) {
         if (this.$store.state.filter.query.filter.tag.positives.length === 0) return false
         if (this.isSelectedTag(tag)) return false
-        const count = this.tags[tag.toLowerCase()]
+        const count = this.tags && this.tags[tag.toLowerCase()]
         if (count) return count === 0
         return true
       },
@@ -105,8 +105,8 @@
               return tb - ta
             }
 
-            const as = tags[a.toLowerCase()] || 0
-            const bs = tags[b.toLowerCase()] || 0
+            const as = tags && tags[a.toLowerCase()] || 0
+            const bs = tags && tags[b.toLowerCase()] || 0
             return bs - as
           })
       }
