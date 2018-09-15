@@ -9,23 +9,14 @@
       </div>
     </div>
 
-    <div class="SearchSuggest Elevation3 IndexElevation3 Border24Bottom NoSelect" v-if="isExtended">
-      <div class="Results IndexElevation3">
+    <div class="SearchSuggest Elevation3 IndexTopElevation Border24Bottom NoSelect" v-if="isExtended">
+      <div class="Results IndexTopElevation">
         <div class="Item" :class="{'OnPosition': position === item.position}" v-for="item in items"
              :key="item.position" @click="onClick(item)">
           <simple-svg class="Icon" fill="black" :filepath="`/img/search/${item.type}.svg`"/>
           <div class="Content">
-            <div class="Place Text" v-if="item.type === 'place'">
-              <span class="Name">{{item.place.name}}</span>
-              <span class="Location">, {{item.place.location.neighbourhood}}</span>
-            </div>
-
-            <div class="Assumption Text" v-if="item.type === 'assumption'">
-              <div class="Token Border24 TagBg" v-if="item.type === 'assumption'"
-                   v-for="token in item.assumption.tokens" :key="token.type + token.text">
-                <span class="TokenText">{{token.text}}</span>
-              </div>
-            </div>
+            <search-suggest-place-item v-if="item.type === 'place'" :item="item"/>
+            <search-suggest-assumption-item v-if="item.type === 'assumption'" :item="item"/>
           </div>
         </div>
       </div>
@@ -35,10 +26,12 @@
 
 <script>
   import {pluck, filter, debounceTime, distinctUntilChanged, switchMap, map} from 'rxjs/operators'
+  import SearchSuggestPlaceItem from "./suggest/SearchSuggestPlaceItem";
+  import SearchSuggestAssumptionItem from "./suggest/SearchSuggestAssumptionItem";
 
   export default {
     name: "SearchBar",
-    components: {},
+    components: {SearchSuggestAssumptionItem, SearchSuggestPlaceItem},
     props: {
       placeholder: {
         type: String,
@@ -239,7 +232,7 @@
 
     @media (max-width: 767.98px) {
       position: fixed;
-      margin-top: 12px;
+      margin-top: 8px;
       left: 0;
       right: 0;
     }
@@ -273,38 +266,6 @@
 
       &.OnPosition {
         background: #BEC9D0;
-      }
-    }
-  }
-
-  .Place {
-    height: 26px;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-
-    span.Name {
-      font-weight: 600;
-    }
-
-    span.Location {
-
-    }
-  }
-
-  .Assumption {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-
-    .Token {
-      height: 26px;
-      margin-right: 8px;
-
-      .TokenText {
-        font-size: 14px;
-        font-weight: 500;
-        margin: auto 12px;
       }
     }
   }
