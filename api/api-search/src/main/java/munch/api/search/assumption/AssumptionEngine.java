@@ -3,12 +3,19 @@ package munch.api.search.assumption;
 import com.google.common.base.Joiner;
 import edit.utils.PatternSplit;
 import munch.api.search.SearchRequest;
+import munch.api.search.assumption.assumer.AssumerManager;
+import munch.api.search.assumption.assumer.Assumption;
+import munch.api.search.assumption.data.AssumptionQuery;
+import munch.api.search.assumption.data.AssumptionToken;
+import munch.api.search.assumption.data.TagAssumptionToken;
+import munch.api.search.assumption.data.TextAssumptionToken;
 import munch.api.search.data.SearchQuery;
 import munch.data.location.Area;
 import munch.data.location.Location;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.*;
@@ -21,10 +28,11 @@ import java.util.*;
  */
 @Singleton
 public class AssumptionEngine {
-    public static final Set<String> STOP_WORDS = Set.of("around", "near", "in", "at", "food", "and", "or", "cuisine");
+    public static final Set<String> STOP_WORDS = Set.of("around", "near", "in", "at", "and", "or",
+            "food", "cuisine", "cuisines", "places", "place", "location");
     public static final PatternSplit TOKENIZE_PATTERN = PatternSplit.compile(" {1,}|,|\\.");
-
     private static final Area SINGAPORE = new Area();
+
     static {
         SINGAPORE.setType(Area.Type.City);
         SINGAPORE.setAreaId("singapore");
@@ -42,19 +50,15 @@ public class AssumptionEngine {
         SINGAPORE.setLocation(location);
     }
 
-    private final AssumptionDatabase database;
+    private final AssumerManager manager;
 
     @Inject
-    public AssumptionEngine(CachedAssumptionDatabase database) {
-        this.database = database;
-    }
-
-    AssumptionEngine(AssumptionDatabase database) {
-        this.database = database;
+    public AssumptionEngine(AssumerManager manager) {
+        this.manager = manager;
     }
 
     public List<AssumptionQuery> assume(SearchRequest request, String text) {
-        Map<String, Assumption> assumptionMap = database.get();
+        Map<String, Assumption> assumptionMap = manager.get();
         text = text.trim();
         List<Object> tokenList = tokenize(assumptionMap, text);
 
@@ -87,7 +91,7 @@ public class AssumptionEngine {
 
         String location = getLocation(tokenList);
         if (location != null) {
-            return List.of(createAssumedQuery(location, text, assumedTokens, request.getSearchQuery()));
+            return List.of(createLocation(location, text, assumedTokens, request));
         }
 
         List<AssumptionQuery> list = new ArrayList<>();
@@ -95,6 +99,23 @@ public class AssumptionEngine {
         createNearby(text, assumedTokens, request).ifPresent(list::add);
         list.add(createAnywhere(text, assumedTokens, request));
         return list;
+    }
+
+    /**
+     * Location without any other token will be prefixed with 'Places in' + Location
+     *
+     * @param location      name
+     * @param text          searched
+     * @param assumedTokens collected tokens
+     * @param request       search request
+     * @return AssumptionQuery for location
+     */
+    private AssumptionQuery createLocation(String location, String text, List<AssumptionToken> assumedTokens, SearchRequest request) {
+        if (assumedTokens.size() == 1) {
+            List<AssumptionToken> tokens = List.of(new TextAssumptionToken("Places in"), assumedTokens.get(0));
+            return create(location, text, tokens, request.getSearchQuery());
+        }
+        return create(location, text, assumedTokens, request.getSearchQuery());
     }
 
     private AssumptionQuery createAnywhere(String text, List<AssumptionToken> assumedTokens, SearchRequest request) {
@@ -105,7 +126,7 @@ public class AssumptionEngine {
 
         assumedTokens = new ArrayList<>(assumedTokens);
         assumedTokens.add(new TagAssumptionToken("Anywhere"));
-        return createAssumedQuery("Anywhere", text, assumedTokens, request.getSearchQuery());
+        return create("Anywhere", text, assumedTokens, request.getSearchQuery());
     }
 
     private Optional<AssumptionQuery> createNearby(String text, List<AssumptionToken> assumedTokens, SearchRequest request) {
@@ -117,7 +138,7 @@ public class AssumptionEngine {
 
         assumedTokens = new ArrayList<>(assumedTokens);
         assumedTokens.add(new TagAssumptionToken("Nearby"));
-        return Optional.of(createAssumedQuery("Nearby", text, assumedTokens, query));
+        return Optional.of(create("Nearby", text, assumedTokens, query));
     }
 
     private Optional<AssumptionQuery> createCurrent(String text, List<AssumptionToken> assumedTokens, SearchRequest request) {
@@ -133,11 +154,10 @@ public class AssumptionEngine {
         assumedTokens = new ArrayList<>(assumedTokens);
         assumedTokens.add(new TextAssumptionToken("in"));
         assumedTokens.add(new TagAssumptionToken(locationName));
-        return Optional.of(createAssumedQuery(locationName, text, assumedTokens, request.getSearchQuery()));
+        return Optional.of(create(locationName, text, assumedTokens, request.getSearchQuery()));
     }
 
-    protected AssumptionQuery createAssumedQuery(String location, String text,
-                                                 List<AssumptionToken> assumedTokens, SearchQuery query) {
+    protected AssumptionQuery create(String location, String text, List<AssumptionToken> assumedTokens, SearchQuery query) {
         AssumptionQuery assumptionQuery = new AssumptionQuery();
         assumptionQuery.setText(text);
         assumptionQuery.setLocation(location);
@@ -155,6 +175,11 @@ public class AssumptionEngine {
         return copied;
     }
 
+    /**
+     * @param tokenList list of parsed tokens
+     * @return Location
+     */
+    @Nullable
     private static String getLocation(List<Object> tokenList) {
         for (Object o : tokenList) {
             if (o instanceof Assumption) {
@@ -174,7 +199,7 @@ public class AssumptionEngine {
                 assumedTokens.add(new TextAssumptionToken((String) o));
             } else {
                 TagAssumptionToken token = new TagAssumptionToken(((Assumption) o).getTag());
-                if (!assumedTokens.contains(token)){
+                if (!assumedTokens.contains(token)) {
                     assumedTokens.add(token);
                 }
             }

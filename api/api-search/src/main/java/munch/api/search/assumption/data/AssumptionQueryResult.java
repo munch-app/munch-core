@@ -1,4 +1,4 @@
-package munch.api.search.assumption;
+package munch.api.search.assumption.data;
 
 import munch.api.search.data.SearchQuery;
 import munch.data.place.Place;
@@ -11,7 +11,7 @@ import java.util.List;
  * Time: 4:41 PM
  * Project: munch-core
  */
-public class AssumptionQueryResult {
+public final class AssumptionQueryResult {
     private SearchQuery searchQuery;
     private List<AssumptionToken> tokens;
     private List<Place> places;

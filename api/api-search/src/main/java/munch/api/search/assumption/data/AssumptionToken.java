@@ -1,4 +1,4 @@
-package munch.api.search.assumption;
+package munch.api.search.assumption.data;
 
 import java.util.Objects;
 

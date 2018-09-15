@@ -1,4 +1,4 @@
-package munch.api.search.assumption;
+package munch.api.search.assumption.data;
 
 /**
  * Created by: Fuxing
@@ -6,7 +6,7 @@ package munch.api.search.assumption;
  * Time: 7:09 PM
  * Project: munch-data
  */
-public class TextAssumptionToken extends AssumptionToken {
+public final class TextAssumptionToken extends AssumptionToken {
     public TextAssumptionToken(String text) {
         setText(text);
     }
@@ -15,6 +15,4 @@ public class TextAssumptionToken extends AssumptionToken {
     public String getType() {
         return "text";
     }
-
-
 }
