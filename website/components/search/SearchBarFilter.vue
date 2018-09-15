@@ -60,7 +60,7 @@
           {
             type: 'location',
             name: query.filter.area && query.filter.area.type !== 'City' && query.filter.area.name || 'Location',
-            applied: query.filter.area && query.filter.area.type !== 'City'
+            applied: query.filter.area == null || query.filter.area.type !== 'City'
           },
           {
             type: 'amenities',
@@ -75,7 +75,7 @@
             applied: establishments.length > 0
           },
           {
-            type: 'timing',
+            type: 'timings',
             name: query.filter.hour && query.filter.hour.name || 'Timings',
             applied: query.filter.hour && query.filter.hour.name
           },

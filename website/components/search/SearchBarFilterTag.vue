@@ -36,7 +36,7 @@
 
   function reduce(query, type) {
     let collector = []
-    types[type].list.forEach(name => {
+    types[type] && types[type].list.forEach(name => {
       if (query.filter.tag.positives.includes(name.toLowerCase())) {
         collector.push(name)
       }
@@ -216,6 +216,8 @@
   }
 
   .LastRow {
-
+    .Name {
+      padding-right: 0;
+    }
   }
 </style>

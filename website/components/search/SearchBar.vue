@@ -1,6 +1,6 @@
 <template>
   <div v-on-clickaway="onBlur">
-    <div class="SearchTextBar NoSelect" :class="{'Extended': isExtended}">
+    <div class="SearchTextBar NoSelect Elevation1" :class="{'Extended': isExtended, 'Elevation2': searching}">
       <input ref="input" class="TextBar" type="text"
              placeholder="Search e.g. Italian in Marina Bay" v-model="text" @keyup="onKeyUp" @focus="onFocus">
 
@@ -80,13 +80,12 @@
         }
       },
       positions() {
-        if (!this.assumptions) return []
         let position = 0
         return [
-          ...this.assumptions.map(assumption => {
+          ...(this.assumptions || []).map(assumption => {
             return {type: 'assumption', item: assumption, position: position++}
           }),
-          ...this.places.map(place => {
+          ...(this.places || []).map(place => {
             return {type: 'place', item: place, position: position++}
           })
         ]
@@ -157,18 +156,13 @@
       onClear() {
         this.text = ''
         this.suggestions = []
+        this.position = 0
         this.$emit('onText', this.text)
       },
       isPosition(object) {
         const item = this.positions && this.positions[this.position] && this.positions[this.position].item
-
-        if (item && item.placeId && object.placeId) {
-          return item.placeId === object.placeId
-        }
-
-        if (item && item.tokens && object.tokens) {
-          return item.count === object.count
-        }
+        if (item && item.placeId && object.placeId) return item.placeId === object.placeId
+        if (item && item.tokens && object.tokens) return item.count === object.count
       }
     },
     subscriptions() {
@@ -199,7 +193,6 @@
     position: relative;
     width: 100%;
     height: 40px;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.20), 0 2px 3px 0 rgba(0, 0, 0, 0.13);
     border-radius: 3px;
 
     &.Extended {

@@ -24,7 +24,7 @@
     },
     methods: {
       toggle(timing) {
-        this.$store.dispatch('filter/timing', timing)
+        this.$store.dispatch('filter/timings', timing)
       }
     }
   }

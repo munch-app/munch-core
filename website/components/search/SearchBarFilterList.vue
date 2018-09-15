@@ -27,13 +27,13 @@
           <search-bar-filter-tag type="establishments"/>
         </div>
 
-        <div class="Group Timing" :class="{'Selected': selected === 'timing'}">
+        <div class="Group Timing" :class="{'Selected': selected === 'timings'}">
           <h2 class="FilterName">Timing</h2>
           <search-bar-filter-timing/>
         </div>
 
         <div class="BottomBar">
-          <div class="Button Cancel" @click="onCancel">Cancel</div>
+          <div class="Button Cancel" @click="onClear">Clear</div>
           <div class="Button Apply" @click="onApply" v-if="applyText"
                :class="{'Secondary500Bg White Weight400': result, 'Secondary050Bg BlackA85 Weight600': !result}">
             {{applyText}}
@@ -47,13 +47,13 @@
 
 <script>
   import {mapGetters} from 'vuex'
+  import _ from 'underscore'
 
   import SearchBarFilterTag from "./SearchBarFilterTag";
   import SearchBarFilterTiming from "./SearchBarFilterTiming";
   import SearchBarFilterLocation from "./SearchBarFilterLocation";
   import SearchBarFilterPrice from "./SearchBarFilterPrice";
   import BeatLoader from 'vue-spinner/src/BeatLoader.vue'
-
 
   export default {
     name: "SearchBarFilterList",
@@ -88,9 +88,10 @@
       },
     },
     methods: {
-      onCancel() {
-        this.$store.commit('filter/selected', null)
-        this.$store.commit('layout/elevationOff', 'filter')
+      onClear() {
+        const query = this.$store.state.filter.query
+        const tags = SearchBarFilterTag.$$reduce(query, this.selected)
+        this.$store.dispatch('filter/clear', {tags})
       },
       onApply() {
         if (this.count && this.count > 0) {
@@ -148,7 +149,7 @@
       left: 0;
       right: 0;
       overflow-y: scroll;
-      overflow-x:hidden;
+      overflow-x: hidden;
     }
 
     .FilterList {
@@ -222,5 +223,4 @@
       }
     }
   }
-
 </style>

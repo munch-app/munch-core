@@ -13,6 +13,27 @@ const ANYWHERE = {
     }
   }
 }
+const types = {
+  'cuisine': {
+    list: ['Singaporean', 'Japanese', 'Italian', 'Thai', 'Chinese', 'Korean', 'Mexican', 'Western', 'Indian', 'Cantonese', 'English', 'Fusion', 'Asian', 'Hainanese', 'American', 'French', 'Hong Kong', 'Teochew', 'Taiwanese', 'Malaysian', 'Shanghainese', 'Indonesian', 'Vietnamese', 'European', 'Peranakan', 'Sze Chuan', 'Spanish', 'Middle Eastern', 'Modern European', 'Filipino', 'Turkish', 'Hakka', 'German', 'Mediterranean', 'Swiss', 'Hawaiian', 'Australian'],
+  },
+  'amenities': {
+    list: ['Romantic', 'Supper', 'Brunch', 'Business Meal', 'Scenic View', 'Child-Friendly', 'Large Group', 'Vegetarian Options', 'Halal', 'Healthy', 'Alcohol', 'Vegetarian', 'Private Dining', 'Value For Money', 'Pet-Friendly', 'Live Music', 'Vegan', 'Vegan Options']
+  },
+  'establishments': {
+    list: ['Hawker', 'Drinks', 'Bakery', 'Dessert', 'Snacks', 'Cafe', 'Bars & Pubs', 'Fast Food', 'BBQ', 'Buffet', 'Hotpot & Steamboat', 'High Tea', 'Fine Dining']
+  }
+}
+
+export function reduce(query, type) {
+  let collector = []
+  types[type].list.forEach(name => {
+    if (query.filter.tag.positives.includes(name.toLowerCase())) {
+      collector.push(name)
+    }
+  })
+  return collector
+}
 
 export const state = () => ({
   query: {
@@ -171,6 +192,38 @@ export const mutations = {
     }
   },
 
+  /**
+   * @param state
+   * @param tags to remove if any
+   */
+  clear(state, {tags}) {
+    switch (state.selected) {
+      case 'price':
+        state.query.filter.price = {}
+        break
+
+      case 'cuisine':
+      case 'amenities':
+      case 'establishments':
+        tags.forEach(function (tag) {
+          tag = tag.toLowerCase()
+          const index = state.query.filter.tag.positives.indexOf(tag)
+          if (index !== -1) {
+            state.query.filter.tag.positives.splice(index, 1)
+          }
+        })
+        break
+
+      case 'location':
+        state.query.filter.area = ANYWHERE
+        break
+
+      case 'timings':
+        state.query.filter.hour = {}
+        break
+    }
+  },
+
   updatePrice(state, {name, min, max}) {
     if (state.query.filter.price.name === name) {
       state.query.filter.price = {}
@@ -244,6 +297,33 @@ export const actions = {
       .finally(() => commit('loading', false))
   },
 
+  clear({commit, state}, payload) {
+    commit('loading', true)
+    commit('clear', payload)
+
+    switch (state.selected) {
+      case 'location':
+        return this.$axios.$post('/api/search/filter/count', state.query, {progress: false})
+          .then(({data}) => {
+            commit('count', data)
+            loadingDeadline(commit, state)
+          })
+          .catch(error => commit('error', error))
+
+      case 'price':
+      case 'cuisine':
+      case 'timings':
+      case 'amenities':
+      case 'establishments':
+        return this.$axios.$post('/api/search/filter/count', state.query, {progress: false})
+          .then(({data}) => {
+            commit('count', data)
+            loadingDeadline(commit, state)
+          })
+          .catch(error => commit('error', error))
+    }
+  },
+
   location({commit, state}, location) {
     if (state.loading) return // Don't commit any changes if is already loading
 
@@ -267,7 +347,6 @@ export const actions = {
       .finally(() => loadingDeadline(commit, state))
   },
 
-
   price({commit, state}, object) {
     if (state.loading) return // Don't commit any changes if is already loading
 
@@ -282,8 +361,7 @@ export const actions = {
       .catch(error => commit('error', error))
   },
 
-
-  timing({commit, state}, timing) {
+  timings({commit, state}, timing) {
     if (state.loading) return // Don't commit any changes if is already loading
 
     commit('loading', true)
