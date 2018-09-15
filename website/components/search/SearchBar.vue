@@ -2,7 +2,7 @@
   <div v-on-clickaway="onBlur">
     <div class="SearchTextBar NoSelect" :class="{'Extended': isExtended}">
       <input ref="input" class="TextBar" type="text"
-             :placeholder="placeholder" v-model="text" @keyup="onKeyUp" @focus="onFocus">
+             placeholder="Search e.g. Italian in Marina Bay" v-model="text" @keyup="onKeyUp" @focus="onFocus">
 
       <div class="Clear" :style="clearStyle" @click="onClear">
         <simple-svg fill="black" filepath="/img/search/close.svg"/>
@@ -11,12 +11,24 @@
 
     <div class="SearchSuggest Elevation3 IndexTopElevation Border24Bottom NoSelect" v-if="isExtended">
       <div class="Results IndexTopElevation">
-        <div class="Item" :class="{'OnPosition': position === item.position}" v-for="item in items"
-             :key="item.position" @click="onClick(item)">
-          <simple-svg class="Icon" fill="black" :filepath="`/img/search/${item.type}.svg`"/>
-          <div class="Content">
-            <search-suggest-place-item v-if="item.type === 'place'" :item="item"/>
-            <search-suggest-assumption-item v-if="item.type === 'assumption'" :item="item"/>
+        <div class="Suggest" v-if="suggests">
+          <div class="SuggestCell Whisper100Bg Text WhiteA85" v-for="suggest in suggests" :key="suggest"
+               @click="onItemSuggest(suggest)">
+            {{suggest}}
+          </div>
+        </div>
+        <div class="Assumption" v-if="assumptions">
+          <div class="Item" v-for="assumption in assumptions" :key="assumption.count"
+               :class="{'Highlight': isPosition(assumption)}"
+               @click="onItemAssumption(assumption)">
+            <search-suggest-assumption-item :assumption="assumption"/>
+          </div>
+        </div>
+
+        <div class="Place" v-if="places">
+          <div class="Item" v-for="place in places" :key="place.placeId" :class="{'Highlight': isPosition(place)}"
+               @click="onItemPlace(place)">
+            <search-suggest-place-item :place="place"/>
           </div>
         </div>
       </div>
@@ -32,22 +44,16 @@
   export default {
     name: "SearchBar",
     components: {SearchSuggestAssumptionItem, SearchSuggestPlaceItem},
-    props: {
-      placeholder: {
-        type: String,
-        required: false,
-        default: () => 'Search e.g. Italian in Marina Bay'
-      }
-    },
     data() {
       return {
         text: '',
-        suggestions: [],
+        suggestions: null,
         position: 0,
         searching: false
       }
     },
     mounted() {
+      // TODO Fix this mounted problem
       this.text = this.$route.query.q || ''
       this.$emit('onText', this.text)
       window.addEventListener('keyup', this.keyUpListener);
@@ -58,39 +64,35 @@
           'display': this.text.length > 0 ? 'block' : 'none'
         }
       },
-      items() {
-        if (this.suggestions) {
-          let counter = 0;
-          let items = []
-
-          if (this.suggestions.assumptions) {
-            this.suggestions.assumptions.forEach((assumption) => {
-              items.push({
-                type: 'assumption',
-                position: counter,
-                assumption: assumption
-              })
-              counter += 1
-            });
-          }
-
-          if (this.suggestions.places) {
-            this.suggestions.places.forEach((place) => {
-              items.push({
-                type: 'place',
-                position: counter,
-                place: place,
-              })
-              counter += 1
-            });
-          }
-          if (items.length > 0) {
-            return items.slice(0, 10)
-          }
+      suggests() {
+        if (this.suggestions && this.suggestions.suggests && this.suggestions.suggests.length > 0) {
+          return this.suggestions.suggests
         }
       },
+      assumptions() {
+        if (this.suggestions && this.suggestions.assumptions && this.suggestions.assumptions.length > 0) {
+          return this.suggestions.assumptions
+        }
+      },
+      places() {
+        if (this.suggestions && this.suggestions.places && this.suggestions.places.length > 0) {
+          return this.suggestions.places.slice(0, 10)
+        }
+      },
+      positions() {
+        if (!this.assumptions) return []
+        let position = 0
+        return [
+          ...this.assumptions.map(assumption => {
+            return {type: 'assumption', item: assumption, position: position++}
+          }),
+          ...this.places.map(place => {
+            return {type: 'place', item: place, position: position++}
+          })
+        ]
+      },
       isExtended() {
-        return this.items && this.searching
+        return (this.suggests || this.assumptions || this.places) && this.searching
       }
     },
     methods: {
@@ -102,34 +104,39 @@
             break
 
           case 40: // Down
-            if (this.position === this.items.length - 1) break
+            if (this.position === this.positions.length - 1) break
             this.position += 1
             break
 
           case 13: // Enter
-            if (this.items.length < 0) {
-              this.onBlur()
-              break
+            if (this.positions.length < 0) {
+              return this.onBlur()
             }
-            this.onClick(this.items[this.position])
-            break
+
+            const object = this.positions[this.position]
+            switch (object.type) {
+              case 'suggest':
+                return this.onItemSuggest(object.item)
+              case 'assumption':
+                return this.onItemAssumption(object.item)
+              case 'place':
+                return this.onItemPlace(object.item)
+            }
         }
       },
-      onClick(item) {
-        switch (item.type) {
-          case 'place':
-            this.$router.push({path: '/places/' + item.place.placeId})
-            this.onBlur()
-            break
+      onItemSuggest(suggest) {
+        this.text = suggest
+      },
+      onItemAssumption(assumption) {
+        this.$store.dispatch('filter/start', assumption.searchQuery)
+        this.$store.dispatch('search/start', assumption.searchQuery)
 
-          case 'assumption':
-            this.$store.dispatch('filter/start', item.assumption.searchQuery)
-            this.$store.dispatch('search/start', item.assumption.searchQuery)
-
-            if (this.$route.name !== 'search') this.$router.push({path: '/search'})
-            this.onBlur()
-            break
-        }
+        if (this.$route.name !== 'search') this.$router.push({path: '/search'})
+        this.onBlur()
+      },
+      onItemPlace(place) {
+        this.$router.push({path: '/places/' + place.placeId})
+        this.onBlur()
       },
       onKeyUp() {
         if (this.text.length === 0) {
@@ -152,6 +159,17 @@
         this.suggestions = []
         this.$emit('onText', this.text)
       },
+      isPosition(object) {
+        const item = this.positions && this.positions[this.position] && this.positions[this.position].item
+
+        if (item && item.placeId && object.placeId) {
+          return item.placeId === object.placeId
+        }
+
+        if (item && item.tokens && object.tokens) {
+          return item.count === object.count
+        }
+      }
     },
     subscriptions() {
       return {
@@ -226,6 +244,7 @@
     }
   }
 
+  @Nav2: #EFF2F7;
   .SearchSuggest {
     background: white;
     position: absolute;
@@ -243,30 +262,33 @@
     }
 
     .Item {
-      height: 42px;
-      padding: 8px 14px;
+      padding: 8px 15px;
       clear: both;
 
-      .Icon {
-        float: left;
-        width: 24px;
-        height: 24px;
-        margin: 1px 14px 1px 0;
-      }
-
-      .Content {
-        height: 26px;
-        width: 100%;
-      }
-
-      &:hover {
+      &:hover, &.Highlight {
         cursor: pointer;
-        background: #BEC9D0;
+        background: @Nav2;
       }
+    }
+  }
 
-      &.OnPosition {
-        background: #BEC9D0;
-      }
+  .Suggest {
+    padding: 8px 15px;
+    clear: both;
+    display: flex;
+    align-items: center;
+
+    overflow-x: scroll;
+    -webkit-overflow-scrolling: touch;
+
+    .SuggestCell {
+      font-size: 14px;
+      padding: 3px 12px;
+      margin-right: 10px;
+      border-radius: 12px;
+
+      white-space: nowrap;
+      overflow: visible;
     }
   }
 </style>

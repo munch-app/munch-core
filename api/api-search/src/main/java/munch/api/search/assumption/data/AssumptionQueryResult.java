@@ -12,6 +12,8 @@ import java.util.List;
  * Project: munch-core
  */
 public final class AssumptionQueryResult {
+    // Might want to send a unique assumption id for tracking
+
     private SearchQuery searchQuery;
     private List<AssumptionToken> tokens;
     private List<Place> places;
