@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!--TODO-->
+    <!--TODO: Not sure how I am gonna to implement this yet-->
   </div>
 </template>
 
@@ -10,6 +10,6 @@
     }
 </script>
 
-<style scoped>
+<style scoped lang="less">
 
 </style>

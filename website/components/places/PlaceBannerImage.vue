@@ -172,6 +172,10 @@
   .BannerImage {
     width: 100vw;
 
+    &:hover {
+      cursor: pointer;
+    }
+
     .BannerContainer {
       position: absolute;
       top: 0;
@@ -298,7 +302,7 @@
       height: 8vw;
 
       &:hover {
-        opacity: 1;
+        cursor: pointer;
       }
       &::before, &::after {
         position: absolute;

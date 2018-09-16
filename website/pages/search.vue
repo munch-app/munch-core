@@ -1,7 +1,6 @@
 <template>
-  <div>
+  <div class="ZeroSpacing">
     <div class="SearchResult Container" v-if="cards && query">
-      <h2 class="TopResult">Top Results</h2>
       <div class="Result">
         <card-delegator v-for="card in cards" :key="card['_uniqueId']" :card="card"/>
       </div>
@@ -30,9 +29,7 @@
 
 <style scoped lang="less">
   .SearchResult {
-    .TopResult {
-      margin-top: 24px;
-    }
+    margin-top: 12px;
   }
 
   .Result {

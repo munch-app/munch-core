@@ -1,6 +1,9 @@
 <template>
   <div>
-    <!--TODO-->
+    <!--
+    TODO
+    full width
+    -->
   </div>
 </template>
 

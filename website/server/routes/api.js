@@ -27,8 +27,8 @@ service.interceptors.response.use(function (response) {
  * ...}
  */
 router.use('/api', function (req, res, next) {
-  const localTime = req.headers['User-Local-Time']
-  const latLng = req.headers['User-Lat-Lng']
+  const localTime = req.headers['user-local-time']
+  const latLng = req.headers['user-lat-lng']
   const headers = {}
   if (localTime) headers['User-Local-Time'] = localTime
   if (latLng) headers['User-Lat-Lng'] = latLng
