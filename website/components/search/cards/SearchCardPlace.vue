@@ -13,7 +13,7 @@
         </div>
         <div class="LocationDistanceTiming Small">
           <span v-if="distance">{{distance}}, </span>
-          <span class="Weight600 BlackA80">{{location}}</span>
+          <span class="Weight400 BlackA85">{{location}}</span>
           <span v-if="timing" class="BlackA75 BulletDivider">•</span>
           <span :class="timing.class">{{timing.text}}</span>
         </div>
@@ -110,7 +110,7 @@
       }
 
       .LocationDistanceTiming {
-        font-size: 14px;
+        font-size: 13px;
         margin-top: 8px;
         text-overflow: ellipsis;
         white-space: nowrap;

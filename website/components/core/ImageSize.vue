@@ -1,7 +1,7 @@
 <template>
   <div class="ImageSize">
     <slot class="ImageBox Index0"></slot>
-    <b-img class="Image IndexImage" center fluid-grow :src="url" :alt="alt"/>
+    <b-img class="Image IndexImage" center fluid-grow :src="url" :alt="alt" :style="{'object-fit': objectFit}"/>
   </div>
 </template>
 
@@ -18,6 +18,11 @@
         require: false,
         type: Number,
         default: () => 800
+      },
+      objectFit: {
+        require: false,
+        type: String,
+        default: () => 'cover'
       },
       alt: String,
       image: Object
@@ -91,7 +96,6 @@
       bottom: 0;
 
       height: 100%;
-      object-fit: cover;
     }
   }
 </style>
