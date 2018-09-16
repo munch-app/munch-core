@@ -14,6 +14,13 @@
     v-else-if="isCardId('injected_Header_20180120')"
     :title="card.title"
   />
+  <search-card-no-result
+    class="Card NoSelect Initial FullWidth"
+    v-else-if="isCardId('injected_NoResult_20171208')"
+  />
+  <search-card-no-result-location
+    class="Card NoSelect Initial FullWidth"
+    v-else-if="isCardId('injected_NoResultLocation_20171208')"/>
   <div v-else style="display: none"></div>
 </template>
 
@@ -21,10 +28,15 @@
   import SearchCardPlace from "./SearchCardPlace";
   import SearchCardAreaClusterList from "./SearchCardAreaClusterList";
   import SearchCardHeader from "./SearchCardHeader";
+  import SearchCardNoResult from "./SearchCardNoResult";
+  import SearchCardNoResultLocation from "./SearchCardNoResultLocation";
 
   export default {
     name: "CardDelegator",
-    components: {SearchCardHeader, SearchCardAreaClusterList, SearchCardPlace},
+    components: {
+      SearchCardNoResultLocation,
+      SearchCardNoResult, SearchCardHeader, SearchCardAreaClusterList, SearchCardPlace
+    },
     props: {
       card: {
         type: Object,

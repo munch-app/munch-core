@@ -11,6 +11,9 @@
 
     <div class="SearchSuggest Elevation3 IndexTopElevation Border24Bottom NoSelect" v-if="isExtended">
       <div class="Results IndexTopElevation">
+        <div class="NoResult Text" v-if="!hasResult && suggestions">
+          Couldn't find any result for '{{text}}'
+        </div>
         <div class="Suggest" v-if="suggests">
           <div class="SuggestCell Whisper100Bg Text WhiteA85" v-for="suggest in suggests" :key="suggest"
                @click="onItemSuggest(suggest)">
@@ -91,7 +94,10 @@
         ]
       },
       isExtended() {
-        return (this.suggests || this.assumptions || this.places) && this.searching
+        return this.searching && this.text !== ''
+      },
+      hasResult() {
+        return this.suggests || this.assumptions || this.places
       }
     },
     methods: {
@@ -138,9 +144,7 @@
         this.onBlur()
       },
       onKeyUp() {
-        if (this.text.length === 0) {
-          this.suggestions = []
-        }
+        this.suggestions = null
         this.$emit('onText', this.text)
       },
       onFocus() {
@@ -155,7 +159,7 @@
       },
       onClear() {
         this.text = ''
-        this.suggestions = []
+        this.suggestions = null
         this.position = 0
         this.$emit('onText', this.text)
       },
@@ -170,7 +174,8 @@
         suggestions: this.$watchAsObservable('text').pipe(
           pluck('newValue'),
           map((text) => text.trim()),
-          debounceTime(300), // Change this
+          filter((text) => text !== ''),
+          debounceTime(200),
           distinctUntilChanged(),
           switchMap((text) => {
             return this.$axios.$post('/api/search/suggest', {
@@ -283,5 +288,9 @@
       white-space: nowrap;
       overflow: visible;
     }
+  }
+
+  .NoResult {
+    padding: 8px 15px;
   }
 </style>

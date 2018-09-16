@@ -4,7 +4,7 @@
 
     <div class="ClusterList">
       <div class="ClusterContainer" v-for="area in areas" :key="area.areaId" @click="onClick(area)">
-        <div class="ClusterCard">
+        <div class="ClusterCard ElevationHover1">
           <image-size class="Image" :image="area.images && area.images[0]"></image-size>
           <div class="Name">
             {{area.name}}
@@ -43,12 +43,14 @@
   }
 
   .ClusterList {
+    height: 112px;
     display: flex;
     overflow-x: scroll;
-    overflow-y: hidden;
+    overflow-y: visible;
     -webkit-overflow-scrolling: touch;
 
     .ClusterContainer {
+      overflow: visible;
       padding-right: 18px;
 
       &:hover {

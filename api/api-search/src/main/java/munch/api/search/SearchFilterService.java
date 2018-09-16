@@ -1,13 +1,9 @@
 package munch.api.search;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import munch.api.ApiService;
-import munch.api.search.data.FilterCount;
-import munch.api.search.data.FilterPrice;
 import munch.api.search.data.FilterResult;
-import munch.api.search.elastic.ElasticQueryUtils;
 import munch.data.client.ElasticClient;
 import munch.restful.core.JsonUtils;
 import munch.restful.server.JsonCall;
@@ -38,86 +34,38 @@ public final class SearchFilterService extends ApiService {
     public void route() {
         PATH("/search/filter", () -> {
             POST("", this::post);
-            POST("/count", this::count);
-            POST("/price", this::price);
         });
     }
 
     public FilterResult post(JsonCall call) {
         SearchRequest request = searchRequestFactory.create(call);
-
         if (request.hasPrice()) {
-            JsonNode aggregations = postAggregation(request, false, true);
-            Map<String, Integer> tags = ElasticOutput.parseTagCounts(aggregations.path("tags"));
+            JsonNode aggregations = postAggregation(request, false, true, true);
+            long count = ElasticOutput.parseCount(aggregations);
+            Map<String, Integer> tags = ElasticOutput.parseTagCounts(aggregations);
 
             request.getSearchQuery().getFilter().setPrice(null);
-            aggregations = postAggregation(request, true, false);
+            aggregations = postAggregation(request, true, false, false);
+            Map<Double, Integer> frequency = ElasticOutput.parsePriceFrequency(aggregations);
 
-            Map<Double, Integer> frequency = ElasticOutput.parsePriceFrequency(aggregations.path("prices"));
-            return FilterResult.from(tags, frequency);
+            return FilterResult.from(count, tags, frequency);
         } else {
-            JsonNode aggregations = postAggregation(request, true, true);
-            Map<String, Integer> tags = ElasticOutput.parseTagCounts(aggregations.path("tags"));
-            Map<Double, Integer> frequency = ElasticOutput.parsePriceFrequency(aggregations.path("prices"));
-            return FilterResult.from(tags, frequency);
+            JsonNode aggregations = postAggregation(request, true, true, true);
+            Map<String, Integer> tags = ElasticOutput.parseTagCounts(aggregations);
+            Map<Double, Integer> frequency = ElasticOutput.parsePriceFrequency(aggregations);
+            long count = ElasticOutput.parseCount(aggregations);
+            return FilterResult.from(count, tags, frequency);
         }
     }
 
-    @Deprecated
-    public FilterCount count(JsonCall call) {
-        SearchRequest request = searchRequestFactory.create(call);
-        JsonNode queryNode = ElasticQueryUtils.make(request);
-
-        FilterCount filterCount = new FilterCount();
-
-        // Set Count
-        Long count = elasticClient.count(JsonUtils.createObjectNode().set("query", queryNode));
-        filterCount.setCount(count == null ? 0 : count);
-
-        // Set Tags Count
-        ObjectNode aggsNode = JsonUtils.createObjectNode();
-        aggsNode.set("tags", ElasticInput.aggTags());
-        JsonNode aggregations = postElasticAggs(queryNode, aggsNode);
-        filterCount.setTags(ElasticOutput.parseTagCounts(aggregations.path("tags")));
-
-        return filterCount;
-    }
-
     /**
-     * @deprecated use priceGraph instead, try to deprecate by 0.15
+     * @param request search request to read from
+     * @param prices  whether to agg price
+     * @param tags    whether to agg tags
+     * @param count   whether to agg count
+     * @return aggregation node
      */
-    @Deprecated
-    public FilterPrice price(JsonCall call) {
-        SearchRequest request = searchRequestFactory.create(call);
-
-        ObjectNode queryNode = JsonUtils.createObjectNode();
-        ArrayNode filter = queryNode.putObject("bool").putArray("filter");
-        filter.add(ElasticQueryUtils.filterTerm("dataType", "Place"));
-        filter.add(ElasticQueryUtils.filterTerm("status.type", "open"));
-        ElasticQueryUtils.filterLocation(request).ifPresent(filter::add);
-
-        ObjectNode aggsNode = JsonUtils.createObjectNode();
-        aggsNode.set("prices", ElasticInput.aggPrices());
-
-        JsonNode aggregations = postElasticAggs(queryNode, aggsNode);
-
-        FilterPrice filterPrice = new FilterPrice();
-        filterPrice.setFrequency(ElasticOutput.parsePriceFrequency(aggregations.path("prices")));
-        return filterPrice;
-    }
-
-    @Deprecated
-    private JsonNode postElasticAggs(JsonNode queryNode, JsonNode aggsNode) {
-        ObjectNode rootNode = objectMapper.createObjectNode();
-        rootNode.put("size", 0);
-        rootNode.set("query", queryNode);
-        rootNode.set("aggs", aggsNode);
-
-        JsonNode result = elasticClient.search(rootNode);
-        return result.path("aggregations");
-    }
-
-    private JsonNode postAggregation(SearchRequest request, boolean prices, boolean tags) {
+    private JsonNode postAggregation(SearchRequest request, boolean prices, boolean tags, boolean count) {
         if (!prices && !tags) throw new IllegalStateException("Either prices or tags must be true.");
 
         ObjectNode rootNode = objectMapper.createObjectNode();
@@ -127,6 +75,7 @@ public final class SearchFilterService extends ApiService {
         ObjectNode aggsNode = JsonUtils.createObjectNode();
         if (prices) aggsNode.set("prices", ElasticInput.aggPrices());
         if (tags) aggsNode.set("tags", ElasticInput.aggTags());
+        if (count) aggsNode.set("count", ElasticInput.aggCount());
         rootNode.set("aggs", aggsNode);
 
         JsonNode result = elasticClient.search(rootNode);
@@ -154,13 +103,21 @@ public final class SearchFilterService extends ApiService {
                     .put("field", "price.perPax");
             return priceRange;
         }
+
+        private static JsonNode aggCount() {
+            ObjectNode count = objectMapper.createObjectNode();
+            count.putObject("terms")
+                    .put("field", "status.type")
+                    .put("size", 10);
+            return count;
+        }
     }
 
     private static final class ElasticOutput {
-        private static Map<String, Integer> parseTagCounts(JsonNode terms) {
+        private static Map<String, Integer> parseTagCounts(JsonNode aggregations) {
             Map<String, Integer> counts = new HashMap<>();
 
-            for (JsonNode object : terms.path("buckets")) {
+            for (JsonNode object : aggregations.path("tags").path("buckets")) {
                 String key = object.path("key").asText();
                 int count = object.path("doc_count").asInt();
                 counts.put(key, count);
@@ -169,16 +126,26 @@ public final class SearchFilterService extends ApiService {
             return counts;
         }
 
-        private static Map<Double, Integer> parsePriceFrequency(JsonNode prices) {
+        private static Map<Double, Integer> parsePriceFrequency(JsonNode aggregations) {
             Map<Double, Integer> frequency = new HashMap<>();
 
-            for (JsonNode object : prices.path("buckets")) {
+            for (JsonNode object : aggregations.path("prices").path("buckets")) {
                 double key = object.path("key").asDouble();
                 int count = object.path("doc_count").asInt();
                 frequency.put(key, count);
             }
 
             return frequency;
+        }
+
+        private static long parseCount(JsonNode aggregations) {
+            for (JsonNode object : aggregations.path("count").path("buckets")) {
+                if (object.path("key").asText().equals("open")) {
+                    return object.path("doc_count").asLong();
+                }
+            }
+
+            return 0;
         }
     }
 }

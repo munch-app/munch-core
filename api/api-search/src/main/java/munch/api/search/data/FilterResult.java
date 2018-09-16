@@ -1,6 +1,5 @@
 package munch.api.search.data;
 
-import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -38,13 +37,10 @@ public final class FilterResult {
         this.priceGraph = priceGraph;
     }
 
-    public static FilterResult from(Map<String, Integer> tags, Map<Double, Integer> frequency) {
+    public static FilterResult from(long count, Map<String, Integer> tags, Map<Double, Integer> frequency) {
         FilterResult result = new FilterResult();
-        if (!tags.isEmpty()) {
-            result.setTags(tags);
-            result.setCount(Collections.max(tags.values()));
-        }
-
+        result.setCount(count);
+        result.setTags(tags);
         result.setPriceGraph(PriceGraph.fromFrequency(frequency));
         return result;
     }
