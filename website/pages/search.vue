@@ -2,9 +2,9 @@
   <div>
     <div class="SearchResult Container" v-if="cards && query">
       <h2 class="TopResult">Top Results</h2>
-      <b-row>
+      <div class="Result">
         <card-delegator v-for="card in cards" :key="card['_uniqueId']" :card="card"/>
-      </b-row>
+      </div>
     </div>
   </div>
 </template>
@@ -33,5 +33,16 @@
     .TopResult {
       margin-top: 24px;
     }
+  }
+
+  .Result {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-right: -12px;
+    margin-left: -12px;
+
+    margin-bottom: 64px;
   }
 </style>

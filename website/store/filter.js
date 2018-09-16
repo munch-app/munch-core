@@ -13,27 +13,6 @@ const ANYWHERE = {
     }
   }
 }
-const types = {
-  'cuisine': {
-    list: ['Singaporean', 'Japanese', 'Italian', 'Thai', 'Chinese', 'Korean', 'Mexican', 'Western', 'Indian', 'Cantonese', 'English', 'Fusion', 'Asian', 'Hainanese', 'American', 'French', 'Hong Kong', 'Teochew', 'Taiwanese', 'Malaysian', 'Shanghainese', 'Indonesian', 'Vietnamese', 'European', 'Peranakan', 'Sze Chuan', 'Spanish', 'Middle Eastern', 'Modern European', 'Filipino', 'Turkish', 'Hakka', 'German', 'Mediterranean', 'Swiss', 'Hawaiian', 'Australian'],
-  },
-  'amenities': {
-    list: ['Romantic', 'Supper', 'Brunch', 'Business Meal', 'Scenic View', 'Child-Friendly', 'Large Group', 'Vegetarian Options', 'Halal', 'Healthy', 'Alcohol', 'Vegetarian', 'Private Dining', 'Value For Money', 'Pet-Friendly', 'Live Music', 'Vegan', 'Vegan Options']
-  },
-  'establishments': {
-    list: ['Hawker', 'Drinks', 'Bakery', 'Dessert', 'Snacks', 'Cafe', 'Bars & Pubs', 'Fast Food', 'BBQ', 'Buffet', 'Hotpot & Steamboat', 'High Tea', 'Fine Dining']
-  }
-}
-
-export function reduce(query, type) {
-  let collector = []
-  types[type].list.forEach(name => {
-    if (query.filter.tag.positives.includes(name.toLowerCase())) {
-      collector.push(name)
-    }
-  })
-  return collector
-}
 
 export const state = () => ({
   query: {
@@ -114,9 +93,11 @@ export const mutations = {
     state.query.filter.area = query.filter.area || null
 
     state.query.filter.tag.positives = []
-    query.filter.tag.positives.forEach(value => {
-      state.query.filter.tag.positives.push(value.toLowerCase())
-    })
+    if (query.filter.tag && query.filter.tag.positives) {
+      query.filter.tag.positives.forEach(value => {
+        state.query.filter.tag.positives.push(value.toLowerCase())
+      })
+    }
   },
 
   /**
@@ -275,9 +256,10 @@ function post(commit, state, $axios) {
 }
 
 export const actions = {
-  start({commit, state}) {
+  start({commit, state}, query) {
     if (state.loading === true) return
     commit('loading', true)
+    if (query) commit('replace', query)
 
     return post(commit, state, this.$axios)
   },

@@ -33,13 +33,13 @@
       buttons() {
         const query = this.$store.state.filter.query
         const user = this.$store.state.filter.user
-        const price = query.filter.price
+        const price = query.filter.price && query.filter.price.min !== undefined && query.filter.price
         const cuisine = SearchBarFilterTag.$$reduce(query, 'cuisine')
         const amenities = SearchBarFilterTag.$$reduce(query, 'amenities')
         const establishments = SearchBarFilterTag.$$reduce(query, 'establishments')
 
         const filters =
-          (price && price.min && price.max ? 1 : 0) +
+          (price ? 1 : 0) +
           cuisine.length +
           establishments.length +
           amenities.length +
@@ -49,8 +49,8 @@
         return [
           {
             type: 'price',
-            name: price && price.min && price.max ? `$${price.min} - $${price.max}` : 'Price',
-            applied: price && price.min && price.max
+            name: price ? `$${price.min} - $${price.max}` : 'Price',
+            applied: price
           },
           {
             type: 'cuisine',

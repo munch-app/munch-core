@@ -43,9 +43,9 @@
     },
     watch: {
       priceGraph(priceGraph) {
-        this.value = [priceGraph.min, priceGraph.max]
         this.min = priceGraph.min
         this.max = priceGraph.max
+        this.value = [priceGraph.min, priceGraph.max]
 
         if (this.price && this.price.name) {
           const range = priceGraph.ranges[this.price.name]
