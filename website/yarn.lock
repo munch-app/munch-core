@@ -3341,6 +3341,10 @@ interpret@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/interpret/-/interpret-1.1.0.tgz#7ed1b1410c6a0e0f78cf95d3b8440c63f78b8614"
 
+intersection-observer@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/intersection-observer/-/intersection-observer-0.5.0.tgz#9fe8bee3953c755b1485c38efd9633d535775ea6"
+
 invariant@^2.2.0, invariant@^2.2.2:
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/invariant/-/invariant-2.2.4.tgz#610f3c92c9359ce1db616e538008d23ff35158e6"
@@ -6637,6 +6641,10 @@ vue-meta@^1.4.3:
 vue-no-ssr@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/vue-no-ssr/-/vue-no-ssr-1.0.0.tgz#169bdabfa2ca170c8979d94062d877a0479c3f10"
+
+vue-observe-visibility@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/vue-observe-visibility/-/vue-observe-visibility-0.4.1.tgz#741dfc6c7894f4f41abab9efa1a86b1eb5012b18"
 
 vue-router@^3.0.1:
   version "3.0.1"

@@ -169,6 +169,9 @@ public final class SearchCardInjector {
                 return cards.size();
             }
 
+            /**
+             * @return TODO Convert to load via page
+             */
             public int getFrom() {
                 return request.getCall().queryInt("from");
             }

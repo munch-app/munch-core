@@ -205,6 +205,7 @@ public final class SearchRequest {
         }
 
         public JsonResult delegate(SearchRequest request) {
+            // TODO search places to be converted to load via paging style
             List<Place> places = searchPlaces(request);
             places = placeSorter.sort(places, request);
 

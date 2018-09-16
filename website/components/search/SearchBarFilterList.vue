@@ -149,6 +149,7 @@
       left: 0;
       right: 0;
       overflow-y: scroll;
+      -webkit-overflow-scrolling: touch;
       overflow-x: hidden;
     }
 

@@ -67,21 +67,22 @@
 
     .Image {
       width: 100%;
-      height: 70px;
+      height: 64px;
       overflow: hidden;
     }
 
     .Name {
-      height: 40px;
+      height: 38px;
       line-height: 1.2;
-      padding: 4px 6px 0;
+      padding: 6px 6px 0;
       font-size: 13px;
       font-weight: 600;
       color: rgba(0, 0, 0, 0.75);
 
-      text-overflow: ellipsis;
       overflow: hidden;
       -webkit-line-clamp: 2;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
     }
   }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <nuxt-link :to="'/places/' + place.placeId">
-    <div class="Elevation1 ElevationHover2 Card Border48">
-      <image-size class="Image Border48Top" :image="images" :alt="place.name"/>
+    <div class="Card">
+      <image-size class="Image Border3" :image="images" :alt="place.name"/>
 
       <div class="Content">
         <div class="Name Title Large Weight600 BlackA80">{{place.name}}</div>
@@ -13,9 +13,9 @@
         </div>
         <div class="LocationDistanceTiming Small">
           <span v-if="distance">{{distance}}, </span>
-          <span class="Weight400 BlackA85">{{location}}</span>
+          <span class="Weight600 BlackA80">{{location}}</span>
           <span v-if="timing" class="BlackA75 BulletDivider">•</span>
-          <span :class="timing.class">{{timing.text}}</span>
+          <span v-if="timing" :class="timing.class">{{timing.text}}</span>
         </div>
       </div>
     </div>
@@ -24,7 +24,7 @@
 
 <script>
   import ImageSize from "../../core/ImageSize";
-  import {Day, days, Hour, HourGroup} from '../../places/hour-group'
+  import {Hour, HourGroup} from '../../places/hour-group'
 
   export default {
     name: "SearchCardPlace",
@@ -57,6 +57,8 @@
         return null
       },
       timing() {
+        if (this.place.hours.length === 0) return
+
         const group = new HourGroup(this.place.hours.map((h) => new Hour(h.day, h.open, h.close)))
         switch (group.isOpen()) {
           case 'open':
@@ -81,8 +83,6 @@
     }
 
     .Content {
-      padding: 8px 16px 16px 16px;
-
       .Name {
         height: 26px;
         line-height: 26px;
@@ -99,19 +99,25 @@
         align-items: flex-start;
         overflow: hidden;
 
-        height: 22px;
-        margin-top: 3px;
+        height: 24px;
+        margin-top: 4px;
 
         .Tag {
-          font-size: 11px;
-          padding: 3px 7px;
+          font-weight: 400;
+          font-size: 12px;
+          line-height: 24px;
+          color: black;
+
+          padding: 0 8px;
           margin-right: 8px;
         }
       }
 
       .LocationDistanceTiming {
-        font-size: 13px;
         margin-top: 8px;
+
+        font-weight: 600;
+        font-size: 13px;
         text-overflow: ellipsis;
         white-space: nowrap;
         overflow: hidden;

@@ -53,6 +53,7 @@ public final class SearchSuggestionTagLoader implements SearchCardInjector.Loade
 
     @Override
     public List<Position> load(Request request) {
+        if (request.getFrom() != 0) return List.of();
         if (!request.isCardsMore(25)) return List.of();
         if (!request.isNatural()) return List.of();
 

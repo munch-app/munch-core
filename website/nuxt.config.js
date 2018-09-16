@@ -64,6 +64,7 @@ module.exports = {
       'prismic-vue',
       'portal-vue',
       'vue-browser-geolocation',
+      'vue-observe-visibility',
     ],
     plugins: [
       new webpack.ProvidePlugin({
@@ -81,6 +82,7 @@ module.exports = {
     '~/plugins/prismic-vue',
     '~/plugins/portal-vue',
     '~/plugins/vue-browser-geolocation',
+    '~/plugins/vue-observe-visibility',
   ],
   serverMiddleware: [
     {

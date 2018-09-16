@@ -173,8 +173,8 @@
           margin: 1px 0;
           height: 22px;
           width: 22px;
-          border-radius: 3px;
-          border: 2px solid rgba(0, 0, 0, 0.65);
+          border-radius: 2px;
+          border: 2px solid rgba(0, 0, 0, 0.85);
         }
 
         &::after {
