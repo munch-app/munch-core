@@ -2,7 +2,7 @@
   <div v-on-clickaway="onBlur">
     <div class="SearchTextBar NoSelect Elevation1" :class="{'Extended': isExtended, 'Elevation2': searching}">
       <input ref="input" class="TextBar" type="text"
-             placeholder="Search e.g. Italian in Marina Bay" v-model="text" @keyup="onKeyUp" @focus="onFocus">
+             placeholder="Search e.g. Italian in Marina Bay" v-model="text" @focus="onFocus">
 
       <div class="Clear" :style="clearStyle" @click="onClear">
         <simple-svg fill="black" filepath="/img/search/close.svg"/>
@@ -12,7 +12,7 @@
     <div class="SearchSuggest Elevation3 IndexTopElevation Border24Bottom NoSelect" v-if="isExtended">
       <div class="Results IndexTopElevation">
         <div class="NoResult Text" v-if="!hasResult && suggestions">
-          Couldn't find any result for '{{text}}'
+          Sorry! We couldn’t find results for '{{text}}'.
         </div>
         <div class="Suggest" v-if="suggests">
           <div class="SuggestCell Whisper100Bg Text WhiteA85" v-for="suggest in suggests" :key="suggest"
@@ -118,15 +118,21 @@
               return this.onBlur()
             }
 
-            const object = this.positions[this.position]
-            switch (object.type) {
-              case 'suggest':
-                return this.onItemSuggest(object.item)
-              case 'assumption':
-                return this.onItemAssumption(object.item)
-              case 'place':
-                return this.onItemPlace(object.item)
+            const object = this.positions && this.positions[this.position]
+            if (object) {
+              switch (object.type) {
+                case 'suggest':
+                  return this.onItemSuggest(object.item)
+                case 'assumption':
+                  return this.onItemAssumption(object.item)
+                case 'place':
+                  return this.onItemPlace(object.item)
+              }
             }
+            break
+          default:
+            this.suggestions = null
+            this.$emit('onText', this.text)
         }
       },
       onItemSuggest(suggest) {
@@ -142,10 +148,6 @@
       onItemPlace(place) {
         this.$router.push({path: '/places/' + place.placeId})
         this.onBlur()
-      },
-      onKeyUp() {
-        this.suggestions = null
-        this.$emit('onText', this.text)
       },
       onFocus() {
         window.scrollTo(0, 0);
@@ -255,7 +257,7 @@
     }
 
     @media (min-width: 768px) {
-      width: 440px;
+      width: 500px;
       margin-top: 0;
     }
 

@@ -110,7 +110,7 @@
 
       .SearchBar {
         @media (min-width: 768px) {
-          width: 440px;
+          width: 500px;
         }
       }
     }

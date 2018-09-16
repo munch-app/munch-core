@@ -21,6 +21,11 @@
   <search-card-no-result-location
     class="Card NoSelect Initial FullWidth"
     v-else-if="isCardId('injected_NoResultLocation_20171208')"/>
+  <search-card-area-cluster-header
+    class="Card NoSelect Initial FullWidth"
+    v-else-if="isCardId('injected_AreaClusterHeader_20180621')"
+    :area="card.area"
+  />
   <div v-else style="display: none"></div>
 </template>
 
@@ -30,10 +35,12 @@
   import SearchCardHeader from "./SearchCardHeader";
   import SearchCardNoResult from "./SearchCardNoResult";
   import SearchCardNoResultLocation from "./SearchCardNoResultLocation";
+  import SearchCardAreaClusterHeader from "./SearchCardAreaClusterHeader";
 
   export default {
     name: "CardDelegator",
     components: {
+      SearchCardAreaClusterHeader,
       SearchCardNoResultLocation,
       SearchCardNoResult, SearchCardHeader, SearchCardAreaClusterList, SearchCardPlace
     },
