@@ -89,6 +89,17 @@ public final class SearchRequest {
     }
 
     /**
+     * @return whether there is price data
+     */
+    public boolean hasPrice() {
+        if (searchQuery.getFilter() == null) return false;
+        if (searchQuery.getFilter().getPrice() == null) return false;
+        if (searchQuery.getFilter().getPrice().getMin() != null) return true;
+        if (searchQuery.getFilter().getPrice().getMax() != null) return true;
+        return false;
+    }
+
+    /**
      * @return whether user set search to anywhere
      */
     public boolean isAnywhere() {
@@ -138,6 +149,13 @@ public final class SearchRequest {
     public SearchRequest deepCopy() {
         SearchQuery searchQuery = JsonUtils.deepCopy(this.searchQuery, SearchQuery.class);
         return new SearchRequest(call, userId, searchQuery, latLng);
+    }
+
+    /**
+     * @return Elastic Query
+     */
+    public JsonNode createElasticQuery() {
+        return ElasticQueryUtils.make(this);
     }
 
     @Singleton

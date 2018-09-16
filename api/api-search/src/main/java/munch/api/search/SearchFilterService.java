@@ -45,16 +45,22 @@ public final class SearchFilterService extends ApiService {
 
     public FilterResult post(JsonCall call) {
         SearchRequest request = searchRequestFactory.create(call);
-        JsonNode queryNode = ElasticQueryUtils.make(request);
 
-        ObjectNode aggsNode = JsonUtils.createObjectNode();
-        aggsNode.set("tags", ElasticInput.aggTags());
-        aggsNode.set("prices", ElasticInput.aggPrices());
+        if (request.hasPrice()) {
+            JsonNode aggregations = postAggregation(request, false, true);
+            Map<String, Integer> tags = ElasticOutput.parseTagCounts(aggregations.path("tags"));
 
-        JsonNode aggregations = postElasticAggs(queryNode, aggsNode);
-        Map<String, Integer> tags = ElasticOutput.parseTagCounts(aggregations.path("tags"));
-        Map<Double, Integer> frequency = ElasticOutput.parsePriceFrequency(aggregations.path("prices"));
-        return FilterResult.from(tags, frequency);
+            request.getSearchQuery().getFilter().setPrice(null);
+            aggregations = postAggregation(request, true, false);
+
+            Map<Double, Integer> frequency = ElasticOutput.parsePriceFrequency(aggregations.path("prices"));
+            return FilterResult.from(tags, frequency);
+        } else {
+            JsonNode aggregations = postAggregation(request, true, true);
+            Map<String, Integer> tags = ElasticOutput.parseTagCounts(aggregations.path("tags"));
+            Map<Double, Integer> frequency = ElasticOutput.parsePriceFrequency(aggregations.path("prices"));
+            return FilterResult.from(tags, frequency);
+        }
     }
 
     @Deprecated
@@ -100,10 +106,27 @@ public final class SearchFilterService extends ApiService {
         return filterPrice;
     }
 
+    @Deprecated
     private JsonNode postElasticAggs(JsonNode queryNode, JsonNode aggsNode) {
         ObjectNode rootNode = objectMapper.createObjectNode();
         rootNode.put("size", 0);
         rootNode.set("query", queryNode);
+        rootNode.set("aggs", aggsNode);
+
+        JsonNode result = elasticClient.search(rootNode);
+        return result.path("aggregations");
+    }
+
+    private JsonNode postAggregation(SearchRequest request, boolean prices, boolean tags) {
+        if (!prices && !tags) throw new IllegalStateException("Either prices or tags must be true.");
+
+        ObjectNode rootNode = objectMapper.createObjectNode();
+        rootNode.put("size", 0);
+        rootNode.set("query", request.createElasticQuery());
+
+        ObjectNode aggsNode = JsonUtils.createObjectNode();
+        if (prices) aggsNode.set("prices", ElasticInput.aggPrices());
+        if (tags) aggsNode.set("tags", ElasticInput.aggTags());
         rootNode.set("aggs", aggsNode);
 
         JsonNode result = elasticClient.search(rootNode);
