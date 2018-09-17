@@ -106,7 +106,7 @@
 <style scoped lang="less">
   .FilterListContainer {
     background: white;
-    position: fixed;
+    position: absolute;
   }
 
   .FilterList {
