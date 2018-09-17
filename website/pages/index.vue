@@ -16,7 +16,7 @@
     <section class="Location">
       <h2>Day in, day out</h2>
       <p>Your favourite places - rediscovered.</p>
-
+      <landing-location-list/>
     </section>
 
     <section class="General">
@@ -27,7 +27,10 @@
 </template>
 
 <script>
+  import LandingLocationList from "../components/landing/LandingLocationList";
+
   export default {
+    components: {LandingLocationList},
     layout: 'search'
   }
 </script>
@@ -63,5 +66,9 @@
         }
       }
     }
+  }
+
+  section.Location {
+
   }
 </style>
