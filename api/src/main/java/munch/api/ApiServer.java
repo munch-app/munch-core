@@ -2,8 +2,11 @@ package munch.api;
 
 import munch.restful.server.RestfulServer;
 import munch.restful.server.RestfulService;
+import munch.restful.server.jwt.TokenAuthenticator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import spark.Request;
+import spark.Response;
 import spark.Spark;
 
 import javax.inject.Inject;
@@ -23,6 +26,7 @@ public final class ApiServer extends RestfulServer {
     private static final Logger logger = LoggerFactory.getLogger(ApiServer.class);
 
     private final HealthService healthService;
+    protected TokenAuthenticator<?> authenticator;
 
     @Inject
     public ApiServer(Set<RestfulService> routers, HealthService healthService) {
@@ -35,9 +39,20 @@ public final class ApiServer extends RestfulServer {
     @Override
     protected void setupRouters() {
         // Added /* because beginning of path has version number
-        Spark.path("/*", () -> super.setupRouters());
+        Spark.path("/*", () -> {
+            Spark.before("/*", this::before);
+            super.setupRouters();
+        });
 
         healthService.start();
         logger.info("Started SparkRouter: HealthService");
+    }
+
+    /**
+     * Before all calls
+     */
+    public void before(Request request, Response response) {
+        // See JsonCall.get & JsonCall.put to understand how it works
+        request.attribute(ApiRequest.class.getName(), new ApiRequest(request, authenticator));
     }
 }

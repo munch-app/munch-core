@@ -37,6 +37,7 @@ public abstract class ApiService implements JsonService {
      * @param call JsonCall
      * @return Optional String UserId if exist
      */
+    @Deprecated
     public Optional<String> optionalUserId(JsonCall call) {
         return authenticator.optionalSubject(call);
     }
@@ -49,6 +50,7 @@ public abstract class ApiService implements JsonService {
      * @param call JsonCall
      * @return Optional String of User Latitude Longitude if exists
      */
+    @Deprecated
     public static Optional<String> optionalUserLatLng(JsonCall call) {
         return Optional.ofNullable(call.getHeader(HEADER_USER_LAT_LNG));
     }
@@ -61,6 +63,7 @@ public abstract class ApiService implements JsonService {
      * @param call JsonCall
      * @return Optional String of User Local Time if exists
      */
+    @Deprecated
     public static Optional<LocalDateTime> optionalUserLocalTime(JsonCall call) {
         return Optional.ofNullable(call.getHeader(HEADER_USER_LOCAL_TIME))
                 .map(LocalDateTime::parse);
@@ -71,6 +74,7 @@ public abstract class ApiService implements JsonService {
      * @return UserId
      */
     @NotNull
+    @Deprecated
     public String getUserId(JsonCall call) {
         return authenticator.getSubject(call);
     }

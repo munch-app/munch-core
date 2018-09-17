@@ -1,5 +1,6 @@
 package munch.api.user;
 
+import munch.api.ApiRequest;
 import munch.api.ApiService;
 import munch.data.client.PlaceClient;
 import munch.data.place.Place;
@@ -52,7 +53,7 @@ public final class UserPlaceCollectionService extends ApiService {
      * @return List of UserPlaceCollection owned by current user
      */
     public JsonResult list(JsonCall call) {
-        String userId = getUserId(call);
+        String userId = call.get(ApiRequest.class).getUserId();
         Long sort = call.queryObject("next.sort", null, Long.class);
         int size = call.querySize(10, 20);
 
@@ -80,7 +81,7 @@ public final class UserPlaceCollectionService extends ApiService {
      */
     public UserPlaceCollection get(JsonCall call) {
         String collectionId = call.pathString("collectionId");
-        String userId = optionalUserId(call).orElse(null);
+        String userId = call.get(ApiRequest.class).getUserId();
 
         UserPlaceCollection collection = collectionClient.get(collectionId);
         if (collection == null) return null;
@@ -92,7 +93,7 @@ public final class UserPlaceCollectionService extends ApiService {
     }
 
     public UserPlaceCollection post(JsonCall call) {
-        String userId = getUserId(call);
+        String userId = call.get(ApiRequest.class).getUserId();
 
         UserPlaceCollection collection = call.bodyAsObject(UserPlaceCollection.class);
         collection.setCreatedBy(UserPlaceCollection.CreatedBy.User);
@@ -101,7 +102,7 @@ public final class UserPlaceCollectionService extends ApiService {
     }
 
     public UserPlaceCollection patch(JsonCall call) {
-        String userId = getUserId(call);
+        String userId = call.get(ApiRequest.class).getUserId();
         String collectionId = call.pathString("collectionId");
 
         validateAccess(collectionClient.get(collectionId), userId);
@@ -123,7 +124,7 @@ public final class UserPlaceCollectionService extends ApiService {
     /**
      * @param collection add image if don't exist
      */
-    private void resolveImage(UserPlaceCollection collection) {
+    public void resolveImage(UserPlaceCollection collection) {
         if (collection == null) return;
         if (collection.getImage() != null) return;
 
@@ -148,7 +149,7 @@ public final class UserPlaceCollectionService extends ApiService {
      * @param userId     user id operating the collection
      * @param ignores    CreatedBy to ignore when validating
      */
-    static void validateAccess(UserPlaceCollection collection, String userId, UserPlaceCollection.CreatedBy... ignores) {
+    public static void validateAccess(UserPlaceCollection collection, String userId, UserPlaceCollection.CreatedBy... ignores) {
         if (collection == null) throw new CodeException(404);
         if (!collection.getUserId().equals(userId)) throw new CodeException(503);
 

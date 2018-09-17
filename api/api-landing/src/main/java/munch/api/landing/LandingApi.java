@@ -1,8 +1,10 @@
 package munch.api.landing;
 
 import munch.api.ApiService;
+import munch.api.landing.collections.CollectionProvider;
 import munch.restful.server.JsonCall;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.Map;
 
@@ -15,6 +17,13 @@ import java.util.Map;
 @Singleton
 public final class LandingApi extends ApiService {
 
+    private final CollectionProvider collectionProvider;
+
+    @Inject
+    public LandingApi(CollectionProvider collectionProvider) {
+        this.collectionProvider = collectionProvider;
+    }
+
     @Override
     public void route() {
         PATH("/landing", () -> {
@@ -22,11 +31,15 @@ public final class LandingApi extends ApiService {
         });
     }
 
+    /**
+     * @return Landing page data
+     */
     public Map<String, Object> post(JsonCall call) {
-        // Location
-        // Queries
-        // Collections
-        //TODO
-        return null;
+        LandingRequest request = new LandingRequest(call);
+        return Map.of(
+//                "locations", null,
+//                "queries", null,
+                "collections", collectionProvider.get(request)
+        );
     }
 }

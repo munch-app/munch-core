@@ -31,7 +31,13 @@ public final class CleanerTransformer extends JsonTransformer {
         if (object instanceof Collection) {
             ((Collection<?>) object).forEach(this::cleanEach);
         } else if (object instanceof Map) {
-            ((Map<?, ?>) object).forEach((k, v) -> cleanEach(v));
+            ((Map<?, ?>) object).forEach((k, v) -> {
+                if (v instanceof Collection) {
+                    ((Collection<?>) v).forEach(this::cleanEach);
+                } else {
+                    cleanEach(v);
+                }
+            });
         } else {
             cleanEach(object);
         }

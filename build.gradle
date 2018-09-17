@@ -13,7 +13,7 @@ allprojects {
     ext.guiceVersion = '4.2.0'
     ext.awsVersion = '1.11.367'
 
-    ext.restfulVersion = '2.4.15'
+    ext.restfulVersion = '2.4.17'
     ext.fileVersion = '1.2.11'
     ext.catalystVersion = '3.0-SNAPSHOT'
     ext.instagramVersion = '1.0-SNAPSHOT'
