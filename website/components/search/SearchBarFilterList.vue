@@ -189,10 +189,10 @@
   }
 
   @media (min-width: 768px) {
-    .FilterList {
+    .FilterListContainer {
+      box-shadow: 0 6px 6px 0 rgba(0, 0, 0, 0.26), 0 10px 20px 0 rgba(0, 0, 0, 0.19);
       padding: 16px 24px;
       border-radius: 4px;
-      box-shadow: 0 6px 6px 0 rgba(0, 0, 0, 0.26), 0 10px 20px 0 rgba(0, 0, 0, 0.19);
 
       background: white;
       margin-top: 8px;

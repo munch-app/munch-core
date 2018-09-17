@@ -27,7 +27,7 @@
       const priceGraph = this.$store.state.filter.result.priceGraph || {}
 
       return {
-        value: [price.min || 0, price.max || 200],
+        value: [price.min || priceGraph.min || 0, price.max || priceGraph.max || 200],
         min: priceGraph.min || 0,
         max: priceGraph.max || 200
       }
