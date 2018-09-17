@@ -15,9 +15,11 @@
           </div>
         </div>
       </div>
-      <div class="Elevation1 ElevationHover2 HoverPointer Border2 AddLocation EachLocation">
-        <div class="ImageBox">
-          <simple-svg fill="rgba(0, 0, 0, 0.75)" :filepath="`/img/landing/add.svg`"/>
+      <div class="AddLocation EachLocation">
+        <div class="Elevation1 ElevationHover2 HoverPointer Border2">
+          <div class="ImageBox">
+            <simple-svg fill="rgba(0, 0, 0, 0.75)" :filepath="`/img/landing/add.svg`"/>
+          </div>
         </div>
       </div>
     </div>
@@ -40,22 +42,29 @@
 
 <style scoped lang="less">
   .LocationList {
-    margin-top: 16px;
-    margin-left: -15px;
-    margin-right: -15px;
-    padding-top: 2px;
-    padding-bottom: 2px;
+    margin-left: -24px;
+    margin-right: -24px;
+    padding-top: 16px;
+    padding-bottom: 8px;
 
     display: flex;
     overflow-y: visible;
     overflow-x: scroll;
     -webkit-overflow-scrolling: touch;
 
+    .EachLocation:nth-of-type(1) {
+      margin-left: 24px;
+    }
+
+    .EachLocation:nth-last-of-type(1) {
+      padding-right: 24px;
+    }
+
     .EachLocation {
+      flex-shrink: 0;
       display: flex;
-      margin-right: 12px;
-      margin-left: 12px;
-      width: 240px;
+      margin-right: 24px;
+      width: 248px;
 
       div.ImageBox {
         width: 64px;
@@ -67,19 +76,18 @@
         text-overflow: ellipsis;
         white-space: nowrap;
         overflow: hidden;
+        padding-top: 8px;
+        padding-left: 16px;
+        padding-right: 16px;
 
         .Name {
           font-weight: 600;
           font-size: 17px;
           line-height: 1.3;
           color: rgba(0, 0, 0, 0.75);
-          padding-top: 8px;
-          padding-left: 12px;
         }
 
         .Address {
-          padding-left: 12px;
-          padding-right: 18px;
           font-size: 15px;
 
           text-overflow: ellipsis;
