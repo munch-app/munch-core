@@ -14,6 +14,7 @@ import com.google.inject.Provides;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import munch.api.core.CoreModule;
+import munch.api.landing.LandingModule;
 import munch.api.place.PlaceModule;
 import munch.api.search.SearchModule;
 import munch.api.user.UserModule;
@@ -41,6 +42,7 @@ public class ApiModule extends AbstractModule {
         install(new UserModule());
         install(new PlaceModule());
         install(new SearchModule());
+        install(new LandingModule());
     }
 
     private FirebaseAuthenticationModule getAuthenticationModule() {

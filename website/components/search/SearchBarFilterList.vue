@@ -31,15 +31,15 @@
           <h2 class="FilterName">Timing</h2>
           <search-bar-filter-timing/>
         </div>
+      </div>
 
-        <div class="BottomBar">
-          <div class="Button Cancel" @click="onClear">Clear</div>
-          <div class="Button Apply" @click="onApply" v-if="applyText"
-               :class="{'Secondary500Bg White Weight400': result, 'Secondary050Bg BlackA85 Weight600': !result}">
-            {{applyText}}
-          </div>
-          <beat-loader v-else class="Button Apply Secondary050Bg FlexCenter" color="#084E69" size="8px"/>
+      <div class="BottomBar">
+        <div class="Button Cancel" @click="onClear">Clear</div>
+        <div class="Button Apply" @click="onApply" v-if="applyText"
+             :class="{'Secondary500Bg White Weight400': result, 'Secondary050Bg BlackA85 Weight600': !result}">
+          {{applyText}}
         </div>
+        <beat-loader v-else class="Button Apply Secondary050Bg FlexCenter" color="#084E69" size="8px"/>
       </div>
     </div>
   </div>
@@ -47,7 +47,6 @@
 
 <script>
   import {mapGetters} from 'vuex'
-  import _ from 'underscore'
 
   import SearchBarFilterTag from "./SearchBarFilterTag";
   import SearchBarFilterTiming from "./SearchBarFilterTiming";

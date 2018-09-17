@@ -30,6 +30,7 @@ public final class SearchAreaClusterListLoader implements SearchCardInjector.Loa
 
     @Override
     public List<Position> load(Request request) {
+        if (!request.isFirstPage()) return List.of();
         if (request.isComplex()) return List.of();
         if (request.hasArea()) return List.of();
 

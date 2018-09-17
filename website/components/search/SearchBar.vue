@@ -40,6 +40,7 @@
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
   import {pluck, filter, debounceTime, distinctUntilChanged, switchMap, map} from 'rxjs/operators'
   import SearchSuggestPlaceItem from "./suggest/SearchSuggestPlaceItem";
   import SearchSuggestAssumptionItem from "./suggest/SearchSuggestAssumptionItem";
@@ -56,12 +57,18 @@
       }
     },
     mounted() {
-      // TODO Fix this mounted problem
+      // TODO PM-173
       this.text = this.$route.query.q || ''
       this.$emit('onText', this.text)
       window.addEventListener('keyup', this.keyUpListener);
     },
+    watch: {
+      loading() {
+        this.text = ''
+      }
+    },
     computed: {
+      ...mapGetters('search', ['loading']),
       clearStyle() {
         return {
           'display': this.text.length > 0 ? 'block' : 'none'

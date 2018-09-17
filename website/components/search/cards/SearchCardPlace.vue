@@ -7,7 +7,7 @@
         <div class="Name Title Large Weight600 BlackA80">{{place.name}}</div>
         <div class="Tags">
           <div class="Tag Border24" v-for="tag in tags" :key="tag.tagId"
-               :class="{'Peach100Bg': tag.type === 'price', 'Whisper100Bg': tag.type !== 'price'}">
+               :class="{'Peach100Bg Weight600 BlackA80': tag.type === 'price', 'Whisper100Bg Weight400': tag.type !== 'price'}">
             {{tag.name}}
           </div>
         </div>
@@ -46,7 +46,7 @@
       },
       tags() {
         const perPax = this.place.price && this.place.price.perPax
-        const priceTax = perPax && [{type: 'price', name: `$${perPax.toFixed(1)}`}] || []
+        const priceTax = perPax && [{type: 'price', name: `$${perPax.toFixed(0)}`}] || []
 
         return [
           ...priceTax,
@@ -103,11 +103,8 @@
         margin-top: 4px;
 
         .Tag {
-          font-weight: 400;
           font-size: 12px;
           line-height: 24px;
-          color: black;
-
           padding: 0 8px;
           margin-right: 8px;
         }

@@ -91,7 +91,7 @@ public final class SearchSuggestionTagLoader implements SearchCardInjector.Loade
         ObjectNode tag = JsonUtils.createObjectNode();
         tag.putObject("terms")
                 .put("field", "tags.name")
-                .put("size", 1000);
+                .put("size", 200);
         return tag;
     }
 

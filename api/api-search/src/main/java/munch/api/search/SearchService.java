@@ -62,6 +62,7 @@ public final class SearchService extends ApiService {
 
         // Save UserSearchHistory
         CompletableFuture.runAsync(() -> {
+            // Should capture user that are not logged in also
             String userId = searchRequest.getUserId();
             if (userId == null) return;
 
