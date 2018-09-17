@@ -1,19 +1,11 @@
 package munch.api.search;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import munch.api.ApiService;
-import munch.api.search.cards.SearchCard;
-import munch.api.search.cards.SearchCardParser;
 import munch.api.search.data.SearchQuery;
 import munch.api.search.elastic.ElasticQueryUtils;
-import munch.api.search.elastic.ElasticSortUtils;
-import munch.api.search.inject.SearchCardInjector;
-import munch.data.client.ElasticClient;
-import munch.data.place.Place;
 import munch.restful.core.JsonUtils;
 import munch.restful.server.JsonCall;
-import munch.restful.server.JsonResult;
 import munch.restful.server.jwt.TokenAuthenticator;
 import org.apache.commons.lang3.StringUtils;
 
@@ -21,7 +13,6 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.function.Function;
 
 /**
@@ -152,6 +143,14 @@ public final class SearchRequest {
     }
 
     /**
+     * @param query to replace
+     * @return cloned search request, with query replaced
+     */
+    public SearchRequest cloneWith(SearchQuery query) {
+        return new SearchRequest(call, userId, query, latLng);
+    }
+
+    /**
      * @return Elastic Query
      */
     public JsonNode createElasticQuery() {
@@ -188,39 +187,4 @@ public final class SearchRequest {
         }
     }
 
-    @Singleton
-    public static final class Delegator {
-        private final ElasticClient elasticClient;
-
-        private final SearchCardParser cardParser;
-        private final SearchPlaceSorter placeSorter;
-        private final SearchCardInjector searchCardInjector;
-
-        @Inject
-        public Delegator(ElasticClient elasticClient, SearchCardParser cardParser, SearchPlaceSorter placeSorter, SearchCardInjector searchCardInjector) {
-            this.elasticClient = elasticClient;
-            this.cardParser = cardParser;
-            this.placeSorter = placeSorter;
-            this.searchCardInjector = searchCardInjector;
-        }
-
-        public JsonResult delegate(SearchRequest request) {
-            // TODO search places to be converted to load via paging style
-            List<Place> places = searchPlaces(request);
-            places = placeSorter.sort(places, request);
-
-            List<SearchCard> cards = cardParser.parseCards(places, request);
-            searchCardInjector.inject(cards, request);
-            return JsonResult.ok(cards);
-        }
-
-        private List<Place> searchPlaces(SearchRequest request) {
-            ObjectNode root = JsonUtils.createObjectNode();
-            root.put("from", request.getCall().queryInt("from"));
-            root.put("size", request.getCall().queryInt("size"));
-            root.set("query", ElasticQueryUtils.make(request));
-            root.set("sort", ElasticSortUtils.make(request));
-            return elasticClient.searchHitsHits(root);
-        }
-    }
 }

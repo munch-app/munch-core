@@ -289,6 +289,10 @@
 
       white-space: nowrap;
       overflow: visible;
+
+      &:hover {
+        cursor: pointer;
+      }
     }
   }
 

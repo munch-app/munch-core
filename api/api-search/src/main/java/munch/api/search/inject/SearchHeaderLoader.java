@@ -14,10 +14,10 @@ public final class SearchHeaderLoader implements SearchCardInjector.Loader {
 
     @Override
     public List<Position> load(Request request) {
+        if (!request.isFirstPage()) return List.of();
         if (request.getCardsCount() == 0) return List.of();
         if (request.hasArea()) return List.of();
         if (request.isComplex()) return List.of();
-        if (request.getFrom() != 0) return List.of();
 
         // Contains search result & query is not complex
         SearchHeaderCard headerCard = new SearchHeaderCard();

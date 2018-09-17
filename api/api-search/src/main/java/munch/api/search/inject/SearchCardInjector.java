@@ -35,7 +35,10 @@ public final class SearchCardInjector {
     public void inject(List<SearchCard> cards, SearchRequest searchRequest) {
         Loader.Request request = new Loader.Request(cards, searchRequest);
 
+        // Negative = Placed above content
         List<Loader.Position> negatives = new ArrayList<>();
+
+        // Positive = Placed in content
         List<Loader.Position> positives = new ArrayList<>();
 
         // Collect into Negatives & Positives
@@ -112,12 +115,18 @@ public final class SearchCardInjector {
          * Search query request
          */
         class Request {
+            private static final int PAGE_SIZE = 30;
+
             private final List<SearchCard> cards;
             private final SearchQuery query;
             private final SearchRequest request;
 
             private final boolean complex;
 
+            /**
+             * @param cards   content card
+             * @param request raw search request
+             */
             public Request(List<SearchCard> cards, SearchRequest request) {
                 this.cards = new ArrayList<>(cards);
                 this.query = request.getSearchQuery();
@@ -126,10 +135,17 @@ public final class SearchCardInjector {
                 this.complex = isComplexQuery(query);
             }
 
+            /**
+             * @return raw search request
+             */
             public SearchRequest getRequest() {
                 return request;
             }
 
+            /**
+             * @param defaultName to default to if none is found
+             * @return name of Location where search is applied to
+             */
             public String getLocationName(String defaultName) {
                 if (query.getFilter().getArea() != null) {
                     String name = query.getFilter().getArea().getName();
@@ -169,15 +185,24 @@ public final class SearchCardInjector {
                 return cards.size();
             }
 
-            /**
-             * @return TODO Convert to load via page
-             */
-            public int getFrom() {
-                return request.getCall().queryInt("from");
+            public boolean isCardsMoreThan(int count) {
+                return getCardsCount() > count;
             }
 
-            public boolean isCardsMore(int count) {
-                return getCardsCount() > count;
+            public boolean isFullPage() {
+                return getCardsCount() == Request.PAGE_SIZE;
+            }
+
+            @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+            public boolean isFirstPage() {
+                return getPage() == 0;
+            }
+
+            /**
+             * @return page number user is on
+             */
+            public int getPage() {
+                return request.getCall().queryInt("page", 0);
             }
 
             public SearchQuery getQuery() {
@@ -213,6 +238,9 @@ public final class SearchCardInjector {
                 return query.getFilter().getArea() != null;
             }
 
+            /**
+             * @return whether user turn on location service
+             */
             public boolean hasUserLocation() {
                 return request.hasUserLatLng();
             }
@@ -227,6 +255,10 @@ public final class SearchCardInjector {
                 return false;
             }
 
+            /**
+             * @param query to check
+             * @return whether query is complex meaning user has custom selection
+             */
             private static boolean isComplexQuery(SearchQuery query) {
                 if (query.getSort() != null) {
                     if (query.getSort().getType() != null)

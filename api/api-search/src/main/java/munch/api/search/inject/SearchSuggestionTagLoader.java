@@ -2,8 +2,6 @@ package munch.api.search.inject;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
 import munch.api.search.SearchRequest;
 import munch.api.search.cards.SearchSuggestedTagCard;
 import munch.api.search.elastic.ElasticQueryUtils;
@@ -30,31 +28,26 @@ public final class SearchSuggestionTagLoader implements SearchCardInjector.Loade
 
     private final ElasticClient elasticClient;
 
-    private final Supplier<Map<String, Tag>> supplier;
+    private final Map<String, Tag> tags = new HashMap<>();
 
     @Inject
     public SearchSuggestionTagLoader(TagClient tagClient, ElasticClient elasticClient) {
         this.elasticClient = elasticClient;
 
-        supplier = Suppliers.memoize(() -> {
-            Map<String, Tag> map = new HashMap<>();
-            tagClient.iterator().forEachRemaining(tag -> {
-                switch (tag.getType()) {
-                    case Amenities:
-                    case Cuisine:
-                        map.put(tag.getName().toLowerCase(), tag);
+        tagClient.iterator().forEachRemaining(tag -> {
+            switch (tag.getType()) {
+                case Amenities:
+                case Cuisine:
+                    this.tags.put(tag.getName().toLowerCase(), tag);
 
-                }
-            });
-            return map;
+            }
         });
-        supplier.get();
     }
 
     @Override
     public List<Position> load(Request request) {
-        if (request.getFrom() != 0) return List.of();
-        if (!request.isCardsMore(25)) return List.of();
+        if (!request.isFirstPage()) return List.of();
+        if (!request.isFullPage()) return List.of();
         if (!request.isNatural()) return List.of();
 
         Map<String, Integer> tagMap = aggTags(request.getRequest());
@@ -77,7 +70,7 @@ public final class SearchSuggestionTagLoader implements SearchCardInjector.Loade
 
     private boolean filter(Map.Entry<String, Integer> entry) {
         if (entry.getValue() < 10) return false;
-        return supplier.get().containsKey(entry.getKey().toLowerCase());
+        return tags.containsKey(entry.getKey().toLowerCase());
     }
 
     private Map<String, Integer> aggTags(SearchRequest request) {
@@ -98,7 +91,7 @@ public final class SearchSuggestionTagLoader implements SearchCardInjector.Loade
         ObjectNode tag = JsonUtils.createObjectNode();
         tag.putObject("terms")
                 .put("field", "tags.name")
-                .put("size", 3000);
+                .put("size", 1000);
         return tag;
     }
 

@@ -31,6 +31,9 @@ public final class SearchPlaceSorter {
     private Set<String> tagLevel2 = new HashSet<>();
     private Set<String> tagLevel3 = new HashSet<>();
 
+    /**
+     * Will be replaced by Taste Bud
+     */
     @Inject
     public SearchPlaceSorter(TagClient tagClient) {
         Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
