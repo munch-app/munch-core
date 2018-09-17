@@ -75,6 +75,7 @@ public final class SearchPlaceSorter {
         if (localTime != null) sort(dataList, localTime);
 
         dataList.sort((o1, o2) -> Double.compare(o2.getRanking(), o1.getRanking()));
+        dataList.sort((o1, o2) -> Boolean.compare(o1.getImages().isEmpty(), o2.getImages().isEmpty()));
         return dataList;
     }
 
