@@ -1,5 +1,5 @@
 <template>
-  <div class="HeaderMenu IndexTopElevation NoSelect" v-if="$store.state.layout.menu" v-on-clickaway="onClickAway">
+  <div class="HeaderMenu IndexTopElevation no-select" v-if="$store.state.layout.menu" v-on-clickaway="onClickAway">
     <div class="NavLink Elevation3 Text IndexTopElevation">
       <div class="MobileOnly" @click="onMenuClick('/')">Home</div>
       <div v-if="isLoggedIn" @click="onMenuClick('/profile')">View Profile</div>

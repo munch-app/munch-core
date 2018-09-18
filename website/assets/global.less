@@ -13,7 +13,7 @@ a {
   border: 0;
 }
 
-.NoSelect {
+.no-select {
   -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none; /* Safari */
   -khtml-user-select: none; /* Konqueror HTML */
@@ -22,16 +22,26 @@ a {
   user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
 }
 
-.HoverPointer {
+.hover-pointer {
   &:hover {
     cursor: pointer;
   }
 }
 
-.FlexCenter {
+.flex-center {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.float-right {
+  float: right !important;
+}
+
+.clearfix::after {
+  display: block;
+  clear: both;
+  content: "";
 }
 
 @import "colors";

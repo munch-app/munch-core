@@ -39,7 +39,7 @@
              :class="{'Secondary500Bg White Weight400': result, 'Secondary050Bg BlackA85 Weight600': !result}">
           {{applyText}}
         </div>
-        <beat-loader v-else class="Button Apply Secondary050Bg FlexCenter" color="#084E69" size="8px"/>
+        <beat-loader v-else class="Button Apply Secondary050Bg flex-center" color="#084E69" size="8px"/>
       </div>
     </div>
   </div>

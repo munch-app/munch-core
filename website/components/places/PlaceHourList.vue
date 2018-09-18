@@ -25,7 +25,7 @@
         </div>
 
         <div class="BottomBar">
-          <div class="Secondary500Bg White CloseButton Elevation1 Border3 text-center HoverPointer"
+          <div class="Secondary500Bg White CloseButton Elevation1 Border3 text-center hover-pointer"
                @click="popover = false">
             CLOSE
           </div>

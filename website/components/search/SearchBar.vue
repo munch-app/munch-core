@@ -1,6 +1,6 @@
 <template>
   <div v-on-clickaway="onBlur">
-    <div class="SearchTextBar NoSelect Elevation1" :class="{'Extended': isExtended, 'Elevation2': searching}">
+    <div class="SearchTextBar no-select Elevation1" :class="{'Extended': isExtended, 'Elevation2': searching}">
       <input ref="input" class="TextBar" type="text"
              placeholder="Search e.g. Italian in Marina Bay" v-model="text" @focus="onFocus">
 
@@ -9,7 +9,7 @@
       </div>
     </div>
 
-    <div class="SearchSuggest Elevation3 IndexTopElevation Border24Bottom NoSelect" v-if="isExtended">
+    <div class="SearchSuggest Elevation3 IndexTopElevation Border24Bottom no-select" v-if="isExtended">
       <div class="Results IndexTopElevation">
         <div class="NoResult Text" v-if="!hasResult && suggestions">
           Sorry! We couldn’t find results for '{{text}}'.

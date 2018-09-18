@@ -1,8 +1,8 @@
 <template>
-  <div class="PlaceBannerImage NoSelect">
+  <div class="PlaceBannerImage no-select">
     <slick class="Slick" ref="slick" :options="banner.options" @afterChange="onBannerAfter">
       <div v-for="(value, index) in images" :key="value.imageId" @click="onFullScreen(index)">
-        <div class="BannerImage NoSelect">
+        <div class="BannerImage no-select">
           <image-size class="Image" :image="value">
             <div class="BannerContainer">
               <div v-if="value.profile && value.profile.name" class="Small UsernameButton Border4 Elevation1">
@@ -15,7 +15,7 @@
     </slick>
 
     <div v-if="fullScreen.selected">
-      <slick class="Slick FullScreen IndexOverlay NoSelect" ref="fullScreen" :options="fullScreen.options" @afterChange="onFullScreenAfter">
+      <slick class="Slick FullScreen IndexOverlay no-select" ref="fullScreen" :options="fullScreen.options" @afterChange="onFullScreenAfter">
         <div v-for="image in images" :key="image.imageId">
           <div class="ImageContainer">
             <image-size class="Image" :image="image" :min="1000" :max="2048" object-fit="scale-down"/>

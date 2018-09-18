@@ -1,5 +1,5 @@
 <template>
-  <nuxt-link :to="'/places/' + place.placeId" class="NoSelect ItemCard">
+  <nuxt-link :to="'/places/' + place.placeId" class="no-select ItemCard">
     <image-size v-if="images" class="Image Border3" :image="images" :alt="place.name"/>
     <div v-else class="Image Border3 Whisper100Bg"></div>
 

@@ -17,10 +17,10 @@
           <h2>My Collections</h2>
         </div>
         <div class="CollectionControl">
-          <div class="CollectionButton Elevation1 ElevationHover2 Border3 Secondary300Bg HoverPointer">
+          <div class="CollectionButton Elevation1 ElevationHover2 Border3 Secondary300Bg hover-pointer">
             <simple-svg class="Icon" fill="rgba(255,255,255,0.95)" filepath="/img/profile/edit.svg"/>
           </div>
-          <div class="CollectionButton Elevation1 ElevationHover2 Border3 Secondary300Bg HoverPointer">
+          <div class="CollectionButton Elevation1 ElevationHover2 Border3 Secondary300Bg hover-pointer">
             <simple-svg class="Icon" fill="rgba(255,255,255,0.95)" filepath="/img/profile/add.svg"/>
           </div>
         </div>

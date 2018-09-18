@@ -1,6 +1,6 @@
 <template>
   <div class="PartnerInstagramMedia">
-    <slick class="Slick NoSelect" ref="slick" :options="options" @afterChange="onAfterChange">
+    <slick class="Slick no-select" ref="slick" :options="options" @afterChange="onAfterChange">
       <a class="MediaCard" v-for="media in medias" :key="media.mediaId" :href="media.link" target="_blank"
          rel="nofollow">
         <image-size class="Image Elevation1 Border48" :image="media.image">

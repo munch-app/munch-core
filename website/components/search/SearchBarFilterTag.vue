@@ -9,7 +9,7 @@
       <div class="Control">
         <div v-if="!loading" class="Count">{{count(tag)}}</div>
         <div v-if="!loading || isSelectedTag(tag)" class="Checkbox"/>
-        <beat-loader v-if="!isSelectedTag(tag) && loading" class="FlexCenter" color="#0A6284" size="6px"/>
+        <beat-loader v-if="!isSelectedTag(tag) && loading" class="flex-center" color="#0A6284" size="6px"/>
       </div>
     </div>
     <div class="LastRow TagRow" v-if="hiddenCount > 0" @click="hidden = !hidden">

@@ -1,38 +1,38 @@
 <template>
   <search-card-place
-    class="Card NoSelect Initial Pointer"
+    class="Card no-select Initial Pointer"
     v-if="isCardId('basic_Place_20171211')"
     :place="card.place"
   />
   <search-card-place-small
-    class="Card NoSelect Initial Pointer"
+    class="Card no-select Initial Pointer"
     v-else-if="isCardId('basic_SmallPlace_20180129')"
     :place="card.place"
   />
   <search-card-area-cluster-list
-    class="Card NoSelect Initial FullWidth"
+    class="Card no-select Initial FullWidth"
     v-else-if="isCardId('injected_AreaClusterList_20180621')"
     :areas="card.areas"
   />
   <search-card-header
-    class="Card NoSelect Initial FullWidth NoBottom"
+    class="Card no-select Initial FullWidth NoBottom"
     v-else-if="isCardId('injected_Header_20180120')"
     :title="card.title"
   />
   <search-card-no-result
-    class="Card NoSelect Initial FullWidth"
+    class="Card no-select Initial FullWidth"
     v-else-if="isCardId('injected_NoResult_20171208')"
   />
   <search-card-no-result-location
-    class="Card NoSelect Initial FullWidth"
+    class="Card no-select Initial FullWidth"
     v-else-if="isCardId('injected_NoResultLocation_20171208')"/>
   <search-card-area-cluster-header
-    class="Card NoSelect Initial FullWidth"
+    class="Card no-select Initial FullWidth"
     v-else-if="isCardId('injected_AreaClusterHeader_20180621')"
     :area="card.area"
   />
   <search-card-suggestion-tag
-    class="Card NoSelect Initial FullWidth"
+    class="Card no-select Initial FullWidth"
     v-else-if="isCardId('injected_SuggestedTag_20180511')"
     :card="card"
   />

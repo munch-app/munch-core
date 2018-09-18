@@ -2,7 +2,7 @@
   <div class="PlaceAwardList">
     <slick class="Slick" ref="slick" :options="options">
       <div v-for="award in awards" :key="award.itemId">
-        <div class="Award NoSelect Whisper100Bg">
+        <div class="Award no-select Whisper100Bg">
           <div>{{award.award.name}}</div>
         </div>
       </div>

@@ -1,7 +1,7 @@
 <template>
-  <nuxt-link class="CollectionCard HoverPointer" :to="`/collections/${collection.collectionId}`">
+  <nuxt-link class="CollectionCard hover-pointer" :to="`/collections/${collection.collectionId}`">
     <image-size class="Image" :image="collection.image">
-      <div class="FlexCenter ImageContainer">
+      <div class="flex-center ImageContainer">
         <h3 class="White TextCenter">{{collection.name}}</h3>
         <div class="Username"></div>
       </div>

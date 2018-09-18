@@ -3,7 +3,7 @@
     <slick class="Slick" ref="slick" :options="options" @afterChange="onAfterChange">
       <a v-for="article in articles" :key="article.url" :href="article.url" target="_blank"
          rel="nofollow">
-        <div class="ArticleCard NoSelect Elevation1 Border48">
+        <div class="ArticleCard no-select Elevation1 Border48">
           <image-size class="Image Border48Top" :image="article.thumbnail"/>
 
           <div class="Content">
