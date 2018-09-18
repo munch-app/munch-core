@@ -5,7 +5,7 @@
         <div class="Greeting">
           <h1>{{salutation}}<span class="Name">, {{username || 'Samantha'}}</span></h1>
           <div class="Text Login" v-if="!username">(not your name?
-            <span class="LoginButton Primary500 Weight600">Log In</span>
+            <nuxt-link to="/login" class="LoginButton Primary500 Weight600">Log In</nuxt-link>
             now!)
           </div>
         </div>
@@ -72,7 +72,7 @@
       salutation() {
         const date = new Date()
         const totalMinutes = (date.getHours() * 60) + date.getMinutes()
-        if (totalMinutes >= 180 && totalMinutes < 720) return 'Good Morning'
+        if (totalMinutes >= 300 && totalMinutes < 720) return 'Good Morning'
         if (totalMinutes >= 720 && totalMinutes < 1020) return 'Good Morning'
         else return 'Good Evening'
       },

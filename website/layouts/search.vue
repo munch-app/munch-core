@@ -6,7 +6,7 @@
         <div class="Search">
           <search-bar class="SearchBar" @onText="onText" @onFocus="onFocus" @onBlur="onBlur"/>
         </div>
-        <header-profile class="Profile float-right" @click="onClickProfile"/>
+        <header-right class="HeaderMenu float-right" @clickMenu="onClickMenu"/>
       </div>
     </nav>
 
@@ -26,14 +26,15 @@
 <script>
   import {mapGetters} from 'vuex'
   import HeaderLogo from "../components/layouts/HeaderLogo";
-  import HeaderProfile from "../components/layouts/HeaderProfile";
   import HeaderMenu from "../components/layouts/HeaderMenu";
   import SearchBar from "../components/search/SearchBar";
   import SearchBarFilter from "../components/search/SearchBarFilter";
+  import HeaderRight from "../components/layouts/HeaderRight";
 
   export default {
     components: {
-      SearchBarFilter, SearchBar, HeaderMenu, HeaderProfile, HeaderLogo
+      HeaderRight,
+      SearchBarFilter, SearchBar, HeaderMenu, HeaderLogo
     },
     data() {
       return {
@@ -55,7 +56,7 @@
           this.$router.push({path: '/'})
         }
       },
-      onClickProfile() {
+      onClickMenu() {
         this.$store.commit('layout/toggleMenu')
       },
       onText(text) {
@@ -115,11 +116,9 @@
       }
     }
 
-    .Profile {
-      display: none;
-
-      @media (min-width: 768px) {
-        display: block;
+    @media (max-width: 767.98px) {
+      .HeaderMenu {
+        display: none;
       }
     }
   }

@@ -9,7 +9,7 @@
         <div class="Email Text Weight600 BlackA75">fuxing@munch.space</div>
       </div>
     </section>
-    <hr>
+    <hr class="Container">
 
     <section class="Collection">
       <div class="Header Container">
@@ -17,11 +17,11 @@
           <h2>My Collections</h2>
         </div>
         <div class="CollectionControl">
-          <div class="CollectionButton Elevation1 ElevationHover2 Border3 Secondary300Bg hover-pointer">
-            <simple-svg class="Icon" fill="rgba(255,255,255,0.95)" filepath="/img/profile/edit.svg"/>
+          <div class="CollectionButton Elevation1 ElevationHover2 Border3 WhiteBg hover-pointer">
+            <simple-svg class="Icon" fill="#0A6284" filepath="/img/profile/edit.svg"/>
           </div>
-          <div class="CollectionButton Elevation1 ElevationHover2 Border3 Secondary300Bg hover-pointer">
-            <simple-svg class="Icon" fill="rgba(255,255,255,0.95)" filepath="/img/profile/add.svg"/>
+          <div class="CollectionButton Elevation1 ElevationHover2 Border3 WhiteBg hover-pointer">
+            <simple-svg class="Icon" fill="#0A6284" filepath="/img/profile/add.svg"/>
           </div>
         </div>
       </div>
@@ -98,6 +98,7 @@
     .CollectionList {
       display: flex;
       flex-wrap: wrap;
+      margin-top: -12px;
       margin-right: -12px;
       margin-left: -12px;
 

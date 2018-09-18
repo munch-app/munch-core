@@ -1,17 +1,24 @@
 <template>
-  <div class="HeaderMenu IndexTopElevation no-select" v-if="$store.state.layout.menu" v-on-clickaway="onClickAway">
-    <div class="NavLink Elevation3 Text IndexTopElevation">
-      <div class="MobileOnly" @click="onMenuClick('/')">Home</div>
-      <div v-if="isLoggedIn" @click="onMenuClick('/profile')">View Profile</div>
-      <div v-else @click="onMenuClick('/login')">Login</div>
-      <hr>
-      <div @click="onMenuClick('/support')">Support</div>
-      <div @click="onMenuClick('/about')">About Munch</div>
+  <div class="HeaderMenu IndexTopElevation no-select" v-if="$store.state.layout.menu">
+    <ul class="NavLink Elevation3 Text IndexTopElevation">
+      <div class="MobileOnly">
+        <nuxt-link to="/">Home</nuxt-link>
+        <nuxt-link to="/profile" v-if="isLoggedIn">Profile</nuxt-link>
+        <nuxt-link to="/login" v-else>Login</nuxt-link>
+        <hr>
+      </div>
+      <div class="NonMobileOnly" v-if="isLoggedIn">
+        <nuxt-link to="/profile">Profile</nuxt-link>
+        <hr>
+      </div>
+      <nuxt-link to="/support">Support</nuxt-link>
+      <nuxt-link to="/about">About Munch</nuxt-link>
       <hr>
       <div><a href="https://partner.munch.app" target="_blank">Content Partners</a></div>
       <hr v-if="isLoggedIn">
-      <div v-if="isLoggedIn" @click="onMenuClick('/logout')">Logout</div>
-    </div>
+      <nuxt-link to="/logout" v-if="isLoggedIn">Logout</nuxt-link>
+    </ul>
+    <div v-on-clickaway="onClickAway"></div>
   </div>
 </template>
 
@@ -20,15 +27,10 @@
 
   export default {
     name: "HeaderMenu",
-    computed:  {
+    computed: {
       ...mapGetters('user', ['isLoggedIn']),
     },
     methods: {
-      onMenuClick(to) {
-        this.$store.commit('layout/showMenu', false)
-
-        this.$router.push({'path': to})
-      },
       onClickAway() {
         if (this.$store.state.layout.menu) {
           this.$store.commit('layout/showMenu', false)
@@ -69,8 +71,12 @@
       margin: 8px 0;
     }
 
-    & > div {
-      padding: 8px 16px;
+    a {
+      font-size: 15px;
+      font-weight: 600;
+      color: rgba(0, 0, 0, 0.75);
+      padding: 8px 15px;
+      display: block;
 
       &:hover {
         cursor: pointer;
@@ -82,12 +88,22 @@
     @media (min-width: 768px) {
       width: 200px;
       border-radius: 4px;
-      margin-top: -6px;
+      margin-top: -8px;
+
+      a {
+        padding: 8px 18px;
+      }
     }
   }
 
   @media (min-width: 768px) {
     .MobileOnly {
+      display: none;
+    }
+  }
+
+  @media (max-width: 767.98px) {
+    .NonMobileOnly {
       display: none;
     }
   }

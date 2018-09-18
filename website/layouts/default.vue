@@ -1,9 +1,9 @@
 <template>
   <div>
     <nav class="Header NavBg Elevation1 IndexHeader">
-      <div class="Container clearfix">
+      <div class="HeaderRow Container clearfix">
         <header-logo class="Logo float-left" @click="onClickLogo"/>
-        <header-profile class="Profile float-right" @click="onClickProfile"/>
+        <header-right class="HeaderMenu float-right" @clickMenu="onClickMenu"/>
       </div>
 
       <header-menu class="Menu"/>
@@ -20,12 +20,13 @@
 <script>
   import {mapGetters} from 'vuex'
   import HeaderLogo from "../components/layouts/HeaderLogo";
-  import HeaderProfile from "../components/layouts/HeaderProfile";
+  import HeaderRight from "../components/layouts/HeaderRight";
   import HeaderMenu from "../components/layouts/HeaderMenu";
 
   export default {
     components: {
-      HeaderMenu, HeaderProfile, HeaderLogo
+      HeaderMenu,
+      HeaderRight, HeaderLogo
     },
     computed: {
       ...mapGetters('layout', ['isElevated']),
@@ -38,7 +39,7 @@
           this.$router.push({path: '/'})
         }
       },
-      onClickProfile() {
+      onClickMenu() {
         this.$store.commit('layout/toggleMenu')
       }
     }
@@ -52,19 +53,8 @@
     height: 56px;
     width: 100%;
 
-    .Logo {
-    }
-
-    .Profile {
-      display: none;
-
-      @media (min-width: 768px) {
-        display: block;
-      }
-    }
-
-    .Menu {
-
+    .HeaderRight {
+      height: 56px;
     }
   }
 
