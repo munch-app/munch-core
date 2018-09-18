@@ -33,7 +33,7 @@
         </div>
       </div>
 
-      <div class="BottomBar">
+      <div class="BottomBar IndexElevation">
         <div class="Button Cancel" @click="onClear">Clear</div>
         <div class="Button Apply" @click="onApply" v-if="applyText"
              :class="{'Secondary500Bg White Weight400': result, 'Secondary050Bg BlackA85 Weight600': !result}">
@@ -106,10 +106,6 @@
 <style scoped lang="less">
   .FilterListContainer {
     background: white;
-    position: absolute;
-  }
-
-  .FilterList {
   }
 
   .FilterName {
@@ -143,18 +139,23 @@
 
   @media (max-width: 767.98px) {
     .FilterListContainer {
-      top: 104px;
-      bottom: 64px;
-      left: 0;
-      right: 0;
-      overflow-y: scroll;
-      -webkit-overflow-scrolling: touch;
-      overflow-x: hidden;
     }
 
     .FilterList {
-      margin: 0 15px 0 15px;
-      padding-bottom: 24px;
+      background: white;
+      position: fixed;
+      /*padding-bottom: 24px;*/
+
+      top: 104px;
+      left: 0;
+      right: 0;
+      bottom: 64px;
+
+      padding: 0 15px 48px 15px;
+
+      overflow-x: visible;
+      overflow-y: scroll;
+      -webkit-overflow-scrolling: touch;
 
       @media (min-width: 576px) {
         max-width: 540px;
@@ -190,6 +191,8 @@
 
   @media (min-width: 768px) {
     .FilterListContainer {
+      position: fixed;
+
       box-shadow: 0 6px 6px 0 rgba(0, 0, 0, 0.26), 0 10px 20px 0 rgba(0, 0, 0, 0.19);
       padding: 16px 24px;
       border-radius: 4px;

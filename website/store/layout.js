@@ -6,10 +6,11 @@ export const state = () => ({
   }
 })
 
-
 export const getters = {
   isElevated: (state) => state.elevation.elevated,
 }
+
+import {disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks} from 'body-scroll-lock';
 
 export const mutations = {
   showMenu(state, menu) {
@@ -18,6 +19,11 @@ export const mutations = {
 
   toggleMenu(state) {
     state.menu = !state.menu
+    if (state.menu) {
+      this.commit('layout/elevationOn', 'headerMenu')
+    } else {
+      this.commit('layout/elevationOff', 'headerMenu')
+    }
   },
 
   /**
@@ -27,6 +33,7 @@ export const mutations = {
   elevationOn(state, name) {
     state.elevation.name = name
     state.elevation.elevated = true
+    disableBodyScroll(document.querySelector('body'))
   },
 
   /**
@@ -38,6 +45,7 @@ export const mutations = {
     if (state.elevation.elevated && state.elevation.name === name) {
       state.elevation.name = name
       state.elevation.elevated = false
+      enableBodyScroll(document.querySelector('body'));
     }
   }
 }

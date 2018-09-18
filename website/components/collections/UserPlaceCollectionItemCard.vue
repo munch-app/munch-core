@@ -1,0 +1,132 @@
+<template>
+  <nuxt-link :to="'/places/' + place.placeId" class="NoSelect ItemCard">
+    <image-size v-if="images" class="Image Border3" :image="images" :alt="place.name"/>
+    <div v-else class="Image Border3 Whisper100Bg"></div>
+
+    <div class="Content">
+      <div class="Name Title Large Weight600 BlackA80">{{place.name}}</div>
+      <div class="Tags">
+        <div class="Tag Border24" v-for="tag in tags" :key="tag.tagId"
+             :class="{'Peach100Bg Weight600 BlackA80': tag.type === 'price', 'Whisper100Bg Weight400': tag.type !== 'price'}">
+          {{tag.name}}
+        </div>
+      </div>
+      <div class="LocationDistanceTiming Small">
+        <span v-if="distance">{{distance}}, </span>
+        <span class="Weight600 BlackA80">{{location}}</span>
+        <span v-if="timing" class="BlackA75 BulletDivider">•</span>
+        <span v-if="timing" :class="timing.class">{{timing.text}}</span>
+      </div>
+    </div>
+  </nuxt-link>
+</template>
+
+<script>
+  import ImageSize from "../core/ImageSize";
+  import {Hour, HourGroup} from '../places/hour-group'
+
+  export default {
+    name: "UserPlaceCollectionItemCard",
+    components: {ImageSize},
+    props: {
+      place: {
+        required: true,
+        type: Object
+      }
+    },
+    computed: {
+      location() {
+        return this.place.location.neighbourhood || this.place.location.street
+      },
+      images() {
+        if (this.place.images && this.place.images[0]) {
+          return this.place.images[0]
+        }
+      },
+      tags() {
+        const perPax = this.place.price && this.place.price.perPax
+        const priceTax = perPax && [{type: 'price', name: `$${perPax.toFixed(0)}`}] || []
+
+        return [
+          ...priceTax,
+          ...this.place.tags.slice(0, 3)
+        ]
+      },
+      distance() {
+        return null
+      },
+      timing() {
+        if (this.place.hours.length === 0) return
+
+        const group = new HourGroup(this.place.hours.map((h) => new Hour(h.day, h.open, h.close)))
+        switch (group.isOpen()) {
+          case 'open':
+            return {class: 'Open', text: 'Open Now'}
+          case 'closed':
+            return {class: 'Close', text: 'Closed Now'}
+          case 'opening':
+            return {class: 'Open', text: 'Opening Soon'}
+          case 'closing':
+            return {class: 'Close', text: 'Closing Soon'}
+        }
+      },
+    }
+  }
+</script>
+
+<style scoped lang="less">
+  .ItemCard {
+    color: initial;
+    text-decoration: initial;
+
+    .Image {
+      width: 100%;
+      padding-top: 60%;
+    }
+
+    .Content {
+      .Name {
+        height: 26px;
+        line-height: 26px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+
+        margin-top: 6px;
+      }
+
+      .Tags {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        overflow: hidden;
+
+        height: 24px;
+        margin-top: 4px;
+
+        .Tag {
+          font-size: 12px;
+          line-height: 24px;
+          padding: 0 8px;
+          margin-right: 8px;
+        }
+      }
+
+      .LocationDistanceTiming {
+        margin-top: 8px;
+
+        font-weight: 600;
+        font-size: 13px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+
+        .BulletDivider {
+          vertical-align: middle;
+          font-size: 12px;
+          margin: 0 3px;
+        }
+      }
+    }
+  }
+</style>

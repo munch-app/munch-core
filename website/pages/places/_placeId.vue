@@ -90,11 +90,6 @@
         title: this.data.place.name + ' | Munch',
       }
     },
-    data() {
-      return {
-        tab: 'information'
-      }
-    },
     asyncData({$axios, params}) {
       return $axios.$get('/api/places/' + params.placeId)
         .then(({data}) => {

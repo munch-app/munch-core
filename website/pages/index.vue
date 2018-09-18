@@ -85,7 +85,7 @@
 <style scoped lang="less">
   .LandingPage {
     margin-top: 24px;
-    margin-bottom: 48px;
+    padding-bottom: 64px;
   }
 
   section {

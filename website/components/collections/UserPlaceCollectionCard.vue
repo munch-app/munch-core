@@ -1,12 +1,12 @@
 <template>
-  <div class="CollectionCard HoverPointer">
+  <nuxt-link class="CollectionCard HoverPointer" :to="`/collections/${collection.collectionId}`">
     <image-size class="Image" :image="collection.image">
       <div class="FlexCenter ImageContainer">
         <h3 class="White TextCenter">{{collection.name}}</h3>
         <div class="Username"></div>
       </div>
     </image-size>
-  </div>
+  </nuxt-link>
 </template>
 
 <script>
@@ -26,7 +26,8 @@
 
 <style scoped lang="less">
   .CollectionCard {
-
+    color: initial;
+    text-decoration: initial;
   }
 
   .Image {
@@ -35,10 +36,15 @@
   }
 
   .ImageContainer {
+    transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
     background-color: rgba(0,0,0,0.55);
     width: 200px;
     height: 200px;
     padding: 24px;
+
+    &:hover {
+      background-color: rgba(0,0,0,0.33);
+    }
 
     @media (max-width: 575.98px) {
       width: 160px;

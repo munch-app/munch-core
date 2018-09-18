@@ -18,7 +18,6 @@
 <script>
   import {mapGetters} from 'vuex'
 
-  import NoSSR from 'vue-no-ssr'
   import CardDelegator from "../components/search/cards/CardDelegator";
   import BeatLoader from 'vue-spinner/src/BeatLoader.vue'
 
@@ -28,7 +27,7 @@
 
   export default {
     layout: 'search',
-    components: {CardDelegator, BeatLoader, NoSSR},
+    components: {CardDelegator, BeatLoader},
     head() {
       return {
         title: 'Search | Munch',
