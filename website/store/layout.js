@@ -15,15 +15,16 @@ import {disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks} from 'body
 export const mutations = {
   showMenu(state, menu) {
     state.menu = menu
-  },
 
-  toggleMenu(state) {
-    state.menu = !state.menu
     if (state.menu) {
       this.commit('layout/elevationOn', 'headerMenu')
     } else {
       this.commit('layout/elevationOff', 'headerMenu')
     }
+  },
+
+  toggleMenu(state) {
+    this.commit('layout/showMenu', !state.menu)
   },
 
   /**

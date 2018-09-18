@@ -4,8 +4,9 @@
       <div class="Container">
         <div class="Greeting">
           <h1>{{salutation}}<span class="Name">, {{username || 'Samantha'}}</span></h1>
-          <div class="Text Login" v-if="!username">(not your name? <span
-            class="LoginButton Primary500 Weight600">Log In</span> now!)
+          <div class="Text Login" v-if="!username">(not your name?
+            <span class="LoginButton Primary500 Weight600">Log In</span>
+            now!)
           </div>
         </div>
         <p>Discover the best wherever & whenever</p>

@@ -1,25 +1,28 @@
 <template>
   <div class="HeaderMenu IndexTopElevation NoSelect" v-if="$store.state.layout.menu" v-on-clickaway="onClickAway">
     <div class="NavLink Elevation3 Text IndexTopElevation">
-      <div @click="onMenuClick('/login')">Login</div>
-      <div @click="onMenuClick('/')">Home</div>
-      <div @click="onMenuClick('/profile')">View Profile</div>
-      <hr>
-      <div @click="onMenuClick('/about')">About Munch</div>
-      <div @click="onMenuClick('/contact')">Contact Us</div>
-      <hr>
-      <div><a href="https://partner.munch.app" target="_blank">Content Partners</a></div>
+      <div class="MobileOnly" @click="onMenuClick('/')">Home</div>
+      <div v-if="isLoggedIn" @click="onMenuClick('/profile')">View Profile</div>
+      <div v-else @click="onMenuClick('/login')">Login</div>
       <hr>
       <div @click="onMenuClick('/support')">Support</div>
+      <div @click="onMenuClick('/about')">About Munch</div>
       <hr>
-      <div @click="onMenuClick('/logout')">Logout</div>
+      <div><a href="https://partner.munch.app" target="_blank">Content Partners</a></div>
+      <hr v-if="isLoggedIn">
+      <div v-if="isLoggedIn" @click="onMenuClick('/logout')">Logout</div>
     </div>
   </div>
 </template>
 
 <script>
+  import {mapGetters} from "vuex";
+
   export default {
     name: "HeaderMenu",
+    computed:  {
+      ...mapGetters('user', ['isLoggedIn']),
+    },
     methods: {
       onMenuClick(to) {
         this.$store.commit('layout/showMenu', false)
@@ -80,6 +83,12 @@
       width: 200px;
       border-radius: 4px;
       margin-top: -6px;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .MobileOnly {
+      display: none;
     }
   }
 </style>

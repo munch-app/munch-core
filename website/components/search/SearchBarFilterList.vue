@@ -146,12 +146,12 @@
       position: fixed;
       /*padding-bottom: 24px;*/
 
-      top: 104px;
+      top: 0;
       left: 0;
       right: 0;
-      bottom: 64px;
+      bottom: 0;
 
-      padding: 0 15px 48px 15px;
+      padding: 104px 15px 112px 15px;
 
       overflow-x: visible;
       overflow-y: scroll;

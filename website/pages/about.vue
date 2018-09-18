@@ -1,13 +1,18 @@
 <template>
-  <section class="Container">
-    <h3>About</h3>
+  <section class="Container About">
+    <h1>About MUNCH</h1>
   </section>
 </template>
 
 <script>
-  export default {}
+  export default {
+
+  }
 </script>
 
-<style lang="less" scoped>
-
+<style scoped lang="less">
+  .About {
+    margin-top: 24px;
+    padding-bottom: 64px;
+  }
 </style>
