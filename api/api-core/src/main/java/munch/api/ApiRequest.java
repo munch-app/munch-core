@@ -3,12 +3,16 @@ package munch.api;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import munch.restful.core.exception.AuthenticationException;
 import munch.restful.core.exception.CodeException;
 import munch.restful.server.jwt.AuthenticatedToken;
 import munch.restful.server.jwt.TokenAuthenticator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import spark.Request;
 
 import javax.annotation.Nullable;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -19,6 +23,7 @@ import java.util.Optional;
  * Project: munch-core
  */
 public final class ApiRequest {
+    private static final Logger logger = LoggerFactory.getLogger(ApiRequest.class);
     public static final String HEADER_USER_LAT_LNG = "User-Lat-Lng";
     public static final String HEADER_USER_LOCAL_TIME = "User-Local-Time";
 
@@ -61,6 +66,12 @@ public final class ApiRequest {
      */
     @Nullable
     public String getUserId() {
+        return userId;
+    }
+
+    @NotNull
+    public String requireUserId() throws AuthenticationException {
+        if (userId == null) throw new AuthenticationException(403, "Forbidden");
         return userId;
     }
 

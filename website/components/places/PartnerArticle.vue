@@ -2,7 +2,7 @@
   <div class="PartnerArticle">
     <slick class="Slick" ref="slick" :options="options" @afterChange="onAfterChange">
       <a v-for="article in articles" :key="article.url" :href="article.url" target="_blank"
-         rel="nofollow">
+         rel="noreferrer noopener nofollow">
         <div class="ArticleCard no-select Elevation1 Border48">
           <image-size class="Image Border48Top" :image="article.thumbnail"/>
 

@@ -31,10 +31,8 @@
       </div>
       <div class="Container">
         <div class="CollectionList">
-          <div class="Card" v-for="i in [0,1,2,3,4,5,6,7,8,9,10,11,12]" :key="i">
-            <div class="Primary100Bg" style="height: 100%">
-              <h3 class="TextCenter pt-5">Collection Name</h3>
-            </div>
+          <div class="Card" v-for="collection in collections" :key="collection.collectionId">
+            <user-place-collection-card :collection="collection"/>
           </div>
         </div>
       </div>
@@ -43,8 +41,22 @@
 </template>
 
 <script>
+  import UserPlaceCollectionCard from "../../components/collections/UserPlaceCollectionCard";
+
   export default {
+    components: {UserPlaceCollectionCard},
     layout: 'search',
+    data() {
+
+    },
+    asyncData({$axios}) {
+      return $axios.$get('/api/users/places/collections')
+        .then(({data}) => {
+          return {
+            collections: data
+          }
+        })
+    },
     computed: {
       profile() {
         return this.$store.state.user.profile || {}

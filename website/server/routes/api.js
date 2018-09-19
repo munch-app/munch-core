@@ -8,13 +8,12 @@ const service = require('axios').create({
 service.interceptors.response.use(function (response) {
   return response;
 }, function (error) {
-  let message = error.response &&
+  let metaError = error.response &&
     error.response.data &&
     error.response.data.meta &&
-    error.response.data.meta.error &&
-    error.response.data.meta.error.message
-  if (message) {
-    return Promise.reject(new Error(message))
+    error.response.data.meta.error
+  if (metaError && metaError.type) {
+    return Promise.reject(new Error(`${metaError.type}: ${metaError.message || ''}`))
   }
   return Promise.reject(error);
 });

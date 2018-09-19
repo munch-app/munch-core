@@ -8,7 +8,7 @@
       <div class="Container">
         <section class="Name ContentBody">
           <h1>{{place.name}}</h1>
-          <div class="Regular Street">{{place.location.street || place.location.address}}</div>
+          <div class="Regular Street">{{place.location.neighbourhood || place.location.street || place.location.address}}</div>
           <place-tag-list class="Tag" :tags="place.tags" :max="6"/>
         </section>
 

@@ -1,11 +1,14 @@
 <template>
-  <div class="ZeroSpacing Container Authenticate">
-    <h3>Authenticating...</h3>
+  <div class="ZeroSpacing Container Authenticate flex-center">
+    <moon-loader class="Loader" color="#084E69" size="56px"/>
   </div>
 </template>
 
 <script>
+  import BeatLoader from "vue-spinner/src/BeatLoader";
+  import MoonLoader from "vue-spinner/src/MoonLoader";
   export default {
+    components: {MoonLoader, BeatLoader},
     head() {
       return {title: 'Authenticating | Munch'}
     },
@@ -28,6 +31,7 @@
 
 <style scoped lang="less">
   .Authenticate {
-    margin-top: 24px;
+    margin-top: 48px;
+    height: 100%;
   }
 </style>

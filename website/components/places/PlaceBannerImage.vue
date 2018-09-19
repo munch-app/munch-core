@@ -1,5 +1,9 @@
 <template>
   <div class="PlaceBannerImage no-select">
+    <div class="Banner NavigationLeft IndexNavigation" v-if="images.length > 3 && banner.currentSlide !== 0"
+         @click="onPrev"></div>
+    <div class="Banner NavigationRight IndexNavigation" v-if="images.length > 3" @click="onNext"></div>
+
     <slick class="Slick" ref="slick" :options="banner.options" @afterChange="onBannerAfter">
       <div v-for="(value, index) in images" :key="value.imageId" @click="onFullScreen(index)">
         <div class="BannerImage no-select">
@@ -15,12 +19,13 @@
     </slick>
 
     <div v-if="fullScreen.selected">
-      <slick class="Slick FullScreen IndexOverlay no-select" ref="fullScreen" :options="fullScreen.options" @afterChange="onFullScreenAfter">
+      <slick class="Slick FullScreen IndexOverlay no-select" ref="fullScreen" :options="fullScreen.options"
+             @afterChange="onFullScreenAfter">
         <div v-for="image in images" :key="image.imageId">
           <div class="ImageContainer">
             <image-size class="Image" :image="image" :min="1000" :max="2048" object-fit="scale-down"/>
             <div class="Description Text" v-if="image.profile">
-              <a :href="getUrl(image)" target="_blank">@{{image.profile.name}}</a>
+              <a :href="getUrl(image)" target="_blank" rel="noreferrer noopener nofollow">@{{image.profile.name}}</a>
             </div>
           </div>
         </div>
@@ -28,7 +33,8 @@
       <div class="Control">
         <div class="NavigationClose IndexOverlay" @click="onFullScreenClose"></div>
         <div class="NavigationLeft IndexOverlay" v-if="fullScreen.currentSlide !== 0" @click="onFullScreenPrev"></div>
-        <div class="NavigationRight IndexOverlay" v-if="fullScreen.currentSlide !== images.length - 1" @click="onFullScreenNext"></div>
+        <div class="NavigationRight IndexOverlay" v-if="fullScreen.currentSlide !== images.length - 1"
+             @click="onFullScreenNext"></div>
       </div>
     </div>
   </div>
@@ -161,6 +167,7 @@
 
   .Slick {
     display: flex;
+    overflow: hidden;
   }
 
   .Image {
@@ -196,6 +203,65 @@
     }
   }
 
+  .PlaceBannerImage {
+    .Banner.NavigationLeft, .Banner.NavigationRight {
+      display: none;
+      position: absolute;
+
+      width: 48px;
+      height: 100%;
+
+      transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
+      &::after {
+        display: inline-block;
+        position: absolute;
+        content: "";
+
+        height: 18px;
+        width: 18px;
+        border-right: 3px solid white;
+        border-bottom: 3px solid white;
+
+        transform: rotate(-45deg);
+
+        right: 14px;
+        top: calc(50% - 14px);
+      }
+    }
+
+    .Banner.NavigationLeft {
+      left: 0;
+      margin-left: 15px;
+      background-image: linear-gradient(to left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
+
+      &::after {
+        left: 14px;
+        transform: rotate(135deg);
+      }
+
+      &:hover {
+        cursor: pointer;
+        background-image: linear-gradient(to left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3));
+      }
+    }
+
+    .Banner.NavigationRight {
+      right: 0;
+      margin-right: 15px;
+      background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
+
+      &::after {
+        right: 14px;
+        transform: rotate(-45deg);
+      }
+
+      &:hover {
+        cursor: pointer;
+        background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3));
+      }
+    }
+  }
+
   /* > 576 Condition */
   @media (min-width: 576px) {
     .BannerImage {
@@ -225,6 +291,12 @@
 
     .Image {
       padding-top: 60%;
+    }
+
+    .PlaceBannerImage {
+      .Banner.NavigationRight, .Banner.NavigationLeft {
+        display: block;
+      }
     }
   }
 
@@ -271,7 +343,6 @@
       top: 0;
       bottom: 0;
       width: 8vw;
-      background: rgba(255, 255, 255, 0.2);
       transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
 
       &::after {
@@ -323,6 +394,8 @@
 
     .NavigationLeft {
       left: 0;
+      background-image: linear-gradient(to left, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.125));
+
       &::after {
         right: calc(50% - 14px);
         transform: rotate(135deg);
@@ -331,6 +404,8 @@
 
     .NavigationRight {
       right: 0;
+      background-image: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.125));
+
       &::after {
         left: calc(50% - 14px);
         transform: rotate(-45deg);

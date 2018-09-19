@@ -2,7 +2,7 @@
   <div class="PlaceMenuList">
     <b-row>
       <b-col cols="4" v-for="data in list" :key="data.key">
-        <a :href="data.href" target="_blank" rel="nofollow">
+        <a :href="data.href" target="_blank" rel="noreferrer noopener nofollow">
           <div v-if="data.key === 'url'" class="Elevation1 Web Border48">
             <img src="/img/places/web_page.svg">
           </div>

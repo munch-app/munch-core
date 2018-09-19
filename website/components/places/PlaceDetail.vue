@@ -10,11 +10,11 @@
     </div>
     <div class="Row Website" v-if="websiteUrl">
       <div class="Left Secondary500">WEBSITE</div>
-      <div class="Right">{{websiteUrl}}</div>
+      <a :href="place.website"  class="Right" target="_blank" rel="noreferrer noopener nofollow">{{websiteUrl}}</a>
     </div>
     <div class="Row WebsiteMenu" v-if="menuUrl">
       <div class="Left Secondary500">MENU</div>
-      <div class="Right">{{menuUrl}}</div>
+      <a :href="place.menu.url" class="Right" rel="noreferrer noopener nofollow">{{menuUrl}}</a>
     </div>
     <div class="Row Hour" v-if="hours.length > 0">
       <div class="Left Secondary500">HOURS</div>
