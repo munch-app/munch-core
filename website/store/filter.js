@@ -205,6 +205,13 @@ export const mutations = {
     }
   },
 
+  clearAll(state) {
+    state.query.filter.price = {}
+    state.query.filter.area = ANYWHERE
+    state.query.filter.hour = {}
+    state.query.filter.tag.positives.splice(0, state.query.filter.tag.positives.length)
+  },
+
   updatePrice(state, {name, min, max}) {
     if (state.query.filter.price.name === name) {
       state.query.filter.price = {}
@@ -267,6 +274,12 @@ export const actions = {
   clear({commit, state}, payload) {
     commit('loading', true)
     commit('clear', payload)
+    return post(commit, state, this.$axios)
+  },
+
+  clearAll({commit, state}) {
+    commit('loading', true)
+    commit('clearAll')
     return post(commit, state, this.$axios)
   },
 

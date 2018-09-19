@@ -13,6 +13,10 @@
           <div class="BulletDivider" v-if="button.count">•</div>
           <div v-if="button.count">{{button.count}}</div>
         </div>
+
+        <div class="FilterButton ElevationHover2 Elevation1 WhiteBg ClearAllButton" @click="onClearAll" v-if="isClearAll">
+          <div>Clear All</div>
+        </div>
       </div>
     </div>
 
@@ -87,6 +91,18 @@
             applied: filters > 0
           }
         ]
+      },
+      isClearAll() {
+        const query = this.$store.state.filter.query
+        const price = query.filter.price && query.filter.price.min !== undefined && query.filter.price
+
+        const filters =
+          (price ? 1 : 0) +
+          (query.filter.tag.positives.length) +
+          (query.filter.area && query.filter.area.type !== 'City' ? 1 : 0) +
+          (query.filter.hour && query.filter.hour.name ? 1 : 0)
+
+        return filters > 0
       }
     },
     methods: {
@@ -104,6 +120,11 @@
           this.$store.commit('filter/selected', null)
           this.$store.commit('unfocus', 'Filter')
         }
+      },
+      onClearAll() {
+        this.$store.commit('unfocus', 'Filter')
+        this.$store.dispatch('filter/clearAll')
+        this.$store.dispatch('search/start', this.$store.state.filter.query)
       }
     }
   }
@@ -168,6 +189,13 @@
       @media (min-width: 768px) {
         display: none;
       }
+    }
+
+    .ClearAllButton {
+      margin-left: auto;
+      margin-right: 0;
+
+      display: flex;
     }
   }
 </style>
