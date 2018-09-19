@@ -113,6 +113,8 @@
       }
     }
   }
+
+  // TODO RIP Activity Store
 </script>
 
 

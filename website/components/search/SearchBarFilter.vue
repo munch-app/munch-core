@@ -93,16 +93,16 @@
       onButton(button) {
         if (this.$store.state.filter.selected !== button.type) {
           this.$store.commit('filter/selected', button.type)
-          this.$store.commit('layout/elevationOn', 'filter')
+          this.$store.commit('focus', 'Filter')
         } else {
           this.$store.commit('filter/selected', null)
-          this.$store.commit('layout/elevationOff', 'filter')
+          this.$store.commit('unfocus', 'Filter')
         }
       },
       onClickAway() {
         if (this.selected) {
           this.$store.commit('filter/selected', null)
-          this.$store.commit('layout/elevationOff', 'filter')
+          this.$store.commit('unfocus', 'Filter')
         }
       }
     }

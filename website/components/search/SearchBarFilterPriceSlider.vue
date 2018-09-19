@@ -33,9 +33,7 @@
 </template>
 
 <script>
-  import NoSSR from 'vue-no-ssr'
-
-  let components = {'no-ssr': NoSSR}
+  let components = {}
   if (process.browser) {
     components['vue-slider'] = require('vue-slider-component')
   }

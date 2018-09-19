@@ -65,6 +65,7 @@ module.exports = {
       'portal-vue',
       'vue-browser-geolocation',
       'vue-observe-visibility',
+      'localStorage',
     ],
     plugins: [
       new webpack.ProvidePlugin({
@@ -83,6 +84,7 @@ module.exports = {
     '~/plugins/portal-vue',
     '~/plugins/vue-browser-geolocation',
     '~/plugins/vue-observe-visibility',
+    {src: '~/plugins/localStorage', ssr: false}
   ],
   serverMiddleware: [
     {

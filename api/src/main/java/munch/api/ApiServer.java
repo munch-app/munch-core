@@ -26,13 +26,13 @@ public final class ApiServer extends RestfulServer {
     private static final Logger logger = LoggerFactory.getLogger(ApiServer.class);
 
     private final HealthService healthService;
-    protected TokenAuthenticator<?> authenticator;
+    protected final TokenAuthenticator<?> authenticator;
 
     @Inject
-    public ApiServer(Set<RestfulService> routers, HealthService healthService) {
+    public ApiServer(Set<RestfulService> routers, HealthService healthService, TokenAuthenticator authenticator) {
         super(routers);
         this.healthService = healthService;
-
+        this.authenticator = authenticator;
         setDebug(false);
     }
 

@@ -1,13 +1,17 @@
 <template>
   <div class="ZeroSpacing">
     <section class="Profile Container">
-      <div class="ProfileImage">
-
+      <div class="ProfileImage Secondary100Bg">
+        <no-ssr>
+          <img v-if="photo" :src="photo" :alt="profile.name">
+        </no-ssr>
       </div>
-      <div class="ProfileDetail">
-        <h2 class="Name BlackA85">Fuxing Loh</h2>
-        <div class="Email Text Weight600 BlackA75">fuxing@munch.space</div>
-      </div>
+      <no-ssr class="ProfileDetail">
+        <div>
+          <h2 class="Name BlackA85">{{profile.name}}</h2>
+          <div class="Email Text Weight600 BlackA75">{{profile.email}}</div>
+        </div>
+      </no-ssr>
     </section>
     <hr class="Container">
 
@@ -40,7 +44,23 @@
 
 <script>
   export default {
-    layout: 'search'
+    layout: 'search',
+    computed: {
+      profile() {
+        return this.$store.state.user.profile || {}
+      },
+      photo() {
+        return this.profile && this.profile.photoUrl
+      }
+    },
+    mounted() {
+      if (process.client) {
+        const authenticator = require('~/services/authenticator').default
+        if (!this.$store.state.user.profile && !authenticator.isLoggedIn()) {
+          this.$router.push({path: '/authenticate'})
+        }
+      }
+    }
   }
 </script>
 
@@ -54,13 +74,18 @@
     align-items: flex-end;
 
     .ProfileImage {
+      overflow: hidden;
       height: 64px;
       width: 64px;
-      background-color: black;
       border-radius: 50%;
       margin-right: 24px;
 
       margin-bottom: 16px;
+
+      img {
+        height: 64px;
+        width: 64px;
+      }
     }
 
     .ProfileDetail {

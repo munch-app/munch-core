@@ -19,6 +19,19 @@ service.interceptors.response.use(function (response) {
   return Promise.reject(error);
 });
 
+function getHeaders(req) {
+  const localTime = req.headers['user-local-time']
+  const latLng = req.headers['user-lat-lng']
+  const authentication = req.headers['authorization']
+  const headers = {}
+
+  if (localTime) headers['User-Local-Time'] = localTime
+  if (latLng) headers['User-Lat-Lng'] = latLng
+  if (authentication) headers['Authorization'] = authentication
+
+  return headers
+}
+
 /**
  * Request:
  * ['task-name-1', 'task-nane-2']
@@ -27,17 +40,11 @@ service.interceptors.response.use(function (response) {
  * ...}
  */
 router.use('/api', function (req, res, next) {
-  const localTime = req.headers['user-local-time']
-  const latLng = req.headers['user-lat-lng']
-  const headers = {}
-  if (localTime) headers['User-Local-Time'] = localTime
-  if (latLng) headers['User-Lat-Lng'] = latLng
-
   service.request({
     url: req.url.replace(/^\/api/, ''),
     params: req.query,
     method: req.method,
-    headers: headers,
+    headers: getHeaders(req),
     data: req.body
   }).then(({data}) => {
     res.json(data);

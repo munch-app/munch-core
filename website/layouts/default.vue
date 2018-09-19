@@ -10,8 +10,11 @@
     </nav>
     <div style="height: 56px"/>
 
+    <profile-on-boarding v-if="isFocused('Login')"/>
+
     <div :class="{'ElevationOverlay IndexContentOverlay': isElevated}"></div>
     <nuxt :class="{ElevationBlur: isElevated}"/>
+
     <nav class="Footer IndexFooter">
     </nav>
   </div>
@@ -29,18 +32,18 @@
       HeaderRight, HeaderLogo
     },
     computed: {
-      ...mapGetters('layout', ['isElevated']),
+      ...mapGetters(['isElevated', 'isFocused']),
     },
     methods: {
       onClickLogo() {
         if (window.innerWidth < 768) {
-          this.$store.commit('layout/toggleMenu')
+          this.$store.commit('toggleFocus', 'HeaderMenu')
         } else {
           this.$router.push({path: '/'})
         }
       },
       onClickMenu() {
-        this.$store.commit('layout/toggleMenu')
+        this.$store.commit('toggleFocus', 'HeaderMenu')
       }
     }
   }

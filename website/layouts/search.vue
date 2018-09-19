@@ -2,7 +2,7 @@
   <div>
     <nav class="IndexHeader Header NavBg" :class="{'Elevation1': !isFilter}">
       <div class="HeaderRow Container clearfix">
-        <header-logo class="Logo" :class="{'IsSuggest': isSuggest}" @click="onClickLogo"/>
+        <header-logo class="Logo" :class="{'IsSuggest': isFocused('Suggest')}" @click="onClickLogo"/>
         <div class="Search">
           <search-bar class="SearchBar" @onText="onText" @onFocus="onFocus" @onBlur="onBlur"/>
         </div>
@@ -15,6 +15,8 @@
 
     <div style="height: 48px" v-if="isFilter"/>
     <search-bar-filter class="Filter IndexHeader" v-if="isFilter"/>
+
+    <profile-on-boarding v-if="isFocused('Login')"/>
 
     <div :class="{'ElevationOverlay IndexContentOverlay': isElevated}"></div>
     <nuxt :class="{ElevationBlur: isElevated}"/>
@@ -30,20 +32,19 @@
   import SearchBar from "../components/search/SearchBar";
   import SearchBarFilter from "../components/search/SearchBarFilter";
   import HeaderRight from "../components/layouts/HeaderRight";
+  import ProfileOnBoarding from "../components/profile/ProfileOnBoarding";
 
   export default {
     components: {
-      HeaderRight,
-      SearchBarFilter, SearchBar, HeaderMenu, HeaderLogo
+      ProfileOnBoarding, HeaderRight, SearchBarFilter, SearchBar, HeaderMenu, HeaderLogo
     },
     data() {
       return {
-        isSuggest: false,
         text: ""
       }
     },
     computed: {
-      ...mapGetters('layout', ['isElevated']),
+      ...mapGetters(['isElevated', 'isFocused']),
       isFilter() {
         return this.$route.name === 'search'
       },
@@ -51,26 +52,24 @@
     methods: {
       onClickLogo() {
         if (window.innerWidth < 768) {
-          this.$store.commit('layout/toggleMenu')
+          this.$store.commit('toggleFocus', 'HeaderMenu')
         } else {
           this.$router.push({path: '/'})
         }
       },
       onClickMenu() {
-        this.$store.commit('layout/toggleMenu')
+        this.$store.commit('toggleFocus', 'HeaderMenu')
       },
       onText(text) {
         this.text = text
       },
       onFocus() {
         this.$router.push({path: '/search', query: {q: this.text}})
-        this.isSuggest = true
-        this.$store.commit('layout/elevationOn', 'suggest')
+        this.$store.commit('focus', 'Suggest')
       },
       onBlur() {
-        if (this.isSuggest) {
-          this.$store.commit('layout/elevationOff', 'suggest')
-          this.isSuggest = false
+        if (this.isFocused('Suggest')) {
+          this.$store.commit('unfocus', 'Suggest')
         }
       }
     },

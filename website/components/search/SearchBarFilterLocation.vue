@@ -2,14 +2,16 @@
   <div class="LocationCollection">
     <div class="LocationCell flex-center" @click="toggle('Nearby')" :class="{
          'Primary500Bg White': isSelectedLocation('Nearby'),
-         'Whisper100Bg BlackA75': !isSelectedLocation('Nearby')}">
+         'Whisper100Bg BlackA75': !isSelectedLocation('Nearby')}"
+    >
       <beat-loader v-if="loadingNearby" class="flex-center" color="#0A6284" size="6px"/>
       <div v-else>Nearby</div>
     </div>
     <div class="LocationCell" v-for="location in locations" :key="location" @click="toggle(location)"
          :class="{
          'Primary500Bg White': isSelectedLocation(location),
-         'Whisper100Bg BlackA75': !isSelectedLocation(location)}">
+         'Whisper100Bg BlackA75': !isSelectedLocation(location)}"
+    >
       {{location}}
     </div>
   </div>
@@ -35,19 +37,22 @@
       toggle(location) {
         if (location === 'Nearby') {
           this.loadingNearby = true
+          this.$store.commit('filter/loading', true)
+
           return this.$getLocation({
             enableHighAccuracy: true,
             timeout: 8000,
             maximumAge: 15000
+          }).then(coordinates => {
+            this.$store.commit('filter/updateLatLng', `${coordinates.lat},${coordinates.lng}`)
+            this.$store.commit('filter/loading', false)
+            this.$store.dispatch('filter/location', location)
+          }).catch(error => {
+            alert(error)
+          }).finally(() => {
+            this.$store.commit('filter/loading', false)
+            this.loadingNearby = false
           })
-            .then(coordinates => {
-              this.$store.commit('filter/updateLatLng', `${coordinates.lat},${coordinates.lng}`)
-              this.$store.dispatch('filter/location', location)
-            }).catch(error => {
-              alert(error)
-            }).finally(() => {
-              this.loadingNearby = false
-            })
         } else {
           this.$store.dispatch('filter/location', location)
         }

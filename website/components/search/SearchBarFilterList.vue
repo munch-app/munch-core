@@ -95,7 +95,7 @@
       onApply() {
         if (this.count && this.count > 0) {
           this.$store.commit('filter/selected', null)
-          this.$store.commit('layout/elevationOff', 'filter')
+          this.$store.commit('unfocus', 'Filter')
           this.$store.dispatch('search/start', this.$store.state.filter.query)
         }
       },

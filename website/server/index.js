@@ -3,12 +3,15 @@ const express = require('express');
 const app = express();
 
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser')
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
-
+app.use(cookieParser())
 
 // Import API Routes
-app.use(require('./routes/api'));
+app.use(require('./routes/api'))
+app.use(require('./routes/auth'))
 
 // To filter out css.map
 app.use(/.*.css.map$/, function (req, res, next) {

@@ -1,10 +1,10 @@
 <template>
-  <div class="HeaderMenu IndexTopElevation no-select" v-if="$store.state.layout.menu">
+  <div class="HeaderMenu IndexTopElevation no-select" v-if="isFocused('HeaderMenu')">
     <ul class="NavLink Elevation3 Text IndexTopElevation">
       <div class="MobileOnly">
         <nuxt-link to="/">Home</nuxt-link>
         <nuxt-link to="/profile" v-if="isLoggedIn">Profile</nuxt-link>
-        <nuxt-link to="/login" v-else>Login</nuxt-link>
+        <a v-else @click="$store.commit('focus', 'Login')">Login</a>
         <hr>
       </div>
       <div class="NonMobileOnly" v-if="isLoggedIn">
@@ -16,7 +16,7 @@
       <hr>
       <div><a href="https://partner.munch.app" target="_blank">Content Partners</a></div>
       <hr v-if="isLoggedIn">
-      <nuxt-link to="/logout" v-if="isLoggedIn">Logout</nuxt-link>
+      <a @click="onLogout" v-if="isLoggedIn">Logout</a>
     </ul>
     <div v-on-clickaway="onClickAway"></div>
   </div>
@@ -28,13 +28,18 @@
   export default {
     name: "HeaderMenu",
     computed: {
+      ...mapGetters(['isFocused']),
       ...mapGetters('user', ['isLoggedIn']),
     },
     methods: {
       onClickAway() {
-        if (this.$store.state.layout.menu) {
-          this.$store.commit('layout/showMenu', false)
+        if (this.isFocused('HeaderMenu')) {
+          this.$store.commit('unfocus', 'HeaderMenu')
         }
+      },
+      onLogout() {
+        this.$store.dispatch('user/logout')
+        this.$router.push({path: '/'})
       }
     }
   }

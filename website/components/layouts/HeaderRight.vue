@@ -1,7 +1,9 @@
 <template>
   <div class="HeaderRight">
-    <nuxt-link to="/login" class="Login hover-pointer" v-if="!isLoggedIn">Login</nuxt-link>
-    <div v-else>{{displayName}}</div>
+    <no-ssr>
+      <div @click="$store.commit('focus', 'Login')" class="Name hover-pointer" v-if="!isLoggedIn">Login</div>
+      <nuxt-link to="/profile" v-else class="Name">{{displayName}}</nuxt-link>
+    </no-ssr>
     <img class="Menu hover-pointer" src="/img/layouts/menu.svg" @click="$emit('clickMenu')"/>
   </div>
 </template>
@@ -22,12 +24,13 @@
     display: flex;
     align-items: center;
 
-    .Login {
+    .Name {
       font-size: 15px;
       font-weight: 600;
       line-height: 32px;
+      color: rgba(0, 0, 0, 0.80);
+
       margin-right: 16px;
-      color: rgba(0, 0, 0, 0.82);
     }
   }
 </style>
