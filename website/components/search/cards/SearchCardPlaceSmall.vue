@@ -1,10 +1,10 @@
 <template>
   <nuxt-link :to="'/places/' + place.placeId">
-    <div class="Elevation1 Card Border3">
+    <div class="elevation-1 Card border-3">
       <div class="Content">
         <div class="Name Title Large Weight600 BlackA80">{{place.name}}</div>
         <div class="Tags">
-          <div class="Tag Border24" v-for="tag in tags" :key="tag.tagId"
+          <div class="Tag border-3" v-for="tag in tags" :key="tag.tagId"
                :class="{'Peach100Bg': tag.type === 'price', 'Whisper100Bg': tag.type !== 'price'}">
             {{tag.name}}
           </div>

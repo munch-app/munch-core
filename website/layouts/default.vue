@@ -1,7 +1,7 @@
 <template>
   <div>
-    <nav class="Header NavBg Elevation1 IndexHeader">
-      <div class="HeaderRow Container clearfix">
+    <nav class="Header NavBg elevation-1 index-header">
+      <div class="HeaderRow container clearfix">
         <header-logo class="Logo float-left" @click="onClickLogo"/>
         <header-right class="HeaderMenu float-right" @clickMenu="onClickMenu"/>
       </div>
@@ -12,10 +12,10 @@
 
     <profile-on-boarding v-if="isFocused('Login')"/>
 
-    <div :class="{'ElevationOverlay IndexContentOverlay': isElevated}"></div>
+    <div :class="{'ElevationOverlay index-content-overlay': isElevated}"></div>
     <nuxt :class="{ElevationBlur: isElevated}"/>
 
-    <nav class="Footer IndexFooter">
+    <nav class="Footer index-footer">
     </nav>
   </div>
 </template>

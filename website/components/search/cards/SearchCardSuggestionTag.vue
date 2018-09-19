@@ -1,12 +1,12 @@
 <template>
   <div>
-    <div class="SearchCard Primary500Bg Border4 ZeroSpacing">
+    <div class="SearchCard Primary500Bg border-4 zero-spacing">
       <h2 class="White Text Weight600">Can't decide?</h2>
       <div class="White Text">{{description}}</div>
 
       <div class="TagList">
         <div class="TagContainer" v-for="tag in card.tags" :key="tag.name" @click="onClick(tag.name)">
-          <div class="Tag Text TextCenter WhiteBg Border4">
+          <div class="Tag Text TextCenter WhiteBg border-4">
             <div class="Name">{{tag.name}}</div>
             <div class="Count">{{tag.count}} places</div>
           </div>

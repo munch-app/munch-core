@@ -1,7 +1,7 @@
 <template>
   <div>
-    <nav class="IndexHeader Header NavBg" :class="{'Elevation1': !isFilter}">
-      <div class="HeaderRow Container clearfix">
+    <nav class="index-header Header NavBg" :class="{'elevation-1': !isFilter}">
+      <div class="HeaderRow container clearfix">
         <header-logo class="Logo" :class="{'IsSuggest': isFocused('Suggest')}" @click="onClickLogo"/>
         <div class="Search">
           <search-bar class="SearchBar" @onText="onText" @onFocus="onFocus" @onBlur="onBlur"/>
@@ -14,13 +14,13 @@
     <header-menu class="Menu"/>
 
     <div style="height: 48px" v-if="isFilter"/>
-    <search-bar-filter class="Filter IndexHeader" v-if="isFilter"/>
+    <search-bar-filter class="Filter index-header" v-if="isFilter"/>
 
     <profile-on-boarding v-if="isFocused('Login')"/>
 
-    <div :class="{'ElevationOverlay IndexContentOverlay': isElevated}"></div>
+    <div :class="{'ElevationOverlay index-content-overlay': isElevated}"></div>
     <nuxt :class="{ElevationBlur: isElevated}"/>
-    <nav class="Footer IndexFooter">
+    <nav class="Footer index-footer">
     </nav>
   </div>
 </template>

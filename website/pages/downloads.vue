@@ -28,7 +28,7 @@
       </section>
     </div>
 
-    <section class="About Container">
+    <section class="About container">
       <b-container>
         <b-row>
           <b-col offset-md="1" md="5">

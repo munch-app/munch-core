@@ -1,7 +1,7 @@
 <template>
-  <div class="Container" v-if="selected">
-    <div class="FilterListContainer IndexElevation">
-      <div class="FilterList IndexElevation">
+  <div class="container" v-if="selected">
+    <div class="FilterListContainer index-elevation">
+      <div class="FilterList index-elevation">
         <div class="Group Price" :class="{'Selected': selected === 'price'}">
           <h2 class="FilterName">Price</h2>
           <search-bar-filter-price/>
@@ -33,7 +33,7 @@
         </div>
       </div>
 
-      <div class="BottomBar IndexElevation">
+      <div class="BottomBar index-elevation">
         <div class="Button Cancel" @click="onClear">Clear</div>
         <div class="Button Apply" @click="onApply" v-if="applyText"
              :class="{'Secondary500Bg White Weight400': result, 'Secondary050Bg BlackA85 Weight600': !result}">

@@ -3,9 +3,9 @@
     <slick class="Slick no-select" ref="slick" :options="options" @afterChange="onAfterChange">
       <a class="MediaCard" v-for="media in medias" :key="media.mediaId" :href="media.link" target="_blank"
          rel="nofollow">
-        <image-size class="Image Elevation1 Border48" :image="media.image">
+        <image-size class="Image elevation-1 border-4" :image="media.image">
           <div class="ImageBox">
-            <div class="Small UsernameButton Border24 Elevation1">@{{media.user.username}}</div>
+            <div class="Small UsernameButton border-3 elevation-1">@{{media.user.username}}</div>
           </div>
         </image-size>
         <div class="Small UsernameLabel">@{{media.user.username}}</div>
@@ -13,11 +13,11 @@
     </slick>
 
     <div class="Controls">
-      <div class="Left Elevation1 Border24" @click="onPrev"
+      <div class="Left elevation-1 border-3" @click="onPrev"
            :class="{'Secondary500Bg': hasPrev, 'Secondary100Bg': !hasPrev}">
         <simple-svg class="Icon" fill="white" filepath="/img/places/caret_left.svg"/>
       </div>
-      <div class="Right Elevation1 Border24" @click="onNext"
+      <div class="Right elevation-1 border-3" @click="onNext"
            :class="{'Secondary500Bg': hasNext, 'Secondary100Bg': !hasNext}">
         <simple-svg class="Icon" fill="white" filepath="/img/places/caret_right.svg"/>
       </div>

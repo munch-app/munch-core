@@ -1,11 +1,11 @@
 <template>
-  <div class="ZeroSpacing">
+  <div class="zero-spacing">
     <section class="Banner" v-if="place.images.length > 0">
       <place-banner-image :images="place.images"/>
     </section>
 
     <section class="Information">
-      <div class="Container">
+      <div class="container">
         <section class="Name ContentBody">
           <h1>{{place.name}}</h1>
           <div class="Regular Street">{{place.location.neighbourhood || place.location.street || place.location.address}}</div>
@@ -27,19 +27,19 @@
     </section>
 
     <section class="Partner" v-if="hasPartner">
-      <div class="Container">
+      <div class="container">
         <h2 class="Secondary500 Header">Partner's Content</h2>
       </div>
 
       <section class="Article" v-if="data.articles.length > 0">
-        <div class="Container">
+        <div class="container">
           <h2>Articles</h2>
         </div>
         <partner-article :place-id="placeId" :preload="data.articles"/>
       </section>
 
       <section class="Instagram" v-if="data.instagram.medias.length > 0">
-        <div class="Container">
+        <div class="container">
           <h2>Instagram</h2>
         </div>
         <partner-instagram-media :place-id="placeId" :preload="data.instagram.medias"/>

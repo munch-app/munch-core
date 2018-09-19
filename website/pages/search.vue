@@ -1,6 +1,6 @@
 <template>
-  <div class="ZeroSpacing">
-    <div class="SearchResult Container" v-if="cards && query">
+  <div class="zero-spacing">
+    <div class="SearchResult container" v-if="cards && query">
       <div class="Result">
         <card-delegator v-for="card in cards" :key="card['_uniqueId']" :card="card"/>
       </div>

@@ -1,6 +1,6 @@
 <template>
-  <div class="ZeroSpacing">
-    <section class="Profile Container">
+  <div class="zero-spacing">
+    <section class="Profile container">
       <div class="ProfileImage Secondary100Bg">
         <no-ssr>
           <img v-if="photo" :src="photo" :alt="profile.name">
@@ -12,27 +12,30 @@
           <div class="Email Text Weight600 BlackA75">{{profile.email}}</div>
         </div>
       </no-ssr>
+      <div class="ProfileAction">
+        <div class="SettingButton">Setting</div>
+      </div>
     </section>
-    <hr class="Container">
+    <hr class="container">
 
     <section class="Collection">
-      <div class="Header Container">
+      <div class="Header container">
         <div>
           <h2>My Collections</h2>
         </div>
         <div class="CollectionControl">
-          <div class="CollectionButton Elevation1 ElevationHover2 Border3 WhiteBg hover-pointer">
+          <div class="CollectionButton elevation-1 elevation-hover-2 border-3 WhiteBg hover-pointer">
             <simple-svg class="Icon" fill="#0A6284" filepath="/img/profile/edit.svg"/>
           </div>
-          <div class="CollectionButton Elevation1 ElevationHover2 Border3 WhiteBg hover-pointer">
+          <div class="CollectionButton elevation-1 elevation-hover-2 border-3 WhiteBg hover-pointer">
             <simple-svg class="Icon" fill="#0A6284" filepath="/img/profile/add.svg"/>
           </div>
         </div>
       </div>
-      <div class="Container">
+      <div class="container">
         <div class="CollectionList">
           <div class="Card" v-for="collection in collections" :key="collection.collectionId">
-            <user-place-collection-card :collection="collection"/>
+            <profile-collection-card :collection="collection"/>
           </div>
         </div>
       </div>
@@ -41,19 +44,23 @@
 </template>
 
 <script>
-  import UserPlaceCollectionCard from "../../components/collections/UserPlaceCollectionCard";
+  import ProfileCollectionCard from "../../components/profile/ProfileCollectionCard";
 
   export default {
-    components: {UserPlaceCollectionCard},
+    components: {ProfileCollectionCard},
     layout: 'search',
     data() {
-
+      return {
+        collections: [],
+        next: {}
+      }
     },
     asyncData({$axios}) {
       return $axios.$get('/api/users/places/collections')
-        .then(({data}) => {
+        .then(({data, next}) => {
           return {
-            collections: data
+            collections: data,
+            next: next
           }
         })
     },
@@ -106,6 +113,14 @@
 
       .Email {
         margin-bottom: 16px;
+      }
+    }
+
+    .ProfileAction {
+      .SettingButton {
+        line-height: 24px;
+        height: 24px;
+        font-size: 17px;
       }
     }
   }

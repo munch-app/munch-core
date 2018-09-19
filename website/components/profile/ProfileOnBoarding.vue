@@ -1,9 +1,9 @@
 <!--suppress CssUnknownTarget -->
 
 <template>
-  <div class="ZeroSpacing">
-    <div class="ProfileOnBoarding IndexDialog">
-      <div class="Dialog Elevation3">
+  <div class="zero-spacing">
+    <div class="ProfileOnBoarding index-dialog">
+      <div class="Dialog elevation-3">
         <div class="LoginBanner">
           <div class="BrandLogo">
             <img src="/img/MunchLogo_White.svg">

@@ -1,6 +1,6 @@
 <template>
-  <div class="HeaderMenu IndexTopElevation no-select" v-if="isFocused('HeaderMenu')">
-    <ul class="NavLink Elevation3 Text IndexTopElevation">
+  <div class="HeaderMenu index-top-elevation no-select" v-if="isFocused('HeaderMenu')">
+    <ul class="NavLink elevation-3 Text index-top-elevation">
       <div class="MobileOnly">
         <nuxt-link to="/">Home</nuxt-link>
         <nuxt-link to="/profile" v-if="isLoggedIn">Profile</nuxt-link>

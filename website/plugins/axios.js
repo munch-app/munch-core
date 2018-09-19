@@ -21,7 +21,7 @@ export default function ({$axios, store, req}) {
 
   if (process.server) {
     $axios.onRequest(config => {
-      const token = req.cookies.IdToken && req.cookies.IdToken.token
+      const token = req.cookies.IdToken && JSON.parse(req.cookies.IdToken).token
       if (token) config.headers['Authorization'] = `Bearer ${token}`
       return config
     });

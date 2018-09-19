@@ -3,8 +3,8 @@
     <slick class="Slick" ref="slick" :options="options" @afterChange="onAfterChange">
       <a v-for="article in articles" :key="article.url" :href="article.url" target="_blank"
          rel="noreferrer noopener nofollow">
-        <div class="ArticleCard no-select Elevation1 Border48">
-          <image-size class="Image Border48Top" :image="article.thumbnail"/>
+        <div class="ArticleCard no-select elevation-1 border-4">
+          <image-size class="Image border-4Top" :image="article.thumbnail"/>
 
           <div class="Content">
             <h4 class="Title">{{article.title}}</h4>
@@ -15,11 +15,11 @@
       </a>
     </slick>
     <div class="Controls">
-      <div class="Left Elevation1 Border24" @click="onPrev"
+      <div class="Left elevation-1 border-3" @click="onPrev"
            :class="{'Secondary500Bg': hasPrev, 'Secondary100Bg': !hasPrev}">
         <simple-svg class="Icon" fill="white" filepath="/img/places/caret_left.svg"/>
       </div>
-      <div class="Right Elevation1 Border24" @click="onNext"
+      <div class="Right elevation-1 border-3" @click="onNext"
            :class="{'Secondary500Bg': hasNext, 'Secondary100Bg': !hasNext}">
         <simple-svg class="Icon" fill="white" filepath="/img/places/caret_right.svg"/>
       </div>

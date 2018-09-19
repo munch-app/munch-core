@@ -1,15 +1,15 @@
 <template>
   <div class="PlaceBannerImage no-select">
-    <div class="Banner NavigationLeft IndexNavigation" v-if="images.length > 3 && banner.currentSlide !== 0"
+    <div class="Banner NavigationLeft index-navigation" v-if="images.length > 3 && banner.currentSlide !== 0"
          @click="onPrev"></div>
-    <div class="Banner NavigationRight IndexNavigation" v-if="images.length > 3" @click="onNext"></div>
+    <div class="Banner NavigationRight index-navigation" v-if="images.length > 3" @click="onNext"></div>
 
     <slick class="Slick" ref="slick" :options="banner.options" @afterChange="onBannerAfter">
       <div v-for="(value, index) in images" :key="value.imageId" @click="onFullScreen(index)">
         <div class="BannerImage no-select">
           <image-size class="Image" :image="value">
             <div class="BannerContainer">
-              <div v-if="value.profile && value.profile.name" class="Small UsernameButton Border4 Elevation1">
+              <div v-if="value.profile && value.profile.name" class="Small UsernameButton border-4 elevation-1">
                 {{value.profile.name}}
               </div>
             </div>
@@ -19,7 +19,7 @@
     </slick>
 
     <div v-if="fullScreen.selected">
-      <slick class="Slick FullScreen IndexOverlay no-select" ref="fullScreen" :options="fullScreen.options"
+      <slick class="Slick FullScreen index-overlay no-select" ref="fullScreen" :options="fullScreen.options"
              @afterChange="onFullScreenAfter">
         <div v-for="image in images" :key="image.imageId">
           <div class="ImageContainer">
@@ -31,9 +31,9 @@
         </div>
       </slick>
       <div class="Control">
-        <div class="NavigationClose IndexOverlay" @click="onFullScreenClose"></div>
-        <div class="NavigationLeft IndexOverlay" v-if="fullScreen.currentSlide !== 0" @click="onFullScreenPrev"></div>
-        <div class="NavigationRight IndexOverlay" v-if="fullScreen.currentSlide !== images.length - 1"
+        <div class="NavigationClose index-overlay" @click="onFullScreenClose"></div>
+        <div class="NavigationLeft index-overlay" v-if="fullScreen.currentSlide !== 0" @click="onFullScreenPrev"></div>
+        <div class="NavigationRight index-overlay" v-if="fullScreen.currentSlide !== images.length - 1"
              @click="onFullScreenNext"></div>
       </div>
     </div>

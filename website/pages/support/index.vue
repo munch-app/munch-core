@@ -1,5 +1,5 @@
 <template>
-  <div class="Container Support">
+  <div class="container Support">
     <div v-html="title"></div>
     <div v-html="content"></div>
   </div>

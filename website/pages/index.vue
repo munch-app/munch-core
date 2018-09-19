@@ -1,7 +1,7 @@
 <template>
-  <div class="ZeroSpacing LandingPage">
+  <div class="zero-spacing LandingPage">
     <section class="Profile">
-      <div class="Container">
+      <div class="container">
         <div class="Greeting">
           <h1>{{salutation}}<no-ssr><span class="Name">, {{displayName || 'Samantha'}}</span></no-ssr></h1>
           <no-ssr>
@@ -17,12 +17,12 @@
     </section>
 
     <section class="Timing">
-      <div class="Container">
+      <div class="container">
         <h2>Here & Now</h2>
         <p>The best Breakfast spots near you.</p>
       </div>
 
-      <div class="Container">
+      <div class="container">
         <div class="TimingList">
           <div class="Card" v-for="i in [0,1,2,4]" :key="i">
             <div></div>
@@ -32,20 +32,20 @@
     </section>
 
     <section class="Location">
-      <div class="Container">
+      <div class="container">
         <h2>Day in, day out</h2>
         <p>Your favourite places - rediscovered.</p>
       </div>
-      <landing-location-list class="Container"/>
+      <landing-location-list class="container"/>
     </section>
 
     <section class="Collection">
-      <div class="Container">
+      <div class="container">
         <h2>In the know</h2>
         <p>What’s hot and edible</p>
       </div>
 
-      <div class="Container">
+      <div class="container">
         <div class="CollectionList">
           <div class="Card" v-for="collection in collections" :key="collection.collectionId">
             <user-place-collection-card :collection="collection"/>

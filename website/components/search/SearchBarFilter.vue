@@ -1,7 +1,7 @@
 <template>
   <div class="SearchFilterBar no-select" v-on-clickaway="onClickAway">
-    <div class="FilterBar Elevation1 Index5">
-      <div class="Buttons Container">
+    <div class="FilterBar elevation-1 index-5">
+      <div class="Buttons container">
         <div v-for="button in buttons" :key="button.type" class="FilterButton" @click="onButton(button)"
              :class="{
              'Primary500Bg White': button.type === selected,
@@ -14,7 +14,7 @@
           <div v-if="button.count">{{button.count}}</div>
         </div>
 
-        <div class="FilterButton ElevationHover2 Elevation1 WhiteBg ClearAllButton" @click="onClearAll" v-if="isClearAll">
+        <div class="FilterButton elevation-hover-2 elevation-1 WhiteBg ClearAllButton" @click="onClearAll" v-if="isClearAll">
           <div>Clear All</div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 <template>
-  <div class="ZeroSpacing Container Authenticate flex-center">
+  <div class="zero-spacing container Authenticate flex-center">
     <moon-loader class="Loader" color="#084E69" size="56px"/>
   </div>
 </template>

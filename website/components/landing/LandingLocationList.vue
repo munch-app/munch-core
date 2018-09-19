@@ -1,7 +1,7 @@
 <template>
-  <div class="LandingLocationList Container">
+  <div class="LandingLocationList container">
     <div class="LocationList no-select">
-      <div class="Elevation1 ElevationHover2 hover-pointer Border2 EachLocation" v-for="location in locations"
+      <div class="elevation-1 elevation-hover-2 hover-pointer border-2 EachLocation" v-for="location in locations"
            :key="location.name">
         <div class="ImageBox Primary050Bg">
           <simple-svg fill="rgba(0, 0, 0, 0.75)" :filepath="`/img/landing/${location.image}`"/>
@@ -16,7 +16,7 @@
         </div>
       </div>
       <div class="AddLocation EachLocation">
-        <div class="Elevation1 ElevationHover2 hover-pointer Border2">
+        <div class="elevation-1 elevation-hover-2 hover-pointer border-2">
           <div class="ImageBox">
             <simple-svg fill="rgba(0, 0, 0, 0.75)" :filepath="`/img/landing/add.svg`"/>
           </div>

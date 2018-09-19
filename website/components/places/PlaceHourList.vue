@@ -12,8 +12,8 @@
       </span>
     </div>
 
-    <div class="DialogContainer IndexElevation">
-      <div class="HourDialog Elevation2 IndexElevation" v-if="popover" v-on-clickaway="onClickAway">
+    <div class="DialogContainer index-elevation">
+      <div class="HourDialog elevation-2 index-elevation" v-if="popover" v-on-clickaway="onClickAway">
         <div class="Content">
           <div class="DialogRow" v-for="day in days" :key="day.text">
             <div class="Day">{{day.text}}:</div>
@@ -25,7 +25,7 @@
         </div>
 
         <div class="BottomBar">
-          <div class="Secondary500Bg White CloseButton Elevation1 Border3 text-center hover-pointer"
+          <div class="Secondary500Bg White CloseButton elevation-1 border-3 text-center hover-pointer"
                @click="popover = false">
             CLOSE
           </div>

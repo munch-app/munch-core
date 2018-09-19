@@ -1,10 +1,10 @@
 <template>
-  <div class="ZeroSpacing CollectionPage">
-    <div class="Header Container">
+  <div class="zero-spacing CollectionPage">
+    <div class="Header container">
       <h1>{{collection.name}}</h1>
     </div>
 
-    <div class="Container">
+    <div class="container">
       <div class="ItemList">
         <div class="Card" v-for="item in items" :key="item.placeId">
           <user-place-collection-item-card :place="item.place"/>
@@ -12,7 +12,7 @@
       </div>
     </div>
 
-    <div class="LoadingIndicator Container" v-if="more" v-observe-visibility="{
+    <div class="LoadingIndicator container" v-if="more" v-observe-visibility="{
           callback: visibilityChanged,
           throttle: 300,
         }">

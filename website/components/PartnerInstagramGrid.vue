@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="InstagramImage Container">
+    <div class="InstagramImage container">
       <b-row no-gutters>
         <b-col cols="4" md="3" v-for="media in parsed" :key="media.mediaId">
           <a target="_blank" :href="media.url" rel="noopener noreferrer nofollow">

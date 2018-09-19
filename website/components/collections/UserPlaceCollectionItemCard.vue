@@ -1,12 +1,12 @@
 <template>
   <nuxt-link :to="'/places/' + place.placeId" class="no-select ItemCard">
-    <image-size v-if="images" class="Image Border3" :image="images" :alt="place.name"/>
-    <div v-else class="Image Border3 Whisper100Bg"></div>
+    <image-size v-if="images" class="Image border-3" :image="images" :alt="place.name"/>
+    <div v-else class="Image border-3 Whisper100Bg"></div>
 
     <div class="Content">
       <div class="Name Title Large Weight600 BlackA80">{{place.name}}</div>
       <div class="Tags">
-        <div class="Tag Border24" v-for="tag in tags" :key="tag.tagId"
+        <div class="Tag border-3" v-for="tag in tags" :key="tag.tagId"
              :class="{'Peach100Bg Weight600 BlackA80': tag.type === 'price', 'Whisper100Bg Weight400': tag.type !== 'price'}">
           {{tag.name}}
         </div>
