@@ -1,7 +1,7 @@
 <template>
   <button class="Button elevation-1 border-4" :class="[variant.toLowerCase(), size.toLowerCase()]" @click="$emit('click')">
     <div class="Body">
-      <div class="Text">{{text}}</div>
+      <div class="text">{{text}}</div>
       <simple-svg v-if="icon" class="Icon" :fill="fillColor" :filepath="icon"/>
     </div>
   </button>

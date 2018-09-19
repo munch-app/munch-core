@@ -21,7 +21,7 @@
                   Whether you're looking for the perfect date spot or the hottest bar in town - Munch helps you answer
                   the question:
                 </p>
-                <p class="Weight600">
+                <p class="weight-600">
                   'What do you want to eat?'
                 </p>
               </div>
@@ -46,7 +46,7 @@
           <div class="FacebookButton" @click="onSignInFacebook">
             Sign in with Facebook
           </div>
-          <div class="Text PrivacyPolicy">
+          <div class="text PrivacyPolicy">
             By signing up, you agree to Munch's terms of use and privacy policy.
           </div>
         </div>

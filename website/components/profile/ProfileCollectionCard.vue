@@ -3,7 +3,7 @@
     <image-size class="Image" :image="collection.image">
       <div class="GreyscaleContainer">
         <div class="flex-center ImageContainer">
-          <div class="Heading Name White text-ellipsis-1-line">{{collection.name}}</div>
+          <div class="heading Name White text-ellipsis-1-line">{{collection.name}}</div>
         </div>
       </div>
     </image-size>

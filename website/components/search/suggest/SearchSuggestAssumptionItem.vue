@@ -3,7 +3,7 @@
     <simple-svg class="Icon" fill="rgba(0,0,0,0.75)" filepath="/img/search/assumption.svg"/>
     <div v-for="token in tokens" :key="token.type + token.text">
       <div class="Tag Token border-3 Whisper100Bg BlackA80" v-if="token.type === 'tag'">{{token.text}}</div>
-      <div class="Text Token border-3 BlackA75" v-if="token.type === 'text'">
+      <div class="text Token border-3 BlackA75" v-if="token.type === 'text'">
         <div>
           {{token.text}}
         </div>

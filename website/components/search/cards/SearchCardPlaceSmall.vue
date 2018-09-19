@@ -2,16 +2,16 @@
   <nuxt-link :to="'/places/' + place.placeId">
     <div class="elevation-1 Card border-3">
       <div class="Content">
-        <div class="Name Title Large Weight600 BlackA80">{{place.name}}</div>
+        <div class="Name Title large weight-600 BlackA80">{{place.name}}</div>
         <div class="Tags">
           <div class="Tag border-3" v-for="tag in tags" :key="tag.tagId"
                :class="{'Peach100Bg': tag.type === 'price', 'Whisper100Bg': tag.type !== 'price'}">
             {{tag.name}}
           </div>
         </div>
-        <div class="LocationDistanceTiming Small">
+        <div class="LocationDistanceTiming small">
           <span v-if="distance">{{distance}}, </span>
-          <span class="Weight600 BlackA80">{{location}}</span>
+          <span class="weight-600 BlackA80">{{location}}</span>
           <span v-if="timing" class="BlackA75 BulletDivider">•</span>
           <span v-if="timing" :class="timing.class">{{timing.text}}</span>
         </div>

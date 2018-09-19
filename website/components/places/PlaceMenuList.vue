@@ -8,7 +8,7 @@
           </div>
           <image-size v-else class="elevation-1 Image border-4" :image="data.image">
             <div class="ImageBox">
-              <div v-if="data.source" class="Small UsernameButton border-3 elevation-1">{{data.source}}</div>
+              <div v-if="data.source" class="small UsernameButton border-3 elevation-1">{{data.source}}</div>
             </div>
           </image-size>
         </a>

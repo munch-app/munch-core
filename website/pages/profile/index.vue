@@ -9,11 +9,11 @@
       <no-ssr class="ProfileDetail">
         <div>
           <h2 class="Name BlackA85">{{profile.name}}</h2>
-          <div class="Email Text Weight600 BlackA75">{{profile.email}}</div>
+          <div class="Email text weight-600 BlackA75">{{profile.email}}</div>
         </div>
       </no-ssr>
       <div class="ProfileAction">
-        <div class="SettingButton">Setting</div>
+        <div class="SettingButton border-3 elevation-1 text-uppercase BlackA75 weight-600 hover-pointer elevation-hover-2">Settings</div>
       </div>
     </section>
     <hr class="container">
@@ -25,10 +25,10 @@
         </div>
         <div class="CollectionControl">
           <div class="CollectionButton elevation-1 elevation-hover-2 border-3 WhiteBg hover-pointer">
-            <simple-svg class="Icon" fill="#0A6284" filepath="/img/profile/edit.svg"/>
+            <simple-svg class="Icon" fill="rgba(0,0,0,0.75)" filepath="/img/profile/edit.svg"/>
           </div>
           <div class="CollectionButton elevation-1 elevation-hover-2 border-3 WhiteBg hover-pointer">
-            <simple-svg class="Icon" fill="#0A6284" filepath="/img/profile/add.svg"/>
+            <simple-svg class="Icon" fill="rgba(0,0,0,0.75)" filepath="/img/profile/add.svg"/>
           </div>
         </div>
       </div>
@@ -117,10 +117,16 @@
     }
 
     .ProfileAction {
+      margin-left: auto;
+      margin-right: 0;
+
       .SettingButton {
-        line-height: 24px;
-        height: 24px;
-        font-size: 17px;
+        line-height: 36px;
+        height: 36px;
+        font-size: 16px;
+
+        padding: 0 16px;
+        margin-bottom: 15px;
       }
     }
   }

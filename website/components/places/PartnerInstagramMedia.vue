@@ -5,10 +5,10 @@
          rel="nofollow">
         <image-size class="Image elevation-1 border-4" :image="media.image">
           <div class="ImageBox">
-            <div class="Small UsernameButton border-3 elevation-1">@{{media.user.username}}</div>
+            <div class="small UsernameButton border-3 elevation-1">@{{media.user.username}}</div>
           </div>
         </image-size>
-        <div class="Small UsernameLabel">@{{media.user.username}}</div>
+        <div class="small UsernameLabel">@{{media.user.username}}</div>
       </a>
     </slick>
 

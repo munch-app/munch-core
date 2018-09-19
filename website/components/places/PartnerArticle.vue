@@ -8,8 +8,8 @@
 
           <div class="Content">
             <h4 class="Title">{{article.title}}</h4>
-            <div class="Description Regular">{{article.description}}</div>
-            <div class="Brand Small">@{{article.brand}}</div>
+            <div class="Description regular">{{article.description}}</div>
+            <div class="Brand small">@{{article.brand}}</div>
           </div>
         </div>
       </a>

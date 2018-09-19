@@ -1,14 +1,14 @@
 <template>
   <div>
     <div class="SearchCard Secondary400Bg border-4 zero-spacing">
-      <h2 class="White Text Weight600">{{area.name}}</h2>
+      <h2 class="White text weight-600">{{area.name}}</h2>
       <div class="Content">
         <image-size v-if="image" class="Image border-4" :image="image"/>
-        <div class="Text White">
+        <div class="text White">
           <div>{{area.description}}</div>
           <div class="LastLine">
             <div class="Count">
-              <span class="Weight600">{{area.counts.total}} </span>
+              <span class="weight-600">{{area.counts.total}} </span>
               <span>food spots</span>
             </div>
             <div class="Address">{{area.location.address}}</div>

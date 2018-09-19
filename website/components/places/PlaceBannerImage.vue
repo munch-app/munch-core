@@ -9,7 +9,7 @@
         <div class="BannerImage no-select">
           <image-size class="Image" :image="value">
             <div class="BannerContainer">
-              <div v-if="value.profile && value.profile.name" class="Small UsernameButton border-4 elevation-1">
+              <div v-if="value.profile && value.profile.name" class="small UsernameButton border-4 elevation-1">
                 {{value.profile.name}}
               </div>
             </div>
@@ -24,7 +24,7 @@
         <div v-for="image in images" :key="image.imageId">
           <div class="ImageContainer">
             <image-size class="Image" :image="image" :min="1000" :max="2048" object-fit="scale-down"/>
-            <div class="Description Text" v-if="image.profile">
+            <div class="Description text" v-if="image.profile">
               <a :href="getUrl(image)" target="_blank" rel="noreferrer noopener nofollow">@{{image.profile.name}}</a>
             </div>
           </div>

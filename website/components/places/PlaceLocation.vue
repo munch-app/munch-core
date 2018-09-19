@@ -1,8 +1,8 @@
 <template>
   <div>
     <h2>Location</h2>
-    <div class="Address Text">{{location.address}}</div>
-    <div class="Landmark Text" v-if="landmark">{{landmark.min}} min from <span>{{landmark.name}}</span></div>
+    <div class="Address text">{{location.address}}</div>
+    <div class="Landmark text" v-if="landmark">{{landmark.min}} min from <span>{{landmark.name}}</span></div>
     <google-embed-map class="Map" :lat-lng="location.latLng" height="224"/>
   </div>
 </template>

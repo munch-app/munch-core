@@ -10,7 +10,7 @@
           <div class="Name">
             {{location.name}}
           </div>
-          <div class="Address Text">
+          <div class="Address text">
             {{location.address}}
           </div>
         </div>

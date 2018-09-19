@@ -1,5 +1,5 @@
 <template>
-  <div class="Place Text">
+  <div class="Place text">
     <simple-svg class="Icon" fill="rgba(0,0,0,0.75)" filepath="/img/search/place.svg"/>
     <span class="Name">{{place.name}}</span>
     <span class="Location BlackA85">, {{location}}</span>
