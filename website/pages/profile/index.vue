@@ -31,7 +31,7 @@
                class="CollectionButton elevation-1 elevation-hover-2 border-3 WhiteBg hover-pointer">
             <simple-svg class="Icon" fill="rgba(0,0,0,0.75)" filepath="/img/profile/edit.svg"/>
           </div>
-          <div v-if="!showCollectionButton" @click="creating = {}"
+          <div v-if="!showCollectionButton" @click="creating = {access: 'Public'}"
                class="CollectionButton elevation-1 elevation-hover-2 border-3 WhiteBg hover-pointer">
             <simple-svg class="Icon" fill="rgba(0,0,0,0.75)" filepath="/img/profile/add.svg"/>
           </div>
@@ -109,8 +109,12 @@
         }
       },
       onCreate() {
-        // TODO
-        this.creating = {}
+        return this.$store.dispatch('user/collections/post', this.creating)
+          .then(() => {
+            this.creating = null
+          }).catch(error => {
+            this.$store.dispatch('addError', error)
+          })
       }
     }
   }
