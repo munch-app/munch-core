@@ -6,7 +6,7 @@
           <div v-if="data.key === 'url'" class="elevation-1 Web border-4">
             <img src="/img/places/web_page.svg">
           </div>
-          <image-size v-else class="elevation-1 Image border-4" :image="data.image">
+          <image-size v-else class="Image elevation-1 border-4" :image="data.image">
             <div class="ImageBox">
               <div v-if="data.source" class="small UsernameButton border-3 elevation-1">{{data.source}}</div>
             </div>

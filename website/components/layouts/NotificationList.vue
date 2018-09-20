@@ -1,7 +1,7 @@
 <template>
   <div class="NotificationList index-overlay" v-if="notifications">
     <div v-for="notification in notifications" :key="notification.Id">
-      <div class="NotificationBox elevation-2 Peach200Bg" v-if="notification.type === 'error'">
+      <div class="NotificationBox elevation-2 peach-200-bg" v-if="notification.type === 'error'">
         <div class="heading">
           {{notification.error.name}}
         </div>
@@ -9,7 +9,7 @@
           {{notification.error.message}}
         </div>
       </div>
-      <div class="NotificationBox elevation-2 Whisper200Bg" v-if="notification.type === 'message'">
+      <div class="NotificationBox elevation-2 whisper-200-bg" v-if="notification.type === 'message'">
         <div class="heading">
           {{notification.title}}
         </div>

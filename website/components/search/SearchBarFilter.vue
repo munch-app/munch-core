@@ -4,9 +4,9 @@
       <div class="Buttons container">
         <div v-for="button in buttons" :key="button.type" class="FilterButton" @click="onButton(button)"
              :class="{
-             'Primary500Bg White': button.type === selected,
-             'Whisper100Bg BlackA75': button.type !== selected && !button.applied,
-             'Primary050Bg BlackA95': button.type !== selected && button.applied,
+             'primary-500-bg White': button.type === selected,
+             'whisper-100-bg black-a-75': button.type !== selected && !button.applied,
+             'Primary050Bg black': button.type !== selected && button.applied,
              'Combined': button.type === 'combined'
              }">
           <div>{{button.name}}</div>
@@ -14,7 +14,7 @@
           <div v-if="button.count">{{button.count}}</div>
         </div>
 
-        <div class="FilterButton elevation-hover-2 elevation-1 WhiteBg ClearAllButton" @click="onClearAll" v-if="isClearAll">
+        <div class="FilterButton elevation-hover-2 elevation-1 white-bg ClearAllButton" @click="onClearAll" v-if="isClearAll">
           <div>Clear All</div>
         </div>
       </div>

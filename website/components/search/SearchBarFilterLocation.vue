@@ -1,16 +1,16 @@
 <template>
   <div class="LocationCollection">
     <div class="LocationCell flex-center" @click="toggle('Nearby')" :class="{
-         'Primary500Bg White': isSelectedLocation('Nearby'),
-         'Whisper100Bg BlackA75': !isSelectedLocation('Nearby')}"
+         'primary-500-bg White': isSelectedLocation('Nearby'),
+         'whisper-100-bg black-a-75': !isSelectedLocation('Nearby')}"
     >
       <beat-loader v-if="loadingNearby" class="flex-center" color="#0A6284" size="6px"/>
       <div v-else>Nearby</div>
     </div>
     <div class="LocationCell" v-for="location in locations" :key="location" @click="toggle(location)"
          :class="{
-         'Primary500Bg White': isSelectedLocation(location),
-         'Whisper100Bg BlackA75': !isSelectedLocation(location)}"
+         'primary-500-bg White': isSelectedLocation(location),
+         'whisper-100-bg black-a-75': !isSelectedLocation(location)}"
     >
       {{location}}
     </div>

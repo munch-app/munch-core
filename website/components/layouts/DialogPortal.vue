@@ -78,6 +78,7 @@ Where there is build in default styling for certain elements.
   .Dialog.Styled {
     display: flex;
     flex-direction: column;
+
     > div {
       margin-left: -12px;
       margin-right: -12px;
@@ -97,6 +98,10 @@ Where there is build in default styling for certain elements.
       margin-top: 16px;
       line-height: 1.5;
       align-self: flex-end;
+
+      &:hover {
+        cursor: pointer;
+      }
     }
 
     input {

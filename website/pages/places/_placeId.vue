@@ -48,6 +48,8 @@
 
     <section class="End">
     </section>
+
+    <profile-collection-add-place :place="place" v-if="showAddToCollection" @on-close="showAddToCollection = false"/>
   </div>
 </template>
 
@@ -64,9 +66,11 @@
   import PlaceLocation from "../../components/places/PlaceLocation";
   import PlaceAbout from "../../components/places/PlaceAbout";
   import PlaceDetail from "../../components/places/PlaceDetail";
+  import ProfileCollectionAddPlace from "../../components/profile/ProfileCollectionAddPlace";
 
   export default {
     components: {
+      ProfileCollectionAddPlace,
       PlaceDetail,
       PlaceAbout,
       PlaceLocation,
@@ -87,6 +91,11 @@
       }
       return {
         title: this.data.place.name + ' | Munch',
+      }
+    },
+    data() {
+      return {
+        showAddToCollection: true
       }
     },
     asyncData({$axios, params}) {
@@ -112,10 +121,7 @@
       }
     }
   }
-
-  // TODO RIP Activity Store
 </script>
-
 
 <style lang="less" scoped>
   section.Banner {
@@ -134,10 +140,6 @@
 
   section.Name {
     margin-top: 16px;
-
-    .Street {
-      margin-top: 8px;
-    }
 
     .Tag {
       margin-top: 8px;

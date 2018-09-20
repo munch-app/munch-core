@@ -2,9 +2,9 @@
   <div class="Assumption">
     <simple-svg class="Icon" fill="rgba(0,0,0,0.75)" filepath="/img/search/assumption.svg"/>
     <div v-for="token in tokens" :key="token.type + token.text">
-      <div :class="{'Whisper100Bg': !highlight, 'WhiteBg': highlight}"
-           class="Tag Token border-3 BlackA80" v-if="token.type === 'tag'">{{token.text}}</div>
-      <div class="text Token border-3 BlackA75" v-if="token.type === 'text'">
+      <div :class="{'whisper-100-bg': !highlight, 'white-bg': highlight}"
+           class="Tag Token border-3 black-a-80" v-if="token.type === 'tag'">{{token.text}}</div>
+      <div class="text Token border-3 black-a-75" v-if="token.type === 'text'">
         <div>
           {{token.text}}
         </div>
