@@ -1,6 +1,7 @@
 package munch.api.user;
 
 import com.google.firebase.auth.FirebaseToken;
+import munch.api.ApiRequest;
 import munch.api.ApiService;
 import munch.notification.MunchMailingListClient;
 import munch.restful.core.exception.AuthenticationException;
@@ -84,7 +85,7 @@ public final class UserService extends ApiService {
     }
 
     public UserSetting patchSearchSetting(JsonCall call) {
-        String userId = getUserId(call);
+        String userId = call.get(ApiRequest.class).getUserId();
         UserSetting setting = settingClient.get(userId);
         if (setting == null) setting = new UserSetting();
 

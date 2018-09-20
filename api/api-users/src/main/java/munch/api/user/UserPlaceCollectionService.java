@@ -53,7 +53,7 @@ public final class UserPlaceCollectionService extends ApiService {
      * @return List of UserPlaceCollection owned by current user
      */
     public JsonResult list(JsonCall call) {
-        String userId = call.get(ApiRequest.class).requireUserId();
+        String userId = call.get(ApiRequest.class).getUserId();
         Long sort = call.queryObject("next.sort", null, Long.class);
         int size = call.querySize(10, 20);
 
@@ -93,7 +93,7 @@ public final class UserPlaceCollectionService extends ApiService {
     }
 
     public UserPlaceCollection post(JsonCall call) {
-        String userId = call.get(ApiRequest.class).requireUserId();
+        String userId = call.get(ApiRequest.class).getUserId();
 
         UserPlaceCollection collection = call.bodyAsObject(UserPlaceCollection.class);
         collection.setCreatedBy(UserPlaceCollection.CreatedBy.User);
@@ -102,7 +102,7 @@ public final class UserPlaceCollectionService extends ApiService {
     }
 
     public UserPlaceCollection patch(JsonCall call) {
-        String userId = call.get(ApiRequest.class).requireUserId();
+        String userId = call.get(ApiRequest.class).getUserId();
         String collectionId = call.pathString("collectionId");
 
         validateAccess(collectionClient.get(collectionId), userId);
@@ -113,7 +113,7 @@ public final class UserPlaceCollectionService extends ApiService {
     }
 
     public UserPlaceCollection delete(JsonCall call) {
-        String userId = call.get(ApiRequest.class).requireUserId();
+        String userId = call.get(ApiRequest.class).getUserId();
         String collectionId = call.pathString("collectionId");
 
         validateAccess(collectionClient.get(collectionId), userId);

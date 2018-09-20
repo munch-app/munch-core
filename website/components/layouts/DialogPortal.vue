@@ -81,6 +81,7 @@ Where there is build in default styling for certain elements.
     > div {
       margin-left: -12px;
       margin-right: -12px;
+      margin-bottom: 8px;
 
       > * {
         margin-left: 12px;
@@ -88,7 +89,7 @@ Where there is build in default styling for certain elements.
       }
     }
 
-    h1, h2, h3, h4, p {
+    h1, h2, h3, h4, h5, h6, p {
       margin-bottom: 8px;
     }
 

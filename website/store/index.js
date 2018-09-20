@@ -36,12 +36,10 @@ export const mutations = {
   /**
    * Internal use only, use dispatch to add instead
    * @param state
-   * @param type of notification
-   * @param error to add into notification stack
-   * @param id to track when to remove
+   * @param notification to add
    */
-  addNotification(state, {type, error, id}) {
-    state.notifications.push({type, error, id})
+  addNotification(state, notification) {
+    state.notifications.push(notification)
   },
 
   /**
@@ -99,12 +97,30 @@ export const actions = {
   addError({commit, state}, error) {
     console.log(error)
     if (state.notifications.length > 30) {
-      console.log('Too many concurrent error. Not added')
+      console.log('Too many concurrent notification. Not added')
       return
     }
 
     const id = uuidv4()
     commit('addNotification', {type: 'error', error, id})
+    setTimeout(() => commit('removeNotification', {id}), 8000)
+  },
+
+  /**
+   *
+   * @param commit
+   * @param state
+   * @param title of message
+   * @param message itself
+   */
+  addMessage({commit, state}, {title, message}) {
+    if (state.notifications.length > 30) {
+      console.log('Too many concurrent notification. Not added')
+      return
+    }
+
+    const id = uuidv4()
+    commit('addNotification', {type: 'message', message, title, id})
     setTimeout(() => commit('removeNotification', {id}), 5000)
   }
 }

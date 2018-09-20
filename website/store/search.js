@@ -1,3 +1,5 @@
+import _ from 'underscore'
+
 export const state = () => ({
   query: null,
   page: 0,
@@ -22,10 +24,18 @@ export const mutations = {
     state.result.cards.splice(0, state.result.cards.length)
   },
   start(state, query) {
+    // Search Preference Injection
+    const injections = this.getters['user/searchPreferenceTags']
+    if (query && query.filters && query.filter.tag && query.filter.tag.positives) {
+      query.filter.tag.positives = _.union(query.filter.tag.positives, injections)
+    } else {
+      if (!query.filter) query.filter = {}
+      if (!query.filter.tag) query.filter.tag = {}
+      query.filter.tag.positives = injections
+    }
+
     state.more = true
     state.loading = true
-
-    // TODO: Search Preference to be enforced
 
     state.query = query
     state.page = 0

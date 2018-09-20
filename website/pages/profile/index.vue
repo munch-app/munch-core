@@ -13,12 +13,29 @@
         </div>
       </no-ssr>
       <div class="ProfileAction">
-        <div
-          class="SettingButton border-3 elevation-1 text-uppercase BlackA75 weight-600 hover-pointer elevation-hover-2">
+        <div @click="showSetting = true"
+             class="SettingButton border-3 elevation-1 text-uppercase BlackA75 weight-600 hover-pointer elevation-hover-2">
           Settings
         </div>
       </div>
+
+      <portal to="dialog-styled" v-if="showSetting">
+        <h3>{{profile.name}}</h3>
+        <h5>Search Preference</h5>
+        <div class="TagGroup flex-space-between hover-pointer" @click="toggleSearchTag('halal')">
+          <div class="text">Halal</div>
+          <div class="checkbox" :class="{selected: isSearchPreference('halal')}"/>
+        </div>
+        <div class="TagGroup flex-space-between hover-pointer" @click="toggleSearchTag('vegetarian options')">
+          <div class="text">Vegetarian Options</div>
+          <div class="checkbox" :class="{selected: isSearchPreference('vegetarian options')}"/>
+        </div>
+        <div class="right">
+          <button class="clear-elevated" @click="showSetting = false">Close</button>
+        </div>
+      </portal>
     </section>
+
     <hr class="container">
 
     <section class="Collection">
@@ -82,11 +99,13 @@
     data() {
       return {
         showCollectionButton: false,
+        showSetting: false,
         creating: null,
       }
     },
     computed: {
       ...mapGetters('user/collections', ['list', 'more']),
+      ...mapGetters('user', ['isSearchPreference']),
       profile() {
         return this.$store.state.user.profile || {}
       },
@@ -113,6 +132,18 @@
           .then(() => {
             this.creating = null
           }).catch(error => {
+            this.$store.dispatch('addError', error)
+          })
+      },
+      toggleSearchTag(tag) {
+        return this.$store.dispatch('user/toggleSettingSearchTag', tag)
+          .then(() => {
+            const title = `${this.profile.name} Preference`
+            const isAdded = this.isSearchPreference(tag)
+            const message = `${isAdded ? 'Added': 'Removed'} '${tag}' to your search preference.`
+            this.$store.dispatch('addMessage', {title, message})
+          })
+          .catch(error => {
             this.$store.dispatch('addError', error)
           })
       }

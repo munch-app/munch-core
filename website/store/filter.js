@@ -268,6 +268,12 @@ export const actions = {
     commit('loading', true)
     if (query) commit('replace', query)
 
+    // Search Preference Injection
+    const injections = this.getters['user/searchPreferenceTags']
+    injections.forEach(tag => {
+      commit('putTag', tag)
+    })
+
     return post(commit, state, this.$axios)
   },
 

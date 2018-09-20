@@ -1,13 +1,24 @@
 <template>
   <div class="NotificationList index-overlay" v-if="notifications">
     <div v-for="notification in notifications" :key="notification.Id">
-      <div class="NotificationBox Error elevation-2 Peach200Bg" v-if="notification.type === 'error'">
+      <div class="NotificationBox elevation-2 Peach200Bg" v-if="notification.type === 'error'">
         <div class="heading">
           {{notification.error.name}}
         </div>
         <div class="text">
           {{notification.error.message}}
         </div>
+      </div>
+      <div class="NotificationBox elevation-2 Whisper200Bg" v-if="notification.type === 'message'">
+        <div class="heading">
+          {{notification.title}}
+        </div>
+        <div class="text">
+          {{notification.message}}
+        </div>
+      </div>
+      <div v-else>
+        {{notification}}
       </div>
     </div>
   </div>
@@ -41,9 +52,7 @@
     padding: 16px 24px;
     border-radius: 4px;
     margin-top: 16px;
-  }
 
-  .Error {
     .heading {
       margin-bottom: 4px;
     }

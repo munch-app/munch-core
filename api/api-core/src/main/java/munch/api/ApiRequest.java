@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import spark.Request;
 
 import javax.annotation.Nullable;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -64,13 +63,7 @@ public final class ApiRequest {
     /**
      * @return get authenticated userId
      */
-    @Nullable
     public String getUserId() {
-        return userId;
-    }
-
-    @NotNull
-    public String requireUserId() throws AuthenticationException {
         if (userId == null) throw new AuthenticationException(403, "Forbidden");
         return userId;
     }

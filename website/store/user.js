@@ -11,6 +11,12 @@ export const state = () => ({
 export const getters = {
   isLoggedIn: (state) => !!state.profile,
   displayName: (state) => state.profile && state.profile.name,
+  isSearchPreference: (state) => (tag) => {
+    return state.setting.search.tags.includes(tag.toLowerCase())
+  },
+  searchPreferenceTags: (state) => {
+    return state.setting && state.setting.search && state.setting.search.tags
+  }
 }
 
 export const mutations = {
@@ -21,6 +27,15 @@ export const mutations = {
   clear(state) {
     state.profile = null
     state.setting = null
+  },
+  toggleSettingSearchTag(state, tag) {
+    tag = tag.toLowerCase()
+    const index = state.setting.search.tags.indexOf(tag)
+    if (index === -1) {
+      state.setting.search.tags.push(tag)
+    } else {
+      state.setting.search.tags.splice(index, 1)
+    }
   }
 }
 
@@ -45,7 +60,12 @@ export const actions = {
     commit('clear')
   },
 
-  patchSettingSearch({commit, state}) {
-    // TODO future implementation
+  toggleSettingSearchTag({commit, state}, tag) {
+    commit('toggleSettingSearchTag', tag)
+
+    return this.$axios.$patch('/api/users/setting/search', state.setting.search)
+      .then(({data}) => {
+        return data
+      })
   }
 }
