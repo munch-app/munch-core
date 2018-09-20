@@ -63,7 +63,6 @@
 
   export default {
     components: {UserPlaceCollectionCard, LandingLocationList},
-    layout: 'search',
     asyncData({$axios}) {
       return $axios.$post('/api/landing')
         .then(({data}) => {

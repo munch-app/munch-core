@@ -1,7 +1,7 @@
 <template>
   <div class="ImageSize">
     <slot class="ImageBox index-0"></slot>
-    <b-img class="Image index-image" center fluid-grow :src="url" :alt="alt" :style="{'object-fit': objectFit}"/>
+    <b-img class="Image index-image" v-if="url" center fluid-grow :src="url" :alt="alt" :style="{'object-fit': objectFit}"/>
   </div>
 </template>
 

@@ -66,7 +66,6 @@
   import PlaceDetail from "../../components/places/PlaceDetail";
 
   export default {
-    layout: 'search',
     components: {
       PlaceDetail,
       PlaceAbout,

@@ -31,7 +31,6 @@
 
   export default {
     components: {UserPlaceCollectionItemCard, BeatLoader},
-    layout: 'search',
     data() {
       return {
         more: false,

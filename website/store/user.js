@@ -2,7 +2,7 @@ import authenticator from '~/services/authenticator'
 
 export const state = () => ({
   profile: null,
-  setting: null
+  setting: null,
 })
 
 // Future: You can fetch from JWT or Cookie and fill store before rendering

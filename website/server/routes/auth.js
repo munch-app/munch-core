@@ -14,6 +14,8 @@ router.use('/', function (req, res, next) {
   return next()
 });
 
+// Future: to server side session to allow longer then 1 hour app session
+
 router.use('/profile', function (req, res, next) {
   if (req.cookies.IdToken) return next()
   return res.redirect('/authenticate')

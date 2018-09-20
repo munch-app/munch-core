@@ -13,7 +13,10 @@
         </div>
       </no-ssr>
       <div class="ProfileAction">
-        <div class="SettingButton border-3 elevation-1 text-uppercase BlackA75 weight-600 hover-pointer elevation-hover-2">Settings</div>
+        <div
+          class="SettingButton border-3 elevation-1 text-uppercase BlackA75 weight-600 hover-pointer elevation-hover-2">
+          Settings
+        </div>
       </div>
     </section>
     <hr class="container">
@@ -24,18 +27,39 @@
           <h2>My Collections</h2>
         </div>
         <div class="CollectionControl">
-          <div class="CollectionButton elevation-1 elevation-hover-2 border-3 WhiteBg hover-pointer">
+          <div v-if="!editing" @click="onEdit"
+               class="CollectionButton elevation-1 elevation-hover-2 border-3 WhiteBg hover-pointer">
             <simple-svg class="Icon" fill="rgba(0,0,0,0.75)" filepath="/img/profile/edit.svg"/>
           </div>
-          <div class="CollectionButton elevation-1 elevation-hover-2 border-3 WhiteBg hover-pointer">
+          <div v-if="!editing" @click="onAdd"
+               class="CollectionButton elevation-1 elevation-hover-2 border-3 WhiteBg hover-pointer">
             <simple-svg class="Icon" fill="rgba(0,0,0,0.75)" filepath="/img/profile/add.svg"/>
+          </div>
+          <div v-if="editing" @click="onDone"
+               class="CollectionButton elevation-1 elevation-hover-2 border-3 WhiteBg hover-pointer">
+            <simple-svg class="Icon" fill="rgba(0,0,0,0.75)" filepath="/img/profile/done.svg"/>
           </div>
         </div>
       </div>
       <div class="container">
         <div class="CollectionList">
-          <div class="Card" v-for="collection in collections" :key="collection.collectionId">
+          <div class="Card" v-for="collection in list" :key="collection.collectionId">
+            <div class="Editing" v-if="editing && isEditable(collection)">
+              <simple-svg class="Icon" fill="white" filepath="/img/profile/edit.svg"/>
+              <simple-svg class="Icon" fill="white" filepath="/img/profile/remove.svg"/>
+            </div>
+            <portal to="dialog-confirmation" v-if="editing">
+              <h3>Delete '{{collection.name}}'?</h3>
+              <button class="primary" @click="editing = !editing">Delete</button>
+            </portal>
             <profile-collection-card :collection="collection"/>
+          </div>
+
+          <div class="LoadingIndicator" v-if="more" v-observe-visibility="{
+            callback: visibilityChanged,
+            throttle: 300,
+            }">
+            <beat-loader color="#084E69" size="14px"/>
           </div>
         </div>
       </div>
@@ -44,27 +68,21 @@
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
   import ProfileCollectionCard from "../../components/profile/ProfileCollectionCard";
+  import BeatLoader from "vue-spinner/src/BeatLoader";
+
+  if (process.browser) require('intersection-observer')
 
   export default {
-    components: {ProfileCollectionCard},
-    layout: 'search',
+    components: {BeatLoader, ProfileCollectionCard},
     data() {
       return {
-        collections: [],
-        next: {}
+        editing: false
       }
     },
-    asyncData({$axios}) {
-      return $axios.$get('/api/users/places/collections')
-        .then(({data, next}) => {
-          return {
-            collections: data,
-            next: next
-          }
-        })
-    },
     computed: {
+      ...mapGetters('user/collections', ['list', 'more']),
       profile() {
         return this.$store.state.user.profile || {}
       },
@@ -78,6 +96,31 @@
         if (!this.$store.state.user.profile && !authenticator.isLoggedIn()) {
           this.$router.push({path: '/authenticate'})
         }
+      }
+    },
+    methods: {
+      visibilityChanged(isVisible) {
+        if (isVisible) {
+          this.$store.dispatch('user/collections/load')
+        }
+      },
+      isEditable(collection) {
+        return collection.createdBy === 'User'
+      },
+      onEdit() {
+        this.editing = true
+      },
+      onAdd() {
+
+      },
+      onDone() {
+        this.editing = false
+      },
+      onRemoveCollection(collection) {
+        // TODO
+      },
+      onEditCollection(collection) {
+        // TODO
       }
     }
   }
@@ -104,6 +147,10 @@
       img {
         height: 64px;
         width: 64px;
+      }
+
+      @media (max-width: 575.98px) {
+        display: none;
       }
     }
 
@@ -164,6 +211,22 @@
         position: relative;
         width: 100%;
         min-height: 1px;
+      }
+
+      .Editing {
+        position: absolute;
+        width: 100%;
+        justify-content: flex-end;
+        display: flex;
+        z-index: 1;
+        padding-top: 6px;
+        padding-right: 26px;
+
+        .Icon {
+          width: 20px;
+          height: 20px;
+          margin-right: 4px;
+        }
       }
     }
 

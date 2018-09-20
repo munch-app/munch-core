@@ -1,9 +1,9 @@
 <template>
   <div class="container Error">
     <h1 v-if="error.statusCode === 404">Page Not Found</h1>
-    <h1 v-else>An error occurred</h1>
+    <h1 v-else>{{error.message}}</h1>
 
-    <nuxt-link to="/">Home Page</nuxt-link>
+    <nuxt-link class="HomePage hover-pointer" to="/">Home Page</nuxt-link>
   </div>
 </template>
 
@@ -16,5 +16,11 @@
 <style scoped lang="less">
   .Error {
     margin-top: 24px;
+    padding-bottom: 64px;
+  }
+
+  .HomePage {
+    text-decoration: underline;
+    font-size: 17px;
   }
 </style>
