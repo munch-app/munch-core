@@ -36,7 +36,7 @@ export const actions = {
       .then(({profile, setting}) => {
         return commit('setUser', {profile, setting})
       }).catch(error => {
-        return this.commit('addError', error)
+        return this.store.dispatch('addError', error)
       })
   },
 

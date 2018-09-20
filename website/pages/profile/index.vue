@@ -27,15 +27,15 @@
           <h2>My Collections</h2>
         </div>
         <div class="CollectionControl">
-          <div v-if="!editing" @click="onEdit"
+          <div v-if="!showCollectionButton" @click="showCollectionButton = true"
                class="CollectionButton elevation-1 elevation-hover-2 border-3 WhiteBg hover-pointer">
             <simple-svg class="Icon" fill="rgba(0,0,0,0.75)" filepath="/img/profile/edit.svg"/>
           </div>
-          <div v-if="!editing" @click="onAdd"
+          <div v-if="!showCollectionButton" @click="creating = {}"
                class="CollectionButton elevation-1 elevation-hover-2 border-3 WhiteBg hover-pointer">
             <simple-svg class="Icon" fill="rgba(0,0,0,0.75)" filepath="/img/profile/add.svg"/>
           </div>
-          <div v-if="editing" @click="onDone"
+          <div v-if="showCollectionButton" @click="showCollectionButton = false"
                class="CollectionButton elevation-1 elevation-hover-2 border-3 WhiteBg hover-pointer">
             <simple-svg class="Icon" fill="rgba(0,0,0,0.75)" filepath="/img/profile/done.svg"/>
           </div>
@@ -44,46 +44,28 @@
       <div class="container">
         <div class="CollectionList">
           <div class="Card" v-for="collection in list" :key="collection.collectionId">
-            <div class="Editing" v-if="editing">
-              <div v-if="isEditable(collection)">
-                <div @click="deleting = collection" class="hover-pointer">
-                  <simple-svg class="Icon" fill="black" filepath="/img/profile/delete.svg"/>
-                </div>
-                <div @click="updating = JSON.parse(JSON.stringify(collection))" class="hover-pointer">
-                  <simple-svg class="Icon" fill="black" filepath="/img/profile/edit.svg"/>
-                </div>
-
-                <portal to="dialog-confirmation" v-if="editing && deleting.collectionId === collection.collectionId">
-                  <h3>Delete '{{deleting.name}}'?</h3>
-                  <p>You cannot recover a collection once it is deleted.</p>
-                  <div class="right">
-                    <button class="clear-elevated" @click="deleting = {}">Cancel</button>
-                    <button class="secondary" @click="onDeleteCollection(deleting)">Delete</button>
-                  </div>
-                </portal>
-
-                <portal to="dialog-confirmation" v-if="editing && updating.collectionId === collection.collectionId">
-                  <h3>Edit '{{updating.name}}'</h3>
-                  <input v-model="updating.name" placeholder="Name">
-                  <input v-model="updating.description" placeholder="Description">
-                  <div class="right">
-                    <button class="clear-elevated" @click="updating = {}">Cancel</button>
-                    <button class="secondary" @click="onEditCollection(updating)">Confirm</button>
-                  </div>
-                </portal>
-              </div>
-            </div>
-            <profile-collection-card :collection="collection"/>
-          </div>
-
-          <div class="LoadingIndicator" v-if="more" v-observe-visibility="{
-            callback: visibilityChanged,
-            throttle: 300,
-            }">
-            <beat-loader color="#084E69" size="14px"/>
+            <profile-collection-card :collection="collection" :show-button="showCollectionButton"/>
           </div>
         </div>
       </div>
+      <div class="container">
+        <div class="LoadingIndicator" v-if="more" v-observe-visibility="{
+            callback: visibilityChanged,
+            throttle: 300,
+            }">
+          <beat-loader color="#084E69" size="14px"/>
+        </div>
+      </div>
+
+      <portal to="dialog-styled" v-if="creating">
+        <h3>Create New Collection</h3>
+        <input v-model="creating.name" placeholder="Name">
+        <input v-model="creating.description" placeholder="Description">
+        <div class="right">
+          <button class="clear-elevated" @click="creating = null">Cancel</button>
+          <button class="secondary" @click="onCreate">Create</button>
+        </div>
+      </portal>
     </section>
   </div>
 </template>
@@ -99,9 +81,8 @@
     components: {BeatLoader, ProfileCollectionCard},
     data() {
       return {
-        editing: false,
-        deleting: {},
-        updating: {}
+        showCollectionButton: false,
+        creating: null,
       }
     },
     computed: {
@@ -127,23 +108,9 @@
           this.$store.dispatch('user/collections/load')
         }
       },
-      isEditable(collection) {
-        return collection.createdBy === 'User'
-      },
-      onEdit() {
-        this.editing = true
-      },
-      onDone() {
-        this.editing = false
-      },
-      onAdd() {
-
-      },
-      onDeleteCollection(collection) {
+      onCreate() {
         // TODO
-      },
-      onEditCollection(collection) {
-        // TODO
+        this.creating = {}
       }
     }
   }
@@ -234,23 +201,6 @@
         position: relative;
         width: 100%;
         min-height: 1px;
-      }
-
-      .Editing {
-        height: 24px;
-        width: 100%;
-        margin-bottom: 8px;
-
-        > div {
-          justify-content: flex-end;
-          display: flex;
-        }
-
-        .Icon {
-          width: 24px;
-          height: 24px;
-          margin-right: 4px;
-        }
       }
     }
 

@@ -1,4 +1,5 @@
 import _ from 'underscore'
+import Vue from 'vue'
 
 export const state = () => ({
   list: [],
@@ -14,9 +15,9 @@ export const getters = {
 
 export const mutations = {
   put(state, collection) {
-    const index = _.findIndex(state.list, (c) => c.collectionId === collectionId)
+    const index = _.findIndex(state.list, (c) => c.collectionId === collection.collectionId)
     if (index !== -1) {
-      state.list[index] = collection
+      Vue.set(state.list, index, collection)
     } else {
       state.list.push(collection)
     }
@@ -48,11 +49,12 @@ export const actions = {
       })
   },
 
-  patch({commit, state}, body) {
-    return this.$axios.$patch(`/api/users/places/collections`, body)
-      .then(({data}) => {
-        commit('put', data)
-      })
+  patch({commit, state}, {collectionId, name, description}) {
+    return this.$axios.$patch(`/api/users/places/collections/${collectionId}`, {
+      name, description
+    }).then(({data}) => {
+      commit('put', data)
+    })
   },
 
   delete({commit, state}, collectionId) {

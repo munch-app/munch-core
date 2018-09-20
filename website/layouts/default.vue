@@ -16,10 +16,14 @@
     <div style="height: 48px" v-if="isFilter"/>
     <search-bar-filter class="Filter index-header" v-if="isFilter"/>
 
+    <!-- Everything under here should be overlaying elements -->
     <profile-on-boarding v-if="isFocused('Login')"/>
 
     <dialog-portal/>
 
+    <notification-list/>
+
+    <!-- Elevation overlay for content -->
     <div :class="{'elevation-overlay index-content-overlay': isElevated}"></div>
     <nuxt :class="{'elevation-blur': isElevated}"/>
 
@@ -37,9 +41,11 @@
   import HeaderRight from "../components/layouts/HeaderRight";
   import ProfileOnBoarding from "../components/profile/ProfileOnBoarding";
   import DialogPortal from "../components/layouts/DialogPortal";
+  import NotificationList from "../components/layouts/NotificationList";
 
   export default {
     components: {
+      NotificationList,
       DialogPortal, ProfileOnBoarding, HeaderRight, SearchBarFilter, SearchBar, HeaderMenu, HeaderLogo
     },
     data() {

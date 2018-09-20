@@ -1,15 +1,16 @@
 <!--
 2 Dialog portal are supported for now
 dialog:
-where you have to style everything yourself
+Where you have to style everything yourself.
 
-dialog-confirmation:
-where h1,h2,h3,h4,p,button default styling is enabled
+dialog-styled:
+Where there is build in default styling for certain elements.
 -->
 <template>
   <div class="DialogPortal index-dialog flex-center zero-spacing">
     <portal-target class="Dialog elevation-3 index-elevation" name="dialog"/>
-    <portal-target class="Dialog Confirmation elevation-3 index-elevation" name="dialog-confirmation"/>
+    <portal-target class="Dialog Styled elevation-3 index-elevation" name="dialog-styled"/>
+
     <div class="DialogOverlay elevation-overlay index-content-overlay"/>
   </div>
 </template>
@@ -62,9 +63,11 @@ where h1,h2,h3,h4,p,button default styling is enabled
   // Responsive sizing
   .Dialog {
     border-radius: 3px;
+    min-width: 340px;
     max-width: 576px;
 
     @media (max-width: 575.98px) {
+      min-width: 300px;
       margin: 0;
       border-radius: 0;
       left: 0;
@@ -72,24 +75,35 @@ where h1,h2,h3,h4,p,button default styling is enabled
     }
   }
 
-  .Dialog.Confirmation {
+  .Dialog.Styled {
     display: flex;
     flex-direction: column;
+    > div {
+      margin-left: -12px;
+      margin-right: -12px;
 
-    h1, h2, h3, h4 {
-      margin-bottom: 8px;
+      > * {
+        margin-left: 12px;
+        margin-right: 12px;
+      }
     }
 
-    p {
-      margin-top: 8px;
+    h1, h2, h3, h4, p {
       margin-bottom: 8px;
     }
 
     button {
       margin-top: 16px;
-      margin-left: 24px;
       line-height: 1.5;
       align-self: flex-end;
+    }
+
+    input {
+      font-size: 17px;
+      border: 0;
+      border-bottom: 1px solid #478DA6; // Secondary300
+      padding: 8px 0;
+      margin-bottom: 8px;
     }
 
     .left {

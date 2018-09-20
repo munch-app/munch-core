@@ -48,7 +48,7 @@
             this.$store.commit('filter/loading', false)
             this.$store.dispatch('filter/location', location)
           }).catch(error => {
-            alert(error)
+            this.$store.dispatch('addError', error)
           }).finally(() => {
             this.$store.commit('filter/loading', false)
             this.loadingNearby = false

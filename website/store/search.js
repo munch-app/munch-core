@@ -25,6 +25,8 @@ export const mutations = {
     state.more = true
     state.loading = true
 
+    // TODO: Search Preference to be enforced
+
     state.query = query
     state.page = 0
     state.result.cards.splice(0, state.result.cards.length)
