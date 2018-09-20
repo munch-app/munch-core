@@ -1,8 +1,15 @@
+<!--
+2 Dialog portal are supported for now
+dialog:
+where you have to style everything yourself
+
+dialog-confirmation:
+where h1,h2,h3,h4,p,button default styling is enabled
+-->
 <template>
   <div class="DialogPortal index-dialog flex-center zero-spacing">
     <portal-target class="Dialog elevation-3 index-elevation" name="dialog"/>
     <portal-target class="Dialog Confirmation elevation-3 index-elevation" name="dialog-confirmation"/>
-
     <div class="DialogOverlay elevation-overlay index-content-overlay"/>
   </div>
 </template>
@@ -70,15 +77,26 @@
     flex-direction: column;
 
     h1, h2, h3, h4 {
-      margin-bottom: 24px;
+      margin-bottom: 8px;
     }
 
     p {
-
+      margin-top: 8px;
+      margin-bottom: 8px;
     }
 
     button {
+      margin-top: 16px;
+      margin-left: 24px;
       line-height: 1.5;
+      align-self: flex-end;
+    }
+
+    .left {
+      align-self: flex-start;
+    }
+
+    .right {
       align-self: flex-end;
     }
   }

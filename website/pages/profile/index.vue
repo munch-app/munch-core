@@ -44,14 +44,35 @@
       <div class="container">
         <div class="CollectionList">
           <div class="Card" v-for="collection in list" :key="collection.collectionId">
-            <div class="Editing" v-if="editing && isEditable(collection)">
-              <simple-svg class="Icon" fill="white" filepath="/img/profile/edit.svg"/>
-              <simple-svg class="Icon" fill="white" filepath="/img/profile/remove.svg"/>
+            <div class="Editing" v-if="editing">
+              <div v-if="isEditable(collection)">
+                <div @click="deleting = collection" class="hover-pointer">
+                  <simple-svg class="Icon" fill="black" filepath="/img/profile/delete.svg"/>
+                </div>
+                <div @click="updating = JSON.parse(JSON.stringify(collection))" class="hover-pointer">
+                  <simple-svg class="Icon" fill="black" filepath="/img/profile/edit.svg"/>
+                </div>
+
+                <portal to="dialog-confirmation" v-if="editing && deleting.collectionId === collection.collectionId">
+                  <h3>Delete '{{deleting.name}}'?</h3>
+                  <p>You cannot recover a collection once it is deleted.</p>
+                  <div class="right">
+                    <button class="clear-elevated" @click="deleting = {}">Cancel</button>
+                    <button class="secondary" @click="onDeleteCollection(deleting)">Delete</button>
+                  </div>
+                </portal>
+
+                <portal to="dialog-confirmation" v-if="editing && updating.collectionId === collection.collectionId">
+                  <h3>Edit '{{updating.name}}'</h3>
+                  <input v-model="updating.name" placeholder="Name">
+                  <input v-model="updating.description" placeholder="Description">
+                  <div class="right">
+                    <button class="clear-elevated" @click="updating = {}">Cancel</button>
+                    <button class="secondary" @click="onEditCollection(updating)">Confirm</button>
+                  </div>
+                </portal>
+              </div>
             </div>
-            <portal to="dialog-confirmation" v-if="editing">
-              <h3>Delete '{{collection.name}}'?</h3>
-              <button class="primary" @click="editing = !editing">Delete</button>
-            </portal>
             <profile-collection-card :collection="collection"/>
           </div>
 
@@ -78,7 +99,9 @@
     components: {BeatLoader, ProfileCollectionCard},
     data() {
       return {
-        editing: false
+        editing: false,
+        deleting: {},
+        updating: {}
       }
     },
     computed: {
@@ -110,13 +133,13 @@
       onEdit() {
         this.editing = true
       },
-      onAdd() {
-
-      },
       onDone() {
         this.editing = false
       },
-      onRemoveCollection(collection) {
+      onAdd() {
+
+      },
+      onDeleteCollection(collection) {
         // TODO
       },
       onEditCollection(collection) {
@@ -214,17 +237,18 @@
       }
 
       .Editing {
-        position: absolute;
+        height: 24px;
         width: 100%;
-        justify-content: flex-end;
-        display: flex;
-        z-index: 1;
-        padding-top: 6px;
-        padding-right: 26px;
+        margin-bottom: 8px;
+
+        > div {
+          justify-content: flex-end;
+          display: flex;
+        }
 
         .Icon {
-          width: 20px;
-          height: 20px;
+          width: 24px;
+          height: 24px;
           margin-right: 4px;
         }
       }

@@ -39,10 +39,13 @@ public final class SuggestDelegator {
     }
 
     public Map<String, Object> delegate(String text, SearchRequest request) {
+        List<String> names = suggestNames(text, request);
+        List<Place> places = suggestPlaces(text, request);
+        List<AssumptionQueryResult> assumptions = suggestAssumption(text, names, request);
         return Map.of(
-                "suggests", suggestNames(text, request),
-                "assumptions", suggestQueries(text, request),
-                "places", suggestPlaces(text, request)
+                "suggests", names,
+                "places", places,
+                "assumptions", assumptions
         );
     }
 
@@ -88,28 +91,39 @@ public final class SuggestDelegator {
         return elasticClient.searchHitsHits(root);
     }
 
-    private List<AssumptionQueryResult> suggestQueries(String text, SearchRequest originalRequest) {
-
+    private List<AssumptionQueryResult> suggestAssumption(String text, List<String> names, SearchRequest originalRequest) {
         for (AssumptionQuery assumptionQuery : assumptionEngine.assume(originalRequest, text)) {
-            SearchRequest request = originalRequest.cloneWith(assumptionQuery.getSearchQuery());
+            AssumptionQueryResult result = query(originalRequest, assumptionQuery);
+            if (result != null) return List.of(result);
+        }
 
-            List<Place> places = suggestPlaces(0, 20, request);
-            if (places.isEmpty()) continue;
-
-            AssumptionQueryResult result = new AssumptionQueryResult();
-            result.setPlaces(places);
-            result.setSearchQuery(assumptionQuery.getSearchQuery());
-            result.setTokens(assumptionQuery.getTokens());
-
-            ObjectNode root = JsonUtils.createObjectNode();
-            root.set("query", ElasticQueryUtils.make(request));
-            Long count = elasticClient.count(root);
-            result.setCount(count == null ? 0 : count);
-
-            return List.of(result);
+        for (String name : names) {
+            for (AssumptionQuery assumptionQuery : assumptionEngine.assume(originalRequest, name)) {
+                AssumptionQueryResult result = query(originalRequest, assumptionQuery);
+                if (result != null) return List.of(result);
+            }
         }
 
         return List.of();
+    }
+
+    private AssumptionQueryResult query(SearchRequest originalRequest, AssumptionQuery assumptionQuery) {
+        SearchRequest request = originalRequest.cloneWith(assumptionQuery.getSearchQuery());
+
+        List<Place> places = suggestPlaces(0, 20, request);
+        if (places.isEmpty()) return null;
+
+        AssumptionQueryResult result = new AssumptionQueryResult();
+        result.setPlaces(places);
+        result.setSearchQuery(assumptionQuery.getSearchQuery());
+        result.setTokens(assumptionQuery.getTokens());
+
+        ObjectNode root = JsonUtils.createObjectNode();
+        root.set("query", ElasticQueryUtils.make(request));
+        Long count = elasticClient.count(root);
+        result.setCount(count == null ? 0 : count);
+
+        return result;
     }
 
     private List<Place> suggestPlaces(int from, int size, SearchRequest request) {

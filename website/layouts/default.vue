@@ -1,6 +1,6 @@
 <template>
   <div>
-    <nav class="index-header Header NavBg" :class="{'elevation-1': !isFilter}">
+    <nav class="index-top-elevation Header NavBg" :class="{'elevation-1': !isFilter}">
       <div class="HeaderRow container clearfix">
         <header-logo class="Logo" :class="{'IsSuggest': isFocused('Suggest')}" @click="onClickLogo"/>
         <div class="Search">

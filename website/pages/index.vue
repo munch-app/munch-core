@@ -5,7 +5,7 @@
         <div class="Greeting">
           <h1>{{salutation}}<no-ssr><span class="Name">, {{displayName || 'Samantha'}}</span></no-ssr></h1>
           <no-ssr>
-            <div class="textLogin" v-if="!isLoggedIn">(not your name?
+            <div class="text Login" v-if="!isLoggedIn">(not your name?
               <a @click="$store.commit('focus', 'Login')" class="LoginButton"><span
                 class="Primary500 weight-600">Log In</span></a>
               now!)

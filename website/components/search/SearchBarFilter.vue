@@ -1,6 +1,6 @@
 <template>
-  <div class="SearchFilterBar no-select" v-on-clickaway="onClickAway">
-    <div class="FilterBar elevation-1 index-5">
+  <div class="SearchFilterBar no-select index-5" v-on-clickaway="onClickAway">
+    <div class="FilterBar elevation-1 index-header">
       <div class="Buttons container">
         <div v-for="button in buttons" :key="button.type" class="FilterButton" @click="onButton(button)"
              :class="{

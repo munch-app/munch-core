@@ -9,7 +9,7 @@
       </div>
     </div>
 
-    <div class="SearchSuggest elevation-3 index-top-elevation border-3Bottom no-select" v-if="isExtended">
+    <div class="SearchSuggest elevation-3 index-top-elevation border-3 Bottom no-select" v-if="isExtended">
       <div class="Results index-top-elevation">
         <div class="NoResult text" v-if="!hasResult && suggestions">
           Sorry! We couldn’t find results for '{{text}}'.
@@ -24,7 +24,7 @@
           <div class="Item" v-for="assumption in assumptions" :key="assumption.count"
                :class="{'Highlight': isPosition(assumption)}"
                @click="onItemAssumption(assumption)">
-            <search-suggest-assumption-item :assumption="assumption"/>
+            <search-suggest-assumption-item :assumption="assumption" :highlight="isPosition(assumption)"/>
           </div>
         </div>
 
@@ -176,6 +176,7 @@
         const item = this.positions && this.positions[this.position] && this.positions[this.position].item
         if (item && item.placeId && object.placeId) return item.placeId === object.placeId
         if (item && item.tokens && object.tokens) return item.count === object.count
+        return false
       }
     },
     subscriptions() {
