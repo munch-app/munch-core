@@ -4,7 +4,7 @@
       <div>
         <h1>{{collection.name}}</h1>
         <div class="flex">
-          <h5><span class="weight-400">by</span> Fuxing Loh</h5>
+          <h5 v-if="collection.userProfile"><span class="weight-400">by</span> {{collection.userProfile.name}}</h5>
           <h5>{{collection.count}} <span class="weight-400">places</span></h5>
         </div>
       </div>
