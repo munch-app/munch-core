@@ -7,7 +7,7 @@
       <span class="TodayLong">
         {{Day.today().text}}:
       </span>
-      <span :class="{'Open': isDayOpen(), 'Close': !isDayOpen() }">
+      <span :class="{'open': isDayOpen(), 'close': !isDayOpen() }">
         {{timeRange}}
       </span>
     </div>
@@ -18,7 +18,7 @@
           <div class="DialogRow" v-for="day in days" :key="day.text">
             <div class="Day">{{day.text}}:</div>
             <div class="Hour"
-                 :class="{'Open': day.isToday() && isDayOpen(day), 'Close': day.isToday() && !isDayOpen(day) }">
+                 :class="{'open': day.isToday() && isDayOpen(day), 'close': day.isToday() && !isDayOpen(day) }">
               {{group.getHour(day)}}
             </div>
           </div>

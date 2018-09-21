@@ -36,10 +36,10 @@
       <div class="BottomBar index-elevation">
         <div class="Button Cancel" @click="onClear">Clear</div>
         <div class="Button Apply" @click="onApply" v-if="applyText"
-             :class="{'secondary-500-bg White weight-400': result, 'Secondary050Bg black-a-85 weight-600': !result}">
+             :class="{'secondary-500-bg White weight-400': result, 'secondary-050-bg black-a-85 weight-600': !result}">
           {{applyText}}
         </div>
-        <beat-loader v-else class="Button Apply Secondary050Bg flex-center" color="#084E69" size="8px"/>
+        <beat-loader v-else class="Button Apply secondary-050-bg flex-center" color="#084E69" size="8px"/>
       </div>
     </div>
   </div>

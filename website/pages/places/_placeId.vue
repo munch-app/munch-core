@@ -28,7 +28,7 @@
 
     <section class="Partner" v-if="hasPartner">
       <div class="container">
-        <h2 class="Secondary500 Header">Partner's Content</h2>
+        <h2 class="secondary-500 Header">Partner's Content</h2>
       </div>
 
       <section class="Article" v-if="data.articles.length > 0">

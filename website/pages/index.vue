@@ -7,7 +7,7 @@
           <no-ssr>
             <div class="text Login" v-if="!isLoggedIn">(not your name?
               <a @click="$store.commit('focus', 'Login')" class="LoginButton"><span
-                class="Primary500 weight-600">Log In</span></a>
+                class="primary-500 weight-600">Log In</span></a>
               now!)
             </div>
           </no-ssr>

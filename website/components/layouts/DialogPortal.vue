@@ -107,7 +107,7 @@ Where there is build in default styling for certain elements.
     input {
       font-size: 17px;
       border: 0;
-      border-bottom: 1px solid #478DA6; // Secondary300
+      border-bottom: 1px solid #478DA6; // secondary-300
       padding: 8px 0;
       margin-bottom: 8px;
     }

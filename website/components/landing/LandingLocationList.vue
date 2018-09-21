@@ -3,7 +3,7 @@
     <div class="LocationList no-select">
       <div class="elevation-1 elevation-hover-2 hover-pointer border-2 EachLocation" v-for="location in locations"
            :key="location.name">
-        <div class="ImageBox Primary050Bg">
+        <div class="ImageBox primary-050-bg">
           <simple-svg fill="rgba(0, 0, 0, 0.75)" :filepath="`/img/landing/${location.image}`"/>
         </div>
         <div class="ContentBox">

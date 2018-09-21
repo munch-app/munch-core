@@ -6,7 +6,7 @@
              :class="{
              'primary-500-bg White': button.type === selected,
              'whisper-100-bg black-a-75': button.type !== selected && !button.applied,
-             'Primary050Bg black': button.type !== selected && button.applied,
+             'primary-050-bg black': button.type !== selected && button.applied,
              'Combined': button.type === 'combined'
              }">
           <div>{{button.name}}</div>

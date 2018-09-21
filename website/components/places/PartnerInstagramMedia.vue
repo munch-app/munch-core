@@ -14,11 +14,11 @@
 
     <div class="Controls">
       <div class="Left elevation-1 border-3" @click="onPrev"
-           :class="{'secondary-500-bg': hasPrev, 'Secondary100Bg': !hasPrev}">
+           :class="{'secondary-500-bg': hasPrev, 'secondary-100-bg': !hasPrev}">
         <simple-svg class="Icon" fill="white" filepath="/img/places/caret_left.svg"/>
       </div>
       <div class="Right elevation-1 border-3" @click="onNext"
-           :class="{'secondary-500-bg': hasNext, 'Secondary100Bg': !hasNext}">
+           :class="{'secondary-500-bg': hasNext, 'secondary-100-bg': !hasNext}">
         <simple-svg class="Icon" fill="white" filepath="/img/places/caret_right.svg"/>
       </div>
     </div>

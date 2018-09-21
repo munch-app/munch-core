@@ -1,7 +1,7 @@
 <template>
   <div class="zero-spacing">
     <section class="Profile container">
-      <div class="ProfileImage Secondary100Bg">
+      <div class="ProfileImage secondary-100-bg">
         <no-ssr>
           <img v-if="photo" :src="photo" :alt="profile.name">
         </no-ssr>
