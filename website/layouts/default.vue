@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="Default">
     <nav class="index-top-elevation Header nav-bg" :class="{'elevation-1': !isFilter}">
       <div class="HeaderRow container clearfix">
         <header-logo class="Logo" :class="{'IsSuggest': isFocused('Suggest')}" @click="onClickLogo"/>
@@ -25,10 +25,9 @@
 
     <!-- Elevation overlay for content -->
     <div :class="{'elevation-overlay index-content-overlay': isElevated}"></div>
-    <nuxt :class="{'elevation-blur': isElevated}"/>
+    <nuxt class="Content" :class="{'elevation-blur': isElevated}"/>
 
-    <nav class="Footer index-footer">
-    </nav>
+    <nav-footer class="Footer index-footer"/>
   </div>
 </template>
 
@@ -42,9 +41,11 @@
   import ProfileOnBoarding from "../components/profile/ProfileOnBoarding";
   import DialogPortal from "../components/layouts/DialogPortal";
   import NotificationList from "../components/layouts/NotificationList";
+  import NavFooter from "../components/layouts/NavFooter";
 
   export default {
     components: {
+      NavFooter,
       NotificationList,
       DialogPortal, ProfileOnBoarding, HeaderRight, SearchBarFilter, SearchBar, HeaderMenu, HeaderLogo
     },
@@ -87,6 +88,12 @@
 </script>
 
 <style lang="less" scoped>
+  .Default {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+  }
+
   .Header {
     position: fixed;
     top: 0;
@@ -130,5 +137,12 @@
         display: none;
       }
     }
+  }
+
+  .Content {
+    flex: 1;
+  }
+
+  .Footer {
   }
 </style>

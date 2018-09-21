@@ -10,7 +10,7 @@
       </div>
 
       <no-ssr>
-        <div v-if="collection.userId === userId && collection.createdBy === 'User'">
+        <div v-if="isEditable">
           <div v-if="!editing" @click="editing = true"
                class="button-action elevation-1 elevation-hover-2 border-3 white-bg hover-pointer">
             <simple-svg class="Icon" fill="rgba(0,0,0,0.75)" filepath="/img/collections/edit.svg"/>
@@ -68,6 +68,15 @@
     },
     computed: {
       ...mapGetters('user', ['isLoggedIn', 'userId']),
+      isEditable() {
+        if (this.collection.userId === this.userId) {
+          switch (this.collection.createdBy) {
+            case 'User':
+            case 'Default':
+              return true
+          }
+        }
+      }
     },
     methods: {
       visibilityChanged(isVisible, entry) {

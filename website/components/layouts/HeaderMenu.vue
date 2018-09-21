@@ -7,15 +7,6 @@
         <a v-else @click="$store.commit('focus', 'Login')">Login</a>
         <hr>
       </div>
-      <div class="NonMobileOnly" v-if="isLoggedIn">
-        <nuxt-link to="/profile">Profile</nuxt-link>
-        <hr>
-      </div>
-      <nuxt-link to="/support">Support</nuxt-link>
-      <nuxt-link to="/about">About Munch</nuxt-link>
-      <hr>
-      <div><a href="https://partner.munch.app" target="_blank">Content Partners</a></div>
-      <hr v-if="isLoggedIn">
       <a @click="onLogout" v-if="isLoggedIn">Logout</a>
     </ul>
     <div v-on-clickaway="onClickAway"></div>
