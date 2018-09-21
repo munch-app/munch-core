@@ -39,6 +39,12 @@
       <landing-location-list class="container"/>
     </section>
 
+    <section class="EatBetween secondary-100-bg">
+      <div class="container flex-center">
+        <h1 class="white mt-5">Eat Between?</h1>
+      </div>
+    </section>
+
     <section class="Collection">
       <div class="container">
         <h2>In the know</h2>
@@ -86,7 +92,6 @@
 
 <style scoped lang="less">
   .LandingPage {
-    margin-top: 24px;
     padding-bottom: 64px;
   }
 
@@ -153,6 +158,10 @@
         padding-right: 24px;
       }
     }
+  }
+
+  section.EatBetween {
+    height: 400px;
   }
 
   section.Location {

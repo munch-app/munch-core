@@ -5,7 +5,8 @@
         <nuxt-link to="/">Home</nuxt-link>
         <nuxt-link to="/profile" v-if="isLoggedIn">Profile</nuxt-link>
         <a v-else @click="$store.commit('focus', 'Login')">Login</a>
-        <hr>
+        <hr v-if="isLoggedIn">
+        <a @click="onLogout" v-if="isLoggedIn">Logout</a>
       </div>
       <a @click="onLogout" v-if="isLoggedIn">Logout</a>
     </ul>

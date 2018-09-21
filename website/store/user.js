@@ -17,7 +17,7 @@ export const getters = {
     return state.setting.search.tags.includes(tag.toLowerCase())
   },
   searchPreferenceTags: (state) => {
-    return state.setting && state.setting.search && state.setting.search.tags
+    return state.setting && state.setting.search && state.setting.search.tags || []
   }
 }
 

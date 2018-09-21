@@ -27,7 +27,7 @@
     <div :class="{'elevation-overlay index-content-overlay': isElevated}"></div>
     <nuxt class="Content" :class="{'elevation-blur': isElevated}"/>
 
-    <nav-footer class="Footer index-footer"/>
+    <nav-footer class="Footer"/>
   </div>
 </template>
 

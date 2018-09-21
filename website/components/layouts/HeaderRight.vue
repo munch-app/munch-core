@@ -1,11 +1,11 @@
 <template>
-  <div class="HeaderRight">
-    <no-ssr>
+  <no-ssr>
+    <div class="HeaderRight">
       <div @click="$store.commit('focus', 'Login')" class="Name hover-pointer" v-if="!isLoggedIn">Login</div>
       <nuxt-link to="/profile" v-else class="Name">{{displayName}}</nuxt-link>
-    </no-ssr>
-    <img class="Menu hover-pointer" src="/img/layouts/menu.svg" @click="$emit('clickMenu')"/>
-  </div>
+      <img v-if="isLoggedIn" class="Menu hover-pointer" src="/img/layouts/menu.svg" @click="$emit('clickMenu')"/>
+    </div>
+  </no-ssr>
 </template>
 
 <script>
@@ -29,8 +29,10 @@
       font-weight: 600;
       line-height: 32px;
       color: rgba(0, 0, 0, 0.80);
+    }
 
-      margin-right: 16px;
+    img {
+      margin-left: 16px;
     }
   }
 </style>

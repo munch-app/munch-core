@@ -1,14 +1,18 @@
 <!--
-2 Dialog portal are supported for now
+3 Dialog portal are supported for now
 dialog:
 Where you have to style everything yourself.
 
 dialog-styled:
 Where there is build in default styling for certain elements.
+
+dialog-w400:
+Max-width of 400px if > 576vw
 -->
 <template>
   <div class="DialogPortal index-dialog flex-center zero-spacing">
     <portal-target class="Dialog elevation-3 index-elevation" name="dialog"/>
+    <portal-target class="Dialog W400 elevation-3 index-elevation" name="dialog-w400"/>
     <portal-target class="Dialog Styled elevation-3 index-elevation" name="dialog-styled"/>
 
     <div class="DialogOverlay elevation-overlay index-content-overlay"/>
@@ -118,6 +122,14 @@ Where there is build in default styling for certain elements.
 
     .right {
       align-self: flex-end;
+    }
+  }
+
+  .Dialog.W400 {
+    max-width: 400px;
+
+    @media (max-width: 575.98px) {
+      max-width: 576px;
     }
   }
 </style>

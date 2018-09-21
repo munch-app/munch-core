@@ -26,8 +26,8 @@ export const mutations = {
   start(state, query) {
     // Search Preference Injection
     const injections = this.getters['user/searchPreferenceTags']
-    if (query && query.filters && query.filter.tag && query.filter.tag.positives) {
-      query.filter.tag.positives = _.union(query.filter.tag.positives, injections)
+    if (query && query.filter && query.filter.tag && query.filter.tag.positives) {
+      query.filter.tag.positives = _.union(query.filter.tag.positives, [...injections])
     } else {
       if (!query.filter) query.filter = {}
       if (!query.filter.tag) query.filter.tag = {}
