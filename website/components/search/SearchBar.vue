@@ -9,7 +9,7 @@
       </div>
     </div>
 
-    <div class="SearchSuggest elevation-3 index-top-elevation border-3 Bottom no-select" v-if="isExtended">
+    <div class="SearchSuggest elevation-3 index-top-elevation border-3-bottom no-select" v-if="isExtended">
       <div class="Results index-top-elevation">
         <div class="NoResult text" v-if="!hasResult && suggestions">
           Sorry! We couldn’t find results for '{{text}}'.

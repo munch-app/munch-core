@@ -28,7 +28,7 @@ module.exports = {
       }
     }
   },
-  loading: {color: '#3B8070'},
+  loading: {color: '#0A6284'},
   router: {
     scrollBehavior: () => ({x: 0, y: 0})
   },

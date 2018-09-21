@@ -1,5 +1,5 @@
 <template>
-  <div class="HeaderMenu index-top-elevation no-select" v-if="isFocused('HeaderMenu')">
+  <div class="HeaderMenu container index-top-elevation no-select" v-if="isFocused('HeaderMenu')">
     <ul class="NavLink elevation-3 text index-top-elevation">
       <div class="MobileOnly">
         <nuxt-link to="/">Home</nuxt-link>
@@ -38,23 +38,14 @@
 
 <style scoped lang="less">
   .HeaderMenu {
-    @media (min-width: 768px) {
-      max-width: 720px;
-      padding-right: 15px;
-      padding-left: 15px;
-      margin-right: auto;
-      margin-left: auto;
+    @media (max-width: 767.98px) {
+      padding-right: 0;
+      padding-left: 0;
+    }
 
+    @media (min-width: 768px) {
       display: flex;
       justify-content: flex-end;
-    }
-
-    @media (min-width: 992px) {
-      max-width: 960px;
-    }
-
-    @media (min-width: 1200px) {
-      max-width: 1140px;
     }
   }
 

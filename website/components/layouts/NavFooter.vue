@@ -7,13 +7,15 @@
       </div>
       <div class="Company">
         <h4 class="secondary">Company</h4>
-        <nuxt-link to="/press">Press</nuxt-link>
-        <nuxt-link to="/about">About</nuxt-link>
         <nuxt-link to="/support">Support</nuxt-link>
+        <nuxt-link to="/support/privacy-policy">Privacy Policy</nuxt-link>
+        <nuxt-link to="/support/terms-of-use">Terms of Use</nuxt-link>
       </div>
 
       <div class="Product">
         <h4 class="secondary">Product</h4>
+        <nuxt-link to="/about">About</nuxt-link>
+        <nuxt-link to="/press">Press</nuxt-link>
         <a href="https://partner.munch.app" target="_blank">Content Partners</a>
       </div>
     </div>
@@ -32,7 +34,7 @@
 
     > div > div {
       margin-top: 32px;
-      margin-right: 80px;
+      margin-right: 88px;
     }
   }
 

@@ -47,7 +47,13 @@
     components: {
       NavFooter,
       NotificationList,
-      DialogPortal, ProfileOnBoarding, HeaderRight, SearchBarFilter, SearchBar, HeaderMenu, HeaderLogo
+      DialogPortal,
+      ProfileOnBoarding,
+      HeaderRight,
+      SearchBarFilter,
+      SearchBar,
+      HeaderMenu,
+      HeaderLogo
     },
     data() {
       return {
