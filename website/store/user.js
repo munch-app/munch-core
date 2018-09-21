@@ -14,7 +14,10 @@ export const getters = {
   isLoggedIn: (state) => !!state.profile,
   displayName: (state) => state.profile && state.profile.name,
   isSearchPreference: (state) => (tag) => {
-    return state.setting.search.tags.includes(tag.toLowerCase())
+    return state.setting &&
+      state.setting.search &&
+      state.setting.search.tags &&
+      state.setting.search.tags.includes(tag.toLowerCase())
   },
   searchPreferenceTags: (state) => {
     return state.setting && state.setting.search && state.setting.search.tags || []

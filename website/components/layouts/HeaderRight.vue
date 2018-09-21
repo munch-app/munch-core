@@ -3,7 +3,7 @@
     <div class="HeaderRight">
       <div @click="$store.commit('focus', 'Login')" class="Name hover-pointer" v-if="!isLoggedIn">Login</div>
       <nuxt-link to="/profile" v-else class="Name">{{displayName}}</nuxt-link>
-      <img v-if="isLoggedIn" class="Menu hover-pointer" src="/img/layouts/menu.svg" @click="$emit('clickMenu')"/>
+      <img v-if="false" class="Menu hover-pointer" src="/img/layouts/menu.svg" @click="$emit('clickMenu')"/>
     </div>
   </no-ssr>
 </template>

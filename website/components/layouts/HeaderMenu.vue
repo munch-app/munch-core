@@ -5,10 +5,7 @@
         <nuxt-link to="/">Home</nuxt-link>
         <nuxt-link to="/profile" v-if="isLoggedIn">Profile</nuxt-link>
         <a v-else @click="$store.commit('focus', 'Login')">Login</a>
-        <hr v-if="isLoggedIn">
-        <a @click="onLogout" v-if="isLoggedIn">Logout</a>
       </div>
-      <a @click="onLogout" v-if="isLoggedIn">Logout</a>
     </ul>
     <div v-on-clickaway="onClickAway"></div>
   </div>
@@ -28,10 +25,6 @@
         if (this.isFocused('HeaderMenu')) {
           this.$store.commit('unfocus', 'HeaderMenu')
         }
-      },
-      onLogout() {
-        this.$store.dispatch('user/logout')
-        this.$router.push({path: '/'})
       }
     }
   }
