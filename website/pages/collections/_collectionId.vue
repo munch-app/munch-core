@@ -1,33 +1,51 @@
 <template>
   <div class="zero-spacing CollectionPage">
     <div class="Header container">
-      <h1>{{collection.name}}</h1>
+      <div>
+        <h1>{{collection.name}}</h1>
+        <div class="flex">
+          <h5><span class="weight-400">by</span> Fuxing Loh</h5>
+          <h5>{{collection.count}} <span class="weight-400">places</span></h5>
+        </div>
+      </div>
+
+      <no-ssr>
+        <div v-if="collection.userId === userId && collection.createdBy === 'User'">
+          <div v-if="!editing" @click="editing = true"
+               class="button-action elevation-1 elevation-hover-2 border-3 white-bg hover-pointer">
+            <simple-svg class="Icon" fill="rgba(0,0,0,0.75)" filepath="/img/collections/edit.svg"/>
+          </div>
+          <div v-if="editing" @click="editing = false"
+               class="button-action elevation-1 elevation-hover-2 border-3 white-bg hover-pointer">
+            <simple-svg class="Icon" fill="rgba(0,0,0,0.75)" filepath="/img/collections/done.svg"/>
+          </div>
+        </div>
+      </no-ssr>
     </div>
 
     <div class="container">
       <div class="ItemList">
         <div class="Card" v-for="item in items" :key="item.placeId">
-          <user-place-collection-item-card :place="item.place"/>
+          <user-place-collection-item-card :editing="editing" :place="item.place"
+                                           :collection="collection" @on-delete="onDelete(item)"/>
         </div>
       </div>
     </div>
 
-    <div class="LoadingIndicator container" v-if="more" v-observe-visibility="{
-          callback: visibilityChanged,
-          throttle: 300,
-        }">
+    <div class="LoadingIndicator container" v-if="more"
+         v-observe-visibility="{callback:visibilityChanged,throttle:300}">
       <beat-loader color="#084E69" size="14px"/>
     </div>
   </div>
 </template>
 
 <script>
+  import {mapGetters} from "vuex";
   import BeatLoader from "vue-spinner/src/BeatLoader";
   import UserPlaceCollectionItemCard from "../../components/collections/UserPlaceCollectionItemCard";
+  import _ from 'underscore'
 
-  if (process.browser) {
-    require('intersection-observer')
-  }
+  if (process.browser) require('intersection-observer')
 
   export default {
     components: {UserPlaceCollectionItemCard, BeatLoader},
@@ -36,6 +54,7 @@
         more: false,
         next: {},
         items: [],
+        editing: false
       }
     },
     asyncData({$axios, params}) {
@@ -46,6 +65,9 @@
             more: true
           }
         })
+    },
+    computed: {
+      ...mapGetters('user', ['isLoggedIn', 'userId']),
     },
     methods: {
       visibilityChanged(isVisible, entry) {
@@ -59,6 +81,12 @@
               this.items.push(...data)
             }).catch(error => alert(error))
         }
+      },
+      onDelete(item) {
+        const index = _.findIndex(this.items, (n) => n.placeId === item.placeId)
+        if (index !== -1) {
+          this.items.splice(index, 1)
+        }
       }
     }
   }
@@ -67,7 +95,16 @@
 <style scoped lang="less">
   .Header {
     margin-top: 24px;
-    margin-bottom: 0;
+    margin-bottom: 16px;
+
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-end;
+    justify-content: space-between;
+
+    h5 {
+      margin-right: 24px;
+    }
   }
 
   .ItemList {
@@ -105,7 +142,6 @@
   }
 
   .LoadingIndicator {
-    padding-top: 24px;
     padding-bottom: 48px;
   }
 </style>

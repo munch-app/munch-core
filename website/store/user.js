@@ -10,6 +10,7 @@ export const state = () => ({
 
 export const getters = {
   profile: (state) => state.profile || {},
+  userId: (state) => state.profile && state.profile.userId,
   isLoggedIn: (state) => !!state.profile,
   displayName: (state) => state.profile && state.profile.name,
   isSearchPreference: (state) => (tag) => {

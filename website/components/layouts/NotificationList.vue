@@ -9,7 +9,7 @@
           {{notification.error.message}}
         </div>
       </div>
-      <div class="NotificationBox elevation-2 whisper-200-bg" v-if="notification.type === 'message'">
+      <div class="NotificationBox elevation-2 white-bg" v-if="notification.type === 'message'">
         <div class="heading">
           {{notification.title}}
         </div>

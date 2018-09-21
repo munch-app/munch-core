@@ -1,24 +1,40 @@
 <template>
-  <nuxt-link :to="'/places/' + place.placeId" class="no-select ItemCard">
-    <image-size v-if="images" class="Image border-3" :image="images" :alt="place.name"/>
-    <div v-else class="Image border-3 whisper-100-bg"></div>
-
-    <div class="Content">
-      <div class="Name Title large weight-600 black-a-80">{{place.name}}</div>
-      <div class="Tags">
-        <div class="Tag border-3" v-for="tag in tags" :key="tag.tagId"
-             :class="{'peach-100-bg weight-600 black-a-80': tag.type === 'price', 'whisper-100-bg weight-400': tag.type !== 'price'}">
-          {{tag.name}}
-        </div>
-      </div>
-      <div class="LocationDistanceTiming small">
-        <span v-if="distance">{{distance}}, </span>
-        <span class="weight-600 black-a-80">{{location}}</span>
-        <span v-if="timing" class="black-a-75 BulletDivider">•</span>
-        <span v-if="timing" :class="timing.class">{{timing.text}}</span>
+  <div>
+    <div v-if="editing" class="Editing">
+      <div @click="deleting = true" class="hover-pointer">
+        <simple-svg class="Icon button-action elevation-1 secondary-300-bg border-3" fill="white" filepath="/img/collections/delete.svg"/>
       </div>
     </div>
-  </nuxt-link>
+
+    <nuxt-link :to="'/places/' + place.placeId" class="no-select ItemCard">
+      <image-size v-if="images" class="Image border-3" :image="images" :alt="place.name"/>
+      <div v-else class="Image border-3 whisper-100-bg"></div>
+
+      <div class="Content">
+        <div class="Name Title large weight-600 black-a-80">{{place.name}}</div>
+        <div class="Tags">
+          <div class="Tag border-3" v-for="tag in tags" :key="tag.tagId"
+               :class="{'peach-100-bg weight-600 black-a-80': tag.type === 'price', 'whisper-100-bg weight-400': tag.type !== 'price'}">
+            {{tag.name}}
+          </div>
+        </div>
+        <div class="LocationDistanceTiming small">
+          <span v-if="distance">{{distance}}, </span>
+          <span class="weight-600 black-a-80">{{location}}</span>
+          <span v-if="timing" class="black-a-75 BulletDivider">•</span>
+          <span v-if="timing" :class="timing.class">{{timing.text}}</span>
+        </div>
+      </div>
+
+      <portal to="dialog-styled" v-if="deleting">
+        <h3>Delete '{{place.name}}' from '{{collection.name}}'?</h3>
+        <div class="right">
+          <button class="clear-elevated" @click="deleting = false">Cancel</button>
+          <button class="secondary" @click="onDeleteItem">Delete</button>
+        </div>
+      </portal>
+    </nuxt-link>
+  </div>
 </template>
 
 <script>
@@ -29,10 +45,12 @@
     name: "UserPlaceCollectionItemCard",
     components: {ImageSize},
     props: {
-      place: {
-        required: true,
-        type: Object
-      }
+      place: {type: Object, required: true},
+      collection: {type: Object, required: true},
+      editing: {type: Boolean},
+    },
+    data() {
+      return {deleting: false}
     },
     computed: {
       location() {
@@ -70,11 +88,38 @@
             return {class: 'timing-close', text: 'Closing Soon'}
         }
       },
+    },
+    methods: {
+      onDeleteItem() {
+        const collectionId = this.collection.collectionId
+        const placeId = this.place.placeId
+        return this.$store.dispatch('user/collections/deleteItem', {collectionId, placeId})
+          .then(() => {
+            this.deleting = false
+            this.$emit('on-delete')
+            const message = `Removed '${this.place.name}' to '${this.collection.name}' collection.`
+            this.$store.dispatch('addMessage', {message})
+          }).catch(error => {
+            this.$store.dispatch('addError', error)
+          })
+      },
     }
   }
 </script>
 
 <style scoped lang="less">
+  .Editing {
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: flex-end;
+
+    .Icon {
+      width: 32px;
+      height: 32px;
+      padding: 5px;
+    }
+  }
+
   .ItemCard {
     color: initial;
     text-decoration: initial;

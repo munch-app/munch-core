@@ -87,6 +87,7 @@
       margin-bottom: 16px;
 
       .Image {
+        flex-shrink: 0;
         width: 50px;
         height: 50px;
         margin-right: 16px;
