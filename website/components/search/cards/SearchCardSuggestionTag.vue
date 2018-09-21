@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="SearchCard primary-500-bg border-4 zero-spacing">
-      <h2 class="White text weight-600">Can't decide?</h2>
-      <div class="White text">{{description}}</div>
+      <h2 class="white text weight-600">Can't decide?</h2>
+      <div class="white text">{{description}}</div>
 
       <div class="TagList">
         <div class="TagContainer" v-for="tag in card.tags" :key="tag.name" @click="onClick(tag.name)">

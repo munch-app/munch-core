@@ -61,13 +61,13 @@
         const group = new HourGroup(this.place.hours.map((h) => new Hour(h.day, h.open, h.close)))
         switch (group.isOpen()) {
           case 'open':
-            return {class: 'open', text: 'Open Now'}
+            return {class: 'timing-open', text: 'Open Now'}
           case 'closed':
-            return {class: 'close', text: 'Closed Now'}
+            return {class: 'timing-close', text: 'Closed Now'}
           case 'opening':
-            return {class: 'open', text: 'Opening Soon'}
+            return {class: 'timing-open', text: 'Opening Soon'}
           case 'closing':
-            return {class: 'close', text: 'Closing Soon'}
+            return {class: 'timing-close', text: 'Closing Soon'}
         }
       },
     }

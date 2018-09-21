@@ -2,7 +2,7 @@
   <div class="TimingCollection">
     <div class="TimingCell" v-for="timing in timings" :key="timing" @click="toggle(timing)"
          :class="{
-         'primary-500-bg White': isSelectedTiming(timing),
+         'primary-500-bg white': isSelectedTiming(timing),
          'whisper-100-bg black-a-75': !isSelectedTiming(timing)}">
       {{timing}}
     </div>

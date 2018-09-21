@@ -2,7 +2,7 @@
   <div class="PriceView">
     <div class="PriceButtonList">
       <div class="PriceButton hover-pointer" v-for="name in ['$','$$','$$$']" :key="name" @click="toggle(name)" :class="{
-           'primary-500-bg White': isSelectedPrice(name),
+           'primary-500-bg white': isSelectedPrice(name),
            'peach-200-bg black-a-75': !isSelectedPrice(name)}">
         {{name}}
       </div>

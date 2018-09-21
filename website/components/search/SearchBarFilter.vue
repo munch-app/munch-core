@@ -4,7 +4,7 @@
       <div class="Buttons container">
         <div v-for="button in buttons" :key="button.type" class="FilterButton" @click="onButton(button)"
              :class="{
-             'primary-500-bg White': button.type === selected,
+             'primary-500-bg white': button.type === selected,
              'whisper-100-bg black-a-75': button.type !== selected && !button.applied,
              'primary-050-bg black': button.type !== selected && button.applied,
              'Combined': button.type === 'combined'
