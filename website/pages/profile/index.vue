@@ -3,7 +3,7 @@
     <section class="Profile container">
       <div class="ProfileImage secondary-100-bg">
         <no-ssr>
-          <img v-if="photo" :src="photo" :alt="profile.name">
+          <img v-if="profile.photoUrl" :src="profile.photoUrl" :alt="profile.name">
         </no-ssr>
       </div>
       <no-ssr class="ProfileDetail">
@@ -105,13 +105,7 @@
     },
     computed: {
       ...mapGetters('user/collections', ['list', 'more']),
-      ...mapGetters('user', ['isSearchPreference']),
-      profile() {
-        return this.$store.state.user.profile || {}
-      },
-      photo() {
-        return this.profile && this.profile.photoUrl
-      }
+      ...mapGetters('user', ['isSearchPreference', 'profile']),
     },
     mounted() {
       if (process.client) {

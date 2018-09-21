@@ -3,10 +3,8 @@ package munch.api;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonService;
 import munch.restful.server.JsonTransformer;
-import munch.restful.server.jwt.TokenAuthenticator;
 
 import javax.inject.Inject;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -21,25 +19,13 @@ public abstract class ApiService implements JsonService {
     public static final String HEADER_USER_LOCAL_TIME = "User-Local-Time";
 
     private CleanerTransformer transformer;
-    protected TokenAuthenticator<?> authenticator;
 
     /**
      * @param transformer   whitelist transformer to clean data
-     * @param authenticator authenticator to authenticate user
      */
     @Inject
-    void injectWhitelist(CleanerTransformer transformer, TokenAuthenticator authenticator) {
+    void injectWhitelist(CleanerTransformer transformer) {
         this.transformer = transformer;
-        this.authenticator = authenticator;
-    }
-
-    /**
-     * @param call JsonCall
-     * @return Optional String UserId if exist
-     */
-    @Deprecated
-    public Optional<String> optionalUserId(JsonCall call) {
-        return authenticator.optionalSubject(call);
     }
 
     /**
@@ -67,16 +53,6 @@ public abstract class ApiService implements JsonService {
     public static Optional<LocalDateTime> optionalUserLocalTime(JsonCall call) {
         return Optional.ofNullable(call.getHeader(HEADER_USER_LOCAL_TIME))
                 .map(LocalDateTime::parse);
-    }
-
-    /**
-     * @param call JsonCall to authenticate
-     * @return UserId
-     */
-    @NotNull
-    @Deprecated
-    public String getUserId(JsonCall call) {
-        return authenticator.getSubject(call);
     }
 
     /**

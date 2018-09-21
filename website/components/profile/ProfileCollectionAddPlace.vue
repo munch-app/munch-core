@@ -1,13 +1,16 @@
 <template>
   <portal to="dialog">
-    <h3>Add To Collection</h3>
+    <h3 class="text-ellipsis-1-line">Add To Collection</h3>
     <div class="ListView">
       <div class="">
-        <div class="Collection flex" v-for="collection in list" :key="collection.collectionId">
-          <image-size class="Image" :image="collection.image"/>
+        <div class="Collection flex" v-for="collection in list" :key="collection.collectionId"
+             @click="addToCollection(collection)">
+          <image-size class="Image" :image="collection.image" v-if="collection.image"/>
+          <div v-else class="Image whisper-200-bg"/>
+
           <div class="Content">
-            <div class="Name text">{{collection.name}}</div>
-            <div class="small-bold">{{collection.count}} places</div>
+            <div class="Name text text-ellipsis-1-line">{{collection.name}}</div>
+            <div class="small-bold text-ellipsis-1-line">{{collection.count}} places</div>
           </div>
         </div>
       </div>
@@ -15,7 +18,9 @@
         <beat-loader color="#084E69" size="14px"/>
       </div>
     </div>
-    <button class="clear-elevated hover-pointer" @click="$emit('on-close')">Close</button>
+    <div>
+      <button class="clear-elevated hover-pointer" @click="$emit('on-close')">Close</button>
+    </div>
   </portal>
 </template>
 
@@ -42,6 +47,16 @@
           this.$store.dispatch('user/collections/load')
         }
       },
+      addToCollection(collection) {
+        const collectionId = collection.collectionId
+        const placeId = this.place.placeId
+        this.$store.dispatch('user/collections/putItem', {collectionId, placeId})
+          .then(() => {
+            const message = `Added '${this.place.name}' to '${collection.name}' collection.`
+            this.$store.dispatch('addMessage', {message})
+          })
+        this.$emit('on-close')
+      }
     }
   }
 </script>
@@ -78,6 +93,7 @@
       }
 
       .Content {
+        flex-grow: 1;
         display: flex;
         flex-direction: column;
         justify-content: center;

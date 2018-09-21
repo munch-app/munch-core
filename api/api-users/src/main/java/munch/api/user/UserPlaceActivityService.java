@@ -1,5 +1,6 @@
 package munch.api.user;
 
+import munch.api.ApiRequest;
 import munch.api.ApiService;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonResult;
@@ -33,7 +34,7 @@ public final class UserPlaceActivityService extends ApiService {
     }
 
     private JsonResult put(JsonCall call) {
-        String userId = getUserId(call);
+        String userId = call.get(ApiRequest.class).getUserId();
         String placeId = call.pathString("placeId");
         long startedMillis = call.pathLong("startedMillis");
         UserPlaceActivity placeActivity = call.bodyAsObject(UserPlaceActivity.class);

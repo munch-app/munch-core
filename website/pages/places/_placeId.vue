@@ -12,6 +12,15 @@
           <place-tag-list class="Tag" :tags="place.tags" :max="6"/>
         </section>
 
+        <section class="Action">
+          <no-ssr>
+            <div v-if="isLoggedIn" @click="showAddToCollection = true"
+                 class="Button elevation-1 elevation-hover-2 border-3 white-bg hover-pointer">
+              <simple-svg class="Icon" fill="rgba(0,0,0,0.75)" filepath="/img/places/action_add_collection.svg"/>
+            </div>
+          </no-ssr>
+        </section>
+
         <section class="MainDetail ContentBody">
           <place-detail :place="place"/>
         </section>
@@ -54,6 +63,7 @@
 </template>
 
 <script>
+  import {mapGetters} from "vuex";
   import PlaceTagList from "../../components/places/PlaceTagList";
   import ImageSize from "../../components/core/ImageSize";
   import MunchButton from "../../components/core/MunchButton";
@@ -70,16 +80,8 @@
 
   export default {
     components: {
-      ProfileCollectionAddPlace,
-      PlaceDetail,
-      PlaceAbout,
-      PlaceLocation,
-      PlaceAwardList,
-      PlaceBannerImage,
-      PartnerArticle,
-      PartnerInstagramMedia,
-      GoogleEmbedMap,
-      PlaceMenuList, MunchButton, ImageSize, PlaceTagList
+      ProfileCollectionAddPlace, PlaceDetail, PlaceAbout, PlaceLocation, PlaceAwardList, PlaceBannerImage,
+      PartnerArticle, PartnerInstagramMedia, GoogleEmbedMap, PlaceMenuList, MunchButton, ImageSize, PlaceTagList
     },
     head() {
       const description = this.data.place.description
@@ -95,7 +97,7 @@
     },
     data() {
       return {
-        showAddToCollection: true
+        showAddToCollection: false
       }
     },
     asyncData({$axios, params}) {
@@ -105,6 +107,7 @@
         });
     },
     computed: {
+      ...mapGetters('user', ['isLoggedIn']),
       placeId() {
         return this.data.place.placeId
       },
@@ -143,6 +146,16 @@
 
     .Tag {
       margin-top: 8px;
+    }
+  }
+
+  section.Action {
+    .Button {
+      margin-right: 16px;
+      margin-top: 16px;
+      padding: 8px;
+      width: 40px;
+      height: 40px;
     }
   }
 

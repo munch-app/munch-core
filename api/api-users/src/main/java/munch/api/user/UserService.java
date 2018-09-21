@@ -58,11 +58,13 @@ public final class UserService extends ApiService {
     }
 
     public UserProfile getProfile(JsonCall call) {
-        return profileClient.get(getUserId(call));
+        String userId = call.get(ApiRequest.class).getUserId();
+        return profileClient.get(userId);
     }
 
     public UserSetting getSetting(JsonCall call) throws AuthenticationException {
-        UserSetting setting = settingClient.get(getUserId(call));
+        String userId = call.get(ApiRequest.class).getUserId();
+        UserSetting setting = settingClient.get(userId);
         if (setting != null) return setting;
         return new UserSetting();
     }

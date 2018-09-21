@@ -1,16 +1,14 @@
 package munch.api.search;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import munch.api.ApiService;
+import munch.api.ApiRequest;
 import munch.api.search.data.SearchQuery;
 import munch.api.search.elastic.ElasticQueryUtils;
 import munch.restful.core.JsonUtils;
 import munch.restful.server.JsonCall;
-import munch.restful.server.jwt.TokenAuthenticator;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
-import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.time.LocalDateTime;
 import java.util.function.Function;
@@ -29,17 +27,12 @@ public final class SearchRequest {
     private final String latLng;
     private final LocalDateTime localDateTime;
 
-    private SearchRequest(JsonCall call, @Nullable String userId, SearchQuery searchQuery) {
-        this(call, userId, searchQuery, ApiService.optionalUserLatLng(call).orElse(null));
-    }
-
-    private SearchRequest(JsonCall call, String userId, SearchQuery searchQuery, String latLng) {
+    private SearchRequest(JsonCall call, SearchQuery searchQuery) {
         this.call = call;
-        this.userId = userId;
+        this.userId = call.get(ApiRequest.class).optionalUserId().orElse(null);
         this.searchQuery = searchQuery;
-        this.latLng = latLng;
-
-        this.localDateTime = ApiService.optionalUserLocalTime(call).orElse(null);
+        this.latLng = call.get(ApiRequest.class).optionalLatLng().orElse(null);
+        this.localDateTime = call.get(ApiRequest.class).optionalLocalTime().orElse(null);
     }
 
     /**
@@ -139,7 +132,7 @@ public final class SearchRequest {
      */
     public SearchRequest deepCopy() {
         SearchQuery searchQuery = JsonUtils.deepCopy(this.searchQuery, SearchQuery.class);
-        return new SearchRequest(call, userId, searchQuery, latLng);
+        return new SearchRequest(call, searchQuery);
     }
 
     /**
@@ -147,7 +140,7 @@ public final class SearchRequest {
      * @return cloned search request, with query replaced
      */
     public SearchRequest cloneWith(SearchQuery query) {
-        return new SearchRequest(call, userId, query, latLng);
+        return new SearchRequest(call, query);
     }
 
     /**
@@ -159,31 +152,21 @@ public final class SearchRequest {
 
     @Singleton
     public static final class Factory {
-        private final TokenAuthenticator<?> authenticator;
-
-        @Inject
-        public Factory(TokenAuthenticator authenticator) {
-            this.authenticator = authenticator;
-        }
-
         public SearchRequest create(JsonCall call) {
-            String userId = authenticator.optionalSubject(call).orElse(null);
             SearchQuery searchQuery = call.bodyAsObject(SearchQuery.class);
             SearchQuery.fix(searchQuery);
-            return new SearchRequest(call, userId, searchQuery);
+            return new SearchRequest(call, searchQuery);
         }
 
         public SearchRequest create(JsonCall call, SearchQuery searchQuery) {
-            String userId = authenticator.optionalSubject(call).orElse(null);
             SearchQuery.fix(searchQuery);
-            return new SearchRequest(call, userId, searchQuery);
+            return new SearchRequest(call, searchQuery);
         }
 
         public SearchRequest create(JsonCall call, Function<JsonNode, SearchQuery> mapper) {
-            String userId = authenticator.optionalSubject(call).orElse(null);
             SearchQuery searchQuery = mapper.apply(call.bodyAsJson());
             SearchQuery.fix(searchQuery);
-            return new SearchRequest(call, userId, searchQuery);
+            return new SearchRequest(call, searchQuery);
         }
     }
 

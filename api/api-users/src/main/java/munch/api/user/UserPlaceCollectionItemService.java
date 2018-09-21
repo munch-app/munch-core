@@ -1,5 +1,6 @@
 package munch.api.user;
 
+import munch.api.ApiRequest;
 import munch.api.ApiService;
 import munch.data.client.PlaceClient;
 import munch.data.place.Place;
@@ -21,6 +22,8 @@ import java.util.List;
  */
 @Singleton
 public final class UserPlaceCollectionItemService extends ApiService {
+    // TODO look at authenticator
+
 
     private final UserPlaceCollectionClient collectionClient;
     private final PlaceClient placeClient;
@@ -61,7 +64,7 @@ public final class UserPlaceCollectionItemService extends ApiService {
     }
 
     public Item get(JsonCall call) {
-        authenticator.authenticate(call);
+        call.get(ApiRequest.class).getUserId();
         String collectionId = call.pathString("collectionId");
         String placeId = call.pathString("placeId");
 
@@ -76,7 +79,7 @@ public final class UserPlaceCollectionItemService extends ApiService {
     }
 
     public Item put(JsonCall call) throws ItemAlreadyExistInPlaceCollection {
-        String userId = getUserId(call);
+        String userId = call.get(ApiRequest.class).getUserId();
         String collectionId = call.pathString("collectionId");
         String placeId = call.pathString("placeId");
 
@@ -91,7 +94,7 @@ public final class UserPlaceCollectionItemService extends ApiService {
     }
 
     public UserPlaceCollection.Item delete(JsonCall call) {
-        String userId = getUserId(call);
+        String userId = call.get(ApiRequest.class).getUserId();
         String collectionId = call.pathString("collectionId");
         String placeId = call.pathString("placeId");
 

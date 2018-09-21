@@ -9,6 +9,7 @@ export const state = () => ({
 // So that user info will be loaded without using vuex-local-storage
 
 export const getters = {
+  profile: (state) => state.profile || {},
   isLoggedIn: (state) => !!state.profile,
   displayName: (state) => state.profile && state.profile.name,
   isSearchPreference: (state) => (tag) => {

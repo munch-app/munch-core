@@ -38,10 +38,30 @@ export const mutations = {
 
   removeAll(state) {
     state.list.splice(0, state.list.length)
+  },
+
+  restart(state) {
+    state.list.splice(0, state.list.length)
+    state.next = null
+    state.loading = false
   }
 }
 
 export const actions = {
+  putItem({commit, state}, {collectionId, placeId}) {
+    return this.$axios.$put(`/api/users/places/collections/${collectionId}/items/${placeId}`)
+      .then(() => {
+        commit('restart')
+      })
+  },
+
+  deleteItem({commit, state}, {collectionId, placeId}) {
+    return this.$axios.$delete(`/api/users/places/collections/${collectionId}/items/${placeId}`)
+      .then(() => {
+        commit('restart')
+      })
+  },
+
   post({commit, state}, collection) {
     return this.$axios.$post(`/api/users/places/collections`, collection)
       .then(({data}) => {
