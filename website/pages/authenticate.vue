@@ -5,19 +5,19 @@
 </template>
 
 <script>
-  import BeatLoader from "vue-spinner/src/BeatLoader";
   import MoonLoader from "vue-spinner/src/MoonLoader";
   export default {
-    components: {MoonLoader, BeatLoader},
+    components: {MoonLoader},
     head() {
       return {title: 'Authenticating | Munch'}
     },
     mounted() {
       if (process.client) {
+        const redirect = this.$route.query.redirect && decodeURIComponent(this.$route.query.redirect) || '/'
         const authenticator = require('~/services/authenticator').default
         authenticator.getIdToken()
           .then(() => {
-            this.$router.push({path: '/'})
+            this.$router.push({path: redirect})
           })
           .catch(error => {
             console.log(error)
