@@ -1,33 +1,32 @@
 <template>
   <div class="Default">
-    <nav class="index-top-elevation Header nav-bg" :class="{'elevation-1': !isFilter}">
+    <nav class="index-top-elevation Header nav-bg" :class="{'elevation-1': !isSearch}">
       <div class="HeaderRow container clearfix">
-        <header-logo class="Logo" :class="{'IsSuggest': isFocused('Suggest')}" @click="onClickLogo"/>
+        <header-logo class="Logo" :class="{'IsSuggest': isFocused('Suggest')}"/>
         <div class="Search">
-          <search-bar class="SearchBar" @onText="onText" @onFocus="onFocus" @onBlur="onBlur"/>
+          <search-bar class="SearchBar" v-if="!isIndex" @onText="onText" @onFocus="onFocus" @onBlur="onBlur"/>
         </div>
-        <header-right class="HeaderMenu float-right" @clickMenu="onClickMenu"/>
+        <header-right class="HeaderMenu"/>
       </div>
     </nav>
 
     <div style="height: 56px"/>
-    <header-menu class="Menu"/>
+    <header-menu/>
 
-    <div style="height: 48px" v-if="isFilter"/>
-    <search-bar-filter class="Filter index-header" v-if="isFilter"/>
+    <div style="height: 48px" v-if="isSearch"/>
+    <search-bar-filter v-if="isSearch"/>
 
-    <!-- Everything under here should be overlaying elements -->
-    <profile-on-boarding v-if="isFocused('Login')"/>
-
+    <!-- Dialog manager for system -->
     <dialog-portal/>
 
+    <!-- Notification List on the right -->
     <notification-list/>
 
     <!-- Elevation overlay for content -->
     <div :class="{'elevation-overlay index-content-overlay': isElevated}"></div>
     <nuxt class="Content" :class="{'elevation-blur': isElevated}"/>
 
-    <nav-footer class="Footer"/>
+    <nav-footer/>
   </div>
 </template>
 
@@ -56,27 +55,18 @@
       HeaderLogo
     },
     data() {
-      return {
-        text: ""
-      }
+      return {text: ""}
     },
     computed: {
       ...mapGetters(['isElevated', 'isFocused']),
-      isFilter() {
+      isSearch() {
         return this.$route.name === 'search'
       },
+      isIndex() {
+        return this.$route.name === 'index'
+      }
     },
     methods: {
-      onClickLogo() {
-        if (window.innerWidth < 768) {
-          this.$store.commit('toggleFocus', 'HeaderMenu')
-        } else {
-          this.$router.push({path: '/'})
-        }
-      },
-      onClickMenu() {
-        this.$store.commit('toggleFocus', 'HeaderMenu')
-      },
       onText(text) {
         this.text = text
       },
@@ -98,6 +88,10 @@
     display: flex;
     min-height: 100vh;
     flex-direction: column;
+
+    .Content {
+      flex: 1;
+    }
   }
 
   .Header {
@@ -106,49 +100,34 @@
     height: 56px;
     width: 100%;
 
-    .Logo {
-      display: block;
-      margin-right: 8px;
-
-      &.IsSuggest {
-        display: none;
-
-        @media (min-width: 768px) {
-          display: block;
-        }
-      }
-    }
-
     .HeaderRow {
       display: flex;
-    }
 
-    .Search {
-      margin: 8px 0 8px 0;
-      flex-grow: 1;
-
-      @media (min-width: 768px) {
-        margin: 8px 8px 8px 8px;
+      .Logo {
+        margin-right: 8px;
       }
 
-      .SearchBar {
-        @media (min-width: 768px) {
+      .Search {
+        margin: 8px 0 8px 0;
+        flex-grow: 1;
+      }
+
+      @media (max-width: 767.98px) {
+        .HeaderMenu, .IsSuggest {
+          display: none;
+        }
+      }
+
+      @media (min-width: 768px) {
+        .Search {
+          margin-left: 8px;
+          margin-right: 8px;
+        }
+
+        .SearchBar {
           width: 500px;
         }
       }
     }
-
-    @media (max-width: 767.98px) {
-      .HeaderMenu {
-        display: none;
-      }
-    }
-  }
-
-  .Content {
-    flex: 1;
-  }
-
-  .Footer {
   }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="HeaderLogo" @click="$emit('click')">
+  <div class="HeaderLogo" @click="onClickLogo">
     <img class="Image" src="/img/MunchLogo.svg">
     <img class="HeaderIndicator" src="/img/layouts/caret-down.svg">
   </div>
@@ -8,6 +8,15 @@
 <script>
   export default {
     name: "HeaderLogo",
+    methods: {
+      onClickLogo() {
+        if (window.innerWidth < 768) {
+          this.$store.commit('toggleFocus', 'HeaderMenu')
+        } else {
+          this.$router.push({path: '/'})
+        }
+      }
+    }
   }
 </script>
 

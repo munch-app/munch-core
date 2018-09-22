@@ -15,45 +15,45 @@ Max-width of 400px if > 576vw
     <portal-target class="Dialog W400 elevation-3 index-elevation" name="dialog-w400"/>
     <portal-target class="Dialog Styled elevation-3 index-elevation" name="dialog-styled"/>
 
+    <!-- Universal Dialog -->
+    <profile-on-boarding v-if="isFocused('Login')"/>
+
     <div class="DialogOverlay elevation-overlay index-content-overlay"/>
   </div>
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
+  import ProfileOnBoarding from "../profile/ProfileOnBoarding";
+
   export default {
     name: "DialogDelegator",
-    data() {
-      return {
-        isOverlay: false
-      }
-    },
-    methods: {
-      visibilityChanged(isVisible) {
-        this.isOverlay = isVisible
-      },
+    components: {ProfileOnBoarding},
+    computed: {
+      ...mapGetters(['isFocused']),
     }
   }
 </script>
 
 <style lang="less">
-  // Disable if no content
-  .Dialog:empty {
-    display: none !important;
+  .DialogPortal {
+    position: fixed;
+    top: 0;
+    bottom: 0;
   }
 
   .DialogOverlay {
     display: none;
   }
 
+  // Disable if no content
+  .Dialog:empty {
+    display: none !important;
+  }
+
   // Dialog overlay will only be shown if there is a preceding not empty dialog
   .Dialog:not(:empty) ~ .DialogOverlay {
     display: initial !important;
-  }
-
-  .DialogPortal {
-    position: fixed;
-    top: 0;
-    bottom: 0;
   }
 
   .Dialog {

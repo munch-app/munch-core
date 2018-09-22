@@ -9,7 +9,7 @@
         <h1>Munch</h1>
       </div>
 
-      <div class="CloseButton" @click="$store.commit('unfocus', 'Login')">
+      <div class="CloseButton hover-pointer" @click="$store.commit('unfocus', 'Login')">
         Close
       </div>
       <slick class="Slick no-select" ref="slick" :options="options">
@@ -43,7 +43,7 @@
     </div>
 
     <div class="LoginBottom">
-      <div class="FacebookButton border-3 text-center" @click="onSignInFacebook">
+      <div class="FacebookButton border-3 text-center hover-pointer" @click="onSignInFacebook">
         Sign in with Facebook
       </div>
       <div class="text PrivacyPolicy">
