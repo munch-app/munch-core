@@ -49,12 +49,13 @@ export const getters = {
   },
 
   isSelectedLocation: (state) => (location) => {
+    const userLatLng = state.user.latLng  || Cookies.get('UserLatLng')
     if (location === 'Nearby') {
-      return state.user.latLng && state.query.filter.area === null
+      return userLatLng && state.query.filter.area === null
     }
 
     if (location === 'Anywhere') {
-      if (!state.user.latLng && state.query.filter.area === null) {
+      if (!userLatLng && state.query.filter.area === null) {
         return true
       } else {
         return state.query.filter.area && state.query.filter.area.areaId === ANYWHERE.areaId
@@ -265,11 +266,6 @@ export const actions = {
   start({commit, state}, query) {
     if (state.loading === true) return
     commit('loading', true)
-
-    // Set User LatLng if exist
-    const cookieLatLng = Cookies.get('UserLatLng')
-    if (!state.user.latLng && cookieLatLng) commit('updateLatLng', cookieLatLng)
-
     if (query) commit('replace', query)
 
     // Search Preference Injection

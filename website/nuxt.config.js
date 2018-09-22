@@ -100,9 +100,7 @@ module.exports = {
       id: 'UA-117480436-1'
     }],
   ],
-  axios: {
-    // proxyHeaders: false
-  },
+  axios: {},
   sitemap: {
     path: '/sitemap.xml',
     hostname: 'https://www.munch.app',

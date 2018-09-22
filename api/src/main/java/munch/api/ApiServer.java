@@ -1,5 +1,8 @@
 package munch.api;
 
+import munch.restful.core.exception.AuthenticationException;
+import munch.restful.core.exception.StructuredException;
+import munch.restful.server.JsonCall;
 import munch.restful.server.RestfulServer;
 import munch.restful.server.RestfulService;
 import munch.restful.server.jwt.TokenAuthenticator;
@@ -54,5 +57,15 @@ public final class ApiServer extends RestfulServer {
     public void before(Request request, Response response) {
         // See JsonCall.get & JsonCall.put to understand how it works
         request.attribute(ApiRequest.class.getName(), new ApiRequest(request, authenticator));
+    }
+
+    @Override
+    protected void handleException(JsonCall call, StructuredException exception) {
+        if (exception instanceof AuthenticationException) {
+            ApiRequest request = call.get(ApiRequest.class);
+            logger.warn("AuthenticationException User: {}", request.optionalUserId().orElse(null));
+            return;
+        }
+        super.handleException(call, exception);
     }
 }
