@@ -4,21 +4,25 @@
       <h2 class="white text weight-600">Can't decide?</h2>
       <div class="white text">{{description}}</div>
 
-      <div class="TagList">
-        <div class="TagContainer" v-for="tag in card.tags" :key="tag.name" @click="onClick(tag.name)">
-          <div class="Tag text text-center white-bg border-4">
-            <div class="Name">{{tag.name}}</div>
-            <div class="Count">{{tag.count}} places</div>
+      <horizontal-scroll-view class="TagList" :items="card.tags" :map-key="i => i.name" :container="false"
+                              :padding="18">
+        <template slot-scope="{item}" @click="onClick(item)">
+          <div class="Tag text text-center white-bg border-4 hover-pointer">
+            <div class="Name text-ellipsis-1-line">{{item.name}}</div>
+            <div class="Count text-ellipsis-1-line">{{item.count}} places</div>
           </div>
-        </div>
-      </div>
+        </template>
+      </horizontal-scroll-view>
     </div>
   </div>
 </template>
 
 <script>
+  import HorizontalScrollView from "../../core/HorizontalScrollView";
+
   export default {
     name: "SearchCardSuggestionTag",
+    components: {HorizontalScrollView},
     props: {
       card: {
         type: Object,
@@ -51,14 +55,9 @@
 
   .TagList {
     margin-top: 16px;
-    display: flex;
-
-    overflow-x: scroll;
-    -webkit-overflow-scrolling: touch;
-
-    .TagContainer {
-      padding-right: 18px;
-    }
+    margin-left: -15px;
+    margin-right: -24px;
+    height: 70px;
 
     .Tag {
       padding-left: 6px;
@@ -67,16 +66,6 @@
       width: 120px;
       height: 70px;
       font-weight: 600;
-
-      &:hover {
-        cursor: pointer;
-      }
-
-      div {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
 
       .Name {
         text-transform: capitalize;

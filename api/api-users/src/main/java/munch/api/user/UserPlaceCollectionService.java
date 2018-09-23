@@ -81,7 +81,7 @@ public final class UserPlaceCollectionService extends ApiService {
      */
     public UserPlaceCollection get(JsonCall call) {
         String collectionId = call.pathString("collectionId");
-        String userId = call.get(ApiRequest.class).getUserId();
+        String userId = call.get(ApiRequest.class).optionalUserId().orElse(null);
 
         UserPlaceCollection collection = collectionClient.get(collectionId);
         if (collection == null) return null;

@@ -60,7 +60,11 @@
       // TODO PM-173
       this.text = this.$route.query.q || ''
       this.$emit('onText', this.text)
-      window.addEventListener('keyup', this.keyUpListener);
+      window.addEventListener('keyup', this.keyUpListener)
+
+      if (this.isFocused('Suggest')) {
+        this.$refs.input.focus()
+      }
     },
     watch: {
       loading() {
@@ -68,6 +72,7 @@
       }
     },
     computed: {
+      ...mapGetters(['isElevated', 'isFocused']),
       ...mapGetters('search', ['loading']),
       clearStyle() {
         return {
@@ -160,7 +165,9 @@
         window.scrollTo(0, 0);
         this.searching = true
         this.position = 0
-        this.$emit('onFocus', this.text)
+
+        this.$router.push({path: '/search', query: {q: this.text}})
+        this.$store.commit('focus', 'Suggest')
       },
       onBlur() {
         this.searching = false

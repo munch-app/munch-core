@@ -144,9 +144,6 @@
     display: flex;
     align-items: center;
 
-    overflow-x: scroll;
-    -webkit-overflow-scrolling: touch;
-
     .FilterButton {
       font-size: 13px;
       font-weight: 600;

@@ -2,25 +2,25 @@
   <div>
     <h2>Discover Locations</h2>
 
-    <div class="ClusterList">
-      <div class="ClusterContainer" v-for="area in areas" :key="area.areaId" @click="onClick(area)">
+    <horizontal-scroll-view class="ClusterList" :items="areas" :map-key="a => a.areaId" :container="false"
+                            :padding="18">
+      <template slot-scope="{item}" @click="onClick(item)">
         <div class="ClusterCard elevation-hover-1">
-          <image-size class="Image" :image="area.images && area.images[0]"></image-size>
-          <div class="Name">
-            {{area.name}}
-          </div>
+          <image-size class="Image" :image="item.images && item.images[0]"/>
+          <div class="Name">{{item.name}}</div>
         </div>
-      </div>
-    </div>
+      </template>
+    </horizontal-scroll-view>
   </div>
 </template>
 
 <script>
   import ImageSize from "../../core/ImageSize";
+  import HorizontalScrollView from "../../core/HorizontalScrollView";
 
   export default {
     name: "SearchCardAreaClusterList",
-    components: {ImageSize},
+    components: {HorizontalScrollView, ImageSize},
     props: {
       areas: {
         type: Array,
@@ -38,25 +38,9 @@
 </script>
 
 <style scoped lang="less">
-  h2 {
-    margin-bottom: 18px;
-  }
-
   .ClusterList {
+    margin-top: 18px;
     height: 112px;
-    display: flex;
-    overflow-x: scroll;
-    overflow-y: visible;
-    -webkit-overflow-scrolling: touch;
-
-    .ClusterContainer {
-      overflow: visible;
-      padding-right: 18px;
-
-      &:hover {
-        cursor: pointer;
-      }
-    }
   }
 
   .ClusterCard {

@@ -55,18 +55,6 @@ module.exports = {
         config.devtool = 'eval-source-map'
       }
     },
-    vendor: [
-      'jquery',
-      'vue-line-clamp-extended',
-      'vue-clickaway',
-      'vue-simple-svg',
-      'vue-rx',
-      'prismic-vue',
-      'portal-vue',
-      'vue-browser-geolocation',
-      'vue-observe-visibility',
-      'vuex-persistedstate',
-    ],
     plugins: [
       new webpack.ProvidePlugin({
         '$': 'jquery'
@@ -74,16 +62,17 @@ module.exports = {
     ]
   },
   plugins: [
-    '~/plugins/axios',
     '~/plugins/global',
-    '~/plugins/vue-line-clamp-extended',
-    '~/plugins/vue-clickaway',
-    '~/plugins/vue-simple-svg',
-    '~/plugins/vue-rx',
-    '~/plugins/prismic-vue',
+    '~/plugins/axios',
     '~/plugins/portal-vue',
+    '~/plugins/prismic-vue',
+    '~/plugins/vue-rx',
+    '~/plugins/vue-clickaway',
+    '~/plugins/vue-line-clamp-extended',
+    '~/plugins/vue-simple-svg',
     '~/plugins/vue-browser-geolocation',
     '~/plugins/vue-observe-visibility',
+    {src: '~/plugins/vue-touch', ssr: false},
     {src: '~/plugins/vuex-persistedstate', ssr: false}
   ],
   serverMiddleware: [

@@ -1,9 +1,15 @@
 <template>
   <div class="zero-spacing LandingPage">
-    <section class="Profile">
+    <section class="EatBetween">
+      <landing-eat-between/>
+    </section>
+
+    <section v-if="false" class="Profile">
       <div class="container">
         <div class="Greeting">
-          <h1>{{salutation}}<no-ssr><span class="Name">, {{displayName || 'Samantha'}}</span></no-ssr></h1>
+          <h1>{{salutation}}
+            <no-ssr><span class="Name">, {{displayName || 'Samantha'}}</span></no-ssr>
+          </h1>
           <no-ssr>
             <div class="text Login" v-if="!isLoggedIn">(not your name?
               <a @click="$store.commit('focus', 'Login')" class="LoginButton"><span
@@ -22,26 +28,19 @@
         <p>The best Breakfast spots near you.</p>
       </div>
 
-      <div class="container">
-        <div class="TimingList">
-          <div class="Card" v-for="i in [0,1,2,4]" :key="i">
-            <div></div>
-          </div>
-        </div>
-      </div>
+      <horizontal-scroll-view class="TimingList" :items="[0,1,2,3,4,5,6,7,8,9]" :map-key="i => i">
+        <template slot-scope="{item}">
+          <div class="SimpleCard"></div>
+        </template>
+      </horizontal-scroll-view>
     </section>
 
-    <section class="Location">
+    <section class="Search">
       <div class="container">
-        <h2>Day in, day out</h2>
-        <p>Your favourite places - rediscovered.</p>
+        <h2>Search</h2>
       </div>
-      <landing-location-list class="container"/>
-    </section>
-
-    <section class="EatBetween secondary-100-bg">
-      <div class="container flex-center">
-        <h1 class="white mt-5">Eat Between?</h1>
+      <div class="container">
+        <search-bar class="SearchBar"/>
       </div>
     </section>
 
@@ -51,13 +50,7 @@
         <p>What’s hot and edible</p>
       </div>
 
-      <div class="container">
-        <div class="CollectionList">
-          <div class="Card" v-for="collection in collections" :key="collection.collectionId">
-            <user-place-collection-card :collection="collection"/>
-          </div>
-        </div>
-      </div>
+      <landing-collection class="LandingCollection" :collections="collections"/>
     </section>
   </div>
 </template>
@@ -65,10 +58,13 @@
 <script>
   import {mapGetters} from "vuex";
   import LandingLocationList from "../components/landing/LandingLocationList";
-  import UserPlaceCollectionCard from "../components/collections/UserPlaceCollectionCard";
+  import HorizontalScrollView from "../components/core/HorizontalScrollView";
+  import LandingCollection from "../components/landing/LandingCollection";
+  import LandingEatBetween from "../components/landing/LandingEatBetween";
+  import SearchBar from "../components/search/SearchBar";
 
   export default {
-    components: {UserPlaceCollectionCard, LandingLocationList},
+    components: {SearchBar, LandingEatBetween, LandingCollection, HorizontalScrollView, LandingLocationList},
     asyncData({$axios}) {
       return $axios.$post('/api/landing')
         .then(({data}) => {
@@ -92,12 +88,11 @@
 
 <style scoped lang="less">
   .LandingPage {
-    padding-bottom: 64px;
+    padding-bottom: 24px;
   }
 
   section {
-    margin-top: 24px;
-    margin-bottom: 32px;
+    margin-bottom: 40px;
   }
 
   section.Profile {
@@ -131,65 +126,27 @@
   section.Timing {
     .TimingList {
       margin-top: 16px;
-      margin-left: -24px;
-      margin-right: -24px;
+      height: 72px;
+    }
 
-      display: flex;
-      overflow-x: scroll;
-      -webkit-overflow-scrolling: touch;
-
-      .Card {
-        margin-right: 24px;
-        flex-shrink: 0;
-
-        > div {
-          background: black;
-          width: 160px;
-          height: 72px;
-          border-radius: 4px;
-        }
-      }
-
-      .Card:nth-of-type(1) {
-        margin-left: 24px;
-      }
-
-      .Card:nth-last-of-type(1) {
-        padding-right: 24px;
-      }
+    .SimpleCard {
+      background: black;
+      width: 160px;
+      height: 72px;
+      border-radius: 4px;
     }
   }
 
-  section.EatBetween {
-    height: 400px;
-  }
-
-  section.Location {
-
+  section.Search {
+    .SearchBar {
+      margin-top: 16px;
+      max-width: 500px;
+    }
   }
 
   section.Collection {
-    .CollectionList {
+    .LandingCollection {
       margin-top: 16px;
-      margin-left: -24px;
-      margin-right: -24px;
-
-      display: flex;
-      overflow-x: scroll;
-      -webkit-overflow-scrolling: touch;
-
-      .Card {
-        margin-right: 24px;
-        flex-shrink: 0;
-      }
-
-      .Card:nth-of-type(1) {
-        margin-left: 24px;
-      }
-
-      .Card:nth-last-of-type(1) {
-        padding-right: 24px;
-      }
     }
   }
 </style>
