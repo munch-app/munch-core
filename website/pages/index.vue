@@ -39,8 +39,9 @@
       <div class="container">
         <h2>Search</h2>
       </div>
-      <div class="container">
+      <div class="container" @click="onFocus">
         <search-bar class="SearchBar"/>
+        <div class="SearchBarContainer"></div>
       </div>
     </section>
 
@@ -81,6 +82,12 @@
         if (totalMinutes >= 300 && totalMinutes < 720) return 'Good Morning'
         if (totalMinutes >= 720 && totalMinutes < 1020) return 'Good Afternoon'
         else return 'Good Evening'
+      }
+    },
+    methods: {
+      onFocus() {
+        this.$router.push({path: '/search'})
+        this.$store.commit('focus', 'Suggest')
       }
     }
   }
@@ -138,6 +145,15 @@
   }
 
   section.Search {
+    .SearchBarContainer {
+      position: absolute;
+
+      left: 0;
+      right: 0;
+      height: 40px;
+      margin-top: -40px;
+    }
+
     .SearchBar {
       margin-top: 16px;
       max-width: 500px;

@@ -1,6 +1,6 @@
 <template>
-  <div v-on-clickaway="onBlur">
-    <div class="SearchTextBar no-select elevation-1" :class="{'Extended': isExtended, 'elevation-2': searching}">
+  <div v-on-clickaway="onBlur" class="elevation-1 border-3" :class="{'Extended': isExtended, 'elevation-2': searching}">
+    <div class="SearchTextBar no-select">
       <input ref="input" class="TextBar" type="text"
              placeholder="Search e.g. Italian in Marina Bay" v-model="text" @focus="onFocus">
 
@@ -165,9 +165,7 @@
         window.scrollTo(0, 0);
         this.searching = true
         this.position = 0
-
-        this.$router.push({path: '/search', query: {q: this.text}})
-        this.$store.commit('focus', 'Suggest')
+        this.$emit('onFocus')
       },
       onBlur() {
         this.searching = false
@@ -211,19 +209,16 @@
 </script>
 
 <style scoped lang="less">
+  .Extended {
+    @media (min-width: 768px) {
+      border-radius: 3px 3px 0 0;
+    }
+  }
+
   .SearchTextBar {
     position: relative;
     width: 100%;
     height: 40px;
-    border-radius: 3px;
-
-    &.Extended {
-      border-radius: 3px;
-
-      @media (min-width: 768px) {
-        border-radius: 3px 3px 0 0;
-      }
-    }
 
     .TextBar {
       border-radius: 3px;
@@ -260,6 +255,7 @@
   }
 
   @Nav2: #EFF2F7;
+
   .SearchSuggest {
     background: white;
     position: absolute;

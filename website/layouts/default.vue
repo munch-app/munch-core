@@ -4,7 +4,7 @@
       <div class="HeaderRow container clearfix">
         <header-logo class="Logo" :class="{'IsSuggest': isFocused('Suggest')}"/>
         <div class="Search">
-          <search-bar class="SearchBar" v-if="!isIndex" @onText="onText" @onBlur="onBlur"/>
+          <search-bar class="SearchBar" v-if="!isIndex" @onText="onText" @onBlur="onBlur" @onFocus="onFocus"/>
         </div>
         <header-right class="HeaderMenu"/>
       </div>
@@ -31,6 +31,8 @@
 </template>
 
 <script>
+  if (process.browser) require('intersection-observer')
+
   import {mapGetters} from 'vuex'
   import HeaderLogo from "../components/layouts/HeaderLogo";
   import HeaderMenu from "../components/layouts/HeaderMenu";
@@ -44,21 +46,17 @@
 
   export default {
     components: {
-      NavFooter,
-      NotificationList,
-      DialogPortal,
-      ProfileOnBoarding,
-      HeaderRight,
-      SearchBarFilter,
-      SearchBar,
-      HeaderMenu,
-      HeaderLogo
+      NavFooter, NotificationList, DialogPortal, ProfileOnBoarding, HeaderRight, SearchBarFilter,
+      SearchBar, HeaderMenu, HeaderLogo
     },
     data() {
       return {text: ""}
     },
     computed: {
       ...mapGetters(['isElevated', 'isFocused']),
+      route() {
+        return this.$route.name
+      },
       isSearch() {
         return this.$route.name === 'search'
       },
@@ -71,7 +69,7 @@
         this.text = text
       },
       onFocus() {
-        this.$router.push({path: '/search', query: {q: this.text}})
+        this.$router.push({path: '/search'})
         this.$store.commit('focus', 'Suggest')
       },
       onBlur() {
@@ -80,6 +78,11 @@
         }
       }
     },
+    watch: {
+      route() {
+        // this.$store.commit('clearFocus')
+      }
+    }
   }
 </script>
 

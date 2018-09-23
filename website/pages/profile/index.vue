@@ -93,8 +93,6 @@
   import ProfileCollectionCard from "../../components/profile/ProfileCollectionCard";
   import BeatLoader from "vue-spinner/src/BeatLoader";
 
-  if (process.browser) require('intersection-observer')
-
   export default {
     components: {BeatLoader, ProfileCollectionCard},
     data() {

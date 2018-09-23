@@ -45,8 +45,6 @@
   import UserPlaceCollectionItemCard from "../../components/collections/UserPlaceCollectionItemCard";
   import _ from 'underscore'
 
-  if (process.browser) require('intersection-observer')
-
   export default {
     components: {UserPlaceCollectionItemCard, BeatLoader},
     data() {

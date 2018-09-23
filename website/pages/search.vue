@@ -21,8 +21,6 @@
   import CardDelegator from "../components/search/cards/CardDelegator";
   import BeatLoader from 'vue-spinner/src/BeatLoader.vue'
 
-  if (process.browser) require('intersection-observer')
-
   export default {
     components: {CardDelegator, BeatLoader},
     head() {

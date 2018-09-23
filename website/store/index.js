@@ -68,6 +68,15 @@ export const mutations = {
     }
   },
   /**
+   * clear focus
+   * @param state
+   */
+  clearFocus(state) {
+    state.focus.name = null
+    state.focus.is = false
+    clearAllBodyScrollLocks(document.querySelector('body'))
+  },
+  /**
    * @param state
    * @param name element to toggle focus on
    */

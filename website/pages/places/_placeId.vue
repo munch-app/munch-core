@@ -8,7 +8,9 @@
       <div class="container">
         <section class="Name ContentBody">
           <h1>{{place.name}}</h1>
-          <div class="regular Street">{{place.location.neighbourhood || place.location.street || place.location.address}}</div>
+          <div class="regular Street">{{place.location.neighbourhood || place.location.street ||
+            place.location.address}}
+          </div>
           <place-tag-list class="Tag" :tags="place.tags" :max="6"/>
         </section>
 
@@ -44,14 +46,14 @@
         <div class="container">
           <h2>Articles</h2>
         </div>
-        <partner-article :place-id="placeId" :preload="data.articles"/>
+        <partner-article :place-id="place.placeId" :preload="data.articles"/>
       </section>
 
       <section class="Instagram" v-if="data.instagram.medias.length > 0">
         <div class="container">
           <h2>Instagram</h2>
         </div>
-        <partner-instagram-media :place-id="placeId" :preload="data.instagram.medias"/>
+        <partner-instagram-media :place-id="place.placeId" :preload="data.instagram.medias"/>
       </section>
     </section>
 
@@ -84,16 +86,15 @@
       PartnerArticle, PartnerInstagramMedia, GoogleEmbedMap, PlaceMenuList, MunchButton, ImageSize, PlaceTagList
     },
     head() {
+      const title = this.data.place.name + ' | Munch'
       const description = this.data.place.description
-      if (description) {
-        return {
-          title: this.data.place.name + ' | Munch',
-          meta: [{hid: 'description', name: 'description', content: description}]
-        }
-      }
-      return {
-        title: this.data.place.name + ' | Munch',
-      }
+      const tags = this.data.place.tags.map(tag => tag.name).join(',')
+
+      const meta = []
+      meta.push({name: 'robots', content: `follow,${this.hasPartner() ? 'index' : 'noindex'}`})
+      if (description) meta.push({hid: 'description', name: 'description', content: description})
+      if (tags) meta.push({name: 'keywords', content: tags})
+      return {title, meta}
     },
     data() {
       return {
@@ -108,9 +109,6 @@
     },
     computed: {
       ...mapGetters('user', ['isLoggedIn']),
-      placeId() {
-        return this.data.place.placeId
-      },
       place() {
         return this.data.place
       },

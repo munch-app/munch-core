@@ -4,8 +4,8 @@
 
     <horizontal-scroll-view class="ClusterList" :items="areas" :map-key="a => a.areaId" :container="false"
                             :padding="18">
-      <template slot-scope="{item}" @click="onClick(item)">
-        <div class="ClusterCard elevation-hover-1">
+      <template slot-scope="{item}">
+        <div class="ClusterCard elevation-hover-1" @click="onClick(item)">
           <image-size class="Image" :image="item.images && item.images[0]"/>
           <div class="Name">{{item.name}}</div>
         </div>

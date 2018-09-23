@@ -72,6 +72,7 @@ module.exports = {
     '~/plugins/vue-simple-svg',
     '~/plugins/vue-browser-geolocation',
     '~/plugins/vue-observe-visibility',
+    '~/plugins/vue-router',
     {src: '~/plugins/vue-touch', ssr: false},
     {src: '~/plugins/vuex-persistedstate', ssr: false}
   ],
