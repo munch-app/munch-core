@@ -91,7 +91,7 @@
       const tags = this.data.place.tags.map(tag => tag.name).join(',')
 
       const meta = []
-      meta.push({name: 'robots', content: `follow,${this.hasPartner() ? 'index' : 'noindex'}`})
+      meta.push({name: 'robots', content: `follow,${this.hasPartner ? 'index' : 'noindex'}`})
       if (description) meta.push({hid: 'description', name: 'description', content: description})
       if (tags) meta.push({name: 'keywords', content: tags})
       return {title, meta}

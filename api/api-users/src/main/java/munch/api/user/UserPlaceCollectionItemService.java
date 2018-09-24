@@ -22,9 +22,6 @@ import java.util.List;
  */
 @Singleton
 public final class UserPlaceCollectionItemService extends ApiService {
-    // TODO look at authenticator
-
-
     private final UserPlaceCollectionClient collectionClient;
     private final PlaceClient placeClient;
 

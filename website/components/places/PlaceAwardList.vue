@@ -11,12 +11,8 @@
 </template>
 
 <script>
-  import Slick from 'vue-slick';
-  import "slick-carousel/slick/slick.css";
-
   export default {
     name: "PlaceAwardList",
-    components: {Slick},
     props: {
       awards: {
         type: Array,

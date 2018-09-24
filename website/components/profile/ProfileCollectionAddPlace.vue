@@ -26,12 +26,11 @@
 
 <script>
   import {mapGetters} from 'vuex'
-  import BeatLoader from "vue-spinner/src/BeatLoader";
   import ImageSize from "../core/ImageSize";
 
   export default {
     name: "ProfileCollectionAddPlace",
-    components: {ImageSize, BeatLoader},
+    components: {ImageSize},
     props: {
       place: {
         type: Object,

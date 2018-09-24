@@ -52,11 +52,10 @@
   import SearchBarFilterTiming from "./SearchBarFilterTiming";
   import SearchBarFilterLocation from "./SearchBarFilterLocation";
   import SearchBarFilterPrice from "./SearchBarFilterPrice";
-  import BeatLoader from 'vue-spinner/src/BeatLoader.vue'
 
   export default {
     name: "SearchBarFilterList",
-    components: {SearchBarFilterPrice, SearchBarFilterLocation, SearchBarFilterTiming, SearchBarFilterTag, BeatLoader},
+    components: {SearchBarFilterPrice, SearchBarFilterLocation, SearchBarFilterTiming, SearchBarFilterTag},
     mounted() {
       // LatLng need to be commited before mounting
       this.$store.dispatch('filter/start')

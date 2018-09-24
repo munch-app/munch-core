@@ -54,7 +54,7 @@ export const actions = {
   start({commit, state}, query) {
     commit('start', query)
 
-    this.$axios.$post(`/api/search?page=${state.page}`, state.query)
+    return this.$axios.$post(`/api/search?page=${state.page}`, state.query)
       .then(({data}) => {
         commit('append', data)
       })
@@ -63,7 +63,7 @@ export const actions = {
   append({commit, state}) {
     if (state.loading) return
 
-    this.$axios.$post(`/api/search?page=${state.page}`, state.query)
+    return this.$axios.$post(`/api/search?page=${state.page}`, state.query)
       .then(({data}) => {
         commit('append', data)
       })

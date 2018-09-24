@@ -18,14 +18,17 @@
 <script>
   import {mapGetters} from 'vuex'
 
-  import CardDelegator from "../components/search/cards/CardDelegator";
-  import BeatLoader from 'vue-spinner/src/BeatLoader.vue'
+  import CardDelegator from "../../components/search/cards/CardDelegator";
 
   export default {
-    components: {CardDelegator, BeatLoader},
+    components: {CardDelegator},
     head() {
-      return {
-        title: 'Search | Munch',
+      return {title: 'Search | Munch'}
+    },
+    fetch({$axios, route}) {
+      const queryId = route.query.qid
+      if (queryId) {
+        // TODO get SearchQuery and fill store
       }
     },
     computed: {

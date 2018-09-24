@@ -58,7 +58,7 @@
         return this.$route.name
       },
       isSearch() {
-        return this.$route.name === 'search'
+        return this.$route.name && this.$route.name.startsWith('search')
       },
       isIndex() {
         return this.$route.name === 'index'

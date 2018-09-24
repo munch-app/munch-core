@@ -5,9 +5,7 @@
 </template>
 
 <script>
-  import MoonLoader from "vue-spinner/src/MoonLoader";
   export default {
-    components: {MoonLoader},
     head() {
       return {title: 'Authenticating | Munch'}
     },

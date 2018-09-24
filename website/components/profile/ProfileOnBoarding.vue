@@ -54,12 +54,8 @@
 </template>
 
 <script>
-  import Slick from 'vue-slick';
-  import "slick-carousel/slick/slick.css";
-
   export default {
     name: "ProfileOnBoarding",
-    components: {Slick},
     data() {
       return {
         options: {

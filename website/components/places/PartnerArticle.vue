@@ -28,13 +28,11 @@
 </template>
 
 <script>
-  import Slick from 'vue-slick';
-  import "slick-carousel/slick/slick.css";
   import ImageSize from "../core/ImageSize";
 
   export default {
     name: "PartnerArticle",
-    components: {ImageSize, Slick},
+    components: {ImageSize},
     props: {
       /* PlaceId to query more instagram media */
       placeId: {

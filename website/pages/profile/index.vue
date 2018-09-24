@@ -91,10 +91,9 @@
 <script>
   import {mapGetters} from 'vuex'
   import ProfileCollectionCard from "../../components/profile/ProfileCollectionCard";
-  import BeatLoader from "vue-spinner/src/BeatLoader";
 
   export default {
-    components: {BeatLoader, ProfileCollectionCard},
+    components: {ProfileCollectionCard},
     data() {
       return {
         showCollectionButton: false,
@@ -133,7 +132,7 @@
           .then(() => {
             const title = `${this.profile.name} Preference`
             const isAdded = this.isSearchPreference(tag)
-            const message = `${isAdded ? 'Added': 'Removed'} '${tag}' to your search preference.`
+            const message = `${isAdded ? 'Added' : 'Removed'} '${tag}' to your search preference.`
             this.$store.dispatch('addMessage', {title, message})
           })
           .catch(error => {

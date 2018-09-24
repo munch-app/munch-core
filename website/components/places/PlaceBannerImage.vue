@@ -41,13 +41,11 @@
 </template>
 
 <script>
-  import Slick from 'vue-slick';
-  import "slick-carousel/slick/slick.css";
   import ImageSize from "../core/ImageSize";
 
   export default {
     name: "PlaceBannerImage",
-    components: {ImageSize, Slick},
+    components: {ImageSize},
     props: {
       images: {
         type: Array,

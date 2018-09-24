@@ -41,12 +41,11 @@
 
 <script>
   import {mapGetters} from "vuex";
-  import BeatLoader from "vue-spinner/src/BeatLoader";
   import UserPlaceCollectionItemCard from "../../components/collections/UserPlaceCollectionItemCard";
   import _ from 'underscore'
 
   export default {
-    components: {UserPlaceCollectionItemCard, BeatLoader},
+    components: {UserPlaceCollectionItemCard},
     data() {
       return {
         more: false,

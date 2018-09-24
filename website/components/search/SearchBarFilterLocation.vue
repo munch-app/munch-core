@@ -18,12 +18,10 @@
 </template>
 
 <script>
-  import BeatLoader from 'vue-spinner/src/BeatLoader.vue'
   import {mapGetters} from 'vuex'
 
   export default {
     name: "SearchBarFilterLocation",
-    components: {BeatLoader},
     data() {
       return {
         locations: ['Anywhere'],

@@ -20,7 +20,6 @@
 
 <script>
   import {mapGetters} from 'vuex'
-  import BeatLoader from 'vue-spinner/src/BeatLoader.vue'
 
   const types = {
     'cuisine': {
@@ -47,7 +46,6 @@
   export default {
     $$reduce: reduce,
     name: "SearchBarFilterTag",
-    components: {BeatLoader},
     props: {
       type: {
         type: String,

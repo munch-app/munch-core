@@ -57,11 +57,9 @@
       }
     },
     mounted() {
-      // TODO PM-173
-      this.text = this.$route.query.q || ''
-      this.$emit('onText', this.text)
       window.addEventListener('keyup', this.keyUpListener)
 
+      // Auto focus refs.input if 'Suggest' is focused
       if (this.isFocused('Suggest')) {
         this.$refs.input.focus()
       }
