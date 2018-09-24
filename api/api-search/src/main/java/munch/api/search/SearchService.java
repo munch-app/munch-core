@@ -2,20 +2,19 @@ package munch.api.search;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import munch.api.ApiService;
-import munch.api.search.cards.SearchCard;
 import munch.api.search.data.SearchQuery;
 import munch.api.search.suggest.SuggestDelegator;
 import munch.restful.core.JsonUtils;
 import munch.restful.core.exception.ParamException;
 import munch.restful.server.JsonCall;
-import munch.user.client.UserSearchHistoryClient;
-import munch.user.data.UserSearchHistory;
+import munch.restful.server.JsonResult;
+import munch.user.client.UserSearchQueryClient;
+import munch.user.data.UserSearchQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -34,14 +33,14 @@ public final class SearchService extends ApiService {
     private final SearchDelegator searchRequestDelegator;
     private final SuggestDelegator suggestDelegator;
 
-    private final UserSearchHistoryClient historyClient;
+    private final UserSearchQueryClient userSearchQueryClient;
 
     @Inject
-    public SearchService(SearchRequest.Factory searchRequestFactory, SearchDelegator searchRequestDelegator, SuggestDelegator suggestDelegator, UserSearchHistoryClient historyClient) {
+    public SearchService(SearchRequest.Factory searchRequestFactory, SearchDelegator searchRequestDelegator, SuggestDelegator suggestDelegator, UserSearchQueryClient userSearchQueryClient) {
         this.searchRequestFactory = searchRequestFactory;
         this.searchRequestDelegator = searchRequestDelegator;
         this.suggestDelegator = suggestDelegator;
-        this.historyClient = historyClient;
+        this.userSearchQueryClient = userSearchQueryClient;
     }
 
     @Override
@@ -57,23 +56,23 @@ public final class SearchService extends ApiService {
      * @return list of Place
      * @see SearchQuery
      */
-    private List<SearchCard> search(JsonCall call) {
+    private JsonResult search(JsonCall call) {
         SearchRequest searchRequest = searchRequestFactory.create(call);
+        String userId = searchRequest.getUserId();
+        UserSearchQuery userSearchQuery = userSearchQueryClient.create(userId, searchRequest.getSearchQuery());
 
         // Save UserSearchHistory
         CompletableFuture.runAsync(() -> {
-            // Should capture user that are not logged in also
-            String userId = searchRequest.getUserId();
-            if (userId == null) return;
-
             try {
-                UserSearchHistory history = UserSearchHistory.from(userId, System.currentTimeMillis(), searchRequest.getSearchQuery());
-                historyClient.put(history.getUserId(), history.getCreatedMillis(), history);
+                userSearchQueryClient.put(userSearchQuery);
             } catch (Exception e) {
-                logger.warn("Failed to persist SearchHistory userId: {}, history: {}", userId, searchRequest.getSearchQuery(), e);
+                logger.warn("Failed to persist UserSearchQuery: {}", userSearchQuery, e);
             }
         });
-        return searchRequestDelegator.delegate(searchRequest);
+
+        JsonResult result = JsonResult.ok(searchRequestDelegator.delegate(searchRequest));
+        result.put("queryId", userSearchQuery.getQueryId());
+        return result;
     }
 
     /**

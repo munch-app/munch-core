@@ -29,8 +29,8 @@ public final class SearchRequest {
 
     private SearchRequest(JsonCall call, SearchQuery searchQuery) {
         this.call = call;
-        this.userId = call.get(ApiRequest.class).optionalUserId().orElse(null);
         this.searchQuery = searchQuery;
+        this.userId = call.get(ApiRequest.class).optionalUserId().orElse(null);
         this.latLng = call.get(ApiRequest.class).optionalLatLng().orElse(null);
         this.localDateTime = call.get(ApiRequest.class).optionalLocalTime().orElse(null);
     }
