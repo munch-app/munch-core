@@ -5,7 +5,7 @@
         <b-container>
           <b-row style="text-align: left">
             <b-col md="5" offset-md="1" cols="12">
-              <h1 style="margin-top: 30px">DISCOVER DELICIOUS</h1>
+              <h1 style="margin-top: 30px" class="white">DISCOVER DELICIOUS</h1>
               <h6 style="margin-top: 30px; font-size: 120%">
                 Whether you're looking for the perfect date spot or the hottest bar in town - Munch helps you answer the
                 question:
@@ -176,10 +176,6 @@
   .Downloads section {
     padding-top: 75px;
     padding-bottom: 75px;
-  }
-
-  .Downloads p {
-    font-size: 90%;
   }
 
   .Downloads h3 {

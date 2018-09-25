@@ -2,7 +2,7 @@
   <search-card-place
     class="Card no-select Initial Pointer"
     v-if="isCardId('basic_Place_20171211')"
-    :place="card.place"
+    :card="card"
   />
   <search-card-place-small
     class="Card no-select Initial Pointer"

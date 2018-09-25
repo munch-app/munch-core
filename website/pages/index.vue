@@ -22,7 +22,7 @@
       </div>
     </section>
 
-    <section class="Timing">
+    <section v-if="false" class="Timing">
       <div class="container">
         <h2>Here & Now</h2>
         <p>The best Breakfast spots near you.</p>
@@ -35,7 +35,7 @@
       </horizontal-scroll-view>
     </section>
 
-    <section class="Search">
+    <section v-if="false" class="Search">
       <div class="container">
         <h2>Search</h2>
       </div>
@@ -45,7 +45,7 @@
       </div>
     </section>
 
-    <section class="Collection">
+    <section v-if="false" class="Collection">
       <div class="container">
         <h2>In the know</h2>
         <p>What’s hot and edible</p>
@@ -95,7 +95,8 @@
 
 <style scoped lang="less">
   .LandingPage {
-    padding-bottom: 24px;
+    margin-top: -56px;
+    margin-bottom: -40px;
   }
 
   section {

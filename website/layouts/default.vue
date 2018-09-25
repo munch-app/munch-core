@@ -1,6 +1,6 @@
 <template>
   <div class="Default">
-    <nav class="index-top-elevation Header nav-bg" :class="{'elevation-1': !isSearch}">
+    <nav class="Header index-top-elevation" :class="{'elevation-1': !isSearch && !isIndex, 'nav-bg': !isIndex}">
       <div class="HeaderRow container clearfix">
         <header-logo class="Logo" :class="{'IsSuggest': isFocused('Suggest')}"/>
         <div class="Search">
