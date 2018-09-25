@@ -1,18 +1,18 @@
 <template>
   <div class="LocationCollection">
-    <div class="LocationCell flex-center" @click="toggle('Nearby')" :class="{
-         'primary-500-bg white': isSelectedLocation('Nearby'),
-         'whisper-100-bg black-a-75': !isSelectedLocation('Nearby')}"
-    >
-      <beat-loader v-if="loadingNearby" class="flex-center" color="#0A6284" size="6px"/>
+    <div class="LocationCell flex-center" @click="toggleNearby"
+         :class="{
+         'primary-500-bg white': isSelectedLocationType('Nearby'),
+         'whisper-100-bg black-a-75': !isSelectedLocationType('Nearby')}">
+      <beat-loader v-if="nearby.loading" class="flex-center" color="#0A6284" size="6px"/>
       <div v-else>Nearby</div>
     </div>
-    <div class="LocationCell" v-for="location in locations" :key="location" @click="toggle(location)"
+
+    <div class="LocationCell" @click="toggleAnywhere"
          :class="{
-         'primary-500-bg white': isSelectedLocation(location),
-         'whisper-100-bg black-a-75': !isSelectedLocation(location)}"
-    >
-      {{location}}
+         'primary-500-bg white': isSelectedLocationType('Anywhere'),
+         'whisper-100-bg black-a-75': !isSelectedLocationType('Anywhere')}">
+      Anywhere
     </div>
   </div>
 </template>
@@ -24,37 +24,39 @@
     name: "SearchBarFilterLocation",
     data() {
       return {
-        locations: ['Anywhere'],
-        loadingNearby: false
+        nearby: {
+          loading: false
+        },
+        where: {},
+        between: {},
       }
     },
     computed: {
-      ...mapGetters('filter', ['isSelectedLocation'])
+      ...mapGetters('filter', ['isSelectedLocationType', 'isSelectedLocationArea'])
     },
     methods: {
-      toggle(location) {
-        if (location === 'Nearby') {
-          this.loadingNearby = true
-          this.$store.commit('filter/loading', true)
+      toggleNearby() {
+        this.nearby.loading = true
+        this.$store.commit('filter/loading', true)
 
-          return this.$getLocation({
-            enableHighAccuracy: true,
-            timeout: 8000,
-            maximumAge: 15000
-          }).then(coordinates => {
-            this.$store.commit('filter/updateLatLng', `${coordinates.lat},${coordinates.lng}`)
-            this.$store.commit('filter/loading', false)
-            this.$store.dispatch('filter/location', location)
-          }).catch(error => {
-            this.$store.dispatch('addError', error)
-          }).finally(() => {
-            this.$store.commit('filter/loading', false)
-            this.loadingNearby = false
-          })
-        } else {
-          this.$store.dispatch('filter/location', location)
-        }
-      }
+        return this.$getLocation({
+          enableHighAccuracy: true,
+          timeout: 8000,
+          maximumAge: 15000
+        }).then(coordinates => {
+          this.$store.commit('filter/updateLatLng', `${coordinates.lat},${coordinates.lng}`)
+          this.$store.commit('filter/loading', false)
+          return this.$store.dispatch('filter/location', {type: 'Nearby'})
+        }).catch(error => {
+          return this.$store.dispatch('addError', error)
+        }).finally(() => {
+          this.nearby.loading = false
+          return this.$store.commit('filter/loading', false)
+        })
+      },
+      toggleAnywhere() {
+        return this.$store.dispatch('filter/location', {type: 'Anywhere'})
+      },
     }
   }
 </script>

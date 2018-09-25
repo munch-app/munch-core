@@ -5,12 +5,14 @@
         <card-delegator v-for="card in cards" :key="card['_uniqueId']" :card="card"/>
       </div>
 
-      <div class="LoadingIndicator" v-if="more" v-observe-visibility="{
+      <no-ssr>
+        <div class="LoadingIndicator" v-if="more" v-observe-visibility="{
           callback: visibilityChanged,
           throttle: 300,
         }">
-        <beat-loader color="#084E69" size="14px"/>
-      </div>
+          <beat-loader color="#084E69" size="14px"/>
+        </div>
+      </no-ssr>
     </div>
   </div>
 </template>
@@ -23,12 +25,23 @@
   export default {
     components: {CardDelegator},
     head() {
-      return {title: 'Search | Munch'}
+      const {name, description, keywords} = this.$store.state.search.seo
+
+      const meta = []
+      meta.push({name: 'robots', content: `follow,${name ? 'index' : 'noindex'}`})
+      if (description) meta.push({hid: 'description', name: 'description', content: description})
+      if (keywords) meta.push({name: 'keywords', content: keywords})
+      return {title: `${name || 'Search'} | Munch`, meta}
     },
-    fetch({$axios, route}) {
-      const queryId = route.query.qid
-      if (queryId) {
-        // TODO get SearchQuery and fill store
+    async fetch({store, route, params}) {
+      const named = params.named
+      if (named) {
+        return store.dispatch('search/startNamed', named)
+      }
+
+      const qid = route.query.qid
+      if (qid) {
+        return store.dispatch('search/startQid', qid)
       }
     },
     computed: {

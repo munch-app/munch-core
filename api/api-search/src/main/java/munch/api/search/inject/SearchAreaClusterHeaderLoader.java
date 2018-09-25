@@ -18,9 +18,10 @@ public final class SearchAreaClusterHeaderLoader implements SearchCardInjector.L
     @Override
     public List<Position> load(Request request) {
         if (!request.isFirstPage()) return List.of();
-        if (!request.hasArea()) return List.of();
+        if (!request.isWhere()) return List.of();
+        if (request.getAreas().size() != 1) return List.of();
 
-        Area area = request.getQuery().getFilter().getArea();
+        Area area = request.getAreas().get(0);
         if (area.getType() != Area.Type.Cluster) return List.of();
 
         SearchAreaClusterHeaderCard card = new SearchAreaClusterHeaderCard();

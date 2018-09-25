@@ -18,6 +18,8 @@
   import ImageSize from "../../core/ImageSize";
   import HorizontalScrollView from "../../core/HorizontalScrollView";
 
+  // TODO height not full
+
   export default {
     name: "SearchCardAreaClusterList",
     components: {HorizontalScrollView, ImageSize},
@@ -30,7 +32,6 @@
     methods: {
       onClick(area) {
         this.$store.dispatch('filter/location', area)
-        this.$store.dispatch('filter/start')
         this.$store.dispatch('search/start', this.$store.state.filter.query)
       }
     }

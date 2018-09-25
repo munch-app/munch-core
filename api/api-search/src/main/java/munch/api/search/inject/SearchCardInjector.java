@@ -3,6 +3,7 @@ package munch.api.search.inject;
 import munch.api.search.SearchRequest;
 import munch.api.search.cards.SearchCard;
 import munch.api.search.data.SearchQuery;
+import munch.data.location.Area;
 import munch.restful.core.JsonUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -147,11 +148,7 @@ public final class SearchCardInjector {
              * @return name of Location where search is applied to
              */
             public String getLocationName(String defaultName) {
-                if (query.getFilter().getArea() != null) {
-                    String name = query.getFilter().getArea().getName();
-                    if (name != null) return name;
-                }
-                return defaultName;
+                return request.getLocationName(defaultName);
             }
 
             /**
@@ -166,14 +163,16 @@ public final class SearchCardInjector {
                     }
                 }
 
-                // Area latLng
-                SearchQuery.Filter filter = query.getFilter();
-                if (filter.getArea() != null) {
-                    if (filter.getArea().getLocation() != null) {
-                        return filter.getArea().getLocation().getLatLng();
-                    }
+                // Find relevant latLng
+                if (isNearby()) return request.getLatLng();
+                if (isAnywhere()) return request.getLatLng();
+                if (isWhere()) {
+                    if (getAreas().size() == 1) return getAreas().get(0).getLocation().getLatLng();
                 }
 
+                if (isBetween()) return null;
+
+                // Fallback
                 return request.getLatLng();
             }
 
@@ -202,15 +201,11 @@ public final class SearchCardInjector {
              * @return page number user is on
              */
             public int getPage() {
-                return request.getCall().queryInt("page", 0);
+                return request.getPage();
             }
 
             public SearchQuery getQuery() {
                 return query;
-            }
-
-            public SearchQuery cloneQuery() {
-                return JsonUtils.deepCopy(query, SearchQuery.class);
             }
 
             public String getUserId() {
@@ -222,20 +217,27 @@ public final class SearchCardInjector {
             }
 
             public boolean isAnywhere() {
-                if (hasUserLocation()) return false;
-                if (hasArea()) return false;
-                return true;
+                return request.isAnywhere();
             }
 
             public boolean isNearby() {
-                if (!hasUserLocation()) return false;
-                if (query.getFilter() == null) return true;
-                return query.getFilter().getArea() == null;
+                return request.isNearby();
+            }
+
+            public boolean isWhere() {
+                return request.isWhere();
+            }
+
+            public boolean isBetween() {
+                return request.isBetween();
             }
 
             public boolean hasArea() {
-                if (query.getFilter() == null) return false;
-                return query.getFilter().getArea() != null;
+                return request.hasArea();
+            }
+
+            public List<Area> getAreas() {
+                return request.getAreas();
             }
 
             /**
@@ -243,6 +245,10 @@ public final class SearchCardInjector {
              */
             public boolean hasUserLocation() {
                 return request.hasUserLatLng();
+            }
+
+            public SearchQuery cloneQuery() {
+                return JsonUtils.deepCopy(query, SearchQuery.class);
             }
 
             /**
@@ -257,7 +263,7 @@ public final class SearchCardInjector {
 
             /**
              * @param query to check
-             * @return whether query is complex meaning user has custom selection
+             * @return whether query is complex meaning; user has custom selection
              */
             private static boolean isComplexQuery(SearchQuery query) {
                 if (query.getSort() != null) {

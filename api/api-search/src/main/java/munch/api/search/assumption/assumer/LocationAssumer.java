@@ -65,8 +65,7 @@ public final class LocationAssumer extends Assumer {
     public static Consumer<SearchRequest> applyArea(Area area) {
         return request -> {
             SearchQuery query = request.getSearchQuery();
-            if (query.getFilter() == null) query.setFilter(new SearchQuery.Filter());
-            query.getFilter().setArea(area);
+            query.getFilter().getLocation().setAreas(List.of(area));
         };
     }
 }

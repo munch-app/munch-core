@@ -1,6 +1,6 @@
 <template>
   <div class="no-select index-5" v-on-clickaway="onClickAway">
-    <div class="FilterBar elevation-1 index-header">
+    <div class="FilterBar index-header">
       <div class="Buttons container">
         <div v-for="button in buttons" :key="button.type" class="FilterButton" @click="onButton(button)"
              :class="{
@@ -14,7 +14,8 @@
           <div v-if="button.count">{{button.count}}</div>
         </div>
 
-        <div class="FilterButton elevation-hover-2 elevation-1 white-bg ClearAllButton" @click="onClearAll" v-if="isClearAll">
+        <div class="FilterButton elevation-hover-2 elevation-1 white-bg ClearAllButton" @click="onClearAll"
+             v-if="isClearAll">
           <div>Clear All</div>
         </div>
       </div>
@@ -36,7 +37,6 @@
       ...mapGetters('filter', ['selected']),
       buttons() {
         const query = this.$store.state.filter.query
-        const user = this.$store.state.filter.user
         const price = query.filter.price && query.filter.price.min !== undefined && query.filter.price
         const cuisine = SearchBarFilterTag.$$reduce(query, 'cuisine')
         const amenities = SearchBarFilterTag.$$reduce(query, 'amenities')
@@ -47,10 +47,14 @@
           cuisine.length +
           establishments.length +
           amenities.length +
-          (query.filter.area && query.filter.area.type !== 'City' ? 1 : 0) +
           (query.filter.hour && query.filter.hour.name ? 1 : 0)
 
         return [
+          {
+            type: 'location',
+            name: query.filter.location && query.filter.location.type,
+            applied: query.filter.location && query.filter.location.type !== 'Anywhere'
+          },
           {
             type: 'price',
             name: price ? `$${price.min} - $${price.max}` : 'Price',
@@ -61,11 +65,6 @@
             name: cuisine.length === 1 ? cuisine[0] : 'Cuisine',
             count: cuisine.length > 1 ? cuisine.length : undefined,
             applied: cuisine.length > 0
-          },
-          {
-            type: 'location',
-            name: query.filter.area && query.filter.area.type !== 'City' && query.filter.area.name || 'Location',
-            applied: (query.filter.area == null && user.latLng) || (query.filter.area && query.filter.area.type !== 'City')
           },
           {
             type: 'amenities',
@@ -99,7 +98,6 @@
         const filters =
           (price ? 1 : 0) +
           (query.filter.tag.positives.length) +
-          (query.filter.area && query.filter.area.type !== 'City' ? 1 : 0) +
           (query.filter.hour && query.filter.hour.name ? 1 : 0)
 
         return filters > 0
@@ -110,6 +108,7 @@
         if (this.$store.state.filter.selected !== button.type) {
           this.$store.commit('filter/selected', button.type)
           this.$store.commit('focus', 'Filter')
+          this.$store.dispatch('filter/start')
         } else {
           this.$store.commit('filter/selected', null)
           this.$store.commit('unfocus', 'Filter')
@@ -123,7 +122,7 @@
       },
       onClearAll() {
         this.$store.commit('unfocus', 'Filter')
-        this.$store.dispatch('filter/clearAll')
+        this.$store.dispatch('filter/reset')
         this.$store.dispatch('search/start', this.$store.state.filter.query)
       }
     }
@@ -137,6 +136,8 @@
     height: 48px;
     width: 100%;
     background: white;
+
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05), 0 1px 1px rgba(0, 0, 0, 0.10);
   }
 
   .Buttons {

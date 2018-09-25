@@ -175,15 +175,42 @@ public final class ElasticQueryUtils {
         SearchQuery searchQuery = request.getSearchQuery();
         SearchQuery.Filter filter = searchQuery.getFilter();
 
-        JsonNode areaFilter = filterArea(filter.getArea());
-        if (areaFilter != null) return Optional.of(areaFilter);
+        if (request.isNearby()) {
+            return Optional.of(filterDistance(request.getLatLng(), request.getRadius()));
+        }
 
-        if (request.getLatLng() != null) {
-            JsonNode filtered = filterDistance(request.getLatLng(), request.getRadius());
-            return Optional.of(filtered);
+        if (request.isAnywhere()) {
+            // Currently anywhere don't filter to any city, in the future it will auto find a city
+            // via search request before reaching Elastic Query Utils
+            return Optional.empty();
+        }
+
+        if (request.isWhere()) {
+            if (request.getAreas().size() == 1) return Optional.ofNullable(filterArea(request.getAreas().get(0)));
+            return Optional.ofNullable(filterAreas(request.getAreas()));
+        }
+
+        if (request.isBetween()) {
+            // TODO wait for Product
         }
 
         return Optional.empty();
+    }
+
+    public static JsonNode filterAreas(List<Area> areas) {
+        ArrayNode should = mapper.createArrayNode();
+        for (Area area : areas) {
+            JsonNode node = filterArea(area);
+            if (node != null) should.add(filterArea(area));
+        }
+
+
+        ObjectNode boolNode = mapper.createObjectNode();
+        boolNode.set("should", should);
+
+        ObjectNode rootNode = mapper.createObjectNode();
+        rootNode.set("bool", boolNode);
+        return rootNode;
     }
 
     @Nullable

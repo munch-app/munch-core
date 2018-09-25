@@ -149,7 +149,6 @@
         this.text = suggest
       },
       onItemAssumption(assumption) {
-        this.$store.dispatch('filter/start', assumption.searchQuery)
         this.$store.dispatch('search/start', assumption.searchQuery)
 
         if (this.$route.name !== 'search') this.$router.push({path: '/search'})

@@ -40,7 +40,6 @@
     methods: {
       onClick(tag) {
         this.$store.dispatch('filter/tag', tag)
-        this.$store.dispatch('filter/start')
         this.$store.dispatch('search/start', this.$store.state.filter.query)
       }
     }

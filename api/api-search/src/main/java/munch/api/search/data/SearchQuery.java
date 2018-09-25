@@ -6,6 +6,7 @@ import munch.data.location.Area;
 
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -21,7 +22,7 @@ import java.util.Set;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class SearchQuery {
-    public static final String VERSION = "2018-06-16";
+    public static final String VERSION = "2018-09-25";
 
     private Filter filter = new Filter();
     private Sort sort = new Sort();
@@ -56,7 +57,7 @@ public final class SearchQuery {
         private Price price;
         private Tag tag;
         private Hour hour;
-        private Area area;
+        private Location location;
 
         public Price getPrice() {
             return price;
@@ -82,12 +83,12 @@ public final class SearchQuery {
             this.hour = hour;
         }
 
-        public Area getArea() {
-            return area;
+        public Location getLocation() {
+            return location;
         }
 
-        public void setArea(Area area) {
-            this.area = area;
+        public void setLocation(Location location) {
+            this.location = location;
         }
 
         @JsonIgnoreProperties(ignoreUnknown = true)
@@ -224,13 +225,65 @@ public final class SearchQuery {
             }
         }
 
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        public static class Location {
+            private List<Area> areas;
+            private Type type;
+
+            /**
+             * @return if no location default to anywhere
+             */
+            public List<Area> getAreas() {
+                return areas;
+            }
+
+            public void setAreas(List<Area> areas) {
+                this.areas = areas;
+            }
+
+            public Type getType() {
+                return type;
+            }
+
+            public void setType(Type type) {
+                this.type = type;
+            }
+
+            public enum Type {
+                /**
+                 * Feature: Eat Between
+                 * Require: areas, 1 or more
+                 */
+                Between,
+
+                /**
+                 * Default: Any of these areas
+                 * Require: areas, 1 or more
+                 */
+                Where,
+
+                /**
+                 * Default: if user location is turned on
+                 * Require: Header['User-Lat-Lng']
+                 */
+                Nearby,
+
+                /**
+                 * Default: if user didn't select any location, assumed anywhere based on geo ip will be used
+                 * Require: Ip Address or Header['User-Lat-Lng']
+                 * Note: if any of the above failed to find required data, Anywhere will be assumed
+                 */
+                Anywhere
+            }
+        }
+
         @Override
         public String toString() {
             return "Filter{" +
                     "price=" + price +
                     ", tag=" + tag +
                     ", hour=" + hour +
-                    ", area=" + area +
+                    ", location=" + location +
                     '}';
         }
     }
@@ -287,10 +340,5 @@ public final class SearchQuery {
                 ", sort=" + sort +
                 ", version=" + getVersion() +
                 '}';
-    }
-
-    public static void fix(SearchQuery query) {
-        if (query.getFilter() == null) query.setFilter(new Filter());
-        if (query.getSort() == null) query.setSort(new Sort());
     }
 }

@@ -31,9 +31,10 @@ public class AssumptionEngine {
     public static final Set<String> STOP_WORDS = Set.of("around", "near", "in", "at", "and", "or",
             "food", "cuisine", "cuisines", "places", "place", "location");
     public static final PatternSplit TOKENIZE_PATTERN = PatternSplit.compile(" {1,}|,|\\.");
-    private static final Area SINGAPORE = new Area();
+    private static final Area SINGAPORE;
 
     static {
+        SINGAPORE = new Area();
         SINGAPORE.setType(Area.Type.City);
         SINGAPORE.setAreaId("singapore");
         SINGAPORE.setName("Singapore");
@@ -122,7 +123,7 @@ public class AssumptionEngine {
         request = request.deepCopy();
 
         SearchQuery query = request.getSearchQuery();
-        query.getFilter().setArea(SINGAPORE);
+        query.getFilter().getLocation().setAreas(List.of(SINGAPORE));
 
         assumedTokens = new ArrayList<>(assumedTokens);
         assumedTokens.add(new TagAssumptionToken("Anywhere"));
@@ -134,7 +135,7 @@ public class AssumptionEngine {
         if (!request.hasUserLatLng()) return Optional.empty();
 
         SearchQuery query = request.getSearchQuery();
-        query.getFilter().setArea(null);
+        query.getFilter().getLocation().setAreas(null);
 
         assumedTokens = new ArrayList<>(assumedTokens);
         assumedTokens.add(new TagAssumptionToken("Nearby"));
@@ -143,13 +144,10 @@ public class AssumptionEngine {
 
     private Optional<AssumptionQuery> createCurrent(String text, List<AssumptionToken> assumedTokens, SearchRequest request) {
         request = request.deepCopy();
-        if (request.isAnywhere()) return Optional.empty();
+        if (!request.isWhere()) return Optional.empty();
 
         String locationName = request.getLocationName(null);
         if (locationName == null) return Optional.empty();
-
-        if (locationName.equalsIgnoreCase("singapore")) return Optional.empty();
-        if (locationName.equalsIgnoreCase("anywhere")) return Optional.empty();
 
         assumedTokens = new ArrayList<>(assumedTokens);
         assumedTokens.add(new TextAssumptionToken("in"));

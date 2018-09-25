@@ -56,10 +56,6 @@
   export default {
     name: "SearchBarFilterList",
     components: {SearchBarFilterPrice, SearchBarFilterLocation, SearchBarFilterTiming, SearchBarFilterTag},
-    mounted() {
-      // LatLng need to be commited before mounting
-      this.$store.dispatch('filter/start')
-    },
     computed: {
       ...mapGetters('filter', ['count', 'selected']),
       applyText() {

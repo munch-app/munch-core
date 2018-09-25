@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import munch.api.ApiService;
 import munch.api.search.data.FilterResult;
+import munch.api.search.elastic.ElasticQueryUtils;
 import munch.data.client.ElasticClient;
 import munch.restful.core.JsonUtils;
 import munch.restful.server.JsonCall;
@@ -70,7 +71,7 @@ public final class SearchFilterService extends ApiService {
 
         ObjectNode rootNode = objectMapper.createObjectNode();
         rootNode.put("size", 0);
-        rootNode.set("query", request.createElasticQuery());
+        rootNode.set("query", ElasticQueryUtils.make(request));
 
         ObjectNode aggsNode = JsonUtils.createObjectNode();
         if (prices) aggsNode.set("prices", ElasticInput.aggPrices());

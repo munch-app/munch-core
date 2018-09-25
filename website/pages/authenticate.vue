@@ -1,7 +1,5 @@
 <template>
-  <div class="zero-spacing container Authenticate flex-center">
-    <moon-loader class="Loader" color="#084E69" size="56px"/>
-  </div>
+  <div class="Authenticate"/>
 </template>
 
 <script>
@@ -19,7 +17,7 @@
           })
           .catch(error => {
             console.log(error)
-            authenticator.signOut()
+            this.$store.dispatch('user/logout')
             this.$router.push({path: '/'})
           })
       }
@@ -29,7 +27,12 @@
 
 <style scoped lang="less">
   .Authenticate {
-    margin-top: 48px;
-    height: 100%;
+    z-index: 999999999;
+    background: white;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
   }
 </style>

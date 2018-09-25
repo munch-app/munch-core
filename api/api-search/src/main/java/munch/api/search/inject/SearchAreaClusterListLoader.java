@@ -32,7 +32,9 @@ public final class SearchAreaClusterListLoader implements SearchCardInjector.Loa
     public List<Position> load(Request request) {
         if (!request.isFirstPage()) return List.of();
         if (request.isComplex()) return List.of();
-        if (request.hasArea()) return List.of();
+
+        // Only for Nearby & Anywhere
+        if (!(request.isNearby() || request.isAnywhere())) return List.of();
 
         String latLng = request.getLatLngContext();
         if (latLng == null) return List.of();

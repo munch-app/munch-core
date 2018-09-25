@@ -16,20 +16,23 @@ public final class SearchHeaderLoader implements SearchCardInjector.Loader {
     public List<Position> load(Request request) {
         if (!request.isFirstPage()) return List.of();
         if (request.getCardsCount() == 0) return List.of();
-        if (request.hasArea()) return List.of();
         if (request.isComplex()) return List.of();
 
-        // Contains search result & query is not complex
-        SearchHeaderCard headerCard = new SearchHeaderCard();
-
         if (request.isAnywhere()) {
-            headerCard.setTitle("Discover Singapore");
+            return header("Discover Singapore");
         } else if (request.isNearby()) {
-            headerCard.setTitle("Discover Near You");
-        } else {
+            return header("Discover Near You");
+        } else if (request.isWhere()) {
             String location = request.getLocationName("Location");
-            headerCard.setTitle("Discover " + location);
+            return header("Discover " + location);
+        } else {
+            return List.of();
         }
+    }
+
+    private List<Position> header(String text) {
+        SearchHeaderCard headerCard = new SearchHeaderCard();
+        headerCard.setTitle(text);
         return of(-1, headerCard);
     }
 }

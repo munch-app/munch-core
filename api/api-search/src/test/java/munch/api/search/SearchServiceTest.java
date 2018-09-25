@@ -15,6 +15,7 @@ import munch.restful.core.JsonUtils;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -92,7 +93,8 @@ class SearchServiceTest extends AbstractServiceTest {
                             request.queryString("from", 0);
                             request.queryString("size", 10);
                             SearchQuery areaQuery = new SearchQuery();
-                            areaQuery.getFilter().setArea(SearchQueryTestUtils.SMALL_AREA);
+                            areaQuery.getFilter().setLocation(new SearchQuery.Filter.Location());
+                            areaQuery.getFilter().getLocation().setAreas(List.of(SearchQueryTestUtils.SMALL_AREA));
                             request.body(areaQuery);
                             request.header(ApiService.HEADER_USER_LOCAL_TIME, "2011-12-03T10:15:30");
                         })
@@ -148,7 +150,8 @@ class SearchServiceTest extends AbstractServiceTest {
                             body.put("text", "Chinese");
 
                             SearchQuery areaQuery = new SearchQuery();
-                            areaQuery.getFilter().setArea(SearchQueryTestUtils.SMALL_AREA);
+                            areaQuery.getFilter().setLocation(new SearchQuery.Filter.Location());
+                            areaQuery.getFilter().getLocation().setAreas(List.of(SearchQueryTestUtils.SMALL_AREA));
                             request.body(areaQuery);
                             body.set("searchQuery", JsonUtils.toTree(areaQuery));
                             request.body(body);

@@ -28,7 +28,6 @@
     methods: {
       onClick(tag) {
         this.$store.commit('filter/putTag', tag.name)
-        this.$store.dispatch('filter/start')
         this.$store.dispatch('search/start', this.$store.state.filter.query)
         if (this.$route.name !== 'search') this.$router.push({path: '/search'})
       }

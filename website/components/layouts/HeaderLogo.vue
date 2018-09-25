@@ -1,49 +1,58 @@
 <template>
-  <div class="HeaderLogo" @click="onClickLogo">
-    <img class="Image" src="/img/MunchLogo.svg">
-    <img class="HeaderIndicator" src="/img/layouts/caret-down.svg">
+  <div class="HeaderLogo">
+    <div class="MobileAnchor" @click="$store.commit('toggleFocus', 'HeaderMenu')"/>
+    <nuxt-link to="/">
+      <img class="Image" src="/img/MunchLogo.svg">
+      <img class="HeaderIndicator" src="/img/layouts/caret-down.svg">
+    </nuxt-link>
   </div>
 </template>
 
 <script>
   export default {
-    name: "HeaderLogo",
-    methods: {
-      onClickLogo() {
-        if (window.innerWidth < 768) {
-          this.$store.commit('toggleFocus', 'HeaderMenu')
-        } else {
-          this.$router.push({path: '/'})
-        }
-      }
-    }
+    name: "HeaderLogo"
   }
 </script>
 
 <style scoped lang="less">
   .HeaderLogo {
+    position: relative;
+  }
+
+  .HeaderLogo a {
+    display: flex;
+    height: 100%;
+
     margin-top: 12px;
     margin-bottom: 12px;
-    height: 32px;
-
-    display: flex;
 
     &:hover {
       cursor: pointer;
     }
+
+    .Image {
+      float: left;
+      height: 32px;
+      width: 32px;
+    }
+
+    .HeaderIndicator {
+      display: block;
+      height: 32px;
+      width: 16px;
+      padding: 10px 0 10px 4px;
+
+      @media (min-width: 768px) {
+        display: none;
+      }
+    }
   }
 
-  .Image {
-    float: left;
-    height: 32px;
-    width: 32px;
-  }
-
-  .HeaderIndicator {
-    display: block;
-    height: 32px;
-    width: 16px;
-    padding: 10px 0 10px 4px;
+  .MobileAnchor {
+    z-index: 1;
+    position: absolute;
+    width: 100%;
+    height: 100%;
 
     @media (min-width: 768px) {
       display: none;

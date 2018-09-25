@@ -2,6 +2,7 @@ package munch.api.search;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import munch.api.ApiService;
+import munch.api.search.data.NamedSearchQuery;
 import munch.api.search.data.SearchQuery;
 import munch.api.search.suggest.SuggestDelegator;
 import munch.restful.core.JsonUtils;
@@ -32,23 +33,40 @@ public final class SearchService extends ApiService {
     private final SearchRequest.Factory searchRequestFactory;
     private final SearchDelegator searchRequestDelegator;
     private final SuggestDelegator suggestDelegator;
+    private final NamedDelegator namedDelegator;
 
     private final UserSearchQueryClient userSearchQueryClient;
 
     @Inject
-    public SearchService(SearchRequest.Factory searchRequestFactory, SearchDelegator searchRequestDelegator, SuggestDelegator suggestDelegator, UserSearchQueryClient userSearchQueryClient) {
+    public SearchService(SearchRequest.Factory searchRequestFactory, SearchDelegator searchRequestDelegator, SuggestDelegator suggestDelegator, NamedDelegator namedDelegator, UserSearchQueryClient userSearchQueryClient) {
         this.searchRequestFactory = searchRequestFactory;
         this.searchRequestDelegator = searchRequestDelegator;
         this.suggestDelegator = suggestDelegator;
+        this.namedDelegator = namedDelegator;
         this.userSearchQueryClient = userSearchQueryClient;
     }
 
     @Override
     public void route() {
         PATH("/search", () -> {
+            GET("/named/:named", this::named);
+            GET("/qid/:qid", this::qid);
+
             POST("", this::search);
             POST("/suggest", this::suggest);
         });
+    }
+
+    public NamedSearchQuery named(JsonCall call) {
+        String named = call.pathString("named");
+        return namedDelegator.delegate(named);
+    }
+
+    public Object qid(JsonCall call) {
+        String qid = call.pathString("qid");
+        UserSearchQuery userSearchQuery = userSearchQueryClient.get(qid);
+        if (userSearchQuery == null) return null;
+        return userSearchQuery.getSearchQuery();
     }
 
     /**
@@ -58,20 +76,20 @@ public final class SearchService extends ApiService {
      */
     private JsonResult search(JsonCall call) {
         SearchRequest searchRequest = searchRequestFactory.create(call);
-        String userId = searchRequest.getUserId();
-        UserSearchQuery userSearchQuery = userSearchQueryClient.create(userId, searchRequest.getSearchQuery());
+        UserSearchQuery userSearchQuery = userSearchQueryClient.create(searchRequest.getUserId(), searchRequest.getSearchQuery());
 
-        // Save UserSearchHistory
-        CompletableFuture.runAsync(() -> {
-            try {
-                userSearchQueryClient.put(userSearchQuery);
-            } catch (Exception e) {
-                logger.warn("Failed to persist UserSearchQuery: {}", userSearchQuery, e);
-            }
-        });
+        if (searchRequest.getPage() == 0) {
+            CompletableFuture.runAsync(() -> {
+                try {
+                    userSearchQueryClient.put(userSearchQuery);
+                } catch (Exception e) {
+                    logger.warn("Failed to persist UserSearchQuery: {}", userSearchQuery, e);
+                }
+            });
+        }
 
         JsonResult result = JsonResult.ok(searchRequestDelegator.delegate(searchRequest));
-        result.put("queryId", userSearchQuery.getQueryId());
+        result.put("qid", userSearchQuery.getQid());
         return result;
     }
 
