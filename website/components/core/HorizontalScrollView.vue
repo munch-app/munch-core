@@ -100,7 +100,6 @@
   }
 
   .HorizontalScrollViewWrapper {
-    height: 100%;
     overflow-y: visible;
     position: relative;
 

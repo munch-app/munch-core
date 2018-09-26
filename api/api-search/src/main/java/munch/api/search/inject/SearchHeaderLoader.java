@@ -22,9 +22,6 @@ public final class SearchHeaderLoader implements SearchCardInjector.Loader {
             return header("Discover Singapore");
         } else if (request.isNearby()) {
             return header("Discover Near You");
-        } else if (request.isWhere()) {
-            String location = request.getLocationName("Location");
-            return header("Discover " + location);
         } else {
             return List.of();
         }

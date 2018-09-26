@@ -54,7 +54,7 @@
 
   .TagList {
     margin-top: 16px;
-    height: 70px;
+    height: 70px !important;
 
     .Tag {
       padding-left: 6px;

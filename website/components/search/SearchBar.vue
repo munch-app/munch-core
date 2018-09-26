@@ -163,6 +163,18 @@
         this.searching = true
         this.position = 0
         this.$emit('onFocus')
+
+        if (this.suggestions === null && this.text && this.text.length > 0) {
+          this.$axios.$post('/api/search/suggest', {
+            "text": text,
+            "searchQuery": {
+              "filter": {},
+              "sort": {}
+            }
+          }, {progress: false}).then(suggestions => {
+            this.suggestions = suggestions
+          })
+        }
       },
       onBlur() {
         this.searching = false

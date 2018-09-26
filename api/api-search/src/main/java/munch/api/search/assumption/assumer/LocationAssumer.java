@@ -22,10 +22,10 @@ import java.util.function.Consumer;
 @Singleton
 public final class LocationAssumer extends Assumer {
     private static final List<Assumption> EXPLICITS = List.of(
-            Assumption.of(Assumption.Type.Location, "nearby", "Nearby", applyArea(null)),
-            Assumption.of(Assumption.Type.Location, "nearby me", "Nearby", applyArea(null)),
-            Assumption.of(Assumption.Type.Location, "near me", "Near Me", applyArea(null)),
-            Assumption.of(Assumption.Type.Location, "around me", "Around Me", applyArea(null))
+            Assumption.of(Assumption.Type.Location, "nearby", "Nearby", applyType(SearchQuery.Filter.Location.Type.Nearby)),
+            Assumption.of(Assumption.Type.Location, "nearby me", "Nearby", applyType(SearchQuery.Filter.Location.Type.Nearby)),
+            Assumption.of(Assumption.Type.Location, "near me", "Near Me", applyType(SearchQuery.Filter.Location.Type.Nearby)),
+            Assumption.of(Assumption.Type.Location, "around me", "Around Me", applyType(SearchQuery.Filter.Location.Type.Nearby))
     );
 
     private final AreaClient areaClient;
@@ -45,7 +45,6 @@ public final class LocationAssumer extends Assumer {
             assumptions.add(assumption);
         });
 
-
         areaClient.iterator().forEachRemaining(area -> {
             String token = area.getName().toLowerCase();
             assumptions.add(Assumption.of(Assumption.Type.Location, token, area.getName(), applyArea(area)));
@@ -58,14 +57,21 @@ public final class LocationAssumer extends Assumer {
             }
         });
 
-
         return assumptions;
     }
 
     public static Consumer<SearchRequest> applyArea(Area area) {
         return request -> {
             SearchQuery query = request.getSearchQuery();
+            query.getFilter().getLocation().setType(SearchQuery.Filter.Location.Type.Where);
             query.getFilter().getLocation().setAreas(List.of(area));
+        };
+    }
+
+    public static Consumer<SearchRequest> applyType(SearchQuery.Filter.Location.Type type) {
+        return request -> {
+            SearchQuery query = request.getSearchQuery();
+            query.getFilter().getLocation().setType(type);
         };
     }
 }

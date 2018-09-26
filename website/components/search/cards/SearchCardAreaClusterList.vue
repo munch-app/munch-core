@@ -31,7 +31,7 @@
     },
     methods: {
       onClick(area) {
-        this.$store.dispatch('filter/location', area)
+        this.$store.dispatch('filter/location', {areas: [area], type: 'Where'})
         this.$store.dispatch('search/start', this.$store.state.filter.query)
       }
     }
@@ -41,7 +41,7 @@
 <style scoped lang="less">
   .ClusterList {
     margin-top: 18px;
-    height: 112px;
+    height: 112px !important;
   }
 
   .ClusterCard {

@@ -78,7 +78,9 @@ export const mutations = {
     state.query.filter.hour = query.filter.hour || {}
     state.query.filter.location = query.filter.location || {areas: [], type: 'Anywhere'}
 
-    state.query.filter.tag.positives = query.filter.tag.positives
+    state.query.filter.tag.positives = query.filter.tag.positives.map((tag) => {
+      return tag.toLowerCase()
+    })
   },
 
   /**
@@ -160,13 +162,13 @@ export const mutations = {
         return
 
       case 'Where':
-        state.query.filter.location.areas.splice(0, state.query.filter.location.areas)
+        state.query.filter.location.areas.splice(0, state.query.filter.location.areas.length)
         state.query.filter.location.areas.push(...areas)
         state.query.filter.location.type = 'Where'
         return
 
       case 'Between':
-        state.query.filter.location.areas.splice(0, state.query.filter.location.areas)
+        state.query.filter.location.areas.splice(0, state.query.filter.location.areas.length)
         state.query.filter.location.areas.push(...areas)
         state.query.filter.location.type = 'Between'
         return

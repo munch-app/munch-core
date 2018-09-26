@@ -49,10 +49,20 @@
           amenities.length +
           (query.filter.hour && query.filter.hour.name ? 1 : 0)
 
+        const locationName = () => {
+          const type = query.filter.location && query.filter.location.type
+          if (type === 'Where') {
+            return query.filter.location.areas.map(value => {
+              return value.name
+            }).join(', ')
+          }
+          return type || 'Location'
+        }
+
         return [
           {
             type: 'location',
-            name: query.filter.location && query.filter.location.type,
+            name: locationName(),
             applied: query.filter.location && query.filter.location.type !== 'Anywhere'
           },
           {
