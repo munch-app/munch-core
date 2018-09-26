@@ -4,7 +4,7 @@
       <div class="HeaderRow container clearfix">
         <header-logo class="Logo" :class="{'IsSuggest': isFocused('Suggest')}"/>
         <div class="Search">
-          <search-bar class="SearchBar" v-if="!isIndex" @onText="onText" @onBlur="onBlur" @onFocus="onFocus"/>
+          <search-bar class="SearchBar" @onText="onText" @onBlur="onBlur" @onFocus="onFocus"/>
         </div>
         <header-right class="HeaderMenu"/>
       </div>
