@@ -18,7 +18,7 @@
     </div>
     <div class="Row Hour" v-if="hours.length > 0">
       <div class="Left secondary-500">HOURS</div>
-      <place-hour-list class="Right" :hours="hours"/>
+      <place-hour-list :place-id="place.placeId" class="Right" :hours="hours"/>
     </div>
     <div></div>
   </div>

@@ -43,6 +43,8 @@
 <script>
   import ImageSize from "../core/ImageSize";
 
+  const Activity = require('~/services/user/place-activity')
+
   export default {
     name: "PlaceBannerImage",
     components: {ImageSize},
@@ -129,9 +131,13 @@
       },
       onFullScreenAfter(event, slick, currentSlide) {
         this.fullScreen.currentSlide = currentSlide
+        // noinspection JSDeprecatedSymbols
+        Activity.navigation.bannerImageItem(this.placeId, currentSlide)
+
       },
       onBannerAfter(event, slick, currentSlide) {
         this.banner.currentSlide = currentSlide
+        Activity.navigation.bannerImageItem(this.placeId, currentSlide)
       }
     }
   }

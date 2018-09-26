@@ -1,8 +1,8 @@
 <template>
   <div class="PartnerInstagramMedia">
     <slick class="Slick no-select" ref="slick" :options="options" @afterChange="onAfterChange">
-      <a class="MediaCard" v-for="media in medias" :key="media.mediaId" :href="media.link" target="_blank"
-         rel="nofollow">
+      <a class="MediaCard" v-for="(media, index) in medias" :key="media.mediaId" :href="media.link" target="_blank"
+         rel="nofollow" data-place-activity="partnerInstagramItem" :data-place-activity-data="index">
         <image-size class="Image elevation-1 border-4" :image="media.image">
           <div class="ImageBox">
             <div class="small UsernameButton border-3 elevation-1">@{{media.user.username}}</div>
@@ -27,6 +27,8 @@
 
 <script>
   import ImageSize from "../core/ImageSize";
+  const Activity = require('~/services/user/place-activity')
+
 
   export default {
     name: "PartnerInstagramMedia",
@@ -46,7 +48,7 @@
     data() {
       return {
         options: {
-          mobileFirst : true,
+          mobileFirst: true,
           speed: 300,
           infinite: false,
           slidesToShow: 1,
@@ -83,6 +85,7 @@
       },
       onAfterChange(event, slick, currentSlide) {
         this.currentSlide = currentSlide
+        Activity.navigation.partnerInstagramItem(this.placeId, currentSlide)
       }
     }
   }
@@ -118,6 +121,7 @@
 
   .Slick {
     display: flex;
+    overflow: hidden;
   }
 
   .Controls {
@@ -148,8 +152,8 @@
   }
 
   .MediaCard {
-     margin-top: 8px;
-     margin-bottom: 8px;
+    margin-top: 8px;
+    margin-bottom: 8px;
 
     &:hover {
       cursor: pointer;

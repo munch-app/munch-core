@@ -83,6 +83,7 @@
 
   .Slick {
     display: flex;
+    overflow: hidden;
   }
 
   .Award {

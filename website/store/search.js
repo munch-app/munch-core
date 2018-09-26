@@ -63,6 +63,8 @@ export const mutations = {
  */
 export const actions = {
   start({commit, state}, query) {
+    this.$router.replace({path: '/search'})
+
     commit('start', query)
     this.commit('filter/replace', query)
 

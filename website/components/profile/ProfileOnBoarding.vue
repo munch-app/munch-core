@@ -115,6 +115,7 @@
 
   .Slick {
     display: flex;
+    overflow: hidden;
   }
 
   .BannerContent {

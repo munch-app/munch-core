@@ -3,7 +3,11 @@
     <h2>Location</h2>
     <div class="Address text">{{location.address}}</div>
     <div class="Landmark text" v-if="landmark">{{landmark.min}} min from <span>{{landmark.name}}</span></div>
-    <google-embed-map class="Map" :lat-lng="location.latLng" height="224"/>
+
+    <div class="GoogleMap">
+      <a class="Interaction" data-place-activity="mapExternal" target="_blank" :href="`https://www.google.com/maps?q=${location.latLng}`" style="height: 224px"></a>
+      <google-embed-map :lat-lng="location.latLng" height="224"/>
+    </div>
   </div>
 </template>
 
@@ -31,6 +35,10 @@
     name: "PlaceLocation",
     components: {GoogleEmbedMap},
     props: {
+      placeId: {
+        type: String,
+        required: true
+      },
       location: {
         type: Object,
         required: true
@@ -70,7 +78,19 @@
     }
   }
 
-  .Map {
+  .GoogleMap {
+    position: relative;
     margin-top: 16px;
+
+    .Interaction {
+      z-index: 1;
+      width: 100%;
+      position: absolute;
+      background-color: rgba(0, 0, 0, 0);
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
   }
 </style>

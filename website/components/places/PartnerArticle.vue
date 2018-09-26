@@ -1,8 +1,8 @@
 <template>
   <div class="PartnerArticle">
     <slick class="Slick" ref="slick" :options="options" @afterChange="onAfterChange">
-      <a v-for="article in articles" :key="article.url" :href="article.url" target="_blank"
-         rel="noreferrer noopener nofollow">
+      <a v-for="(article, index) in articles" :key="article.url" :href="article.url" target="_blank"
+         rel="noreferrer noopener nofollow" data-place-activity="partnerArticleItem" :data-place-activity-data="index">
         <div class="ArticleCard no-select elevation-1 border-4">
           <image-size class="Image border-4Top" :image="article.thumbnail"/>
 
@@ -29,6 +29,7 @@
 
 <script>
   import ImageSize from "../core/ImageSize";
+  const Activity = require('~/services/user/place-activity')
 
   export default {
     name: "PartnerArticle",
@@ -93,6 +94,7 @@
       },
       onAfterChange(event, slick, currentSlide) {
         this.currentSlide = currentSlide
+        Activity.navigation.partnerArticleItem(this.placeId, currentSlide)
       }
     }
   }
@@ -127,6 +129,7 @@
 
   .Slick {
     display: flex;
+    overflow: hidden;
   }
 
   .Controls {

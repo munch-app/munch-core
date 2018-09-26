@@ -1,6 +1,6 @@
 <template>
   <div class="PlaceHourList">
-    <div class="HourToday" @click="popover = !popover">
+    <div class="HourToday" @click="onPopover">
       <span class="TodayShort">
         {{Day.today().text.substring(0, 3)}}:
       </span>
@@ -37,10 +37,15 @@
 
 <script>
   import {Day, days, Hour, HourGroup} from './hour-group'
+  const Activity = require('~/services/user/place-activity')
 
   export default {
     name: "PlaceHourList",
     props: {
+      placeId: {
+        type: String,
+        required: true,
+      },
       hours: {
         required: true,
         twoWay: false,
@@ -98,6 +103,10 @@
         if (this.popover) {
           this.popover = false
         }
+      },
+      onPopover() {
+        this.popover = !this.popover
+        Activity.click.hours(this.placeId)
       }
     }
   }

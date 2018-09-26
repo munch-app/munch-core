@@ -74,7 +74,7 @@ module.exports = {
     '~/plugins/vue-observe-visibility',
     '~/plugins/vue-router',
 
-    {src: '~/plugins/vue-slick', ssr: false},
+    {src: '~/plugins/vue-slick', ssr: true},
     {src: '~/plugins/vue-touch', ssr: false},
     {src: '~/plugins/vue-loader', ssr: false},
     {src: '~/plugins/vuex-persistedstate', ssr: false}

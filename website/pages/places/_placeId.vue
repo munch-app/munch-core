@@ -11,7 +11,7 @@
           <div class="regular Street">{{place.location.neighbourhood || place.location.street ||
             place.location.address}}
           </div>
-          <place-tag-list class="Tag" :tags="place.tags" :max="6"/>
+          <place-tag-list class="Tag" :tags="place.tags" :max="10"/>
         </section>
 
         <section class="Action">
@@ -32,7 +32,7 @@
         </section>
 
         <section class="Location ContentBody">
-          <place-location :location="place.location"/>
+          <place-location :place-id="place.placeId" :location="place.location"/>
         </section>
       </div>
     </section>
@@ -60,7 +60,9 @@
     <section class="End">
     </section>
 
-    <profile-collection-add-place :place="place" v-if="showAddToCollection" @on-close="showAddToCollection = false"/>
+    <no-ssr>
+      <profile-collection-add-place :place="place" v-if="showAddToCollection" @on-close="showAddToCollection = false"/>
+    </no-ssr>
   </div>
 </template>
 
@@ -79,6 +81,10 @@
   import PlaceAbout from "../../components/places/PlaceAbout";
   import PlaceDetail from "../../components/places/PlaceDetail";
   import ProfileCollectionAddPlace from "../../components/profile/ProfileCollectionAddPlace";
+
+  const Activity = require('~/services/user/place-activity')
+
+  let clickAction
 
   export default {
     components: {
@@ -119,6 +125,32 @@
         if (this.data.place.hours && this.data.place.hours.length > 0) {
           return this.data.place.hours
         }
+      }
+    },
+    methods: {},
+    mounted() {
+      if (process.client) {
+        const placeId = this.place.placeId
+        Activity.start.call(this, placeId)
+
+        clickAction = function () {
+          const action = this.dataset.placeActivity
+          const data = this.dataset.placeActivityData
+          Activity.click[action](placeId, data)
+        }
+
+        // Track all place activity clicks
+        document.querySelectorAll('a[data-place-activity]').forEach(anchor => {
+          anchor.addEventListener("click", clickAction, true);
+        })
+      }
+    },
+    destroyed() {
+      if (process.client) {
+        // Remove all place activity clicks
+        document.querySelectorAll('a[data-place-activity]').forEach(anchor => {
+          anchor.removeEventListener("click", clickAction, true)
+        })
       }
     }
   }
