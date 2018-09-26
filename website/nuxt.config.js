@@ -46,7 +46,7 @@ module.exports = {
       if (isServer) {
         config.externals += [
           require('webpack-node-externals')({
-            whitelist: [/^vue-slick/]
+            whitelist: ['vue-slick']
           })
         ]
       }
@@ -61,20 +61,34 @@ module.exports = {
       })
     ]
   },
+  vendor: [
+    'jquery',
+
+    'portal-vue',
+    'prismic-vue',
+    'vue-rx',
+    'vue-clickaway',
+    'vue-simple-svg',
+    'vue-browser-geolocation',
+    'vue-observe-visibility',
+    'vue-slick',
+
+    'vuex-persistedstate',
+  ],
   plugins: [
     '~/plugins/global',
     '~/plugins/axios',
+    '~/plugins/vue-router',
+
     '~/plugins/portal-vue',
     '~/plugins/prismic-vue',
     '~/plugins/vue-rx',
     '~/plugins/vue-clickaway',
-    '~/plugins/vue-line-clamp-extended',
     '~/plugins/vue-simple-svg',
     '~/plugins/vue-browser-geolocation',
     '~/plugins/vue-observe-visibility',
-    '~/plugins/vue-router',
+    '~/plugins/vue-slick',
 
-    {src: '~/plugins/vue-slick', ssr: false},
     {src: '~/plugins/vue-touch', ssr: false},
     {src: '~/plugins/vue-loader', ssr: false},
     {src: '~/plugins/vuex-persistedstate', ssr: false}
