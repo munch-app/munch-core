@@ -6289,6 +6289,10 @@ safer-buffer@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.0.tgz#d9f653a55538c8d7829cb1a92e90bbcbc5ff5d3b"
 
+sanitize.css@^7.0.3:
+  version "7.0.3"
+  resolved "https://registry.yarnpkg.com/sanitize.css/-/sanitize.css-7.0.3.tgz#121929e784381013256cd4805d1d8983a95ffae3"
+
 sax@^1.2.4, sax@~1.2.1:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"

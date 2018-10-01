@@ -1,6 +1,6 @@
 <template>
   <div class="Default">
-    <nav class="Header index-top-elevation" :class="{'elevation-1': !isSearch && !isIndex, 'nav-bg': !isIndex}">
+    <nav class="Header index-top-elevation hr-bottom" :class="{'elevation-1': !isSearch && !isIndex, 'white-bg': !isIndex}">
       <div class="HeaderRow container clearfix">
         <header-logo class="Logo" :class="{'IsSuggest': isFocused('Suggest')}"/>
         <div class="Search">
@@ -31,6 +31,7 @@
 </template>
 
 <script>
+  import 'sanitize.css'
   if (process.browser) require('intersection-observer')
 
   import {mapGetters} from 'vuex'

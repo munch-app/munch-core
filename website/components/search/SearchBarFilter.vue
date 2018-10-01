@@ -1,6 +1,6 @@
 <template>
   <div class="no-select index-5" v-on-clickaway="onClickAway">
-    <div class="FilterBar index-header">
+    <div class="FilterBar index-header hr-bottom">
       <div class="Buttons container">
         <div v-for="button in buttons" :key="button.type" class="FilterButton" @click="onButton(button)"
              :class="{
@@ -147,7 +147,7 @@
     width: 100%;
     background: white;
 
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05), 0 1px 1px rgba(0, 0, 0, 0.10);
+    /*box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05), 0 1px 1px rgba(0, 0, 0, 0.10);*/
   }
 
   .Buttons {
