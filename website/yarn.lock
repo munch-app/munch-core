@@ -203,6 +203,10 @@
   dependencies:
     vue-analytics "^5.4.0"
 
+"@nuxtjs/google-tag-manager@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@nuxtjs/google-tag-manager/-/google-tag-manager-2.1.0.tgz#82bb4acbea7f63bbd9a0ccea4daac39feb3d43b9"
+
 "@nuxtjs/proxy@^1.2.4":
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/@nuxtjs/proxy/-/proxy-1.2.4.tgz#41aafac58854f14e28aed17238936bb6404e6071"

@@ -12,7 +12,7 @@
       <div class="Left secondary-500">WEBSITE</div>
       <a :href="place.website"  class="Right" target="_blank" rel="noreferrer noopener nofollow">{{websiteUrl}}</a>
     </div>
-    <div class="Row WebsiteMenu" v-if="menuUrl">
+    <div class="Row WebsiteMenu" v-if="false">
       <div class="Left secondary-500">MENU</div>
       <a :href="place.menu.url" class="Right" rel="noreferrer noopener nofollow">{{menuUrl}}</a>
     </div>

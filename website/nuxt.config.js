@@ -106,6 +106,9 @@ module.exports = {
     ['@nuxtjs/google-analytics', {
       id: 'UA-117480436-1'
     }],
+    ['@nuxtjs/google-tag-manager', {
+      id: 'GTM-KVBXWDJ'
+    }],
   ],
   axios: {},
   sitemap: {
