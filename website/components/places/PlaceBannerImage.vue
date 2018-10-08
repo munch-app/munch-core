@@ -1,10 +1,12 @@
 <template>
-  <div class="PlaceBannerImage container-fixed no-select">
+  <div class="PlaceBannerImage container-full no-select">
     <div class="Banner NavigationLeft index-navigation" v-if="images.length > 3 && banner.currentSlide !== 0"
          @click="onPrev"></div>
     <div class="Banner NavigationRight index-navigation" v-if="images.length > 3" @click="onNext"></div>
 
     <slick class="Slick" ref="slick" :options="banner.options" @afterChange="onBannerAfter">
+      <div><div class="gutter"/></div>
+
       <div v-for="(value, index) in images" :key="value.imageId" @click="onFullScreen(index)">
         <div class="BannerImage no-select">
           <image-size class="Image" :image="value">
@@ -146,11 +148,6 @@
 <style scoped lang="less">
   .PlaceBannerImage {
     position: relative;
-
-    @media (min-width: 576px) {
-      padding-left: 24px;
-      padding-right: 24px;
-    }
   }
 
   .Slick {
@@ -231,6 +228,10 @@
         cursor: pointer;
         background-image: linear-gradient(to left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3));
       }
+
+      @media (min-width: 1200px) {
+        margin-left: 80px;
+      }
     }
 
     .Banner.NavigationRight {
@@ -247,6 +248,16 @@
         cursor: pointer;
         background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3));
       }
+
+      @media (min-width: 1200px) {
+        margin-right: 80px;
+      }
+    }
+  }
+
+  @media (max-width: 575.98px) {
+    .gutter {
+      display: none;
     }
   }
 
@@ -265,7 +276,6 @@
   /* > 768 Condition */
   @media (min-width: 768px) {
     .BannerImage {
-      margin-right: 24px;
       width: 270px;
     }
   }
@@ -273,12 +283,7 @@
   /* 1200 Condition*/
   @media (min-width: 1200px) {
     .BannerImage {
-      margin-right: 24px;
       width: 320px;
-    }
-
-    .Image {
-      padding-top: 60%;
     }
 
     .PlaceBannerImage {

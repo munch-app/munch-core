@@ -1,20 +1,23 @@
 <template>
   <div class="PartnerArticle">
-    <slick class="Slick container-fixed" ref="slick" :options="options" @afterChange="onAfterChange">
+    <slick class="Slick container-full" ref="slick" :options="options" @afterChange="onAfterChange">
+      <div><div class="gutter"/></div>
+
       <a v-for="(article, index) in articles" :key="article.url" :href="article.url" target="_blank"
          rel="noreferrer noopener nofollow" data-place-activity="partnerArticleItem" :data-place-activity-data="index">
-        <div class="ArticleCard no-select elevation-1 border-4">
-          <image-size class="Image border-4Top" :image="article.thumbnail"/>
+        <div class="ArticleCard no-select elevation-2 elevation-hover-3 border-3 hover-pointer">
+          <image-size class="Image border-3-top" :image="article.thumbnail"/>
 
           <div class="Content">
-            <h4 class="Title">{{article.title}}</h4>
-            <div class="Description regular">{{article.content || article.description}}</div>
-            <div class="Brand small">@{{article.domain.name}}</div>
+            <h3 class="Title">{{article.title}}</h3>
+            <p class="Description">{{article.content || article.description}}</p>
+
+            <h4 class="Brand secondary">{{article.domain.name}}</h4>
           </div>
         </div>
       </a>
     </slick>
-    <div class="Controls container-fixed">
+    <div class="Controls container">
       <div class="Left elevation-1 border-3" @click="onPrev"
            :class="{'secondary-500-bg': hasPrev, 'secondary-100-bg': !hasPrev}">
         <simple-svg class="Icon" fill="white" filepath="/img/places/caret_left.svg"/>
@@ -29,6 +32,7 @@
 
 <script>
   import ImageSize from "../core/ImageSize";
+
   const Activity = require('~/services/user/place-activity')
 
   export default {
@@ -49,7 +53,7 @@
     data() {
       return {
         options: {
-          mobileFirst : true,
+          mobileFirst: true,
           speed: 300,
           infinite: false,
           slidesToShow: 1,
@@ -101,16 +105,6 @@
 </script>
 
 <style scoped lang="less">
-  .PartnerArticle {
-    .Slick, .Controls {
-      padding-left: 24px;
-
-      @media (min-width: 576px) {
-        padding-right: 24px;
-      }
-    }
-  }
-
   .Slick {
     display: flex;
     overflow: hidden;
@@ -143,137 +137,65 @@
     }
   }
 
-  .ArticleCard {
-    &:hover {
-      cursor: pointer;
-    }
-  }
-
-  .Image {
-    width: 100%;
-    padding-top: 60%;
-  }
-
   a {
     text-decoration: none;
     color: black;
   }
 
-  /* < 576 Condition & Normal Condition */
   .ArticleCard {
-    margin: 8px 18px 8px 1px;
-    width: 244px;
-    height: 310px;
-  }
+    margin: 24px 24px 24px 0;
+    width: 300px;
+    height: 394px;
 
-  .Content {
-    padding: 10px 16px 16px 16px;
-  }
-
-  .Title {
-    font-size: 16px;
-    max-height: 47px;
-    -webkit-line-clamp: 2;
-
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-  }
-
-  .Description {
-    font-size: 13px;
-    max-height: 56px;
-    margin-top: 8px;
-
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-  }
-
-  .Brand {
-    font-size: 11px;
-    margin-top: 8px;
-    height: 18px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  /* > 576 Condition */
-  @media (min-width: 576px) {
-    .ArticleCard {
-      margin-right: 24px;
-      width: 290px;
-      height: 408px;
+    .Image {
+      width: 100%;
+      padding-top: 55%;
     }
 
     .Content {
-      padding: 16px 24px 24px 24px;
-    }
+      padding: 16px 24px 16px 24px;
 
-    .Title {
-      font-size: 19px;
-      max-height: 56px;
-      -webkit-line-clamp: 2;
-    }
+      .Title {
+        font-size: 19px;
+        max-height: 56px;
+        -webkit-line-clamp: 2;
 
-    .Description {
-      font-size: 16px;
-      margin-top: 8px;
-      max-height: 96px;
-    }
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+      }
 
-    .Brand {
-      margin-top: 16px;
-      font-size: 12px;
-      height: 18px;
-    }
-  }
+      .Description {
+        font-size: 16px;
+        line-height: 1.5;
 
-  /* > 768 Condition */
-  @media (min-width: 768px) {
-    .ArticleCard {
-      margin-right: 28px;
-      width: 290px;
-      height: 408px;
-    }
+        max-height: 96px;
+        margin-top: 8px;
 
-    .Content {
-      padding: 16px 24px 24px 24px;
-    }
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
+      }
 
-    .Title {
-      font-size: 19px;
-      max-height: 56px;
-      -webkit-line-clamp: 2;
-    }
+      .Brand {
+        font-size: 16px;
+        height: 24px;
 
-    .Description {
-      font-size: 16px;
-    }
+        margin-top: 16px;
 
-    .Brand {
-      font-size: 12px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
     }
   }
 
-  /* 1200 Condition*/
   @media (min-width: 1200px) {
     .ArticleCard {
-      margin-right: 28px;
-      width: 350px;
-      height: 444px;
-    }
-
-    .Title {
-    }
-
-    .Description {
-    }
-
-    .Brand {
-
+      margin-right: 32px;
+      width: 340px;
+      height: 420px;
     }
   }
 </style>
