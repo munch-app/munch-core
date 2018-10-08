@@ -9,7 +9,7 @@
           <div class="Content">
             <h4 class="Title">{{article.title}}</h4>
             <div class="Description regular">{{article.description}}</div>
-            <div class="Brand small">@{{article.brand}}</div>
+            <div class="Brand small">@{{article.domain.name}}</div>
           </div>
         </div>
       </a>

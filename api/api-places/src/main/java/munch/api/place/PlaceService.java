@@ -5,13 +5,11 @@ import com.google.inject.Singleton;
 import munch.api.ApiService;
 import munch.api.place.basic.BasicCardLoader;
 import munch.api.place.card.PlaceCard;
-import munch.api.place.query.PlaceArticleCardLoader;
 import munch.api.place.query.QueryCardLoader;
-import munch.article.clients.Article;
+import munch.article.ArticleLinkClient;
 import munch.data.client.PlaceClient;
 import munch.data.place.Place;
 import munch.instagram.InstagramLinkClient;
-import munch.restful.core.NextNodeList;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonResult;
 import munch.user.client.AwardCollectionClient;
@@ -34,21 +32,20 @@ public class PlaceService extends ApiService {
     private final QueryCardLoader cardLoader;
     private final PlaceCardSorter cardSorter;
 
+    private final ArticleLinkClient articleLinkClient;
     private final InstagramLinkClient instagramLinkClient;
     private final AwardCollectionClient awardCollectionClient;
 
-    private final CatalystV2Support v2Support;
-
     @Inject
-    public PlaceService(PlaceClient placeClient, BasicCardLoader basicReader, QueryCardLoader cardLoader, PlaceCardSorter cardSorter, InstagramLinkClient instagramLinkClient, AwardCollectionClient awardCollectionClient, CatalystV2Support v2Support) {
+    public PlaceService(PlaceClient placeClient, BasicCardLoader basicReader, QueryCardLoader cardLoader,
+                        PlaceCardSorter cardSorter, ArticleLinkClient articleLinkClient, InstagramLinkClient instagramLinkClient, AwardCollectionClient awardCollectionClient) {
         this.placeClient = placeClient;
         this.basicReader = basicReader;
         this.cardLoader = cardLoader;
         this.cardSorter = cardSorter;
+        this.articleLinkClient = articleLinkClient;
         this.instagramLinkClient = instagramLinkClient;
         this.awardCollectionClient = awardCollectionClient;
-
-        this.v2Support = v2Support;
     }
 
     /**
@@ -73,13 +70,10 @@ public class PlaceService extends ApiService {
         Place place = placeClient.get(placeId);
         if (place == null) return JsonResult.notFound();
 
-        NextNodeList<Article> articles = v2Support.getArticles(placeId, null, 10);
-        PlaceArticleCardLoader.removeBadData(articles);
-
         return JsonResult.ok(Map.of(
                 "place", place,
                 "awards", awardCollectionClient.list(placeId, null, 10),
-                "articles", articles,
+                "articles", articleLinkClient.list(placeId, null, 10),
                 "instagram", Map.of(
                         "medias", instagramLinkClient.list(placeId, null, 10)
                 )

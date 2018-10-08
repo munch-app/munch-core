@@ -13,10 +13,16 @@ allprojects {
     ext.guiceVersion = '4.2.1'
     ext.awsVersion = '1.11.367'
 
-    ext.restfulVersion = '2.4.20'
-    ext.fileVersion = '1.2.11'
-    ext.catalystVersion = '3.0-SNAPSHOT'
+    ext.restfulVersion = '2.4.21'
+    ext.fileVersion = '1.2.14'
+    ext.catalystVersion = '3.1'
+
+    ext.userVersion = '1.27'
+    ext.notificationVersion = '1.5'
+    
+    ext.dataVersion = '4.10-SNAPSHOT'
     ext.instagramVersion = '1.0-SNAPSHOT'
+    ext.articleVersion = '1.0-SNAPSHOT'
 
     sourceCompatibility = 1.9
     targetCompatibility = 1.9

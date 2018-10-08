@@ -22,7 +22,7 @@
     data() {
       return {
         options: {
-          mobileFirst : true,
+          mobileFirst: true,
           speed: 300,
           infinite: false,
           slidesToShow: 1,
@@ -65,15 +65,15 @@
     border-radius: 3px;
     margin-right: 8px;
 
-    > div {
-      max-height: 40px;
+    div {
+      max-height: 33px;
 
       color: rgba(0, 0, 0, 0.8);
       font-size: 13px;
       font-weight: 600;
       line-height: 1.25;
-      text-align: center;
 
+      text-align: center;
       -webkit-line-clamp: 2;
       overflow: hidden;
       display: -webkit-box;

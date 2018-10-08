@@ -1,8 +1,8 @@
 package munch.api.place;
 
 import munch.api.ApiService;
-import munch.api.place.query.PlaceArticleCardLoader;
-import munch.article.clients.Article;
+import munch.article.data.Article;
+import munch.article.link.ArticleLinkClient;
 import munch.instagram.InstagramLinkClient;
 import munch.instagram.data.InstagramMedia;
 import munch.restful.core.NextNodeList;
@@ -20,13 +20,12 @@ import javax.inject.Singleton;
 @Singleton
 public final class PlacePartnerService extends ApiService {
     private final InstagramLinkClient instagramLinkClient;
-
-    private final CatalystV2Support v2Support;
+    private final ArticleLinkClient articleLinkClient;
 
     @Inject
-    public PlacePartnerService(InstagramLinkClient instagramLinkClient, CatalystV2Support v2Support) {
+    public PlacePartnerService(InstagramLinkClient instagramLinkClient, ArticleLinkClient articleLinkClient) {
         this.instagramLinkClient = instagramLinkClient;
-        this.v2Support = v2Support;
+        this.articleLinkClient = articleLinkClient;
     }
 
     @Override
@@ -40,11 +39,9 @@ public final class PlacePartnerService extends ApiService {
     private NextNodeList<Article> getArticles(JsonCall call) {
         int size = call.querySize(20, 40);
         String placeId = call.pathString("placeId");
-        String nextPlaceSort = call.queryString("next.placeSort", null);
+        String nextSort = call.queryString("next.sort", null);
 
-        NextNodeList<Article> nextNodeList = v2Support.getArticles(placeId, nextPlaceSort, size);
-        PlaceArticleCardLoader.removeBadData(nextNodeList);
-        return nextNodeList;
+        return articleLinkClient.list(placeId, nextSort, size);
     }
 
     /**
