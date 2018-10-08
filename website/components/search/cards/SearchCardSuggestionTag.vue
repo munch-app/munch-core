@@ -5,7 +5,7 @@
       <div class="white text">{{description}}</div>
 
       <horizontal-scroll-view class="TagList" :items="card.tags" :map-key="i => i.name" :container="false"
-                              :padding="18">
+                              :nav-white="false" :padding="18">
         <template slot-scope="{item}">
           <div class="Tag text text-center white-bg border-4 hover-pointer" @click="onClick(item.name)">
             <div class="Name text-ellipsis-1-line">{{item.name}}</div>

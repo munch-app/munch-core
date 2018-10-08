@@ -1,6 +1,6 @@
 <template>
   <div class="PartnerInstagramMedia">
-    <slick class="Slick no-select" ref="slick" :options="options" @afterChange="onAfterChange">
+    <slick class="Slick no-select container-fixed" ref="slick" :options="options" @afterChange="onAfterChange">
       <a class="MediaCard" v-for="(media, index) in medias" :key="media.mediaId" :href="media.link" target="_blank"
          rel="nofollow" data-place-activity="partnerInstagramItem" :data-place-activity-data="index">
         <image-size class="Image elevation-1 border-4" :image="media.image">
@@ -12,7 +12,7 @@
       </a>
     </slick>
 
-    <div class="Controls">
+    <div class="Controls container-fixed">
       <div class="Left elevation-1 border-3" @click="onPrev"
            :class="{'secondary-500-bg': hasPrev, 'secondary-100-bg': !hasPrev}">
         <simple-svg class="Icon" fill="white" filepath="/img/places/caret_left.svg"/>
@@ -94,28 +94,11 @@
 <style scoped lang="less">
   .PartnerInstagramMedia {
     .Slick, .Controls {
-      padding-left: 15px;
-      width: 100%;
-      margin-left: auto;
-      margin-right: auto;
+      padding-left: 24px;
 
       @media (min-width: 576px) {
-        padding-right: 15px;
-        max-width: 540px;
+        padding-right: 24px;
       }
-
-      @media (min-width: 768px) {
-        max-width: 720px;
-      }
-
-      @media (min-width: 992px) {
-        max-width: 960px;
-      }
-
-      @media (min-width: 1200px) {
-        max-width: 1140px;
-      }
-
     }
   }
 

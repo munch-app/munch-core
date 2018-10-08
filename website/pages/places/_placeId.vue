@@ -5,7 +5,7 @@
     </section>
 
     <section class="Information">
-      <div class="container">
+      <div class="container-fixed">
         <section class="Name ContentBody">
           <h1>{{place.name}}</h1>
           <div class="regular Street">{{place.location.neighbourhood || place.location.street ||
@@ -38,19 +38,19 @@
     </section>
 
     <section class="Partner" v-if="hasPartner">
-      <div class="container">
+      <div class="container-fixed">
         <h2 class="secondary-500 Header">Partner's Content</h2>
       </div>
 
       <section class="Article" v-if="data.articles.length > 0">
-        <div class="container">
+        <div class="container-fixed">
           <h2>Articles</h2>
         </div>
         <partner-article :place-id="place.placeId" :preload="data.articles"/>
       </section>
 
       <section class="Instagram" v-if="data.instagram.medias.length > 0">
-        <div class="container">
+        <div class="container-fixed">
           <h2>Instagram</h2>
         </div>
         <partner-instagram-media :place-id="place.placeId" :preload="data.instagram.medias"/>

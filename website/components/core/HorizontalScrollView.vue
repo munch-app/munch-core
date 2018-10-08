@@ -1,7 +1,9 @@
 <template>
   <div class="HorizontalScrollViewWrapper" :class="{'container-no-gutter': container}">
-    <div @click="onPrev" v-if="hasPrev" class="ScrollControlPrev index-navigation hover-pointer"/>
-    <div @click="onNext" v-if="hasNext" class="ScrollControlNext index-navigation hover-pointer"/>
+    <div @click="onPrev" v-if="hasPrev" class="ScrollControlPrev index-navigation hover-pointer"
+         :class="{NavWhite:navWhite}"/>
+    <div @click="onNext" v-if="hasNext" class="ScrollControlNext index-navigation hover-pointer"
+         :class="{NavWhite:navWhite}"/>
 
     <div class="HorizontalScrollView zero-spacing index-content" :class="{container}">
       <div ref="scrollArea" class="ScrollArea index-content" :style="container ? '' : 'margin: 0 -15px'">
@@ -35,6 +37,11 @@
       mapKey: {
         type: Function,
         required: true
+      },
+      navWhite: {
+        type: Boolean,
+        required: false,
+        default: () => false
       }
     },
     data() {
@@ -124,6 +131,13 @@
         width: 14px;
         border-right: 2px solid black;
         border-bottom: 2px solid black;
+      }
+    }
+
+    .ScrollControlPrev, .ScrollControlNext {
+      &.NavWhite::after {
+        border-right: 2px solid white;
+        border-bottom: 2px solid white;
       }
     }
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="PlaceBannerImage no-select">
+  <div class="PlaceBannerImage container-fixed no-select">
     <div class="Banner NavigationLeft index-navigation" v-if="images.length > 3 && banner.currentSlide !== 0"
          @click="onPrev"></div>
     <div class="Banner NavigationRight index-navigation" v-if="images.length > 3" @click="onNext"></div>
@@ -145,27 +145,11 @@
 
 <style scoped lang="less">
   .PlaceBannerImage {
-    width: 100%;
-    margin-left: auto;
-    margin-right: auto;
     position: relative;
 
     @media (min-width: 576px) {
-      max-width: 540px;
-      padding-left: 15px;
-      padding-right: 15px;
-    }
-
-    @media (min-width: 768px) {
-      max-width: 720px;
-    }
-
-    @media (min-width: 992px) {
-      max-width: 960px;
-    }
-
-    @media (min-width: 1200px) {
-      max-width: 1140px;
+      padding-left: 24px;
+      padding-right: 24px;
     }
   }
 
@@ -235,7 +219,7 @@
 
     .Banner.NavigationLeft {
       left: 0;
-      margin-left: 15px;
+      margin-left: 24px;
       background-image: linear-gradient(to left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
 
       &::after {
@@ -251,7 +235,7 @@
 
     .Banner.NavigationRight {
       right: 0;
-      margin-right: 15px;
+      margin-right: 24px;
       background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
 
       &::after {

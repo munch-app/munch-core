@@ -104,6 +104,12 @@
       max-width: 25%;
     }
 
+    @media (min-width: 1600px) {
+      -ms-flex: 0 0 20%;
+      flex: 0 0 20%;
+      max-width: 20%;
+    }
+
     &.FullWidth {
       -ms-flex: 0 0 100%;
       flex: 0 0 100%;
