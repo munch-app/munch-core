@@ -1,6 +1,7 @@
 package munch.api.place;
 
 import munch.api.ApiServiceModule;
+import munch.article.ArticleCleaner;
 import munch.instagram.InstagramCleaner;
 
 /**
@@ -13,6 +14,7 @@ public final class PlaceModule extends ApiServiceModule {
     @Override
     protected void configure() {
         addCleaner(InstagramCleaner.class);
+        addCleaner(ArticleCleaner.class);
 
         addService(PlaceService.class);
         addService(PlacePartnerService.class);
