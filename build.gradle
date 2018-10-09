@@ -14,7 +14,7 @@ allprojects {
     ext.awsVersion = '1.11.367'
 
     ext.restfulVersion = '2.4.21'
-    ext.fileVersion = '1.2.14'
+    ext.fileVersion = '1.2.15'
     ext.catalystVersion = '3.1'
 
     ext.userVersion = '1.27'

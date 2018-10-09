@@ -33,7 +33,10 @@ project('api-places') {
         compile group: 'article-system', name: 'article-system-link-client', version: articleVersion
         compile group: 'article-system', name: 'article-system-data-client', version: articleVersion
 
+        compile group: 'file-service', name: 'file-service-client', version: fileVersion
+
         compile group: 'catalyst', name: 'catalyst-link-client', version: catalystVersion
+        compile group: 'catalyst', name: 'catalyst-mutation-client', version: catalystVersion
         compile group: 'catalyst', name: 'catalyst-edit-website-utils', version: catalystVersion
     }
 }

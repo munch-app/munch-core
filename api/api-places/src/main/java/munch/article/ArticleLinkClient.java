@@ -3,6 +3,7 @@ package munch.article;
 import catalyst.link.PlaceLinkClient;
 import munch.article.data.Article;
 import munch.article.data.ArticleClient;
+import munch.article.data.DomainCache;
 import munch.restful.core.NextNodeList;
 
 import javax.annotation.Nullable;
@@ -22,8 +23,8 @@ import java.util.Set;
 public final class ArticleLinkClient extends munch.article.link.ArticleLinkClient {
 
     @Inject
-    public ArticleLinkClient(PlaceLinkClient placeLinkClient, ArticleClient articleClient) {
-        super(placeLinkClient, articleClient);
+    public ArticleLinkClient(PlaceLinkClient placeLinkClient, ArticleClient articleClient, DomainCache domainCache) {
+        super(placeLinkClient, articleClient, domainCache);
     }
 
     @Override

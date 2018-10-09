@@ -11,7 +11,7 @@
         <div class="BannerImage no-select">
           <image-size class="Image" :image="value">
             <div class="BannerContainer">
-              <div v-if="value.profile && value.profile.name" class="small UsernameButton border-4 elevation-1">
+              <div v-if="value.profile && value.profile.name" class="small UsernameButton border-3 elevation-1">
                 {{value.profile.name}}
               </div>
             </div>

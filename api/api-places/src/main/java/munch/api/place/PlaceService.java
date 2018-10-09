@@ -9,7 +9,10 @@ import munch.api.place.query.QueryCardLoader;
 import munch.article.ArticleLinkClient;
 import munch.data.client.PlaceClient;
 import munch.data.place.Place;
+import munch.gallery.PlaceImage;
+import munch.gallery.PlaceImageClient;
 import munch.instagram.InstagramLinkClient;
+import munch.restful.core.NextNodeList;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonResult;
 import munch.user.client.AwardCollectionClient;
@@ -36,9 +39,11 @@ public class PlaceService extends ApiService {
     private final InstagramLinkClient instagramLinkClient;
     private final AwardCollectionClient awardCollectionClient;
 
+    private final PlaceImageClient placeImageClient;
+
     @Inject
     public PlaceService(PlaceClient placeClient, BasicCardLoader basicReader, QueryCardLoader cardLoader,
-                        PlaceCardSorter cardSorter, ArticleLinkClient articleLinkClient, InstagramLinkClient instagramLinkClient, AwardCollectionClient awardCollectionClient) {
+                        PlaceCardSorter cardSorter, ArticleLinkClient articleLinkClient, InstagramLinkClient instagramLinkClient, AwardCollectionClient awardCollectionClient, PlaceImageClient placeImageClient) {
         this.placeClient = placeClient;
         this.basicReader = basicReader;
         this.cardLoader = cardLoader;
@@ -46,6 +51,7 @@ public class PlaceService extends ApiService {
         this.articleLinkClient = articleLinkClient;
         this.instagramLinkClient = instagramLinkClient;
         this.awardCollectionClient = awardCollectionClient;
+        this.placeImageClient = placeImageClient;
     }
 
     /**
@@ -56,6 +62,7 @@ public class PlaceService extends ApiService {
         PATH("/places/:placeId", () -> {
             GET("", this::get);
             GET("/cards", this::getCards);
+            GET("/images", this::getImages);
         });
     }
 
@@ -99,5 +106,13 @@ public class PlaceService extends ApiService {
                 "cards", cards,
                 "place", place
         ));
+    }
+
+    public NextNodeList<PlaceImage> getImages(JsonCall call) {
+        String placeId = call.pathString("placeId");
+        String nextSort = call.queryString("next.sort", null);
+        int size = call.querySize(20, 40);
+
+        return placeImageClient.list(placeId, nextSort, size);
     }
 }
