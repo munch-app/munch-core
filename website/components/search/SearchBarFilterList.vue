@@ -2,6 +2,11 @@
   <div class="container" v-if="selected">
     <div class="FilterListContainer index-elevation">
       <div class="FilterList index-elevation">
+        <div class="Group Location" :class="{'Selected': selected === 'location'}">
+          <h2 class="FilterName">Where</h2>
+          <search-bar-filter-location/>
+        </div>
+
         <div class="Group Price" :class="{'Selected': selected === 'price'}">
           <h2 class="FilterName">Price</h2>
           <search-bar-filter-price/>
@@ -10,11 +15,6 @@
         <div class="Group Cuisine" :class="{'Selected': selected === 'cuisine'}">
           <h2 class="FilterName">Cuisine</h2>
           <search-bar-filter-tag type="cuisine"/>
-        </div>
-
-        <div class="Group Location" :class="{'Selected': selected === 'location'}">
-          <h2 class="FilterName">Location</h2>
-          <search-bar-filter-location/>
         </div>
 
         <div class="Group Amenities" :class="{'Selected': selected === 'amenities'}">
@@ -36,7 +36,7 @@
       <div class="BottomBar index-elevation">
         <div class="Button Cancel" @click="onClear">Clear</div>
         <div class="Button Apply" @click="onApply" v-if="applyText"
-             :class="{'secondary-500-bg white weight-400': result, 'secondary-050-bg black-a-85 weight-600': !result}">
+             :class="{'secondary-500-bg white weight-600': isApplicable, 'secondary-050-bg black-a-85 weight-600': !isApplicable}">
           {{applyText}}
         </div>
         <beat-loader v-else class="Button Apply secondary-050-bg flex-center" color="#084E69" size="8px"/>
@@ -57,29 +57,7 @@
     name: "SearchBarFilterList",
     components: {SearchBarFilterPrice, SearchBarFilterLocation, SearchBarFilterTiming, SearchBarFilterTag},
     computed: {
-      ...mapGetters('filter', ['count', 'selected']),
-      applyText() {
-        if (this.$store.state.filter.loading) return
-
-        const count = this.$store.state.filter.result.count
-        if (count) {
-          if (count >= 100) return `See 100+ Restaurants`
-          else if (count <= 10) return `See ${count} Restaurants`
-          else {
-            const rounded = Math.round(count / 10) * 10
-            return `See ${rounded}+ Restaurants`
-          }
-        }
-        return 'No Results'
-      },
-      result() {
-        if (this.$store.state.filter.loading) {
-          return true
-        }
-
-        return !!this.count;
-
-      },
+      ...mapGetters('filter', ['count', 'selected', 'isSelectedLocationType', 'betweenLocations', 'applyText', 'isApplicable']),
     },
     methods: {
       onClear() {
@@ -88,7 +66,7 @@
         this.$store.dispatch('filter/clear', {tags})
       },
       onApply() {
-        if (this.count && this.count > 0) {
+        if (this.isApplicable) {
           this.$store.commit('filter/selected', null)
           this.$store.commit('unfocus', 'Filter')
           this.$store.dispatch('search/start', this.$store.state.filter.query)
@@ -126,10 +104,6 @@
         cursor: pointer;
       }
     }
-
-    .Apply {
-      font-size: 15px;
-    }
   }
 
   @media (max-width: 767.98px) {
@@ -146,7 +120,7 @@
       right: 0;
       bottom: 0;
 
-      padding: 104px 15px 112px 15px;
+      padding: 104px 24px 112px 24px;
 
       overflow-x: visible;
       overflow-y: scroll;
@@ -160,7 +134,7 @@
     }
 
     .BottomBar {
-      height: 64px;
+      height: 72px;
       position: fixed;
       left: 0;
       right: 0;
@@ -178,7 +152,7 @@
         line-height: 48px;
         text-align: center;
 
-        margin: 8px 15px;
+        margin: 12px 24px;
         flex-grow: 1;
       }
     }
@@ -189,6 +163,7 @@
       position: fixed;
 
       box-shadow: 0 6px 6px 0 rgba(0, 0, 0, 0.26), 0 10px 20px 0 rgba(0, 0, 0, 0.19);
+      border: 1px solid rgba(0, 0, 0, 0.1);
       padding: 16px 24px;
       border-radius: 4px;
 
@@ -216,7 +191,7 @@
       .Apply {
         text-align: center;
         padding: 6px 0;
-        width: 200px;
+        width: 224px;
         margin-left: 8px;
       }
     }

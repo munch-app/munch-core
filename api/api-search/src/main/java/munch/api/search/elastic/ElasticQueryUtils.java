@@ -172,9 +172,6 @@ public final class ElasticQueryUtils {
      * @return Filter Location Json
      */
     public static Optional<JsonNode> filterLocation(SearchRequest request) {
-        SearchQuery searchQuery = request.getSearchQuery();
-        SearchQuery.Filter filter = searchQuery.getFilter();
-
         if (request.isNearby()) {
             return Optional.of(filterDistance(request.getLatLng(), request.getRadius()));
         }
@@ -190,8 +187,9 @@ public final class ElasticQueryUtils {
             return Optional.ofNullable(filterAreas(request.getAreas()));
         }
 
-        if (request.isBetween()) {
-            // TODO wait for Product
+        if (request.isBetween() && request.getAreas().size() < request.getPage()) {
+            Area area = request.getAreas().get(request.getPage());
+            return Optional.ofNullable(filterArea(area));
         }
 
         return Optional.empty();

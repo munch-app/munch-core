@@ -26,6 +26,9 @@ export const state = () => ({
     tags: {},
     priceGraph: undefined,
   },
+  between: {
+    locations: [{}, {}]
+  },
   startedLoading: null,
   loading: null, // true, false, null = not loaded before
   selected: null,
@@ -63,7 +66,44 @@ export const getters = {
   },
   selected: (state) => {
     return state.selected
-  }
+  },
+  betweenLocations: (state) => {
+    return state.between.locations
+  },
+  applyText: (state) => {
+    if (state.loading) return
+    if (state.query.filter.location.type === 'Between') {
+      const length = state.between.locations.filter(bl => bl.name).length
+      if (length > 1) {
+        return `Between ${length} Locations`
+      }
+      return 'Require 2 Locations'
+    }
+
+    const count = state.result.count
+    if (count) {
+      if (count >= 100) return `See 100+ Restaurants`
+      else if (count <= 10) return `See ${count} Restaurants`
+      else {
+        const rounded = Math.round(count / 10) * 10
+        return `See ${rounded}+ Restaurants`
+      }
+    }
+    return 'No Results'
+  },
+  isApplicable: (state) => {
+    if (state.loading) {
+      return true
+    }
+
+    if (state.query.filter.location.type === 'Between') {
+      const length = state.between.locations.filter(bl => bl.name).length
+      return length > 1;
+    }
+
+    return !!state.result.count
+
+  },
 }
 
 export const mutations = {
@@ -243,6 +283,22 @@ export const mutations = {
   loading(state, loading) {
     state.loading = loading
     state.startedLoading = new Date()
+  },
+
+  updateBetweenLocation(state, {location, index}) {
+    if (location) {
+      state.between.locations.splice(index, 1, location)
+    } else {
+      state.between.locations.splice(index, 1)
+    }
+
+
+    if (state.between.locations.length >= 10) return
+
+    const last = state.between.locations[state.between.locations.length - 1]
+    if (last && last.name) {
+      state.between.locations.push({})
+    }
   },
 }
 

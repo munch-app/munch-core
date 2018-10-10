@@ -1,5 +1,5 @@
 <template>
-  <div v-on-clickaway="onBlur" class="elevation-1 border-3" :class="{'Extended': isExtended, 'elevation-2': searching}">
+  <div v-on-clickaway="onBlur" class="elevation-1 border-3 border" :class="{'Extended': isExtended, 'elevation-2': searching}">
     <div class="SearchTextBar no-select">
       <input ref="input" class="TextBar" type="text"
              placeholder="Search e.g. Italian in Marina Bay" v-model="text" @focus="onFocus">
@@ -227,7 +227,7 @@
   .SearchTextBar {
     position: relative;
     width: 100%;
-    height: 40px;
+    height: 38px;
 
     .TextBar {
       border-radius: 3px;
@@ -238,7 +238,7 @@
       border: none transparent;
       width: 100%;
       font-size: 17px;
-      height: 40px;
+      height: 38px;
       padding: 0 16px;
       line-height: 2;
 
@@ -253,8 +253,8 @@
     .Clear {
       position: absolute;
       right: 0;
-      width: 40px;
-      height: 40px;
+      width: 38px;
+      height: 38px;
       padding: 10px;
 
       &:hover {

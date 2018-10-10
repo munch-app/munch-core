@@ -1,10 +1,13 @@
 <template>
-  <div class="TimingCollection">
-    <div class="TimingCell" v-for="timing in timings" :key="timing" @click="toggle(timing)"
-         :class="{
+  <div class="TimingCollectionContainer">
+    <div class="TimingCollection">
+      <div class="TimingCell" v-for="timing in timings" :key="timing" @click="toggle(timing)"
+           :class="{
          'primary-500-bg white': isSelectedTiming(timing),
          'whisper-100-bg black-a-75': !isSelectedTiming(timing)}">
-      {{timing}}
+        {{timing}}
+      </div>
+      <div class="TimingCellRight"></div>
     </div>
   </div>
 </template>
@@ -31,8 +34,13 @@
 </script>
 
 <style scoped lang="less">
+  .TimingCollectionContainer {
+    margin-left: -24px;
+    margin-right: -24px;
+  }
+
   .TimingCollection {
-    padding: 8px 0;
+    padding: 8px 24px;
     display: flex;
     flex-flow: row nowrap;
     margin-left: -16px;
@@ -54,5 +62,10 @@
     &:hover {
       cursor: pointer;
     }
+  }
+
+  .TimingCellRight {
+    padding-left: 24px;
+    min-height: 1px;
   }
 </style>

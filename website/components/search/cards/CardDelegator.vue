@@ -36,6 +36,11 @@
     v-else-if="isCardId('injected_SuggestedTag_20180511')"
     :card="card"
   />
+  <search-card-between-area
+    class="Card no-select Initial FullWidth"
+    v-else-if="isCardId('injected_BetweenArea_20180925')"
+    :card="card"
+  />
   <div v-else style="display: none"></div>
 </template>
 
@@ -48,10 +53,12 @@
   import SearchCardAreaClusterHeader from "./SearchCardAreaClusterHeader";
   import SearchCardPlaceSmall from "./SearchCardPlaceSmall";
   import SearchCardSuggestionTag from "./SearchCardSuggestionTag";
+  import SearchCardBetweenArea from "./SearchCardBetweenArea";
 
   export default {
     name: "CardDelegator",
     components: {
+      SearchCardBetweenArea,
       SearchCardSuggestionTag,
       SearchCardPlaceSmall,
       SearchCardAreaClusterHeader,
@@ -73,45 +80,31 @@
 </script>
 
 <style scoped lang="less">
-  .Initial {
-    color: initial;
-    text-decoration: initial;
-  }
-
-  .Pointer:hover {
-    cursor: pointer;
-  }
-
   .Card {
     position: relative;
     width: 100%;
     min-height: 1px;
     padding: 18px 12px;
 
-    -ms-flex: 0 0 100%;
     flex: 0 0 100%;
     max-width: 100%;
 
     @media (min-width: 768px) {
-      -ms-flex: 0 0 33.333333%;
       flex: 0 0 33.333333%;
       max-width: 33.333333%;
     }
 
     @media (min-width: 1200px) {
-      -ms-flex: 0 0 25%;
       flex: 0 0 25%;
       max-width: 25%;
     }
 
     @media (min-width: 1600px) {
-      -ms-flex: 0 0 20%;
       flex: 0 0 20%;
       max-width: 20%;
     }
 
     &.FullWidth {
-      -ms-flex: 0 0 100%;
       flex: 0 0 100%;
       max-width: 100%;
     }
@@ -122,6 +115,15 @@
 
     &.NoTop {
       padding-top: 0;
+    }
+
+    &.Initial {
+      color: initial;
+      text-decoration: initial;
+    }
+
+    &.Pointer:hover {
+      cursor: pointer;
     }
   }
 </style>

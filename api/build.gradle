@@ -44,6 +44,8 @@ project('api-places') {
 project('api-search') {
     dependencies {
         compile group: 'catalyst', name: 'catalyst-edit-core-utils', version: catalystVersion
+
+        compile group: 'location-service', name: 'location-service-client', version: locationVersion
     }
 }
 

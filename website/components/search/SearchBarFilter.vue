@@ -55,6 +55,9 @@
             return query.filter.location.areas.map(value => {
               return value.name
             }).join(', ')
+          } else if (type === 'Between') {
+            // TODO Between N Locations?
+            return 'Eat Between'
           }
           return type || 'Location'
         }

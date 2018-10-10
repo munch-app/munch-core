@@ -180,6 +180,13 @@ public final class SearchCardInjector {
                 return cards;
             }
 
+            /**
+             * Clear all cards results, used when a Loader want to inject or swallow all the cards into its own container
+             */
+            public void clearCards() {
+                cards.clear();
+            }
+
             public int getCardsCount() {
                 return cards.size();
             }

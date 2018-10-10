@@ -1,27 +1,44 @@
 <template>
-  <div class="LocationCollection">
-    <div class="LocationCell flex-center" @click="toggleNearby"
-         :class="{
+  <div>
+    <div class="LocationCollectionContainer">
+      <div class="LocationCollection">
+        <div class="LocationCell" @click="toggleBetween"
+             :class="{
+         'primary-500-bg white': isSelectedLocationType('Between'),
+         'whisper-100-bg black-a-75': !isSelectedLocationType('Between')}">
+          Eat Between
+        </div>
+
+        <div class="LocationCell flex-center" @click="toggleNearby"
+             :class="{
          'primary-500-bg white': isSelectedLocationType('Nearby'),
          'whisper-100-bg black-a-75': !isSelectedLocationType('Nearby')}">
-      <beat-loader v-if="nearby.loading" class="flex-center" color="#0A6284" size="6px"/>
-      <div v-else>Nearby</div>
-    </div>
+          <beat-loader v-if="nearby.loading" class="flex-center" color="#0A6284" size="6px"/>
+          <div v-else>Nearby</div>
+        </div>
 
-    <div class="LocationCell" @click="toggleAnywhere"
-         :class="{
+        <div class="LocationCell" @click="toggleAnywhere"
+             :class="{
          'primary-500-bg white': isSelectedLocationType('Anywhere'),
          'whisper-100-bg black-a-75': !isSelectedLocationType('Anywhere')}">
-      Anywhere
+          Anywhere
+        </div>
+
+        <div class="LocationCellRight"></div>
+      </div>
     </div>
+
+    <search-bar-filter-between class="LocationBetween" v-if="isSelectedLocationType('Between')"/>
   </div>
 </template>
 
 <script>
   import {mapGetters} from 'vuex'
+  import SearchBarFilterBetween from "./SearchBarFilterBetween";
 
   export default {
     name: "SearchBarFilterLocation",
+    components: {SearchBarFilterBetween},
     data() {
       return {
         nearby: {
@@ -57,19 +74,26 @@
       toggleAnywhere() {
         return this.$store.dispatch('filter/location', {type: 'Anywhere'})
       },
+      toggleBetween() {
+        return this.$store.dispatch('filter/location', {type: 'Between', areas: []})
+      }
     }
   }
 </script>
 
 <style scoped lang="less">
+  .LocationCollectionContainer {
+    margin-left: -24px;
+    margin-right: -24px;
+  }
+
   .LocationCollection {
-    padding: 8px 0;
     display: flex;
     flex-flow: row nowrap;
-    margin-left: -16px;
 
     overflow-x: scroll;
     -webkit-overflow-scrolling: touch;
+    padding: 8px 24px;
   }
 
   .LocationCell {
@@ -80,10 +104,25 @@
     line-height: 1.5;
     border-radius: 3px;
     padding: 12px 20px;
-    margin-left: 16px;
+    margin-right: 16px;
 
     &:hover {
       cursor: pointer;
+    }
+  }
+
+  .LocationCellRight {
+    padding-left: 8px;
+    min-height: 1px;
+  }
+
+  .LocationBetween {
+    margin-top: 16px;
+
+    max-width: 480px;
+
+    @media (min-width: 768px) {
+      width: 480px;
     }
   }
 </style>

@@ -135,7 +135,7 @@ public final class SuggestDelegator {
         return elasticClient.searchHitsHits(root);
     }
 
-    private static JsonNode multiMatchNameNames(String query) {
+    public static JsonNode multiMatchNameNames(String query) {
         ObjectNode root = JsonUtils.createObjectNode();
         ObjectNode match = root.putObject("multi_match");
 
