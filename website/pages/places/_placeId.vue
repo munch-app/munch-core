@@ -190,19 +190,19 @@
   }
 
   section.MainDetail {
-    margin-top: 32px;
+    margin-top: 48px;
   }
 
   section.About {
-    margin-top: 32px;
+    margin-top: 48px;
   }
 
   section.Location {
-    margin-top: 32px;
+    margin-top: 48px;
   }
 
   section.Partner {
-    margin: 32px 0;
+    margin-top: 48px;
 
     .Header {
       margin-bottom: 16px;
@@ -226,6 +226,6 @@
   }
 
   section.End {
-    margin-top: 48px;
+    margin-top: 64px;
   }
 </style>

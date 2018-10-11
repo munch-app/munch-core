@@ -5,6 +5,7 @@ import munch.article.data.Article;
 import munch.article.data.ArticleClient;
 import munch.article.data.DomainCache;
 import munch.restful.core.NextNodeList;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -40,7 +41,8 @@ public final class ArticleLinkClient extends munch.article.link.ArticleLinkClien
 
         articles.removeIf(article -> {
             // No description article will be removed for now
-            if (article.getDescription() == null && article.getContent() == null) return true;
+            if (StringUtils.isAnyBlank(article.getTitle())) return true;
+            if (StringUtils.isAnyBlank(article.getDescription(), article.getContent())) return true;
             if (uniqueUrls.contains(article.getUrl())) return true;
 
             String pair = article.getDomainId() + "|" + article.getTitle();

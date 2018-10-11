@@ -80,7 +80,7 @@
 
   .GoogleMap {
     position: relative;
-    margin-top: 16px;
+    margin-top: 32px;
 
     .Interaction {
       z-index: 1;

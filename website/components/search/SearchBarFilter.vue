@@ -196,11 +196,15 @@
       }
     }
 
-    .Combined, .Location {
+    .FilterButton.Combined {
       display: flex;
       @media (min-width: 768px) {
         display: none;
       }
+    }
+
+    .FilterButton.Location {
+      display: flex;
     }
 
     .ClearAllButton {
