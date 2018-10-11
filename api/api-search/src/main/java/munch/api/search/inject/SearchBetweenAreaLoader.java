@@ -48,12 +48,12 @@ public final class SearchBetweenAreaLoader implements SearchCardInjector.Loader 
         Pair<List<Place>, Area> pair = getPlaces(request, areas);
         if (pair == null) return noResult(request);
 
-
         List<Place> places = pair.getLeft();
         Area area = pair.getRight();
 
         SearchBetweenAreaCard card = new SearchBetweenAreaCard();
         card.setIndex(request.getPage());
+        card.setCount(request.getRequest().getPoints().size());
         card.setArea(area);
         card.setPlaces(places);
 

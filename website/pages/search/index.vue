@@ -6,7 +6,7 @@
       </div>
 
       <no-ssr>
-        <div class="LoadingIndicator" v-if="more" v-observe-visibility="{
+        <div class="LoadingIndicator flex-center" v-if="more" v-observe-visibility="{
           callback: visibilityChanged,
           throttle: 300,
         }">

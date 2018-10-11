@@ -110,6 +110,8 @@
     .BetweenContainer {
       height: 100vh;
       align-items: center;
+
+      max-width: 1200px;
     }
 
     .Input {

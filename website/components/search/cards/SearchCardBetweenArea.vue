@@ -1,10 +1,11 @@
 <template>
   <div>
     <div class="Header">
-      <h2>{{area.name}}</h2>
+      <h2>{{header}}</h2>
+      <h4>Based on {{count}} locations.</h4>
     </div>
 
-    <div class="Places container-full">
+    <div class="Places container-width">
       <div class="Card Initial hover-pointer" v-for="place in places" :key="place.placeId">
         <place-card :place="place"/>
       </div>
@@ -14,6 +15,7 @@
 
 <script>
   import PlaceCard from "../../places/PlaceCard";
+
   export default {
     name: "SearchCardBetweenArea",
     components: {PlaceCard},
@@ -24,11 +26,23 @@
       }
     },
     computed: {
+      count() {
+        return this.card.count
+      },
       area() {
         return this.card.area
       },
+      index() {
+        return this.card.index
+      },
       places() {
         return this.card.places
+      },
+      header() {
+        if (this.index === 0) {
+          return `Most ideal spot for everyone: ${this.card.area.name}`
+        }
+        return `Next most ideal spot: ${this.card.area.name}`
       }
     }
   }
