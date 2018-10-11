@@ -15,12 +15,12 @@ import java.util.Map;
  * Project: munch-core
  */
 @Singleton
-public final class LandingApi extends ApiService {
+public final class LandingService extends ApiService {
 
     private final CollectionProvider collectionProvider;
 
     @Inject
-    public LandingApi(CollectionProvider collectionProvider) {
+    public LandingService(CollectionProvider collectionProvider) {
         this.collectionProvider = collectionProvider;
     }
 

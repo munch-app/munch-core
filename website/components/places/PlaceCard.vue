@@ -1,7 +1,8 @@
 <template>
   <nuxt-link :to="'/places/' + place.placeId">
     <div class="Card">
-      <image-size class="Image border-3" :image="images" :alt="place.name"/>
+      <image-size v-if="images" class="Image border-3" :image="images" :alt="place.name"/>
+      <div v-else class="Image border-3 whisper-100-bg"/>
 
       <div class="Content">
         <div class="Name Title large weight-600 black-a-80">{{place.name}}</div>

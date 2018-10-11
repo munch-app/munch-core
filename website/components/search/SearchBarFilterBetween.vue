@@ -4,18 +4,23 @@
 
     <div class="Locations">
       <div>
-        <div class="LocationTextBar border-3 hover-pointer" v-for="(location, index) in betweenLocations" :key="index">
+        <div class="LocationTextBar border-3 hover-pointer" v-for="(location, index) in locationPoints" :key="index">
           <div class="TextBar" @click="onSearch(index)">
-            <div v-if="location && location.name">
+            <div>
               {{location.name}}
-            </div>
-            <div v-else class="primary-500">
-              {{`Enter Location ${index + 1}`}}
             </div>
           </div>
 
-          <div class="Clear hover-pointer" :style="clearStyle(index)" @click="onRemove(index)">
+          <div class="Clear hover-pointer" @click="onRemove(index)">
             <simple-svg fill="black" filepath="/img/search/close.svg"/>
+          </div>
+        </div>
+
+        <div class="LocationTextBar border-3 hover-pointer" v-for="(key, index) in emptyPoints" :key="key">
+          <div class="TextBar" @click="onSearch(index + locationPoints.length)">
+            <div class="primary-500">
+              {{`Enter Location ${index + 1 + locationPoints.length}`}}
+            </div>
           </div>
         </div>
       </div>
@@ -73,7 +78,12 @@
       window.addEventListener('keyup', this.keyUpListener)
     },
     computed: {
-      ...mapGetters('filter', ['betweenLocations']),
+      ...mapGetters('filter', ['locationPoints']),
+      emptyPoints() {
+        if (this.locationPoints.length >= 10) return []
+        if (this.locationPoints.length === 0) return ['first', 'second']
+        return ['last']
+      }
     },
     methods: {
       keyUpListener(evt) {
@@ -89,7 +99,9 @@
             break
 
           case 13: // Enter
-            this.onLocation(this.suggestions[this.search.position])
+            if (this.suggestions && this.search.position < this.suggestions.length) {
+              this.onLocation(this.suggestions[this.search.position])
+            }
             break
         }
       },
@@ -111,13 +123,9 @@
         this.search.position = 0
         this.suggestions = []
       },
-      clearStyle(index) {
-        const display = this.betweenLocations[index] && this.betweenLocations[index].name
-        return {'display': display ? 'block' : 'none'}
-      },
-      onLocation(location) {
+      onLocation(point) {
         const index = this.search.editing
-        this.$store.commit('filter/updateBetweenLocation', {location, index})
+        this.$store.commit('filter/updateBetweenLocation', {point, index})
 
         this.search.searching = false
         this.suggestions = []

@@ -55,6 +55,13 @@ project('api-landing') {
     }
 }
 
+project('api-feed') {
+    dependencies {
+        compile project(':api:api-users')
+        compile group: 'article-system', name: 'article-system-data-client', version: articleVersion
+    }
+}
+
 
 project('api-users') {
     dependencies {
@@ -70,6 +77,7 @@ dependencies {
     compile project(':api:api-places')
     compile project(':api:api-search')
     compile project(':api:api-landing')
+    compile project(':api:api-feed')
 }
 
 apply plugin: 'application'

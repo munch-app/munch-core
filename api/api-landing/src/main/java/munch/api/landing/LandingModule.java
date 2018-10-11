@@ -12,6 +12,6 @@ public final class LandingModule extends ApiServiceModule {
 
     @Override
     protected void configure() {
-        addService(LandingApi.class);
+        addService(LandingService.class);
     }
 }

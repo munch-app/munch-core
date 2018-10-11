@@ -3,14 +3,13 @@ package munch.api.search;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import munch.api.ApiService;
-import munch.api.search.data.BetweenLocation;
+import munch.api.search.data.SearchQuery;
 import munch.api.search.suggest.SuggestDelegator;
 import munch.data.ElasticObject;
 import munch.data.client.AreaClient;
 import munch.data.client.ElasticClient;
 import munch.data.location.Area;
 import munch.data.location.Landmark;
-import munch.data.location.Location;
 import munch.location.Country;
 import munch.location.GeocodeClient;
 import munch.location.LatitudeLongitude;
@@ -48,41 +47,39 @@ public final class SearchFilterBetweenService extends ApiService {
     public void route() {
         PATH("/search/filter/between", () -> {
             POST("/search", this::search);
-            POST("/generate", this::generate);
         });
     }
 
-    public List<BetweenLocation> search(JsonCall call) {
+    public List<SearchQuery.Filter.Location.Point> search(JsonCall call) {
         JsonNode json = call.bodyAsJson();
         String text = json.path("text").asText();
 
         // Try Geocode if is Numeric and 6 digits
         if (StringUtils.isNumeric(text) && StringUtils.length(text) == 6) {
             LatitudeLongitude latLng = geocodeClient.withPostcode(Country.sgp, text);
-            if (latLng != null) return List.of(asLocation(text, latLng.asString()));
+            if (latLng != null) return List.of(asPoint(text, latLng.asString()));
         }
 
         // Try Munch Database
-        List<BetweenLocation> results = search(text);
+        List<SearchQuery.Filter.Location.Point> results = search(text);
         if (!results.isEmpty()) return results;
 
         // Try universal Geocoder database
         return geocodeClient.search(Country.sgp, text).stream()
-                .map(nll -> asLocation(nll.getName(), nll.asString()))
+                .map(nll -> asPoint(nll.getName(), nll.asString()))
                 .collect(Collectors.toList());
     }
 
-    private List<BetweenLocation> search(String text) {
+    private List<SearchQuery.Filter.Location.Point> search(String text) {
         ObjectNode root = JsonUtils.createObjectNode();
         root.put("from", 0);
-        root.put("size", 40);
+        root.put("size", 10);
         ObjectNode queryNode = root.putObject("query");
         ObjectNode boolNode = queryNode.putObject("bool");
 
         // must: {?}
         boolNode.set("must", SuggestDelegator.multiMatchNameNames(text));
 
-        // filter: [{"term": {"dataType": "Place"}}]
         boolNode.putArray("filter")
                 .addObject()
                 .putObject("terms")
@@ -91,33 +88,23 @@ public final class SearchFilterBetweenService extends ApiService {
                 .add("Landmark");
 
         List<ElasticObject> objects = elasticClient.searchHitsHits(root);
-        List<BetweenLocation> list = new ArrayList<>();
+        List<SearchQuery.Filter.Location.Point> list = new ArrayList<>();
         for (ElasticObject object : objects) {
             if (object instanceof Area) {
                 Area area = (Area) object;
-                list.add(asLocation(area.getName(), area.getLocation().getLatLng()));
+                list.add(asPoint(area.getName(), area.getLocation().getLatLng()));
             } else if (object instanceof Landmark) {
                 Landmark landmark = (Landmark) object;
-                list.add(asLocation(landmark.getName(), landmark.getLocation().getLatLng()));
+                list.add(asPoint(landmark.getName(), landmark.getLocation().getLatLng()));
             }
         }
         return list;
     }
 
-    private BetweenLocation asLocation(String name, String latLng) {
-        BetweenLocation betweenLocation = new BetweenLocation();
-        betweenLocation.setName(name);
-
-        Location location = new Location();
-        location.setLatLng(latLng);
-        betweenLocation.setLocation(location);
-        return betweenLocation;
-    }
-
-    public List<Area> generate(JsonCall call) {
-        List<BetweenLocation> locations = call.bodyAsList(BetweenLocation.class);
-        // TODO: Generate a list of Area
-
-        return areaClient.list(null, 10);
+    private SearchQuery.Filter.Location.Point asPoint(String name, String latLng) {
+        SearchQuery.Filter.Location.Point point = new SearchQuery.Filter.Location.Point();
+        point.setName(name);
+        point.setLatLng(latLng);
+        return point;
     }
 }

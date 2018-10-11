@@ -30,6 +30,17 @@ export const mutations = {
   },
 
   start(state, query) {
+    this.commit('search/setQuery', query)
+
+    state.more = true
+    state.loading = true
+
+    state.seo = {}
+    state.page = 0
+    state.result.cards.splice(0, state.result.cards.length)
+  },
+
+  setQuery(state, query) {
     // Search Preference Injection
     if (!query.filter) query.filter = {}
     if (!query.filter.tag) query.filter.tag = {}
@@ -40,13 +51,7 @@ export const mutations = {
       if (index === -1) query.filter.tag.positives.push(tag)
     })
 
-    state.more = true
-    state.loading = true
-
-    state.seo = {}
     state.query = query
-    state.page = 0
-    state.result.cards.splice(0, state.result.cards.length)
   },
 
   append(state, cards) {
@@ -69,8 +74,9 @@ export const actions = {
     this.commit('filter/replace', query)
 
     return this.$axios.$post(`/api/search?page=${state.page}`, state.query)
-      .then(({data, qid}) => {
+      .then(({data, qid, searchQuery}) => {
         commit('append', data)
+        commit('setQuery', searchQuery)
 
         this.$router.replace({path: '/search', query: {qid}})
       })
@@ -87,8 +93,9 @@ export const actions = {
         this.commit('filter/replace', query)
 
         return this.$axios.$post(`/api/search?page=${state.page}`, query)
-          .then(({data}) => {
+          .then(({data, searchQuery}) => {
             commit('append', data)
+            commit('setQuery', searchQuery)
           })
       }).catch(error => {
         return this.$router.replace({path: '/search', query: {}})
@@ -104,8 +111,9 @@ export const actions = {
         this.commit('filter/replace', data)
 
         return this.$axios.$post(`/api/search?page=${state.page}`, data)
-          .then(({data}) => {
+          .then(({data, searchQuery}) => {
             commit('append', data)
+            commit('setQuery', searchQuery)
           })
       }).catch(error => {
         return this.$router.replace({path: '/search', query: {}})
@@ -116,8 +124,9 @@ export const actions = {
     if (state.loading) return
 
     return this.$axios.$post(`/api/search?page=${state.page}`, state.query)
-      .then(({data}) => {
+      .then(({data, searchQuery}) => {
         commit('append', data)
+        commit('setQuery', searchQuery)
       })
   }
 }

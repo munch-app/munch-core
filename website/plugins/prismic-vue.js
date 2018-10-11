@@ -17,14 +17,14 @@ function linkResolver(doc) {
 }
 
 export default (context, inject) => {
-  return Prismic.getApi(endpoint, {
-    req: context.req
-  }).then(Api => {
-    context.Prismic = {
-      api: Api,
-      dom: PrismicDOM,
-      getSingle: (type) => Api.getSingle(type),
-      asHtml: (content) => PrismicDOM.RichText.asHtml(content, linkResolver)
-    }
-  })
+  context.Prismic = {
+    dom: PrismicDOM,
+    getSingle: (type) => {
+      return Prismic.getApi(endpoint, {req: context.req})
+        .then(Api => {
+          return Api.getSingle(type)
+        })
+    },
+    asHtml: (content) => PrismicDOM.RichText.asHtml(content, linkResolver)
+  }
 }

@@ -11,9 +11,11 @@ export const state = () => ({
       hour: {},
       location: {
         areas: [],
+        points: [],
+
         // Either: Nearby, Anywhere, Where, Between
         // Default to Anywhere unless user select otherwise
-        type: 'Anywhere',
+        type: 'Between',
       },
     },
     sort: {}
@@ -25,9 +27,6 @@ export const state = () => ({
     count: null,
     tags: {},
     priceGraph: undefined,
-  },
-  between: {
-    locations: [{}, {}]
   },
   startedLoading: null,
   loading: null, // true, false, null = not loaded before
@@ -67,13 +66,14 @@ export const getters = {
   selected: (state) => {
     return state.selected
   },
-  betweenLocations: (state) => {
-    return state.between.locations
+  locationPoints: (state) => {
+    return state.query.filter.location.points
   },
   applyText: (state) => {
     if (state.loading) return
-    if (state.query.filter.location.type === 'Between') {
-      const length = state.between.locations.filter(bl => bl.name).length
+    const location = state.query.filter.location
+    if (location.type === 'Between') {
+      const length = location.points.filter(bl => bl.name).length
       if (length > 1) {
         return `Between ${length} Locations`
       }
@@ -96,13 +96,13 @@ export const getters = {
       return true
     }
 
-    if (state.query.filter.location.type === 'Between') {
-      const length = state.between.locations.filter(bl => bl.name).length
+    const location = state.query.filter.location
+    if (location.type === 'Between') {
+      const length = location.points.filter(bl => bl.name).length
       return length > 1;
     }
 
     return !!state.result.count
-
   },
 }
 
@@ -187,13 +187,13 @@ export const mutations = {
    *
    * @param state
    * @param type to update to
-   * @param areas areas to replace, for consistency, updater should concat and push to mutation
+   * @param areas to replace, for consistency, updater should concat and push to mutation
    */
   updateLocation(state, {type, areas}) {
     switch (type) {
       case 'Nearby':
         if (state.user.latLng) {
-          state.query.filter.location.type = type
+          state.query.filter.location.type = 'Nearby'
         }
         return
 
@@ -209,7 +209,6 @@ export const mutations = {
 
       case 'Between':
         state.query.filter.location.areas.splice(0, state.query.filter.location.areas.length)
-        state.query.filter.location.areas.push(...areas)
         state.query.filter.location.type = 'Between'
         return
     }
@@ -238,7 +237,15 @@ export const mutations = {
         break
 
       case 'location':
-        state.query.filter.location.type = 'Anywhere'
+        if (state.query.filter.location.type === 'Between') {
+          state.query.filter.location.points.splice(0, state.query.filter.location.points.length)
+        } else {
+          if (state.user.latLng) {
+            state.query.filter.location.type = 'Nearby'
+          } else {
+            state.query.filter.location.type = 'Anywhere'
+          }
+        }
         break
 
       case 'timings':
@@ -285,19 +292,12 @@ export const mutations = {
     state.startedLoading = new Date()
   },
 
-  updateBetweenLocation(state, {location, index}) {
-    if (location) {
-      state.between.locations.splice(index, 1, location)
+  updateBetweenLocation(state, {point, index}) {
+    const points = state.query.filter.location.points
+    if (point) {
+      points.splice(index, 1, point)
     } else {
-      state.between.locations.splice(index, 1)
-    }
-
-
-    if (state.between.locations.length >= 10) return
-
-    const last = state.between.locations[state.between.locations.length - 1]
-    if (last && last.name) {
-      state.between.locations.push({})
+      points.splice(index, 1)
     }
   },
 }

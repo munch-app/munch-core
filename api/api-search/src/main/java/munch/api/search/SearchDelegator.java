@@ -39,6 +39,9 @@ public final class SearchDelegator {
     }
 
     public List<SearchCard> delegate(SearchRequest request) {
+        // Only allow 10 page of results, to prevent abuse
+        if (request.getPage() >= 10) return List.of();
+
         List<Place> places = searchPlaces(request);
         places = placeSorter.sort(places, request);
 
@@ -48,15 +51,18 @@ public final class SearchDelegator {
     }
 
     private List<Place> searchPlaces(SearchRequest request) {
-        int page = request.getCall().queryInt("page", 0);
-        // Only allow 10 page of results, to prevent abuse
-        if (page >= 10) return List.of();
+        if (!isSearchable(request)) return List.of();
 
         ObjectNode root = JsonUtils.createObjectNode();
-        root.put("from", page * PAGE_SIZE);
+        root.put("from", request.getPage() * PAGE_SIZE);
         root.put("size", PAGE_SIZE);
         root.set("query", ElasticQueryUtils.make(request));
         root.set("sort", ElasticSortUtils.make(request));
         return elasticClient.searchHitsHits(root);
+    }
+
+    private static boolean isSearchable(SearchRequest request) {
+        if (request.isBetween()) return false;
+        return true;
     }
 }

@@ -34,7 +34,7 @@
     name: "SearchBarFilter",
     components: {SearchBarFilterList},
     computed: {
-      ...mapGetters('filter', ['selected']),
+      ...mapGetters('filter', ['selected', 'locationPoints']),
       buttons() {
         const query = this.$store.state.filter.query
         const price = query.filter.price && query.filter.price.min !== undefined && query.filter.price
@@ -56,8 +56,8 @@
               return value.name
             }).join(', ')
           } else if (type === 'Between') {
-            // TODO Between N Locations?
-            return 'Eat Between'
+            const length = this.locationPoints.filter(bl => bl.name).length
+            return `Between ${length} Locations`
           }
           return type || 'Location'
         }

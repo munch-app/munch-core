@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import javax.annotation.Nullable;
 import javax.inject.Singleton;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -109,7 +110,7 @@ public final class SearchRequest {
     }
 
     public boolean isBetween() {
-        if (!hasArea()) return false;
+        if (getPoints().size() < 2) return false;
         return searchQuery.getFilter().getLocation().getType() == SearchQuery.Filter.Location.Type.Between;
     }
 
@@ -118,8 +119,15 @@ public final class SearchRequest {
     }
 
     public List<Area> getAreas() {
-        if (searchQuery.getFilter().getLocation().getAreas() == null) return List.of();
+        if (searchQuery.getFilter().getLocation().getAreas() == null) {
+            searchQuery.getFilter().getLocation().setAreas(new ArrayList<>());
+        }
         return searchQuery.getFilter().getLocation().getAreas();
+    }
+
+    public List<SearchQuery.Filter.Location.Point> getPoints() {
+        if (searchQuery.getFilter().getLocation().getPoints() == null) return List.of();
+        return searchQuery.getFilter().getLocation().getPoints();
     }
 
     /**

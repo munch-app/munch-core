@@ -228,6 +228,7 @@ public final class SearchQuery {
         @JsonIgnoreProperties(ignoreUnknown = true)
         public static class Location {
             private List<Area> areas;
+            private List<Point> points;
             private Type type;
 
             /**
@@ -239,6 +240,17 @@ public final class SearchQuery {
 
             public void setAreas(List<Area> areas) {
                 this.areas = areas;
+            }
+
+            /**
+             * @return Points used by Eat Between
+             */
+            public List<Point> getPoints() {
+                return points;
+            }
+
+            public void setPoints(List<Point> points) {
+                this.points = points;
             }
 
             public Type getType() {
@@ -274,6 +286,44 @@ public final class SearchQuery {
                  * Note: if any of the above failed to find required data, Anywhere will be assumed
                  */
                 Anywhere
+            }
+
+            @Override
+            public String toString() {
+                return "Location{" +
+                        "areas=" + areas +
+                        ", points=" + points +
+                        ", type=" + type +
+                        '}';
+            }
+
+            public static class Point {
+                private String name;
+                private String latLng;
+
+                public String getName() {
+                    return name;
+                }
+
+                public void setName(String name) {
+                    this.name = name;
+                }
+
+                public String getLatLng() {
+                    return latLng;
+                }
+
+                public void setLatLng(String latLng) {
+                    this.latLng = latLng;
+                }
+
+                @Override
+                public String toString() {
+                    return "Point{" +
+                            "name='" + name + '\'' +
+                            ", latLng='" + latLng + '\'' +
+                            '}';
+                }
             }
         }
 

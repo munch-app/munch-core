@@ -18,6 +18,9 @@ public final class SearchNoResultLoader implements SearchCardInjector.Loader {
     public List<Position> load(Request request) {
         if (!request.isFirstPage()) return List.of();
         if (request.isCardsMoreThan(0)) return List.of();
+
+        // Is Between will generate it's own No Result Card
+        if (request.isBetween()) return List.of();
         return of(10_000, CARD_NO_RESULT);
     }
 }

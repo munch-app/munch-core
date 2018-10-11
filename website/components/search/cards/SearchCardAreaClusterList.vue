@@ -18,8 +18,6 @@
   import ImageSize from "../../core/ImageSize";
   import HorizontalScrollView from "../../core/HorizontalScrollView";
 
-  // TODO height not full
-
   export default {
     name: "SearchCardAreaClusterList",
     components: {HorizontalScrollView, ImageSize},

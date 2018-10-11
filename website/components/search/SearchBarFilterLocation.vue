@@ -75,7 +75,7 @@
         return this.$store.dispatch('filter/location', {type: 'Anywhere'})
       },
       toggleBetween() {
-        return this.$store.dispatch('filter/location', {type: 'Between', areas: []})
+        return this.$store.dispatch('filter/location', {type: 'Between'})
       }
     }
   }

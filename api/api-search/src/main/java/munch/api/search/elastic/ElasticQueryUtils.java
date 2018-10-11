@@ -38,10 +38,32 @@ public final class ElasticQueryUtils {
      * @return created bool node
      */
     public static JsonNode make(SearchRequest request) {
+        return make(mustNot(request), filter(request));
+    }
+
+    /**
+     * NOTE: This ElasticQueryUtils is only for Place data type
+     *
+     * @param request SearchRequest
+     * @param filters additonal filters
+     * @return created bool node
+     */
+    public static JsonNode make(SearchRequest request, JsonNode... filters) {
+        ArrayNode filterArray = filter(request);
+        for (JsonNode filter : filters) {
+            filterArray.add(filter);
+        }
+        return make(mustNot(request), filterArray);
+    }
+
+    /**
+     * NOTE: This ElasticQueryUtils is only for Place data type
+     */
+    public static JsonNode make(JsonNode mustNot, JsonNode filter) {
         ObjectNode bool = mapper.createObjectNode();
         bool.set("must", mustMatchAll());
-        bool.set("must_not", mustNot(request));
-        bool.set("filter", filter(request));
+        bool.set("must_not", mustNot);
+        bool.set("filter", filter);
         return mapper.createObjectNode().set("bool", bool);
     }
 
@@ -81,7 +103,7 @@ public final class ElasticQueryUtils {
      * @param request SearchRequest.SearchQuery.Filter
      * @return JsonNode bool filter
      */
-    private static JsonNode filter(SearchRequest request) {
+    private static ArrayNode filter(SearchRequest request) {
         SearchQuery searchQuery = request.getSearchQuery();
 
         ArrayNode filterArray = mapper.createArrayNode();
@@ -187,9 +209,8 @@ public final class ElasticQueryUtils {
             return Optional.ofNullable(filterAreas(request.getAreas()));
         }
 
-        if (request.isBetween() && request.getAreas().size() < request.getPage()) {
-            Area area = request.getAreas().get(request.getPage());
-            return Optional.ofNullable(filterArea(area));
+        if (request.isBetween()) {
+            return Optional.empty();
         }
 
         return Optional.empty();
@@ -271,6 +292,17 @@ public final class ElasticQueryUtils {
     public static JsonNode filterTerm(String name, String text) {
         ObjectNode filter = mapper.createObjectNode();
         filter.putObject("term").put(name, text);
+        return filter;
+    }
+
+    /**
+     * @param name name of term
+     * @param num  value to filter
+     * @return JsonNode =  { "term" : { "name" : "text" } }
+     */
+    public static JsonNode filterTerm(String name, int num) {
+        ObjectNode filter = mapper.createObjectNode();
+        filter.putObject("term").put(name, num);
         return filter;
     }
 

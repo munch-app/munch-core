@@ -4,7 +4,7 @@
       <h2>{{area.name}}</h2>
     </div>
 
-    <div class="Places">
+    <div class="Places container-full">
       <div class="Card Initial hover-pointer" v-for="place in places" :key="place.placeId">
         <place-card :place="place"/>
       </div>
@@ -35,6 +35,14 @@
 </script>
 
 <style scoped lang="less">
+  .Places {
+    display: flex;
+    flex-wrap: wrap;
+
+    margin-right: -12px;
+    margin-left: -12px;
+  }
+
   .Card {
     position: relative;
     width: 100%;

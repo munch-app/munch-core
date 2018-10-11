@@ -57,7 +57,7 @@
     name: "SearchBarFilterList",
     components: {SearchBarFilterPrice, SearchBarFilterLocation, SearchBarFilterTiming, SearchBarFilterTag},
     computed: {
-      ...mapGetters('filter', ['count', 'selected', 'isSelectedLocationType', 'betweenLocations', 'applyText', 'isApplicable']),
+      ...mapGetters('filter', ['count', 'selected', 'isSelectedLocationType', 'applyText', 'isApplicable']),
     },
     methods: {
       onClear() {

@@ -81,7 +81,6 @@ public final class SearchSuggestionTagLoader implements SearchCardInjector.Loade
         ObjectNode aggs = rootNode.putObject("aggs");
         aggs.set("tags", aggTags());
 
-        ;
         JsonNode result = elasticClient.search(rootNode);
 
         return parseTagCounts(result.path("aggregations").path("tags"));
