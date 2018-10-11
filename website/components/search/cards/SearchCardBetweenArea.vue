@@ -2,7 +2,7 @@
   <div>
     <div class="Header">
       <h2>{{header}}</h2>
-      <h4>Based on {{count}} locations.</h4>
+      <h5>Based on {{count}} locations.</h5>
     </div>
 
     <div class="Places container-width">

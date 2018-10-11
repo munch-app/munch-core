@@ -1,7 +1,7 @@
 <template>
   <div class="container" v-if="selected">
     <div class="FilterListContainer index-elevation">
-      <div class="FilterList index-elevation">
+      <div class="FilterList index-elevation" :class="`Selected-${selected}`">
         <div class="Group Location" :class="{'Selected': selected === 'location'}">
           <h2 class="FilterName">Where</h2>
           <search-bar-filter-location/>
@@ -113,7 +113,6 @@
     .FilterList {
       background: white;
       position: fixed;
-      /*padding-bottom: 24px;*/
 
       top: 0;
       left: 0;
@@ -130,6 +129,20 @@
         max-width: 540px;
         margin-right: auto;
         margin-left: auto;
+      }
+    }
+
+    .Group.Location {
+      display: none;
+    }
+
+    .FilterList.Selected-location {
+      .Group {
+        display: none;
+      }
+
+      .Group.Selected {
+        display: block;
       }
     }
 

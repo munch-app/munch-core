@@ -6,7 +6,7 @@
              :class="{
          'primary-500-bg white': isSelectedLocationType('Between'),
          'whisper-100-bg black-a-75': !isSelectedLocationType('Between')}">
-          Eat Between
+          EatBetween
         </div>
 
         <div class="LocationCell flex-center" @click="toggleNearby"

@@ -7,7 +7,7 @@
         {{name}}
       </div>
     </div>
-    <div class="PriceGraph" v-if="priceGraph">
+    <div class="PriceGraph" v-if="false">
       <search-bar-filter-price-graph class="Graph" :price-graph="priceGraph"/>
       <search-bar-filter-price-slider class="Slider" @drag-end="onDragEnd" v-model="value" :min="min" :max="max"/>
     </div>

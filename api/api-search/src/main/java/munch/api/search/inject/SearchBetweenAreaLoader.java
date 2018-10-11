@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import edit.utils.LatLngUtils;
 import munch.api.search.cards.SearchBetweenAreaCard;
-import munch.api.search.cards.SearchNoResultCard;
+import munch.api.search.cards.SearchBetweenNoResultCard;
 import munch.api.search.data.SearchQuery;
 import munch.api.search.elastic.ElasticQueryUtils;
 import munch.api.search.elastic.ElasticSortUtils;
@@ -28,7 +28,7 @@ import java.util.List;
  */
 @Singleton
 public final class SearchBetweenAreaLoader implements SearchCardInjector.Loader {
-    private static final SearchNoResultCard CARD_NO_RESULT = new SearchNoResultCard();
+    private static final SearchBetweenNoResultCard CARD_NO_RESULT = new SearchBetweenNoResultCard();
 
     private static final Logger logger = LoggerFactory.getLogger(SearchBetweenAreaLoader.class);
     private final ElasticClient elasticClient;

@@ -243,7 +243,7 @@ public final class SearchQuery {
             }
 
             /**
-             * @return Points used by Eat Between
+             * @return Points used by EatBetween
              */
             public List<Point> getPoints() {
                 return points;
@@ -263,7 +263,7 @@ public final class SearchQuery {
 
             public enum Type {
                 /**
-                 * Feature: Eat Between
+                 * Feature: EatBetween
                  * Require: areas, 1 or more
                  */
                 Between,

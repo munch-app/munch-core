@@ -23,6 +23,10 @@
             </div>
           </div>
         </div>
+
+        <div>
+          <h6>(Up to 10 locations)</h6>
+        </div>
       </div>
     </div>
   </div>

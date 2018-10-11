@@ -7,7 +7,8 @@
              'primary-500-bg white': button.type === selected,
              'whisper-100-bg black-a-75': button.type !== selected && !button.applied,
              'primary-050-bg black': button.type !== selected && button.applied,
-             'Combined': button.type === 'combined'
+             'Combined': button.type === 'combined',
+             'Location': button.type === 'location',
              }">
           <div>{{button.name}}</div>
           <div class="BulletDivider" v-if="button.count">•</div>
@@ -195,7 +196,7 @@
       }
     }
 
-    .Combined {
+    .Combined, .Location {
       display: flex;
       @media (min-width: 768px) {
         display: none;
