@@ -3,14 +3,18 @@
     <section class="EatBetween">
       <landing-eat-between/>
     </section>
+
+    <section>
+    </section>
   </div>
 </template>
 
 <script>
   import LandingEatBetween from "../components/landing/LandingEatBetween";
+  import AppleMap from "../components/core/AppleMap";
 
   export default {
-    components: {LandingEatBetween},
+    components: {AppleMap, LandingEatBetween},
   }
 </script>
 

@@ -12,6 +12,7 @@ app.use(cookieParser())
 // Import API Routes
 app.use(require('./routes/api'))
 app.use(require('./routes/auth'))
+app.use(require('./routes/apple-maps'))
 
 // To filter out css.map
 app.use(/.*.css.map$/, function (req, res, next) {

@@ -27,10 +27,11 @@
   import {mapGetters} from 'vuex'
 
   import SearchBarFilterBetween from "../search/SearchBarFilterBetween";
+  import AppleMap from "../core/AppleMap";
 
   export default {
     name: "LandingEatBetween",
-    components: {SearchBarFilterBetween},
+    components: {AppleMap, SearchBarFilterBetween},
     computed: {
       ...mapGetters('filter', ['applyText', 'isApplicable']),
     },

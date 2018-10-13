@@ -15,6 +15,7 @@ public final class SearchBetweenAreaCard implements SearchCard {
 
     private int index;
     private int count;
+
     private Area area;
     private List<Place> places;
 

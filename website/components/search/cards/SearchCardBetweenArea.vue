@@ -2,7 +2,10 @@
   <div>
     <div class="Header">
       <h2>{{header}}</h2>
-      <h5>Based on {{count}} locations.</h5>
+      <h5>
+        <span v-if="area.location && area.location.street">{{area.location.street}}, </span>
+        <span class="weight-400">Based on {{count}} locations.</span>
+      </h5>
     </div>
 
     <div class="Places container-width">

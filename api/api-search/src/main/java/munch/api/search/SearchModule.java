@@ -2,6 +2,7 @@ package munch.api.search;
 
 import com.google.inject.multibindings.Multibinder;
 import munch.api.ApiServiceModule;
+import munch.api.search.between.SearchBetweenAreaLoader;
 import munch.api.search.inject.*;
 
 /**

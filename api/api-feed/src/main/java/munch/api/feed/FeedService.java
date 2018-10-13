@@ -49,11 +49,18 @@ public final class FeedService extends ApiService {
     @Override
     public void route() {
         PATH("/feed", () -> {
-            GET("", this::get);
+            GET("", this::articles);
+
+            GET("/articles", this::articles);
+            GET("/images", this::images);
         });
     }
 
-    public JsonResult get(JsonCall call) {
+    public JsonResult images(JsonCall call) {
+        return JsonResult.ok();
+    }
+
+    public JsonResult articles(JsonCall call) {
         String nextSort = call.queryString("next.sort", null);
         if (nextSort != null) {
             return asResult(null);

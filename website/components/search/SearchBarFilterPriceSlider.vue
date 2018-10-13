@@ -54,6 +54,9 @@
         required: true
       }
     },
+    mounted() {
+      this.$emit('dragEnd')
+    },
     methods: {
       onInput(input) {
         this.$emit('input', input)

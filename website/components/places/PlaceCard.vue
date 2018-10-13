@@ -77,6 +77,11 @@
 </script>
 
 <style scoped lang="less">
+  a {
+    color: initial !important;
+    text-decoration: initial !important;
+  }
+
   .Card {
     .Image {
       width: 100%;

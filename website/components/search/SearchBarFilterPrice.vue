@@ -7,8 +7,9 @@
         {{name}}
       </div>
     </div>
-    <div class="PriceGraph" v-if="false">
-      <search-bar-filter-price-graph class="Graph" :price-graph="priceGraph"/>
+    <div class="PriceGraph">
+      <!-- Graph is disabled for now -->
+      <search-bar-filter-price-graph v-if="false" class="Graph" :price-graph="priceGraph"/>
       <search-bar-filter-price-slider class="Slider" @drag-end="onDragEnd" v-model="value" :min="min" :max="max"/>
     </div>
   </div>
@@ -108,7 +109,7 @@
   }
 
   .PriceGraph {
-    margin-top: 16px;
+    margin-top: 64px;
 
     .Graph {
       height: 100px;
