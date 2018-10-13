@@ -60,6 +60,12 @@
   div.Brand {
     display: flex;
     align-items: flex-start;
+
+    .Image {
+      width: 48px;
+      height: 48px;
+    }
+
     h4 {
       margin-left: 16px;
     }

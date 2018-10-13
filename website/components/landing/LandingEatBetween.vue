@@ -16,8 +16,7 @@
         </div>
       </div>
 
-      <div class="Design">
-
+      <div class="Design flex-center">
       </div>
     </div>
   </div>
@@ -85,15 +84,29 @@
         }
 
         .Cancel {
-          padding: 6px 24px;
+          padding: 6px 18px 6px 0;
         }
 
         .Apply {
           text-align: center;
           padding: 6px 0;
-          width: 224px;
+          width: 208px;
           margin-left: 8px;
         }
+      }
+    }
+
+    .Design {
+      flex: 50%;
+
+      img {
+        width: 100%;
+        padding-left: 64px;
+        padding-right: 64px;
+      }
+
+      @media (max-width: 767.98px) {
+        display: none;
       }
     }
   }

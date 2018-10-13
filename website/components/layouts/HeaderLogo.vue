@@ -23,8 +23,8 @@
     display: flex;
     height: 100%;
 
-    margin-top: 12px;
-    margin-bottom: 12px;
+    margin-top: 8px;
+    margin-bottom: 8px;
 
     &:hover {
       cursor: pointer;
@@ -32,13 +32,13 @@
 
     .Image {
       float: left;
-      height: 32px;
-      width: 32px;
+      height: 40px;
+      width: 40px;
     }
 
     .HeaderIndicator {
       display: block;
-      height: 32px;
+      height: 40px;
       width: 16px;
       padding: 10px 0 10px 4px;
 
