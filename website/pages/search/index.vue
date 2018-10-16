@@ -31,7 +31,7 @@
       meta.push({name: 'robots', content: `follow,${name ? 'index' : 'noindex'}`})
       if (description) meta.push({hid: 'description', name: 'description', content: description})
       if (keywords) meta.push({name: 'keywords', content: keywords})
-      return {title: `${name || 'Search'} | Munch`, meta}
+      return {title: `${name || 'Search'} · Munch`, meta}
     },
     async fetch({store, route, params}) {
       const named = params.named

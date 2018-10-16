@@ -1,5 +1,6 @@
 package munch.api.search.between;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import edit.utils.LatLngUtils;
 import munch.api.search.SearchRequest;
@@ -48,11 +49,8 @@ public final class SearchBetweenAreaLoader implements SearchCardInjector.Loader 
         if (!request.isBetween()) return List.of();
 
         if (request.getPage() == 1) {
+            // First first Page, generate the Area
             List<Area> areas = areaGenerator.generate(request);
-            for (Area area : areas) {
-                // TODO Remove Later
-                logger.info("Area: {}", area);
-            }
             if (areas.isEmpty()) return of(-1, CARD_NO_RESULT);
             request.getAreas().addAll(areas);
         }
@@ -66,12 +64,10 @@ public final class SearchBetweenAreaLoader implements SearchCardInjector.Loader 
         if (area.getName() == null) {
             String latLng = area.getLocation().getLatLng();
             area.setName(getName(latLng));
-            area.getLocation().setStreet(getStreet(latLng));
         }
 
         SearchBetweenAreaCard card = new SearchBetweenAreaCard();
         card.setIndex(request.getPage());
-        card.setCount(request.getRequest().getPoints().size());
         card.setArea(area);
         card.setPlaces(places);
         return of(-1, card);
@@ -92,12 +88,24 @@ public final class SearchBetweenAreaLoader implements SearchCardInjector.Loader 
     }
 
     private String getName(String centroid) {
+        ObjectNode root = JsonUtils.createObjectNode();
+        root.put("from", 0);
+        root.put("size", 1);
+
+        ArrayNode filters = JsonUtils.createArrayNode();
+        filters.add(ElasticQueryUtils.filterTerm("dataType", "Area"));
+        filters.add(ElasticQueryUtils.filterTerms("type", List.of("Region")));
+        filters.add(ElasticQueryUtils.filterIntersects(centroid));
+        root.set("query", ElasticQueryUtils.make(filters));
+
+        ArrayNode sort = JsonUtils.createArrayNode();
+        sort.add(ElasticSortUtils.sortDistance(centroid));
+        root.set("sort", sort);
+
+        List<Area> areas = elasticClient.searchHitsHits(root);
+        if (!areas.isEmpty()) return areas.get(0).getName();
+
         LatLngUtils.LatLng latLng = LatLngUtils.parse(centroid);
         return locationClient.getNeighbourhood(latLng.getLat(), latLng.getLng());
-    }
-
-    private String getStreet(String centroid) {
-        LatLngUtils.LatLng latLng = LatLngUtils.parse(centroid);
-        return locationClient.getStreet(latLng.getLat(), latLng.getLng());
     }
 }

@@ -5,7 +5,7 @@
 <script>
   export default {
     head() {
-      return {title: 'Authenticating | Munch'}
+      return {title: 'Munch'}
     },
     mounted() {
       if (process.client) {

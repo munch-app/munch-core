@@ -14,7 +14,6 @@ import java.util.List;
 public final class SearchBetweenAreaCard implements SearchCard {
 
     private int index;
-    private int count;
 
     private Area area;
     private List<Place> places;
@@ -25,14 +24,6 @@ public final class SearchBetweenAreaCard implements SearchCard {
 
     public void setIndex(int index) {
         this.index = index;
-    }
-
-    public int getCount() {
-        return count;
-    }
-
-    public void setCount(int count) {
-        this.count = count;
     }
 
     public Area getArea() {

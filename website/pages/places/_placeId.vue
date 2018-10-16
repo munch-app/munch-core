@@ -92,7 +92,7 @@
       PartnerArticle, PartnerInstagramMedia, GoogleEmbedMap, PlaceMenuList, MunchButton, ImageSize, PlaceTagList
     },
     head() {
-      const title = this.data.place.name + ' | Munch'
+      const title = this.data.place.name + ' · Munch'
       const description = this.data.place.description
       const tags = this.data.place.tags.map(tag => tag.name).join(',')
 

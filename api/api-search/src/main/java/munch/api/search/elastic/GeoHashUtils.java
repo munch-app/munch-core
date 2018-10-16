@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-package munch.api.search.between;
+package munch.api.search.elastic;
 
 
 import com.vividsolutions.jts.geom.Envelope;

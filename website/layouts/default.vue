@@ -25,6 +25,9 @@
     <!-- Notification List on the right -->
     <notification-list/>
 
+    <!-- Notification Even on the bottom -->
+    <notification-event/>
+
     <!-- Elevation overlay for content -->
     <div :class="{'elevation-overlay index-content-overlay': isElevated}"></div>
     <nuxt class="Content" :class="{'elevation-blur': isElevated}"/>
@@ -47,9 +50,11 @@
   import DialogPortal from "../components/layouts/DialogPortal";
   import NotificationList from "../components/layouts/NotificationList";
   import NavFooter from "../components/layouts/NavFooter";
+  import NotificationEvent from "../components/layouts/NotificationEvent";
 
   export default {
     components: {
+      NotificationEvent,
       NavFooter, NotificationList, DialogPortal, ProfileOnBoarding, HeaderRight, SearchBarFilter,
       SearchBar, HeaderMenu, HeaderLogo
     },

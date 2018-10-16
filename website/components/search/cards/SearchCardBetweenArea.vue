@@ -67,7 +67,7 @@
     .Map {
       margin-top: 24px;
       width: 100%;
-      height: 240px;
+      height: 224px;
 
       border-radius: 3px;
       overflow: hidden;
