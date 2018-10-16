@@ -5,7 +5,7 @@
   <portal to="dialog-w400" class="zero-spacing">
     <div class="LoginBanner">
       <div class="BrandLogo flex-center">
-        <img src="/img/MunchLogo_White.svg">
+        <img src="/img/MunchLogoTitled.svg">
         <h1>Munch</h1>
       </div>
 

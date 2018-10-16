@@ -1,9 +1,8 @@
 <template>
-  <nav class="zero-spacing nav-bg">
+  <nav class="zero-spacing hr-top">
     <div class="NavFooter flex container">
       <div class="Brand">
-        <img class="Image" src="/img/MunchLogo.svg">
-        <h4 class="primary">Munch</h4>
+        <img class="Image" src="/img/MunchLogoTitled.svg">
       </div>
       <div class="Company">
         <h4 class="secondary">Company</h4>
@@ -62,7 +61,6 @@
     align-items: flex-start;
 
     .Image {
-      width: 48px;
       height: 48px;
     }
 

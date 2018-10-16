@@ -110,7 +110,7 @@ public final class SearchRequest {
     }
 
     public boolean isBetween() {
-        if (getPoints().size() < 2) return false;
+        if (getPoints().size() < 1) return false;
         return searchQuery.getFilter().getLocation().getType() == SearchQuery.Filter.Location.Type.Between;
     }
 

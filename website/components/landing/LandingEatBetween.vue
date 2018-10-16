@@ -2,7 +2,8 @@
   <div class="LandingEatBetween">
     <div class="BetweenContainer container">
       <div class="Input">
-        <h1>Getting the gang together just got a whole lot easier</h1>
+        <h1>EatBetween</h1>
+        <h2>Getting the gang together just got a whole lot easier</h2>
         <search-bar-filter-between/>
 
         <div class="Action">
@@ -17,6 +18,7 @@
       </div>
 
       <div class="Design flex-center">
+        <img src="/img/landing/4-guys@2x.png">
       </div>
     </div>
   </div>
@@ -35,17 +37,17 @@
       ...mapGetters('filter', ['applyText', 'isApplicable']),
     },
     mounted() {
+      this.$store.commit('filter/selected', 'location')
       this.$store.dispatch('filter/location', {type: 'Between', areas: []})
     },
     methods: {
       onClear() {
-        const query = this.$store.state.filter.query
-        const tags = SearchBarFilterTag.$$reduce(query, this.selected)
-        this.$store.dispatch('filter/clear', {tags})
+        this.$store.dispatch('filter/clear', {tags: []})
       },
       onApply() {
         if (this.isApplicable) {
-
+          this.$store.commit('filter/selected', null)
+          this.$store.commit('unfocus', 'Filter')
           this.$store.dispatch('search/start', this.$store.state.filter.query)
         }
       },
@@ -65,6 +67,10 @@
 
       h1 {
         margin-top: 24px;
+        margin-bottom: 16px;
+      }
+
+      h2 {
         margin-bottom: 24px;
       }
 

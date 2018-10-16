@@ -1,6 +1,6 @@
 <template>
   <no-ssr>
-    <div class="HeaderRight">
+    <div class="HeaderRight" v-if="false">
       <div @click="onClickLogin" class="Name hover-pointer" v-if="!isLoggedIn">Login</div>
       <nuxt-link to="/profile" v-else class="Name">{{displayName}}</nuxt-link>
       <img v-if="false" class="Menu hover-pointer" src="/img/layouts/menu.svg" @click="onClickMenu"/>

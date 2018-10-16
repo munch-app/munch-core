@@ -73,11 +73,7 @@ export const getters = {
     if (state.loading) return
     const location = state.query.filter.location
     if (location.type === 'Between') {
-      const length = location.points.filter(bl => bl.name).length
-      if (length > 1) {
-        return `Between ${length} Locations`
-      }
-      return 'Require 2 Locations'
+      return 'Locate Between'
     }
 
     const count = state.result.count
@@ -99,7 +95,7 @@ export const getters = {
     const location = state.query.filter.location
     if (location.type === 'Between') {
       const length = location.points.filter(bl => bl.name).length
-      return length > 1;
+      return length > 0;
     }
 
     return !!state.result.count

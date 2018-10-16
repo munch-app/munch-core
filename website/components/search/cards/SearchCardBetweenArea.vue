@@ -1,11 +1,11 @@
 <template>
   <div>
     <div class="Header">
-      <h2>{{header}}</h2>
-      <h5>
-        <span v-if="area.location && area.location.street">{{area.location.street}}, </span>
-        <span class="weight-400">Based on {{count}} locations.</span>
-      </h5>
+      <div>
+        <h2>{{header}}</h2>
+
+        <apple-map class="Map" :annotations="annotations"/>
+      </div>
     </div>
 
     <div class="Places container-width">
@@ -18,10 +18,11 @@
 
 <script>
   import PlaceCard from "../../places/PlaceCard";
+  import AppleMap from "../../core/AppleMap";
 
   export default {
     name: "SearchCardBetweenArea",
-    components: {PlaceCard},
+    components: {AppleMap, PlaceCard},
     props: {
       card: {
         type: Object,
@@ -42,16 +43,37 @@
         return this.card.places
       },
       header() {
-        if (this.index === 0) {
-          return `Most ideal spot for everyone: ${this.card.area.name}`
-        }
-        return `Next most ideal spot: ${this.card.area.name}`
+        return `An ideal spot for everyone: ${this.card.area.name}`
+      },
+      annotations() {
+        return this.card.places.map(place => {
+          const latLng = place.location.latLng.split(",")
+
+          return {
+            lat: parseFloat(latLng[0]),
+            lng: parseFloat(latLng[1]),
+            name: place.name
+          }
+        })
       }
     }
   }
 </script>
 
 <style scoped lang="less">
+  .Header {
+    margin-bottom: 24px;
+
+    .Map {
+      margin-top: 24px;
+      width: 100%;
+      height: 240px;
+
+      border-radius: 3px;
+      overflow: hidden;
+    }
+  }
+
   .Places {
     display: flex;
     flex-wrap: wrap;

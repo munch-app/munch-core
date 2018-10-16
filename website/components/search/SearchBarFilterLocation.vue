@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="LocationCollectionContainer">
-      <div class="LocationCollection">
+      <div v-if="false" class="LocationCollection">
         <div class="LocationCell" @click="toggleBetween"
              :class="{
          'primary-500-bg white': isSelectedLocationType('Between'),

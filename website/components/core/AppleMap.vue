@@ -1,33 +1,20 @@
 <template>
   <div>
-    <script src="https://cdn.apple-mapkit.com/mk/5.x.x/mapkit.js"></script>
-    <div id="map"/>
+    <div ref="map" class="AppleMap"/>
   </div>
 </template>
 
 <script>
   export default {
     name: "AppleMap",
+    props: {
+      annotations: {
+        type: Array,
+        required: false
+      }
+    },
     mounted() {
-      mapkit.init({
-        authorizationCallback: done => {
-          this.$axios.$get('/apple-maps/token')
-            .then(done)
-        },
-        language: "en"
-      });
-
-      const lat = 1.38;
-      const lng = 103.8;
-
-      const region = new mapkit.CoordinateRegion(
-        new mapkit.Coordinate(lat, lng),
-        new mapkit.CoordinateSpan(3, 3)
-      );
-
-      const map = new mapkit.Map("map", {
-        center: new mapkit.Coordinate(lat, lng),
-        region: region,
+      const map = new mapkit.Map(this.$refs.map, {
         showsUserLocation: true,
         showsUserLocationControl: false,
         showsCompass: false,
@@ -37,13 +24,53 @@
         showsMapTypeControl: false,
         isZoomEnabled: false
       });
+
+
+      if (this.annotations) {
+        const calloutDelegate = {
+          calloutElementForAnnotation: function(annotation) {
+            const div = document.createElement("div");
+            div.className = "CalloutNamed elevation-1"
+            div.textContent = annotation.data.name
+
+            return div;
+          }
+        };
+
+        const list = this.annotations.map(annotation => {
+          const coordinate = new mapkit.Coordinate(annotation.lat, annotation.lng)
+
+          return new mapkit.MarkerAnnotation(coordinate, {
+            color: "#F05F3B",
+            callout: calloutDelegate,
+            data: {
+              name: annotation.name
+            }
+          });
+        })
+        map.showItems(list, {
+          animate: true,
+          padding: new mapkit.Padding(64, 24, 64, 24)
+        })
+      }
     }
   }
 </script>
 
-<style scoped lang="less">
-  #map {
+<style lang="less">
+  .AppleMap {
     width: 100%;
     height: 100%;
+
+    .CalloutNamed {
+      background: white;
+      padding: 8px;
+      border-radius: 3px;
+
+      font-size: 13px;
+      line-height: 13px;
+
+      margin-bottom: 4px;
+    }
   }
 </style>

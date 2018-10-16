@@ -3,8 +3,8 @@
     <ul class="NavLink elevation-3 text index-top-elevation">
       <div class="MobileOnly">
         <nuxt-link to="/">Home</nuxt-link>
-        <nuxt-link to="/profile" v-if="isLoggedIn">Profile</nuxt-link>
-        <a v-else @click="$store.commit('focus', 'Login')">Login</a>
+        <!--<nuxt-link to="/profile" v-if="isLoggedIn">Profile</nuxt-link>-->
+        <!--<a v-else @click="$store.commit('focus', 'Login')">Login</a>-->
       </div>
     </ul>
     <div v-on-clickaway="onClickAway"></div>

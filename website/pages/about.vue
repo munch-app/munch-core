@@ -25,9 +25,7 @@
 
     <section class="Mission">
       <div class="content container-1200">
-        <div class="content-image">
-          <img src="/img/about/Munch Dog@3x.png">
-        </div>
+        <div class="content-image"/>
         <div class="content-text">
           <div v-html="section3.heading"/>
           <div v-html="section3.paragraph"/>
@@ -37,9 +35,7 @@
 
     <section class="Contact primary-050-bg">
       <div class="content container-1200">
-        <div class="content-image">
-          <img src="/img/about/Munch Contact@3x.png">
-        </div>
+        <div class="content-image"/>
         <div class="content-text">
           <div v-html="section4.heading"/>
           <div v-html="section4.paragraph"/>

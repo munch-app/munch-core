@@ -20,7 +20,10 @@ module.exports = {
       {rel: 'manifest', href: '/site.webmanifest'},
       {rel: 'mask-icon', href: '/safari-pinned-tab.svg', color: '#f05f3b'},
 
-      {rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700|Roboto'}
+      {rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700|Roboto'},
+    ],
+    script: [
+      {src: 'https://cdn.apple-mapkit.com/mk/5.x.x/mapkit.js'}
     ]
   },
   css: [
@@ -126,6 +129,7 @@ module.exports = {
       '/support',
       '/search',
       '/about',
+      '/press',
     ]
   }
 };

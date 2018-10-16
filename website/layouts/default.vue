@@ -4,7 +4,10 @@
       <div class="HeaderRow container clearfix">
         <header-logo class="Logo" :class="{'IsSuggest': isFocused('Suggest')}"/>
         <div class="Search">
-          <search-bar class="SearchBar" @onText="onText" @onBlur="onBlur" @onFocus="onFocus"/>
+          <nuxt-link to="/">
+            <span class="BrandTitle">Discover Delicious</span>
+          </nuxt-link>
+          <search-bar class="SearchBar" @onText="onText" @onBlur="onBlur" @onFocus="onFocus" v-if="false"/>
         </div>
         <header-right class="HeaderMenu"/>
       </div>
@@ -79,10 +82,14 @@
         }
       }
     },
-    watch: {
-      route() {
-        // this.$store.commit('clearFocus')
-      }
+    mounted() {
+      mapkit.init({
+        authorizationCallback: done => {
+          this.$axios.$get('/apple-maps/token')
+            .then(done)
+        },
+        language: "en"
+      })
     }
   }
 </script>
@@ -114,6 +121,18 @@
       .Search {
         margin: 8px 0 8px 0;
         flex-grow: 1;
+
+        a {
+          color: initial;
+          text-decoration: initial;
+        }
+
+        .BrandTitle {
+          line-height: 40px;
+          font-size: 16px;
+          font-weight: 600;
+          color: rgba(0, 0, 0, 0.8);
+        }
       }
 
       @media (max-width: 767.98px) {
