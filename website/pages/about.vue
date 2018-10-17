@@ -5,7 +5,7 @@
         <div class="content-image">
           <img src="/img/about/Munch Logo@3x.png">
         </div>
-        <div>
+        <div class="prismic-content">
           <div v-html="section1.heading"/>
           <div v-html="section1.paragraph"/>
         </div>
@@ -16,7 +16,7 @@
       <div class="content container-1200">
         <div class="content-image">
         </div>
-        <div class="content-text">
+        <div class="content-text prismic-content">
           <div v-html="section2.heading"/>
           <div v-html="section2.paragraph"/>
         </div>
@@ -26,7 +26,7 @@
     <section class="Mission">
       <div class="content container-1200">
         <div class="content-image"/>
-        <div class="content-text">
+        <div class="content-text prismic-content">
           <div v-html="section3.heading"/>
           <div v-html="section3.paragraph"/>
         </div>
@@ -36,7 +36,7 @@
     <section class="Contact primary-050-bg">
       <div class="content container-1200">
         <div class="content-image"/>
-        <div class="content-text">
+        <div class="content-text prismic-content">
           <div v-html="section4.heading"/>
           <div v-html="section4.paragraph"/>
         </div>

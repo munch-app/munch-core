@@ -123,6 +123,10 @@
         this.$store.commit('filter/updateBetweenLocation', {index})
       },
       onSuggestCancel() {
+        if (this.search.text === '') {
+          this.search.searching = false
+          return
+        }
         this.search.text = ''
         this.search.position = 0
         this.suggestions = []

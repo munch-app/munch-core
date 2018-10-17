@@ -1,5 +1,5 @@
 <template>
-  <div class="container Support">
+  <div class="container Support prismic-content">
     <div v-html="title"></div>
     <div v-html="content"></div>
   </div>

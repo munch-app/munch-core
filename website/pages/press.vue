@@ -1,6 +1,6 @@
 <template>
   <div class="container Press">
-    <section>
+    <section class="prismic-content">
       <div v-html="fact_sheet.title"/>
       <div v-html="fact_sheet.content"/>
     </section>

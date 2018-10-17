@@ -48,13 +48,33 @@
 
   .NotificationBox {
     transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
-    width: 272px;
+    width: 300px;
     padding: 16px 24px;
     border-radius: 4px;
     margin-top: 16px;
 
     .heading {
       margin-bottom: 4px;
+    }
+  }
+
+  @media (max-width: 575.98px) {
+    .NotificationList {
+      left: 0;
+      right: 0;
+      margin: 0;
+    }
+
+    .NotificationBox {
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+      width: 100vw;
+      border-radius: 0;
+    }
+  }
+
+  @media (min-width: 576px) {
+    .NotificationBox {
+      border: 1px solid rgba(0, 0, 0, 0.1);
     }
   }
 </style>

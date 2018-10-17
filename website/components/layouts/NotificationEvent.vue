@@ -1,12 +1,15 @@
 <template>
   <div class="NotificationEvent index-overlay">
-    <div class="NotificationBox EatBetweenEvent elevation-3 white-bg border" v-if="eatBetween" @click="clickEatBetween">
+    <div class="NotificationBox EatBetweenEvent elevation-3 white-bg" v-if="eatBetween" @click="clickEatBetween">
       <div class="Header">
         <h4 class="primary-700">
           Copy Link?
         </h4>
         <simple-svg class="Icon" fill="black" filepath="/img/layouts/copy.svg"/>
 
+        <div class="Close" @click.stop="onCancel">
+          <simple-svg class="Icon" fill="black" filepath="/img/layouts/close.svg" />
+        </div>
       </div>
 
       <h6 class="text">
@@ -59,6 +62,9 @@
           'event_category': 'link',
           'event_label': 'eat_between'
         })
+      },
+      onCancel() {
+        this.eatBetween = false
       }
     },
     computed: {
@@ -98,6 +104,11 @@
         height: 20px;
         margin-left: 16px;
       }
+
+      .Close {
+        margin-left: auto;
+        margin-right: 0;
+      }
     }
 
     &:hover {
@@ -113,8 +124,15 @@
     }
 
     .NotificationBox {
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
       width: 100vw;
       border-radius: 0;
+    }
+  }
+
+  @media (min-width: 576px) {
+    .NotificationBox {
+      border: 1px solid rgba(0, 0, 0, 0.1);
     }
   }
 </style>

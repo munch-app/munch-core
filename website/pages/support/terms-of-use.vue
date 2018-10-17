@@ -1,7 +1,7 @@
 <template>
   <div class="container Support">
     <b-row>
-      <b-col class="Content" cols="12" md="9" v-html="content"/>
+      <b-col class="Content prismic-content" cols="12" md="9" v-html="content"/>
       <b-col cols="12" md="3">
         <hr class="d-md-none d-block">
         <h4>Support articles</h4>

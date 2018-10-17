@@ -53,6 +53,8 @@
   import SearchBarFilterLocation from "./SearchBarFilterLocation";
   import SearchBarFilterPrice from "./SearchBarFilterPrice";
 
+  import {clearAllBodyScrollLocks} from 'body-scroll-lock';
+
   export default {
     name: "SearchBarFilterList",
     components: {SearchBarFilterPrice, SearchBarFilterLocation, SearchBarFilterTiming, SearchBarFilterTag},
@@ -72,6 +74,13 @@
           this.$store.dispatch('search/start', this.$store.state.filter.query)
         }
       },
+    },
+    watch: {
+      selected() {
+        if (window.innerWidth < 768) {
+          clearAllBodyScrollLocks()
+        }
+      }
     }
   }
 </script>
@@ -112,14 +121,15 @@
 
     .FilterList {
       background: white;
-      position: absolute;
-
-      top: 0;
+      position: fixed;
+      top: 104px;
       left: 0;
       right: 0;
-      bottom: 0;
+      height: calc(100vh - 72px - 56px - 48px);
 
-      padding: 104px 24px 112px 24px;
+      padding-left: 24px;
+      padding-right: 24px;
+      padding-bottom: 24px;
 
       overflow-x: visible;
       overflow-y: scroll;
