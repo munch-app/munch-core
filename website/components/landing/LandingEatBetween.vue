@@ -58,7 +58,6 @@
 <style scoped lang="less">
   .BetweenContainer {
     display: flex;
-    align-items: center;
     padding-top: 56px;
     padding-bottom: 56px;
 
@@ -119,6 +118,7 @@
 
   @media (max-width: 767.98px) {
     .BetweenContainer {
+      height: 100vh;
     }
 
     .Input {

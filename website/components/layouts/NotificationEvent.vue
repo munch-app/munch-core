@@ -1,6 +1,6 @@
 <template>
-  <div class="NotificationList index-overlay">
-    <div class="NotificationBox elevation-3 white-bg border">
+  <div class="NotificationEvent index-overlay">
+    <div class="NotificationBox EatBetweenEvent elevation-3 white-bg border" v-if="eatBetween" @click="clickEatBetween">
       <div class="Header">
         <h4 class="primary-700">
           Copy Link?
@@ -8,6 +8,7 @@
         <simple-svg class="Icon" fill="black" filepath="/img/layouts/copy.svg"/>
 
       </div>
+
       <h6 class="text">
         Teamwork makes the dream work. You've done the tough part now send this link to your friends and ask somebody to
         pick.
@@ -17,18 +18,64 @@
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
+
   export default {
-    name: "NotificationEvent"
+    name: "NotificationEvent",
+    data() {
+      return {
+        eatBetween: false
+      }
+    },
+    watch: {
+      searchType(searchType) {
+        if (searchType !== 'search') return
+
+        const query = this.$store.state.search.query
+        if (query && query.filter && query.filter.location && query.filter.location.type === 'Between') {
+
+          this.eatBetween = true
+          setTimeout(() => {
+            this.eatBetween = false
+          }, 8000)
+        }
+      }
+    },
+    methods: {
+      clickEatBetween() {
+        this.eatBetween = false
+
+        const dummy = document.createElement('input')
+        const text = window.location.href
+
+        document.body.appendChild(dummy)
+        dummy.value = text;
+        dummy.select();
+        document.execCommand('copy')
+        document.body.removeChild(dummy)
+        this.$store.dispatch('addMessage', {message: 'Link copied!'})
+
+        this.$gtag('event', 'share', {
+          'event_category': 'link',
+          'event_label': 'eat_between'
+        })
+      }
+    },
+    computed: {
+      searchType() {
+        return this.$store.state.search.type
+      }
+    }
   }
 </script>
 
 <style scoped lang="less">
-  .NotificationList {
+  .NotificationEvent {
     position: fixed;
-    left: 0;
+    right: 0;
     bottom: 0;
-    margin-left: 32px;
-    margin-bottom: 32px;
+    margin-right: 24px;
+    margin-bottom: 24px;
   }
 
   .NotificationBox {
@@ -52,10 +99,15 @@
         margin-left: 16px;
       }
     }
+
+    &:hover {
+      cursor: pointer;
+    }
   }
 
   @media (max-width: 575.98px) {
-    .NotificationList {
+    .NotificationEvent {
+      left: 0;
       right: 0;
       margin: 0;
     }

@@ -120,7 +120,6 @@
         this.fullScreen.selected = true
         this.fullScreen.currentSlide = index
         this.fullScreen.options.initialSlide = index
-        console.log(this.$refs.fullScreen)
       },
       onFullScreenClose() {
         this.fullScreen.selected = false

@@ -15,7 +15,7 @@
         top: '-6px'
       },
       bgStyle: {
-        backgroundColor: '#EEDFDF',
+        backgroundColor: '#faf0f0',
       },
       tooltipStyle: {
         backgroundColor: 'transparent',

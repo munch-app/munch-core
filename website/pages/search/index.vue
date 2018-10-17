@@ -48,6 +48,14 @@
       ...mapGetters('search', ['query', 'cards', 'more']),
       ...mapGetters('filter', ['selected']),
     },
+    mounted() {
+      const type = this.$store.state.search.type
+      const query = this.query
+      this.$gtag('event', 'search', {
+        'event_category': type,
+        'event_label': (query && query.filter && query.filter.location && query.filter.location.type || '').toLowerCase()
+      })
+    },
     methods: {
       visibilityChanged(isVisible, entry) {
         if (isVisible) {

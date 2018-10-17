@@ -18,7 +18,6 @@ export const getters = {
 
 export const mutations = {
   redraw(state, {count}) {
-    console.log(count)
     state.lanes.splice(0, state.lanes.length)
 
     for (let i = 0; i < count; i++) {

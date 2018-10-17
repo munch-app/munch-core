@@ -48,7 +48,7 @@ public final class SearchBetweenAreaLoader implements SearchCardInjector.Loader 
     public List<Position> load(Request request) {
         if (!request.isBetween()) return List.of();
 
-        if (request.getPage() == 1) {
+        if (request.getPage() == 0) {
             // First first Page, generate the Area
             List<Area> areas = areaGenerator.generate(request);
             if (areas.isEmpty()) return of(-1, CARD_NO_RESULT);

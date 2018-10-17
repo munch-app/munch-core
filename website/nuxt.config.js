@@ -111,13 +111,17 @@ module.exports = {
     'bootstrap-vue/nuxt',
     '@nuxtjs/axios',
     '@nuxtjs/sitemap',
-    ['@nuxtjs/google-analytics', {
-      id: 'UA-117480436-1'
-    }],
+    '@nuxtjs/google-gtag',
+
     ['@nuxtjs/google-tag-manager', {
       id: 'GTM-KVBXWDJ'
     }],
   ],
+  'google-gtag': {
+    id: 'UA-117480436-1',
+    config: {},
+    debug: false
+  },
   axios: {},
   sitemap: {
     path: '/sitemap.xml',

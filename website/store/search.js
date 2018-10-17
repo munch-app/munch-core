@@ -2,6 +2,7 @@ import _ from 'underscore'
 
 export const state = () => ({
   seo: {}, // For seo purpose
+  type: null,
   query: null,
   page: 0,
   result: {cards: []},
@@ -12,6 +13,7 @@ export const state = () => ({
 
 export const getters = {
   query: (state) => state.query,
+  type: (state) => state.type,
   cards: (state) => state.result.cards,
   more: (state) => state.more,
   loading: (state) => state.loading,
@@ -29,7 +31,8 @@ export const mutations = {
     state.seo = {name, description, keywords}
   },
 
-  start(state, query) {
+  start(state, {query, type}) {
+    state.type = type
     this.commit('search/setQuery', query)
 
     state.more = true
@@ -70,7 +73,7 @@ export const actions = {
   start({commit, state}, query) {
     this.$router.replace({path: '/search'})
 
-    commit('start', query)
+    commit('start', {query, type: 'search'})
     this.commit('filter/replace', query)
 
     return this.$axios.$post(`/api/search?page=${state.page}`, state.query)
@@ -88,7 +91,7 @@ export const actions = {
         if (!data) return Promise.reject(new Error('Not Found'))
 
         const query = data.searchQuery
-        commit('start', query)
+        commit('start', {query, type: 'named'})
         commit('setSeo', {name: data.name, description: data.description, keywords: data.keywords})
         this.commit('filter/replace', query)
 
@@ -107,7 +110,7 @@ export const actions = {
       .then(({data}) => {
         if (!data) return Promise.reject(new Error('Not Found'))
 
-        commit('start', data)
+        commit('start', {query: data, type: 'qid'})
         this.commit('filter/replace', data)
 
         return this.$axios.$post(`/api/search?page=${state.page}`, data)

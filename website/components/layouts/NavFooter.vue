@@ -61,7 +61,7 @@
     align-items: flex-start;
 
     .Image {
-      height: 48px;
+      height: 40px;
     }
 
     h4 {
