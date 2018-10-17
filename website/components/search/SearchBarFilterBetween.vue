@@ -1,59 +1,59 @@
 <template>
-  <div class="FilterBetween Listing" v-if="!search.searching">
-    <div class="text">Simply enter everyone's location & we will find the most ideal spot for a meal together.</div>
+  <div class="FilterBetween Listing">
+    <div v-show="!search.searching">
+      <div class="text">Simply enter everyone's location & we will find the most ideal spot for a meal together.</div>
 
-    <div class="Locations">
-      <div>
-        <div class="LocationTextBar border-3 hover-pointer" v-for="(location, index) in locationPoints" :key="index">
-          <div class="TextBar" @click="onSearch(index)">
-            <div>
-              {{location.name}}
+      <div class="Locations">
+        <div>
+          <div class="LocationTextBar border-3 hover-pointer" v-for="(location, index) in locationPoints" :key="index">
+            <div class="TextBar" @click.capture="onSearch(index)">
+              <div>
+                {{location.name}}
+              </div>
+            </div>
+
+            <div class="Clear hover-pointer" @click="onRemove(index)">
+              <simple-svg fill="black" filepath="/img/search/close.svg"/>
             </div>
           </div>
 
-          <div class="Clear hover-pointer" @click="onRemove(index)">
+          <div class="LocationTextBar border-3 hover-pointer" v-for="(key, index) in emptyPoints" :key="key">
+            <div class="TextBar" @click.capture="onSearch(index + locationPoints.length)">
+              <div class="primary-500">
+                {{`Enter Location ${index + 1 + locationPoints.length}`}}
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h6>(Up to 10 locations)</h6>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="FilterBetween Search" :class="{OffScreen: !search.searching}">
+      <div class="flex">
+        <div class="Back hover-pointer" @click="search.searching = false">
+          <simple-svg fill="black" filepath="/img/search/back.svg"/>
+        </div>
+        <div class="SearchTextBar border-3 hover-pointer">
+          <input ref="input" class="TextBar" type="text"
+                 placeholder="Search Location Name" v-model="search.text">
+
+          <div class="Clear hover-pointer" @click="onSuggestCancel">
             <simple-svg fill="black" filepath="/img/search/close.svg"/>
           </div>
         </div>
-
-        <div class="LocationTextBar border-3 hover-pointer" v-for="(key, index) in emptyPoints" :key="key">
-          <div class="TextBar" @click="onSearch(index + locationPoints.length)">
-            <div class="primary-500">
-              {{`Enter Location ${index + 1 + locationPoints.length}`}}
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <h6>(Up to 10 locations)</h6>
-        </div>
       </div>
-    </div>
-  </div>
 
-  <div class="FilterBetween Search" v-else>
-    <div class="flex">
-      <div class="Back hover-pointer" @click="search.searching = false">
-        <simple-svg fill="black" filepath="/img/search/back.svg"/>
-      </div>
-      <div class="SearchTextBar border-3 hover-pointer">
-        <input ref="input" class="TextBar" type="text"
-               placeholder="Search Location Name" v-model="search.text">
-
-        <div class="Clear hover-pointer" @click="onSuggestCancel">
-          <simple-svg fill="black" filepath="/img/search/close.svg"/>
+      <div class="Suggest">
+        <div class="SuggestCell whisper-100-bg text" v-for="(location, index) in suggestions"
+             :key="index" @click="onLocation(location)"
+             :class="{'whisper-200-bg': search.position === index}"
+        >
+          {{location.name}}
         </div>
-
-
-      </div>
-    </div>
-
-    <div class="Suggest">
-      <div class="SuggestCell whisper-100-bg text" v-for="(location, index) in suggestions"
-           :key="index" @click="onLocation(location)"
-           :class="{'whisper-200-bg': search.position === index}"
-      >
-        {{location.name}}
       </div>
     </div>
   </div>
@@ -116,8 +116,10 @@
         this.search.position = 0
 
         this.$nextTick(() => {
-          this.$refs.input.focus()
+          // this.$refs.input.focus()
         })
+
+        this.$refs.input.focus()
       },
       onRemove(index) {
         this.$store.commit('filter/updateBetweenLocation', {index})
@@ -280,5 +282,10 @@
         margin-top: 1px;
       }
     }
+  }
+
+  .FilterBetween.OffScreen {
+    position: absolute;
+    top: -1000px;
   }
 </style>
