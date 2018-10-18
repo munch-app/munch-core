@@ -37,7 +37,6 @@
 </template>
 
 <script>
-  import 'sanitize.css'
   if (process.browser) require('intersection-observer')
 
   import {mapGetters} from 'vuex'

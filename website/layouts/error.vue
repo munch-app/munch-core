@@ -15,12 +15,16 @@
 
 <style scoped lang="less">
   .Error {
-    margin-top: 24px;
+    padding-top: 24px;
     padding-bottom: 64px;
-  }
 
-  .HomePage {
-    text-decoration: underline;
-    font-size: 17px;
+    h1 {
+      margin-bottom: 16px;
+    }
+
+    .HomePage {
+      text-decoration: underline;
+      font-size: 17px;
+    }
   }
 </style>

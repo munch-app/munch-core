@@ -39,7 +39,7 @@
 
     <section class="Partner" v-if="hasPartner">
       <!--<div class="container">-->
-        <!--<h2 class="secondary-500 Header">Partner's Content</h2>-->
+      <!--<h2 class="secondary-500 Header">Partner's Content</h2>-->
       <!--</div>-->
 
       <section class="Article" v-if="data.articles.length > 0">
@@ -107,11 +107,19 @@
         showAddToCollection: false
       }
     },
-    asyncData({$axios, params}) {
+    asyncData({$axios, params, error}) {
       return $axios.$get('/api/places/' + params.placeId)
         .then(({data}) => {
           return {data: data};
-        });
+        })
+        .catch((err) => {
+          const response = err.response
+          if (response && response.status === 404) {
+            error({statusCode: 404, message: err.message})
+          } else {
+            error({statusCode: 500, message: err.message})
+          }
+        })
     },
     computed: {
       ...mapGetters('user', ['isLoggedIn']),

@@ -8,12 +8,15 @@ const service = require('axios').create({
 service.interceptors.response.use(function (response) {
   return response;
 }, function (error) {
-  let metaError = error.response &&
-    error.response.data &&
-    error.response.data.meta &&
-    error.response.data.meta.error
-  if (metaError && metaError.type) {
-    return Promise.reject(new Error(`${metaError.type}: ${metaError.message || ''}`))
+  const meta = error.response && error.response.data && error.response.data.meta
+
+  if (meta && meta.error && meta.error.type) {
+    const {type, message} = meta.error
+    return Promise.reject(new Error(`${type}: ${message || ''}`))
+  }
+
+  if (meta.code === 404) {
+    throw({statusCode: 404, message: 'Not Found'})
   }
   return Promise.reject(error);
 });

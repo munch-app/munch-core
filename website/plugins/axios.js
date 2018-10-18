@@ -3,6 +3,13 @@ import authenticator from '~/services/authenticator'
 import * as Cookies from 'js-cookie'
 
 export default function ({$axios, store, req}) {
+  // $axios.onError(error => {
+  //   // TODO
+  //   // console.log($nuxt)
+  //   throw({statusCode: 404, message: 'Not Found'})
+  //   // return $nuxt.error({statusCode: 404, message: 'Not Found'})
+  // })
+
   if (process.client) {
     $axios.onRequest(config => {
       // User Data from state
@@ -10,7 +17,7 @@ export default function ({$axios, store, req}) {
 
       const latLng = store.state.filter.user.latLng || Cookies.get('UserLatLng')
       if (latLng) config.headers['User-Lat-Lng'] = latLng
-      
+
       // Get user Id token
       return authenticator.getIdToken().then(({token}) => {
         if (token) config.headers['Authorization'] = `Bearer ${token}`
