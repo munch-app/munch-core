@@ -14,6 +14,7 @@ import munch.data.location.Area;
 import munch.data.place.Place;
 import munch.location.LocationClient;
 import munch.restful.core.JsonUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +36,7 @@ public final class SearchBetweenAreaLoader implements SearchCardInjector.Loader 
 
     private final ElasticClient elasticClient;
     private final BetweenAreaGenerator areaGenerator;
+
     private final LocationClient locationClient;
 
     @Inject
@@ -106,6 +108,12 @@ public final class SearchBetweenAreaLoader implements SearchCardInjector.Loader 
         if (!areas.isEmpty()) return areas.get(0).getName();
 
         LatLngUtils.LatLng latLng = LatLngUtils.parse(centroid);
-        return locationClient.getNeighbourhood(latLng.getLat(), latLng.getLng());
+        String neighbourhood = locationClient.getNeighbourhood(latLng.getLat(), latLng.getLng());
+        if (StringUtils.isNotBlank(neighbourhood)) return neighbourhood;
+
+        String street = locationClient.getStreet(latLng.getLat(), latLng.getLng());
+        if (StringUtils.isNotBlank(street)) return street;
+
+        return "Somewhere";
     }
 }
