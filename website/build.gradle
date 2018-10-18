@@ -18,6 +18,11 @@ task publishWebsiteProduction {
         "-t", dockerTag + 'production', '.'
     }
     exec { commandLine "docker", "push", dockerTag + 'production' }
+    exec { commandLine 'aws', 'ecs', 'update-service',
+      '--cluster', 'munch-core',
+      '--service', 'Website',
+      '--force-new-deployment'
+    }
   }
 }
 
