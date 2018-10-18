@@ -170,7 +170,7 @@
     margin-bottom: -12px;
 
     max-height: 440px;
-    overflow-y: scroll;
+    overflow-y: auto;
   }
 
   .LocationTextBar {
@@ -269,7 +269,7 @@
     .Suggest {
       margin-left: 36px;
       height: 240px;
-      overflow-y: scroll;
+      overflow-y: auto;
 
       .SuggestCell {
         white-space: nowrap;
@@ -286,6 +286,6 @@
 
   .FilterBetween.OffScreen {
     position: absolute;
-    top: -1000px;
+    top: -100000px;
   }
 </style>

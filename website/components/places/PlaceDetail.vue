@@ -1,23 +1,23 @@
 <template>
   <div class="Detail">
     <div class="Row Price" v-if="place.price && place.price.perPax">
-      <div class="Left secondary-500">PRICE</div>
+      <div class="Left secondary-600">PRICE</div>
       <div class="Right">~${{place.price.perPax.toFixed(1)}}/pax</div>
     </div>
     <div class="Row Phone" v-if="place.phone">
-      <div class="Left secondary-500">PHONE</div>
+      <div class="Left secondary-600">PHONE</div>
       <div class="Right">{{place.phone}}</div>
     </div>
     <div class="Row Website" v-if="websiteUrl">
-      <div class="Left secondary-500">WEBSITE</div>
+      <div class="Left secondary-600">WEBSITE</div>
       <a :href="place.website"  class="Right" target="_blank" rel="noreferrer noopener nofollow">{{websiteUrl}}</a>
     </div>
     <div class="Row WebsiteMenu" v-if="false">
-      <div class="Left secondary-500">MENU</div>
+      <div class="Left secondary-600">MENU</div>
       <a :href="place.menu.url" class="Right" rel="noreferrer noopener nofollow">{{menuUrl}}</a>
     </div>
     <div class="Row Hour" v-if="hours.length > 0">
-      <div class="Left secondary-500">HOURS</div>
+      <div class="Left secondary-600">HOURS</div>
       <place-hour-list :place-id="place.placeId" class="Right" :hours="hours"/>
     </div>
     <div></div>
@@ -83,11 +83,15 @@
 
     .Row {
       display: flex;
-    }
 
-    .Row .Left, .Row .Right {
-      line-height: 24px;
-      margin-bottom: 8px;
+      .Left, .Right {
+        line-height: 24px;
+        margin-bottom: 8px;
+
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+      }
     }
 
     .Row .Left {
@@ -95,15 +99,13 @@
       font-weight: 700;
     }
 
-    .Row .Right {
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-    }
-
     @media (max-width: 575.98px) {
+      .Row .Left {
+        width: 80px;
+      }
+
       .Row .Right {
-        padding-left: 12px;
+        padding-left: 16px;
         text-align: right;
         flex-grow: 1;
       }

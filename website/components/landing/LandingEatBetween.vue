@@ -76,7 +76,7 @@
       .Action {
         display: flex;
         justify-content: flex-end;
-        margin-top: 16px;
+        padding-top: 16px;
 
         .Button {
           line-height: 1.5;
@@ -122,7 +122,7 @@
     }
 
     .Input {
-      width: 100vw;
+      width: calc(100vw - 48px);
     }
   }
 

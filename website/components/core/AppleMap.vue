@@ -15,7 +15,7 @@
     },
     mounted() {
       const map = new mapkit.Map(this.$refs.map, {
-        showsUserLocation: true,
+        showsUserLocation: false,
         showsUserLocationControl: false,
         showsCompass: false,
         showsScale: false,

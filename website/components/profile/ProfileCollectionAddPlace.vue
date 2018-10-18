@@ -78,7 +78,7 @@
     margin-bottom: -16px;
 
     max-height: 400px;
-    overflow-y: scroll;
+    overflow-y: auto;
     -webkit-overflow-scrolling: touch;
 
     .Collection {

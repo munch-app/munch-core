@@ -115,7 +115,7 @@
 
 <style scoped lang="less">
   .TagColumn {
-    overflow-y: scroll;
+    overflow-y: auto;
 
     @media (min-width: 768px) {
       // 104 Height of nav bar

@@ -9,7 +9,7 @@ RUN yarn --pure-lockfile
 
 COPY . /usr/src/app/
 
-ENV API_URL_BROWSER https://munch.app/
+ENV API_URL_BROWSER https://www.munch.app/
 ENV API_MUNCH_APP https://api.munch.app/v0.14.0
 
 ENV HOST 0.0.0.0

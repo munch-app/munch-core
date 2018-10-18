@@ -132,7 +132,7 @@
       padding-bottom: 24px;
 
       overflow-x: visible;
-      overflow-y: scroll;
+      overflow-y: auto;
       -webkit-overflow-scrolling: touch;
 
       @media (min-width: 576px) {
