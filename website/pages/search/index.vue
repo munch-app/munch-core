@@ -49,12 +49,18 @@
       ...mapGetters('filter', ['selected']),
     },
     mounted() {
-      const type = this.$store.state.search.type
+      // const type = this.$store.state.search.type
+      const parameters = {}
+
+      const search = this.$store.state.search
+      parameters['event_category'] = (search.type || 'search').toLowerCase()
+
       const query = this.query
-      this.$gtag('event', 'search', {
-        'event_category': type,
-        'event_label': (query && query.filter && query.filter.location && query.filter.location.type || '').toLowerCase()
-      })
+      const locationType = query && query.filter && query.filter.location && query.filter.location.type || ''
+      parameters['event_label'] = `search_${locationType.toLowerCase()}`
+
+
+      this.$gtag('event', 'search', parameters)
     },
     methods: {
       visibilityChanged(isVisible, entry) {

@@ -59,8 +59,8 @@
         this.$store.dispatch('addMessage', {message: 'Link copied!'})
 
         this.$gtag('event', 'share', {
-          'event_category': 'link',
-          'event_label': 'eat_between'
+          'event_category': 'url',
+          'event_label': 'search_between'
         })
       },
       onCancel() {

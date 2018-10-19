@@ -11,20 +11,20 @@ export default function ({app, store, $gtag}) {
     app.router.afterEach((to, from) => {
       if (to.name !== 'places-placeId') return
 
-      let label = undefined
+      const additional = {}
 
       switch (from.name) {
         case 'search':
+          additional['from_action'] = 'search'
           const search = store.state.search
-          const type = search.type || ''
+          additional['from_category'] = (search.type || 'search').toLowerCase()
           const locationType = search.query && search.query.filter && search.query.filter.location && search.query.filter.location.type || ''
-          label = `${type.toLowerCase()}-${locationType.toLowerCase()}`
-
+          additional['from_search_location_type'] = locationType.toLowerCase()
       }
 
       app.$gtag('event', 'view', {
         'event_category': 'rip',
-        'event_label': label
+        ...additional
       })
     })
   }
