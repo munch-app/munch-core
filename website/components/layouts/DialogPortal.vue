@@ -13,6 +13,7 @@ Max-width of 400px if > 576vw
   <div class="DialogPortal index-dialog flex-center zero-spacing">
     <portal-target class="Dialog elevation-3 index-elevation" name="dialog"/>
     <portal-target class="Dialog W400 elevation-3 index-elevation" name="dialog-w400"/>
+    <portal-target class="Dialog Blank elevation-3 index-elevation" name="dialog-blank"/>
     <portal-target class="Dialog Styled elevation-3 index-elevation" name="dialog-styled"/>
 
     <!-- Universal Dialog -->
@@ -131,5 +132,10 @@ Max-width of 400px if > 576vw
     @media (max-width: 575.98px) {
       max-width: 576px;
     }
+  }
+
+  .Dialog.Blank {
+    padding: 0;
+    background: initial;
   }
 </style>

@@ -105,7 +105,8 @@ module.exports = {
     {
       path: '/_health', handler: (req, res) => res.end('ok')
     },
-    '~/server/index.js'
+    '~/server/index.js',
+    '~/server/redirect.js'
   ],
   modules: [
     'bootstrap-vue/nuxt',
@@ -134,13 +135,10 @@ module.exports = {
     path: '/sitemap.xml',
     hostname: 'https://www.munch.app',
     cacheTime: 1000 * 60 * 15,
-    exclude: [],
-    routes: [
-      '/',
-      '/support',
-      '/search',
-      '/about',
-      '/press',
-    ]
+    exclude: [
+      "/profile",
+      "/authenticate",
+    ],
+    routes: [] // Custom routes to configure
   }
 };

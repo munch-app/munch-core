@@ -23,6 +23,7 @@ allprojects {
     ext.notificationVersion = '1.5'
 
     ext.dataVersion = '4.10-SNAPSHOT'
+    ext.feedVersion = '1.0-SNAPSHOT'
     ext.instagramVersion = '1.0-SNAPSHOT'
     ext.articleVersion = '1.0-SNAPSHOT'
 

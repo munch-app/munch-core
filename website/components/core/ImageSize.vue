@@ -1,7 +1,9 @@
 <template>
-  <div class="ImageSize">
-    <slot class="ImageBox index-0"></slot>
-    <b-img class="Image index-image" v-if="url" center fluid-grow :src="url" :alt="alt" :style="{'object-fit': objectFit}"/>
+  <div class="ImageSize" :style="style">
+    <div class="ImageSlot index-0">
+      <slot></slot>
+    </div>
+    <img class="Image index-image" v-if="size.url" :src="size.url" :alt="alt" :style="imageStyle"/>
   </div>
 </template>
 
@@ -24,51 +26,51 @@
         type: String,
         default: () => 'cover'
       },
+      grow: String, // 'height' or 'width'
       alt: String,
-      image: Object
+      image: Object,
     },
     computed: {
       sizes() {
         if (this.image && this.image.sizes && Array.isArray(this.image.sizes)) {
           return this.image.sizes
         }
-
-        if (this.image) {
-          let sizes = []
-          for (const size in this.image) {
-            if (this.image.hasOwnProperty(size)) {
-              let wh = size.split('x')
-              sizes.push({width: parseInt(wh[0]), height: parseInt(wh[1]), url: this.image[size]})
-            }
-          }
-          return sizes
-        }
-
         return []
       },
+      size() {
+        let selected = {width: 0}
 
-      url() {
-        const min = this.min
-        const max = this.max
-        const sizes = this.sizes
-
-        let maxUrl = ''
-        let maxWidth = 0
-
-        for (let i = 0; i < sizes.length; i++) {
-          let size = sizes[i]
+        for (let i = 0; i < this.sizes.length; i++) {
+          let size = this.sizes[i]
           if (size.hasOwnProperty('width') && size.hasOwnProperty('height') && size.hasOwnProperty('url')) {
-            if (min <= size.width && size.width <= max) return size.url
-            if (min <= size.height && size.height <= max) return size.url
+            if (this.min <= size.width && size.width <= this.max) return size
+            if (this.min <= size.height && size.height <= this.max) return size
 
-            if (maxWidth < size.width) {
-              maxWidth = size.width
-              maxUrl = size.url
+            if (selected.width < size.width) {
+              selected = size
             }
           }
         }
 
-        return maxUrl
+        return selected
+      },
+      style() {
+        if (this.grow === 'height') {
+          return {
+            paddingTop: this.heightPercent,
+          }
+        }
+      },
+      imageStyle() {
+        return {objectFit: this.objectFit}
+      },
+      heightPercent() {
+        // Size need to use what os
+        if (this.size.url) {
+          const width = parseFloat(this.size.width)
+          const height = parseFloat(this.size.height)
+          return `${height/width * 100}%`
+        }
       }
     }
   }
@@ -76,11 +78,13 @@
 
 <style scoped lang="less">
   .ImageSize {
-    position: relative;
     background-color: transparent;
     overflow: hidden;
 
-    .ImageBox {
+    width: 100%;
+    position: relative;
+
+    .ImageSlot, .Image {
       position: absolute;
       top: 0;
       left: 0;
@@ -89,12 +93,7 @@
     }
 
     .Image {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-
+      width: 100%;
       height: 100%;
     }
   }

@@ -1,5 +1,5 @@
 <template>
-  <div class="no-select index-5" v-on-clickaway="onClickAway">
+  <nav class="no-select index-5" v-on-clickaway="onClickAway">
     <div class="FilterBar index-header hr-bottom">
       <div class="Buttons container">
         <div v-for="button in buttons" :key="button.type" class="FilterButton" @click="onButton(button)"
@@ -23,7 +23,7 @@
     </div>
 
     <search-bar-filter-list @selected="onButton"/>
-  </div>
+  </nav>
 </template>
 
 <script>

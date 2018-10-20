@@ -1,6 +1,5 @@
 User-Agent: *
 
 Disallow: /_health/
-Disallow: /feed
 Disallow: /profile
 Disallow: /authenticate

@@ -1,19 +1,17 @@
 package munch.api.feed;
 
 import munch.api.ApiService;
-import munch.article.data.Article;
-import munch.article.data.ArticleClient;
+import munch.data.client.PlaceCachedClient;
+import munch.feed.*;
 import munch.restful.core.NextNodeList;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonResult;
-import org.apache.commons.lang3.RandomUtils;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.UUID;
+import java.util.Set;
 
 /**
  * Created by: Fuxing
@@ -23,64 +21,64 @@ import java.util.UUID;
  */
 @Singleton
 public final class FeedService extends ApiService {
-    private static final int SIZE = 30;
-    private final ArticleClient articleClient;
-
-    private static final List<String> NEXT_IDS;
-
-    static {
-        NEXT_IDS = new ArrayList<>();
-        int slice = 32;
-        long part = Long.MAX_VALUE / 32 * 2;
-        for (int i = 0; i < slice; i++) {
-            NEXT_IDS.add(new UUID(part * i, 0).toString());
-        }
-    }
-
-    public static void main(String[] args) {
-        System.out.println(NEXT_IDS);
-    }
+    private final PlaceCachedClient placeClient;
+    private final ImageFeedClient imageFeedClient;
+    private final ArticleFeedClient articleFeedClient;
 
     @Inject
-    public FeedService(ArticleClient articleClient) {
-        this.articleClient = articleClient;
+    public FeedService(PlaceCachedClient placeClient, ImageFeedClient imageFeedClient, ArticleFeedClient articleFeedClient) {
+        this.placeClient = placeClient;
+        this.imageFeedClient = imageFeedClient;
+        this.articleFeedClient = articleFeedClient;
     }
 
     @Override
     public void route() {
         PATH("/feed", () -> {
-            GET("", this::articles);
-
             GET("/articles", this::articles);
             GET("/images", this::images);
         });
     }
 
+    private JsonResult result(NextNodeList<? extends FeedItem> items) {
+        Set<String> placeIds = new HashSet<>();
+        items.forEach(feedItem -> {
+            feedItem.getPlaces().forEach(place -> {
+                placeIds.add(place.getPlaceId());
+            });
+        });
+
+        JsonResult result = JsonResult.ok();
+        result.put("data", items);
+        result.put("places", placeClient.get(placeIds));
+
+        if (items.hasNext()) {
+            String sort = items.getNextString("sort", null);
+            if (sort != null) {
+                result.put("next", Map.of("sort", sort));
+            }
+        }
+        return result;
+    }
+
     public JsonResult images(JsonCall call) {
-        return JsonResult.ok();
+        String country = call.queryString("country", "sgp");
+        String latLng = call.queryString("latLng", "1.3521,103.8198");
+        String nextSort = call.queryString("next.sort", null);
+        int size = call.querySize(20, 30);
+
+        NextNodeList<ImageFeedItem> items = imageFeedClient.get(country, latLng, nextSort, size);
+        return result(items);
     }
 
     public JsonResult articles(JsonCall call) {
+        String country = call.queryString("country", "sgp");
+        String latLng = call.queryString("latLng", "1.3521,103.8198");
         String nextSort = call.queryString("next.sort", null);
-        if (nextSort != null) {
-            return asResult(null);
-        } else {
-            String next = NEXT_IDS.get(RandomUtils.nextInt(0, NEXT_IDS.size()));
-            return asResult(next);
-        }
+        int size = call.querySize(20, 30);
+
+
+        NextNodeList<ArticleFeedItem> items = articleFeedClient.get(country, latLng, nextSort, size);
+        return result(items);
     }
-
-    private JsonResult asResult(String next) {
-        NextNodeList<Article> articles = articleClient.list(next, SIZE);
-        next = articles.getNextString("articleId", null);
-
-        if (next == null) return JsonResult.ok(articles);
-
-        return JsonResult.ok(articles)
-                .put("next", Map.of(
-                        "sort", next
-                ));
-    }
-
-    // 00000000-0000-0000-0000-000000000000
 }

@@ -9,7 +9,6 @@ RUN yarn --pure-lockfile
 
 COPY . /usr/src/app/
 
-RUN echo "Disallow: /" >> /usr/src/app/static/robots.txt
 ENV API_URL_BROWSER https://staging.munch.app/
 ENV API_MUNCH_APP https://api.munch.app/v0.14.0
 
@@ -17,6 +16,9 @@ ENV HOST 0.0.0.0
 ENV NODE_ENV production
 ENV ORIGIN https://staging.munch.app
 EXPOSE 3000
+
+# Custom config for staging
+RUN echo "Disallow: /" >> /usr/src/app/static/robots.txt
 
 RUN yarn run build
 CMD [ "yarn", "run", "start" ]

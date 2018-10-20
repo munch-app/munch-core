@@ -59,7 +59,8 @@ project('api-landing') {
 project('api-feed') {
     dependencies {
         compile project(':api:api-users')
-        compile group: 'article-system', name: 'article-system-data-client', version: articleVersion
+        
+        compile group: 'munch-feed', name: 'munch-feed-client', version: feedVersion
     }
 }
 

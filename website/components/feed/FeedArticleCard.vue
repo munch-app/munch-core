@@ -1,14 +1,20 @@
 <template>
-  <div class="FeedArticleCard no-select elevation-2 elevation-hover-3 border-3 hover-pointer">
-    <image-size v-if="imageHeight" class="Image border-3-top" :image="article.thumbnail"
-                :style="{paddingTop: imageHeight}"
-    />
+  <div class="FeedArticleCard">
+    <h2 class="Title">{{article.title}}</h2>
+    <p class="Content">{{article.content}}</p>
 
-    <div class="Content">
-      <h3 class="Title">{{article.title}}</h3>
-      <p class="Description">{{article.content || article.description}}</p>
+    <h5 class="DomainName secondary-500">{{article.domain.name}}</h5>
 
-      <h4 class="Brand secondary">{{article.domain.name}}</h4>
+    <div class="Places">
+      <h6 class="text-uppercase weight-700 black-a-75">Places</h6>
+      <div class="PlaceList">
+        <div class="PlaceItem" v-for="place in places" :key="place.placeId">
+          <image-size class="Image" :image="place.images[0]"/>
+          <h6>
+            {{place.name}}
+          </h6>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -20,20 +26,19 @@
     name: "FeedArticleCard",
     components: {ImageSize},
     props: {
-      article: {
+      item: {
         required: true,
         type: Object
       },
     },
     computed: {
-      imageHeight() {
-        const thumbnail = this.article.thumbnail
-        const size = thumbnail && thumbnail.sizes && thumbnail.sizes[0]
-        if (size) {
-          const width = parseFloat(size.width)
-          const height = parseFloat(size.height)
-          return `${height/width * 100}%`
-        }
+      article() {
+        return this.item.article
+      },
+      places() {
+        return this.item.places.map(({placeId}) => {
+          return this.$store.getters['feed/articles/getPlace'](placeId)
+        }).filter(place => place)
       }
     }
   }
@@ -46,47 +51,40 @@
   }
 
   .FeedArticleCard {
-    .Image {
-      width: 100%;
-      height: auto;
+    padding-top: 24px;
+    padding-bottom: 24px;
+
+    max-width: 800px;
+  }
+
+  .FeedArticleCard {
+    .Title {
+      margin-bottom: 8px;
     }
 
     .Content {
-      padding: 16px 24px 16px 24px;
+      margin-bottom: 16px;
+    }
 
-      .Title {
-        font-size: 19px;
-        max-height: 56px;
-        -webkit-line-clamp: 2;
+    .DomainName {
+      margin-bottom: 16px;
+    }
+  }
 
-        overflow: hidden;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
+  .Places {
+    margin-top: 16px;
+
+    .PlaceList {
+      display: flex;
+
+      .PlaceItem {
+        margin-right: 16px;
       }
+    }
 
-      .Description {
-        font-size: 16px;
-        line-height: 1.5;
-
-        max-height: 96px;
-        margin-top: 8px;
-
-        overflow: hidden;
-        display: -webkit-box;
-        -webkit-line-clamp: 4;
-        -webkit-box-orient: vertical;
-      }
-
-      .Brand {
-        font-size: 16px;
-        height: 24px;
-
-        margin-top: 16px;
-
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
+    .Image {
+      width: 100px;
+      height: 100px;
     }
   }
 </style>

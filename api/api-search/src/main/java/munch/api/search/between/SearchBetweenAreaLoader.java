@@ -108,6 +108,7 @@ public final class SearchBetweenAreaLoader implements SearchCardInjector.Loader 
         if (!areas.isEmpty()) return areas.get(0).getName();
 
         LatLngUtils.LatLng latLng = LatLngUtils.parse(centroid);
+
         String neighbourhood = locationClient.getNeighbourhood(latLng.getLat(), latLng.getLng());
         if (StringUtils.isNotBlank(neighbourhood)) return neighbourhood;
 
