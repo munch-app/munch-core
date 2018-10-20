@@ -112,15 +112,17 @@ module.exports = {
     'bootstrap-vue/nuxt',
     '@nuxtjs/axios',
     '@nuxtjs/sitemap',
-    '@nuxtjs/google-gtag',
 
+    '@nuxtjs/google-gtag',
     ['@nuxtjs/google-tag-manager', {
-      id: 'GTM-KVBXWDJ'
+      id: 'GTM-KVBXWDJ',
+      pageTracking: true
     }],
   ],
   'google-gtag': {
     id: 'UA-117480436-1',
     config: {
+      send_page_view: false,
       'custom_map': {
         // Used to trace origin
         'dimension1': 'from_action',
@@ -128,7 +130,8 @@ module.exports = {
         'dimension3': 'from_search_location_type',
       }
     },
-    debug: false
+    debug: false,
+    disableAutoPageTrack: true,
   },
   axios: {},
   sitemap: {
