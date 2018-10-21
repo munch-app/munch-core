@@ -1,16 +1,26 @@
 <template>
-  <div class="HorizontalScrollViewWrapper" :class="{'container-no-gutter': container}">
-    <div @click="onPrev" v-if="hasPrev" class="ScrollControlPrev index-navigation hover-pointer"
-         :class="{NavWhite:navWhite}"/>
-    <div @click="onNext" v-if="hasNext" class="ScrollControlNext index-navigation hover-pointer"
-         :class="{NavWhite:navWhite}"/>
+  <div class="HorizontalScrollViewWrapper" :class="{'container-full': container}">
+    <div class="Navigation" :class="{container}" v-if="nav">
+      <div @click="prev" v-if="hasPrev" class="ScrollControlPrev index-navigation hover-pointer"
+           :class="{NavWhite: navWhite}"/>
+      <div @click="next" v-if="hasNext" class="ScrollControlNext index-navigation hover-pointer"
+           :class="{NavWhite: navWhite}"/>
+    </div>
 
     <div class="HorizontalScrollView zero-spacing index-content" :class="{container}">
-      <div ref="scrollArea" class="ScrollArea index-content" :style="container ? '' : 'margin: 0 -15px'">
-        <div class="Content" :style="{paddingLeft: `${15-padding/2}px`, paddingRight: `${15-padding/2}px`}">
-          <div class="Item" :style="{paddingLeft: `${padding/2}px`, paddingRight: `${padding/2}px`}"
-               v-for="item in items" :key="mapKey(item)">
-            <slot :item="item">{{item}}</slot>
+      <div ref="scrollArea" class="ScrollArea index-content">
+        <div class="Content" :style="style.content">
+          <div v-if="container">
+            <div class="gutter"/>
+          </div>
+
+          <div class="Item" :style="style.item"
+               v-for="(item, index) in items" :key="mapKey(item)">
+            <slot :item="item" :index="index">{{item}}</slot>
+          </div>
+
+          <div v-if="container">
+            <div class="gutter"/>
           </div>
         </div>
       </div>
@@ -23,6 +33,10 @@
     name: "HorizontalScrollView",
     props: {
       container: {
+        type: Boolean,
+        default: () => true
+      },
+      nav: {
         type: Boolean,
         default: () => true
       },
@@ -51,6 +65,8 @@
       this.windowWidth = window.innerWidth <= 1200 ? window.innerWidth : 1200
       this.distance = this.windowWidth * 0.7 // Distance to cover per nav click
       this.scrollWidth = this.$refs.scrollArea.scrollWidth
+
+      this.notify()
     },
     computed: {
       hasPrev() {
@@ -59,17 +75,34 @@
       hasNext() {
         return this.windowWidth < this.scrollWidth
       },
+      style() {
+        return {
+          content: {
+            marginLeft: `-${this.padding / 2}px`,
+            marginRight: `-${this.padding / 2}px`
+          },
+          item: {
+            paddingLeft: `${this.padding / 2}px`,
+            paddingRight: `${this.padding / 2}px`
+          }
+        }
+      }
     },
     methods: {
-      onPrev() {
+      prev() {
         const scrollArea = this.$refs.scrollArea
         scrollArea.scrollLeft = scrollArea.scrollLeft - this.distance
         this.offset = scrollArea.scrollLeft - this.distance
+        this.notify()
       },
-      onNext() {
+      next() {
         const scrollArea = this.$refs.scrollArea
         scrollArea.scrollLeft = scrollArea.scrollLeft + this.distance
         this.offset = scrollArea.scrollLeft + this.distance
+        this.notify()
+      },
+      notify() {
+        this.$emit('notify', {hasNext: this.hasNext, hasPrev: this.hasPrev})
       }
     }
   }
@@ -82,7 +115,7 @@
     overflow-y: hidden;
     position: relative;
 
-    .ScrollArea {
+    &> .ScrollArea {
       position: absolute;
       left: 0;
       right: 0;
@@ -93,17 +126,23 @@
       overflow-y: hidden;
       -webkit-overflow-scrolling: touch;
       scroll-behavior: smooth;
-    }
 
-    .Content {
-      display: flex;
-      padding-left: 3px;
-      padding-right: 3px;
+      &> .Content {
+        display: flex;
+        padding-left: 3px;
+        padding-right: 3px;
 
-      .Item {
-        flex-shrink: 0;
+        .Item {
+          flex-shrink: 0;
+        }
       }
     }
+  }
+
+  .Navigation {
+    position: absolute;
+    height: 100%;
+    width: 100%;
   }
 
   .HorizontalScrollViewWrapper {
@@ -111,10 +150,6 @@
     position: relative;
 
     .ScrollControlPrev, .ScrollControlNext {
-      @media (max-width: 767.98px) {
-        display: none;
-      }
-
       position: absolute;
       height: 100%;
       width: 48px;
@@ -142,7 +177,7 @@
     }
 
     .ScrollControlPrev {
-      left: -25px;
+      left: 0;
 
       &::after {
         left: 20px;
@@ -151,7 +186,7 @@
     }
 
     .ScrollControlNext {
-      right: -25px;
+      right: 0;
 
       &::after {
         right: 20px;

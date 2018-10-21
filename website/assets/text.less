@@ -99,7 +99,21 @@ p:extend(.text), .regular:extend(.text) {
 }
 
 .text-ellipsis-1-line {
+  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.text-ellipsis {
   overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+}
+
+.generate-ellipsis-line(5);
+.generate-ellipsis-line(@n, @i: 1) when (@i =< @n) {
+  .text-ellipsis-@{i}l:extend(.text, .text-ellipsis) {
+    -webkit-line-clamp: @i;
+  }
+  .generate-ellipsis-line(@n, (@i + 1));
 }

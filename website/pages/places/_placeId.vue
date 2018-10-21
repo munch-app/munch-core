@@ -44,16 +44,12 @@
     </section>
 
     <section class="Article" v-if="data.articles.length > 0">
-      <div class="container">
-        <h2>Recent Articles</h2>
-      </div>
-
-      <partner-article :place-id="place.placeId" :preload="data.articles"/>
+      <place-article-list :place-id="place.placeId" :preload="data.articles"/>
     </section>
 
     <section class="Images">
       <div class="container">
-        <h2>{{place.name}} Images</h2>
+        <h2>Recent Images</h2>
       </div>
 
       <place-image-wall :place-id="place.placeId"/>
@@ -81,6 +77,7 @@
   import PlaceDetail from "../../components/places/PlaceDetail";
   import ProfileCollectionAddPlace from "../../components/profile/ProfileCollectionAddPlace";
   import PlaceImageWall from "../../components/places/PlaceImageWall";
+  import PlaceArticleList from "../../components/places/PlaceArticleList";
 
   const Activity = require('~/services/user/place-activity')
 
@@ -88,6 +85,7 @@
 
   export default {
     components: {
+      PlaceArticleList,
       PlaceImageWall,
       ProfileCollectionAddPlace, PlaceDetail, PlaceAbout, PlaceLocation, PlaceAwardList, PlaceBannerImage,
       PartnerArticle, PartnerInstagramMedia, GoogleEmbedMap, PlaceMenu, MunchButton, ImageSize, PlaceTagList

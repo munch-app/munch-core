@@ -59,7 +59,7 @@
       style() {
         return {
           wall: {
-            margin: `${this.padding}px -${this.padding}px`
+            margin: `-${this.padding}px`
           },
           lane: {
             paddingLeft: `${this.padding}px`,
@@ -105,17 +105,12 @@
   .MasonryWall {
     display: flex;
 
-    margin: 12px -12px;
-
     .MasonryWallLane {
       flex-grow: 1;
       flex-basis: 0;
 
       display: flex;
       flex-direction: column;
-
-      padding-left: 12px;
-      padding-right: 12px;
     }
   }
 </style>
