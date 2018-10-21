@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h2>Location</h2>
     <div class="Address text">{{location.address}}</div>
     <div class="Landmark text" v-if="landmark">{{landmark.min}} min from <span>{{landmark.name}}</span></div>
 

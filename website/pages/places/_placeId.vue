@@ -1,5 +1,5 @@
 <template>
-  <div class="zero-spacing">
+  <div class="zero-spacing PlacePage">
     <section class="Banner" v-if="false">
       <place-banner-image :images="place.images"/>
     </section>
@@ -8,7 +8,7 @@
       <div class="container">
         <section class="Name ContentBody">
           <h1>{{place.name}}</h1>
-          <div class="regular Street">{{place.location.neighbourhood || place.location.street ||
+          <div class="regular text">{{place.location.neighbourhood || place.location.street ||
             place.location.address}}
           </div>
           <place-tag-list class="Tag" :tags="place.tags" :max="10"/>
@@ -31,7 +31,13 @@
           <place-about :place="place" :awards="data.awards"/>
         </section>
 
+        <section class="Menu ContentBody" v-if="place.menu">
+          <h2>Menu</h2>
+          <place-menu :menu="place.menu"/>
+        </section>
+
         <section class="Location ContentBody">
+          <h2>Location</h2>
           <place-location :place-id="place.placeId" :location="place.location"/>
         </section>
       </div>
@@ -53,9 +59,6 @@
       <place-image-wall :place-id="place.placeId"/>
     </section>
 
-    <section class="End">
-    </section>
-
     <no-ssr>
       <profile-collection-add-place :place="place" v-if="showAddToCollection" @on-close="showAddToCollection = false"/>
     </no-ssr>
@@ -67,7 +70,7 @@
   import PlaceTagList from "../../components/places/PlaceTagList";
   import ImageSize from "../../components/core/ImageSize";
   import MunchButton from "../../components/core/MunchButton";
-  import PlaceMenuList from "../../components/places/PlaceMenuList";
+  import PlaceMenu from "../../components/places/PlaceMenu";
   import GoogleEmbedMap from "../../components/core/GoogleEmbedMap";
   import PartnerInstagramMedia from "../../components/places/PartnerInstagramMedia";
   import PartnerArticle from "../../components/places/PartnerArticle";
@@ -87,7 +90,7 @@
     components: {
       PlaceImageWall,
       ProfileCollectionAddPlace, PlaceDetail, PlaceAbout, PlaceLocation, PlaceAwardList, PlaceBannerImage,
-      PartnerArticle, PartnerInstagramMedia, GoogleEmbedMap, PlaceMenuList, MunchButton, ImageSize, PlaceTagList
+      PartnerArticle, PartnerInstagramMedia, GoogleEmbedMap, PlaceMenu, MunchButton, ImageSize, PlaceTagList
     },
     head() {
       const title = this.data.place.name + ' · Munch'
@@ -160,10 +163,8 @@
 </script>
 
 <style lang="less" scoped>
-  section.Banner {
-    @media (min-width: 576px) {
-      margin-top: 16px;
-    }
+  .PlacePage {
+    margin-bottom: 24px;
   }
 
   section.ContentBody {
@@ -174,8 +175,14 @@
     }
   }
 
+  section {
+    h2 {
+      margin-bottom: 16px;
+    }
+  }
+
   section.Name {
-    margin-top: 32px;
+    margin-top: 24px;
 
     .Tag {
       margin-top: 8px;
@@ -201,6 +208,10 @@
   }
 
   section.Location {
+    margin-top: 48px;
+  }
+
+  section.Menu {
     margin-top: 48px;
   }
 
