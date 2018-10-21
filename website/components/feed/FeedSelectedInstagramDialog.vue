@@ -45,7 +45,6 @@
       },
     },
     computed: {
-      // TODO Close
       place() {
         const placeId = this.item.places[0] && this.item.places[0].placeId
         if (placeId) {

@@ -81,6 +81,7 @@ public class PlaceService extends ApiService {
                 "place", place,
                 "awards", awardCollectionClient.list(placeId, null, 10),
                 "articles", articleLinkClient.list(placeId, null, 10),
+//                "images", placeImageClient.list(placeId, null, 10),
                 "instagram", Map.of(
                         "medias", instagramLinkClient.list(placeId, null, 10)
                 )
@@ -108,6 +109,9 @@ public class PlaceService extends ApiService {
         ));
     }
 
+    /**
+     * @return all linked images
+     */
     public NextNodeList<PlaceImage> getImages(JsonCall call) {
         String placeId = call.pathString("placeId");
         String nextSort = call.queryString("next.sort", null);

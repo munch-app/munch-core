@@ -1,6 +1,6 @@
 <template>
   <div class="zero-spacing">
-    <section class="Banner" v-if="place.images.length > 0">
+    <section class="Banner" v-if="false">
       <place-banner-image :images="place.images"/>
     </section>
 
@@ -37,24 +37,20 @@
       </div>
     </section>
 
-    <section class="Partner" v-if="hasPartner">
-      <!--<div class="container">-->
-      <!--<h2 class="secondary-500 Header">Partner's Content</h2>-->
-      <!--</div>-->
+    <section class="Article" v-if="data.articles.length > 0">
+      <div class="container">
+        <h2>Recent Articles</h2>
+      </div>
 
-      <section class="Article" v-if="data.articles.length > 0">
-        <div class="container">
-          <h2>Recent Articles</h2>
-        </div>
-        <partner-article :place-id="place.placeId" :preload="data.articles"/>
-      </section>
+      <partner-article :place-id="place.placeId" :preload="data.articles"/>
+    </section>
 
-      <section class="Instagram" v-if="data.instagram.medias.length > 0">
-        <div class="container">
-          <h2>Image Gallery</h2>
-        </div>
-        <partner-instagram-media :place-id="place.placeId" :preload="data.instagram.medias"/>
-      </section>
+    <section class="Images">
+      <div class="container">
+        <h2>{{place.name}} Images</h2>
+      </div>
+
+      <place-image-wall :place-id="place.placeId"/>
     </section>
 
     <section class="End">
@@ -81,6 +77,7 @@
   import PlaceAbout from "../../components/places/PlaceAbout";
   import PlaceDetail from "../../components/places/PlaceDetail";
   import ProfileCollectionAddPlace from "../../components/profile/ProfileCollectionAddPlace";
+  import PlaceImageWall from "../../components/places/PlaceImageWall";
 
   const Activity = require('~/services/user/place-activity')
 
@@ -88,6 +85,7 @@
 
   export default {
     components: {
+      PlaceImageWall,
       ProfileCollectionAddPlace, PlaceDetail, PlaceAbout, PlaceLocation, PlaceAwardList, PlaceBannerImage,
       PartnerArticle, PartnerInstagramMedia, GoogleEmbedMap, PlaceMenuList, MunchButton, ImageSize, PlaceTagList
     },
@@ -125,9 +123,6 @@
       ...mapGetters('user', ['isLoggedIn']),
       place() {
         return this.data.place
-      },
-      hasPartner() {
-        return this.data.articles.length > 0 || this.data.instagram.medias.length > 0
       },
       hours() {
         if (this.data.place.hours && this.data.place.hours.length > 0) {
@@ -209,28 +204,12 @@
     margin-top: 48px;
   }
 
-  section.Partner {
+  section.Article {
     margin-top: 48px;
+  }
 
-    .Header {
-      margin-bottom: 16px;
-    }
-
-    .Article {
-      margin: 12px 0;
-
-      h2 {
-        margin-bottom: 8px;
-      }
-    }
-
-    .Instagram {
-      margin: 16px 0;
-
-      h2 {
-        margin-bottom: 8px;
-      }
-    }
+  section.Images {
+    margin-top: 48px;
   }
 
   section.End {

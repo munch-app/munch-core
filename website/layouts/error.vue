@@ -1,6 +1,6 @@
 <template>
   <div class="container Error">
-    <h1 v-if="error.statusCode === 404">Page Not Found</h1>
+    <h1 v-if="error.statusCode === 404">{{error.message || 'Page Not Found'}}</h1>
     <h1 v-else>{{error.message}}</h1>
 
     <nuxt-link class="HomePage hover-pointer" to="/">Home Page</nuxt-link>

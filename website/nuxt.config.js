@@ -118,13 +118,13 @@ module.exports = {
       id: 'GTM-KVBXWDJ',
       pageTracking: true
     }],
+    'nuxt-google-optimize',
   ],
   'google-gtag': {
     id: 'UA-117480436-1',
     config: {
       send_page_view: false,
       'custom_map': {
-        // Used to trace origin
         'dimension1': 'from_action',
         'dimension4': 'from_category',
         'dimension3': 'from_search_location_type',
@@ -142,6 +142,9 @@ module.exports = {
       "/profile",
       "/authenticate",
     ],
-    routes: [] // Custom routes to configure
+    routes: [
+      '/support/privacy',
+      '/support/terms',
+    ]
   }
 };

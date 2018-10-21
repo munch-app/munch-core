@@ -14,6 +14,7 @@ import javax.inject.Singleton;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -24,7 +25,6 @@ import java.util.stream.Collectors;
  */
 @Singleton
 public final class PlaceImageClient {
-
     private final ImageMutationClient imageMutationClient;
     private final ArticleLinkClient articleLinkClient;
     private final InstagramMediaClient instagramMediaClient;
@@ -46,17 +46,45 @@ public final class PlaceImageClient {
                 .map(pim -> {
                     PlaceImage image = new PlaceImage();
                     image.setImageId(pim.getImageId());
-                    image.setSizes(pim.getSizes());
                     image.setSort(pim.getSort());
-                    image.setArticle(articles.get(getArticleId(pim)));
-                    image.setInstagramMedia(medias.get(pim.getId()));
-                    return image;
+                    image.setSizes(pim.getSizes());
+
+                    switch (pim.getSource()) {
+                        case "article.munch.api":
+                            Article article = articles.get(getArticleId(pim));
+                            if (article == null) return null;
+
+                            PlaceImage.Article pArticle = new PlaceImage.Article();
+                            pArticle.setArticleId(article.getArticleId());
+                            pArticle.setUrl(article.getUrl());
+                            pArticle.setDomainId(article.getDomainId());
+                            pArticle.setDomain(article.getDomain());
+
+                            image.setArticle(pArticle);
+                            image.setTitle(article.getTitle());
+                            image.setCaption(article.getContent());
+                            image.setCreatedMillis(article.getCreatedMillis());
+                            return image;
+
+                        case "media.instagram.com":
+                            InstagramMedia media = medias.get(pim.getId());
+                            if (media == null) return null;
+
+                            PlaceImage.Instagram pInstagram = new PlaceImage.Instagram();
+                            pInstagram.setAccountId(media.getAccountId());
+                            pInstagram.setLink(media.getLink());
+                            pInstagram.setMediaId(media.getMediaId());
+                            pInstagram.setUsername(media.getUser().getUsername());
+
+                            image.setInstagram(pInstagram);
+                            image.setTitle(null);
+                            image.setCaption(media.getCaption());
+                            image.setCreatedMillis(media.getCreatedMillis());
+                            return image;
+                    }
+                    return null;
                 })
-                .filter(placeImage -> {
-                    if (placeImage.getArticle() != null) return true;
-                    if (placeImage.getInstagramMedia() != null) return true;
-                    return false;
-                })
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
         return new NextNodeList<>(placeImages, images.getNext());

@@ -7,10 +7,15 @@ function linkResolver(doc) {
   switch (doc.type) {
     case 'support':
       return '/support'
+    case 'support_article':
+      return `/support/${doc.data.uid}`
+
+    // Deprecated
     case 'privacy_policy':
-      return '/support/privacy-policy'
+      return '/support/privacy'
     case 'terms_of_use':
-      return '/support/terms-of-use'
+      return '/support/terms'
+
     default:
       return `/page/${doc.id}`
   }
@@ -25,6 +30,13 @@ export default (context, inject) => {
           return Api.getSingle(type)
         })
     },
-    asHtml: (content) => PrismicDOM.RichText.asHtml(content, linkResolver)
+    get: (type, uid) => {
+      return Prismic.getApi(endpoint, {req: context.req})
+        .then(Api => {
+          return Api.getByUID(type, uid)
+        })
+    },
+    asHtml: (content) => content && PrismicDOM.RichText.asHtml(content, linkResolver),
+    asText: (content) => content && PrismicDOM.RichText.asText(content),
   }
 }

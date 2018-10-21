@@ -38,6 +38,7 @@
     "jsonwebtoken": "^8.3.0",
     "localstorage": "^1.0.1",
     "nuxt": "latest",
+    "nuxt-google-optimize": "^0.5.3",
     "portal-vue": "^1.3.0",
     "prismic-dom": "^2.1.0",
     "prismic-javascript": "^1.5.0-beta.2",

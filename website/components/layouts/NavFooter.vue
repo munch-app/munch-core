@@ -7,8 +7,8 @@
       <div class="Company">
         <h4 class="secondary">Company</h4>
         <nuxt-link to="/support">Support</nuxt-link>
-        <nuxt-link to="/support/privacy-policy">Privacy Policy</nuxt-link>
-        <nuxt-link to="/support/terms-of-use">Terms of Use</nuxt-link>
+        <nuxt-link to="/support/privacy">Privacy Policy</nuxt-link>
+        <nuxt-link to="/support/terms">Terms of Use</nuxt-link>
       </div>
 
       <div class="Product">

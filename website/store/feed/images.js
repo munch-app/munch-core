@@ -18,12 +18,12 @@ export const mutations = {
     state.loading = true
   },
 
-  append(state, {places, data, next}) {
-    state.items.push(...data)
+  append(state, {items, places, next}) {
+    state.items.push(...items)
     Object.keys(places).forEach(placeId => {
       state.places[placeId] = places[placeId]
     })
-    state.next.sort = next.sort
+    state.next.sort = next && next.sort || null
 
     state.loading = false
   }
@@ -40,8 +40,8 @@ export const actions = {
       'size': 20
     }
     return this.$axios.$get(`/api/feed/images`, {params})
-      .then(({data, places, next}) => {
-        commit('append', {data, places, next})
+      .then(({data, next}) => {
+        commit('append', {items: data.items, places: data.places, next})
       })
   },
 
@@ -60,8 +60,8 @@ export const actions = {
       params['next.sort'] = state.next.sort
     }
     return this.$axios.$get(`/api/feed/images`, {params})
-      .then(({data, places, next}) => {
-        commit('append', {data, places, next})
+      .then(({data, next}) => {
+        commit('append', {items: data.items, places: data.places, next})
       })
   }
 }

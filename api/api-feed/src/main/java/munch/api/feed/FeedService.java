@@ -49,8 +49,10 @@ public final class FeedService extends ApiService {
         });
 
         JsonResult result = JsonResult.ok();
-        result.put("data", items);
-        result.put("places", placeClient.get(placeIds));
+        result.put("data", Map.of(
+                "items", items,
+                "places", placeClient.get(placeIds)
+        ));
 
         if (items.hasNext()) {
             String sort = items.getNextString("sort", null);
