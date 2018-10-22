@@ -81,8 +81,13 @@ public final class PlaceImageClient {
                             image.setCaption(media.getCaption());
                             image.setCreatedMillis(media.getCreatedMillis());
                             return image;
+
+                        default:
+                            image.setTitle(null);
+                            image.setCaption(null);
+                            image.setCreatedMillis(pim.getMillis());
+                            return image;
                     }
-                    return null;
                 })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());

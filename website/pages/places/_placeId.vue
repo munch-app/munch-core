@@ -47,12 +47,12 @@
       <place-article-list :place-id="place.placeId" :preload="data.articles"/>
     </section>
 
-    <section class="Images">
+    <section class="Images" v-if="data.images.length > 0">
       <div class="container">
-        <h2>Recent Images</h2>
+        <h2>{{place.name}} Images</h2>
       </div>
 
-      <place-image-wall :place-id="place.placeId"/>
+      <place-image-wall :place-id="place.placeId" :preload="data.images"/>
     </section>
 
     <no-ssr>
@@ -68,8 +68,6 @@
   import MunchButton from "../../components/core/MunchButton";
   import PlaceMenu from "../../components/places/PlaceMenu";
   import GoogleEmbedMap from "../../components/core/GoogleEmbedMap";
-  import PartnerInstagramMedia from "../../components/places/PartnerInstagramMedia";
-  import PartnerArticle from "../../components/places/PartnerArticle";
   import PlaceBannerImage from "../../components/places/PlaceBannerImage";
   import PlaceAwardList from "../../components/places/PlaceAwardList";
   import PlaceLocation from "../../components/places/PlaceLocation";
@@ -88,7 +86,7 @@
       PlaceArticleList,
       PlaceImageWall,
       ProfileCollectionAddPlace, PlaceDetail, PlaceAbout, PlaceLocation, PlaceAwardList, PlaceBannerImage,
-      PartnerArticle, PartnerInstagramMedia, GoogleEmbedMap, PlaceMenu, MunchButton, ImageSize, PlaceTagList
+      GoogleEmbedMap, PlaceMenu, MunchButton, ImageSize, PlaceTagList
     },
     head() {
       const title = this.data.place.name + ' · Munch'
@@ -162,7 +160,7 @@
 
 <style lang="less" scoped>
   .PlacePage {
-    margin-bottom: 24px;
+    margin-bottom: 64px;
   }
 
   section.ContentBody {

@@ -13,7 +13,7 @@
                 <simple-svg class="Icon" fill="white" filepath="/img/feed/instagram.svg"/>
                 <div class="Name">{{item.instagram.username}}</div>
               </div>
-              <div class="Author" v-else>
+              <div class="Author" v-if="item.article">
                 <simple-svg class="Icon" fill="white" filepath="/img/feed/article.svg"/>
                 <div class="Name">{{item.article.domain.name}}</div>
               </div>

@@ -81,7 +81,7 @@ public class PlaceService extends ApiService {
                 "place", place,
                 "awards", awardCollectionClient.list(placeId, null, 10),
                 "articles", articleLinkClient.list(placeId, null, 10),
-//                "images", placeImageClient.list(placeId, null, 10),
+                "images", placeImageClient.list(placeId, null, 10),
                 "instagram", Map.of(
                         "medias", instagramLinkClient.list(placeId, null, 10)
                 )

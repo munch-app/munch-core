@@ -60,7 +60,7 @@ export const mutations = {
   toggleFocus(state, name) {
     if (state.focus.name === name && state.focus.is) {
       state.focus.is = false
-      clearAllBodyScrollLocks(document.querySelector('body'))
+      clearAllBodyScrollLocks()
     } else {
       state.focus.name = name
       state.focus.is = true
@@ -74,7 +74,7 @@ export const mutations = {
   clearFocus(state) {
     state.focus.name = null
     state.focus.is = false
-    clearAllBodyScrollLocks(document.querySelector('body'))
+    clearAllBodyScrollLocks()
   },
   /**
    * @param state
@@ -92,7 +92,7 @@ export const mutations = {
   unfocus(state, name) {
     if (state.focus.name === name) {
       state.focus.is = false
-      clearAllBodyScrollLocks(document.querySelector('body'))
+      clearAllBodyScrollLocks()
     }
   }
 }

@@ -19,19 +19,32 @@ Max-width of 400px if > 576vw
     <!-- Universal Dialog -->
     <profile-on-boarding v-if="isFocused('Login')"/>
 
-    <div class="DialogOverlay elevation-overlay index-content-overlay"/>
+    <div class="DialogOverlay elevation-overlay index-content-overlay"
+         v-observe-visibility="{callback:visibilityChanged,throttle: 1}"/>
   </div>
 </template>
 
 <script>
   import {mapGetters} from 'vuex'
   import ProfileOnBoarding from "../profile/ProfileOnBoarding";
+  import {disableBodyScroll, clearAllBodyScrollLocks} from 'body-scroll-lock';
 
   export default {
     name: "DialogDelegator",
     components: {ProfileOnBoarding},
     computed: {
       ...mapGetters(['isFocused']),
+    },
+    methods: {
+      visibilityChanged(isVisible) {
+        // Lock scrolling if dialog is visible
+        if (isVisible) {
+          const scroll = document.querySelector('#dialog-portal-scroll')
+          disableBodyScroll(scroll)
+        } else {
+          clearAllBodyScrollLocks()
+        }
+      }
     }
   }
 </script>

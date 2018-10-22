@@ -112,7 +112,7 @@ p:extend(.text), .regular:extend(.text) {
 
 .generate-ellipsis-line(5);
 .generate-ellipsis-line(@n, @i: 1) when (@i =< @n) {
-  .text-ellipsis-@{i}l:extend(.text, .text-ellipsis) {
+  .text-ellipsis-@{i}l:extend(.text-ellipsis) {
     -webkit-line-clamp: @i;
   }
   .generate-ellipsis-line(@n, (@i + 1));

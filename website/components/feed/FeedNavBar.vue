@@ -1,14 +1,29 @@
 <template>
   <nav class="FeedNavBar hr-bottom container">
-    <nuxt-link :to="`/feed/${name}`" class="hover-pointer black-a-85 secondary-500-hover" v-for="name in ['images', 'articles']" :key="name">
-      {{name}}
+    <nuxt-link :to="`/feed/${link}`" class="hover-pointer primary-500-hover" v-for="link in links" :key="link"
+               :class="
+    route === `feed-${link}` ? 'primary-500' : 'black-a-85'">
+      {{link}}
     </nuxt-link>
   </nav>
 </template>
 
 <script>
   export default {
-    name: "FeedNavBar"
+    name: "FeedNavBar",
+    data() {
+      return {
+        links: ['images', 'articles']
+      }
+    },
+    computed: {
+      route() {
+        return this.$route.name
+      },
+    },
+    mounted() {
+      console.log(this.$route.name)
+    }
   }
 </script>
 

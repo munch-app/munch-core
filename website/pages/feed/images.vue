@@ -2,8 +2,8 @@
   <div class="zero-spacing">
     <feed-nav-bar/>
 
-    <div class="container">
-      <masonry-wall :items="items" @append="onAppend">
+    <div class="container ImageWall">
+      <masonry-wall :items="items" @append="onAppend" :min="2">
         <template slot-scope="{item, index}">
           <div @click="selected = index">
             <feed-image-card :item="item"/>
@@ -58,6 +58,10 @@
 </script>
 
 <style scoped lang="less">
+  .ImageWall {
+    margin-top: 24px;
+  }
+
   .LoadingIndicator {
     padding-top: 24px;
     padding-bottom: 48px;

@@ -1,13 +1,14 @@
 <template>
   <div class="PlaceMenu">
-    <div class="WebsiteMenuButton elevation-1 border-3 border hover-pointer elevation-hover-2">
+    <a class="WebsiteMenuButton elevation-1 border-3 border hover-pointer elevation-hover-2" v-if="menu.url"
+       :href="menu.url" target="_blank" rel="noopener nofollow noreferrer">
       <simple-svg class="Icon" fill="rgba(0, 0, 0, 0.75)" filepath="/img/places/open_tab.svg"/>
       <div class="Label">Website Menu</div>
-    </div>
+    </a>
 
 
     <horizontal-scroll-view class="MenuImageList" :items="menu.images" :map-key="i => i.imageId" :container="false"
-                            :nav-white="false" :padding="24">
+                            :nav-white="false" :padding="24" v-if="menu.images.length > 0">
       <template slot-scope="{item}">
         <div class="MenuImageItem hover-pointer">
           <image-size :image="item" class="Image border-3">

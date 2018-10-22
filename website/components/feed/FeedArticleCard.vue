@@ -1,21 +1,24 @@
 <template>
   <div class="FeedArticleCard">
-    <h2 class="Title">{{article.title}}</h2>
-    <p class="Content">{{article.content}}</p>
+    <a :href="article.url" target="_blank" rel="noreferrer noopener nofollow">
+      <image-size class="Image index-content border-3" :image="article.thumbnail"/>
+      <h3 class="Title text-ellipsis-2l">{{article.title}}</h3>
+      <p class="Content text-ellipsis-4l">{{article.content}}</p>
+    </a>
 
-    <h5 class="DomainName secondary-500">{{article.domain.name}}</h5>
+    <div class="Bottom">
+      <a class="BrandButton" :href="article.domain.url"
+         target="_blank" rel="noreferrer noopener nofollow">
+        <simple-svg class="Icon" fill="black" filepath="/img/feed/article.svg"/>
+        <div class="Name text text-ellipsis-1l secondary-700">{{article.domain.name}}</div>
+      </a>
 
-    <div class="Places">
-      <h6 class="text-uppercase weight-700 black-a-75">Places</h6>
-      <div class="PlaceList">
-        <div class="PlaceItem" v-for="place in places" :key="place.placeId">
-          <image-size class="Image" :image="place.images[0]"/>
-          <h6>
-            {{place.name}}
-          </h6>
-        </div>
+      <div class="PlaceButton elevation-1 border-3 border hover-pointer elevation-hover-2" @click="onClick">
+        <simple-svg class="Icon" fill="rgba(0, 0, 0, 0.85)" filepath="/img/feed/place.svg"/>
+        <div class="Label">View Places</div>
       </div>
     </div>
+    <hr>
   </div>
 </template>
 
@@ -40,6 +43,11 @@
           return this.$store.getters['feed/articles/getPlace'](placeId)
         }).filter(place => place)
       }
+    },
+    methods: {
+      onClick() {
+        this.$emit('view')
+      }
     }
   }
 </script>
@@ -51,13 +59,16 @@
   }
 
   .FeedArticleCard {
-    padding-top: 24px;
-    padding-bottom: 24px;
-
-    max-width: 800px;
+    max-width: 680px;
   }
 
   .FeedArticleCard {
+    .Image {
+      width: 100%;
+      padding-top: 25%;
+      margin-bottom: 16px;
+    }
+
     .Title {
       margin-bottom: 8px;
     }
@@ -65,26 +76,64 @@
     .Content {
       margin-bottom: 16px;
     }
-
-    .DomainName {
-      margin-bottom: 16px;
-    }
   }
 
-  .Places {
-    margin-top: 16px;
+  .Bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
-    .PlaceList {
+    margin-bottom: 32px;
+
+    .BrandButton {
       display: flex;
+      align-items: center;
 
-      .PlaceItem {
-        margin-right: 16px;
+      margin-right: 8px;
+
+      .Icon {
+        flex-shrink: 0;
+
+        width: 18px;
+        height: 18px;
+      }
+
+      .Name {
+        flex-grow: 1;
+        flex-shrink: 1;
+
+        margin-left: 6px;
+
+        font-size: 15px;
+        font-weight: 600;
+
+        line-height: 21px;
+        height: 21px;
       }
     }
 
-    .Image {
-      width: 100px;
-      height: 100px;
+    .PlaceButton {
+      padding: 6px 10px 6px 8px;
+      display: inline-flex;
+      flex-shrink: 0;
+
+      .Icon {
+        width: 20px;
+        height: 20px;
+      }
+
+      .Label {
+        margin-left: 4px;
+        margin-right: 2px;
+
+        height: 20px;
+        line-height: 20px;
+
+        font-weight: 600;
+        font-size: 13px;
+
+        color: rgba(0, 0, 0, 0.75);
+      }
     }
   }
 </style>

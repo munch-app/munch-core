@@ -2,10 +2,16 @@
   <div class="zero-spacing">
     <feed-nav-bar/>
 
-    <div class="ArticleFeed container">
-      <div class="ArticleFeedItem" v-for="item in items" :key="item.itemId">
-        <feed-article-card :item="item"/>
-        <hr>
+    <div class="container">
+      <div class="ArticleFeed">
+        <nav class="ArticleFeedNav" v-if="false">
+          <div class="hover-pointer secondary-700-hover black-a-85" v-for="tag in tags" :key="tag">{{tag}}</div>
+        </nav>
+        <div class="ArticleFeedList">
+          <div class="ArticleFeedItem" v-for="(item, index) in items" :key="item.itemId">
+            <feed-article-card :item="item" @view="selected = index"/>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -15,6 +21,10 @@
         <beat-loader color="#084E69" size="14px"/>
       </div>
     </no-ssr>
+
+    <no-ssr v-if="selected !== -1">
+      <feed-selected-article-dialog @close="selected = -1" v-if="items[selected].article" :item="items[selected]"/>
+    </no-ssr>
   </div>
 </template>
 
@@ -22,14 +32,26 @@
   import {mapGetters} from 'vuex'
   import FeedArticleCard from "../../components/feed/FeedArticleCard";
   import FeedNavBar from "../../components/feed/FeedNavBar";
+  import FeedSelectedArticleDialog from "../../components/feed/FeedSelectedArticleDialog";
 
   export default {
-    components: {FeedNavBar, FeedArticleCard},
+    components: {FeedSelectedArticleDialog, FeedNavBar, FeedArticleCard},
     head() {
       const meta = [
         {name: 'robots', content: `follow,index`}
       ]
       return {title: `Article · Munch Feed`, meta}
+    },
+    data() {
+      return {
+        tags: [
+          'Recent Articles',
+          'Tag: Bar',
+          'Tag: Halal',
+          'Tag: Chinese'
+        ],
+        selected: -1
+      }
     },
     async fetch({store}) {
       return store.dispatch('feed/articles/start')
@@ -49,9 +71,35 @@
 
 <style scoped lang="less">
   .ArticleFeed {
+    display: flex;
+  }
+
+  nav.ArticleFeedNav {
+    width: 180px;
+    height: 100vh;
+
+    top: 56px;
+    position: sticky;
+
+    padding-top: 24px;
+
+    > div {
+      font-size: 16px;
+      font-weight: 600;
+
+      margin-bottom: 10px;
+      line-height: 16px;
+      height: 16px;
+    }
+  }
+
+  .ArticleFeedList {
+    margin-top: 8px;
+    margin-bottom: -24px;
+
     .ArticleFeedItem {
-      margin-top: 24px;
-      margin-bottom: 24px;
+      padding-top: 16px;
+      padding-bottom: 16px;
     }
   }
 

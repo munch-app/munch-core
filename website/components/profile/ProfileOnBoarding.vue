@@ -12,6 +12,7 @@
       <div class="CloseButton hover-pointer" @click="$store.commit('unfocus', 'Login')">
         Close
       </div>
+
       <slick class="Slick no-select" ref="slick" :options="options">
         <div class="BannerContent B_1">
           <div class="Contain">

@@ -1,4 +1,6 @@
 <template>
+  <!-- Load with Queue -->
+  <!-- Redraw on resize -->
   <div class="MasonryWall" :style="style.wall">
     <div class="MasonryWallLane" v-for="(lane, index) in lanes" :key="index" :style="style.lane">
       <div class="MasonryWallItem" v-for="i in lane.indexes" :key="i" :style="style.item">
