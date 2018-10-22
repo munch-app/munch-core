@@ -1,7 +1,7 @@
 <template>
   <div class="zero-spacing PlacePage">
-    <section class="Banner" v-if="false">
-      <place-banner-image :images="place.images"/>
+    <section class="Banner">
+      <place-image-banner :images="place.images"/>
     </section>
 
     <section class="Information">
@@ -76,6 +76,7 @@
   import ProfileCollectionAddPlace from "../../components/profile/ProfileCollectionAddPlace";
   import PlaceImageWall from "../../components/places/PlaceImageWall";
   import PlaceArticleList from "../../components/places/PlaceArticleList";
+  import PlaceImageBanner from "../../components/places/PlaceImageBanner";
 
   const Activity = require('~/services/user/place-activity')
 
@@ -83,6 +84,7 @@
 
   export default {
     components: {
+      PlaceImageBanner,
       PlaceArticleList,
       PlaceImageWall,
       ProfileCollectionAddPlace, PlaceDetail, PlaceAbout, PlaceLocation, PlaceAwardList, PlaceBannerImage,
@@ -112,7 +114,7 @@
         .catch((err) => {
           const response = err.response
           if (response && response.status === 404) {
-            error({statusCode: 404, message: err.message})
+            error({statusCode: 404, message: 'Place Not Found'})
           } else {
             error({statusCode: 500, message: err.message})
           }

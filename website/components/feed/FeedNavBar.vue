@@ -1,8 +1,8 @@
 <template>
   <nav class="FeedNavBar hr-bottom container">
-    <nuxt-link :to="`/feed/${link}`" class="hover-pointer primary-500-hover" v-for="link in links" :key="link"
+    <nuxt-link :to="`/feed/${link}`" class="hover-pointer secondary-500-hover" v-for="link in links" :key="link"
                :class="
-    route === `feed-${link}` ? 'primary-500' : 'black-a-85'">
+    route === `feed-${link}` ? 'secondary-500' : 'black-a-75'">
       {{link}}
     </nuxt-link>
   </nav>
@@ -39,8 +39,8 @@
       height: @height;
 
       text-transform: uppercase;
-      font-size: 15px;
-      font-weight: 600;
+      font-size: 14px;
+      font-weight: 700;
 
       margin-right: 32px;
 

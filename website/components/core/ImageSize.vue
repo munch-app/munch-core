@@ -26,6 +26,7 @@
         type: String,
         default: () => 'cover'
       },
+      height: Number, // required for width grow
       grow: String, // 'height' or 'width'
       alt: String,
       image: Object,
@@ -59,17 +60,28 @@
           return {
             paddingTop: this.heightPercent,
           }
+        } else if (this.grow === 'width') {
+          return {
+            height: `${this.height}px`,
+            width: `${this.height * this.widthPercent}px`
+          }
         }
       },
       imageStyle() {
         return {objectFit: this.objectFit}
       },
       heightPercent() {
-        // Size need to use what os
         if (this.size.url) {
           const width = parseFloat(this.size.width)
           const height = parseFloat(this.size.height)
-          return `${height/width * 100}%`
+          return `${height / width * 100}%`
+        }
+      },
+      widthPercent() {
+        if (this.size.url) {
+          const width = parseFloat(this.size.width)
+          const height = parseFloat(this.size.height)
+          return width / height
         }
       }
     }

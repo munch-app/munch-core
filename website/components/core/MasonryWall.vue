@@ -7,7 +7,7 @@
         <slot :item="items[i]" :index="i">{{items[i]}}</slot>
       </div>
 
-      <no-ssr v-if="!lane.requested" style="flex-grow:1">
+      <no-ssr :ref="lane.ref" style="flex-grow:1">
         <div v-observe-visibility="{callback: (v) => visibilityChanged(v,index),throttle:2}"/>
       </no-ssr>
     </div>
@@ -15,6 +15,8 @@
 </template>
 
 <script>
+  import _ from 'underscore'
+
   export default {
     name: "MasonryWall",
     props: {
@@ -37,25 +39,18 @@
     },
     data() {
       return {
-        lanes: [],
+        lanes: [],    // e.g. {indexes: [], requested: true, ref: ''}
         cursor: 0
       }
     },
     mounted() {
       this.$nextTick(() => {
-        let index = Math.round(window.innerWidth / this.width)
-        if (index < this.min) index = this.min
-
-        this.lanes.splice(0, this.lanes.length)
-        for (let i = 0; i < index; i++) {
-          this.lanes.push({
-            indexes: [],
-            requested: true
-          })
-        }
-
-        this.fill()
+        this.redraw()
+        window.addEventListener('resize', this.redraw)
       })
+    },
+    destroyed() {
+      window.removeEventListener('resize', this.redraw)
     },
     computed: {
       style() {
@@ -76,9 +71,7 @@
     },
     methods: {
       visibilityChanged(isVisible, index) {
-        if (!isVisible) return
-        this.lanes[index].requested = true
-
+        this.lanes[index].requested = isVisible
         this.fill()
 
         if (this.cursor < this.items.length) return
@@ -89,15 +82,37 @@
           })
         })
       },
+
+      redraw() {
+        let length = Math.round(window.innerWidth / this.width)
+        if (length < this.min) length = this.min
+        if (this.lanes.length === length) return
+
+        this.cursor = 0
+        this.lanes.splice(0, this.lanes.length)
+        for (let i = 0; i < length; i++) {
+          this.lanes.push({
+            indexes: [],
+            requested: true,
+            ref: 'lane' + i
+          })
+        }
+      },
+
       fill() {
-        this.lanes.forEach(lane => {
-          const index = this.cursor
-          if (lane.requested && this.items[index]) {
-            lane.indexes.push(index)
-            lane.requested = false
-            this.cursor = index + 1
-          }
+        const lane = _.max(this.lanes, (l) => {
+          const ref = this.$refs[l.ref]
+          return ref && ref[0] && ref[0].$el.clientHeight || 0
         })
+
+        if (lane.requested) {
+            const index = this.cursor
+            if (lane.requested && this.items[index]) {
+              lane.indexes.push(index)
+              lane.requested = false
+              this.cursor = index + 1
+            }
+        }
       }
     }
   }

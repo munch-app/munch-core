@@ -82,6 +82,7 @@ module.exports = {
     'vue-slick',
 
     'vuex-persistedstate',
+    'vue-scrollto'
   ],
   plugins: [
     '~/plugins/global',
@@ -96,6 +97,7 @@ module.exports = {
     '~/plugins/vue-browser-geolocation',
     '~/plugins/vue-observe-visibility',
     '~/plugins/vue-slick',
+    '~/plugins/vue-scrollto',
 
     {src: '~/plugins/vue-touch', ssr: false},
     {src: '~/plugins/vue-loader', ssr: false},
