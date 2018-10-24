@@ -1,5 +1,5 @@
 <template>
-  <div v-on-clickaway="onBlur" class="elevation-1 border-3 border" :class="{'Extended': isExtended, 'elevation-2': searching}">
+  <div v-on-clickaway="onBlur" class="SearchBar" :class="{'Extended': isExtended, 'elevation-2': searching}">
     <div class="SearchTextBar no-select">
       <input ref="input" class="TextBar" type="text"
              placeholder="Search e.g. Italian in Marina Bay" v-model="text" @focus="onFocus">
@@ -10,6 +10,11 @@
     </div>
 
     <div class="SearchSuggest elevation-3 index-top-elevation border-3-bottom no-select" v-if="isExtended">
+      <div class="Navigation index-top-elevation" v-if="isNavigation">
+        <div class="NavigationItem Restaurants">Restaurants</div>
+        <div @click="onNavigation('/feed/images')" class="NavigationItem">Image Feed</div>
+        <div @click="onNavigation('/feed/articles')" class="NavigationItem">Article Feed</div>
+      </div>
       <div class="Results index-top-elevation">
         <div class="NoResult text" v-if="!hasResult && suggestions">
           Sorry! We couldn’t find results for '{{text}}'.
@@ -104,7 +109,10 @@
         ]
       },
       isExtended() {
-        return this.searching && this.text !== ''
+        return this.searching && (!this.text || this.hasResult || this.suggestions)
+      },
+      isNavigation() {
+        return !this.text
       },
       hasResult() {
         return this.suggests || this.assumptions || this.places
@@ -142,6 +150,7 @@
             break
           default:
             this.suggestions = null
+            this.searching = true
             this.$emit('onText', this.text)
         }
       },
@@ -156,6 +165,10 @@
       },
       onItemPlace(place) {
         this.$router.push({path: '/places/' + place.placeId})
+        this.onBlur()
+      },
+      onNavigation(to) {
+        this.$router.push({path: to})
         this.onBlur()
       },
       onFocus() {
@@ -218,6 +231,18 @@
 </script>
 
 <style scoped lang="less">
+  .SearchBar {
+    border-radius: 3px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
+
+    transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
+    &:hover {
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    }
+  }
+
   .Extended {
     @media (min-width: 768px) {
       border-radius: 3px 3px 0 0;
@@ -264,10 +289,41 @@
   }
 
   @Nav2: #EFF2F7;
+  @Secondary400: #227190;
+
+  .Navigation {
+    display: flex;
+    margin: 16px -14px 16px 16px;
+
+    .NavigationItem {
+      text-decoration: initial !important;
+      padding: 10px 16px;
+      margin-right: 14px;
+
+      border-radius: 3px;
+      border: 1px solid rgba(0, 0, 0, 0.15);
+      text-transform: uppercase;
+
+      font-weight: 600;
+      font-size: 12px;
+      color: rgba(0, 0, 0, .75);
+
+      line-height: 1.5;
+
+      &:hover, &.Restaurants {
+        cursor: pointer;
+        color: white;
+        background: @Secondary400;
+        border: 1px solid @Secondary400;
+      }
+    }
+  }
 
   .SearchSuggest {
     background: white;
     position: absolute;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    margin-left: -1px;
 
     @media (max-width: 767.98px) {
       position: fixed;
