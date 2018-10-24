@@ -30,7 +30,6 @@ function getIdToken() {
 
 export default {
   getIdToken: getIdToken,
-  authenticated: () => getIdToken(),
   signInFacebook() {
     return firebase.auth().signInWithPopup(new firebase.auth.FacebookAuthProvider())
       .then(() => {

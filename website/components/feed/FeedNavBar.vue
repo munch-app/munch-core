@@ -20,9 +20,6 @@
       route() {
         return this.$route.name
       },
-    },
-    mounted() {
-      console.log(this.$route.name)
     }
   }
 </script>

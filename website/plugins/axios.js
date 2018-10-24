@@ -23,6 +23,8 @@ export default function ({$axios, store, req}) {
         if (token) config.headers['Authorization'] = `Bearer ${token}`
         return config
       }).catch(() => {
+        // Error, Logout User,
+        store.dispatch('user/logout')
         return config
       })
     });

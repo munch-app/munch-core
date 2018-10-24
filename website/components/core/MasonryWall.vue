@@ -1,7 +1,7 @@
 <template>
   <!-- Load with Queue -->
   <!-- Redraw on resize -->
-  <div class="MasonryWall" :style="style.wall">
+  <div ref="wall" class="MasonryWall" :style="style.wall">
     <div class="MasonryWallLane" v-for="(lane, index) in lanes" :key="index" :style="style.lane">
       <div class="MasonryWallItem" v-for="i in lane.indexes" :key="i" :style="style.item">
         <slot :item="items[i]" :index="i">{{items[i]}}</slot>
@@ -84,7 +84,7 @@
       },
 
       redraw() {
-        let length = Math.round(window.innerWidth / this.width)
+        let length = Math.round(this.$refs.wall.scrollWidth / this.width)
         if (length < this.min) length = this.min
         if (this.lanes.length === length) return
 

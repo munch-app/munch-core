@@ -94,8 +94,7 @@
   }
 
   .ArticleFeedList {
-    margin-top: 8px;
-    margin-bottom: -24px;
+    margin: 8px auto -24px;
 
     .ArticleFeedItem {
       padding-top: 16px;

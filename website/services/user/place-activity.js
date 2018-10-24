@@ -57,13 +57,10 @@ function push(placeId, startedMillis, actions) {
 
   console.log(activity)
   if (this.$store.getters['user/isLoggedIn']) {
-    const authenticator = require('~/services/authenticator').default
-    return authenticator.authenticated().then(() => {
-      return this.$axios.$put(`api/users/places/activities/${activity.placeId}/${activity.startedMillis}`, activity)
-        .catch(error => {
-          return this.$store.dispatch('addError', error)
-        })
-    })
+    return this.$axios.$put(`api/users/places/activities/${activity.placeId}/${activity.startedMillis}`, activity)
+      .catch(error => {
+        return this.$store.dispatch('addError', error)
+      })
   }
 }
 

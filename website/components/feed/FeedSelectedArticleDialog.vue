@@ -103,6 +103,8 @@
     top: 0;
 
     display: flex;
+    align-content: center;
+    justify-content: space-between;
 
     .Title {
       font-size: 17px;
