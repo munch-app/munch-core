@@ -37,6 +37,7 @@
       ...mapGetters('filter', ['applyText', 'isApplicable']),
     },
     mounted() {
+      // This interfere with SearchQuery
       this.$store.commit('filter/selected', 'location')
       this.$store.dispatch('filter/location', {type: 'Between', areas: []})
     },

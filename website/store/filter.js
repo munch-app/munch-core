@@ -15,7 +15,7 @@ export const state = () => ({
 
         // Either: Nearby, Anywhere, Where, Between
         // Default to Anywhere unless user select otherwise
-        type: 'Between',
+        type: 'Anywhere',
       },
     },
     sort: {}

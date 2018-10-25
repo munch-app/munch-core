@@ -12,10 +12,6 @@
       <div class="Left secondary-600">WEBSITE</div>
       <a :href="place.website"  class="Right" target="_blank" rel="noreferrer noopener nofollow">{{websiteUrl}}</a>
     </div>
-    <div class="Row WebsiteMenu" v-if="false">
-      <div class="Left secondary-600">MENU</div>
-      <a :href="place.menu.url" class="Right" rel="noreferrer noopener nofollow">{{menuUrl}}</a>
-    </div>
     <div class="Row Hour" v-if="hours.length > 0">
       <div class="Left secondary-600">HOURS</div>
       <place-hour-list :place-id="place.placeId" class="Right" :hours="hours"/>

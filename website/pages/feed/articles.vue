@@ -4,9 +4,6 @@
 
     <div class="container">
       <div class="ArticleFeed">
-        <nav class="ArticleFeedNav" v-if="false">
-          <div class="hover-pointer secondary-700-hover black-a-85" v-for="tag in tags" :key="tag">{{tag}}</div>
-        </nav>
         <div class="ArticleFeedList">
           <div class="ArticleFeedItem" v-for="(item, index) in items" :key="item.itemId">
             <feed-article-card :item="item" @view="selected = index"/>
