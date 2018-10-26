@@ -10,6 +10,13 @@ public final class SearchHeaderCard implements SearchCard {
 
     private String title;
 
+    public SearchHeaderCard() {
+    }
+
+    public SearchHeaderCard(String title) {
+        this.title = title;
+    }
+
     public String getTitle() {
         return title;
     }

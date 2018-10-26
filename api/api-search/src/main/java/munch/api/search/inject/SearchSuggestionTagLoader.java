@@ -49,6 +49,7 @@ public final class SearchSuggestionTagLoader implements SearchCardInjector.Loade
         if (!request.isFirstPage()) return List.of();
         if (!request.isFullPage()) return List.of();
         if (!request.isNatural()) return List.of();
+        if (request.isBetween()) return List.of();
 
         Map<String, Integer> tagMap = aggTags(request.getRequest());
         if (tagMap.isEmpty()) return List.of();

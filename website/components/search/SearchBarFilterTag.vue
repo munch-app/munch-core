@@ -73,7 +73,6 @@
       count(tag) {
         if (this.$store.state.filter.query.filter.tag.positives.length === 0) return ''
         if (this.isSelectedTag(tag)) return ''
-        if (this.isSelectedLocationType('Between')) return ''
 
         const count = this.tags && this.tags[tag.toLowerCase()]
         if (count) {

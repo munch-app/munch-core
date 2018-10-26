@@ -30,6 +30,7 @@ public class SearchPlaceCard implements SearchCard {
         this.place = place;
     }
 
+    @Deprecated
     public final static class Small extends SearchPlaceCard {
 
         @Override

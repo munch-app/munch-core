@@ -149,6 +149,10 @@ public final class ElasticQueryUtils {
             }
         }
 
+        if (request.isBetween()) {
+            filterArray.add(filterRange("taste.group", "gte", 2));
+        }
+
         // Accumulate positive tags
         positives.forEach(s -> {
             filterArray.add(filterTerm("tags.name", s));
@@ -222,7 +226,9 @@ public final class ElasticQueryUtils {
         }
 
         if (request.isBetween()) {
-            return Optional.empty();
+            double[] centroid = ElasticSpatialUtils.getCentroid(request.getPoints(), SearchQuery.Filter.Location.Point::getLatLng);
+            JsonNode filter = ElasticSpatialUtils.filterBoundingBox(centroid[0], centroid[1], 1250);
+            return Optional.of(filter);
         }
 
         return Optional.empty();

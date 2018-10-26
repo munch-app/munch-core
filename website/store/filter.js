@@ -71,10 +71,6 @@ export const getters = {
   },
   applyText: (state) => {
     if (state.loading) return
-    const location = state.query.filter.location
-    if (location.type === 'Between') {
-      return 'Locate Between'
-    }
 
     const count = state.result.count
     if (count) {

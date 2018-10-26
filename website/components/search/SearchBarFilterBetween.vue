@@ -38,7 +38,7 @@
           <simple-svg fill="black" filepath="/img/search/back.svg"/>
         </div>
         <div class="SearchTextBar border-3 hover-pointer">
-          <input ref="input" class="TextBar" type="text"
+          <input ref="input" class="TextBar" type="text" @keyup="onKeyUp"
                  placeholder="Search Location Name" v-model="search.text">
 
           <div class="Clear hover-pointer" @click="onSuggestCancel">
@@ -78,9 +78,6 @@
         suggestions: [],
       }
     },
-    mounted() {
-      window.addEventListener('keyup', this.keyUpListener)
-    },
     computed: {
       ...mapGetters('filter', ['locationPoints']),
       emptyPoints() {
@@ -90,7 +87,7 @@
       }
     },
     methods: {
-      keyUpListener(evt) {
+      onKeyUp(evt) {
         switch (evt.keyCode) {
           case 38: // Up
             if (this.search.position === 0) break

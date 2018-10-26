@@ -4,7 +4,7 @@ import munch.api.search.SearchRequest;
 import munch.data.place.Place;
 
 import javax.inject.Singleton;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  * Project: munch-core
  */
 @Singleton
-public class SearchCardParser {
+public final class SearchCardParser {
 
     /**
      * Only search results that is place is parsed now
@@ -22,21 +22,42 @@ public class SearchCardParser {
      * @param places search results
      * @return List of Parsed SearchCard
      */
-    public List<SearchCard> parseCards(List<Place> places, SearchRequest request) {
+    public List<SearchCard> parse(List<Place> places, SearchRequest request) {
+        if (request.isBetween()) {
+            return sortedNeighbourhood(places);
+        }
+
         return places.stream()
-                .map(this::parse)
+                .map(SearchCardParser::parse)
                 .collect(Collectors.toList());
     }
 
-    private SearchPlaceCard parse(Place place) {
-        if (place.getImages().isEmpty()) {
-            SearchPlaceCard.Small small = new SearchPlaceCard.Small();
-            small.setPlace(place);
-            return small;
-        } else {
-            SearchPlaceCard card = new SearchPlaceCard();
-            card.setPlace(place);
-            return card;
+    private static List<SearchCard> sortedNeighbourhood(List<Place> places) {
+        List<String> ordered = new ArrayList<>();
+        Map<String, List<Place>> map = new HashMap<>();
+
+        for (Place place : places) {
+            String neighbourhood = place.getLocation().getNeighbourhood();
+            if (!map.containsKey(neighbourhood)) {
+                map.put(neighbourhood, new ArrayList<>());
+                ordered.add(neighbourhood);
+            }
+            map.get(neighbourhood).add(place);
         }
+
+        List<SearchCard> cards = new ArrayList<>();
+        for (String neighbourhood : ordered) {
+            cards.add(new SearchHeaderCard(neighbourhood));
+            map.get(neighbourhood).forEach(place -> {
+                cards.add(parse(place));
+            });
+        }
+        return cards;
+    }
+
+    private static SearchPlaceCard parse(Place place) {
+        SearchPlaceCard card = new SearchPlaceCard();
+        card.setPlace(place);
+        return card;
     }
 }

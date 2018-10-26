@@ -9,6 +9,7 @@ import munch.api.search.inject.SearchCardInjector;
 import munch.data.client.ElasticClient;
 import munch.data.place.Place;
 import munch.restful.core.JsonUtils;
+import munch.taste.GlobalTasteClient;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -22,47 +23,72 @@ import java.util.List;
  */
 @Singleton
 public final class SearchDelegator {
-    private static final int PAGE_SIZE = 30;
-
     private final ElasticClient elasticClient;
 
     private final SearchCardParser cardParser;
-    private final SearchPlaceSorter placeSorter;
-    private final SearchCardInjector searchCardInjector;
+    private final SearchCardInjector cardInjector;
+
+    private final GlobalTasteClient tasteClient;
 
     @Inject
-    public SearchDelegator(ElasticClient elasticClient, SearchCardParser cardParser, SearchPlaceSorter placeSorter, SearchCardInjector searchCardInjector) {
+    public SearchDelegator(ElasticClient elasticClient, SearchCardParser cardParser, SearchCardInjector cardInjector, GlobalTasteClient tasteClient) {
         this.elasticClient = elasticClient;
         this.cardParser = cardParser;
-        this.placeSorter = placeSorter;
-        this.searchCardInjector = searchCardInjector;
+        this.cardInjector = cardInjector;
+        this.tasteClient = tasteClient;
     }
 
+    /**
+     * @param request to execute
+     * @return results in SearchCard
+     */
     public List<SearchCard> delegate(SearchRequest request) {
-        // Only allow 10 page of results, to prevent abuse
-        if (request.getPage() >= 10) return List.of();
+        if (request.getPage() >= getMaxPage(request)) return List.of();
 
-        List<Place> places = searchPlaces(request);
-        places = placeSorter.sort(places, request);
+        List<Place> places = searchPlaces(request, getPageSize(request));
+        // For EB might need to use different logic to sort the data
+        places = tasteClient.sort(places, request.getLocalTime());
 
-        List<SearchCard> cards = cardParser.parseCards(places, request);
-        searchCardInjector.inject(cards, request);
+        List<SearchCard> cards = cardParser.parse(places, request);
+        cardInjector.inject(cards, request);
         return cards;
     }
 
-    private List<Place> searchPlaces(SearchRequest request) {
-        if (!isSearchable(request)) return List.of();
-
+    private List<Place> searchPlaces(SearchRequest request, int pageSize) {
         ObjectNode root = JsonUtils.createObjectNode();
-        root.put("from", request.getPage() * PAGE_SIZE);
-        root.put("size", PAGE_SIZE);
+        root.put("from", request.getPage() * pageSize);
+        root.put("size", pageSize);
         root.set("query", ElasticQueryUtils.make(request));
         root.set("sort", ElasticSortUtils.make(request));
         return elasticClient.searchHitsHits(root);
     }
 
-    private static boolean isSearchable(SearchRequest request) {
-        if (request.isBetween()) return false;
-        return true;
+    /**
+     * For Location Type: Where, Anywhere, Nearby:
+     * Only allow 10 page of results, to prevent abuse
+     * <p>
+     * For Location Type: Between
+     * Only 1 page of result due to a targeted search
+     * <p>
+     * Page starts from 0
+     *
+     * @param request to find max number page
+     * @return max pages
+     */
+    private static int getMaxPage(SearchRequest request) {
+        if (request.isBetween()) return 1;
+        return 10;
+    }
+
+    /**
+     * LocationType.Between: 100
+     * Else: 30
+     *
+     * @param request to find page size
+     * @return size per page
+     */
+    private static int getPageSize(SearchRequest request) {
+        if (request.isBetween()) return 100;
+        return 30;
     }
 }

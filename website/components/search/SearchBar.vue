@@ -1,7 +1,7 @@
 <template>
   <div v-on-clickaway="onBlur" class="SearchBar" :class="{'Extended': isExtended, 'elevation-2': searching}">
     <div class="SearchTextBar no-select">
-      <input ref="input" class="TextBar" type="text"
+      <input ref="input" class="TextBar" type="text" @keyup="onKeyUp"
              placeholder="Search e.g. Italian in Marina Bay" v-model="text" @focus="onFocus">
 
       <div class="Clear" :style="clearStyle" @click="onClear">
@@ -62,12 +62,13 @@
       }
     },
     mounted() {
-      window.addEventListener('keyup', this.keyUpListener)
-
       // Auto focus refs.input if 'Suggest' is focused
       if (this.isFocused('Suggest')) {
         this.$refs.input.focus()
       }
+    },
+    destroyed() {
+
     },
     watch: {
       loading() {
@@ -119,7 +120,7 @@
       }
     },
     methods: {
-      keyUpListener(evt) {
+      onKeyUp(evt) {
         switch (evt.keyCode) {
           case 38: // Up
             if (this.position === 0) break

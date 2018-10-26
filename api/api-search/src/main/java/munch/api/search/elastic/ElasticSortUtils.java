@@ -30,13 +30,9 @@ public final class ElasticSortUtils {
      * @return created bool node
      */
     public static JsonNode make(SearchRequest request) {
-        SearchQuery query = request.getSearchQuery();
-
         ArrayNode sortArray = mapper.createArrayNode();
-        // If it is null or blank, default to munchRank
-        String type = query.getSort() == null ? "" : StringUtils.trimToEmpty(query.getSort().getType());
 
-        switch (type) {
+        switch (getSortType(request.getSearchQuery())) {
             case SearchQuery.Sort.TYPE_PRICE_LOWEST:
                 sortArray.add(sortField("price.perPax", "asc"));
                 break;
@@ -50,16 +46,24 @@ public final class ElasticSortUtils {
                 }
                 break;
             case SearchQuery.Sort.TYPE_RATING_HIGHEST:
+                // Not Implemented yet
                 sortArray.add(sortField("review.average", "desc"));
                 break;
 
             default:
             case SearchQuery.Sort.TYPE_MUNCH_RANK:
-                sortArray.add(sortField("ranking", "desc"));
+                sortArray.add(sortField("taste.importance", "desc"));
                 break;
         }
 
         return sortArray;
+    }
+
+    /**
+     * @return If it is null or blank, default to munchRank
+     */
+    public static String getSortType(SearchQuery query) {
+        return query.getSort() == null ? "" : StringUtils.trimToEmpty(query.getSort().getType());
     }
 
     /**

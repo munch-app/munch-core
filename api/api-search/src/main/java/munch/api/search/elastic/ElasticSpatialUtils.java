@@ -2,16 +2,15 @@ package munch.api.search.elastic;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.vividsolutions.jts.algorithm.ConvexHull;
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Polygon;
 import edit.utils.LatLngUtils;
-import munch.data.location.Location;
 import munch.restful.core.JsonUtils;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -76,29 +75,6 @@ public final class ElasticSpatialUtils {
         return getGroup4(hash) == getGroup4(compare);
     }
 
-    public static Location.Polygon getConvexHull(Set<String> hashes) {
-        double distance = ElasticSpatialUtils.toRad(0.001);
-
-        List<Coordinate> coordinates = new ArrayList<>();
-        for (String hash : hashes) {
-            Envelope envelope = GeoHashUtils.decodeEnvelope(hash);
-            envelope.expandBy(distance); // 10 meters
-
-            Polygon geometry = (Polygon) geometryFactory.toGeometry(envelope);
-            coordinates.addAll(Arrays.asList(geometry.getCoordinates()));
-        }
-
-        ConvexHull convexHull = new ConvexHull(coordinates.toArray(new Coordinate[0]), geometryFactory);
-        Polygon hull = (Polygon) convexHull.getConvexHull();
-        List<String> points = Arrays.stream(hull.getCoordinates())
-                .map(coordinate -> coordinate.y + "," + coordinate.x)
-                .collect(Collectors.toList());
-
-        Location.Polygon polygon = new Location.Polygon();
-        polygon.setPoints(points);
-        return polygon;
-    }
-
     public static Polygon getPolygon(List<String> points) {
         return geometryFactory.createPolygon(points.stream()
                 .map(s -> {
@@ -108,22 +84,6 @@ public final class ElasticSpatialUtils {
                             Double.parseDouble(split[0])
                     );
                 }).toArray(Coordinate[]::new));
-    }
-
-    public static String getCentroidFromHash(Set<String> hashes) {
-        if (hashes.size() == 1) {
-            return GeoHashUtils.decodeCenter(hashes.iterator().next());
-        }
-
-        double centroidLat = 0, centroidLng = 0;
-
-        for (String hash : hashes) {
-            LatLngUtils.LatLng latLng = LatLngUtils.parse(GeoHashUtils.decodeCenter(hash));
-            centroidLat += latLng.getLat();
-            centroidLng += latLng.getLng();
-        }
-
-        return (centroidLat / hashes.size()) + "," + (centroidLng / hashes.size());
     }
 
     /**

@@ -41,14 +41,16 @@
       this.$store.commit('filter/selected', 'location')
       this.$store.dispatch('filter/location', {type: 'Between', areas: []})
     },
+    destroyed() {
+      this.$store.commit('filter/selected', null)
+      this.$store.commit('unfocus', 'Filter')
+    },
     methods: {
       onClear() {
         this.$store.dispatch('filter/clear', {tags: []})
       },
       onApply() {
         if (this.isApplicable) {
-          this.$store.commit('filter/selected', null)
-          this.$store.commit('unfocus', 'Filter')
           this.$store.dispatch('search/start', this.$store.state.filter.query)
         }
       },

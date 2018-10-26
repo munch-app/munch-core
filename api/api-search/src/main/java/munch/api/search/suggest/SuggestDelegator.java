@@ -155,7 +155,7 @@ public final class SuggestDelegator {
         ArrayNode functions = function.putArray("functions");
         functions.addObject()
                 .putObject("gauss")
-                .putObject("ranking")
+                .putObject("taste.importance")
                 .put("scale", "1000")
                 .put("origin", "2000");
 

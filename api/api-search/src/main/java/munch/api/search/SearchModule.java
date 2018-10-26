@@ -2,7 +2,6 @@ package munch.api.search;
 
 import com.google.inject.multibindings.Multibinder;
 import munch.api.ApiServiceModule;
-import munch.api.search.between.SearchBetweenAreaLoader;
 import munch.api.search.inject.*;
 
 /**
@@ -21,7 +20,7 @@ public final class SearchModule extends ApiServiceModule {
         loaderBinder.addBinding().to(SearchNoLocationLoader.class);
         loaderBinder.addBinding().to(SearchHeaderLoader.class);
         loaderBinder.addBinding().to(SearchSuggestionTagLoader.class);
-        loaderBinder.addBinding().to(SearchBetweenAreaLoader.class);
+        loaderBinder.addBinding().to(SearchBetweenLoader.class);
 
         addService(SearchService.class);
         addService(SearchFilterService.class);
