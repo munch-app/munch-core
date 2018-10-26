@@ -1,6 +1,7 @@
 <template>
   <search-card-place
     class="Card no-select Initial Pointer"
+    :class="{WithMap: map}"
     v-if="isCardId('basic_Place_20171211')"
     :card="card"
   />
@@ -49,6 +50,8 @@
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
+
   import SearchCardPlace from "./SearchCardPlace";
   import SearchCardAreaClusterList from "./SearchCardAreaClusterList";
   import SearchCardHeader from "./SearchCardHeader";
@@ -76,6 +79,9 @@
         type: Object,
         required: true
       }
+    },
+    computed: {
+      ...mapGetters('search', ['map']),
     },
     methods: {
       isCardId(cardId) {
@@ -108,6 +114,18 @@
     @media (min-width: 1600px) {
       flex: 0 0 20%;
       max-width: 20%;
+    }
+
+    &.WithMap {
+      @media (min-width: 768px) {
+        flex: 0 0 50%;
+        max-width: 50%;
+      }
+
+      @media (min-width: 1200px) {
+        flex: 0 0 33.333333%;
+        max-width: 33.333333%;
+      }
     }
 
     &.FullWidth {

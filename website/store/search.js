@@ -9,6 +9,7 @@ export const state = () => ({
 
   more: false,
   loading: false,
+  map: false,
 })
 
 export const getters = {
@@ -17,6 +18,7 @@ export const getters = {
   cards: (state) => state.result.cards,
   more: (state) => state.more,
   loading: (state) => state.loading,
+  map: (state) => state.map,
 }
 
 export const mutations = {
@@ -32,19 +34,6 @@ export const mutations = {
   },
 
   start(state, {query, type}) {
-    state.type = type
-    this.commit('search/setQuery', query)
-
-    state.more = true
-    state.loading = true
-
-    state.seo = {}
-    state.page = 0
-    state.result.cards.splice(0, state.result.cards.length)
-  },
-
-  setQuery(state, query) {
-    // Search Preference Injection
     if (!query.filter) query.filter = {}
     if (!query.filter.tag) query.filter.tag = {}
     if (!query.filter.tag.positives) query.filter.tag.positives = []
@@ -54,7 +43,21 @@ export const mutations = {
       if (index === -1) query.filter.tag.positives.push(tag)
     })
 
+    state.type = type
     state.query = query
+
+    state.more = true
+    state.loading = true
+
+    state.seo = {}
+    state.page = 0
+    state.result.cards.splice(0, state.result.cards.length)
+
+    if (query.filter.location.type === 'Between') {
+      state.map = true
+    } else {
+      state.map = false
+    }
   },
 
   append(state, cards) {
@@ -77,9 +80,8 @@ export const actions = {
     this.commit('filter/replace', query)
 
     return this.$axios.$post(`/api/search?page=${state.page}`, state.query)
-      .then(({data, qid, searchQuery}) => {
+      .then(({data, qid}) => {
         commit('append', data)
-        commit('setQuery', searchQuery)
 
         this.$router.replace({path: '/search', query: {qid}})
       })
@@ -96,9 +98,8 @@ export const actions = {
         this.commit('filter/replace', query)
 
         return this.$axios.$post(`/api/search?page=${state.page}`, query)
-          .then(({data, searchQuery}) => {
+          .then(({data}) => {
             commit('append', data)
-            commit('setQuery', searchQuery)
           })
       }).catch(error => {
         return this.$router.replace({path: '/search', query: {}})
@@ -114,9 +115,8 @@ export const actions = {
         this.commit('filter/replace', data)
 
         return this.$axios.$post(`/api/search?page=${state.page}`, data)
-          .then(({data, searchQuery}) => {
+          .then(({data}) => {
             commit('append', data)
-            commit('setQuery', searchQuery)
           })
       }).catch(error => {
         return this.$router.replace({path: '/search', query: {}})
@@ -127,9 +127,8 @@ export const actions = {
     if (state.loading) return
 
     return this.$axios.$post(`/api/search?page=${state.page}`, state.query)
-      .then(({data, searchQuery}) => {
+      .then(({data}) => {
         commit('append', data)
-        commit('setQuery', searchQuery)
       })
   }
 }

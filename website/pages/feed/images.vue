@@ -1,6 +1,6 @@
 <template>
   <div class="zero-spacing">
-    <feed-nav-bar/>
+    <!--<feed-nav-bar/>-->
 
     <div class="container ImageWall">
       <masonry-wall :items="items" @append="onAppend" :min="2">

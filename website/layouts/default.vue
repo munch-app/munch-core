@@ -1,7 +1,7 @@
 <template>
-  <div class="Default">
+  <div class="Default" :class="{'gutter-24': isSearch && map}">
     <nav class="Header index-top-elevation hr-bottom white-bg">
-      <div class="HeaderRow container clearfix">
+      <div class="HeaderRow clearfix container">
         <header-logo class="Logo" :class="{'IsSuggest': isFocused('Suggest')}"/>
         <div class="Search">
           <nuxt-link to="/" v-if="false">
@@ -62,6 +62,7 @@
     },
     computed: {
       ...mapGetters(['isElevated', 'isFocused']),
+      ...mapGetters('search', ['map']),
       route() {
         return this.$route.name
       },

@@ -1,5 +1,7 @@
 package munch.api.search.cards;
 
+import munch.restful.core.KeyUtils;
+
 /**
  * Created by: Fuxing
  * Date: 20/1/2018
@@ -32,6 +34,6 @@ public final class SearchHeaderCard implements SearchCard {
 
     @Override
     public String getUniqueId() {
-        return String.valueOf(System.currentTimeMillis());
+        return "h_" + System.currentTimeMillis() + KeyUtils.sha256Base64Url(title);
     }
 }

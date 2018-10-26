@@ -58,10 +58,7 @@
   margin-right: 8px;
 }
 
-/**
- Munch default container width
- */
-.container {
+.container, .container-gutter-24 {
   width: 100%;
   padding-right: 24px;
   padding-left: 24px;
@@ -73,6 +70,13 @@
   @media (min-width: 1200px) {
     padding-right: 80px;
     padding-left: 80px;
+  }
+}
+
+.gutter-24 .container {
+  @media (min-width: 1200px) {
+    padding-right: 24px;
+    padding-left: 24px;
   }
 }
 

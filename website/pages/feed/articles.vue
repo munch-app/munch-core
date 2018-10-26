@@ -1,6 +1,6 @@
 <template>
   <div class="zero-spacing">
-    <feed-nav-bar/>
+    <!--<feed-nav-bar/>-->
 
     <div class="container">
       <div class="ArticleFeed">

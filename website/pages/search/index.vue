@@ -2,28 +2,36 @@
   <div class="zero-spacing">
     <div class="SearchResult container" v-if="cards && query">
       <div class="Result">
-        <card-delegator v-for="card in cards" :key="card['_uniqueId']" :card="card"/>
+        <card-delegator v-for="card in cards" :key="card._uniqueId" :card="card"
+                        v-observe-visibility="{callback: (v) => visibleCard(v, card),throttle:200}"
+        />
+
+        <no-ssr>
+          <div class="LoadingIndicator flex-center" v-if="more"
+               v-observe-visibility="{callback: (v) => visibleLoading(v),throttle:300}">
+            <beat-loader color="#084E69" size="14px"/>
+          </div>
+        </no-ssr>
       </div>
 
-      <no-ssr>
-        <div class="LoadingIndicator flex-center" v-if="more" v-observe-visibility="{
-          callback: visibilityChanged,
-          throttle: 300,
-        }">
-          <beat-loader color="#084E69" size="14px"/>
-        </div>
-      </no-ssr>
+      <div class="MapView" v-if="map">
+        <apple-map class="Map" ref="map"/>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
   import {mapGetters} from 'vuex'
+  import Vue from 'vue'
 
   import CardDelegator from "../../components/search/cards/CardDelegator";
+  import AppleMap from "../../components/core/AppleMap";
+
+  let mapUpdate;
 
   export default {
-    components: {CardDelegator},
+    components: {AppleMap, CardDelegator},
     head() {
       const {name, description, keywords} = this.$store.state.search.seo
 
@@ -44,28 +52,72 @@
         return store.dispatch('search/startQid', qid)
       }
     },
+    data() {
+      return {
+        visible: {}
+      }
+    },
     computed: {
-      ...mapGetters('search', ['query', 'cards', 'more']),
+      ...mapGetters('search', ['query', 'cards', 'more', 'map']),
       ...mapGetters('filter', ['selected']),
+      annotations() {
+        return Object.keys(this.visible).map(key => {
+          const card = this.visible[key]
+          if (card._cardId === 'basic_Place_20171211') {
+            const place = card.place
+            const latLng = place.location.latLng.split(",")
+
+            return {
+              lat: parseFloat(latLng[0]),
+              lng: parseFloat(latLng[1]),
+              name: place.name
+            }
+          }
+        }).filter(a => !!a)
+      }
     },
     mounted() {
-      // const type = this.$store.state.search.type
-      const parameters = {}
-
       const search = this.$store.state.search
-      parameters['event_category'] = (search.type || 'search').toLowerCase()
-
-      const query = this.query
-      const locationType = query && query.filter && query.filter.location && query.filter.location.type || ''
-      parameters['event_label'] = `search_${locationType.toLowerCase()}`
-
-
-      this.$gtag('event', 'search', parameters)
+      this.onSearch(search.type, search.query)
     },
     methods: {
-      visibilityChanged(isVisible, entry) {
+      visibleLoading(isVisible) {
         if (isVisible) {
           this.$store.dispatch('search/append')
+        }
+      },
+      visibleCard(isVisible, card) {
+        if (isVisible) {
+          if (this.visible[card._uniqueId]) return
+          Vue.set(this.visible, card._uniqueId, card)
+        } else {
+          Vue.delete(this.visible, card._uniqueId)
+        }
+
+        clearTimeout(mapUpdate)
+        mapUpdate = setTimeout(() => {
+          this.$refs.map.updateAnnotations(this.annotations)
+        }, 1000);
+      },
+      onSearch(type, query) {
+        this.visible = {}
+
+        // const type = this.$store.state.search.type
+        const parameters = {}
+        parameters['event_category'] = (type || 'search').toLowerCase()
+
+        const locationType = query && query.filter && query.filter.location && query.filter.location.type || ''
+        parameters['event_label'] = `search_${locationType.toLowerCase()}`
+
+        this.$gtag('event', 'search', parameters)
+        console.log('Search Event')
+      }
+    },
+    watch: {
+      query(query) {
+        if (query) {
+          const search = this.$store.state.search
+          this.onSearch(search.type, search.query)
         }
       }
     }
@@ -76,18 +128,38 @@
   .SearchResult {
     margin-top: 12px;
     margin-bottom: 64px;
+
+    display: flex;
   }
 
   .Result {
-    display: -ms-flexbox;
+    width: 100%;
     display: flex;
-    -ms-flex-wrap: wrap;
     flex-wrap: wrap;
     margin-right: -12px;
     margin-left: -12px;
   }
 
+  .MapView {
+    flex-shrink: 0;
+    position: relative;
+
+    width: 33vw;
+    margin-left: 24px;
+
+    .Map {
+      position: fixed;
+      margin-top: 12px;
+      height: calc(100vh - 48px - 56px - 48px);
+      width: 33vw;
+
+      border-radius: 3px;
+      overflow: hidden;
+    }
+  }
+
   .LoadingIndicator {
+    width: 100%;
     padding-top: 24px;
     padding-bottom: 48px;
   }

@@ -5,6 +5,7 @@
 </template>
 
 <script>
+  let map;
   export default {
     name: "AppleMap",
     props: {
@@ -14,7 +15,7 @@
       }
     },
     mounted() {
-      const map = new mapkit.Map(this.$refs.map, {
+      map = new mapkit.Map(this.$refs.map, {
         showsUserLocation: false,
         showsUserLocationControl: false,
         showsCompass: false,
@@ -25,33 +26,51 @@
         isZoomEnabled: false
       });
 
+      map.region = new mapkit.CoordinateRegion(
+        new mapkit.Coordinate(1.38, 103.8),
+        new mapkit.CoordinateSpan(0.167647972, 0.354985255)
+      )
 
       if (this.annotations) {
-        const calloutDelegate = {
-          calloutElementForAnnotation: function(annotation) {
-            const div = document.createElement("div");
-            div.className = "CalloutNamed elevation-1"
-            div.textContent = annotation.data.name
+        this.updateAnnotations(this.annotations)
+      }
+    },
+    watch: {
+      annotations(annotations) {
+        this.updateAnnotations(annotations)
+      }
+    },
+    methods: {
+      updateAnnotations(annotations) {
+        if (annotations && map) {
+          const calloutDelegate = {
+            calloutElementForAnnotation: function (annotation) {
+              const div = document.createElement("div");
+              div.className = "CalloutNamed elevation-1"
+              div.textContent = annotation.data.name
 
-            return div;
-          }
-        };
-
-        const list = this.annotations.map(annotation => {
-          const coordinate = new mapkit.Coordinate(annotation.lat, annotation.lng)
-
-          return new mapkit.MarkerAnnotation(coordinate, {
-            color: "#F05F3B",
-            callout: calloutDelegate,
-            data: {
-              name: annotation.name
+              return div;
             }
-          });
-        })
-        map.showItems(list, {
-          animate: true,
-          padding: new mapkit.Padding(64, 24, 64, 24)
-        })
+          };
+
+          const list = annotations.map(annotation => {
+            const coordinate = new mapkit.Coordinate(annotation.lat, annotation.lng)
+
+            return new mapkit.MarkerAnnotation(coordinate, {
+              color: "#F05F3B",
+              callout: calloutDelegate,
+              data: {
+                name: annotation.name
+              }
+            });
+          })
+          console.log('Rendered: Annotations')
+          map.removeAnnotations(map.annotations)
+          map.showItems(list, {
+            animate: true,
+            padding: new mapkit.Padding(64, 64, 64, 64)
+          })
+        }
       }
     }
   }
