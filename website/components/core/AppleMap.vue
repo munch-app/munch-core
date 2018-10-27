@@ -1,77 +1,97 @@
 <template>
   <div>
     <div ref="map" class="AppleMap"/>
+    <div style="display: none">
+      <apple-map-place-annotation v-for="place in places" :key="place.placeId" :place="place"
+                                  :highlight="highlight && highlight.placeId === place.placeId"
+      />
+    </div>
   </div>
 </template>
 
 <script>
-  let map;
+  import AppleMapPlaceAnnotation from "./AppleMapPlaceAnnotation";
+
+  function Coordinate(latLng) {
+    const ll = latLng.split(",")
+    const lat = parseFloat(ll[0])
+    const lng = parseFloat(ll[1])
+    return new mapkit.Coordinate(lat, lng)
+  }
+
+  function CoordinateRegion(region) {
+    const ll = region.delta.split(",")
+    const lat = parseFloat(ll[0])
+    const lng = parseFloat(ll[1])
+
+    return new mapkit.CoordinateRegion(
+      Coordinate(region.latLng),
+      new mapkit.CoordinateSpan(lat, lng)
+    )
+  }
+
   export default {
+    Coordinate,
     name: "AppleMap",
+    components: {AppleMapPlaceAnnotation},
     props: {
-      annotations: {
+      places: {
         type: Array,
         required: false
+      },
+      selected: {
+        type: Object,
+        required: false,
+        twoWay: true,
+      },
+      highlight: {
+        type: Object,
+        required: false,
+        twoWay: true,
+      },
+      region: {
+        type: Object,
+        default: () => ({latLng: '1.38,103.8', delta: '0.167647972,0.354985255'})
+      },
+      options: {
+        type: Object,
+        default: () => ({})
       }
     },
     mounted() {
-      map = new mapkit.Map(this.$refs.map, {
-        showsUserLocation: false,
-        showsUserLocationControl: false,
-        showsCompass: false,
-        showsScale: false,
-        showsZoomControl: false,
-        isRotationEnabled: false,
-        showsMapTypeControl: false,
-        isZoomEnabled: false
-      });
+      this.$map = new mapkit.Map(this.$refs.map, {
+        showsUserLocation: this.options.showsUserLocation || false,
+        showsUserLocationControl: this.options.showsUserLocationControl || true,
 
-      map.region = new mapkit.CoordinateRegion(
-        new mapkit.Coordinate(1.38, 103.8),
-        new mapkit.CoordinateSpan(0.167647972, 0.354985255)
-      )
+        showsCompass: this.options.showsCompass || mapkit.FeatureVisibility.Hidden,
+        showsScale: this.options.showsScale || mapkit.FeatureVisibility.Adaptive,
+        showsZoomControl: this.options.showsZoomControl || true,
 
-      if (this.annotations) {
-        this.updateAnnotations(this.annotations)
+        isZoomEnabled: this.options.isZoomEnabled || true,
+        isScrollEnabled: this.options.isScrollEnabled || true,
+        isRotationEnabled: this.options.isRotationEnabled || false,
+
+        mapType: this.options.mapType || mapkit.Map.MapTypes.Standard,
+        showsMapTypeControl: this.options.showsMapTypeControl || false,
+      })
+      this.$map.region = CoordinateRegion(this.region)
+
+      if (this.places) {
+        this.centerAnnotations()
       }
     },
     watch: {
-      annotations(annotations) {
-        this.updateAnnotations(annotations)
+      places(places) {
+        this.centerAnnotations()
       }
     },
     methods: {
-      updateAnnotations(annotations) {
-        if (annotations && map) {
-          const calloutDelegate = {
-            calloutElementForAnnotation: function (annotation) {
-              const div = document.createElement("div");
-              div.className = "CalloutNamed elevation-1"
-              div.textContent = annotation.data.name
-
-              return div;
-            }
-          };
-
-          const list = annotations.map(annotation => {
-            const coordinate = new mapkit.Coordinate(annotation.lat, annotation.lng)
-
-            return new mapkit.MarkerAnnotation(coordinate, {
-              color: "#F05F3B",
-              callout: calloutDelegate,
-              data: {
-                name: annotation.name
-              }
-            });
-          })
-          console.log('Rendered: Annotations')
-          map.removeAnnotations(map.annotations)
-          map.showItems(list, {
-            animate: true,
-            padding: new mapkit.Padding(64, 64, 64, 64)
-          })
-        }
-      }
+      centerAnnotations() {
+        this.$map.showItems(this.$map.annotations, {
+          animate: true,
+          padding: new mapkit.Padding(64, 64, 64, 64)
+        })
+      },
     }
   }
 </script>
@@ -80,16 +100,5 @@
   .AppleMap {
     width: 100%;
     height: 100%;
-
-    .CalloutNamed {
-      background: white;
-      padding: 8px;
-      border-radius: 3px;
-
-      font-size: 13px;
-      line-height: 13px;
-
-      margin-bottom: 4px;
-    }
   }
 </style>

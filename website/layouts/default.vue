@@ -1,5 +1,5 @@
 <template>
-  <div class="Default" :class="{'gutter-24': isSearch && map}">
+  <div class="Default" :class="{'gutter-24': isSearch && showsMap}">
     <nav class="Header index-top-elevation hr-bottom white-bg">
       <div class="HeaderRow clearfix container">
         <header-logo class="Logo" :class="{'IsSuggest': isFocused('Suggest')}"/>
@@ -62,7 +62,7 @@
     },
     computed: {
       ...mapGetters(['isElevated', 'isFocused']),
-      ...mapGetters('search', ['map']),
+      ...mapGetters('search', ['showsMap']),
       route() {
         return this.$route.name
       },

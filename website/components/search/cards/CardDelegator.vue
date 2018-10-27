@@ -1,7 +1,7 @@
 <template>
   <search-card-place
     class="Card no-select Initial Pointer"
-    :class="{WithMap: map}"
+    :class="{WithMap: showsMap}"
     v-if="isCardId('basic_Place_20171211')"
     :card="card"
   />
@@ -81,7 +81,7 @@
       }
     },
     computed: {
-      ...mapGetters('search', ['map']),
+      ...mapGetters('search', ['showsMap']),
     },
     methods: {
       isCardId(cardId) {

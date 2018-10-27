@@ -9,7 +9,7 @@ export const state = () => ({
 
   more: false,
   loading: false,
-  map: false,
+  showsMap: false,
 })
 
 export const getters = {
@@ -18,7 +18,7 @@ export const getters = {
   cards: (state) => state.result.cards,
   more: (state) => state.more,
   loading: (state) => state.loading,
-  map: (state) => state.map,
+  showsMap: (state) => state.showsMap,
 }
 
 export const mutations = {
@@ -43,6 +43,12 @@ export const mutations = {
       if (index === -1) query.filter.tag.positives.push(tag)
     })
 
+    if (query.filter.location.type === 'Between') {
+      state.showsMap = true
+    } else {
+      state.showsMap = false
+    }
+
     state.type = type
     state.query = query
 
@@ -52,12 +58,6 @@ export const mutations = {
     state.seo = {}
     state.page = 0
     state.result.cards.splice(0, state.result.cards.length)
-
-    if (query.filter.location.type === 'Between') {
-      state.map = true
-    } else {
-      state.map = false
-    }
   },
 
   append(state, cards) {

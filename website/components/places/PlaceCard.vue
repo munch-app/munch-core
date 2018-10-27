@@ -1,7 +1,7 @@
 <template>
   <nuxt-link :to="'/places/' + place.placeId">
     <div class="Card">
-      <image-size v-if="images" class="Image border-3" :image="images" :alt="place.name"/>
+      <image-size v-if="image" class="Image border-3" :image="image" :alt="place.name"/>
       <div v-else class="Image border-3 whisper-100-bg"/>
 
       <div class="Content">
@@ -40,7 +40,7 @@
       location() {
         return this.place.location.neighbourhood || this.place.location.street
       },
-      images() {
+      image() {
         if (this.place.images && this.place.images[0]) {
           return this.place.images[0]
         }

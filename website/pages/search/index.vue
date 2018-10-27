@@ -4,6 +4,7 @@
       <div class="Result">
         <card-delegator v-for="card in cards" :key="card._uniqueId" :card="card"
                         v-observe-visibility="{callback: (v) => visibleCard(v, card),throttle:200}"
+                        @mouseover.native="onMouse(card, true)" @mouseleave.native="onMouse(card, false)"
         />
 
         <no-ssr>
@@ -14,8 +15,8 @@
         </no-ssr>
       </div>
 
-      <div class="MapView" v-if="map">
-        <apple-map class="Map" ref="map"/>
+      <div class="MapView" v-if="showsMap">
+        <apple-map class="Map" :places="map.places" :highlight="map.highlight"/>
       </div>
     </div>
   </div>
@@ -27,11 +28,12 @@
 
   import CardDelegator from "../../components/search/cards/CardDelegator";
   import AppleMap from "../../components/core/AppleMap";
+  import AppleMapPlaceAnnotation from "../../components/core/AppleMapPlaceAnnotation";
 
   let mapUpdate;
 
   export default {
-    components: {AppleMap, CardDelegator},
+    components: {AppleMapPlaceAnnotation, AppleMap, CardDelegator},
     head() {
       const {name, description, keywords} = this.$store.state.search.seo
 
@@ -54,27 +56,16 @@
     },
     data() {
       return {
-        visible: {}
+        visible: {},
+        map: {
+          places: [],
+          highlight: null,
+        }
       }
     },
     computed: {
-      ...mapGetters('search', ['query', 'cards', 'more', 'map']),
+      ...mapGetters('search', ['query', 'cards', 'more', 'showsMap']),
       ...mapGetters('filter', ['selected']),
-      annotations() {
-        return Object.keys(this.visible).map(key => {
-          const card = this.visible[key]
-          if (card._cardId === 'basic_Place_20171211') {
-            const place = card.place
-            const latLng = place.location.latLng.split(",")
-
-            return {
-              lat: parseFloat(latLng[0]),
-              lng: parseFloat(latLng[1]),
-              name: place.name
-            }
-          }
-        }).filter(a => !!a)
-      }
     },
     mounted() {
       const search = this.$store.state.search
@@ -96,8 +87,21 @@
 
         clearTimeout(mapUpdate)
         mapUpdate = setTimeout(() => {
-          this.$refs.map.updateAnnotations(this.annotations)
-        }, 1000);
+          this.map.places = Object.keys(this.visible).map(key => {
+            const card = this.visible[key]
+            if (card._cardId === 'basic_Place_20171211') {
+              return card.place
+            }
+          }).filter(a => !!a)
+
+        }, 300);
+      },
+      onMouse(card, on) {
+        if (on && card._cardId === 'basic_Place_20171211') {
+          this.map.highlight = card.place
+        } else {
+          this.map.highlight = null
+        }
       },
       onSearch(type, query) {
         this.visible = {}
@@ -110,7 +114,6 @@
         parameters['event_label'] = `search_${locationType.toLowerCase()}`
 
         this.$gtag('event', 'search', parameters)
-        console.log('Search Event')
       }
     },
     watch: {
@@ -145,6 +148,7 @@
     position: relative;
 
     width: 33vw;
+    min-height: calc(100vh - 48px - 56px - 48px);
     margin-left: 24px;
 
     .Map {
