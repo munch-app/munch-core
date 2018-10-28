@@ -75,15 +75,6 @@
         showsMapTypeControl: this.options.showsMapTypeControl || false,
       })
       this.$map.region = CoordinateRegion(this.region)
-
-      if (this.places) {
-        this.centerAnnotations()
-      }
-    },
-    watch: {
-      places(places) {
-        this.centerAnnotations()
-      }
     },
     methods: {
       centerAnnotations() {

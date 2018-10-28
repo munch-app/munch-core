@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="SearchCard primary-500-bg border-4 zero-spacing">
+    <div class="SearchCard primary-500-bg zero-spacing">
       <h2 class="white text weight-600">Can't decide?</h2>
       <div class="white text">{{description}}</div>
 
@@ -48,8 +48,17 @@
 
 <style scoped lang="less">
   .SearchCard {
-    padding: 24px 24px;
     overflow: hidden;
+
+    padding: 24px 24px;
+    border-radius: 4px;
+
+    @media (max-width: 991.98px) {
+      border-radius: 0;
+      margin-left: -24px;
+      margin-right: -24px;
+      width: 100vw;
+    }
   }
 
   .TagList {

@@ -2,10 +2,10 @@
   <div>
     <h2>Discover Locations</h2>
 
-    <horizontal-scroll-view class="ClusterList" :items="areas" :map-key="a => a.areaId" :container="false"
+    <horizontal-scroll-view class="ClusterList container-remove-gutter" :items="areas" :map-key="a => a.areaId"
                             :padding="18">
       <template slot-scope="{item}">
-        <div class="ClusterCard elevation-hover-1" @click="onClick(item)">
+        <div class="ClusterCard elevation-hover-1 hover-pointer" @click="onClick(item)">
           <image-size class="Image" :image="item.images && item.images[0]"/>
           <div class="Name">{{item.name}}</div>
         </div>

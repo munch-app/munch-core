@@ -80,9 +80,37 @@
   }
 }
 
-/**
- Munch default fixed container width
- */
+.gutter, .gutter-width {
+  width: 24px;
+  min-height: 1px;
+
+  @media (min-width: 1200px) {
+    width: 80px;
+  }
+}
+
+.container-full {
+  width: 100%;
+  margin-right: auto;
+  margin-left: auto;
+
+  max-width: 2000px;
+}
+
+.container-remove-gutter {
+  margin-left: -24px !important;
+  margin-right: -24px !important;
+  width: calc(100% + 48px) !important;
+
+  @media (min-width: 1200px) {
+    margin-left: -80px !important;
+    margin-right: -80px !important;
+    width: calc(100% + 160px) !important;
+  }
+}
+
+// Should deprecate all other use below this line
+
 .container-fixed {
   width: 100%;
   padding-right: 24px;
@@ -131,14 +159,6 @@
   }
 }
 
-.container-full {
-  width: 100%;
-  margin-right: auto;
-  margin-left: auto;
-
-  max-width: 2000px;
-}
-
 .container-width {
   margin-right: auto;
   margin-left: auto;
@@ -156,14 +176,5 @@
 
   @media (min-width: 1200px) {
     padding-left: 80px;
-  }
-}
-
-.gutter {
-  width: 24px;
-  min-height: 1px;
-
-  @media (min-width: 1200px) {
-   width: 80px;
   }
 }

@@ -1,12 +1,11 @@
 <template>
   <div class="HorizontalScrollViewWrapper" :class="{'container-full': container}">
-    <div class="Navigation" :class="{container}" v-if="nav">
+    <div class="Navigation" :class="{container: container}" v-if="nav">
       <div @click="prev" v-if="hasPrev" class="ScrollControlPrev index-navigation hover-pointer"
            :class="{NavWhite: navWhite}"/>
       <div @click="next" v-if="hasNext" class="ScrollControlNext index-navigation hover-pointer"
            :class="{NavWhite: navWhite}"/>
     </div>
-
     <div class="HorizontalScrollView zero-spacing index-content" :class="{container}">
       <div ref="scrollArea" class="ScrollArea index-content">
         <div class="Content" :style="style.content">
@@ -36,10 +35,6 @@
         type: Boolean,
         default: () => true
       },
-      nav: {
-        type: Boolean,
-        default: () => true
-      },
       padding: {
         type: Number,
         default: () => 24
@@ -52,11 +47,14 @@
         type: Function,
         required: true
       },
+      nav: {
+        type: Boolean,
+        default: () => true
+      },
       navWhite: {
         type: Boolean,
-        required: false,
         default: () => false
-      }
+      },
     },
     data() {
       return {windowWidth: 0, scrollWidth: 0, distance: 0, offset: 0}
@@ -129,8 +127,6 @@
 
       &> .Content {
         display: flex;
-        padding-left: 3px;
-        padding-right: 3px;
 
         .Item {
           flex-shrink: 0;
@@ -143,14 +139,10 @@
     position: absolute;
     height: 100%;
     width: 100%;
-  }
-
-  .HorizontalScrollViewWrapper {
-    overflow-y: visible;
-    position: relative;
+    display: flex;
 
     .ScrollControlPrev, .ScrollControlNext {
-      position: absolute;
+      position: relative;
       height: 100%;
       width: 48px;
 
@@ -177,21 +169,28 @@
     }
 
     .ScrollControlPrev {
-      left: 0;
+      margin-left: -3px;
+      margin-right: auto;
 
       &::after {
-        left: 20px;
+        margin-right: 12px;
         transform: rotate(135deg);
       }
     }
 
     .ScrollControlNext {
-      right: 0;
+      margin-left: auto;
+      margin-right: -25px;
 
       &::after {
-        right: 20px;
+        margin-left: 12px;
         transform: rotate(-45deg);
       }
     }
+  }
+
+  .HorizontalScrollViewWrapper {
+    overflow-y: visible;
+    position: relative;
   }
 </style>

@@ -114,9 +114,7 @@
   }
 
   .ItemList {
-    display: -ms-flexbox;
     display: flex;
-    -ms-flex-wrap: wrap;
     flex-wrap: wrap;
     margin-right: -12px;
     margin-left: -12px;
@@ -127,18 +125,15 @@
       min-height: 1px;
       padding: 18px 12px;
 
-      -ms-flex: 0 0 100%;
       flex: 0 0 100%;
       max-width: 100%;
 
       @media (min-width: 768px) {
-        -ms-flex: 0 0 33.333333%;
         flex: 0 0 33.333333%;
         max-width: 33.333333%;
       }
 
       @media (min-width: 1200px) {
-        -ms-flex: 0 0 25%;
         flex: 0 0 25%;
         max-width: 25%;
       }

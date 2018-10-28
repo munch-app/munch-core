@@ -16,7 +16,7 @@
       </div>
 
       <div class="MapView" v-if="showsMap">
-        <apple-map class="Map" :places="map.places" :highlight="map.highlight"/>
+        <apple-map ref="map" class="Map" :places="map.places" :highlight="map.highlight"/>
       </div>
     </div>
   </div>
@@ -29,8 +29,6 @@
   import CardDelegator from "../../components/search/cards/CardDelegator";
   import AppleMap from "../../components/core/AppleMap";
   import AppleMapPlaceAnnotation from "../../components/core/AppleMapPlaceAnnotation";
-
-  let mapUpdate;
 
   export default {
     components: {AppleMapPlaceAnnotation, AppleMap, CardDelegator},
@@ -66,6 +64,14 @@
     computed: {
       ...mapGetters('search', ['query', 'cards', 'more', 'showsMap']),
       ...mapGetters('filter', ['selected']),
+      visiblePlaces() {
+        return Object.keys(this.visible).map(key => {
+          const card = this.visible[key]
+          if (card._cardId === 'basic_Place_20171211') {
+            return card.place
+          }
+        }).filter(a => !!a)
+      },
     },
     mounted() {
       const search = this.$store.state.search
@@ -85,16 +91,13 @@
           Vue.delete(this.visible, card._uniqueId)
         }
 
-        clearTimeout(mapUpdate)
-        mapUpdate = setTimeout(() => {
-          this.map.places = Object.keys(this.visible).map(key => {
-            const card = this.visible[key]
-            if (card._cardId === 'basic_Place_20171211') {
-              return card.place
-            }
-          }).filter(a => !!a)
-
-        }, 300);
+        if (this.showsMap) {
+          clearTimeout(this.$mapUpdate)
+          this.$mapUpdate = setTimeout(() => {
+            this.map.places = this.visiblePlaces
+            this.$refs.map.centerAnnotations()
+          }, 300);
+        }
       },
       onMouse(card, on) {
         if (on && card._cardId === 'basic_Place_20171211') {
@@ -139,6 +142,7 @@
     width: 100%;
     display: flex;
     flex-wrap: wrap;
+    flex-grow: 1;
     margin-right: -12px;
     margin-left: -12px;
   }
@@ -150,6 +154,10 @@
     width: 33vw;
     min-height: calc(100vh - 48px - 56px - 48px);
     margin-left: 24px;
+
+    @media (max-width: 991.98px) {
+      display: none;
+    }
 
     .Map {
       position: fixed;

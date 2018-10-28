@@ -101,6 +101,11 @@
     flex: 0 0 100%;
     max-width: 100%;
 
+    @media (min-width: 500px) {
+      flex: 0 0 50%;
+      max-width: 50%;
+    }
+
     @media (min-width: 768px) {
       flex: 0 0 33.333333%;
       max-width: 33.333333%;
@@ -118,11 +123,6 @@
 
     &.WithMap {
       @media (min-width: 768px) {
-        flex: 0 0 50%;
-        max-width: 50%;
-      }
-
-      @media (min-width: 1200px) {
         flex: 0 0 33.333333%;
         max-width: 33.333333%;
       }
