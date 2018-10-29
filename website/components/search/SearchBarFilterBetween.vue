@@ -120,6 +120,7 @@
       },
       onRemove(index) {
         this.$store.commit('filter/updateBetweenLocation', {index})
+        this.$store.dispatch('filter/location', {type: 'Between'})
       },
       onSuggestCancel() {
         if (this.search.text === '') {
@@ -138,6 +139,8 @@
         this.suggestions = []
         this.search.text = ''
         this.search.position = 0
+
+        this.$store.dispatch('filter/location', {type: 'Between'})
       }
     },
     subscriptions() {

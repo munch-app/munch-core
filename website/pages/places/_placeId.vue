@@ -31,9 +31,9 @@
           <place-about :place="place" :awards="data.awards"/>
         </section>
 
-        <section class="Menu ContentBody" v-if="place.menu">
+        <section class="Menu ContentBody" v-if="menu">
           <h2>Menu</h2>
-          <place-menu :menu="place.menu"/>
+          <place-menu :menu="menu"/>
         </section>
 
         <section class="Location ContentBody">
@@ -128,6 +128,11 @@
       hours() {
         if (this.data.place.hours && this.data.place.hours.length > 0) {
           return this.data.place.hours
+        }
+      },
+      menu() {
+        if (this.data.place.menu && this.data.place.menu.url) {
+          return this.data.place.menu
         }
       }
     },

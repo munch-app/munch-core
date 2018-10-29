@@ -227,7 +227,7 @@ public final class ElasticQueryUtils {
 
         if (request.isBetween()) {
             double[] centroid = ElasticSpatialUtils.getCentroid(request.getPoints(), SearchQuery.Filter.Location.Point::getLatLng);
-            JsonNode filter = ElasticSpatialUtils.filterBoundingBox(centroid[0], centroid[1], 1250);
+            JsonNode filter = ElasticSpatialUtils.filterBoundingBox(centroid[0], centroid[1], 1750);
             return Optional.of(filter);
         }
 

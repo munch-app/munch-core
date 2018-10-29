@@ -1,7 +1,5 @@
-import _ from 'underscore'
-
 export const state = () => ({
-  seo: {}, // For seo purpose
+  seo: {},
   type: null,
   query: null,
   page: 0,
@@ -9,7 +7,7 @@ export const state = () => ({
 
   more: false,
   loading: false,
-  showsMap: false,
+  showsMap: false
 })
 
 export const getters = {
@@ -19,6 +17,11 @@ export const getters = {
   more: (state) => state.more,
   loading: (state) => state.loading,
   showsMap: (state) => state.showsMap,
+
+  /**
+   * Used for watching for search event, not properly implemented but a hack that works now
+   */
+  searched: (state) => state.result.cards,
 }
 
 export const mutations = {
@@ -43,21 +46,23 @@ export const mutations = {
       if (index === -1) query.filter.tag.positives.push(tag)
     })
 
-    if (query.filter.location.type === 'Between') {
-      state.showsMap = true
-    } else {
-      state.showsMap = false
-    }
-
     state.type = type
     state.query = query
 
     state.more = true
     state.loading = true
+    state.showsMap = false
 
     state.seo = {}
     state.page = 0
     state.result.cards.splice(0, state.result.cards.length)
+
+    if (query.filter.location.type === 'Between')  {
+      state.showsMap = true
+      // Between only loads once
+      state.loading = false
+      state.more = false
+    }
   },
 
   append(state, cards) {
@@ -68,6 +73,12 @@ export const mutations = {
   }
 }
 
+function start({query, type}) {
+  this.commit('search/start', {query, type})
+  this.commit('filter/replace', query)
+  this.dispatch('search/gtag')
+}
+
 /**
  * 3 ways to start searching
  *
@@ -76,9 +87,7 @@ export const actions = {
   start({commit, state}, query) {
     this.$router.replace({path: '/search'})
 
-    commit('start', {query, type: 'search'})
-    this.commit('filter/replace', query)
-
+    start.call(this, {query, type: 'search'})
     return this.$axios.$post(`/api/search?page=${state.page}`, state.query)
       .then(({data, qid}) => {
         commit('append', data)
@@ -93,10 +102,9 @@ export const actions = {
         if (!data) return Promise.reject(new Error('Not Found'))
 
         const query = data.searchQuery
-        commit('start', {query, type: 'named'})
         commit('setSeo', {name: data.name, description: data.description, keywords: data.keywords})
-        this.commit('filter/replace', query)
 
+        start.call(this, {query, type: 'named'})
         return this.$axios.$post(`/api/search?page=${state.page}`, query)
           .then(({data}) => {
             commit('append', data)
@@ -111,9 +119,7 @@ export const actions = {
       .then(({data}) => {
         if (!data) return Promise.reject(new Error('Not Found'))
 
-        commit('start', {query: data, type: 'qid'})
-        this.commit('filter/replace', data)
-
+        start.call(this, {query: data, type: 'qid'})
         return this.$axios.$post(`/api/search?page=${state.page}`, data)
           .then(({data}) => {
             commit('append', data)
@@ -130,5 +136,23 @@ export const actions = {
       .then(({data}) => {
         commit('append', data)
       })
+  },
+
+  gtag({commit, state}) {
+    const type = state.type
+    const query = state.query
+
+    if (type == null) return
+    if (!this.$gtag) return
+
+    console.log("Search GTAG Event")
+
+    const parameters = {}
+    parameters['event_category'] = (type || 'search').toLowerCase()
+
+    const locationType = query && query.filter && query.filter.location && query.filter.location.type || ''
+    parameters['event_label'] = `search_${locationType.toLowerCase()}`
+
+    this.$gtag('event', 'search', parameters)
   }
 }

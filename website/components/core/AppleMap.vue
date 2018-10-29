@@ -2,9 +2,7 @@
   <div>
     <div ref="map" class="AppleMap"/>
     <div style="display: none">
-      <apple-map-place-annotation v-for="place in places" :key="place.placeId" :place="place"
-                                  :highlight="highlight && highlight.placeId === place.placeId"
-      />
+      <slot></slot>
     </div>
   </div>
 </template>
@@ -35,20 +33,6 @@
     name: "AppleMap",
     components: {AppleMapPlaceAnnotation},
     props: {
-      places: {
-        type: Array,
-        required: false
-      },
-      selected: {
-        type: Object,
-        required: false,
-        twoWay: true,
-      },
-      highlight: {
-        type: Object,
-        required: false,
-        twoWay: true,
-      },
       region: {
         type: Object,
         default: () => ({latLng: '1.38,103.8', delta: '0.167647972,0.354985255'})
@@ -82,7 +66,7 @@
           animate: true,
           padding: new mapkit.Padding(64, 64, 64, 64)
         })
-      },
+      }
     }
   }
 </script>

@@ -82,7 +82,7 @@ module.exports = {
     'vue-slick',
 
     'vuex-persistedstate',
-    'vue-scrollto'
+    'vue-scrollto',
   ],
   plugins: [
     '~/plugins/global',
@@ -102,6 +102,7 @@ module.exports = {
     {src: '~/plugins/vue-touch', ssr: false},
     {src: '~/plugins/vue-loader', ssr: false},
     {src: '~/plugins/vuex-persistedstate', ssr: false},
+    {src: '~/plugins/gtag', ssr: false},
   ],
   serverMiddleware: [
     {

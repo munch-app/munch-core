@@ -1,28 +1,25 @@
 <template>
   <div>
     <div ref="annotation">
-      <div class="PlaceAnnotationLarge hover-pointer" v-if="selected">
-        <nuxt-link class="AnnotationDialog border-3 initial" :to="'/places/' + place.placeId">
-          <image-size v-if="image" class="Image index-content border-3-top" :image="image" :alt="place.name"/>
-          <div v-else class="Image whisper-100-bg"/>
+      <div class="PlaceAnnotation hover-pointer" :class="{Hover: focused, Selected: selected}" @click="onClick">
+        <div class="AnnotationDialog">
+          <nuxt-link class="DialogArea Selected initial" :to="'/places/' + place.placeId" v-if="selected">
+            <image-size v-if="image" class="Image index-content border-3-top" :image="image" :alt="place.name"/>
+            <div v-else class="Image whisper-100-bg"/>
 
-          <div class="Content">
-            <div class="Name Title large weight-600 black-a-80">{{place.name}}</div>
-            <div class="Tags">
-              <div class="Tag border-3" v-for="tag in tags" :key="tag.tagId"
-                   :class="{'peach-100-bg weight-600 black-a-80': tag.type === 'price', 'whisper-100-bg weight-400': tag.type !== 'price'}">
-                {{tag.name}}
+            <div class="Content">
+              <div class="Name Title large weight-600 black-a-80">{{place.name}}</div>
+              <div class="Tags">
+                <div class="Tag border-3" v-for="tag in tags" :key="tag.tagId"
+                     :class="{'peach-100-bg weight-600 black-a-80': tag.type === 'price', 'whisper-100-bg weight-400': tag.type !== 'price'}">
+                  {{tag.name}}
+                </div>
               </div>
             </div>
-          </div>
-        </nuxt-link>
-      </div>
-
-      <div class="PlaceAnnotation hover-pointer" :class="{Hover: highlight}" v-else @click="selected = true">
-        <div class="AnnotationDialog">
-          {{place.name}}
+          </nuxt-link>
+          <div class="DialogArea Label" v-else>{{place.name}}</div>
         </div>
-        <div class="Triangle"/>
+        <div class="AnnotationTriangle"/>
       </div>
     </div>
   </div>
@@ -41,7 +38,7 @@
         type: Object,
         required: true,
       },
-      highlight: {
+      focused: {
         type: Boolean,
         default: () => false
       }
@@ -69,10 +66,21 @@
       },
     },
     watch: {
-      highlight(highlight) {
-        this.$annotation.selected = highlight
+      focused(focused) {
+        this.$annotation.selected = focused
         this.selected = false
       }
+    },
+    methods: {
+      onClick() {
+        this.selected = true
+        this.$annotation.selected = true
+
+        this.$parent.$map.showItems([this.$annotation], {
+          animate: true,
+          padding: new mapkit.Padding(64, 64, 64, 64)
+        })
+      },
     },
     mounted() {
       const coordinate = AppleMap.Coordinate(this.place.location.latLng)
@@ -81,11 +89,15 @@
       }, {data: this.place})
 
       const map = this.$parent.$map
-      map.addAnnotation(this.$annotation)
+      if (map) {
+        map.addAnnotation(this.$annotation)
+      }
     },
     beforeDestroy() {
       const map = this.$parent.$map
-      map.removeAnnotation(this.$annotation)
+      if (map) {
+        map.removeAnnotation(this.$annotation)
+      }
     }
   }
 </script>
@@ -94,46 +106,14 @@
   @Primary500: #F05F3B;
 
   .PlaceAnnotation {
-    height: 38px;
-    position: relative;
-
-    .AnnotationDialog {
-      position: relative;
-      margin-left: auto;
-      margin-right: auto;
-
-      min-width: 32px;
-      max-width: 128px;
-      height: 30px;
-
-      padding: 2px 8px;
-      text-align: center;
-
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-
-      border: 1px solid rgba(0, 0, 0, 0.08);
-      background-color: rgb(249, 249, 253);
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-
-      border-radius: 3px;
-
-      color: rgba(0, 0, 0, 0.75);
-      font-size: 15px;
-      font-weight: 600;
-      line-height: 24px;
-    }
-
-    &.Hover, &:hover {
-
-      .AnnotationDialog {
+    &.Hover, &:not(.Selected):hover {
+      .Label {
         color: white;
         border: 1px solid @Primary500;
         background-color: @Primary500;
       }
 
-      .Triangle {
+      .AnnotationTriangle {
         &:after {
           border-top: 9px solid @Primary500;
         }
@@ -141,21 +121,53 @@
     }
   }
 
-  .PlaceAnnotationLarge {
-    position: relative;
+  .AnnotationDialog {
+    position: absolute;
+    bottom: 30px;
+
     width: 200px;
+    min-height: 30px;
+    max-height: 250px;
 
-    .AnnotationDialog {
-      position: absolute;
-      margin-left: auto;
-      margin-right: auto;
+    display: flex;
+    justify-items: flex-end;
+    align-content: center;
 
-      width: 200px;
+    > .DialogArea {
+      position: relative;
+      margin: auto auto 0;
 
-      /*padding: 2px 8px;*/
+      border-radius: 3px;
+      background-color: rgb(249, 249, 253);
 
-      background: rgb(249, 249, 253);
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    }
+  }
+
+  .AnnotationDialog {
+    .Label {
+      min-width: 32px;
+      max-width: 128px;
+      height: 30px;
+      padding: 2px 8px;
+
+      border: 1px solid rgba(0, 0, 0, 0.08);
+
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      color: rgba(0, 0, 0, 0.75);
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 24px;
+      text-align: center;
+    }
+  }
+
+  .AnnotationDialog {
+    .Selected {
+      width: 200px;
 
       .Image {
         width: 100%;
@@ -196,8 +208,10 @@
     }
   }
 
-  .Triangle {
+  .AnnotationTriangle {
     position: relative;
+    margin-left: auto;
+    margin-right: auto;
 
     &:after, &:before {
       position: absolute;

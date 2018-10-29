@@ -63,6 +63,19 @@
   import SearchCardBetweenArea from "./SearchCardBetweenArea";
   import SearchCardBetweenNoResult from "./SearchCardBetweenNoResult";
 
+  function isElementInViewport(el) {
+    const topBar = 56 + 48 // Top Bar
+    const height = (window.innerHeight || document.documentElement.clientHeight)
+    const rect = el.getBoundingClientRect()
+
+    const padding = 80 // Padding for visibility
+
+    function isWithin(y) {
+      return (topBar + padding) <= y && y <= (height - padding)
+    }
+    return isWithin(rect.top) || isWithin(rect.bottom)
+  }
+
   export default {
     name: "CardDelegator",
     components: {
@@ -86,6 +99,9 @@
     methods: {
       isCardId(cardId) {
         return this.card['_cardId'] === cardId
+      },
+      isVisible() {
+        return isElementInViewport(this.$el)
       }
     }
   }
