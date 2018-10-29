@@ -81,6 +81,10 @@ export const getters = {
   applyText: (state) => {
     if (state.loading) return
 
+    if (state.query.filter.location.type === 'Between' && state.query.filter.location.points.length === 0) {
+      return 'Location Required'
+    }
+
     const count = state.result.count
     if (count) {
       if (count >= 100) return `See 100+ Restaurants`
