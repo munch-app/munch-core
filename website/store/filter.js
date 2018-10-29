@@ -1,5 +1,6 @@
 import * as Cookies from 'js-cookie'
-import _ from "underscore";
+import _ from "underscore"
+import Vue from 'vue'
 
 export const state = () => ({
   query: {
@@ -55,13 +56,21 @@ export const getters = {
   },
 
   isSelectedPrice: (state) => (name) => {
-    return state.query.filter.price && state.query.filter.price.name === name
+    if (state.query.filter.price && state.result.priceGraph && state.result.priceGraph.ranges) {
+      const range = state.result.priceGraph.ranges[name]
+      if (range.min !== state.query.filter.price.min) return false
+      if (range.max !== state.query.filter.price.max) return false
+      return true
+    }
   },
   loading: (state) => {
     return state.loading
   },
   count: (state) => {
     return state.result.count
+  },
+  priceGraph: (state) => {
+    return state.result.priceGraph
   },
   selected: (state) => {
     return state.selected
@@ -106,7 +115,7 @@ export const mutations = {
   replace(state, query) {
     state.query.sort = query.sort
 
-    state.query.filter.price = query.filter.price && query.filter.price.min && query.filter.price.max && query.filter.price || {}
+    state.query.filter.price = query.filter.price && !isNaN(query.filter.price.min) && !isNaN(query.filter.price.max) && query.filter.price || {}
     state.query.filter.hour = query.filter.hour || {}
     state.query.filter.location = query.filter.location || {areas: [], type: 'Anywhere'}
 
@@ -255,12 +264,8 @@ export const mutations = {
     state.loading = false
   },
 
-  updatePrice(state, {name, min, max}) {
-    if (state.query.filter.price.name === name) {
-      state.query.filter.price = {}
-    } else {
-      state.query.filter.price = {name, min, max}
-    }
+  updatePrice(state, {min, max}) {
+    state.query.filter.price = {min, max}
   },
 
   /**
@@ -269,9 +274,11 @@ export const mutations = {
    * @param result to update
    */
   result(state, result) {
+
     state.result.count = result && result.count
     state.result.tags = result && result.tags
-    state.result.priceGraph = result && result.priceGraph
+
+    Vue.set(state.result, 'priceGraph', result && result.priceGraph)
   },
 
   /**
@@ -333,6 +340,14 @@ export const actions = {
     // Search Preference Injection
     const injections = this.getters['user/searchPreferenceTags']
     injections.forEach(tag => commit('putTag', tag))
+    return post.call(this, commit, state)
+  },
+
+  /**
+   * Force dispatch of filter regardless of state.loading
+   */
+  refresh({commit, state}) {
+    commit('loading', true)
     return post.call(this, commit, state)
   },
 

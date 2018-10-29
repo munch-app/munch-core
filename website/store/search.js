@@ -145,8 +145,6 @@ export const actions = {
     if (type == null) return
     if (!this.$gtag) return
 
-    console.log("Search GTAG Event")
-
     const parameters = {}
     parameters['event_category'] = (type || 'search').toLowerCase()
 

@@ -139,6 +139,8 @@
 
     margin-right: -12px;
     margin-left: -12px;
+
+    min-height: calc(100vh - 48px - 56px - 48px);
   }
 
   .MapView {
@@ -146,7 +148,6 @@
     position: relative;
 
     width: 33vw;
-    min-height: calc(100vh - 48px - 56px - 48px);
     margin-left: 24px;
 
     @media (max-width: 991.98px) {

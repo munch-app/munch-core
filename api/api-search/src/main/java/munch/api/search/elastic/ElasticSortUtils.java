@@ -32,6 +32,11 @@ public final class ElasticSortUtils {
     public static JsonNode make(SearchRequest request) {
         ArrayNode sortArray = mapper.createArrayNode();
 
+        if (request.isBetween()) {
+            sortArray.add(sortDistance(request.getPointsCentroid()));
+            return sortArray;
+        }
+
         switch (getSortType(request.getSearchQuery())) {
             case SearchQuery.Sort.TYPE_PRICE_LOWEST:
                 sortArray.add(sortField("price.perPax", "asc"));

@@ -17,4 +17,7 @@
 </script>
 
 <style scoped lang="less">
+  h2 {
+    margin-top: 24px;
+  }
 </style>

@@ -3,6 +3,7 @@ package munch.api.search;
 import com.fasterxml.jackson.databind.JsonNode;
 import munch.api.ApiRequest;
 import munch.api.search.data.SearchQuery;
+import munch.api.search.elastic.ElasticSpatialUtils;
 import munch.data.location.Area;
 import munch.restful.core.JsonUtils;
 import munch.restful.server.JsonCall;
@@ -128,6 +129,11 @@ public final class SearchRequest {
     public List<SearchQuery.Filter.Location.Point> getPoints() {
         if (searchQuery.getFilter().getLocation().getPoints() == null) return List.of();
         return searchQuery.getFilter().getLocation().getPoints();
+    }
+
+    public String getPointsCentroid() {
+        double[] centroid = ElasticSpatialUtils.getCentroid(getPoints(), SearchQuery.Filter.Location.Point::getLatLng);
+        return centroid[0] + "," + centroid[1];
     }
 
     /**
