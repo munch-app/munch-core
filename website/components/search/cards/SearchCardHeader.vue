@@ -18,6 +18,6 @@
 
 <style scoped lang="less">
   h2 {
-    margin-top: 24px;
+    margin-top: 8px;
   }
 </style>

@@ -37,9 +37,9 @@
       const price = this.$store.state.filter.query.filter.price || {min: 0, max: 200}
       const priceGraph = this.$store.state.filter.result.priceGraph || {min: 0, max: 200}
 
+      this.value = [price.min || priceGraph.min, price.max || priceGraph.max]
       this.min = priceGraph.min
       this.max = priceGraph.max
-      this.value = [price.min || priceGraph.min, price.max || priceGraph.max]
     },
     watch: {
       priceGraph(priceGraph) {

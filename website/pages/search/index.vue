@@ -98,7 +98,7 @@
         }
       },
       onMapUpdate() {
-        if (this.showsMap && this.$refs.map) {
+        if (this.showsMap && this.$refs.map && this.$refs.cards) {
           const places = this.$refs.cards.map(delegator => {
             if (delegator.isVisible()) return delegator.card.place
           }).filter(p => !!p)

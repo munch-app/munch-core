@@ -4,7 +4,7 @@
       <div class="HeaderRow clearfix container">
         <header-logo class="Logo" :class="{'IsSuggest': isFocused('Suggest')}"/>
         <div class="Search">
-          <nuxt-link to="/" v-if="false">
+          <nuxt-link to="/" v-if="false" production>
             <span class="BrandTitle">Discover Delicious</span>
           </nuxt-link>
           <search-bar v-else class="SearchBar" @onText="onText" @onBlur="onBlur" @onFocus="onFocus"/>
