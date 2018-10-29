@@ -10,14 +10,13 @@
     <div class="PriceGraph">
       <!-- Graph is disabled for now -->
       <search-bar-filter-price-graph v-if="false" class="Graph" :price-graph="priceGraph"/>
-      <search-bar-filter-price-slider class="Slider" v-model="value" :min="min" :max="max"/>
+      <search-bar-filter-price-slider class="Slider" @drag-end="onDragEnd" v-model="value" :min="min" :max="max"/>
     </div>
   </div>
 </template>
 
 <script>
   import {mapGetters} from 'vuex'
-  import {pluck, debounceTime, distinctUntilChanged, map} from 'rxjs/operators'
   import SearchBarFilterPriceGraph from "./SearchBarFilterPriceGraph";
   import SearchBarFilterPriceSlider from "./SearchBarFilterPriceSlider";
 
@@ -25,45 +24,27 @@
     name: "SearchBarFilterPrice",
     components: {SearchBarFilterPriceSlider, SearchBarFilterPriceGraph},
     data() {
-      const price = this.$store.state.filter.query.filter.price || {min: 0, max: 200}
-      const priceGraph = this.$store.state.filter.result.priceGraph || {min: 0, max: 200}
-
       return {
-        value: [price.min || priceGraph.min, price.max || priceGraph.max],
-        price: price,
-        min: priceGraph.min,
-        max: priceGraph.max,
+        value: [0, 200],
+        min: 0,
+        max: 200,
       }
     },
     computed: {
       ...mapGetters('filter', ['isSelectedPrice', 'priceGraph']),
     },
     mounted() {
-      let ignoreFirst = true
-      const observable = this.$watchAsObservable('value').pipe(
-        pluck('newValue'),
-        debounceTime(500),
-        distinctUntilChanged(),
-        map((value) => ({min: value[0], max: value[1]}))
-      )
-      this.$subscribeTo(observable, (price) => {
-        if (ignoreFirst) {
-          ignoreFirst = false
-          return
-        }
-        console.log(price)
-        this.$store.dispatch('filter/refresh')
-      })
+      const price = this.$store.state.filter.query.filter.price || {min: 0, max: 200}
+      const priceGraph = this.$store.state.filter.result.priceGraph || {min: 0, max: 200}
+
+      this.min = priceGraph.min
+      this.max = priceGraph.max
+      this.value = [price.min || priceGraph.min, price.max || priceGraph.max]
     },
     watch: {
       priceGraph(priceGraph) {
-        console.log(priceGraph)
         this.min = priceGraph.min
         this.max = priceGraph.max
-      },
-      value(value) {
-        // this.$store.commit('filter/loading', true)
-        this.$store.commit('filter/updatePrice', {min: value[0], max: value[1]})
       }
     },
     methods: {
@@ -72,7 +53,11 @@
         if (graph && name) {
           const range = graph.ranges[name]
           this.value = [range.min, range.max]
+          this.$store.dispatch('filter/price', {min: range.min, max: range.max})
         }
+      },
+      onDragEnd(min, max) {
+        this.$store.dispatch('filter/price', {min: min, max: max})
       }
     },
   }

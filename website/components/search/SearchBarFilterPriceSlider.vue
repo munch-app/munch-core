@@ -1,7 +1,7 @@
 <template>
   <div>
     <no-ssr>
-      <vue-slider @input="onInput" v-bind="{
+      <vue-slider @input="onInput" @click.native="onClick" v-bind="{
       value, min, max,
       formatter: '${value}',
       mergeFormatter: '${value1} - ${value2}',
@@ -57,6 +57,11 @@
     methods: {
       onInput(input) {
         this.$emit('input', input)
+      },
+      onClick() {
+        this.$nextTick(() => {
+          this.$emit('drag-end', this.value[0], this.value[1])
+        })
       }
     }
   }

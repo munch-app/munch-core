@@ -117,7 +117,9 @@ export const mutations = {
 
     state.query.filter.price = query.filter.price && !isNaN(query.filter.price.min) && !isNaN(query.filter.price.max) && query.filter.price || {}
     state.query.filter.hour = query.filter.hour || {}
-    state.query.filter.location = query.filter.location || {areas: [], type: 'Anywhere'}
+    state.query.filter.location = query.filter.location || {type: 'Anywhere', areas: [], points: []}
+    if (!state.query.filter.location.areas) state.query.filter.location.areas = []
+    if (!state.query.filter.location.points) state.query.filter.location.points = []
 
     state.query.filter.tag.positives = query.filter.tag.positives.map((tag) => {
       return tag.toLowerCase()

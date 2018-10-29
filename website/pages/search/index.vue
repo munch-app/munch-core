@@ -1,5 +1,5 @@
 <template>
-  <div class="zero-spacing">
+  <div class="zero-spacing Page">
     <div class="SearchResult container" v-if="cards && query">
       <div class="Result">
         <card-delegator v-for="card in cards" :key="card._uniqueId" :card="card"
@@ -122,6 +122,10 @@
 </script>
 
 <style scoped lang="less">
+  .Page {
+    min-height: calc(100vh - 48px - 56px);
+  }
+
   .SearchResult {
     margin-top: 12px;
     margin-bottom: 64px;
@@ -139,8 +143,6 @@
 
     margin-right: -12px;
     margin-left: -12px;
-
-    min-height: calc(100vh - 48px - 56px - 48px);
   }
 
   .MapView {

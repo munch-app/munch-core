@@ -3,7 +3,7 @@
     <!--<feed-nav-bar/>-->
 
     <div class="container ImageWall">
-      <masonry-wall :items="items" @append="onAppend" :min="2">
+      <masonry-wall ref="masonry" :items="items" @append="onAppend" :min="2">
         <template slot-scope="{item, index}">
           <div @click="selected = index">
             <feed-image-card :item="item"/>
@@ -16,9 +16,9 @@
       <beat-loader color="#084E69" v-if="more" size="14px"/>
     </no-ssr>
 
-    <div v-if="selected !== -1">
-      <feed-selected-instagram-dialog @close="selected = -1" v-if="items[selected].instagram" :item="items[selected]"/>
-    </div>
+    <feed-selected-instagram-dialog v-if="selectedItem && selectedItem.instagram" :item="selectedItem"
+                                    @next="onNext" @prev="selected--" @close="selected = -1"
+    />
   </div>
 </template>
 
@@ -47,11 +47,18 @@
       }
     },
     computed: {
-      ...mapGetters('feed/images', ['items', 'more'])
+      ...mapGetters('feed/images', ['items', 'more']),
+      selectedItem() {
+        return this.items[this.selected]
+      },
     },
     methods: {
       onAppend(then) {
         this.$store.dispatch('feed/images/append').then(then)
+      },
+      onNext() {
+        this.selected++
+        this.$refs.masonry.scrollTo(this.selected)
       }
     }
   }

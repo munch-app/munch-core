@@ -71,20 +71,22 @@ Max-width of 400px if > 576vw
   }
 
   .Dialog {
-    position: fixed;
-    margin-left: 50vw;
-
+    border-radius: 3px;
     background: white;
     padding: 24px;
   }
 
   // Responsive sizing
   .Dialog {
-    border-radius: 3px;
     min-width: 340px;
     max-width: 576px;
 
+    position: absolute;
+    margin-left: 50vw;
+
+
     @media (max-width: 575.98px) {
+      position: fixed;
       min-width: 300px;
       margin: 0;
       border-radius: 0;

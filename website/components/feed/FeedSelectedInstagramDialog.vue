@@ -1,12 +1,6 @@
 <template>
-  <portal to="dialog-blank">
-    <div class="InstagramDialog" v-on-clickaway="onClose">
-      <div class="Navigation">
-        <div class="Close hover-pointer" @click="onClose">
-          <simple-svg class="Icon" fill="black" filepath="/img/feed/close.svg"/>
-        </div>
-      </div>
-
+  <dialog-navigation @next="$emit('next')" @prev="$emit('prev')" @close="$emit('close')">
+    <div class="InstagramDialog">
       <image-size class="border-3 index-content" :image="item.image" grow="height">
         <div class="ImageContainer hover-pointer" @click="onClickPlace">
           <a class="Author" target="_blank" rel="noreferrer nofollow noopener"
@@ -17,7 +11,7 @@
         </div>
       </image-size>
 
-      <div class="Place hover-pointer" v-if="place" @click="onClickPlace">
+      <a class="Place hover-pointer" v-if="place" :href="`/places/${place.placeId}`" target="_blank">
         <h2 class="Name secondary-500-hover">{{place.name}}</h2>
         <h6 class="Location">{{location}}</h6>
 
@@ -27,17 +21,18 @@
             {{tag.name}}
           </div>
         </div>
-      </div>
+      </a>
     </div>
-  </portal>
+  </dialog-navigation>
 </template>
 
 <script>
   import ImageSize from "../core/ImageSize";
+  import DialogNavigation from "../layouts/DialogNavigation";
 
   export default {
     name: "FeedSelectedInstagramDialog",
-    components: {ImageSize},
+    components: {DialogNavigation, ImageSize},
     props: {
       item: {
         type: Object,
@@ -80,14 +75,14 @@
 <style scoped lang="less">
   .InstagramDialog {
     background: white;
-    padding: 16px 24px 24px;
+    padding: 24px;
     border-radius: 3px;
 
     max-height: 100vh;
-    max-width: 400px;
+    width: 576px;
 
     @media (max-width: 575.98px) {
-      max-width: 576px;
+      width: 100vw;
     }
   }
 
@@ -135,10 +130,21 @@
   }
 
   .Place {
-    margin-top: 12px;
+    color: initial;
+    text-decoration: none !important;
+
+    &:hover {
+      .Name {
+        text-decoration: underline;
+      }
+
+      .Location {
+        text-decoration: underline;
+      }
+    }
 
     .Name {
-
+      margin-top: 12px;
     }
 
     .Location {

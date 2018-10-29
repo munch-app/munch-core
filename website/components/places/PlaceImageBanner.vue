@@ -2,7 +2,7 @@
   <a v-if="images.length > 0" v-scroll-to="{el: '#PlaceImageWall',offset: -120}" class="hover-pointer">
     <div class="container">
       <div class="ImagePipe border-3">
-        <image-size class="Image border-3" v-for="image in images" :image="image" :key="image.imageId" grow="width" :height="160"/>
+        <image-size class="Image border-3" v-for="(image, index) in images" :image="image" :key="index" grow="width" :height="160"/>
       </div>
     </div>
 

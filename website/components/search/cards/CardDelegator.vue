@@ -37,15 +37,6 @@
     v-else-if="isCardId('injected_SuggestedTag_20180511')"
     :card="card"
   />
-  <search-card-between-area
-    class="Card no-select Initial FullWidth"
-    v-else-if="isCardId('injected_BetweenArea_20180925')"
-    :card="card"
-  />
-  <search-card-between-no-result
-    class="Card no-select Initial FullWidth"
-    v-else-if="isCardId('injected_BetweenNoResult_20181011')"
-  />
   <div v-else style="display: none"></div>
 </template>
 
@@ -60,8 +51,6 @@
   import SearchCardAreaClusterHeader from "./SearchCardAreaClusterHeader";
   import SearchCardPlaceSmall from "./SearchCardPlaceSmall";
   import SearchCardSuggestionTag from "./SearchCardSuggestionTag";
-  import SearchCardBetweenArea from "./SearchCardBetweenArea";
-  import SearchCardBetweenNoResult from "./SearchCardBetweenNoResult";
 
   function isElementInViewport(el) {
     const topBar = 56 + 48 // Top Bar
@@ -79,8 +68,6 @@
   export default {
     name: "CardDelegator",
     components: {
-      SearchCardBetweenNoResult,
-      SearchCardBetweenArea,
       SearchCardSuggestionTag,
       SearchCardPlaceSmall,
       SearchCardAreaClusterHeader,

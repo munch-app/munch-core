@@ -78,7 +78,6 @@
         this.text = text
       },
       onFocus() {
-        this.$router.push({path: '/search'})
         this.$store.commit('focus', 'Suggest')
       },
       onBlur() {

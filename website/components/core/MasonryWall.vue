@@ -1,15 +1,15 @@
 <template>
-  <!-- Load with Queue -->
-  <!-- Redraw on resize -->
   <div ref="wall" class="MasonryWall" :style="style.wall">
     <div class="MasonryWallLane" v-for="(lane, index) in lanes" :key="index" :style="style.lane">
-      <div class="MasonryWallItem" v-for="i in lane.indexes" :key="i" :style="style.item">
+      <div class="MasonryWallItem" v-for="i in lane.indexes" :key="i" :style="style.item" :ref="`item_${i}`">
         <slot :item="items[i]" :index="i">{{items[i]}}</slot>
       </div>
 
-      <no-ssr :ref="lane.ref" style="flex-grow:1">
-        <div v-observe-visibility="{callback: (v) => visibilityChanged(v,index),throttle:2}"/>
-      </no-ssr>
+      <!--<no-ssr ref="spacers" style="flex-grow:1; min-height: 1500px">-->
+      <!--<div v-observe-visibility="{callback: (v) => visibilityChanged(v,index),throttle:2}"/>-->
+      <!--</no-ssr>-->
+      <div ref="spacers" style="flex-grow:1;" :data-lane="index">
+      </div>
     </div>
   </div>
 </template>
@@ -39,18 +39,22 @@
     },
     data() {
       return {
-        lanes: [],    // e.g. {indexes: [], requested: true, ref: ''}
-        cursor: 0
+        lanes: [],
+        cursor: 0,
+        loading: true,
+        height: 1000
       }
     },
     mounted() {
       this.$nextTick(() => {
         this.redraw()
         window.addEventListener('resize', this.redraw)
+        this.$fillInterval = setInterval(this.fill, 10)
       })
     },
-    destroyed() {
+    beforeDestroy() {
       window.removeEventListener('resize', this.redraw)
+      clearInterval(this.$fillInterval)
     },
     computed: {
       style() {
@@ -70,19 +74,6 @@
       }
     },
     methods: {
-      visibilityChanged(isVisible, index) {
-        this.lanes[index].requested = isVisible
-        this.fill()
-
-        if (this.cursor < this.items.length) return
-
-        this.$emit('append', () => {
-          this.$nextTick(() => {
-            this.fill()
-          })
-        })
-      },
-
       redraw() {
         let length = Math.round(this.$refs.wall.scrollWidth / this.width)
         if (length < this.min) length = this.min
@@ -91,29 +82,55 @@
         this.cursor = 0
         this.lanes.splice(0, this.lanes.length)
         for (let i = 0; i < length; i++) {
-          this.lanes.push({
-            indexes: [],
-            requested: true,
-            ref: 'lane' + i
-          })
+          this.lanes.push({indexes: []})
         }
+
+        this.height = (window.innerHeight || document.documentElement.clientHeight)
       },
 
       fill() {
-        const lane = _.max(this.lanes, (l) => {
-          const ref = this.$refs[l.ref]
-          return ref && ref[0] && ref[0].$el.clientHeight || 0
+        const spacers = this.$refs.spacers
+        const spacer = _.max(spacers, (spacer) => {
+          return spacer.clientHeight || 0
         })
 
-        if (lane.requested) {
-            const index = this.cursor
-            if (lane.requested && this.items[index]) {
-              lane.indexes.push(index)
-              lane.requested = false
-              this.cursor = index + 1
-            }
+        const top = spacer.getBoundingClientRect().top
+        const index = spacer.dataset.lane
+
+        // Loading only get triggered, after 200
+        if (this.height + 200 > top) {
+          this.loading = true
+        } else if (this.height + 2000 < top) {
+          this.loading = false
         }
-      }
+
+        // Will load util, 2000
+        if (this.loading) {
+          this.addItemTo(index)
+        }
+      },
+
+      addItemTo(laneIndex) {
+        const lane = this.lanes[laneIndex]
+
+        if (this.items[this.cursor]) {
+          lane.indexes.push(this.cursor)
+          this.cursor++
+        }
+
+        // 10 Items in Advance
+        if (this.cursor + 10 < this.items.length) return
+        this.$emit('append')
+      },
+      scrollTo(index) {
+        const item = this.$refs['item_' + index]
+        if (item && item[0]) {
+          clearTimeout(this.$scrollEvent)
+          this.$scrollEvent = setTimeout(() => {
+            this.$scrollTo(item[0], 500)
+          }, 501)
+        }
+      },
     }
   }
 </script>

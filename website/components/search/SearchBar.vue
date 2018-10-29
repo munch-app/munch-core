@@ -173,7 +173,6 @@
         this.onBlur()
       },
       onFocus() {
-        window.scrollTo(0, 0);
         this.searching = true
         this.position = 0
         this.$emit('onFocus')

@@ -5,7 +5,6 @@ import * as Cookies from 'js-cookie'
 export default function ({$axios, store, req}) {
   // $axios.onError(error => {
   //   // TODO
-  //   // console.log($nuxt)
   //   throw({statusCode: 404, message: 'Not Found'})
   //   // return $nuxt.error({statusCode: 404, message: 'Not Found'})
   // })
