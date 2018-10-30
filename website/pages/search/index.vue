@@ -40,7 +40,7 @@
       const {name, description, keywords} = this.$store.state.search.seo
 
       const meta = []
-      meta.push({name: 'robots', content: `follow,${name ? 'index' : 'noindex'}`})
+      meta.push({name: 'robots', content: 'follow,index'})
       if (description) meta.push({hid: 'description', name: 'description', content: description})
       if (keywords) meta.push({name: 'keywords', content: keywords})
       return {title: `${name || 'Search'} · Munch`, meta}
