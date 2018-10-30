@@ -38,7 +38,7 @@ module.exports = {
   },
   loading: {color: '#0A6284'},
   router: {
-    scrollBehavior: () => ({x: 0, y: 0})
+    // scrollBehavior: () => ({x: 0, y: 0})
   },
   build: {
     extend(config, {isDev, isClient, isServer}) {

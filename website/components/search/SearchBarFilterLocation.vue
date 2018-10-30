@@ -65,7 +65,11 @@
           this.$store.commit('filter/loading', false)
           return this.$store.dispatch('filter/location', {type: 'Nearby'})
         }).catch(error => {
-          return this.$store.dispatch('addError', error)
+          return this.$store.dispatch('addMessage', {
+            type: 'error',
+            title: 'Location Not Available',
+            message: 'Is location service enabled?'
+          })
         }).finally(() => {
           this.nearby.loading = false
           return this.$store.commit('filter/loading', false)

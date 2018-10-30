@@ -9,11 +9,11 @@
       </div>
     </div>
 
-    <div class="SearchSuggest elevation-3 index-top-elevation border-3-bottom no-select" v-if="isExtended">
+    <div class="SearchSuggest elevation-3 index-top-elevation no-select" v-if="isExtended">
       <div class="Navigation index-top-elevation" v-if="isNavigation">
-        <div class="NavigationItem Restaurants">Restaurants</div>
-        <div @click="onNavigation('/feed/images')" class="NavigationItem">Image Feed</div>
-        <div @click="onNavigation('/feed/articles')" class="NavigationItem">Article Feed</div>
+        <div @click="onNavigation('/search')" class="NavigationItem" :class="{Selected: route.startsWith('search')}">Search</div>
+        <div @click="onNavigation('/feed/images')" class="NavigationItem" :class="{Selected: route === 'feed-images'}">Image Feed</div>
+        <div @click="onNavigation('/feed/articles')" class="NavigationItem" :class="{Selected: route === 'feed-articles'}">Article Feed</div>
       </div>
       <div class="Results index-top-elevation">
         <div class="NoResult text" v-if="!hasResult && suggestions">
@@ -78,6 +78,9 @@
     computed: {
       ...mapGetters(['isElevated', 'isFocused']),
       ...mapGetters('search', ['loading']),
+      route() {
+        return this.$route.name
+      },
       clearStyle() {
         return {
           'display': this.text.length > 0 ? 'block' : 'none'
@@ -264,7 +267,7 @@
       width: 100%;
       font-size: 17px;
       height: 38px;
-      padding: 0 16px;
+      padding: 0 24px;
       line-height: 2;
 
       color: rgba(0, 0, 0, 0.6);
@@ -293,7 +296,8 @@
 
   .Navigation {
     display: flex;
-    margin: 16px -14px 16px 16px;
+    margin: 16px 10px 16px 24px;
+    min-width: 355px;
 
     .NavigationItem {
       text-decoration: initial !important;
@@ -309,8 +313,12 @@
       color: rgba(0, 0, 0, .75);
 
       line-height: 1.5;
+      height: 38px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: clip;
 
-      &:hover, &.Restaurants {
+      &:hover, &.Selected {
         cursor: pointer;
         color: white;
         background: @Secondary400;
@@ -330,11 +338,14 @@
       margin-top: 8px;
       left: 0;
       right: 0;
+
+      border-radius: 0;
     }
 
     @media (min-width: 768px) {
       width: 500px;
       margin-top: 0;
+      border-radius: 0 0 3px 3px;
     }
 
     .Item {

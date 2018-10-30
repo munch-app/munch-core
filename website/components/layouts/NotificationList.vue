@@ -1,15 +1,15 @@
 <template>
   <div class="NotificationList index-overlay" v-if="notifications">
     <div v-for="notification in notifications" :key="notification.id">
-      <div class="NotificationBox elevation-2 peach-200-bg" v-if="notification.type === 'error'">
+      <div class="NotificationBox Error elevation-2" v-if="notification.type === 'error'">
         <div class="heading">
-          {{notification.error.name}}
+          {{notification.title || 'Error'}}
         </div>
-        <div class="text">
-          {{notification.error.message}}
+        <div class="text" v-if="notification.error || notification.message">
+          {{notification.message || notification.error}}
         </div>
       </div>
-      <div class="NotificationBox elevation-2 white-bg" v-if="notification.type === 'message'">
+      <div class="NotificationBox Message elevation-2" v-else-if="notification.type === 'message'">
         <div class="heading" v-if="notification.title">
           {{notification.title}}
         </div>
@@ -17,7 +17,7 @@
           {{notification.message}}
         </div>
       </div>
-      <div v-else>
+      <div v-else class="text">
         {{notification}}
       </div>
     </div>
@@ -50,11 +50,33 @@
     transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
     width: 300px;
     padding: 16px 24px;
-    border-radius: 4px;
-    margin-top: 16px;
+
+    position: relative;
+    margin-top: 12px;
+    border-radius: 3px;
 
     .heading {
       margin-bottom: 4px;
+    }
+
+    &.Error {
+      background: #ffb4a2;
+    }
+
+    &.Message {
+      background: #fdfdfd;
+    }
+
+    animation-name: move-up;
+    animation-duration: 400ms;
+
+    @keyframes move-up {
+      0% {
+        top: 40px;
+      }
+      100% {
+        top: 0;
+      }
     }
   }
 
@@ -66,15 +88,23 @@
     }
 
     .NotificationBox {
-      border-top: 1px solid rgba(0, 0, 0, 0.1);
       width: 100vw;
       border-radius: 0;
+
+      margin-top: 0;
+
+      &.Error {
+        border-top: 1px solid white;
+      }
+
+      &.Message {
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+      }
     }
   }
 
   @media (min-width: 576px) {
     .NotificationBox {
-      border: 1px solid rgba(0, 0, 0, 0.1);
     }
   }
 </style>

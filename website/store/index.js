@@ -112,24 +112,25 @@ export const actions = {
 
     const id = uuidv4()
     commit('addNotification', {type: 'error', error, id})
-    setTimeout(() => commit('removeNotification', {id}), 8000)
+    setTimeout(() => commit('removeNotification', {id}), 15000)
   },
 
   /**
    *
    * @param commit
    * @param state
+   * @param type of message, allows overriding
    * @param title of message
    * @param message itself
    */
-  addMessage({commit, state}, {title, message}) {
+  addMessage({commit, state}, {type, title, message}) {
     if (state.notifications.length > 30) {
       console.log('Too many concurrent notification. Not added')
       return
     }
 
     const id = uuidv4()
-    commit('addNotification', {type: 'message', message, title, id})
+    commit('addNotification', {type: type || 'message', message, title, id})
     setTimeout(() => commit('removeNotification', {id}), 5000)
   }
 }

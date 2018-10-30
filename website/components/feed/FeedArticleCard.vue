@@ -15,7 +15,7 @@
 
       <div class="PlaceButton elevation-1 border-3 border hover-pointer elevation-hover-2" @click="onClick">
         <simple-svg class="Icon" fill="rgba(0, 0, 0, 0.85)" filepath="/img/feed/place.svg"/>
-        <div class="Label">View Places</div>
+        <div class="Label">Places Mentioned</div>
       </div>
     </div>
     <hr>

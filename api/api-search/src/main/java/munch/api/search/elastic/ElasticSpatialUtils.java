@@ -6,6 +6,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Polygon;
 import edit.utils.LatLngUtils;
+import munch.api.search.data.SearchQuery;
 import munch.restful.core.JsonUtils;
 
 import java.util.HashMap;
@@ -44,6 +45,28 @@ public final class ElasticSpatialUtils {
     public static JsonNode filterBoundingBox(String latLng, double latOffsetMeter, double lngOffsetMeter) {
         LatLngUtils.LatLng parsed = LatLngUtils.parse(latLng);
         return filterBoundingBox(parsed.getLat(), parsed.getLng(), latOffsetMeter, lngOffsetMeter);
+    }
+
+    /**
+     * @return maximum latitude differences in points
+     */
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    public static double getMaxLatDiff(List<SearchQuery.Filter.Location.Point> points) {
+        List<LatLngUtils.LatLng> latLngs = points.stream().map(point -> LatLngUtils.parse(point.getLatLng())).collect(Collectors.toList());
+        double min = latLngs.stream().mapToDouble(LatLngUtils.LatLng::getLat).min().getAsDouble();
+        double max = latLngs.stream().mapToDouble(LatLngUtils.LatLng::getLat).max().getAsDouble();
+        return max - min;
+    }
+
+    /**
+     * @return maximum longitude differences in points
+     */
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    public static double getMaxLngDiff(List<SearchQuery.Filter.Location.Point> points) {
+        List<LatLngUtils.LatLng> latLngs = points.stream().map(point -> LatLngUtils.parse(point.getLatLng())).collect(Collectors.toList());
+        double min = latLngs.stream().mapToDouble(LatLngUtils.LatLng::getLng).min().getAsDouble();
+        double max = latLngs.stream().mapToDouble(LatLngUtils.LatLng::getLng).max().getAsDouble();
+        return max - min;
     }
 
     public static JsonNode filterBoundingBox(double lat, double lng, double latOffsetMeter, double lngOffsetMeter) {

@@ -4,12 +4,7 @@
       <div class="MasonryWallItem" v-for="i in lane.indexes" :key="i" :style="style.item" :ref="`item_${i}`">
         <slot :item="items[i]" :index="i">{{items[i]}}</slot>
       </div>
-
-      <!--<no-ssr ref="spacers" style="flex-grow:1; min-height: 1500px">-->
-      <!--<div v-observe-visibility="{callback: (v) => visibilityChanged(v,index),throttle:2}"/>-->
-      <!--</no-ssr>-->
-      <div ref="spacers" style="flex-grow:1;" :data-lane="index">
-      </div>
+      <div ref="spacers" style="flex-grow:1;" :data-lane="index"/>
     </div>
   </div>
 </template>
