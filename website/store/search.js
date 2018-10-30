@@ -1,5 +1,4 @@
 export const state = () => ({
-  seo: {},
   type: null,
   query: null,
   page: 0,
@@ -32,10 +31,6 @@ export const mutations = {
     state.result.cards.splice(0, state.result.cards.length)
   },
 
-  setSeo(state, {name, title, description, keywords}) {
-    state.seo = {name, title, description, keywords}
-  },
-
   start(state, {query, type}) {
     if (!query.filter) query.filter = {}
     if (!query.filter.tag) query.filter.tag = {}
@@ -53,11 +48,10 @@ export const mutations = {
     state.loading = true
     state.showsMap = false
 
-    state.seo = {}
     state.page = 0
     state.result.cards.splice(0, state.result.cards.length)
 
-    if (query.filter.location.type === 'Between')  {
+    if (query.filter.location.type === 'Between') {
       state.showsMap = true
       // Between only loads once
       state.loading = false
@@ -85,6 +79,8 @@ function start({query, type}) {
  */
 export const actions = {
   start({commit, state}, query) {
+    if (window) window.scrollTo(0, 0)
+
     this.$router.replace({path: '/search'})
 
     start.call(this, {query, type: 'search'})
@@ -96,22 +92,11 @@ export const actions = {
       })
   },
 
-  startNamed({commit, state}, named) {
-    // TODO: Not Found
-    return this.$axios.$get(`/api/search/named/${named}`)
+  startNamed({commit, state}, query) {
+    start.call(this, {query, type: 'named'})
+    return this.$axios.$post(`/api/search?page=${state.page}`, state.query)
       .then(({data}) => {
-        if (!data) return Promise.reject(new Error('Not Found'))
-
-        const query = data.searchQuery
-        commit('setSeo', {name: data.name, title: data.title, description: data.description, keywords: data.keywords})
-
-        start.call(this, {query, type: 'named'})
-        return this.$axios.$post(`/api/search?page=${state.page}`, query)
-          .then(({data}) => {
-            commit('append', data)
-          })
-      }).catch(error => {
-        return this.$router.replace({path: '/search', query: {}})
+        commit('append', data)
       })
   },
 

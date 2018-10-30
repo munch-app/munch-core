@@ -2,11 +2,9 @@
   <div class="zero-spacing Page">
     <div class="SearchResult container" v-if="cards && query">
       <div class="Result">
-        <card-delegator v-for="card in cards" :key="card._uniqueId" :card="card"
-                        ref="cards"
+        <card-delegator v-for="card in cards" :key="card._uniqueId" :card="card" ref="cards"
                         @mouseover.native="onMouse(card, true)" @mouseleave.native="onMouse(card, false)"
         />
-        <!--v-observe-visibility="{callback: (v) => visibleCard(v, card),throttle:300}"-->
 
         <no-ssr>
           <div class="LoadingIndicator flex-center" v-if="more"
@@ -37,20 +35,9 @@
   export default {
     components: {AppleMapPlaceAnnotation, AppleMap, CardDelegator},
     head() {
-      const {name, description, keywords} = this.$store.state.search.seo
-
-      const meta = []
-      meta.push({name: 'robots', content: 'follow,index'})
-      if (description) meta.push({hid: 'description', name: 'description', content: description})
-      if (keywords) meta.push({name: 'keywords', content: keywords})
-      return {title: 'Search · Munch', meta}
+      return {title: 'Search · Munch'}
     },
-    async fetch({store, route, params}) {
-      const named = params.named
-      if (named) {
-        return store.dispatch('search/startNamed', named)
-      }
-
+    async fetch({store, route}) {
       const qid = route.query.qid
       if (qid) {
         return store.dispatch('search/startQid', qid)
