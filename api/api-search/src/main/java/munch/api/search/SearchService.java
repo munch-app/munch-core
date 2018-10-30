@@ -88,7 +88,8 @@ public final class SearchService extends ApiService {
             });
         }
 
-        JsonResult result = JsonResult.ok(searchRequestDelegator.delegate(searchRequest));
+        JsonResult result = JsonResult.ok();
+        result.put("data", searchRequestDelegator.delegate(searchRequest));
         result.put("qid", userSearchQuery.getQid());
         return result;
     }

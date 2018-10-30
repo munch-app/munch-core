@@ -31,7 +31,7 @@ public class AssumptionEngine {
     public static final Set<String> STOP_WORDS = Set.of("around", "near", "in", "at", "and", "or",
             "food", "cuisine", "cuisines", "places", "place", "location");
     public static final PatternSplit TOKENIZE_PATTERN = PatternSplit.compile(" {1,}|,|\\.");
-    private static final Area SINGAPORE;
+    public static final Area SINGAPORE;
 
     static {
         SINGAPORE = new Area();

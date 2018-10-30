@@ -12,18 +12,32 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class NamedSearchQuery {
+
     private String name;
-    private String description;
+    private String title;
     private String keywords;
+    private String description;
+
     private String qid;
     private SearchQuery searchQuery;
 
+    /**
+     * @return name, unique slug of search query
+     */
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getDescription() {

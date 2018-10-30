@@ -9,3 +9,5 @@ include 'api:api-places'
 include 'api:api-users'
 
 include 'website'
+
+include 'sitemap'

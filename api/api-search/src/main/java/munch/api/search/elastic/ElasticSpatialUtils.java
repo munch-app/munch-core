@@ -41,13 +41,13 @@ public final class ElasticSpatialUtils {
         System.out.println(GROUP_4_INT);
     }
 
-    public static JsonNode filterBoundingBox(String latLng, double metres) {
+    public static JsonNode filterBoundingBox(String latLng, double latOffsetMeter, double lngOffsetMeter) {
         LatLngUtils.LatLng parsed = LatLngUtils.parse(latLng);
-        return filterBoundingBox(parsed.getLat(), parsed.getLng(), metres);
+        return filterBoundingBox(parsed.getLat(), parsed.getLng(), latOffsetMeter, lngOffsetMeter);
     }
 
-    public static JsonNode filterBoundingBox(double lat, double lng, double metres) {
-        String[] boundingBox = ElasticSpatialUtils.getBoundingBox(lat, lng, metres / 1000D);
+    public static JsonNode filterBoundingBox(double lat, double lng, double latOffsetMeter, double lngOffsetMeter) {
+        String[] boundingBox = ElasticSpatialUtils.getBoundingBox(lat, lng, latOffsetMeter / 1000D, lngOffsetMeter / 1000D);
 
         ObjectNode filter = JsonUtils.createObjectNode();
         filter.putObject("geo_bounding_box")
@@ -86,14 +86,13 @@ public final class ElasticSpatialUtils {
                 }).toArray(Coordinate[]::new));
     }
 
-    /**
-     * @return [(topLat, topLng), (botLat, botLng)]
-     */
-    public static String[] getBoundingBox(double lat, double lng, double radiusInKim) {
-        final double offset = ElasticSpatialUtils.toRad(radiusInKim);
+
+    public static String[] getBoundingBox(double lat, double lng, double latOffsetKm, double lngOffsetKm) {
+        final double latOffset = ElasticSpatialUtils.toRad(latOffsetKm);
+        final double lngOffset = ElasticSpatialUtils.toRad(lngOffsetKm);
         return new String[]{
-                (lat + offset) + "," + (lng - offset), // Top Lat, Lng
-                (lat - offset) + "," + (lng + offset), // Bot Lat, Lng
+                (lat + latOffset) + "," + (lng - lngOffset), // Top Lat, Lng
+                (lat - latOffset) + "," + (lng + lngOffset), // Bot Lat, Lng
         };
     }
 
