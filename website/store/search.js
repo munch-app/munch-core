@@ -32,8 +32,8 @@ export const mutations = {
     state.result.cards.splice(0, state.result.cards.length)
   },
 
-  setSeo(state, {name, description, keywords}) {
-    state.seo = {name, description, keywords}
+  setSeo(state, {name, title, description, keywords}) {
+    state.seo = {name, title, description, keywords}
   },
 
   start(state, {query, type}) {
@@ -97,12 +97,13 @@ export const actions = {
   },
 
   startNamed({commit, state}, named) {
+    // TODO: Not Found
     return this.$axios.$get(`/api/search/named/${named}`)
       .then(({data}) => {
         if (!data) return Promise.reject(new Error('Not Found'))
 
         const query = data.searchQuery
-        commit('setSeo', {name: data.name, description: data.description, keywords: data.keywords})
+        commit('setSeo', {name: data.name, title: data.title, description: data.description, keywords: data.keywords})
 
         start.call(this, {query, type: 'named'})
         return this.$axios.$post(`/api/search?page=${state.page}`, query)

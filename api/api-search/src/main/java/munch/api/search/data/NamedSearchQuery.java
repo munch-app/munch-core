@@ -3,6 +3,11 @@ package munch.api.search.data;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
 /**
  * Created by: Fuxing
  * Date: 25/9/18
@@ -18,12 +23,17 @@ public final class NamedSearchQuery {
     private String keywords;
     private String description;
 
-    private String qid;
     private SearchQuery searchQuery;
+
+    private Long count;
+    private Long updatedMillis;
 
     /**
      * @return name, unique slug of search query
      */
+    @NotBlank
+    @Size(min = 4, max = 255)
+    @Pattern(regexp = "[a-z]{3}-[a-z0-9-]+")
     public String getName() {
         return name;
     }
@@ -32,6 +42,8 @@ public final class NamedSearchQuery {
         this.name = name;
     }
 
+    @NotBlank
+    @Size(min = 10, max = 255)
     public String getTitle() {
         return title;
     }
@@ -40,6 +52,8 @@ public final class NamedSearchQuery {
         this.title = title;
     }
 
+    @NotBlank
+    @Size(min = 10, max = 400)
     public String getDescription() {
         return description;
     }
@@ -48,6 +62,8 @@ public final class NamedSearchQuery {
         this.description = description;
     }
 
+    @NotBlank
+    @Size(min = 10, max = 400)
     public String getKeywords() {
         return keywords;
     }
@@ -56,14 +72,7 @@ public final class NamedSearchQuery {
         this.keywords = keywords;
     }
 
-    public String getQid() {
-        return qid;
-    }
-
-    public void setQid(String qid) {
-        this.qid = qid;
-    }
-
+    @NotNull
     public SearchQuery getSearchQuery() {
         return searchQuery;
     }
@@ -72,14 +81,34 @@ public final class NamedSearchQuery {
         this.searchQuery = searchQuery;
     }
 
+    @NotNull
+    public Long getCount() {
+        return count;
+    }
+
+    public void setCount(Long count) {
+        this.count = count;
+    }
+
+    @NotNull
+    public Long getUpdatedMillis() {
+        return updatedMillis;
+    }
+
+    public void setUpdatedMillis(Long updatedMillis) {
+        this.updatedMillis = updatedMillis;
+    }
+
     @Override
     public String toString() {
         return "NamedSearchQuery{" +
                 "name='" + name + '\'' +
-                ", description='" + description + '\'' +
+                ", title='" + title + '\'' +
                 ", keywords='" + keywords + '\'' +
-                ", qid='" + qid + '\'' +
+                ", description='" + description + '\'' +
                 ", searchQuery=" + searchQuery +
+                ", count=" + count +
+                ", updatedMillis=" + updatedMillis +
                 '}';
     }
 }

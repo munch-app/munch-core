@@ -1,11 +1,38 @@
 dependencies {
     compile group: 'com.google.inject', name: 'guice', version: guiceVersion
-    compile group: 'munch.restful', name: 'restful-client', version: restfulVersion
+    compile group: 'com.github.dfabulich', name: 'sitemapgen4j', version: '1.1.1'
+    compile group: 'catalyst', name: 'catalyst-utils', version: catalystVersion
     compile group: 'com.munch', name: 'munch-block-aws', version: '1.0.11'
 
-    // For Permutation Engine
-    compile project(':api:api-core')
-    compile project(':api:api-search')
+    compile project(':permutation')
+}
 
-    compile group: 'com.github.dfabulich', name: 'sitemapgen4j', version: '1.1.1'
+apply plugin: 'application'
+apply plugin: 'com.bmuschko.docker-java-application'
+
+ext.dockerTag = dockerRegistryUrl + rootProject.name + '/' + project.name + ':latest'
+
+mainClassName = 'munch.sitemap.SitemapModule'
+
+docker {
+    javaApplication {
+        baseImage = 'fuxingloh/java:9-slim-curl'
+        maintainer = 'Fuxing'
+        ports = [8000, 7755]
+        tag = dockerTag
+    }
+}
+
+task buildImage {
+    dependsOn 'clean'
+    dependsOn 'dockerBuildImage'
+    tasks.findByName('dockerBuildImage').mustRunAfter 'clean'
+}
+
+task publishSitemap {
+    dependsOn 'buildImage'
+
+    doLast {
+        exec { commandLine "docker", "push", dockerTag }
+    }
 }

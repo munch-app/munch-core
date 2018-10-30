@@ -1,12 +1,12 @@
 package munch.sitemap.sgp;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.collect.Iterators;
 import munch.api.search.data.NamedSearchQuery;
 import munch.api.search.data.SearchQuery;
-import munch.sitemap.permutation.PermutationEngine;
-import munch.sitemap.permutation.PermutationService;
+import munch.data.location.Area;
+import munch.permutation.LandmarkUtils;
+import munch.permutation.PermutationEngine;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.Iterator;
 import java.util.List;
@@ -20,44 +20,49 @@ import java.util.List;
 @Singleton
 public final class SGPLocationPermutation extends PermutationEngine {
 
-    @Inject
-    protected SGPLocationPermutation(PermutationService service) {
-        super(service);
-    }
-
     @Override
+    @SuppressWarnings("ConstantConditions")
     protected Iterator<SearchQuery> iterator() {
-        // TODO Combination
-        return null;
+        Iterator<SearchQuery> areas = Iterators.transform(areaClient.iterator(), area -> {
+            SearchQuery query = newSearchQuery();
+            query.getFilter().getLocation().setAreas(List.of(area));
+            return query;
+        });
+
+        Iterator<SearchQuery> landmarks = Iterators.transform(landmarkClient.iterator(), landmark -> {
+            SearchQuery query = newSearchQuery();
+            Area area = LandmarkUtils.asArea(landmark, 1.0);
+            query.getFilter().getLocation().setAreas(List.of(area));
+            return query;
+        });
+
+        return Iterators.concat(areas, landmarks);
     }
 
     @Override
-    protected String getName(SearchQuery searchQuery) {
-        return "sgp-" + getLocationName(searchQuery) + "-" + joinTags(searchQuery, "-");
+    public String getName(SearchQuery searchQuery) {
+        return "sgp-" + getLocationName(searchQuery);
     }
 
     @Override
-    protected String getTitle(SearchQuery searchQuery) {
-        return "The best " + joinTags(searchQuery, " ") + " places in and around " + getLocationName(searchQuery) + " · Munch Singapore";
+    public String getTitle(SearchQuery searchQuery) {
+        return "The best places in and around " + getLocationName(searchQuery) + " · Munch Singapore";
     }
 
     @Override
-    protected String getKeywords(SearchQuery searchQuery) {
-        return joinTags(searchQuery, ",") + "," + getLocationName(searchQuery) + ",Singapore,Food";
+    public String getKeywords(SearchQuery searchQuery) {
+        return getLocationName(searchQuery) + ",Singapore,Food";
     }
 
     @Override
-    protected String getDescription(SearchQuery searchQuery) {
-        return "Looking for " + joinTags(searchQuery, " ") + " places in and around " + getLocationName(searchQuery) + "? " +
+    public String getDescription(SearchQuery searchQuery) {
+        return "Looking for places in and around " + getLocationName(searchQuery) + "? " +
                 "View images and articles from food bloggers. " +
                 "Find the best places by price, location, preferences on Munch! ";
     }
 
     @Override
-    protected boolean validate(NamedSearchQuery namedSearchQuery, List<JsonNode> data) {
-        if (namedSearchQuery.getSearchQuery().getFilter().getTag().getPositives().size() == 3) {
-            return hasMinPlace(data, 5);
-        }
-        return hasMinPlace(data, 10);
+    protected boolean validate(NamedSearchQuery namedSearchQuery) {
+        return namedSearchQuery.getCount() >= 10;
     }
 }

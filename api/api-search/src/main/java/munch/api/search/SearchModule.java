@@ -1,8 +1,13 @@
 package munch.api.search;
 
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
+import com.amazonaws.services.dynamodbv2.document.DynamoDB;
+import com.google.inject.Provides;
 import com.google.inject.multibindings.Multibinder;
 import munch.api.ApiServiceModule;
 import munch.api.search.inject.*;
+
+import javax.inject.Singleton;
 
 /**
  * Created by: Fuxing
@@ -26,5 +31,11 @@ public final class SearchModule extends ApiServiceModule {
         addService(SearchFilterService.class);
         addService(SearchFilterAreaService.class);
         addService(SearchFilterBetweenService.class);
+    }
+
+    @Provides
+    @Singleton
+    DynamoDB provideDynamoDB() {
+        return new DynamoDB(AmazonDynamoDBClientBuilder.defaultClient());
     }
 }
