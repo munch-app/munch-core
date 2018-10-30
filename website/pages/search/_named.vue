@@ -13,7 +13,32 @@
       if (this.keywords) {
         meta.push({name: 'keywords', content: this.keywords})
       }
-      return {title: this.title || 'Search · Munch', meta}
+      return {
+        title: this.title || 'Search · Munch', meta,
+        __dangerouslyDisableSanitizers: ['script'],
+        script: [
+          {
+            type: 'application/ld+json',
+            innerHTML: JSON.stringify({
+                "@context": "http://schema.org",
+                "@type": "BreadcrumbList",
+                "itemListElement": [{
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Search",
+                  "item": "https://www.munch.app/search"
+                }, {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": this.title,
+                  "item": "https://www.munch.app/search/" + this.name
+                }]
+
+              }
+            )
+          }
+        ]
+      }
     },
     asyncData({store, $axios, params, error}) {
       const named = params.named

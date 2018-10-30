@@ -106,7 +106,32 @@
       }
       meta.push({name: 'keywords', content: tags.filter(tag => !!tag).join(',')})
 
-      return {title: `${this.place.name} · Munch`, meta}
+      return {
+        title: `${this.place.name} · Munch`, meta,
+        __dangerouslyDisableSanitizers: ['script'],
+        script: [
+          {
+            type: 'application/ld+json',
+            innerHTML: JSON.stringify({
+                "@context": "http://schema.org",
+                "@type": "BreadcrumbList",
+                "itemListElement": [{
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Places",
+                  "item": "https://www.munch.app/places"
+                }, {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": this.place.name,
+                  "item": "https://www.munch.app/places/" + this.place.placeId
+                }]
+
+              }
+            )
+          }
+        ]
+      }
     },
     data() {
       return {
