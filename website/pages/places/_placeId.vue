@@ -91,15 +91,22 @@
       GoogleEmbedMap, PlaceMenu, MunchButton, ImageSize, PlaceTagList
     },
     head() {
-      const title = this.data.place.name + ' · Munch'
-      const description = this.data.place.description
-      const tags = this.data.place.tags.map(tag => tag.name).join(',')
-
       const meta = []
-      meta.push({name: 'robots', content: `follow,${this.hasPartner ? 'index' : 'noindex'}`})
-      if (description) meta.push({hid: 'description', name: 'description', content: description})
-      if (tags) meta.push({name: 'keywords', content: tags})
-      return {title, meta}
+
+      const index = this.place.taste.group >= 2 ? 'index' : 'noindex'
+      meta.push({name: 'robots', content: `follow,${index}`})
+
+      if (this.place.description) {
+        meta.push({hid: 'description', name: 'description', content: this.place.description})
+      }
+
+      const tags = [this.place.name, ...this.place.tags.map(tag => tag.name)]
+      if (this.place.location.neighbourhood) {
+        tags.push(this.place.location.neighbourhood)
+      }
+      meta.push({name: 'keywords', content: tags.filter(tag => !!tag).join(',')})
+
+      return {title: `${this.place.name} · Munch`, meta}
     },
     data() {
       return {
