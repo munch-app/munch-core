@@ -1,6 +1,6 @@
 <template>
   <no-ssr>
-    <div class="HeaderRight" v-if="false">
+    <div class="HeaderRight" v-if="!isProduction">
       <div @click="onClickLogin" class="Name hover-pointer" v-if="!isLoggedIn">Login</div>
       <nuxt-link to="/profile" v-else class="Name">{{displayName}}</nuxt-link>
       <img v-if="false" class="Menu hover-pointer" src="/img/layouts/menu.svg" @click="onClickMenu"/>
@@ -14,6 +14,7 @@
   export default {
     name: "HeaderRight",
     computed: {
+      ...mapGetters(['isProduction']),
       ...mapGetters('user', ['isLoggedIn', 'displayName']),
     },
     methods: {

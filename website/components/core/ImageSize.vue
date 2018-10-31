@@ -107,8 +107,6 @@
     .Image {
       width: 100%;
       height: 100%;
-
-      -webkit-transform: translate3d(0, 0, 0);
     }
   }
 </style>

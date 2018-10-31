@@ -98,47 +98,36 @@
   }
 
   .Image {
+    width: 100%;
     border-radius: 4px;
     overflow: hidden;
 
+    padding-top: 66%;
+
     .GreyscaleContainer {
       position: relative;
-      padding-left: 8px;
-      padding-right: 8px;
+      padding-left: 12px;
+      padding-right: 12px;
       padding-top: 45%;
       transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
       background-color: rgba(0, 0, 0, 0.55);
+      height: 100%;
+
+      .Name {
+        font-size: 18px;
+        font-weight: 600;
+      }
 
       &:hover {
         background-color: rgba(0, 0, 0, 0.33);
-      }
-
-      .Name {
-        font-size: 19px;
-      }
-
-      @media (max-width: 767.98px) {
-        padding-top: 80%;
-
-        .Name {
-          font-size: 17px;
-        }
-      }
-
-      @media (max-width: 991.98px) {
-        padding-top: 70%;
-
-        .Name {
-          font-size: 18px;
-        }
       }
     }
 
     .ImageContainer {
       position: absolute;
       top: 0;
-      left: 8px;
-      right: 8px;
+      left: 12px;
+      right: 12px;
       bottom: 0;
 
       height: 100%;

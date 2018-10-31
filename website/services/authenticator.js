@@ -16,25 +16,41 @@ firebase.initializeApp({
 });
 
 function getIdToken() {
-  if (firebase.auth().currentUser) {
-    return firebase.auth().currentUser.getIdTokenResult()
-      .then(({expirationTime, token}) => {
-        Cookies.set('IdToken', {expirationTime, token})
-        return {expirationTime, token}
+  return new Promise(function (resolve, reject) {
+    function complete(user) {
+      user.getIdTokenResult()
+        .then(({expirationTime, token}) => {
+          Cookies.set('IdToken', {expirationTime, token})
+          resolve({expirationTime, token})
+        })
+        .catch(err => {
+          Cookies.remove('IdToken')
+          reject(err)
+        })
+    }
+
+
+    if (firebase.auth().currentUser) {
+      complete(firebase.auth().currentUser)
+    } else {
+      const unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
+        if (user) {
+          complete(user)
+        } else {
+          Cookies.remove('IdToken')
+          reject()
+        }
+        unsubscribe()
       })
-  } else {
-    Cookies.remove('IdToken')
-    return Promise.resolve()
-  }
+    }
+  })
 }
 
 export default {
-  getIdToken: getIdToken,
+  getIdToken,
   signInFacebook() {
     return firebase.auth().signInWithPopup(new firebase.auth.FacebookAuthProvider())
-      .then(() => {
-        return getIdToken()
-      })
+      .then(() => getIdToken())
   },
   signOut() {
     firebase.auth().signOut()

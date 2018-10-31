@@ -4,7 +4,10 @@
       <div class="MasonryWallItem" v-for="i in lane.indexes" :key="i" :style="style.item" :ref="`item_${i}`">
         <slot :item="items[i]" :index="i">{{items[i]}}</slot>
       </div>
-      <div ref="spacers" style="flex-grow:1;" :data-lane="index"/>
+
+      <div ref="spacers" class="Spacers" :data-lane="index"
+           v-observe-visibility="{callback: (v) => v && fill(),throttle:300}"
+      />
     </div>
   </div>
 </template>
@@ -36,20 +39,14 @@
       return {
         lanes: [],
         cursor: 0,
-        loading: true,
-        height: 1000
       }
     },
     mounted() {
-      this.$nextTick(() => {
-        this.redraw()
-        window.addEventListener('resize', this.redraw)
-        this.$fillInterval = setInterval(this.fill, 10)
-      })
+      this.redraw()
+      window.addEventListener('resize', this.redraw)
     },
     beforeDestroy() {
       window.removeEventListener('resize', this.redraw)
-      clearInterval(this.$fillInterval)
     },
     computed: {
       style() {
@@ -79,44 +76,38 @@
         for (let i = 0; i < length; i++) {
           this.lanes.push({indexes: []})
         }
-
-        this.height = (window.innerHeight || document.documentElement.clientHeight)
       },
 
       fill() {
-        const spacers = this.$refs.spacers
-        const spacer = _.max(spacers, (spacer) => {
-          return spacer.clientHeight || 0
-        })
-
-        const top = spacer.getBoundingClientRect().top
-        const index = spacer.dataset.lane
-
-        // Loading only get triggered, after 200
-        if (this.height + 200 > top) {
-          this.loading = true
-        } else if (this.height + 2000 < top) {
-          this.loading = false
+        if (this.cursor >= this.items.length) {
+          // Request for more items
+          this.$emit('append')
+          return
         }
 
-        // Will load util, 2000
-        if (this.loading) {
-          this.addItemTo(index)
+        // Fill keep filling until no more items
+        if (this.cursor < this.items.length) {
+          this.$nextTick(() => {
+            const spacers = this.$refs.spacers
+            const spacer = _.max(spacers, (spacer) => spacer.clientHeight || 0)
+            this.fillItem(spacer.dataset.lane)
+            this.fill()
+          })
         }
       },
 
-      addItemTo(laneIndex) {
+      fillItem(laneIndex) {
         const lane = this.lanes[laneIndex]
 
         if (this.items[this.cursor]) {
           lane.indexes.push(this.cursor)
           this.cursor++
         }
-
-        // 10 Items in Advance
-        if (this.cursor + 10 < this.items.length) return
-        this.$emit('append')
       },
+
+      /**
+       * @param index to scroll to
+       */
       scrollTo(index) {
         const item = this.$refs['item_' + index]
         if (item && item[0]) {
@@ -140,6 +131,13 @@
 
       display: flex;
       flex-direction: column;
+    }
+
+    .Spacers {
+      flex-grow:1;
+      margin-top: -300px;
+      padding-top: 300px;
+      min-height: 100px;
     }
   }
 </style>

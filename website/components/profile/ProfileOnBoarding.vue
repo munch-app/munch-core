@@ -5,8 +5,7 @@
   <portal to="dialog-w400" class="zero-spacing">
     <div class="LoginBanner">
       <div class="BrandLogo flex-center">
-        <img src="/img/MunchLogoTitled.svg">
-        <h1>Munch</h1>
+        <img src="~/assets/img/MunchLogoOnboarding.svg" style="width: 66%">
       </div>
 
       <div class="CloseButton hover-pointer" @click="$store.commit('unfocus', 'Login')">

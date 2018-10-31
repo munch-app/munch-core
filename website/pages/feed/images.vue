@@ -12,7 +12,7 @@
       </masonry-wall>
     </div>
 
-    <no-ssr class="flex-center" style="padding: 24px 0 48px 0">
+    <no-ssr class="flex-center" style="padding: 64px 0 64px 0">
       <beat-loader color="#084E69" v-if="more" size="14px"/>
     </no-ssr>
 
