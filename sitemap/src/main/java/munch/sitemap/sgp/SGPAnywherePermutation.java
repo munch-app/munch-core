@@ -5,6 +5,7 @@ import munch.api.search.assumption.AssumptionEngine;
 import munch.api.search.data.NamedSearchQuery;
 import munch.api.search.data.SearchQuery;
 import munch.permutation.PermutationEngine;
+import org.apache.commons.lang3.text.WordUtils;
 
 import javax.inject.Singleton;
 import java.util.Iterator;
@@ -40,7 +41,8 @@ public final class SGPAnywherePermutation extends PermutationEngine {
 
     @Override
     public String getTitle(SearchQuery searchQuery) {
-        return "The best " + joinTags(searchQuery, " ") + " places in Singapore · Munch Singapore";
+        String prefix = joinTags(searchQuery, ", ", WordUtils::capitalizeFully);
+        return prefix + " places in Singapore · Munch Singapore";
     }
 
     @Override
@@ -50,7 +52,8 @@ public final class SGPAnywherePermutation extends PermutationEngine {
 
     @Override
     public String getDescription(SearchQuery searchQuery) {
-        return "Looking for " + joinTags(searchQuery, ", ") + " places in Singapore? " +
+        String prefix = joinTags(searchQuery, ", ", WordUtils::capitalizeFully);
+        return prefix + " places in Singapore. " +
                 "View images and articles from popular food bloggers. " +
                 "Find the best places by price, location, preferences on Munch!";
     }

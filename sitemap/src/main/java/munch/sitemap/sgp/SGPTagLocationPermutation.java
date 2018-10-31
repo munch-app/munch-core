@@ -7,6 +7,7 @@ import munch.api.search.data.SearchQuery;
 import munch.data.location.Area;
 import munch.permutation.LandmarkUtils;
 import munch.permutation.PermutationEngine;
+import org.apache.commons.lang3.text.WordUtils;
 
 import javax.inject.Singleton;
 import java.util.Iterator;
@@ -61,7 +62,8 @@ public final class SGPTagLocationPermutation extends PermutationEngine {
 
     @Override
     public String getTitle(SearchQuery searchQuery) {
-        return "The best " + joinTags(searchQuery, " ") + " places in and around " + getLocationName(searchQuery) + " · Munch Singapore";
+        String prefix = joinTags(searchQuery, ", ", WordUtils::capitalizeFully);
+        return prefix + " places in and around " + getLocationName(searchQuery) + " · Munch Singapore";
     }
 
     @Override
@@ -71,9 +73,10 @@ public final class SGPTagLocationPermutation extends PermutationEngine {
 
     @Override
     public String getDescription(SearchQuery searchQuery) {
-        return "Looking for " + joinTags(searchQuery, " ") + " places in and around " + getLocationName(searchQuery) + "? " +
+        String prefix = joinTags(searchQuery, ", ", WordUtils::capitalizeFully);
+        return prefix + " places in and around " + getLocationName(searchQuery) + ". " +
                 "View images and articles from food bloggers. " +
-                "Find the best places by price, location, preferences on Munch! ";
+                "Find the best places by price, location, preferences on Munch!";
     }
 
     @Override

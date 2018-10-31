@@ -46,7 +46,7 @@ public final class SGPLocationPermutation extends PermutationEngine {
 
     @Override
     public String getTitle(SearchQuery searchQuery) {
-        return "The best places in and around " + getLocationName(searchQuery) + " · Munch Singapore";
+        return "Best places in and around " + getLocationName(searchQuery) + " · Munch Singapore";
     }
 
     @Override
@@ -56,9 +56,9 @@ public final class SGPLocationPermutation extends PermutationEngine {
 
     @Override
     public String getDescription(SearchQuery searchQuery) {
-        return "Looking for places in and around " + getLocationName(searchQuery) + "? " +
+        return "Places in and around " + getLocationName(searchQuery) + ". " +
                 "View images and articles from food bloggers. " +
-                "Find the best places by price, location, preferences on Munch! ";
+                "Find the best places by price, location, preferences on Munch!";
     }
 
     @Override

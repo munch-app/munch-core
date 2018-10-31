@@ -44,11 +44,7 @@ public abstract class PermutationEngine implements NamedQueryMapper {
 
         mapped = Iterators.transform(mapped, namedQuery -> {
             NamedSearchQuery existing = database.get(namedQuery.getName());
-            if (existing != null
-                    && existing.equals(namedQuery)
-                    && !DateCompareUtils.after(existing.getUpdatedMillis(), Duration.ofDays(21))) {
-                return existing;
-            }
+            if (isUseExisting(existing, namedQuery)) return existing;
 
             namedQuery.setCount(apiSearchClient.count(namedQuery.getSearchQuery()));
             if (validate(namedQuery)) {
@@ -59,6 +55,13 @@ public abstract class PermutationEngine implements NamedQueryMapper {
         });
 
         return Iterators.filter(mapped, Objects::nonNull);
+    }
+
+    private boolean isUseExisting(NamedSearchQuery existing, NamedSearchQuery mapped) {
+        if (existing == null) return false;
+        if (DateCompareUtils.after(existing.getUpdatedMillis(), Duration.ofDays(21))) return false;
+        if (existing.equals(mapped)) return true;
+        return false;
     }
 
     /**

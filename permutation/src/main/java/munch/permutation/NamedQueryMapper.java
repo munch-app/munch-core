@@ -1,10 +1,12 @@
 package munch.permutation;
 
+import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import munch.api.search.data.NamedSearchQuery;
 import munch.api.search.data.SearchQuery;
 import munch.data.location.Area;
-import org.apache.commons.lang3.text.WordUtils;
+
+import java.util.stream.Collectors;
 
 /**
  * Created by: Fuxing
@@ -59,9 +61,14 @@ public interface NamedQueryMapper {
 
     default String joinTags(SearchQuery searchQuery, String joiner) {
         SearchQuery.Filter.Tag tag = searchQuery.getFilter().getTag();
-        String tags = Joiner.on(joiner)
-                .join(tag.getPositives());
-        return WordUtils.capitalizeFully(tags);
+        return Joiner.on(joiner).join(tag.getPositives());
+    }
+
+    default String joinTags(SearchQuery searchQuery, String joiner, Function<String, String> mapper) {
+        SearchQuery.Filter.Tag tag = searchQuery.getFilter().getTag();
+        return tag.getPositives().stream()
+                .map(mapper::apply)
+                .collect(Collectors.joining(joiner));
     }
 
     private String cleanName(String name) {
