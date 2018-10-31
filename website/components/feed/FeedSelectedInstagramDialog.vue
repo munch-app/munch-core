@@ -1,38 +1,35 @@
 <template>
-  <dialog-navigation @next="$emit('next')" @prev="$emit('prev')" @close="$emit('close')">
-    <div class="InstagramDialog">
-      <image-size class="border-3 index-content" :image="item.image" grow="height">
-        <div class="ImageContainer hover-pointer" @click="onClickPlace">
-          <a class="Author" target="_blank" rel="noreferrer nofollow noopener"
-             :href="`https://instagram.com/${item.instagram.username}`">
-            <simple-svg class="Icon" fill="white" :filepath="require('~/assets/icon/feed/instagram.svg')"/>
-            <div class="Name">{{item.author}}</div>
-          </a>
-        </div>
-      </image-size>
+  <div class="InstagramDialog">
+    <image-size class="border-3 index-content" :image="item.image" grow="height">
+      <div class="ImageContainer hover-pointer" @click="onClickPlace">
+        <a class="Author" target="_blank" rel="noreferrer nofollow noopener"
+           :href="`https://instagram.com/${item.instagram.username}`">
+          <simple-svg class="Icon" fill="white" :filepath="require('~/assets/icon/feed/instagram.svg')"/>
+          <div class="Name">{{item.author}}</div>
+        </a>
+      </div>
+    </image-size>
 
-      <a class="Place hover-pointer" v-if="place" :href="`/places/${place.placeId}`" target="_blank">
-        <h2 class="Name secondary-500-hover">{{place.name}}</h2>
-        <h6 class="Location">{{location}}</h6>
+    <nuxt-link class="Place hover-pointer" v-if="place" :to="`/places/${place.placeId}`">
+      <h2 class="Name secondary-500-hover">{{place.name}}</h2>
+      <h6 class="Location">{{location}}</h6>
 
-        <div class="Tags">
-          <div class="Tag border-3" v-for="tag in tags" :key="tag.tagId"
-               :class="{'peach-100-bg weight-600 black-a-80': tag.type === 'price', 'whisper-100-bg weight-400': tag.type !== 'price'}">
-            {{tag.name}}
-          </div>
+      <div class="Tags">
+        <div class="Tag border-3" v-for="tag in tags" :key="tag.tagId"
+             :class="{'peach-100-bg weight-600 black-a-80': tag.type === 'price', 'whisper-100-bg weight-400': tag.type !== 'price'}">
+          {{tag.name}}
         </div>
-      </a>
-    </div>
-  </dialog-navigation>
+      </div>
+    </nuxt-link>
+  </div>
 </template>
 
 <script>
   import ImageSize from "../core/ImageSize";
-  import DialogNavigation from "../layouts/DialogNavigation";
 
   export default {
     name: "FeedSelectedInstagramDialog",
-    components: {DialogNavigation, ImageSize},
+    components: {ImageSize},
     props: {
       item: {
         type: Object,

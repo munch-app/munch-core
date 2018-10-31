@@ -33,6 +33,9 @@
       padding: {
         type: Number,
         default: 12,
+      },
+      persistence: {
+        type: Object
       }
     },
     data() {
@@ -42,11 +45,23 @@
       }
     },
     mounted() {
+      if (this.persistence && this.persistence.getter) {
+        const {lanes, cursor} = JSON.parse(JSON.stringify(this.$store.getters[this.persistence.getter]))
+        this.lanes = lanes
+        this.cursor = cursor
+      }
+
       this.redraw()
       window.addEventListener('resize', this.redraw)
     },
     beforeDestroy() {
       window.removeEventListener('resize', this.redraw)
+
+      if (this.persistence && this.persistence.commit) {
+        this.$store.commit(this.persistence.commit, {
+          lanes: this.lanes, cursor: this.cursor
+        })
+      }
     },
     computed: {
       style() {
@@ -134,7 +149,7 @@
     }
 
     .Spacers {
-      flex-grow:1;
+      flex-grow: 1;
       margin-top: -300px;
       padding-top: 300px;
       min-height: 100px;

@@ -3,7 +3,8 @@
     <!--<feed-nav-bar/>-->
 
     <div class="container ImageWall">
-      <masonry-wall ref="masonry" :items="items" @append="onAppend" :min="2">
+      <masonry-wall ref="masonry" :items="items" @append="onAppend" :min="2"
+      :persistence="{getter: 'feed/images/persistence', commit: 'feed/images/persistence'}">
         <template slot-scope="{item, index}">
           <div @click="selected = index">
             <feed-image-card :item="item"/>
@@ -16,9 +17,9 @@
       <beat-loader color="#084E69" v-if="more" size="14px"/>
     </no-ssr>
 
-    <feed-selected-instagram-dialog v-if="selectedItem && selectedItem.instagram" :item="selectedItem"
-                                    @next="onNext" @prev="selected--" @close="selected = -1"
-    />
+    <dialog-navigation v-if="selectedItem" @prev="selected--" @next="onNext" @close="selected = -1">
+      <feed-selected-instagram-dialog v-if="selectedItem.instagram" :item="selectedItem"/>
+    </dialog-navigation>
   </div>
 </template>
 
@@ -29,9 +30,10 @@
   import ImageSize from "../../components/core/ImageSize";
   import FeedSelectedInstagramDialog from "../../components/feed/FeedSelectedInstagramDialog";
   import MasonryWall from "../../components/core/MasonryWall";
+  import DialogNavigation from "../../components/layouts/DialogNavigation";
 
   export default {
-    components: {MasonryWall, FeedSelectedInstagramDialog, ImageSize, FeedNavBar, FeedImageCard},
+    components: {DialogNavigation, MasonryWall, FeedSelectedInstagramDialog, ImageSize, FeedNavBar, FeedImageCard},
     head() {
       const meta = [
         {name: 'robots', content: `follow,index`}

@@ -5,12 +5,16 @@ export const state = () => ({
   places: {},
   next: {sort: null},
   loading: false,
+
+  // Persistence of feed structure
+  persistence: {lanes: [], cursor: 0}
 })
 
 export const getters = {
   items: (state) => state.items,
   more: (state) => !!state.next.sort && state.items.length < MAX_ITEMS,
-  getPlace: (state) => (placeId) => state.places[placeId]
+  getPlace: (state) => (placeId) => state.places[placeId],
+  persistence: (state) => state.persistence
 }
 
 export const mutations = {
@@ -26,6 +30,10 @@ export const mutations = {
     state.next.sort = next && next.sort || null
 
     state.loading = false
+  },
+
+  persistence(state, persistence) {
+    state.persistence = persistence
   }
 }
 
