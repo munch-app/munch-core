@@ -8,7 +8,7 @@
           </div>
         </div>
         <div class="Author">
-          <simple-svg class="Icon" fill="white" filepath="/img/feed/instagram.svg"/>
+          <simple-svg class="Icon" fill="white" :filepath="require('~/assets/icon/feed/instagram.svg')"/>
           <div class="Name">{{item.author}}</div>
         </div>
       </div>

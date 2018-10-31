@@ -5,7 +5,7 @@
         <div class="ImageContainer hover-pointer" @click="onClickPlace">
           <a class="Author" target="_blank" rel="noreferrer nofollow noopener"
              :href="`https://instagram.com/${item.instagram.username}`">
-            <simple-svg class="Icon" fill="white" filepath="/img/feed/instagram.svg"/>
+            <simple-svg class="Icon" fill="white" :filepath="require('~/assets/icon/feed/instagram.svg')"/>
             <div class="Name">{{item.author}}</div>
           </a>
         </div>

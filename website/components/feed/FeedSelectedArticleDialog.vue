@@ -7,7 +7,7 @@
           <h4 class="Title text-ellipsis-1l">{{article.title}}</h4>
         </div>
         <div class="Close hover-pointer" @click="onClose">
-          <simple-svg class="Icon" fill="black" filepath="/img/feed/close.svg"/>
+          <simple-svg class="Icon" fill="black" :filepath="require('~/assets/icon/close.svg')"/>
         </div>
       </div>
 
@@ -20,7 +20,7 @@
           </a>
 
           <a class="BrandButton" :href="article.domain.url">
-            <simple-svg class="Icon" fill="black" filepath="/img/feed/article.svg"/>
+            <simple-svg class="Icon" fill="black" :filepath="require('~/assets/icon/feed/article.svg')"/>
             <div class="Name text text-ellipsis-1l secondary-700">{{article.domain.name}}</div>
           </a>
         </div>

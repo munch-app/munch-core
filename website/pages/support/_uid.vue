@@ -1,21 +1,19 @@
 <template>
   <div class="container prismic-content">
-    <b-row>
-      <b-col cols="12" md="9">
-        <h1 v-if="title">{{title}}</h1>
-        <div v-html="content"/>
-      </b-col>
+    <article>
+      <h1 v-if="title">{{title}}</h1>
+      <div v-html="content"/>
+    </article>
 
-      <b-col cols="12" md="3">
-        <hr class="d-md-none d-block">
-        <h4>Support Articles</h4>
-        <ul>
-          <li v-for="article in articles" :key="article.to">
-            <nuxt-link :to="article.to">{{article.text}}</nuxt-link>
-          </li>
-        </ul>
-      </b-col>
-    </b-row>
+    <aside>
+      <hr>
+      <h4>Support Articles</h4>
+      <ul>
+        <li v-for="article in articles" :key="article.to">
+          <nuxt-link :to="article.to">{{article.text}}</nuxt-link>
+        </li>
+      </ul>
+    </aside>
   </div>
 </template>
 
@@ -56,5 +54,35 @@
 <style lang="less" scoped>
   .prismic-content {
     padding-bottom: 24px;
+
+    display: flex;
+    flex-wrap: wrap;
+    flex-grow: 1;
+    align-self: flex-start;
+  }
+
+  article {
+    @media (min-width: 1200px) {
+      flex: 0 0 75%;
+      max-width: 75%;
+    }
+  }
+
+  aside {
+    width: 100%;
+
+    hr {
+      display: block;
+    }
+
+    @media (min-width: 1200px) {
+      flex: 0 0 25%;
+      max-width: 25%;
+      padding: 0 0 0 48px;
+
+      hr {
+        display: none;
+      }
+    }
   }
 </style>

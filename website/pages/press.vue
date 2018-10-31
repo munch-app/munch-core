@@ -7,8 +7,9 @@
 
     <section class="PressCoverage">
       <div v-html="press_coverage.title"/>
-      <div class="press_coverage_list row">
-        <div class="Card col-md-3 col-sm-6 col-12" v-for="item in pressCoverageList" :key="item.url">
+
+      <div class="PressCoverageList">
+        <div class="Card" v-for="item in pressCoverageList" :key="item.url">
           <a class="elevation-2 elevation-hover-3 block border-3" :href="item.url" target="_blank">
             <img :src="item.image" class="border-3-top">
             <h4 class="text-ellipsis-1-line">{{item.name}}</h4>
@@ -19,8 +20,9 @@
 
     <section class="DigitalAsset">
       <div v-html="digital_asset.title"/>
-      <div class="press_coverage_list row">
-        <div class="Card col-md-3 col-12 col-sm-6" v-for="item in digitalAssetList" :key="item.url">
+
+      <div class="PressCoverageList">
+        <div class="Card" v-for="item in digitalAssetList" :key="item.url">
           <a class="elevation-2 elevation-hover-3 block border-3" :href="item.image" target="_blank">
             <img :src="item.image" class="border-3-top">
             <h4 class="text-ellipsis-1-line">{{item.name}}</h4>
@@ -93,9 +95,31 @@
 
   section {
     margin-top: 32px;
+  }
+
+  .PressCoverageList {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -12px;
+    margin-left: -12px;
 
     .Card {
       margin-top: 16px;
+
+      flex: 0 0 100%;
+      max-width: 100%;
+      padding-right: 12px;
+      padding-left: 12px;
+
+      @media (min-width: 576px) {
+        flex: 0 0 50%;
+        max-width: 50%;
+      }
+
+      @media (min-width: 768px) {
+        flex: 0 0 25%;
+        max-width: 25%;
+      }
 
       h4 {
         padding: 12px 16px;

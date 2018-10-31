@@ -26,7 +26,7 @@
               <div class="text text-ellipsis-4l Description">{{item.content || item.description}}</div>
 
               <div class="secondary-700 Brand">
-                <simple-svg class="Icon" fill="black" filepath="/img/feed/article.svg"/>
+                <simple-svg class="Icon" fill="black" :filepath="require('~/assets/icon/feed/article.svg')"/>
                 <div class="Name text text-ellipsis-1l">{{item.domain.name}}</div>
               </div>
             </div>

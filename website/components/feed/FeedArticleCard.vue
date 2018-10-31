@@ -9,12 +9,12 @@
     <div class="Bottom">
       <a class="BrandButton" :href="article.domain.url"
          target="_blank" rel="noreferrer noopener nofollow">
-        <simple-svg class="Icon" fill="black" filepath="/img/feed/article.svg"/>
+        <simple-svg class="Icon" fill="black" :filepath="require('~/assets/icon/feed/article.svg')"/>
         <div class="Name text text-ellipsis-1l secondary-700">{{article.domain.name}}</div>
       </a>
 
       <div class="PlaceButton elevation-1 border-3 border hover-pointer elevation-hover-2" @click="onClick">
-        <simple-svg class="Icon" fill="rgba(0, 0, 0, 0.85)" filepath="/img/feed/place.svg"/>
+        <simple-svg class="Icon" fill="rgba(0, 0, 0, 0.85)" :filepath="require('~/assets/icon/place.svg')"/>
         <div class="Label">Places Mentioned</div>
       </div>
     </div>

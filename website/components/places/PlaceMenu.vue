@@ -14,8 +14,10 @@
           <image-size :image="item" class="Image border-3">
             <div class="MenuImageContainer">
               <div class="Author" v-if="item.profile && item.profile.name">
-                <simple-svg v-if="item.profile.type === 'instagram'" class="Icon" fill="rgba(255,255,255,0.95)" filepath="/img/feed/instagram.svg"/>
-                <simple-svg v-if="item.profile.type === 'article'" class="Icon" fill="rgba(255,255,255,0.95)" filepath="/img/feed/article.svg"/>
+                <simple-svg v-if="item.profile.type === 'instagram'" class="Icon" fill="rgba(255,255,255,0.95)"
+                            :filepath="require('~/assets/icon/feed/instagram.svg')"/>
+                <simple-svg v-if="item.profile.type === 'article'" class="Icon" fill="rgba(255,255,255,0.95)"
+                            :filepath="require('~/assets/icon/feed/article.svg')"/>
                 <div class="Name text-ellipsis-1-line">{{item.profile.name}}</div>
               </div>
             </div>
@@ -113,7 +115,7 @@
             line-height: 12px;
             font-size: 11px;
             font-weight: 500;
-            color: rgba(255,255,255,0.95);
+            color: rgba(255, 255, 255, 0.95);
           }
         }
       }

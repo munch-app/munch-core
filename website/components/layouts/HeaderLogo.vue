@@ -2,7 +2,7 @@
   <div class="HeaderLogo">
     <div class="MobileAnchor" @click="$store.commit('toggleFocus', 'HeaderMenu')"/>
     <nuxt-link to="/">
-      <img class="Image" src="/img/MunchLogo.svg">
+      <img class="Image" src="~/assets/img/MunchLogo.svg">
       <img class="HeaderIndicator" src="/img/layouts/caret-down.svg">
     </nuxt-link>
   </div>

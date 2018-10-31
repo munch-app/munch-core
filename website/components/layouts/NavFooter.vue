@@ -2,7 +2,7 @@
   <nav class="zero-spacing hr-top index-footer white-bg">
     <div class="NavFooter flex container">
       <div class="Brand">
-        <img class="Image" src="/img/MunchLogoTitled.svg">
+        <img class="Image" src="~/assets/img/MunchLogoTitled.svg">
       </div>
       <div class="Company">
         <h4 class="secondary">Company</h4>

@@ -10,11 +10,11 @@
               </div>
 
               <div class="Author" v-if="item.instagram">
-                <simple-svg class="Icon" fill="white" filepath="/img/feed/instagram.svg"/>
+                <simple-svg class="Icon" fill="white" :filepath="require('~/assets/icon/feed/instagram.svg')"/>
                 <div class="Name">{{item.instagram.username}}</div>
               </div>
               <div class="Author" v-if="item.article">
-                <simple-svg class="Icon" fill="white" filepath="/img/feed/article.svg"/>
+                <simple-svg class="Icon" fill="white" :filepath="require('~/assets/icon/feed/article.svg')"/>
                 <div class="Name">{{item.article.domain.name}}</div>
               </div>
             </div>
@@ -34,13 +34,13 @@
           <a class="Author" v-if="selectedItem.instagram"
              target="_blank" rel="noreferrer nofollow noopener"
              :href="`https://instagram.com/${selectedItem.instagram.username}`">
-            <simple-svg class="Icon" fill="black" filepath="/img/feed/instagram.svg"/>
+            <simple-svg class="Icon" fill="black" :filepath="require('~/assets/icon/feed/instagram.svg')"/>
             <div class="Name secondary-700">{{selectedItem.instagram.username}}</div>
           </a>
           <div class="Author Article" v-if="selectedItem.article">
             <a class="Brand" target="_blank" rel="noreferrer nofollow noopener"
                :href="selectedItem.article.domain.url">
-              <simple-svg class="Icon" fill="black" filepath="/img/feed/article.svg"/>
+              <simple-svg class="Icon" fill="black" :filepath="require('~/assets/icon/feed/article.svg')"/>
               <div class="Name secondary-700">{{selectedItem.article.domain.name}}</div>
             </a>
             <a class="ReadMore" target="_blank" rel="noreferrer nofollow noopener"

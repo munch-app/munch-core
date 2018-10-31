@@ -27,7 +27,7 @@ module.exports = {
     ]
   },
   css: [
-    '~/assets/global.less'
+    '~/assets/less/index.less'
   ],
   render: {
     bundleRenderer: {
@@ -115,9 +115,10 @@ module.exports = {
     '~/server/redirect.js'
   ],
   modules: [
-    'bootstrap-vue/nuxt',
     '@nuxtjs/axios',
     '@nuxtjs/sitemap',
+
+    // 'bootstrap-vue/nuxt',
 
     '@nuxtjs/google-gtag',
     ['@nuxtjs/google-tag-manager', {
