@@ -10,21 +10,21 @@ task publishWebsiteLocal {
   }
 }
 
-//task publishWebsiteProduction {
-//  doLast {
-//    exec {
-//      commandLine "docker", "build",
-//        "-f", "Dockerfile.production",
-//        "-t", dockerTag + 'production', '.'
-//    }
-//    exec { commandLine "docker", "push", dockerTag + 'production' }
-//    exec { commandLine 'aws', 'ecs', 'update-service',
-//      '--cluster', 'munch-core',
-//      '--service', 'Website',
-//      '--force-new-deployment'
-//    }
-//  }
-//}
+task publishWebsiteProduction {
+  doLast {
+    exec {
+      commandLine "docker", "build",
+        "-f", "Dockerfile.production",
+        "-t", dockerTag + 'production', '.'
+    }
+    exec { commandLine "docker", "push", dockerTag + 'production' }
+    exec { commandLine 'aws', 'ecs', 'update-service',
+      '--cluster', 'munch-core',
+      '--service', 'Website',
+      '--force-new-deployment'
+    }
+  }
+}
 
 task publishWebsiteStaging {
   doLast {

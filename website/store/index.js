@@ -2,6 +2,7 @@ import _ from "underscore";
 import uuidv4 from "uuid/v4";
 
 export const state = () => ({
+  origin: process.env.origin,
   loading: false,
   notifications: [],
   focus: {
@@ -27,6 +28,14 @@ export const getters = {
   isElevated: (state) => {
     return state.focus.is
   },
+
+  /**
+   * @returns {boolean} whether it is currently in production
+   */
+  isProduction: (state) => {
+    return state.origin === 'https://www.munch.app'
+  },
+
 }
 
 import {disableBodyScroll, clearAllBodyScrollLocks} from 'body-scroll-lock';

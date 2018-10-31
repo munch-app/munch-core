@@ -40,6 +40,9 @@ module.exports = {
   router: {
     // scrollBehavior: () => ({x: 0, y: 0})
   },
+  env: {
+    origin: process.env.ORIGIN || 'http://localhost:3000'
+  },
   build: {
     extend(config, {isDev, isClient, isServer}) {
       if (isDev && isClient) {

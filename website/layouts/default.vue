@@ -4,7 +4,7 @@
       <div class="HeaderRow clearfix container">
         <header-logo class="Logo" :class="{'IsSuggest': isFocused('Suggest')}"/>
         <div class="Search">
-          <nuxt-link to="/" v-if="false" production>
+          <nuxt-link to="/" v-if="isProduction">
             <span class="BrandTitle">Discover Delicious</span>
           </nuxt-link>
           <search-bar v-else class="SearchBar" @onText="onText" @onBlur="onBlur" @onFocus="onFocus"/>
@@ -34,6 +34,8 @@
 
     <nav-footer/>
   </div>
+
+
 </template>
 
 <script>
@@ -61,7 +63,7 @@
       return {text: ""}
     },
     computed: {
-      ...mapGetters(['isElevated', 'isFocused']),
+      ...mapGetters(['isElevated', 'isFocused', 'isProduction']),
       ...mapGetters('search', ['showsMap']),
       route() {
         return this.$route.name
