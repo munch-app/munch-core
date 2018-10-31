@@ -2,7 +2,8 @@
   <a v-if="images.length > 0" v-scroll-to="{el: '#PlaceImageWall',offset: -120}" class="hover-pointer">
     <div class="container">
       <div class="ImagePipe border-3">
-        <image-size class="Image border-3" v-for="(image, index) in images" :image="image" :key="index" grow="width" :height="160"/>
+        <image-size class="Image border-3" v-for="(image, index) in images" :image="image" :key="index" grow="width"
+                    :height="180"/>
       </div>
     </div>
 
@@ -23,6 +24,7 @@
 
 <script>
   import ImageSize from "../core/ImageSize";
+
   export default {
     name: "PlaceImageBanner",
     components: {ImageSize},
@@ -49,17 +51,17 @@
       margin-right: 20px;
     }
 
-    @media(max-width: 767.98px) {
+    @media (max-width: 767.98px) {
       display: none;
     }
   }
 
   .ImageBanner {
     .Image {
-      height: 180px;
+      height: 200px;
     }
 
-    @media(min-width: 768px) {
+    @media (min-width: 768px) {
       display: none;
     }
   }
@@ -74,6 +76,10 @@
 
       margin: 8px;
       padding: 6px 10px;
+
+      @media (max-width: 767.98px) {
+        margin: 0 0 16px;
+      }
 
       display: inline-flex;
       align-items: center;
