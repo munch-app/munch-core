@@ -4,7 +4,7 @@
 
     <div class="container ImageWall">
       <masonry-wall ref="masonry" :items="items" @append="onAppend" :min="2"
-      :persistence="{getter: 'feed/images/persistence', commit: 'feed/images/persistence'}">
+                    :persistence="{getter: 'feed/images/persistence', commit: 'feed/images/persistence'}">
         <template slot-scope="{item, index}">
           <div @click="selected = index">
             <feed-image-card :item="item"/>
@@ -17,7 +17,8 @@
       <beat-loader color="#084E69" v-if="more" size="14px"/>
     </no-ssr>
 
-    <dialog-navigation v-if="selectedItem" @prev="selected--" @next="onNext" @close="selected = -1">
+    <dialog-navigation v-if="selectedItem" @prev="selected--" @next="onNext" @close="selected = -1"
+                       max-width="600px">
       <feed-selected-instagram-dialog v-if="selectedItem.instagram" :item="selectedItem"/>
     </dialog-navigation>
   </div>

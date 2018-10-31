@@ -23,7 +23,8 @@
       </template>
     </masonry-wall>
 
-    <dialog-navigation v-if="selectedItem" @next="selected++" @prev="selected--" @close="selected = -1">
+    <dialog-navigation v-if="selectedItem" @next="selected++" @prev="selected--" @close="selected = -1"
+                       max-width="600px">
       <div class="ImageWallDialog">
         <image-size class="Image index-content" :image="{sizes: selectedItem.sizes}" grow="height"/>
 
@@ -182,12 +183,9 @@
   }
 
   .ImageWallDialog {
-    background-color: white;
-    border-radius: 4px;
-
+    width: 100%;
     .Image {
-      width: 576px;
-      border-radius: 4px 4px 0 0;
+      border-radius: 3px 3px 0 0;
 
       @media (max-width: 575.98px) {
         width: 100vw;
@@ -206,7 +204,7 @@
         min-height: 28px;
         max-height: 56px;
 
-        color: rgba(0,0,0,0.85);
+        color: rgba(0, 0, 0, 0.85);
       }
 
       .Author {

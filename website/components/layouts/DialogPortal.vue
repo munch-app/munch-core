@@ -15,6 +15,7 @@ Max-width of 400px if > 576vw
     <portal-target class="Dialog W400 elevation-3 index-elevation" name="dialog-w400"/>
     <portal-target class="Dialog Blank elevation-3 index-elevation" name="dialog-blank"/>
     <portal-target class="Dialog Styled elevation-3 index-elevation" name="dialog-styled"/>
+    <portal-target class="Dialog Full index-elevation" name="dialog-full"/>
 
     <!-- Universal Dialog -->
     <profile-on-boarding v-if="isFocused('Login')"/>
@@ -150,6 +151,16 @@ Max-width of 400px if > 576vw
   }
 
   .Dialog.Blank {
+    padding: 0;
+    background: initial;
+  }
+
+  .Dialog.Full {
+    max-width: 100vw;
+    width: 100vw;
+    max-height: 100vh;
+    height: 100vh;
+
     padding: 0;
     background: initial;
   }

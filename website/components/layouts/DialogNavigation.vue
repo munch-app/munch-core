@@ -1,18 +1,25 @@
 <template>
-  <portal to="dialog-blank">
+  <portal to="dialog-full">
     <div class="DialogNavigation" v-on-clickaway="close">
-      <div class="NavButton Close hover-pointer" @click.stop="close">
-        <simple-svg class="Icon" fill="black" filepath="/img/layouts/close.svg"/>
-      </div>
-
-      <slot></slot>
-
-      <div class="NavButtonBottom">
-        <div class="NavButton Prev hover-pointer" @click.stop="prev">
-          <simple-svg class="Icon " fill="black" filepath="/img/layouts/prev.svg"/>
+      <div class="DialogContent" :style="{maxWidth}">
+        <div class="DialogControl DialogPrev">
+          <div class="DialogControlButton flex-center" @click="prev">
+            <simple-svg class="Icon" fill="white" :filepath="require('~/assets/icon/prev.svg')"/>
+          </div>
         </div>
-        <div class="NavButton Next hover-pointer" @click.stop="next">
-          <simple-svg class="Icon" fill="black" filepath="/img/layouts/next.svg"/>
+
+        <slot></slot>
+
+        <div class="DialogControl DialogNext">
+          <div class="DialogControlButton flex-center" @click="next">
+            <simple-svg class="Icon" fill="white" :filepath="require('~/assets/icon/next.svg')"/>
+          </div>
+        </div>
+
+        <div class="DialogControl DialogClose">
+          <div class="DialogControlButton flex-center" @click="close">
+            <simple-svg class="Icon" fill="white" :filepath="require('~/assets/icon/close.svg')"/>
+          </div>
         </div>
       </div>
     </div>
@@ -22,6 +29,11 @@
 <script>
   export default {
     name: "DialogNavigation",
+    props: {
+      maxWidth: {
+        type: String
+      }
+    },
     mounted() {
       this.$navigation = (evt) => {
         switch (evt.keyCode) {
@@ -58,104 +70,97 @@
 </script>
 
 <style scoped lang="less">
-  @media (max-width: 575.98px) {
-    .DialogNavigation {
-      margin-top: 48px;
-      height: calc(100vh - 48px);
-      width: 100vw;
-      background-color: white;
-      overflow-x: scroll;
+  .DialogNavigation {
+    background: rgba(0, 0, 0, 0.4);
+    width: 100vw;
+    height: 100vh;
 
-      padding-bottom: 60px;
+    padding-top: 48px;
+    padding-bottom: 80px;
+
+    position: fixed;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+
+    .DialogContent {
+      margin-left: auto;
+      margin-right: auto;
+
+      background: white;
+
+      display: flex;
     }
 
-    .NavButton {
-      z-index: 1;
-      height: 48px;
-
-      .Icon {
-        width: 24px;
-        height: 24px;
-      }
-
-      &.Close {
-        background-color: white;
-        top: 0;
-        left: 0;
-        right: 0;
+    .DialogControl {
+      .DialogControlButton {
         position: fixed;
 
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        padding-right: 24px;
+        width: 80px;
+        height: 100px;
+        top: calc(50% - 50px);
       }
-    }
 
-    .NavButtonBottom {
-      background-color: white;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      display: flex;
-
-      padding-top: 6px;
-      padding-bottom: 6px;
-
-      .Prev, .Next {
-        flex: 0 0 50%;
-        width: 50%;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
+      .Icon {
+        width: 40px;
+        height: 40px;
       }
-    }
-  }
 
-  @media (min-width: 576px) {
-    .NavButton {
-      position: fixed;
+      &.DialogPrev .DialogControlButton {
+        margin-left: -80px;
+      }
 
-      &.Close {
-        z-index: 1;
-        top: 48px;
-        width: calc(576px + 48px);
-
-        display: flex;
-        justify-content: flex-end;
-
+      &.DialogClose {
         .Icon {
           width: 32px;
           height: 32px;
         }
-      }
 
-      &.Prev, &.Next {
-        z-index: 0;
-        top: 0;
-        bottom: 0;
-        width: 80px;
-
-        display: flex;
-        align-items: center;
-
-        .Icon {
-          width: 40px;
-          height: 40px;
+        .DialogControlButton {
+          top: 0;
+          height: 48px;
         }
       }
+    }
+  }
 
-      &.Prev {
-        left: calc(50vw - 288px - 24px - 80px);
-        justify-content: flex-end;
+  @media (max-width: 575.98px) {
+    .DialogNavigation {
+      padding-bottom: 0;
+    }
+
+    .DialogContent {
+      width: 100vw;
+    }
+  }
+
+  @media (min-width: 576px) {
+    .DialogContent {
+      width: 576px;
+      border-radius: 3px;
+    }
+  }
+
+  @media (max-width: 735.98px) {
+    .DialogControl {
+      z-index: 1000000000;
+      &.DialogClose .DialogControlButton {
+        right: -12px;
       }
 
-      &.Next {
-        right: calc(50vw - 288px - 24px - 80px);
-        justify-content: flex-start;
+      &.DialogPrev .DialogControlButton {
+        left: -12px;
+        margin-left: 0 !important;
       }
+
+      &.DialogNext .DialogControlButton {
+        right: -12px;
+      }
+    }
+  }
+
+  @media (min-width: 992px) {
+    .DialogContent {
+      width: 50%;
     }
   }
 </style>

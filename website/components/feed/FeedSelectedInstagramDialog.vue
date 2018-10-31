@@ -1,35 +1,39 @@
 <template>
   <div class="InstagramDialog">
-    <image-size class="border-3 index-content" :image="item.image" grow="height">
-      <div class="ImageContainer hover-pointer" @click="onClickPlace">
-        <a class="Author" target="_blank" rel="noreferrer nofollow noopener"
-           :href="`https://instagram.com/${item.instagram.username}`">
+    <div class="InstagramHeader">
+      <h3 class="text-ellipsis-1l">{{item.instagram.caption}}</h3>
+      <a class="Author" :href="`https://instagram.com/${item.instagram.username}`" target="_blank" rel="noreferrer nofollow noopener">
+        <h6>by <span class="s700">{{item.author}}</span> on {{format(item.createdMillis, 'mmm dd, yyyy')}}</h6>
+      </a>
+    </div>
+
+    <image-size class="index-content" :image="item.image" grow="height">
+      <div class="ImageContainer">
+        <a class="Author" :href="`https://instagram.com/${item.instagram.username}`" target="_blank" rel="noreferrer nofollow noopener">
           <simple-svg class="Icon" fill="white" :filepath="require('~/assets/icon/feed/instagram.svg')"/>
           <div class="Name">{{item.author}}</div>
         </a>
       </div>
     </image-size>
 
-    <nuxt-link class="Place hover-pointer" v-if="place" :to="`/places/${place.placeId}`">
-      <h2 class="Name secondary-500-hover">{{place.name}}</h2>
-      <h6 class="Location">{{location}}</h6>
+    <div class="Places" v-if="place">
+      <h2>Place Mentioned</h2>
 
-      <div class="Tags">
-        <div class="Tag border-3" v-for="tag in tags" :key="tag.tagId"
-             :class="{'peach-100-bg weight-600 black-a-80': tag.type === 'price', 'whisper-100-bg weight-400': tag.type !== 'price'}">
-          {{tag.name}}
-        </div>
+      <div class="Card">
+        <place-card :place="place"/>
       </div>
-    </nuxt-link>
+    </div>
   </div>
 </template>
 
 <script>
+  import dateformat from 'dateformat'
   import ImageSize from "../core/ImageSize";
+  import PlaceCard from "../places/PlaceCard";
 
   export default {
     name: "FeedSelectedInstagramDialog",
-    components: {ImageSize},
+    components: {PlaceCard, ImageSize},
     props: {
       item: {
         type: Object,
@@ -43,64 +47,31 @@
           return this.$store.getters['feed/images/getPlace'](placeId)
         }
       },
-      location() {
-        return this.place.location.neighbourhood ||
-          this.place.location.street ||
-          this.place.location.address
-      },
-      tags() {
-        const perPax = this.place.price && this.place.price.perPax
-        const priceTax = perPax && [{type: 'price', name: `$${perPax.toFixed(0)}`}] || []
-
-        return [
-          ...priceTax,
-          ...this.place.tags
-        ]
-      },
     },
     methods: {
-      onClickPlace() {
-        this.$router.push({path: '/places/' + this.place.placeId})
-      },
-      onClose() {
-        this.$emit('close')
-      },
+      format: dateformat,
     }
   }
 </script>
 
 <style scoped lang="less">
   .InstagramDialog {
-    background: white;
-    padding: 24px;
-    border-radius: 3px;
-
-    max-height: 100vh;
-    width: 576px;
-
-    @media (max-width: 575.98px) {
-      width: 100vw;
-    }
+    width: 100%;
   }
 
-  .Navigation {
-    margin-bottom: 16px;
+  .InstagramHeader {
+    padding: 16px 24px;
 
-    .Close {
-      .Icon {
-        width: 24px;
-        height: 24px;
-
-        margin-left: auto;
-        margin-right: 0;
-      }
+    .Author {
+      margin-top: 2px;
+      display: block;
     }
   }
 
   .ImageContainer {
     height: 100%;
     width: 100%;
-    padding: 10px;
+    padding: 16px 24px;
 
     display: flex;
     flex-direction: column;
@@ -110,8 +81,8 @@
       display: flex;
 
       .Icon {
-        width: 24px;
-        height: 24px;
+        width: 22px;
+        height: 22px;
       }
 
       .Name {
@@ -119,54 +90,19 @@
 
         height: 24px;
         line-height: 22px;
-        font-size: 15px;
+        font-size: 14px;
         font-weight: 600;
         color: white;
       }
     }
   }
 
-  .Place {
-    color: initial;
-    text-decoration: none !important;
+  .Places {
+    padding: 24px 24px;
 
-    &:hover {
-      .Name {
-        text-decoration: underline;
-      }
-
-      .Location {
-        text-decoration: underline;
-      }
-    }
-
-    .Name {
-      margin-top: 12px;
-    }
-
-    .Location {
-      margin-top: 4px;
-    }
-
-    .Tags {
-      margin-top: 16px;
-
-      display: flex;
-      flex-wrap: wrap;
-      align-items: flex-start;
-      overflow: hidden;
-
-      min-height: 24px;
-      max-height: 64px;
-      margin-bottom: -8px;
-
-      .Tag {
-        font-size: 12px;
-        line-height: 24px;
-        padding: 0 8px;
-        margin-right: 8px;
-        margin-bottom: 8px;
-      }
+    .Card {
+      margin-top: 24px;
+      max-width: 300px;
     }
   }
 </style>
