@@ -81,8 +81,9 @@ export const getters = {
   applyText: (state) => {
     if (state.loading) return
 
-    if (state.query.filter.location.type === 'Between' && state.query.filter.location.points.length === 0) {
-      return 'Location Required'
+    const location = state.query.filter.location
+    if (location.type === 'Between' && location.points.length < 2) {
+      return 'Requires 2 Location'
     }
 
     const count = state.result.count
@@ -103,8 +104,7 @@ export const getters = {
 
     const location = state.query.filter.location
     if (location.type === 'Between') {
-      const length = location.points.filter(bl => bl.name).length
-      return length > 0;
+      return location.points.length > 1
     }
 
     return !!state.result.count
@@ -209,13 +209,13 @@ export const mutations = {
         return
 
       case 'Where':
-        state.query.filter.location.areas.splice(0, state.query.filter.location.areas.length)
+        state.query.filter.location.areas.splice(0)
         state.query.filter.location.areas.push(...areas)
         state.query.filter.location.type = 'Where'
         return
 
       case 'Between':
-        state.query.filter.location.areas.splice(0, state.query.filter.location.areas.length)
+        state.query.filter.location.areas.splice(0)
         state.query.filter.location.type = 'Between'
         return
     }
@@ -245,7 +245,7 @@ export const mutations = {
 
       case 'location':
         if (state.query.filter.location.type === 'Between') {
-          state.query.filter.location.points.splice(0, state.query.filter.location.points.length)
+          state.query.filter.location.points.splice(0)
         } else {
           if (state.user.latLng) {
             state.query.filter.location.type = 'Nearby'
@@ -265,7 +265,7 @@ export const mutations = {
     state.query.filter.price = {}
     state.query.filter.location.type = 'Anywhere'
     state.query.filter.hour = {}
-    state.query.filter.tag.positives.splice(0, state.query.filter.tag.positives.length)
+    state.query.filter.tag.positives.splice(0)
 
     state.loading = false
   },

@@ -37,11 +37,11 @@ export const mutations = {
   },
 
   removeAll(state) {
-    state.list.splice(0, state.list.length)
+    state.list.splice(0)
   },
 
   restart(state) {
-    state.list.splice(0, state.list.length)
+    state.list.splice(0)
     state.next = null
     state.loading = false
   }

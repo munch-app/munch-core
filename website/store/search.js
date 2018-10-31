@@ -28,7 +28,7 @@ export const mutations = {
     state.more = false
     state.loading = false
     state.query = null
-    state.result.cards.splice(0, state.result.cards.length)
+    state.result.cards.splice(0)
   },
 
   start(state, {query, type}) {
@@ -49,7 +49,7 @@ export const mutations = {
     state.showsMap = false
 
     state.page = 0
-    state.result.cards.splice(0, state.result.cards.length)
+    state.result.cards.splice(0)
 
     if (query.filter.location.type === 'Between') {
       state.showsMap = true

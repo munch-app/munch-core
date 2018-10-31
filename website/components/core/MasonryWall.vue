@@ -75,7 +75,7 @@
         if (this.lanes.length === length) return
 
         this.cursor = 0
-        this.lanes.splice(0, this.lanes.length)
+        this.lanes.splice(0)
         for (let i = 0; i < length; i++) {
           this.lanes.push({indexes: []})
         }

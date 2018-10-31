@@ -90,7 +90,7 @@
             if (delegator.isVisible()) return delegator.card.place
           }).filter(p => !!p)
 
-          this.map.places.splice(0, this.map.places.length)
+          this.map.places.splice(0)
           this.map.places.push(...places)
           this.$nextTick(() => {
             this.$refs.map.centerAnnotations()

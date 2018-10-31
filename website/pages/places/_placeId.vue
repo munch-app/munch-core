@@ -107,7 +107,7 @@
       meta.push({name: 'keywords', content: tags.filter(tag => !!tag).join(',')})
 
       return {
-        title: `${this.place.name} · Munch`, meta,
+        title: `${this.place.name} · Munch Singapore`, meta,
         __dangerouslyDisableSanitizers: ['script'],
         script: [
           {

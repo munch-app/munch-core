@@ -7,6 +7,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.util.Objects;
 
 /**
  * Created by: Fuxing
@@ -97,6 +98,22 @@ public final class NamedSearchQuery {
 
     public void setUpdatedMillis(Long updatedMillis) {
         this.updatedMillis = updatedMillis;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        NamedSearchQuery that = (NamedSearchQuery) o;
+        return Objects.equals(name, that.name) &&
+                Objects.equals(title, that.title) &&
+                Objects.equals(keywords, that.keywords) &&
+                Objects.equals(description, that.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, title, keywords, description);
     }
 
     @Override

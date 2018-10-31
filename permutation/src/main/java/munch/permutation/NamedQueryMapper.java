@@ -4,6 +4,7 @@ import com.google.common.base.Joiner;
 import munch.api.search.data.NamedSearchQuery;
 import munch.api.search.data.SearchQuery;
 import munch.data.location.Area;
+import org.apache.commons.lang3.text.WordUtils;
 
 /**
  * Created by: Fuxing
@@ -58,8 +59,9 @@ public interface NamedQueryMapper {
 
     default String joinTags(SearchQuery searchQuery, String joiner) {
         SearchQuery.Filter.Tag tag = searchQuery.getFilter().getTag();
-        return Joiner.on(joiner)
+        String tags = Joiner.on(joiner)
                 .join(tag.getPositives());
+        return WordUtils.capitalizeFully(tags);
     }
 
     private String cleanName(String name) {

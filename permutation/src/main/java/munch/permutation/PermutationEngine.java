@@ -42,16 +42,18 @@ public abstract class PermutationEngine implements NamedQueryMapper {
         Iterator<SearchQuery> iterator = Iterators.filter(iterator(), Objects::nonNull);
         Iterator<NamedSearchQuery> mapped = Iterators.transform(iterator, this::map);
 
-        mapped = Iterators.transform(mapped, named -> {
-            NamedSearchQuery existing = database.get(named.getName());
-            if (existing != null && !DateCompareUtils.after(existing.getUpdatedMillis(), Duration.ofDays(21))) {
+        mapped = Iterators.transform(mapped, namedQuery -> {
+            NamedSearchQuery existing = database.get(namedQuery.getName());
+            if (existing != null
+                    && existing.equals(namedQuery)
+                    && !DateCompareUtils.after(existing.getUpdatedMillis(), Duration.ofDays(21))) {
                 return existing;
             }
 
-            named.setCount(apiSearchClient.count(named.getSearchQuery()));
-            if (validate(named)) {
-                database.put(named);
-                return named;
+            namedQuery.setCount(apiSearchClient.count(namedQuery.getSearchQuery()));
+            if (validate(namedQuery)) {
+                database.put(namedQuery);
+                return namedQuery;
             }
             return null;
         });
