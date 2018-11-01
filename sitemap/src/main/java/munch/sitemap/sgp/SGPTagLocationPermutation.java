@@ -62,8 +62,8 @@ public final class SGPTagLocationPermutation extends PermutationEngine {
 
     @Override
     public String getTitle(SearchQuery searchQuery) {
-        String prefix = joinTags(searchQuery, ", ", WordUtils::capitalizeFully);
-        return prefix + " places in and around " + getLocationName(searchQuery) + " · Munch Singapore";
+        String tag = joinTags(searchQuery, ", ", WordUtils::capitalizeFully);
+        return getLocationName(searchQuery) + ": " + tag + " Places · Munch Singapore";
     }
 
     @Override

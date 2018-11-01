@@ -36,9 +36,9 @@ public final class SGPSearchSitemap implements SitemapProvider {
     public Iterator<WebSitemapUrl> provide() {
         Iterator<NamedSearchQuery> joined = Iterators.concat(
                 anywherePermutation.get(),
-                locationPermutation.get()
-//                tagLocationPermutation.get(),
-//                tagPermutation.get()
+                locationPermutation.get(),
+                tagLocationPermutation.get(),
+                tagPermutation.get()
         );
 
         return Iterators.transform(joined, query -> {
