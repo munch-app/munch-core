@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <masonry-wall ref="wall" id="PlaceImageWall" :items="items" @append="append" :min="2"
-                  :options="{lanes:{2:{padding: 9}}}">
+                  :options="{lanes:{2:{padding: 8}}}">
       <template slot-scope="{item, index}">
         <div class="ImageItem hover-pointer" @click="selected = index">
           <image-size class="border-3" :image="{sizes: item.sizes}" grow="height">
@@ -24,35 +24,11 @@
       </template>
     </masonry-wall>
 
-    <dialog-navigation v-if="selectedItem" @next="selected++" @prev="selected--" @close="selected = -1"
-                       max-width="600px">
-      <div class="ImageWallDialog">
-        <image-size class="Image index-content" :image="{sizes: selectedItem.sizes}" grow="height"/>
-
-        <div class="Info index-content" v-if="selectedItem.instagram || selectedItem.article">
-          <div class="Title text-ellipsis-2l" v-if="selectedItem.title || selectedItem.caption">
-            {{selectedItem.title || selectedItem.caption}}
-          </div>
-          <a class="Author" v-if="selectedItem.instagram"
-             target="_blank" rel="noreferrer nofollow noopener"
-             :href="`https://instagram.com/${selectedItem.instagram.username}`">
-            <simple-svg class="Icon" fill="black" :filepath="require('~/assets/icon/feed/instagram.svg')"/>
-            <div class="Name secondary-700">{{selectedItem.instagram.username}}</div>
-          </a>
-          <div class="Author Article" v-if="selectedItem.article">
-            <a class="Brand" target="_blank" rel="noreferrer nofollow noopener"
-               :href="selectedItem.article.domain.url">
-              <simple-svg class="Icon" fill="black" :filepath="require('~/assets/icon/feed/article.svg')"/>
-              <div class="Name secondary-700">{{selectedItem.article.domain.name}}</div>
-            </a>
-            <a class="ReadMore" target="_blank" rel="noreferrer nofollow noopener"
-               :href="selectedItem.article.url">
-              <div>Read More</div>
-            </a>
-          </div>
-        </div>
-      </div>
-    </dialog-navigation>
+    <no-ssr>
+      <place-image-wall-dialog
+        v-if="selectedItem" :item="selectedItem" @next="selected++" @prev="selected--" @close="selected = -1"
+      />
+    </no-ssr>
 
     <no-ssr class="flex-center" style="padding: 24px 0 48px 0">
       <beat-loader color="#084E69" v-if="next.sort" size="14px"/>
@@ -64,10 +40,11 @@
   import MasonryWall from "../core/MasonryWall";
   import ImageSize from "../core/ImageSize";
   import DialogNavigation from "../layouts/DialogNavigation";
+  import PlaceImageWallDialog from "./PlaceImageWallDialog";
 
   export default {
     name: "PlaceImageWall",
-    components: {DialogNavigation, ImageSize, MasonryWall},
+    components: {PlaceImageWallDialog, DialogNavigation, ImageSize, MasonryWall},
     props: {
       placeId: {
         required: true,
@@ -180,69 +157,6 @@
     &:hover {
       opacity: 1;
       background-color: rgba(0, 0, 0, 0.4);
-    }
-  }
-
-  .ImageWallDialog {
-    width: 100%;
-    .Image {
-      border-radius: 3px 3px 0 0;
-
-      @media (max-width: 575.98px) {
-        width: 100vw;
-        border-radius: 0;
-      }
-    }
-
-    .Info {
-      padding: 24px;
-
-      .Title {
-        font-size: 19px;
-        font-weight: 600;
-
-        line-height: 28px;
-        min-height: 28px;
-        max-height: 56px;
-
-        color: rgba(0, 0, 0, 0.85);
-      }
-
-      .Author {
-        margin-top: 16px;
-        display: flex;
-
-        .Icon {
-          width: 20px;
-          height: 20px;
-        }
-
-        .Name {
-          margin-left: 6px;
-
-          height: 20px;
-          line-height: 19px;
-
-          font-size: 15px;
-          font-weight: 600;
-        }
-
-        &.Article {
-          justify-content: space-between;
-
-          .Brand {
-            display: flex;
-          }
-
-          .ReadMore {
-            height: 24px;
-            line-height: 22px;
-
-            font-weight: 600;
-            font-size: 16px;
-          }
-        }
-      }
     }
   }
 </style>

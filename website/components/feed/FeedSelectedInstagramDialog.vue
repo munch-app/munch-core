@@ -10,7 +10,7 @@
 
     <image-sizes class="InstagramImage" :sizes="item.image.sizes"
                  width="800" height="1000" object-fit="contain"
-                 max-height="calc(100vh - 80px - 40px - 64px)">
+                 max-height="calc(100vh - 80px - 48px - 64px)">
       <div class="ImageContainer flex-column-end">
         <a class="flex" :href="`https://instagram.com/${item.instagram.username}`" target="_blank"
            rel="noreferrer nofollow noopener">

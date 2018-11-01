@@ -2,7 +2,7 @@
   <div class="zero-spacing">
     <div class="container ImageWall">
       <masonry-wall ref="masonry" :items="items" @append="onAppend" :min="2"
-                    :options="{lanes:{2:{padding: 9}}}"
+                    :options="{lanes:{2:{padding: 8}}}"
                     :persistence="{getter: 'feed/images/persistence', commit: 'feed/images/persistence'}">
         <template slot-scope="{item, index}">
           <div @click="selected = index">

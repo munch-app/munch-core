@@ -34,7 +34,7 @@
        *             padding: 6
        *         },
        *         2: {
-       *             padding: 9
+       *             padding: 8
        *         }
        *     }
        * }

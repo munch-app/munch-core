@@ -75,7 +75,7 @@
     width: 100vw;
     height: 100vh;
 
-    padding-top: 40px;
+    padding-top: 48px;
     padding-bottom: 80px;
 
     position: fixed;
