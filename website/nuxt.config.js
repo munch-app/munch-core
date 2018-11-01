@@ -2,7 +2,7 @@ const webpack = require('webpack')
 
 module.exports = {
   head: {
-    title: 'Discover Delicious · Munch',
+    title: 'Discover Delicious · Munch Singapore',
     meta: [
       {charset: 'utf-8'},
       {name: 'viewport', content: 'width=device-width, initial-scale=1'},

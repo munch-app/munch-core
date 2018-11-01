@@ -10,7 +10,7 @@
     <div class="PriceGraph">
       <!-- Graph is disabled for now -->
       <search-bar-filter-price-graph v-if="false" class="Graph" :price-graph="priceGraph"/>
-      <search-bar-filter-price-slider class="Slider" @drag-end="onDragEnd" v-model="value" :min="min" :max="max"/>
+      <search-bar-filter-price-slider ref="slider" class="Slider" @drag-end="onDragEnd" v-model="value" :min="min" :max="max"/>
     </div>
   </div>
 </template>
@@ -31,7 +31,8 @@
       }
     },
     computed: {
-      ...mapGetters('filter', ['isSelectedPrice', 'priceGraph']),
+      ...mapGetters(['isProduction']),
+      ...mapGetters('filter', ['isSelectedPrice', 'priceGraph', 'selected']),
     },
     mounted() {
       const price = this.$store.state.filter.query.filter.price || {min: 0, max: 200}
@@ -45,6 +46,11 @@
       priceGraph(priceGraph) {
         this.min = priceGraph.min
         this.max = priceGraph.max
+      },
+      selected(selected) {
+        if (selected === 'price') {
+          this.$refs.slider.refresh()
+        }
       }
     },
     methods: {

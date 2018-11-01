@@ -71,8 +71,8 @@
           },
           {
             type: 'price',
-            name: price && price.min && price.max ? `$${price.min} - $${price.max}` : 'Price',
-            applied:  price && price.min && price.max
+            name: price && (price.min || price.max) ? `$${price.min} - $${price.max}` : 'Price',
+            applied:  price && (price.min || price.max)
           },
           {
             type: 'cuisine',

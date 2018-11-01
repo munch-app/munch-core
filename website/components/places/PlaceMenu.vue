@@ -6,9 +6,8 @@
       <div class="Label">Website Menu</div>
     </a>
 
-
     <horizontal-scroll-view class="MenuImageList" :items="menu.images" :map-key="i => i.imageId" :container="false"
-                            :nav-white="false" :padding="24" v-if="false">
+                            :nav-white="false" :padding="24" v-if="!isProduction">
       <template slot-scope="{item}">
         <div class="MenuImageItem hover-pointer">
           <image-size :image="item" class="Image border-3">
@@ -29,6 +28,8 @@
 </template>
 
 <script>
+  import {mapGetters} from "vuex";
+
   import ImageSize from "../core/ImageSize";
   import HorizontalScrollView from "../core/HorizontalScrollView";
 
@@ -41,7 +42,9 @@
         type: Object
       }
     },
-    computed: {}
+    computed: {
+      ...mapGetters(['isProduction']),
+    }
   }
 </script>
 

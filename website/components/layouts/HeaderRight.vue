@@ -1,8 +1,11 @@
 <template>
   <no-ssr>
     <div class="HeaderRight" v-if="!isProduction">
-      <div @click="onClickLogin" class="Name hover-pointer" v-if="!isLoggedIn">Login</div>
-      <nuxt-link to="/profile" v-else class="Name">{{displayName}}</nuxt-link>
+      <a class="Partner text-ellipsis-1l" href="https://partner.munch.app" target="_blank">Join as Partner</a>
+
+      <a @click.prevent.stop="onClickLogin" class="hover-pointer" v-if="!isLoggedIn">Login</a>
+      <nuxt-link to="/profile" v-else>{{displayName}}</nuxt-link>
+
       <img v-if="false" class="Menu hover-pointer" src="/img/layouts/menu.svg" @click="onClickMenu"/>
     </div>
   </no-ssr>
@@ -33,10 +36,19 @@
     display: flex;
     align-items: center;
 
-    .Name {
+    .Partner {
+      margin-left: 16px;
+      margin-right: 24px;
+    }
+
+    a {
+      height: 32px;
+      line-height: 32px;
+      overflow: hidden;
+
       font-size: 15px;
       font-weight: 600;
-      line-height: 32px;
+
       color: rgba(0, 0, 0, 0.80);
     }
 

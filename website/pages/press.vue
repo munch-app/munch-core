@@ -41,7 +41,7 @@
 <script>
   export default {
     head() {
-      return {title: 'Press Kit · Munch'}
+      return {title: 'Press Kit · Munch Singapore'}
     },
     asyncData({Prismic}) {
       return Prismic.getSingle('press')

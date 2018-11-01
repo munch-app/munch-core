@@ -42,7 +42,7 @@
 <script>
   import {mapGetters} from "vuex";
   import UserPlaceCollectionItemCard from "../../components/collections/UserPlaceCollectionItemCard";
-  import _ from 'underscore'
+  import _ from 'lodash'
 
   export default {
     components: {UserPlaceCollectionItemCard},

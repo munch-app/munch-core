@@ -1,7 +1,7 @@
 <template>
   <div>
-    <no-ssr>
-      <vue-slider @input="onInput" @click.native="onClick" v-bind="{
+    <!--<no-ssr>-->
+      <vue-slider ref="slider" @input="onInput" @click.native="onClick" v-bind="{
       value, min, max,
       formatter: '${value}',
       mergeFormatter: '${value1} - ${value2}',
@@ -28,13 +28,13 @@
         backgroundColor: '#F05F3B'
       }
   }"/>
-    </no-ssr>
+    <!--</no-ssr>-->
   </div>
 </template>
 
 <script>
   let components = {}
-  if (process.browser) {
+  if (process.client) {
     components['vue-slider'] = require('vue-slider-component')
   }
 
@@ -62,6 +62,9 @@
         this.$nextTick(() => {
           this.$emit('drag-end', this.value[0], this.value[1])
         })
+      },
+      refresh() {
+        this.$refs.slider.refresh()
       }
     }
   }

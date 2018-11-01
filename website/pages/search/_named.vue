@@ -14,7 +14,7 @@
         meta.push({name: 'keywords', content: this.keywords})
       }
       return {
-        title: this.title || 'Search · Munch', meta,
+        title: this.title || 'Search · Munch Singapore', meta,
         __dangerouslyDisableSanitizers: ['script'],
         script: [
           {

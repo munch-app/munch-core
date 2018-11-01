@@ -13,7 +13,7 @@
 </template>
 
 <script>
-  import _ from 'underscore'
+  import _ from 'lodash'
 
   export default {
     name: "MasonryWall",
@@ -104,7 +104,7 @@
         if (this.cursor < this.items.length) {
           this.$nextTick(() => {
             const spacers = this.$refs.spacers
-            const spacer = _.max(spacers, (spacer) => spacer.clientHeight || 0)
+            const spacer = _.maxBy(spacers, (spacer) => spacer.clientHeight || 0)
             this.fillItem(spacer.dataset.lane)
             this.fill()
           })

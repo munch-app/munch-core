@@ -1,5 +1,5 @@
 import * as Cookies from 'js-cookie'
-import _ from "underscore"
+import _ from "lodash"
 import Vue from 'vue'
 
 export const state = () => ({

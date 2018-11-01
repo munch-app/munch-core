@@ -5,6 +5,8 @@
         <nuxt-link to="/">Home</nuxt-link>
         <nuxt-link to="/profile" v-if="isLoggedIn">Profile</nuxt-link>
         <a v-else-if="!isProduction" @click="$store.commit('focus', 'Login')">Login</a>
+        <hr>
+        <a href="https://partner.munch.app" target="_blank">Join as Partner</a>
       </div>
     </ul>
     <div v-on-clickaway="onClickAway"></div>

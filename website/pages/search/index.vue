@@ -35,7 +35,7 @@
   export default {
     components: {AppleMapPlaceAnnotation, AppleMap, CardDelegator},
     head() {
-      return {title: 'Search · Munch'}
+      return {title: 'Search · Munch Singapore'}
     },
     async fetch({store, route}) {
       const qid = route.query.qid

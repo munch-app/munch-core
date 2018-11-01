@@ -30,7 +30,7 @@
           <div class="text">Vegetarian Options</div>
           <div class="checkbox" :class="{selected: isSearchPreference('vegetarian options')}"/>
         </div>
-        <h5 style="margin-top: 8px" @click="onSignOut">Sign Out</h5>
+        <h5 class="hover-pointer" style="margin-top: 8px" @click="onSignOut">Sign Out</h5>
         <div class="right">
           <button class="clear-elevated" @click="showSetting = false">Close</button>
         </div>
