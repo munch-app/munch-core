@@ -19,6 +19,7 @@
 </template>
 
 <script>
+  import _ from 'lodash'
   import {mapGetters} from 'vuex'
 
   const types = {
@@ -34,13 +35,21 @@
   }
 
   function reduce(query, type) {
-    let collector = []
-    types[type] && types[type].list.forEach(name => {
-      if (query.filter.tag.positives.includes(name.toLowerCase())) {
-        collector.push(name)
+    const bucket = {'cuisine': [], 'amenities': [], 'establishments': []}
+    query.filter.tag.positives.forEach(value => {
+      value = value.toLowerCase()
+      if (_.some(types['cuisine'].list, (v) => v.toLowerCase() === value)) {
+        bucket['cuisine'].push(value)
+      } else if (_.some(types['establishments'].list, (v) => v.toLowerCase() === value)) {
+        bucket['establishments'].push(value)
+      } else if (_.some(types['amenities'].list, (v) => v.toLowerCase() === value)) {
+        bucket['amenities'].push(value)
+      } else {
+        bucket['amenities'].push(_.startCase(value))
       }
     })
-    return collector
+
+    return bucket[type]
   }
 
   export default {

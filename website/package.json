@@ -62,7 +62,8 @@
     "vue-static-map": "^3.0.2",
     "vue-touch": "^2.0.0-beta.4",
     "vue2-google-maps": "^0.9.7",
-    "vuex-persistedstate": "^2.5.4"
+    "vuex-persistedstate": "^2.5.4",
+    "lodash": "latest"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.1",
