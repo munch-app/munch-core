@@ -26,6 +26,22 @@
         type: Number,
         default: 1
       },
+      /**
+       * e.g.
+       * {
+       *     lanes: {
+       *         1: {
+       *             padding: 6
+       *         },
+       *         2: {
+       *             padding: 9
+       *         }
+       *     }
+       * }
+       */
+      options: {
+        type: Object,
+      },
       width: {
         type: Number,
         default: 300
@@ -53,6 +69,10 @@
 
       this.redraw()
       window.addEventListener('resize', this.redraw)
+
+      this.$nextTick(() => {
+        this.fill()
+      })
     },
     beforeDestroy() {
       window.removeEventListener('resize', this.redraw)
@@ -65,17 +85,20 @@
     },
     computed: {
       style() {
+        const lane = this.options && this.options.lanes && this.options.lanes[this.lanes.length]
+        const padding = lane && lane.padding || this.padding
+
         return {
           wall: {
-            margin: `-${this.padding}px`
+            margin: `-${padding}px`
           },
           lane: {
-            paddingLeft: `${this.padding}px`,
-            paddingRight: `${this.padding}px`,
+            paddingLeft: `${padding}px`,
+            paddingRight: `${padding}px`,
           },
           item: {
-            paddingTop: `${this.padding}px`,
-            paddingBottom: `${this.padding}px`,
+            paddingTop: `${padding}px`,
+            paddingBottom: `${padding}px`,
           }
         }
       }

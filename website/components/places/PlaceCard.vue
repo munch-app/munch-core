@@ -2,8 +2,8 @@
   <nuxt-link :to="'/places/' + place.placeId">
     <div class="Card" :class="{'Small': small}">
       <no-ssr>
-        <div class="CollectionBtn index-content-overlay" v-if="!isProduction && isLoggedIn">
-          <div @click.prevent.stop="showAddToCollection = true">
+        <div class="CollectionBtn index-content-overlay" v-if="!isProduction">
+          <div @click.prevent.stop="onClickAdd">
             <simple-svg class="AddIcon" fill="white" :filepath="require('~/assets/icon/place/add.svg')"/>
           </div>
         </div>
@@ -100,6 +100,15 @@
             return {class: 'time-close', text: 'Closing Soon'}
         }
       },
+    },
+    methods: {
+      onClickAdd() {
+        if (this.isLoggedIn) {
+          this.showAddToCollection = true
+        } else {
+          this.$store.commit('focus', 'Login')
+        }
+      }
     }
   }
 </script>
