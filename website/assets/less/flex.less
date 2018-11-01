@@ -1,6 +1,15 @@
+.block {
+  display: block;
+}
+
 .flex {
   display: flex;
 }
+
+.flex-column:extend(.flex) {
+  flex-direction: column;
+}
+
 
 .flex-center:extend(.flex) {
   align-items: center;
@@ -10,4 +19,11 @@
 .flex-space-between:extend(.flex) {
   justify-content: space-between;
   align-content: space-between;
+}
+
+/**
+ Used to place object below
+ */
+.flex-column-end:extend(.flex-column) {
+  justify-content: flex-end;
 }

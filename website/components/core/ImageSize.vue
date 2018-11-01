@@ -12,12 +12,10 @@
     name: "ImageSize",
     props: {
       min: {
-        require: false,
         type: Number,
         default: () => 600
       },
       max: {
-        require: false,
         type: Number,
         default: () => 800
       },

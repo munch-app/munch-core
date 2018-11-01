@@ -75,7 +75,7 @@
     width: 100vw;
     height: 100vh;
 
-    padding-top: 48px;
+    padding-top: 40px;
     padding-bottom: 80px;
 
     position: fixed;
@@ -101,8 +101,8 @@
       }
 
       .Icon {
-        width: 40px;
-        height: 40px;
+        width: 36px;
+        height: 36px;
       }
 
       &.DialogPrev .DialogControlButton {
@@ -111,8 +111,8 @@
 
       &.DialogClose {
         .Icon {
-          width: 28px;
-          height: 28px;
+          width: 24px;
+          height: 24px;
         }
 
         .DialogControlButton {
