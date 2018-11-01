@@ -1,6 +1,6 @@
 <template>
   <portal to="dialog-full">
-    <div class="DialogNavigation" v-on-clickaway="close">
+    <div class="DialogNavigation" @click.self="close">
       <div class="DialogContent" :style="{maxWidth}">
         <div class="DialogControl DialogPrev">
           <div class="DialogControlButton flex-center" @click="prev">
@@ -111,8 +111,8 @@
 
       &.DialogClose {
         .Icon {
-          width: 32px;
-          height: 32px;
+          width: 28px;
+          height: 28px;
         }
 
         .DialogControlButton {

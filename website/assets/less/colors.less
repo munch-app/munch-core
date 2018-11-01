@@ -46,6 +46,7 @@
 @Open: #20A700;
 @Close: #EC152C;
 
+// Use the short form version, long form will be deprecated soon
 .primary-050, .p050 {
   color: @Primary050;
 }
@@ -69,10 +70,8 @@
 .primary-500, .p500, .primary {
   color: @Primary500;
 
-  &-hover {
-    &:hover {
-      color: @Primary500;
-    }
+  &-hover:hover {
+    color: @Primary500;
   }
 }
 
@@ -82,6 +81,10 @@
 
 .primary-700, .p700 {
   color: @Primary700;
+
+  &-hover:hover {
+    color: @Primary700;
+  }
 }
 
 .primary-800, .p800 {
@@ -115,10 +118,8 @@
 .secondary-500, .s500, .secondary {
   color: @Secondary500;
 
-  &-hover {
-    &:hover {
-      color: @Secondary500;
-    }
+  &-hover:hover {
+    color: @Secondary500;
   }
 }
 
@@ -129,10 +130,8 @@
 .secondary-700, .s700 {
   color: @Secondary700;
 
-  &-hover {
-    &:hover {
-      color: @Secondary700;
-    }
+  &-hover:hover {
+    color: @Secondary700;
   }
 }
 
@@ -232,19 +231,19 @@
   background-color: @Secondary900;
 }
 
-.timing-open {
+.timing-open, .time-open {
   color: @Open;
 }
 
-.timing-open-bg {
+.timing-open-bg, .bg-time-open {
   background-color: @Open;
 }
 
-.timing-close {
+.timing-close, .time-close {
   color: @Close;
 }
 
-.timing-close-bg {
+.timing-close-bg, .bg-time-close {
   background-color: @Close;
 }
 
@@ -252,7 +251,7 @@
   color: white;
 }
 
-.white-a-95 {
+.white-a-95, .white-a95 {
   color: rgba(255, 255, 255, 0.95);
 }
 
@@ -289,47 +288,47 @@
   background: @Peach100;
 }
 
-.peach-200 {
+.peach-200, .peach200 {
   color: @Peach200;
 }
 
-.peach-200-bg {
+.peach-200-bg, .bg-peach200 {
   background: @Peach200;
 }
 
-.saltpan-100 {
+.saltpan-100, .saltpan100 {
   color: @Saltpan100;
 }
 
-.saltpan-100-bg {
+.saltpan-100-bg, .bg-saltpan100 {
   background: @Saltpan100;
 }
 
-.saltpan-200 {
+.saltpan-200, .saltpan200 {
   color: @Saltpan200;
 }
 
-.saltpan-200-bg {
+.saltpan-200-bg, .bg-saltpan200 {
   background: @Saltpan200;
 }
 
-.whisper-050 {
+.whisper-050, .whisper050 {
   color: @Whisper050;
 }
 
-.whisper-050-bg {
+.whisper-050-bg, .bg-whisper050 {
   background: @Whisper050;
 }
 
-.whisper-100 {
+.whisper-100, .whisper100 {
   color: @Whisper100;
 }
 
-.whisper-100-bg {
+.whisper-100-bg, .bg-whisper100 {
   background: @Whisper100;
 }
 
-.whisper-200 {
+.whisper-200, .whisper200 {
   color: @Whisper200;
 }
 

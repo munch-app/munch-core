@@ -1,5 +1,5 @@
 <template>
-  <nav class="FeedNavBar hr-bottom container">
+  <nav class="FeedNavBar hr-bot container">
     <nuxt-link :to="`/feed/${link}`" class="hover-pointer secondary-500-hover" v-for="link in links" :key="link"
                :class="
     route === `feed-${link}` ? 'secondary-500' : 'black-a-75'">

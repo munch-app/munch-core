@@ -3,7 +3,7 @@
     <h3 class="text-ellipsis-1-line">Add To Collection</h3>
     <div class="ListView">
       <div class="">
-        <div class="Collection flex" v-for="collection in list" :key="collection.collectionId"
+        <div class="Collection flex hover-pointer" v-for="collection in list" :key="collection.collectionId"
              @click="addToCollection(collection)">
           <image-size class="Image" :image="collection.image" v-if="collection.image"/>
           <div v-else class="Image whisper-200-bg"/>

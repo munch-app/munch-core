@@ -1,42 +1,63 @@
 <template>
   <nuxt-link :to="'/places/' + place.placeId">
     <div class="Card">
+      <div class="CollectionBtn index-content-overlay" v-if="!isProduction && isLoggedIn">
+        <div @click.prevent.stop="showAddToCollection = true">
+          <simple-svg class="AddIcon" fill="white" :filepath="require('~/assets/icon/place/add.svg')"/>
+        </div>
+      </div>
       <image-size v-if="image" class="Image border-3 index-content" :image="image" :alt="place.name"/>
-      <div v-else class="Image border-3 whisper-100-bg"/>
+      <div v-else class="Image border-3 bg-whisper100"/>
 
       <div class="Content">
-        <div class="Name Title large weight-600 black-a-80">{{place.name}}</div>
+        <div class="Name Title large weight-600 b-a80">{{place.name}}</div>
         <div class="Tags">
-          <div class="Tag border-3" v-for="tag in tags" :key="tag.tagId"
-               :class="{'peach-100-bg weight-600 black-a-80': tag.type === 'price', 'whisper-100-bg weight-400': tag.type !== 'price'}">
+          <div class="Tag border-3" v-for="tag in tags" :key="tag.tagId" :class="{
+               'bg-peach100 weight-600 black-a-80': tag.type === 'price',
+               'bg-whisper100 weight-400': tag.type !== 'price'}"
+          >
             {{tag.name}}
           </div>
         </div>
+
         <div class="LocationDistanceTiming small">
           <span v-if="distance">{{distance}}, </span>
-          <span class="weight-600 black-a-80">{{location}}</span>
-          <span v-if="timing" class="black-a-75 BulletDivider">•</span>
+          <span class="weight-600 b-a80">{{location}}</span>
+          <span v-if="timing" class="b-a75 BulletDivider">•</span>
           <span v-if="timing" :class="timing.class">{{timing.text}}</span>
         </div>
       </div>
     </div>
+
+    <no-ssr>
+      <profile-collection-add-place :place="place" v-if="showAddToCollection" @on-close="showAddToCollection = false"/>
+    </no-ssr>
   </nuxt-link>
 </template>
 
 <script>
+  import {mapGetters} from "vuex";
   import {Hour, HourGroup} from './hour-group'
   import ImageSize from "../core/ImageSize";
+  import ProfileCollectionAddPlace from "../profile/ProfileCollectionAddPlace";
 
   export default {
     name: "PlaceCard",
-    components: {ImageSize},
+    components: {ProfileCollectionAddPlace, ImageSize},
     props: {
       place: {
         required: true,
         type: Object
       }
     },
+    data() {
+      return {
+        showAddToCollection: false
+      }
+    },
     computed: {
+      ...mapGetters('user', ['isLoggedIn']),
+      ...mapGetters(['isProduction']),
       location() {
         return this.place.location.neighbourhood || this.place.location.street
       },
@@ -63,13 +84,13 @@
         const group = new HourGroup(this.place.hours.map((h) => new Hour(h.day, h.open, h.close)))
         switch (group.isOpen()) {
           case 'open':
-            return {class: 'timing-open', text: 'Open Now'}
+            return {class: 'time-open', text: 'Open Now'}
           case 'closed':
-            return {class: 'timing-close', text: 'Closed Now'}
+            return {class: 'time-close', text: 'Closed Now'}
           case 'opening':
-            return {class: 'timing-open', text: 'Opening Soon'}
+            return {class: 'time-open', text: 'Opening Soon'}
           case 'closing':
-            return {class: 'timing-close', text: 'Closing Soon'}
+            return {class: 'time-close', text: 'Closing Soon'}
         }
       },
     }
@@ -77,62 +98,72 @@
 </script>
 
 <style scoped lang="less">
-  a {
-    color: initial !important;
-    text-decoration: initial !important;
+  .Card {
+    position: relative;
   }
 
-  .Card {
-    .Image {
-      width: 100%;
-      padding-top: 60%;
+  .CollectionBtn {
+    position: absolute;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+
+    .AddIcon {
+      width: 30px;
+      height: 30px;
+      padding: 6px;
+    }
+  }
+
+  .Image {
+    width: 100%;
+    padding-top: 60%;
+  }
+
+  .Content {
+    .Name {
+      height: 26px;
+      line-height: 26px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+
+      margin-top: 6px;
     }
 
-    .Content {
-      .Name {
-        height: 26px;
-        line-height: 26px;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        overflow: hidden;
+    .Tags {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      overflow: hidden;
 
-        margin-top: 6px;
+      min-height: 24px;
+      max-height: 64px;
+      margin-top: 4px;
+      margin-bottom: -8px;
+
+      .Tag {
+        font-size: 12px;
+        line-height: 24px;
+        padding: 0 8px;
+        margin-right: 8px;
+        margin-bottom: 8px;
       }
+    }
 
-      .Tags {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: flex-start;
-        overflow: hidden;
+    .LocationDistanceTiming {
+      margin-top: 8px;
 
-        min-height: 24px;
-        max-height: 64px;
-        margin-top: 4px;
-        margin-bottom: -8px;
+      font-weight: 600;
+      font-size: 13px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
 
-        .Tag {
-          font-size: 12px;
-          line-height: 24px;
-          padding: 0 8px;
-          margin-right: 8px;
-          margin-bottom: 8px;
-        }
-      }
-
-      .LocationDistanceTiming {
-        margin-top: 8px;
-
-        font-weight: 600;
-        font-size: 13px;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        overflow: hidden;
-
-        .BulletDivider {
-          vertical-align: middle;
-          font-size: 12px;
-          margin: 0 3px;
-        }
+      .BulletDivider {
+        vertical-align: middle;
+        font-size: 12px;
+        margin: 0 3px;
       }
     }
   }

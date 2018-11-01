@@ -4,7 +4,7 @@
   &-top {
     border-radius: 2px 2px 0 0;
   }
-  &-bottom {
+  &-bot {
     border-radius: 0 0 2px 2px;
   }
 }
@@ -15,7 +15,7 @@
   &-top {
     border-radius: 3px 3px 0 0;
   }
-  &-bottom {
+  &-bot {
     border-radius: 0 0 3px 3px;
   }
 }
@@ -26,7 +26,7 @@
   &-top {
     border-radius: 4px 4px 0 0;
   }
-  &-bottom {
+  &-bot {
     border-radius: 0 0 4px 4px;
   }
 }
@@ -42,30 +42,18 @@
   }
 }
 
-.mt-8 {
-  margin-top: 8px;
-}
-
-.mb-8 {
-  margin-bottom: 8px;
-}
-
-.ml-8 {
-  margin-left: 8px;
-}
-
-.mr-8 {
-  margin-right: 8px;
-}
-
-.container, .container-gutter-24 {
+/**
+ container default
+ */
+.container {
   width: 100%;
-  padding-right: 24px;
-  padding-left: 24px;
-  margin-right: auto;
-  margin-left: auto;
-
   max-width: 2000px;
+
+  margin-left: auto;
+  margin-right: auto;
+
+  padding-left: 24px;
+  padding-right: 24px;
 
   @media (min-width: 1200px) {
     padding-right: 80px;
@@ -73,14 +61,19 @@
   }
 }
 
-.gutter-24 .container {
-  @media (min-width: 1200px) {
-    padding-right: 24px;
-    padding-left: 24px;
+/**
+ Forces all container to be padding 24px, cascading from top
+ */
+.gutter-24 {
+  .container {
+    @media (min-width: 1200px) {
+      padding-right: 24px;
+      padding-left: 24px;
+    }
   }
 }
 
-.gutter, .gutter-width {
+.gutter {
   width: 24px;
   min-height: 1px;
 
@@ -89,12 +82,15 @@
   }
 }
 
-.container-full {
-  width: 100%;
-  margin-right: auto;
-  margin-left: auto;
+.container-full:extend(.container) {
+  padding-left: 0;
+  padding-right: 0;
+}
 
-  max-width: 2000px;
+.container-1200:extend(.container) {
+  max-width: 1200px;
+  padding-left: 24px;
+  padding-right: 24px;
 }
 
 .container-remove-gutter {
@@ -106,75 +102,5 @@
     margin-left: -80px !important;
     margin-right: -80px !important;
     width: calc(100% + 160px) !important;
-  }
-}
-
-// Should deprecate all other use below this line
-
-.container-fixed {
-  width: 100%;
-  padding-right: 24px;
-  padding-left: 24px;
-  margin-right: auto;
-  margin-left: auto;
-
-  @media (min-width: 576px) {
-    max-width: 540px;
-  }
-
-  @media (min-width: 768px) {
-    max-width: 720px;
-  }
-
-  @media (min-width: 992px) {
-    max-width: 960px;
-  }
-
-  @media (min-width: 1200px) {
-    max-width: 1200px;
-  }
-}
-
-.container-1200 {
-  width: 100%;
-  margin-right: auto;
-  margin-left: auto;
-
-  max-width: 1200px;
-  padding-left: 24px;
-  padding-right: 24px;
-}
-
-.container-no-gutter {
-  width: 100%;
-  margin-right: auto;
-  margin-left: auto;
-
-  max-width: 2000px;
-  padding-left: 24px;
-
-  @media (min-width: 1200px) {
-    padding-right: 80px;
-    padding-left: 80px;
-  }
-}
-
-.container-width {
-  margin-right: auto;
-  margin-left: auto;
-
-  max-width: 2000px;
-}
-
-.container-no-right {
-  width: 100%;
-  margin-right: auto;
-  margin-left: auto;
-
-  max-width: 2000px;
-  padding-left: 24px;
-
-  @media (min-width: 1200px) {
-    padding-left: 80px;
   }
 }

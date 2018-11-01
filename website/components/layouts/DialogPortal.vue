@@ -11,11 +11,11 @@ Max-width of 400px if > 576vw
 -->
 <template>
   <div class="DialogPortal index-dialog flex-center zero-spacing">
-    <portal-target class="Dialog elevation-3 index-elevation" name="dialog"/>
-    <portal-target class="Dialog W400 elevation-3 index-elevation" name="dialog-w400"/>
-    <portal-target class="Dialog Blank elevation-3 index-elevation" name="dialog-blank"/>
-    <portal-target class="Dialog Styled elevation-3 index-elevation" name="dialog-styled"/>
     <portal-target class="Dialog Full index-elevation" name="dialog-full"/>
+    <portal-target class="Dialog Blank elevation-3 index-elevation" name="dialog-blank"/>
+    <portal-target class="Dialog W400 elevation-3 index-elevation" name="dialog-w400"/>
+    <portal-target class="Dialog Styled elevation-3 index-elevation" name="dialog-styled"/>
+    <portal-target class="Dialog elevation-3 index-elevation" name="dialog"/>
 
     <!-- Universal Dialog -->
     <profile-on-boarding v-if="isFocused('Login')"/>

@@ -1,13 +1,13 @@
-.flex, .flex-space-between, .flex-center {
+.flex {
   display: flex;
 }
 
-.flex-center {
+.flex-center:extend(.flex) {
   align-items: center;
   justify-content: center;
 }
 
-.flex-space-between {
+.flex-space-between:extend(.flex) {
   justify-content: space-between;
   align-content: space-between;
 }
