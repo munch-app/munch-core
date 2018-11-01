@@ -1,11 +1,14 @@
 <template>
   <nuxt-link :to="'/places/' + place.placeId">
-    <div class="Card">
-      <div class="CollectionBtn index-content-overlay" v-if="!isProduction && isLoggedIn">
-        <div @click.prevent.stop="showAddToCollection = true">
-          <simple-svg class="AddIcon" fill="white" :filepath="require('~/assets/icon/place/add.svg')"/>
+    <div class="Card" :class="{'Small': small}">
+      <no-ssr>
+        <div class="CollectionBtn index-content-overlay" v-if="!isProduction && isLoggedIn">
+          <div @click.prevent.stop="showAddToCollection = true">
+            <simple-svg class="AddIcon" fill="white" :filepath="require('~/assets/icon/place/add.svg')"/>
+          </div>
         </div>
-      </div>
+      </no-ssr>
+
       <image-size v-if="image" class="Image border-3 index-content" :image="image" :alt="place.name"/>
       <div v-else class="Image border-3 bg-whisper100"/>
 
@@ -46,8 +49,12 @@
     components: {ProfileCollectionAddPlace, ImageSize},
     props: {
       place: {
+        type: Object,
         required: true,
-        type: Object
+      },
+      small: {
+        type: Boolean,
+        default: false
       }
     },
     data() {
@@ -165,6 +172,30 @@
         font-size: 12px;
         margin: 0 3px;
       }
+    }
+  }
+
+  .Small {
+    .Name {
+      font-size: 15px;
+    }
+
+    .Tags {
+      min-height: 22px;
+      max-height: 56px;
+      margin-bottom: -6px;
+
+      .Tag {
+        font-size: 10px;
+        line-height: 22px;
+        padding: 0 7px;
+        margin-right: 6px;
+        margin-bottom: 6px;
+      }
+    }
+
+    .LocationDistanceTiming {
+      font-size: 11px;
     }
   }
 </style>

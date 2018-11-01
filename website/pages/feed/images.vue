@@ -1,7 +1,5 @@
 <template>
   <div class="zero-spacing">
-    <!--<feed-nav-bar/>-->
-
     <div class="container ImageWall">
       <masonry-wall ref="masonry" :items="items" @append="onAppend" :min="2"
                     :persistence="{getter: 'feed/images/persistence', commit: 'feed/images/persistence'}">
@@ -27,19 +25,18 @@
 <script>
   import {mapGetters} from 'vuex'
   import FeedImageCard from "../../components/feed/FeedImageCard";
-  import FeedNavBar from "../../components/feed/FeedNavBar";
   import ImageSize from "../../components/core/ImageSize";
   import FeedSelectedInstagramDialog from "../../components/feed/FeedSelectedInstagramDialog";
   import MasonryWall from "../../components/core/MasonryWall";
   import DialogNavigation from "../../components/layouts/DialogNavigation";
 
   export default {
-    components: {DialogNavigation, MasonryWall, FeedSelectedInstagramDialog, ImageSize, FeedNavBar, FeedImageCard},
+    components: {DialogNavigation, MasonryWall, FeedSelectedInstagramDialog, ImageSize, FeedImageCard},
     head() {
       const meta = [
         {name: 'robots', content: `follow,index`}
       ]
-      return {title: `Images · Munch Feed`, meta}
+      return {title: `Images Feed · Munch Singapore`, meta}
     },
     async fetch({store}) {
       return store.dispatch('feed/images/start')

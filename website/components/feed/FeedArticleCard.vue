@@ -1,33 +1,43 @@
 <template>
   <div class="FeedArticleCard">
-    <a :href="article.url" target="_blank" rel="noreferrer noopener nofollow">
+    <a :href="article.url" class="Article" target="_blank" rel="noreferrer noopener nofollow">
       <image-size class="Image index-content border-3" :image="article.thumbnail"/>
-      <h3 class="Title text-ellipsis-2l">{{article.title}}</h3>
-      <p class="Content text-ellipsis-4l">{{article.content}}</p>
+
+      <h3 class="Title text-ellipsis-1l">{{article.title}}</h3>
+
+      <div class="Author" :href="article.domain.url" target="_blank" rel="noreferrer nofollow noopener">
+        <h6>by <span class="s700">{{item.author}}</span> on {{format(article.createdMillis, 'mmm dd, yyyy')}}</h6>
+      </div>
+
+      <p class="Content text-ellipsis-3l">{{article.content}}</p>
     </a>
 
-    <div class="Bottom">
-      <a class="BrandButton" :href="article.domain.url"
-         target="_blank" rel="noreferrer noopener nofollow">
-        <simple-svg class="Icon" fill="black" :filepath="require('~/assets/icon/feed/article.svg')"/>
-        <div class="Name text text-ellipsis-1l secondary-700">{{article.domain.name}}</div>
-      </a>
+    <div class="Places">
+      <h4 class="s700" v-if="places.length > 1">Places Mentioned</h4>
+      <h4 class="s700" v-else>Place Mentioned</h4>
 
-      <div class="PlaceButton elevation-1 border-3 border hover-pointer elevation-hover-2" @click="onClick">
-        <simple-svg class="Icon" fill="rgba(0, 0, 0, 0.85)" :filepath="require('~/assets/icon/place.svg')"/>
-        <div class="Label">Places Mentioned</div>
-      </div>
+      <horizontal-scroll-view class="PlaceList container-remove-gutter" :items="places" :map-key="i => i.placeId"
+                              :nav-white="false" :padding="24">
+        <template slot-scope="{item}">
+          <div class="Card">
+            <place-card :place="item" small/>
+          </div>
+        </template>
+      </horizontal-scroll-view>
     </div>
     <hr>
   </div>
 </template>
 
 <script>
+  import dateformat from 'dateformat'
   import ImageSize from "../core/ImageSize";
+  import PlaceCard from "../places/PlaceCard";
+  import HorizontalScrollView from "../core/HorizontalScrollView";
 
   export default {
     name: "FeedArticleCard",
-    components: {ImageSize},
+    components: {HorizontalScrollView, PlaceCard, ImageSize},
     props: {
       item: {
         required: true,
@@ -45,6 +55,7 @@
       }
     },
     methods: {
+      format: dateformat,
       onClick() {
         this.$emit('view')
       }
@@ -53,86 +64,41 @@
 </script>
 
 <style scoped lang="less">
-  a {
-    text-decoration: none;
-    color: black;
+  .FeedArticleCard {
+    max-width: 700px;
   }
 
-  .FeedArticleCard {
-    max-width: 680px;
-  }
-
-  .FeedArticleCard {
+  .Article {
     .Image {
       width: 100%;
-      padding-top: 25%;
-      margin-bottom: 16px;
+      padding-top: 22%;
     }
 
     .Title {
-      margin-bottom: 8px;
+      margin-top: 16px;
+    }
+
+    .Author {
+      margin-top: 4px;
+      display: block;
     }
 
     .Content {
-      margin-bottom: 16px;
+      margin-top: 16px;
     }
   }
 
-  .Bottom {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  .Places {
+    margin-top: 24px;
+    margin-bottom: 16px;
 
-    margin-bottom: 32px;
+    .PlaceList {
+      margin-top: 16px;
+      height: 204px;
 
-    .BrandButton {
-      display: flex;
-      align-items: center;
-
-      margin-right: 8px;
-
-      .Icon {
-        flex-shrink: 0;
-
-        width: 18px;
-        height: 18px;
-      }
-
-      .Name {
-        flex-grow: 1;
-        flex-shrink: 1;
-
-        margin-left: 6px;
-
-        font-size: 15px;
-        font-weight: 600;
-
-        line-height: 21px;
-        height: 21px;
-      }
-    }
-
-    .PlaceButton {
-      padding: 6px 10px 6px 8px;
-      display: inline-flex;
-      flex-shrink: 0;
-
-      .Icon {
-        width: 20px;
-        height: 20px;
-      }
-
-      .Label {
-        margin-left: 4px;
-        margin-right: 2px;
-
-        height: 20px;
-        line-height: 20px;
-
-        font-weight: 600;
-        font-size: 13px;
-
-        color: rgba(0, 0, 0, 0.75);
+      .Card {
+        width: 140px;
+        height: 204px;
       }
     }
   }

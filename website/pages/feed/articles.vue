@@ -1,7 +1,5 @@
 <template>
   <div class="zero-spacing">
-    <!--<feed-nav-bar/>-->
-
     <div class="container">
       <div class="ArticleFeed">
         <div class="ArticleFeedList">
@@ -13,7 +11,7 @@
     </div>
 
     <no-ssr>
-      <div class="LoadingIndicator flex-center" v-if="more"
+      <div class="flex-center" style="padding: 48px" v-if="more"
            v-observe-visibility="{callback:visibilityChanged,throttle:1000}">
         <beat-loader color="#084E69" size="14px"/>
       </div>
@@ -28,25 +26,18 @@
 <script>
   import {mapGetters} from 'vuex'
   import FeedArticleCard from "../../components/feed/FeedArticleCard";
-  import FeedNavBar from "../../components/feed/FeedNavBar";
   import FeedSelectedArticleDialog from "../../components/feed/FeedSelectedArticleDialog";
 
   export default {
-    components: {FeedSelectedArticleDialog, FeedNavBar, FeedArticleCard},
+    components: {FeedSelectedArticleDialog, FeedArticleCard},
     head() {
       const meta = [
         {name: 'robots', content: `follow,index`}
       ]
-      return {title: `Article · Munch Feed`, meta}
+      return {title: `Article Feed · Munch Singapore`, meta}
     },
     data() {
       return {
-        tags: [
-          'Recent Articles',
-          'Tag: Bar',
-          'Tag: Halal',
-          'Tag: Chinese'
-        ],
         selected: -1
       }
     },
@@ -71,36 +62,15 @@
     display: flex;
   }
 
-  nav.ArticleFeedNav {
-    width: 180px;
-    height: 100vh;
-
-    top: 56px;
-    position: sticky;
-
-    padding-top: 24px;
-
-    > div {
-      font-size: 16px;
-      font-weight: 600;
-
-      margin-bottom: 10px;
-      line-height: 16px;
-      height: 16px;
-    }
-  }
-
   .ArticleFeedList {
-    margin: 8px auto -24px;
+    margin-top: 8px;
+    margin-bottom: -24px;
+    margin-left: auto;
+    margin-right: auto;
 
     .ArticleFeedItem {
       padding-top: 16px;
       padding-bottom: 16px;
     }
-  }
-
-  .LoadingIndicator {
-    padding-top: 24px;
-    padding-bottom: 48px;
   }
 </style>
