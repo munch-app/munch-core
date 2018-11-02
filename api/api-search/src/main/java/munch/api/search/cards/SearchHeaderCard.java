@@ -1,6 +1,7 @@
 package munch.api.search.cards;
 
 import munch.restful.core.KeyUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 
 /**
  * Created by: Fuxing
@@ -11,12 +12,13 @@ import munch.restful.core.KeyUtils;
 public final class SearchHeaderCard implements SearchCard {
 
     private String title;
+    private String uniqueId;
 
     public SearchHeaderCard() {
     }
 
     public SearchHeaderCard(String title) {
-        this.title = title;
+        setTitle(title);
     }
 
     public String getTitle() {
@@ -25,6 +27,13 @@ public final class SearchHeaderCard implements SearchCard {
 
     public void setTitle(String title) {
         this.title = title;
+        if (uniqueId == null) {
+            setUniqueId("h_" + KeyUtils.sha256Base64Url(title) + RandomStringUtils.randomAlphanumeric(3));
+        }
+    }
+
+    public void setUniqueId(String uniqueId) {
+        this.uniqueId = uniqueId;
     }
 
     @Override
@@ -34,6 +43,7 @@ public final class SearchHeaderCard implements SearchCard {
 
     @Override
     public String getUniqueId() {
-        return "h_" + System.currentTimeMillis() + KeyUtils.sha256Base64Url(title);
+        if (uniqueId == null) return getCardId();
+        return uniqueId;
     }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :id="anchor">
     <h2>{{title}}</h2>
   </div>
 </template>
@@ -8,9 +8,17 @@
   export default {
     name: "SearchCardHeader",
     props: {
-      title: {
-        type: String,
-        default: () => 'Discover'
+      card: {
+        type: Object,
+        required: true
+      }
+    },
+    computed: {
+      title() {
+        return this.card.title || 'Discover'
+      },
+      anchor() {
+        return this.card._uniqueId
       }
     }
   }

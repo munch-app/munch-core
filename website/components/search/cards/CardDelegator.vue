@@ -18,7 +18,12 @@
   <search-card-header
     class="Card no-select Initial FullWidth NoBottom"
     v-else-if="isCardId('injected_Header_20180120')"
-    :title="card.title"
+    :card="card"
+  />
+  <search-card-navigation-header
+    class="Card no-select Initial FullWidth"
+    v-else-if="isCardId('injected_NavigationHeader_20181102')"
+    :card="card"
   />
   <search-card-no-result
     class="Card no-select Initial FullWidth"
@@ -51,6 +56,7 @@
   import SearchCardAreaClusterHeader from "./SearchCardAreaClusterHeader";
   import SearchCardPlaceSmall from "./SearchCardPlaceSmall";
   import SearchCardSuggestionTag from "./SearchCardSuggestionTag";
+  import SearchCardNavigationHeader from "./SearchCardNavigationHeader";
 
   function isElementInViewport(el) {
     const topBar = 56 + 48 // Top Bar
@@ -68,6 +74,7 @@
   export default {
     name: "CardDelegator",
     components: {
+      SearchCardNavigationHeader,
       SearchCardSuggestionTag,
       SearchCardPlaceSmall,
       SearchCardAreaClusterHeader,

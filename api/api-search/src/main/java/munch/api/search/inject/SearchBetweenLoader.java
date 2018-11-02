@@ -1,7 +1,11 @@
 package munch.api.search.inject;
 
+import munch.api.search.cards.SearchHeaderCard;
+import munch.api.search.cards.SearchNavigationHeader;
+
 import javax.inject.Singleton;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by: Fuxing
@@ -14,7 +18,16 @@ public final class SearchBetweenLoader implements SearchCardInjector.Loader {
 
     @Override
     public List<Position> load(Request request) {
-        // Injected card above, wait for YZ
-        return List.of();
+        if (!request.isBetween()) return null;
+
+        List<SearchHeaderCard> headers = request.getCards().stream()
+                .filter(searchCard -> searchCard instanceof SearchHeaderCard)
+                .map(card -> (SearchHeaderCard) card)
+                .collect(Collectors.toList());
+        if (headers.isEmpty()) return null;
+
+        SearchNavigationHeader card = new SearchNavigationHeader(headers);
+        card.setTitle("Eat Between Location");
+        return of(-1, card);
     }
 }

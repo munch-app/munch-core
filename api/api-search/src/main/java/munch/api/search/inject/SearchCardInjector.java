@@ -44,7 +44,10 @@ public final class SearchCardInjector {
 
         // Collect into Negatives & Positives
         for (Loader loader : loaders) {
-            for (Loader.Position position : loader.load(request)) {
+            List<Loader.Position> positions = loader.load(request);
+            if (positions == null) continue;
+
+            for (Loader.Position position : positions) {
                 if (position.index < 0) negatives.add(position);
                 else positives.add(position);
             }
