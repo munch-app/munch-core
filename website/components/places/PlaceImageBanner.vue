@@ -2,7 +2,7 @@
   <a v-if="images">
     <div class="container">
       <div class="ImagePipe border-3">
-        <image-size class="Image border-3 hover-pointer" v-for="(image, index) in images"
+        <image-size class="Image border-3 hover-pointer" v-for="(image, index) in list"
                     :image="image" :key="index" grow="width" :height="180"
                     @click.native="$emit('onClickImage', index)"
         />
@@ -35,6 +35,11 @@
       images: {
         type: Array,
         required: true
+      }
+    },
+    computed: {
+      list() {
+        return this.images.slice(0, 10)
       }
     }
   }

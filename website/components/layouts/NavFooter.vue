@@ -1,5 +1,5 @@
 <template>
-  <nav class="zero-spacing hr-top index-footer white-bg">
+  <nav class="zero hr-top index-footer white-bg">
     <div class="NavFooter flex container">
       <div class="Brand">
         <img class="Image" src="~/assets/img/MunchLogoTitled.svg">

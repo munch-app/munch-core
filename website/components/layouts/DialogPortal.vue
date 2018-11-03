@@ -10,7 +10,7 @@ dialog-w400:
 Max-width of 400px if > 576vw
 -->
 <template>
-  <div class="DialogPortal index-dialog flex-center zero-spacing">
+  <div class="DialogPortal index-dialog flex-center zero">
     <portal-target class="Dialog Full index-elevation" name="dialog-full"/>
     <portal-target class="Dialog Blank elevation-3 index-elevation" name="dialog-blank"/>
     <portal-target class="Dialog W400 elevation-3 index-elevation" name="dialog-w400"/>

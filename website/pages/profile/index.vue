@@ -1,5 +1,5 @@
 <template>
-  <div class="zero-spacing">
+  <div class="zero">
     <section class="Profile container">
       <div class="ProfileImage secondary-500-bg">
         <no-ssr>

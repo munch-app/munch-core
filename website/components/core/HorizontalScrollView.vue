@@ -6,7 +6,7 @@
       <div @click="next" v-if="hasNext" class="ScrollControlNext index-navigation hover-pointer"
            :class="{NavWhite: navWhite}"/>
     </div>
-    <div class="HorizontalScrollView zero-spacing index-content" :class="{container}">
+    <div class="HorizontalScrollView zero index-content" :class="{container}">
       <div ref="scrollArea" class="ScrollArea index-content">
         <div class="Content" :style="style.content">
           <div v-if="container">

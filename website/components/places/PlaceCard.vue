@@ -9,9 +9,10 @@
         </div>
       </no-ssr>
 
-      <!-- index-content: Image should not demand index-content? -->
-      <image-size v-if="image" class="Image border-3" :image="image" :alt="place.name"/>
-      <div v-else class="Image border-3 bg-whisper100"/>
+      <div class="aspect r-5-3 border-3 overflow-hidden">
+        <image-sizes v-if="image" :sizes="image.sizes" :alt="place.name"/>
+        <div v-else class="bg-whisper100"/>
+      </div>
 
       <div class="Content">
         <div class="Name Title large weight-600 b-a80">{{place.name}}</div>
@@ -42,12 +43,12 @@
 <script>
   import {mapGetters} from "vuex";
   import {Hour, HourGroup} from './hour-group'
-  import ImageSize from "../core/ImageSize";
   import ProfileCollectionAddPlace from "../profile/ProfileCollectionAddPlace";
+  import ImageSizes from "../core/ImageSizes";
 
   export default {
     name: "PlaceCard",
-    components: {ProfileCollectionAddPlace, ImageSize},
+    components: {ImageSizes, ProfileCollectionAddPlace},
     props: {
       place: {
         type: Object,
@@ -129,11 +130,6 @@
       height: 30px;
       padding: 6px;
     }
-  }
-
-  .Image {
-    width: 100%;
-    padding-top: 60%;
   }
 
   .Content {

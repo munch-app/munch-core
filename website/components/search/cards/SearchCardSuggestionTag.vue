@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="SearchCard primary-500-bg zero-spacing">
+    <div class="SearchCard primary-500-bg zero">
       <h2 class="white text weight-600">Can't decide?</h2>
       <div class="white text">{{description}}</div>
 

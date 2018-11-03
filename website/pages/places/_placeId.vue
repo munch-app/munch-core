@@ -1,5 +1,5 @@
 <template>
-  <div class="zero-spacing PlacePage">
+  <div class="zero PlacePage">
     <section class="Banner">
       <place-image-banner :images="images" @onClickImage="(index) => $refs.imageWall.onClickImage(index)"/>
     </section>

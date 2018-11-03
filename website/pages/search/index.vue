@@ -1,5 +1,5 @@
 <template>
-  <div class="zero-spacing Page">
+  <div class="zero Page">
     <div class="SearchResult container" v-if="cards && query">
       <div class="Result">
         <card-delegator v-for="card in cards" :key="card._uniqueId" :card="card" ref="cards"

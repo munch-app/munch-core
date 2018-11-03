@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="SearchCard bg-saltpan200 border-4 zero-spacing">
+    <div class="SearchCard bg-saltpan200 border-4 zero">
       <h2 class="text weight-600">{{area.name}}</h2>
       <div class="Content">
         <image-size v-if="image" class="Image border-4" :image="image"/>

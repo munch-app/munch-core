@@ -1,5 +1,5 @@
 <template>
-  <div class="zero-spacing">
+  <div class="zero">
     <div class="container ImageWall">
       <div class="Header">
         <h2>Munch Image Feed</h2>

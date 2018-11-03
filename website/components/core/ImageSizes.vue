@@ -25,8 +25,6 @@ Personally I think there will still a need to use ImageSize for slotting of cont
         required: true
       },
 
-      fixed: Boolean, // Not yet implemented
-
       /**
        * Max width, height enabled width, height grow
        */
@@ -78,10 +76,10 @@ Personally I think there will still a need to use ImageSize for slotting of cont
           objectFit: this.objectFit,
 
           width: this.maxWidth ? 'auto': '100%',
-          maxWidth: this.maxWidth,
+          maxWidth: this.maxWidth || 'initial',
 
           height: this.maxHeight ? 'auto': '100%',
-          maxHeight: this.maxHeight,
+          maxHeight: this.maxHeight || 'initial',
         }
 
         return {image}
@@ -91,10 +89,8 @@ Personally I think there will still a need to use ImageSize for slotting of cont
 </script>
 
 <style scoped lang="less">
-  .ImageSlot {
-    > * {
-      height: 100%;
-      width: 100%;
-    }
+  .ImageSlot > * {
+    height: 100%;
+    width: 100%;
   }
 </style>

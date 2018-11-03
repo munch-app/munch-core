@@ -1,5 +1,5 @@
 <template>
-  <div class="zero-spacing">
+  <div class="zero">
     <div class="container">
       <div class="ArticleFeed">
         <div class="ArticleFeedList">

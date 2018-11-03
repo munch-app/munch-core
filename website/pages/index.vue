@@ -1,5 +1,5 @@
 <template>
-  <div class="zero-spacing LandingPage">
+  <div class="zero LandingPage">
     <section class="EatBetween">
       <landing-eat-between/>
     </section>

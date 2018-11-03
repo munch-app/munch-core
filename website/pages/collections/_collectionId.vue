@@ -1,5 +1,5 @@
 <template>
-  <div class="zero-spacing CollectionPage">
+  <div class="zero CollectionPage">
     <div class="Header container">
       <div>
         <h1>{{collection.name}}</h1>

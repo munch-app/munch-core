@@ -2,7 +2,7 @@
 <!--Need to merge this to use portal-dialog-->
 
 <template>
-  <portal to="dialog-w400" class="zero-spacing">
+  <portal to="dialog-w400" class="zero">
     <div class="LoginBanner">
       <div class="BrandLogo flex-center">
         <img src="~/assets/img/MunchLogoOnboarding.svg" style="width: 66%">
