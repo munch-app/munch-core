@@ -175,6 +175,7 @@
       },
       onNavigation(to) {
         if (to === '/search' && !this.$store.state.search.query) {
+          this.$store.dispatch('filter/location', {type: 'Anywhere'})
           this.$store.dispatch('search/start')
         } else {
           this.$router.push({path: to})

@@ -17,8 +17,5 @@ ENV NODE_ENV production
 ENV ORIGIN https://www.munch.app
 EXPOSE 3000
 
-# Remove pages disabled for production
-RUN rm -r /usr/src/app/pages/feed
-
 RUN yarn run build
 CMD [ "yarn", "run", "start" ]

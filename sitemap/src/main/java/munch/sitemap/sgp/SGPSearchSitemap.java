@@ -33,6 +33,11 @@ public final class SGPSearchSitemap implements SitemapProvider {
     }
 
     @Override
+    public String name() {
+        return "search-sgp";
+    }
+
+    @Override
     public Iterator<WebSitemapUrl> provide() {
         Iterator<NamedSearchQuery> joined = Iterators.concat(
                 anywherePermutation.get(),

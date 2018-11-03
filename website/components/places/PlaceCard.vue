@@ -2,7 +2,7 @@
   <nuxt-link :to="'/places/' + place.placeId">
     <div class="Card" :class="{'Small': small}">
       <no-ssr>
-        <div class="CollectionBtn index-content-overlay" v-if="!isProduction">
+        <div class="CollectionBtn index-content-overlay">
           <div @click.prevent.stop="onClickAdd">
             <simple-svg class="AddIcon" fill="white" :filepath="require('~/assets/icon/place/add.svg')"/>
           </div>
@@ -65,7 +65,6 @@
     },
     computed: {
       ...mapGetters('user', ['isLoggedIn']),
-      ...mapGetters(['isProduction']),
       location() {
         return this.place.location.neighbourhood || this.place.location.street
       },

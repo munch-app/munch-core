@@ -7,7 +7,7 @@
     </a>
 
     <horizontal-scroll-view class="MenuImageList" :items="menu.images" :map-key="i => i.imageId" :container="false"
-                            :nav-white="false" :padding="24" v-if="!isProduction">
+                            :nav-white="false" :padding="24" v-if="isStaging">
       <template slot-scope="{item}">
         <div class="MenuImageItem hover-pointer">
           <image-size :image="item" class="Image border-3">
@@ -43,7 +43,7 @@
       }
     },
     computed: {
-      ...mapGetters(['isProduction']),
+      ...mapGetters(['isStaging']),
     }
   }
 </script>

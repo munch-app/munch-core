@@ -15,6 +15,11 @@ import java.util.Iterator;
  */
 public interface SitemapProvider {
 
+    /**
+     * @return name of sitemap
+     */
+    String name();
+
     Iterator<WebSitemapUrl> provide() throws MalformedURLException;
 
     default WebSitemapUrl build(String path) {

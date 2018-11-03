@@ -5,6 +5,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.multibindings.Multibinder;
+import munch.sitemap.places.PlaceSitemap;
 import munch.sitemap.sgp.SGPSearchSitemap;
 
 /**
@@ -19,6 +20,7 @@ public final class SitemapModule extends AbstractModule {
     protected void configure() {
         Multibinder<SitemapProvider> binder = Multibinder.newSetBinder(binder(), SitemapProvider.class);
         binder.addBinding().to(SGPSearchSitemap.class);
+        binder.addBinding().to(PlaceSitemap.class);
 
         install(new AmazonModule());
     }

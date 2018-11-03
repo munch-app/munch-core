@@ -34,10 +34,13 @@ public final class SitemapGenerator {
     private final FileMapper fileMapper;
     private final NamedCounter counter = new NamedCounter(logger, 1000);
 
+    private final File dir;
+
     @Inject
     public SitemapGenerator(Set<SitemapProvider> providers, FileMapper fileMapper) {
         this.providers = providers;
         this.fileMapper = fileMapper;
+        this.dir = Files.createTempDir();
     }
 
     /**
@@ -53,26 +56,35 @@ public final class SitemapGenerator {
      * @return all the files including the index
      */
     private List<File> generate() throws IOException {
-        File dir = Files.createTempDir();
-        WebSitemapGenerator wsg = WebSitemapGenerator.builder("https://www.munch.app", dir).build();
-
+        List<File> files = new ArrayList<>();
         for (SitemapProvider provider : providers) {
-            provider.provide().forEachRemaining(url -> {
-                counter.increment("Url");
-                wsg.addUrl(url);
-            });
+            files.addAll(generateSitemap(provider));
         }
-
-        // Track and print total number of URL
-        counter.print();
-
-        List<File> files = new ArrayList<>(wsg.write());
-        files.add(createIndex(dir, files));
         return files;
     }
 
-    private File createIndex(File dir, List<File> files) throws MalformedURLException {
-        File index = new File(dir, "index.xml");
+    private List<File> generateSitemap(SitemapProvider provider) throws MalformedURLException {
+        logger.info("Generating for: {}", provider.name());
+
+        WebSitemapGenerator wsg = WebSitemapGenerator.builder("https://www.munch.app", dir)
+                .fileNamePrefix(provider.name())
+                .build();
+
+        provider.provide().forEachRemaining(url -> {
+            counter.increment(provider.name());
+            counter.increment("Url");
+
+            wsg.addUrl(url);
+        });
+        counter.print();
+
+        List<File> files = new ArrayList<>(wsg.write());
+        files.add(createIndex(provider, files));
+        return files;
+    }
+
+    private File createIndex(SitemapProvider provider, List<File> files) throws MalformedURLException {
+        File index = new File(dir, provider.name() + "_index.xml");
         SitemapIndexGenerator sig = new SitemapIndexGenerator("https://www.munch.app", index);
         for (File file : files) {
             sig.addUrl("https://www.munch.app/sitemap/" + file.getName());

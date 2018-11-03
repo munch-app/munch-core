@@ -36,7 +36,7 @@
       }
     },
     computed: {
-      ...mapGetters(['isProduction']),
+      ...mapGetters(['isStaging']),
       ...mapGetters('filter', ['isSelectedPrice', 'priceGraph', 'selected']),
     },
     mounted() {

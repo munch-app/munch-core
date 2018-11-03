@@ -1,6 +1,6 @@
 <template>
   <no-ssr>
-    <div class="HeaderRight" v-if="!isProduction">
+    <div class="HeaderRight">
       <a class="Partner text-ellipsis-1l" href="https://partner.munch.app" target="_blank">Join as Partner</a>
 
       <a @click.prevent.stop="onClickLogin" class="hover-pointer" v-if="!isLoggedIn">Login</a>
@@ -17,7 +17,6 @@
   export default {
     name: "HeaderRight",
     computed: {
-      ...mapGetters(['isProduction']),
       ...mapGetters('user', ['isLoggedIn', 'displayName']),
     },
     methods: {
