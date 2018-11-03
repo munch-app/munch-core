@@ -52,15 +52,27 @@
 
         const locationName = () => {
           const type = query.filter.location && query.filter.location.type
-          if (type === 'Where') {
-            return query.filter.location.areas.map(value => {
-              return value.name
-            }).join(', ')
-          } else if (type === 'Between') {
-            const length = this.locationPoints.filter(bl => bl.name).length
-            return `Between ${length} Locations`
+          switch (type) {
+            case 'Anywhere':
+              return 'Anywhere'
+            case 'Nearby':
+              return 'Nearby'
+
+            case 'Where':
+              if (query.filter.location.areas.length > 0) {
+                return query.filter.location.areas.map(value => {
+                  return value.name
+                }).join(', ')
+              }
+              return 'Location'
+            case 'Between':
+              const length = this.locationPoints.filter(bl => bl.name).length
+              if (length > 1) return `Between ${length} Locations`
+              return 'Location'
+
+            default:
+              return 'Location'
           }
-          return type || 'Location'
         }
 
         return [
@@ -72,7 +84,7 @@
           {
             type: 'price',
             name: price && (price.min || price.max) ? `$${price.min} - $${price.max}` : 'Price',
-            applied:  price && (price.min || price.max)
+            applied: price && (price.min || price.max)
           },
           {
             type: 'cuisine',
@@ -137,7 +149,7 @@
       onClearAll() {
         this.$store.commit('unfocus', 'Filter')
         this.$store.dispatch('filter/reset')
-        this.$store.dispatch('search/start', this.$store.state.filter.query)
+        this.$store.dispatch('search/start')
       }
     }
   }

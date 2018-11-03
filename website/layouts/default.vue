@@ -29,7 +29,7 @@
     <notification-event/>
 
     <!-- Elevation overlay for content -->
-    <div :class="{'elevation-overlay index-content-overlay': isElevated}"></div>
+    <div @click="() => {}" :class="{'elevation-overlay index-content-overlay': isElevated}"></div>
     <nuxt class="Content" :class="{'elevation-blur': isElevated}"/>
 
     <nav-footer/>

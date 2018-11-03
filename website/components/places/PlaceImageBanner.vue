@@ -1,9 +1,11 @@
 <template>
-  <a v-if="images.length > 0" v-scroll-to="{el: '#PlaceImageWall',offset: -120}" class="hover-pointer">
+  <a v-if="images">
     <div class="container">
       <div class="ImagePipe border-3">
-        <image-size class="Image border-3" v-for="(image, index) in images" :image="image" :key="index" grow="width"
-                    :height="180"/>
+        <image-size class="Image border-3 hover-pointer" v-for="(image, index) in images"
+                    :image="image" :key="index" grow="width" :height="180"
+                    @click.native="$emit('onClickImage', index)"
+        />
       </div>
     </div>
 
@@ -13,9 +15,10 @@
 
     <div class="container">
       <div class="Navigation">
-        <div class="ShowButton elevation-1 border-3 border hover-pointer elevation-hover-2 white-bg">
+        <div class="ShowButton border-3 border hover-pointer elevation-hover-2 white-bg"
+             v-scroll-to="{el: '#PlaceImageWall',offset: -120}">
           <simple-svg class="Icon" fill="rgba(0, 0, 0, 0.75)" filepath="/img/places/grid.svg"/>
-          <div class="Label text-uppercase">Show Images</div>
+          <div class="Label text-uppercase">SHOW IMAGES</div>
         </div>
       </div>
     </div>
@@ -44,7 +47,6 @@
     overflow-x: hidden;
 
     display: flex;
-    /*align-items: flex-start;*/
 
     .Image {
       flex-shrink: 0;
@@ -74,7 +76,7 @@
       left: 0;
       bottom: 0;
 
-      margin: 8px;
+      margin: 12px;
       padding: 6px 10px;
 
       @media (max-width: 767.98px) {

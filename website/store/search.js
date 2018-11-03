@@ -36,10 +36,13 @@ export const mutations = {
     if (!query.filter.tag) query.filter.tag = {}
     if (!query.filter.tag.positives) query.filter.tag.positives = []
 
+    // Inject user Search Preference
     this.getters['user/searchPreferenceTags'].forEach(tag => {
       const index = query.filter.tag.positives.indexOf(tag.toLowerCase())
       if (index === -1) query.filter.tag.positives.push(tag)
     })
+
+    // Fix Between
 
     state.type = type
     state.query = query
@@ -78,7 +81,15 @@ function start({query, type}) {
  *
  */
 export const actions = {
+
+  /**
+   * @param commit internal
+   * @param state internal
+   * @param query to start search with, if not given, state.filter.query will be used instead
+   * @returns {*}
+   */
   start({commit, state}, query) {
+    if (!query) query = this.state.filter.query
     if (window) window.scrollTo(0, 0)
 
     this.$router.replace({path: '/search'})

@@ -36,17 +36,19 @@
 
   function reduce(query, type) {
     const bucket = {'cuisine': [], 'amenities': [], 'establishments': []}
+
+    function push(type, value) {
+      const found = _.find(types[type].list, (v) => v.toLowerCase() === value)
+      if (found) bucket[type].push(found)
+      return !!found
+    }
+
     query.filter.tag.positives.forEach(value => {
       value = value.toLowerCase()
-      if (_.some(types['cuisine'].list, (v) => v.toLowerCase() === value)) {
-        bucket['cuisine'].push(value)
-      } else if (_.some(types['establishments'].list, (v) => v.toLowerCase() === value)) {
-        bucket['establishments'].push(value)
-      } else if (_.some(types['amenities'].list, (v) => v.toLowerCase() === value)) {
-        bucket['amenities'].push(value)
-      } else {
-        bucket['amenities'].push(_.startCase(value))
-      }
+      if (push('cuisine', value)) return
+      if (push('establishments', value)) return
+      if (push('amenities', value)) return
+      bucket['amenities'].push(_.startCase(value))
     })
 
     return bucket[type]

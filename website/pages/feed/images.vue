@@ -1,6 +1,11 @@
 <template>
   <div class="zero-spacing">
     <div class="container ImageWall">
+      <div class="Header">
+        <h2>Munch Image Feed</h2>
+        <p>Tantalize your taste buds with the latest food images from Instagram</p>
+      </div>
+
       <masonry-wall ref="masonry" :items="items" @append="onAppend" :min="2"
                     :options="{lanes:{2:{padding: 8}}}"
                     :persistence="{getter: 'feed/images/persistence', commit: 'feed/images/persistence'}">
@@ -67,7 +72,15 @@
 
 <style scoped lang="less">
   .ImageWall {
-    margin-top: 24px;
+    .Header {
+      margin-top: 24px;
+      margin-bottom: 24px;
+
+      p {
+        padding-top: 8px;
+        padding-bottom: 8px;
+      }
+    }
   }
 
   .LoadingIndicator {

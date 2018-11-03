@@ -11,7 +11,6 @@ import munch.data.client.PlaceClient;
 import munch.data.place.Place;
 import munch.gallery.PlaceImage;
 import munch.gallery.PlaceImageClient;
-import munch.instagram.InstagramLinkClient;
 import munch.restful.core.NextNodeList;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonResult;
@@ -36,20 +35,18 @@ public class PlaceService extends ApiService {
     private final PlaceCardSorter cardSorter;
 
     private final ArticleLinkClient articleLinkClient;
-    private final InstagramLinkClient instagramLinkClient;
     private final AwardCollectionClient awardCollectionClient;
 
     private final PlaceImageClient placeImageClient;
 
     @Inject
     public PlaceService(PlaceClient placeClient, BasicCardLoader basicReader, QueryCardLoader cardLoader,
-                        PlaceCardSorter cardSorter, ArticleLinkClient articleLinkClient, InstagramLinkClient instagramLinkClient, AwardCollectionClient awardCollectionClient, PlaceImageClient placeImageClient) {
+                        PlaceCardSorter cardSorter, ArticleLinkClient articleLinkClient, AwardCollectionClient awardCollectionClient, PlaceImageClient placeImageClient) {
         this.placeClient = placeClient;
         this.basicReader = basicReader;
         this.cardLoader = cardLoader;
         this.cardSorter = cardSorter;
         this.articleLinkClient = articleLinkClient;
-        this.instagramLinkClient = instagramLinkClient;
         this.awardCollectionClient = awardCollectionClient;
         this.placeImageClient = placeImageClient;
     }
@@ -81,10 +78,7 @@ public class PlaceService extends ApiService {
                 "place", place,
                 "awards", awardCollectionClient.list(placeId, null, 10),
                 "articles", articleLinkClient.list(placeId, null, 10),
-                "images", placeImageClient.list(placeId, null, 10),
-                "instagram", Map.of(
-                        "medias", instagramLinkClient.list(placeId, null, 10)
-                )
+                "images", placeImageClient.list(placeId, null, 10)
         ));
     }
 

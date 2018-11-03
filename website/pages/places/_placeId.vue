@@ -1,7 +1,7 @@
 <template>
   <div class="zero-spacing PlacePage">
     <section class="Banner">
-      <place-image-banner :images="place.images"/>
+      <place-image-banner :images="images" @onClickImage="(index) => $refs.imageWall.onClickImage(index)"/>
     </section>
 
     <section class="Information">
@@ -43,16 +43,16 @@
       </div>
     </section>
 
-    <section class="Article" v-if="data.articles.length > 0">
-      <place-article-list :place-id="place.placeId" :preload="data.articles"/>
+    <section class="Article" v-if="articles">
+      <place-article-list :place-id="place.placeId" :preload="articles"/>
     </section>
 
-    <section class="Images" v-if="data.images.length > 0">
+    <section class="Images" v-if="images">
       <div class="container">
         <h2>{{place.name}} Images</h2>
       </div>
 
-      <place-image-wall :place-id="place.placeId" :preload="data.images"/>
+      <place-image-wall ref="imageWall" :place-id="place.placeId" :preload="images"/>
     </section>
 
     <no-ssr>
@@ -166,9 +166,18 @@
         if (this.data.place.menu && this.data.place.menu.url) {
           return this.data.place.menu
         }
+      },
+      images() {
+        if (this.data.images.length > 0) {
+          return this.data.images
+        }
+      },
+      articles() {
+        if (this.data.articles.length > 0) {
+          return this.data.articles
+        }
       }
     },
-    methods: {},
     mounted() {
       if (process.client) {
         const placeId = this.place.placeId
@@ -186,7 +195,7 @@
         })
       }
     },
-    destroyed() {
+    beforeDestroy() {
       if (process.client) {
         // Remove all place activity clicks
         document.querySelectorAll('a[data-place-activity]').forEach(anchor => {

@@ -30,7 +30,7 @@
     methods: {
       onClick(area) {
         this.$store.dispatch('filter/location', {areas: [area], type: 'Where'})
-        this.$store.dispatch('search/start', this.$store.state.filter.query)
+        this.$store.dispatch('search/start')
       }
     }
   }

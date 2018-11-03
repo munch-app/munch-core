@@ -36,6 +36,12 @@ export const getters = {
     return state.origin === 'https://www.munch.app'
   },
 
+  /**
+   * @returns {boolean} whether it is currently in not in production
+   */
+  isStaging: (state) => {
+    return state.origin !== 'https://www.munch.app'
+  }
 }
 
 import {disableBodyScroll, clearAllBodyScrollLocks} from 'body-scroll-lock';

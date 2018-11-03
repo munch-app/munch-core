@@ -7,6 +7,11 @@
         {{name}}
       </div>
     </div>
+
+    <div class="Header">
+      <h5>Price Per Pax</h5>
+    </div>
+
     <div class="PriceGraph">
       <!-- Graph is disabled for now -->
       <search-bar-filter-price-graph v-if="false" class="Graph" :price-graph="priceGraph"/>
@@ -48,8 +53,10 @@
         this.max = priceGraph.max
       },
       selected(selected) {
-        if (selected === 'price') {
-          this.$refs.slider.refresh()
+        switch (selected) {
+          case 'combined':
+          case 'price':
+            this.$refs.slider.refresh()
         }
       }
     },
@@ -71,6 +78,10 @@
 
 <style scoped lang="less">
   .PriceView {
+    .Header {
+      margin-top: 24px;
+      margin-bottom: 0;
+    }
   }
 
   .PriceButtonList {
@@ -105,7 +116,7 @@
   }
 
   .PriceGraph {
-    margin-top: 64px;
+    margin-top: 48px;
 
     .Graph {
       height: 100px;

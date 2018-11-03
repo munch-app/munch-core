@@ -11,9 +11,13 @@
 
     <div class="SearchSuggest elevation-3 index-top-elevation no-select" v-if="isExtended">
       <div class="Navigation index-top-elevation" v-if="isNavigation">
-        <div @click="onNavigation('/search')" class="NavigationItem" :class="{Selected: route.startsWith('search')}">Search</div>
-        <div @click="onNavigation('/feed/images')" class="NavigationItem" :class="{Selected: route === 'feed-images'}">Image Feed</div>
-        <div @click="onNavigation('/feed/articles')" class="NavigationItem" :class="{Selected: route === 'feed-articles'}">Article Feed</div>
+        <div @click="onNavigation('/search')" class="NavigationItem" :class="{Selected: route.startsWith('search')}">
+          Search
+        </div>
+        <div @click="onNavigation('/feed/images')" class="NavigationItem" :class="{Selected: route === 'feed-images'}">
+          Image Feed
+        </div>
+        <!--<div v-if="isStaging" @click="onNavigation('/feed/articles')" class="NavigationItem" :class="{Selected: route === 'feed-articles'}">Article Feed</div>-->
       </div>
       <div class="Results index-top-elevation">
         <div class="NoResult text" v-if="!hasResult && suggestions">
@@ -46,7 +50,8 @@
 
 <script>
   import {mapGetters} from 'vuex'
-  import {pluck, filter, debounceTime, distinctUntilChanged, switchMap, map} from 'rxjs/operators'
+  import {merge} from 'rxjs';
+  import {partition, pluck, filter, debounceTime, distinctUntilChanged, switchMap, map} from 'rxjs/operators'
   import SearchSuggestPlaceItem from "./suggest/SearchSuggestPlaceItem";
   import SearchSuggestAssumptionItem from "./suggest/SearchSuggestAssumptionItem";
 
@@ -67,16 +72,13 @@
         this.$refs.input.focus()
       }
     },
-    destroyed() {
-
-    },
     watch: {
       loading() {
         this.text = ''
       }
     },
     computed: {
-      ...mapGetters(['isElevated', 'isFocused']),
+      ...mapGetters(['isElevated', 'isFocused', 'isStaging']),
       ...mapGetters('search', ['loading']),
       route() {
         return this.$route.name
@@ -172,7 +174,14 @@
         this.onBlur()
       },
       onNavigation(to) {
-        this.$router.push({path: to})
+        if (to === '/search') {
+          if (!this.$store.state.search.query) {
+            this.$store.dispatch('search/start')
+          } else {
+            this.$router.push({path: to})
+          }
+        }
+
         this.onBlur()
       },
       onFocus() {
@@ -210,13 +219,16 @@
       }
     },
     subscriptions() {
-      return {
-        suggestions: this.$watchAsObservable('text').pipe(
-          pluck('newValue'),
-          map((text) => text.trim()),
-          filter((text) => text !== ''),
-          debounceTime(200),
-          distinctUntilChanged(),
+      const [server, local] = this.$watchAsObservable('text').pipe(
+        pluck('newValue'),
+        map((text) => text.trim()),
+        debounceTime(200),
+        distinctUntilChanged(),
+        partition(text => text !== '')
+      )
+
+      const suggestions = merge(
+        server.pipe(
           switchMap((text) => {
             return this.$axios.$post('/api/search/suggest', {
               "text": text,
@@ -226,9 +238,12 @@
               }
             }, {progress: false})
           }),
-          map(({data}) => data)
-        )
-      }
+          map(({data}) => data))
+        ,
+        local.pipe(map((text) => null))
+      )
+
+      return {suggestions}
     }
   }
 </script>
@@ -269,6 +284,10 @@
       height: 38px;
       padding: 0 24px;
       line-height: 2;
+
+      @media (max-width: 767.98px) {
+        padding: 0 16px;
+      }
 
       color: rgba(0, 0, 0, 0.6);
 

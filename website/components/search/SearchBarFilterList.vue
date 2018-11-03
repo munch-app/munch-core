@@ -71,7 +71,7 @@
         if (this.isApplicable) {
           this.$store.commit('filter/selected', null)
           this.$store.commit('unfocus', 'Filter')
-          this.$store.dispatch('search/start', this.$store.state.filter.query)
+          this.$store.dispatch('search/start')
         }
       },
     },

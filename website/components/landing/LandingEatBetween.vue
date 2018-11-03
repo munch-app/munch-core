@@ -51,7 +51,7 @@
       },
       onApply() {
         if (this.isApplicable) {
-          this.$store.dispatch('search/start', this.$store.state.filter.query)
+          this.$store.dispatch('search/start')
         }
       },
     }
