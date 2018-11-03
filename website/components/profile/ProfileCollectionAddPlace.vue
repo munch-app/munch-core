@@ -6,7 +6,7 @@
         <div class="Collection flex hover-pointer" v-for="collection in list" :key="collection.collectionId"
              @click="addToCollection(collection)">
           <image-size class="Image" :image="collection.image" v-if="collection.image"/>
-          <div v-else class="Image whisper-200-bg"/>
+          <div v-else class="Image bg-whisper200"/>
 
           <div class="Content">
             <div class="Name text text-ellipsis-1-line">{{collection.name}}</div>

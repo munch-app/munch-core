@@ -5,13 +5,13 @@
         <div class="AnnotationDialog">
           <nuxt-link class="DialogArea Selected initial" :to="'/places/' + place.placeId" v-if="selected">
             <image-size v-if="image" class="Image index-content border-3-top" :image="image" :alt="place.name"/>
-            <div v-else class="Image whisper-100-bg"/>
+            <div v-else class="Image bg-whisper100"/>
 
             <div class="Content">
-              <div class="Name Title large weight-600 black-a-80">{{place.name}}</div>
+              <div class="Name Title large weight-600 b-a80">{{place.name}}</div>
               <div class="Tags">
                 <div class="Tag border-3" v-for="tag in tags" :key="tag.tagId"
-                     :class="{'peach-100-bg weight-600 black-a-80': tag.type === 'price', 'whisper-100-bg weight-400': tag.type !== 'price'}">
+                     :class="{'bg-peach100 weight-600 b-a80': tag.type === 'price', 'bg-whisper100 weight-400': tag.type !== 'price'}">
                   {{tag.name}}
                 </div>
               </div>

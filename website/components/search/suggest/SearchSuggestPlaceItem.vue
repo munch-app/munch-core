@@ -2,7 +2,7 @@
   <div class="Place text">
     <simple-svg class="Icon" fill="rgba(0,0,0,0.75)" filepath="/img/search/place.svg"/>
     <span class="Name">{{place.name}}</span>
-    <span class="Location black-a-85">, {{location}}</span>
+    <span class="Location b-a85">, {{location}}</span>
   </div>
 </template>
 

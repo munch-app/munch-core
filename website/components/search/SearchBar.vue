@@ -24,7 +24,7 @@
           Sorry! We couldn’t find results for '{{text}}'.
         </div>
         <div class="Suggest" v-if="suggests">
-          <div class="SuggestCell whisper-100-bg text WhiteA85" v-for="suggest in suggests" :key="suggest"
+          <div class="SuggestCell bg-whisper100 text WhiteA85" v-for="suggest in suggests" :key="suggest"
                @click="onItemSuggest(suggest)">
             {{suggest}}
           </div>

@@ -2,17 +2,17 @@
   <nuxt-link :to="'/places/' + place.placeId">
     <div class="elevation-1 Card border-3">
       <div class="Content">
-        <div class="Name Title large weight-600 black-a-80">{{place.name}}</div>
+        <div class="Name Title large weight-600 b-a80">{{place.name}}</div>
         <div class="Tags">
           <div class="Tag border-3" v-for="tag in tags" :key="tag.tagId"
-               :class="{'peach-100-bg': tag.type === 'price', 'whisper-100-bg': tag.type !== 'price'}">
+               :class="{'bg-peach100': tag.type === 'price', 'bg-whisper100': tag.type !== 'price'}">
             {{tag.name}}
           </div>
         </div>
         <div class="LocationDistanceTiming small">
           <span v-if="distance">{{distance}}, </span>
-          <span class="weight-600 black-a-80">{{location}}</span>
-          <span v-if="timing" class="black-a-75 BulletDivider">•</span>
+          <span class="weight-600 b-a80">{{location}}</span>
+          <span v-if="timing" class="b-a75 BulletDivider">•</span>
           <span v-if="timing" :class="timing.class">{{timing.text}}</span>
         </div>
       </div>
@@ -53,13 +53,13 @@
         const group = new HourGroup(this.place.hours.map((h) => new Hour(h.day, h.open, h.close)))
         switch (group.isOpen()) {
           case 'open':
-            return {class: 'timing-open', text: 'Open Now'}
+            return {class: 'time-open', text: 'Open Now'}
           case 'closed':
-            return {class: 'timing-close', text: 'Closed Now'}
+            return {class: 'time-close', text: 'Closed Now'}
           case 'opening':
-            return {class: 'timing-open', text: 'Opening Soon'}
+            return {class: 'time-open', text: 'Opening Soon'}
           case 'closing':
-            return {class: 'timing-close', text: 'Closing Soon'}
+            return {class: 'time-close', text: 'Closing Soon'}
         }
       },
     }

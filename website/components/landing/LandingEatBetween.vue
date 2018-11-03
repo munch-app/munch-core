@@ -11,7 +11,7 @@
             Clear
           </div>
           <div class="Button Apply" @click="onApply"
-               :class="{'secondary-500-bg white weight-600': isApplicable, 'secondary-050-bg black-a-85 weight-600': !isApplicable}">
+               :class="{'bg-s500 white weight-600': isApplicable, 'bg-s050 b-a85 weight-600': !isApplicable}">
             {{applyText}}
           </div>
         </div>

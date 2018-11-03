@@ -1,20 +1,20 @@
 <template>
   <div class="zero">
     <section class="Profile container">
-      <div class="ProfileImage secondary-500-bg">
+      <div class="ProfileImage bg-s500">
         <no-ssr>
           <img v-if="profile.photoUrl" :src="profile.photoUrl" :alt="profile.name">
         </no-ssr>
       </div>
       <no-ssr class="ProfileDetail">
         <div>
-          <h2 class="Name black-a-85">{{profile.name}}</h2>
-          <div class="Email text weight-600 black-a-75">{{profile.email}}</div>
+          <h2 class="Name b-a85">{{profile.name}}</h2>
+          <div class="Email text weight-600 b-a75">{{profile.email}}</div>
         </div>
       </no-ssr>
       <div class="ProfileAction">
         <div @click="showSetting = true"
-             class="SettingButton border-3 elevation-1 text-uppercase black-a-75 weight-600 hover-pointer elevation-hover-2">
+             class="SettingButton border-3 elevation-1 text-uppercase b-a75 weight-600 hover-pointer elevation-hover-2">
           Settings
         </div>
       </div>
@@ -46,15 +46,15 @@
         </div>
         <div class="CollectionControl">
           <div v-if="!showCollectionButton" @click="showCollectionButton = true"
-               class="CollectionButton elevation-1 elevation-hover-2 border-3 white-bg hover-pointer">
+               class="CollectionButton elevation-1 elevation-hover-2 border-3 bg-white hover-pointer">
             <simple-svg class="Icon" fill="rgba(0,0,0,0.75)" filepath="/img/profile/edit.svg"/>
           </div>
           <div v-if="!showCollectionButton" @click="creating = {access: 'Public'}"
-               class="CollectionButton elevation-1 elevation-hover-2 border-3 white-bg hover-pointer">
+               class="CollectionButton elevation-1 elevation-hover-2 border-3 bg-white hover-pointer">
             <simple-svg class="Icon" fill="rgba(0,0,0,0.75)" filepath="/img/profile/add.svg"/>
           </div>
           <div v-if="showCollectionButton" @click="showCollectionButton = false"
-               class="CollectionButton elevation-1 elevation-hover-2 border-3 white-bg hover-pointer">
+               class="CollectionButton elevation-1 elevation-hover-2 border-3 bg-white hover-pointer">
             <simple-svg class="Icon" fill="rgba(0,0,0,0.75)" filepath="/img/profile/done.svg"/>
           </div>
         </div>

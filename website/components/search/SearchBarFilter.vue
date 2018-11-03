@@ -1,12 +1,12 @@
 <template>
-  <nav class="no-select index-5" v-on-clickaway="onClickAway">
+  <nav class="no-select" v-on-clickaway="onClickAway">
     <div class="FilterBar index-header hr-bot">
       <div class="Buttons container">
         <div v-for="button in buttons" :key="button.type" class="FilterButton" @click="onButton(button)"
              :class="{
-             'primary-500-bg white': button.type === selected,
-             'whisper-100-bg black-a-75': button.type !== selected && !button.applied,
-             'primary-050-bg black': button.type !== selected && button.applied,
+             'bg-p500 white': button.type === selected,
+             'bg-whisper100 b-a75': button.type !== selected && !button.applied,
+             'bg-p050 black': button.type !== selected && button.applied,
              'Combined': button.type === 'combined',
              'Location': button.type === 'location',
              }">
@@ -15,7 +15,7 @@
           <div v-if="button.count">{{button.count}}</div>
         </div>
 
-        <div class="FilterButton elevation-hover-2 elevation-1 white-bg ClearAllButton" @click="onClearAll"
+        <div class="FilterButton elevation-hover-2 elevation-1 bg-white ClearAllButton" @click="onClearAll"
              v-if="isClearAll">
           <div>Clear All</div>
         </div>

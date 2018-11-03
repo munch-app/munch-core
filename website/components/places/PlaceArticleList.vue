@@ -4,11 +4,11 @@
       <h2>Recent Articles</h2>
       <div class="Controls">
         <div class="Left elevation-1 border-3" @click="prev"
-             :class="{'whisper-100-bg': hasPrev, 'white-bg': !hasPrev}">
+             :class="{'bg-whisper100': hasPrev, 'bg-white': !hasPrev}">
           <simple-svg class="Icon" fill="black" filepath="/img/places/caret_left.svg"/>
         </div>
         <div class="Right elevation-1 border-3" @click="next"
-             :class="{'whisper-100-bg': hasNext, 'white-bg': !hasNext}">
+             :class="{'bg-whisper100': hasNext, 'bg-white': !hasNext}">
           <simple-svg class="Icon" fill="black" filepath="/img/places/caret_right.svg"/>
         </div>
       </div>
@@ -19,13 +19,13 @@
       <template slot-scope="{item,index}">
         <a :href="item.url" target="_blank" rel="noreferrer noopener nofollow" data-place-activity="partnerArticleItem"
            :data-place-activity-data="index">
-          <div class="ArticleCard whisper-050-bg no-select elevation-1 elevation-hover-2 border-3 hover-pointer">
+          <div class="ArticleCard bg-whisper050 no-select elevation-1 elevation-hover-2 border-3 hover-pointer">
             <image-size class="Thumbnail index-content border-3-top" :image="item.thumbnail"/>
             <div class="Content">
-              <div class="text text-ellipsis-2l black-a-85 Title">{{item.title}}</div>
+              <div class="text text-ellipsis-2l b-a85 Title">{{item.title}}</div>
               <div class="text text-ellipsis-4l Description">{{item.content || item.description}}</div>
 
-              <div class="secondary-700 Brand">
+              <div class="s700 Brand">
                 <simple-svg class="Icon" fill="black" :filepath="require('~/assets/icon/feed/article.svg')"/>
                 <div class="Name text text-ellipsis-1l">{{item.domain.name}}</div>
               </div>

@@ -1,13 +1,13 @@
 <template>
   <div>
-    <div class="SearchCard primary-500-bg zero">
+    <div class="SearchCard bg-p500 zero">
       <h2 class="white text weight-600">Can't decide?</h2>
       <div class="white text">{{description}}</div>
 
       <horizontal-scroll-view class="TagList" :items="card.tags" :map-key="i => i.name" :container="false"
                               :nav-white="false" :padding="18">
         <template slot-scope="{item}">
-          <div class="Tag text text-center white-bg border-4 hover-pointer" @click="onClick(item.name)">
+          <div class="Tag text text-center bg-white border-4 hover-pointer" @click="onClick(item.name)">
             <div class="Name text-ellipsis-1-line">{{item.name}}</div>
             <div class="Count text-ellipsis-1-line">{{item.count}} places</div>
           </div>

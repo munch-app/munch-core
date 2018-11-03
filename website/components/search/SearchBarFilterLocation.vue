@@ -4,23 +4,23 @@
       <div class="LocationCollection">
         <div class="LocationCell" @click="toggleBetween"
              :class="{
-         'primary-500-bg white': isSelectedLocationType('Between'),
-         'whisper-100-bg black-a-75': !isSelectedLocationType('Between')}">
+         'bg-p500 white': isSelectedLocationType('Between'),
+         'bg-whisper100 b-a75': !isSelectedLocationType('Between')}">
           EatBetween
         </div>
 
         <div class="LocationCell flex-center" @click="toggleNearby"
              :class="{
-         'primary-500-bg white': isSelectedLocationType('Nearby'),
-         'whisper-100-bg black-a-75': !isSelectedLocationType('Nearby')}">
+         'bg-p500 white': isSelectedLocationType('Nearby'),
+         'bg-whisper100 b-a75': !isSelectedLocationType('Nearby')}">
           <beat-loader v-if="nearby.loading" class="flex-center" color="#0A6284" size="6px"/>
           <div v-else>Nearby</div>
         </div>
 
         <div class="LocationCell" @click="toggleAnywhere"
              :class="{
-         'primary-500-bg white': isSelectedLocationType('Anywhere'),
-         'whisper-100-bg black-a-75': !isSelectedLocationType('Anywhere')}">
+         'bg-p500 white': isSelectedLocationType('Anywhere'),
+         'bg-whisper100 b-a75': !isSelectedLocationType('Anywhere')}">
           Anywhere
         </div>
 

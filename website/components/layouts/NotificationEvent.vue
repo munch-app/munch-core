@@ -1,8 +1,8 @@
 <template>
   <div class="NotificationEvent index-overlay">
-    <div class="NotificationBox EatBetweenEvent elevation-3 white-bg" v-if="eatBetween" @click="clickEatBetween">
+    <div class="NotificationBox EatBetweenEvent elevation-3 bg-white" v-if="eatBetween" @click="clickEatBetween">
       <div class="Header">
-        <h4 class="primary-700">
+        <h4 class="p700">
           Copy Link?
         </h4>
         <simple-svg class="Icon" fill="black" filepath="/img/layouts/copy.svg"/>

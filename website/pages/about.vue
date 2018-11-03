@@ -12,7 +12,7 @@
       </div>
     </section>
 
-    <section class="Vision secondary-050-bg">
+    <section class="Vision bg-s050">
       <div class="content container-1200">
         <div class="content-image">
         </div>
@@ -33,7 +33,7 @@
       </div>
     </section>
 
-    <section class="Contact primary-050-bg">
+    <section class="Contact bg-p050">
       <div class="content container-1200">
         <div class="content-image"/>
         <div class="content-text prismic-content">

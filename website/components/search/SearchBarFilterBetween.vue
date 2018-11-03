@@ -19,7 +19,7 @@
 
           <div class="LocationTextBar border-3 hover-pointer" v-for="(key, index) in emptyPoints" :key="key">
             <div class="TextBar" @click.capture="onSearch(index + locationPoints.length)">
-              <div class="primary-500">
+              <div class="p500">
                 {{`Enter Location ${index + 1 + locationPoints.length}`}}
               </div>
             </div>
@@ -48,9 +48,9 @@
       </div>
 
       <div class="Suggest">
-        <div class="SuggestCell whisper-100-bg text" v-for="(location, index) in suggestions"
+        <div class="SuggestCell bg-whisper100 text" v-for="(location, index) in suggestions"
              :key="index" @click="onLocation(location)"
-             :class="{'whisper-200-bg': search.position === index}"
+             :class="{'bg-whisper200': search.position === index}"
         >
           {{location.name}}
         </div>

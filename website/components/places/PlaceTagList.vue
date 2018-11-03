@@ -1,6 +1,6 @@
 <template>
   <div class="PlaceTagList">
-    <div class="text Tag whisper-100-bg border-3" v-for="tag in tagMax" :key="tag.tagId" @click="onClick(tag)">
+    <div class="text Tag bg-whisper100 border-3" v-for="tag in tagMax" :key="tag.tagId" @click="onClick(tag)">
       {{tag.name}}
     </div>
   </div>

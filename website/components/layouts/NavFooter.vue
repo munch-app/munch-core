@@ -1,18 +1,18 @@
 <template>
-  <nav class="zero hr-top index-footer white-bg">
+  <nav class="zero hr-top index-footer bg-white">
     <div class="NavFooter flex container">
       <div class="Brand">
         <img class="Image" src="~/assets/img/MunchLogoTitled.svg">
       </div>
       <div class="Company">
-        <h4 class="secondary">Company</h4>
+        <h4 class="s500">Company</h4>
         <nuxt-link to="/support">Support</nuxt-link>
         <nuxt-link to="/support/privacy">Privacy Policy</nuxt-link>
         <nuxt-link to="/support/terms">Terms of Use</nuxt-link>
       </div>
 
       <div class="Product">
-        <h4 class="secondary">Product</h4>
+        <h4 class="s500">Product</h4>
         <nuxt-link to="/about">About</nuxt-link>
         <nuxt-link to="/press">Press</nuxt-link>
         <a href="https://partner.munch.app" target="_blank">Content Partners</a>

@@ -2,7 +2,7 @@
   <portal to="dialog-blank" slot-scope="{scroll}">
     <div class="ArticleDialog" id="dialog-portal-scroll" v-on-clickaway="onClose">
 
-      <div class="Navigation index-navigation white-bg elevation-1">
+      <div class="Navigation index-navigation bg-white elevation-1">
         <div>
           <h4 class="Title text-ellipsis-1l">{{article.title}}</h4>
         </div>
@@ -21,11 +21,11 @@
 
           <a class="BrandButton" :href="article.domain.url">
             <simple-svg class="Icon" fill="black" :filepath="require('~/assets/icon/feed/article.svg')"/>
-            <div class="Name text text-ellipsis-1l secondary-700">{{article.domain.name}}</div>
+            <div class="Name text text-ellipsis-1l s700">{{article.domain.name}}</div>
           </a>
         </div>
         <div class="Place">
-          <h4 class="Title secondary-700 text-uppercase">Places</h4>
+          <h4 class="Title s700 text-uppercase">Places</h4>
 
           <div class="PlaceList">
             <div class="PlaceItem index-content" v-for="place in places" :key="place.placeId">

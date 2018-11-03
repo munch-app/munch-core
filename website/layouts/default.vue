@@ -1,7 +1,7 @@
 <template>
   <div class="Default" :class="{'gutter-24': isSearch && showsMap}" lang="en">
     <nav class="Header index-top-elevation hr-bot bg-white">
-      <div class="HeaderRow clearfix container">
+      <div class="HeaderRow container">
         <header-logo class="Logo" :class="{'IsSuggest': isFocused('Suggest')}"/>
         <div class="Search">
           <search-bar class="SearchBar" @onText="onText" @onBlur="onBlur" @onFocus="onFocus"/>

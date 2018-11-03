@@ -17,7 +17,7 @@
         <section class="Action">
           <no-ssr>
             <div v-if="isLoggedIn" @click="showAddToCollection = true"
-                 class="Button elevation-1 elevation-hover-2 border-3 white-bg hover-pointer">
+                 class="Button elevation-1 elevation-hover-2 border-3 bg-white hover-pointer">
               <simple-svg class="Icon" fill="rgba(0,0,0,0.75)" filepath="/img/places/action_add_collection.svg"/>
             </div>
           </no-ssr>
