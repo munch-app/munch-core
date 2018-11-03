@@ -1,54 +1,49 @@
 <template>
   <nuxt-link :to="'/places/' + place.placeId">
-    <div class="Card" :class="{'Small': small}">
+    <div class="Card relative" :class="{'Small': small}">
       <no-ssr>
-        <div class="CollectionBtn index-content-overlay">
-          <div @click.prevent.stop="onClickAdd">
-            <simple-svg class="AddIcon" fill="white" :filepath="require('~/assets/icon/place/add.svg')"/>
-          </div>
-        </div>
+        <place-card-add-collection class="absolute" :place="place"/>
       </no-ssr>
 
-      <div class="aspect r-5-3 border-3 overflow-hidden">
-        <image-sizes v-if="image" :sizes="image.sizes" :alt="place.name"/>
+      <div class="aspect r-5-3 border-3 overflow-hidden" v-if="image">
+        <image-sizes v-if="placeImage" :sizes="placeImage.sizes" :alt="place.name"/>
         <div v-else class="bg-whisper100"/>
       </div>
 
       <div class="Content">
-        <div class="Name Title large weight-600 b-a80">{{place.name}}</div>
+        <div class="Name Title text-ellipsis-1l large weight-600 b-a80">{{place.name}}</div>
         <div class="Tags">
-          <div class="Tag border-3" v-for="tag in tags" :key="tag.tagId" :class="{
-               'bg-peach100 weight-600 black-a-80': tag.type === 'price',
+          <div class="Tag border-3" v-for="tag in placeTags" :key="tag.tagId" :class="{
+               'bg-peach100 weight-600 b-a80': tag.type === 'price',
                'bg-whisper100 weight-400': tag.type !== 'price'}"
           >
             {{tag.name}}
           </div>
         </div>
 
-        <div class="LocationDistanceTiming small">
-          <span v-if="distance">{{distance}}, </span>
-          <span class="weight-600 b-a80">{{location}}</span>
-          <span v-if="timing" class="b-a75 BulletDivider">•</span>
-          <span v-if="timing" :class="timing.class">{{timing.text}}</span>
+        <div class="LocationDistanceTiming small text-ellipsis-1l">
+          <span v-if="placeDistance">{{placeDistance}}, </span>
+          <span class="weight-600 b-a80">{{placeLocation}}</span>
+          <span v-if="placeTiming" class="b-a75 BulletDivider">•</span>
+          <span v-if="placeTiming" :class="placeTiming.class">{{placeTiming.text}}</span>
         </div>
       </div>
     </div>
-
-    <no-ssr>
-      <profile-collection-add-place :place="place" v-if="showAddToCollection" @on-close="showAddToCollection = false"/>
-    </no-ssr>
   </nuxt-link>
 </template>
 
 <script>
-  import {mapGetters} from "vuex";
   import {Hour, HourGroup} from './hour-group'
-  import ProfileCollectionAddPlace from "../profile/ProfileCollectionAddPlace";
   import ImageSizes from "../core/ImageSizes";
+  import PlaceCardAddCollection from "./PlaceCardAddCollection";
+  
+  function abc1428240170610139() {
+    
+  }
 
   export default {
     name: "PlaceCard",
-    components: {ImageSizes, ProfileCollectionAddPlace},
+    components: {PlaceCardAddCollection, ImageSizes},
     props: {
       place: {
         type: Object,
@@ -57,24 +52,22 @@
       small: {
         type: Boolean,
         default: false
-      }
-    },
-    data() {
-      return {
-        showAddToCollection: false
+      },
+      image: {
+        type: Boolean,
+        default: true
       }
     },
     computed: {
-      ...mapGetters('user', ['isLoggedIn']),
-      location() {
+      placeLocation() {
         return this.place.location.neighbourhood || this.place.location.street
       },
-      image() {
+      placeImage() {
         if (this.place.images && this.place.images[0]) {
           return this.place.images[0]
         }
       },
-      tags() {
+      placeTags() {
         const perPax = this.place.price && this.place.price.perPax
         const priceTax = perPax && [{type: 'price', name: `$${perPax.toFixed(0)}`}] || []
 
@@ -83,10 +76,10 @@
           ...this.place.tags
         ]
       },
-      distance() {
+      placeDistance() {
         return null
       },
-      timing() {
+      placeTiming() {
         if (this.place.hours.length === 0) return
 
         const group = new HourGroup(this.place.hours.map((h) => new Hour(h.day, h.open, h.close)))
@@ -101,45 +94,15 @@
             return {class: 'time-close', text: 'Closing Soon'}
         }
       },
-    },
-    methods: {
-      onClickAdd() {
-        if (this.isLoggedIn) {
-          this.showAddToCollection = true
-        } else {
-          this.$store.commit('focus', 'Login')
-        }
-      }
     }
   }
 </script>
 
 <style scoped lang="less">
-  .Card {
-    position: relative;
-  }
-
-  .CollectionBtn {
-    position: absolute;
-    width: 100%;
-    display: flex;
-    justify-content: flex-end;
-
-    .AddIcon {
-      width: 30px;
-      height: 30px;
-      padding: 6px;
-    }
-  }
-
   .Content {
     .Name {
       height: 26px;
       line-height: 26px;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-
       margin-top: 6px;
     }
 
@@ -168,9 +131,6 @@
 
       font-weight: 600;
       font-size: 13px;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
 
       .BulletDivider {
         vertical-align: middle;

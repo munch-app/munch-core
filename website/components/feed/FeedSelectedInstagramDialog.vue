@@ -1,31 +1,25 @@
 <template>
-  <div class="InstagramDialog flex-column">
+  <div class="InstagramDialog flex-column border-3 overflow-hidden">
     <div class="InstagramHeader">
-      <h3 class="text-ellipsis-1l">{{item.instagram.caption}}</h3>
-      <a class="Author block" :href="`https://instagram.com/${item.instagram.username}`" target="_blank"
+      <a class="block" :href="`https://instagram.com/${item.instagram.username}`" target="_blank"
          rel="noreferrer nofollow noopener">
-        <h6>by <span class="s700">{{item.author}}</span> on {{format(item.createdMillis, 'mmm dd, yyyy')}}</h6>
+        <h6 class="text-ellipsis-2l b-a75">{{item.instagram.caption}}</h6>
+        <h6 class="text-ellipsis-1l Author">by <span class="s700">{{item.author}}</span> on {{format(item.createdMillis, 'mmm dd, yyyy')}}</h6>
       </a>
     </div>
 
-    <image-sizes class="InstagramImage" :sizes="item.image.sizes"
-                 width="800" height="1000" object-fit="contain"
-                 max-height="calc(100vh - 80px - 48px - 64px)">
-      <div class="ImageContainer flex-column-end">
-        <a class="flex" :href="`https://instagram.com/${item.instagram.username}`" target="_blank"
-           rel="noreferrer nofollow noopener">
-          <simple-svg class="Icon" fill="white" :filepath="require('~/assets/icon/feed/instagram.svg')"/>
-          <div class="Name">{{item.author}}</div>
-        </a>
-      </div>
-    </image-sizes>
+    <nuxt-link :to="`/places/${place.placeId}`" class="lh-0">
+      <image-sizes class="InstagramImage" :sizes="item.image.sizes"
+                   width="800" height="1000" object-fit="contain"
+                   max-height="calc(100vh - 94px - 48px - 128px - 24px)">
+        <no-ssr>
+          <place-card-add-collection class="absolute" :place="place"/>
+        </no-ssr>
+      </image-sizes>
+    </nuxt-link>
 
-    <div class="Places" v-if="place">
-      <h2>Place Mentioned</h2>
-
-      <div class="Card">
-        <place-card :place="place"/>
-      </div>
+    <div class="Place" v-if="place">
+      <place-card :place="place" :image="false"/>
     </div>
   </div>
 </template>
@@ -35,10 +29,11 @@
   import ImageSize from "../core/ImageSize";
   import PlaceCard from "../places/PlaceCard";
   import ImageSizes from "../core/ImageSizes";
+  import PlaceCardAddCollection from "../places/PlaceCardAddCollection";
 
   export default {
     name: "FeedSelectedInstagramDialog",
-    components: {ImageSizes, PlaceCard, ImageSize},
+    components: {PlaceCardAddCollection, ImageSizes, PlaceCard, ImageSize},
     props: {
       item: {
         type: Object,
@@ -68,7 +63,7 @@
     padding: 16px 24px;
 
     .Author {
-      margin-top: 2px;
+      margin-top: 8px;
     }
   }
 
@@ -95,12 +90,7 @@
     }
   }
 
-  .Places {
-    padding: 24px 24px;
-
-    .Card {
-      margin-top: 24px;
-      max-width: 300px;
-    }
+  .Place {
+    padding: 16px 24px 24px;
   }
 </style>

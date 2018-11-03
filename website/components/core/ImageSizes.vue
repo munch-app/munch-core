@@ -1,8 +1,8 @@
 <!--
 This is a rewrite of ImageSize with emphasis on
 - More fluid rendering by width or height
-
-Personally I think there will still a need to use ImageSize for slotting of content in the middle
+- More lightweight component that focus on rendering sizes from munch-file.Image
+- Cleaner approach for slotting of content into the image
 -->
 <template>
   <div class="ImageSizes relative">
@@ -75,10 +75,10 @@ Personally I think there will still a need to use ImageSize for slotting of cont
         const image = {
           objectFit: this.objectFit,
 
-          width: this.maxWidth ? 'auto': '100%',
+          width: this.maxWidth ? 'auto' : '100%',
           maxWidth: this.maxWidth || 'initial',
 
-          height: this.maxHeight ? 'auto': '100%',
+          height: this.maxHeight ? 'auto' : '100%',
           maxHeight: this.maxHeight || 'initial',
         }
 

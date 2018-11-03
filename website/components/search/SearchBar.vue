@@ -17,7 +17,7 @@
         <div @click="onNavigation('/feed/images')" class="NavigationItem" :class="{Selected: route === 'feed-images'}">
           Image Feed
         </div>
-        <!--<div v-if="isStaging" @click="onNavigation('/feed/articles')" class="NavigationItem" :class="{Selected: route === 'feed-articles'}">Article Feed</div>-->
+        <div v-if="isStaging" @click="onNavigation('/feed/articles')" class="NavigationItem" :class="{Selected: route === 'feed-articles'}">Article Feed</div>
       </div>
       <div class="Results index-top-elevation">
         <div class="NoResult text" v-if="!hasResult && suggestions">
