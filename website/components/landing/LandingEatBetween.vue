@@ -65,8 +65,6 @@
     padding-bottom: 56px;
 
     .Input {
-      height: 60vh;
-
       h1 {
         margin-top: 24px;
         margin-bottom: 16px;
@@ -121,7 +119,7 @@
 
   @media (max-width: 767.98px) {
     .BetweenContainer {
-      height: 100vh;
+      min-height: 100vh;
     }
 
     .Input {
@@ -131,7 +129,7 @@
 
   @media (min-width: 768px) {
     .BetweenContainer {
-      height: 100vh;
+      min-height: 100vh;
       align-items: center;
 
       max-width: 1200px;

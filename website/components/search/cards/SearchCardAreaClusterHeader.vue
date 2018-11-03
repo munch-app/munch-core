@@ -1,10 +1,10 @@
 <template>
   <div>
-    <div class="SearchCard secondary-400-bg border-4 zero-spacing">
-      <h2 class="white text weight-600">{{area.name}}</h2>
+    <div class="SearchCard bg-saltpan200 border-4 zero-spacing">
+      <h2 class="text weight-600">{{area.name}}</h2>
       <div class="Content">
         <image-size v-if="image" class="Image border-4" :image="image"/>
-        <div class="text white">
+        <div class="text">
           <div>{{area.description}}</div>
           <div class="LastLine">
             <div class="Count">
@@ -55,6 +55,8 @@
     padding-left: 150px;
     padding-top: 100px;
     margin-right: 24px;
+
+    max-width: 280px;
   }
 
   .LastLine {

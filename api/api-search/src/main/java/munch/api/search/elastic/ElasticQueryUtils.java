@@ -90,6 +90,20 @@ public final class ElasticQueryUtils {
         return root;
     }
 
+    public static JsonNode multiMatch(String query, String field, String... fields) {
+        ObjectNode root = JsonUtils.createObjectNode();
+        ObjectNode match = root.putObject("multi_match");
+
+        match.put("query", query);
+        match.put("type", "phrase_prefix");
+        ArrayNode fieldsNode = match.putArray("fields");
+        fieldsNode.add(field);
+        for (String each : fields) {
+            fieldsNode.add(each);
+        }
+        return root;
+    }
+
     /**
      * Filter to must not
      *

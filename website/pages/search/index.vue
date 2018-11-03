@@ -14,7 +14,7 @@
         </no-ssr>
       </div>
 
-      <div class="MapView" v-if="showsMap">
+      <div class="MapView index-content-overlay" v-if="showsMap">
         <apple-map ref="map" class="Map">
           <apple-map-place-annotation v-for="place in map.places" :key="place.placeId" :place="place"
                                       :focused="map.focusedPlaceId === place.placeId"

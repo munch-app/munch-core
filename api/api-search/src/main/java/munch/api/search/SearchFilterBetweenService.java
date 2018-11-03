@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import munch.api.ApiService;
 import munch.api.search.data.SearchQuery;
-import munch.api.search.suggest.SuggestDelegator;
+import munch.api.search.elastic.ElasticQueryUtils;
 import munch.data.ElasticObject;
 import munch.data.client.AreaClient;
 import munch.data.client.ElasticClient;
@@ -78,7 +78,7 @@ public final class SearchFilterBetweenService extends ApiService {
         ObjectNode boolNode = queryNode.putObject("bool");
 
         // must: {?}
-        boolNode.set("must", SuggestDelegator.multiMatchNameNames(text));
+        boolNode.set("must", ElasticQueryUtils.multiMatch(text, "name", "names"));
 
         boolNode.putArray("filter")
                 .addObject()

@@ -13,6 +13,7 @@ public final class SearchHeaderCard implements SearchCard {
 
     private String title;
     private String uniqueId;
+    private boolean sticky;
 
     public SearchHeaderCard() {
     }
@@ -30,6 +31,14 @@ public final class SearchHeaderCard implements SearchCard {
         if (uniqueId == null) {
             setUniqueId("h_" + KeyUtils.sha256Base64Url(title) + RandomStringUtils.randomAlphanumeric(3));
         }
+    }
+
+    public boolean isSticky() {
+        return sticky;
+    }
+
+    public void setSticky(boolean sticky) {
+        this.sticky = sticky;
     }
 
     public void setUniqueId(String uniqueId) {

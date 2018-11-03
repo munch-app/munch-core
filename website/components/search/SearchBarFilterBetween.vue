@@ -163,13 +163,11 @@
 
 <style scoped lang="less">
   .Locations {
-    padding-top: 16px;
-    padding-bottom: 16px;
+    margin-top: 12px;
+    margin-bottom: 12px;
 
-    margin-top: -12px;
-    margin-bottom: -12px;
-
-    max-height: 440px;
+    min-height: 80px;
+    max-height: calc(80vh - 48px - 56px - 120px - 60px);
     overflow-y: auto;
   }
 

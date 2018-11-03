@@ -27,7 +27,7 @@ public final class SearchBetweenLoader implements SearchCardInjector.Loader {
         if (headers.isEmpty()) return null;
 
         SearchNavigationHeader card = new SearchNavigationHeader(headers);
-        card.setTitle("Ideal Eatbetween Locations");
+        card.setTitle("Ideal EatBetween Locations");
         return of(-1, card);
     }
 }

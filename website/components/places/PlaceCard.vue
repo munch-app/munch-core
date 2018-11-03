@@ -9,7 +9,8 @@
         </div>
       </no-ssr>
 
-      <image-size v-if="image" class="Image border-3 index-content" :image="image" :alt="place.name"/>
+      <!-- index-content: Image should not demand index-content? -->
+      <image-size v-if="image" class="Image border-3" :image="image" :alt="place.name"/>
       <div v-else class="Image border-3 bg-whisper100"/>
 
       <div class="Content">

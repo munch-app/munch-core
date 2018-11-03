@@ -174,14 +174,11 @@
         this.onBlur()
       },
       onNavigation(to) {
-        if (to === '/search') {
-          if (!this.$store.state.search.query) {
-            this.$store.dispatch('search/start')
-          } else {
-            this.$router.push({path: to})
-          }
+        if (to === '/search' && !this.$store.state.search.query) {
+          this.$store.dispatch('search/start')
+        } else {
+          this.$router.push({path: to})
         }
-
         this.onBlur()
       },
       onFocus() {
@@ -282,12 +279,8 @@
       width: 100%;
       font-size: 17px;
       height: 38px;
-      padding: 0 24px;
+      padding: 0 16px;
       line-height: 2;
-
-      @media (max-width: 767.98px) {
-        padding: 0 16px;
-      }
 
       color: rgba(0, 0, 0, 0.6);
 
@@ -315,8 +308,12 @@
 
   .Navigation {
     display: flex;
-    margin: 16px 10px 16px 24px;
+    margin: 16px 10px 16px 16px;
     min-width: 355px;
+
+    @media (max-width: 767.98px) {
+      margin-left: 24px;
+    }
 
     .NavigationItem {
       text-decoration: initial !important;

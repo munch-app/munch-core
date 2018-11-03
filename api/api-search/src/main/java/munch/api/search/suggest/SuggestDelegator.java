@@ -78,7 +78,7 @@ public final class SuggestDelegator {
         ObjectNode boolNode = queryNode.putObject("bool");
 
         // must: {?}
-        JsonNode must = multiMatchNameNames(text);
+        JsonNode must = ElasticQueryUtils.multiMatch(text, "name");
         String latLng = request.getLatLng();
         boolNode.set("must", withFunctionScoreMust(latLng, must));
 
@@ -133,18 +133,6 @@ public final class SuggestDelegator {
         root.set("query", ElasticQueryUtils.make(request));
         root.set("sort", ElasticSortUtils.make(request));
         return elasticClient.searchHitsHits(root);
-    }
-
-    public static JsonNode multiMatchNameNames(String query) {
-        ObjectNode root = JsonUtils.createObjectNode();
-        ObjectNode match = root.putObject("multi_match");
-
-        match.put("query", query);
-        match.put("type", "phrase_prefix");
-        match.putArray("fields")
-                .add("name")
-                .add("names");
-        return root;
     }
 
     private static JsonNode withFunctionScoreMust(@Nullable String latLng, JsonNode must) {

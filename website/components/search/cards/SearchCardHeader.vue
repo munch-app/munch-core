@@ -1,5 +1,5 @@
 <template>
-  <div :id="anchor">
+  <div :id="anchor" :class="{'Sticky index-elevation': card.sticky}">
     <h2>{{title}}</h2>
   </div>
 </template>
@@ -27,5 +27,16 @@
 <style scoped lang="less">
   h2 {
     margin-top: 8px;
+  }
+
+  .Sticky {
+    position: sticky;
+    top: calc(48px + 56px);
+
+    background-color: white;
+    z-index: 1;
+
+    padding-bottom: 18px !important;
+    margin-bottom: -18px !important;
   }
 </style>

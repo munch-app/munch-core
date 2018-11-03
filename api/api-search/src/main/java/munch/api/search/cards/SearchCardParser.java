@@ -47,7 +47,10 @@ public final class SearchCardParser {
 
         List<SearchCard> cards = new ArrayList<>();
         for (String neighbourhood : ordered) {
-            cards.add(new SearchHeaderCard(neighbourhood));
+            SearchHeaderCard card = new SearchHeaderCard(neighbourhood);
+            card.setSticky(true);
+            cards.add(card);
+
             map.get(neighbourhood).forEach(place -> {
                 cards.add(parse(place));
             });
