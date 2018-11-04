@@ -1,5 +1,6 @@
 <template>
   <div class="PlaceAwardList">
+    <!-- TODO Deprecate Slick ASAP -->
     <slick class="Slick" ref="slick" :options="options">
       <div v-for="award in awards" :key="award.itemId">
         <div class="Award no-select bg-whisper100">

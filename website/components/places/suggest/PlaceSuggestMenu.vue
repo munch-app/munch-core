@@ -1,7 +1,6 @@
 <template>
   <div>
     <div class="input-group">
-      <input-text label="Price Per Pax" v-model="data.place.price.perPax"/>
       <input-text label="Menu URL"/>
       <input-text label="Menu Image"/>
     </div>
@@ -16,7 +15,8 @@
     name: "PlaceSuggestMenu",
     components: {InputText},
     props: {
-      data: Object
+      data: Object,
+      changes: Object
     }
   }
 </script>

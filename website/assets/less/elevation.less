@@ -39,3 +39,40 @@
 .elevation-blur {
   filter: blur(1px);
 }
+
+.hover-opacity:extend(.cubic-bezier) {
+  opacity: 0;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.hover-bg-a:extend(.cubic-bezier) {
+  background-color: rgba(0, 0, 0, 0.0);
+}
+
+.hover-bg-a10:extend(.hover-bg-a) {
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+}
+
+.hover-bg-a20:extend(.hover-bg-a) {
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+}
+
+.hover-bg:extend(.hover-bg-a), .hover-bg-a40:extend(.hover-bg-a) {
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+}
+
+
+.hover-bg-a60:extend(.hover-bg-a) {
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.6);
+  }
+}

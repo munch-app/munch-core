@@ -1,15 +1,20 @@
 <template>
   <div>
-    <p>Own a blog, want it published on munch? <a class="text-underline s700" href="https://partner.munch.app"
+    <p>Own a blog, want it published on munch? <a class="text-underline s700 weight-600" href="https://partner.munch.app"
                                                   target="_blank">partner.munch.app</a></p>
 
     <div class="Existing" v-if="data.articles.length > 0">
-      <h2>Existing Articles</h2>
+      <h2>Articles</h2>
 
       <div class="List">
-        <div class="Article flex" v-for="article in data.articles" :key="article.articleId">
+        <div class="Article flex hover-bg-a10 border-3 hover-pointer" v-for="article in data.articles" :key="article.articleId"
+             @click="onDialog(article)">
           <div>
-            <image-sizes class="Image border-3 overflow-hidden" v-if="article.thumbnail" :sizes="article.thumbnail.sizes"/>
+            <image-sizes class="Image border-3 overflow-hidden" v-if="article.thumbnail" :sizes="article.thumbnail.sizes">
+              <div class="OverlayA20 relative hover-bg-a60 wh-100 flex-center">
+                <simple-svg class="wh-32px" fill="white" :filepath="require('~/assets/icon/close.svg')"/>
+              </div>
+            </image-sizes>
           </div>
 
           <div class="Content flex-column-space-between">
@@ -19,6 +24,30 @@
         </div>
       </div>
     </div>
+
+    <no-ssr>
+      <portal to="dialog-styled" v-if="dialog" class="Dialog">
+        <h3>Flag Article</h3>
+        <div class="flex-space-between hover-pointer" @click="onFlag(dialog, 'NotRelated')">
+          <div class="text">Not related article</div>
+          <div class="checkbox"/>
+        </div>
+
+        <div class="flex-space-between hover-pointer" @click="onFlag(dialog, 'NotPlace')">
+          <div class="text">Does not belong to place</div>
+          <div class="checkbox"/>
+        </div>
+
+        <div class="flex-space-between hover-pointer" @click="onFlag(dialog, 'Explicit')">
+          <div class="text">Explicit content</div>
+          <div class="checkbox"/>
+        </div>
+
+        <div class="right">
+          <button class="clear-elevated" @click="dialog = null">Cancel</button>
+        </div>
+      </portal>
+    </no-ssr>
   </div>
 </template>
 
@@ -29,7 +58,25 @@
     name: "PlaceSuggestArticle",
     components: {ImageSizes},
     props: {
-      data: Object
+      data: Object,
+      changes: {
+        type: Object,
+        twoWay: true
+      }
+    },
+    data() {
+      return {
+        dialog: null
+      }
+    },
+    methods: {
+      onDialog(article) {
+        this.dialog = article
+        // Vue.set(this.changes, image.imageId, image)
+      },
+      onFlag(article, flag) {
+        this.dialog = null
+      }
     }
   }
 </script>
@@ -40,19 +87,33 @@
 
     .List {
       margin-top: 8px;
+      margin-left: -12px;
+      margin-right: -12px;
     }
   }
 
   .Article {
-    padding: 12px 0;
+    padding: 12px 12px;
 
     .Image {
       width: 100px;
       height: 80px;
+
+      .OverlayA20 {
+        background: rgba(0, 0, 0, 0.2);
+      }
     }
 
     .Content {
       margin-left: 20px;
+    }
+  }
+
+  .Dialog {
+    > div {
+      padding-top: 8px;
+      padding-bottom: 8px;
+      margin-bottom: 0;
     }
   }
 </style>

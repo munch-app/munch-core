@@ -85,7 +85,6 @@ Max-width of 400px if > 576vw
     position: absolute;
     margin-left: 50vw;
 
-
     @media (max-width: 575.98px) {
       position: fixed;
       min-width: 300px;
@@ -99,6 +98,19 @@ Max-width of 400px if > 576vw
   .Dialog.Styled {
     display: flex;
     flex-direction: column;
+
+    border: 1px solid rgba(0, 0, 0, 0.1);
+
+    @media (max-width: 300px) {
+      border-style: solid none solid none;
+    }
+
+    @media (min-width: 300px) and (max-width: 575.98px) {
+      min-width: 200px;
+      border-radius: 3px;
+      left: 24px;
+      right: 24px;
+    }
 
     > div {
       margin-left: -12px;

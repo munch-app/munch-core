@@ -68,7 +68,6 @@
   import MunchButton from "../../components/core/MunchButton";
   import PlaceMenu from "../../components/places/PlaceMenu";
   import GoogleEmbedMap from "../../components/core/GoogleEmbedMap";
-  import PlaceBannerImage from "../../components/places/PlaceBannerImage";
   import PlaceAwardList from "../../components/places/PlaceAwardList";
   import PlaceLocation from "../../components/places/PlaceLocation";
   import PlaceAbout from "../../components/places/PlaceAbout";
@@ -87,7 +86,7 @@
       PlaceImageBanner,
       PlaceArticleList,
       PlaceImageWall,
-      ProfileCollectionAddPlace, PlaceDetail, PlaceAbout, PlaceLocation, PlaceAwardList, PlaceBannerImage,
+      ProfileCollectionAddPlace, PlaceDetail, PlaceAbout, PlaceLocation, PlaceAwardList,
       GoogleEmbedMap, PlaceMenu, MunchButton, ImageSize, PlaceTagList
     },
     head() {

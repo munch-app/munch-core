@@ -12,6 +12,7 @@
         Close
       </div>
 
+      <!-- TODO Deprecate SLICK ASAP -->
       <slick class="Slick no-select" ref="slick" :options="options">
         <div class="BannerContent B_1">
           <div class="Contain">

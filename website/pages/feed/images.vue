@@ -3,7 +3,7 @@
     <div class="container ImageWall">
       <div class="Header">
         <h2>Feed</h2>
-        <p>Feast your eyes</p>
+        <p>Feast your eyes with fresh out the oven food shots by your favorite Instagrammers</p>
       </div>
 
       <masonry-wall ref="masonry" :items="items" @append="onAppend" :min="2"

@@ -5,8 +5,8 @@
       <template slot-scope="{item, index}">
         <div class="ImageItem hover-pointer" @click="onClickImage(index)">
           <image-size class="border-3" :image="{sizes: item.sizes}" grow="height">
-            <div class="ImageContainer">
-              <div class="Title" v-if="item.title || item.caption">
+            <div class="ImageContainer wh-100 flex-column-space-between hover-bg-a40 hover-opacity">
+              <div class="Title text-ellipsis-2l" v-if="item.title || item.caption">
                 {{item.title || item.caption}}
               </div>
 
@@ -104,13 +104,7 @@
 
 <style scoped lang="less">
   .ImageContainer {
-    width: 100%;
-    height: 100%;
     padding: 10px;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
 
     .Title {
       text-align: right;
@@ -123,14 +117,7 @@
 
       min-height: 24px;
       max-height: 48px;
-
       color: white;
-
-      -webkit-line-clamp: 2;
-
-      overflow: hidden;
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
     }
 
     .Author {
@@ -150,16 +137,6 @@
         font-weight: 600;
         color: white;
       }
-    }
-  }
-
-  .ImageContainer {
-    opacity: 0;
-    transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
-
-    &:hover {
-      opacity: 1;
-      background-color: rgba(0, 0, 0, 0.4);
     }
   }
 </style>

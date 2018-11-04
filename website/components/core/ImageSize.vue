@@ -3,7 +3,7 @@
     <div class="ImageSlot index-0">
       <slot></slot>
     </div>
-    <img class="Image index-image" v-if="size.url" :src="size.url" :alt="alt" :style="imageStyle"/>
+    <img class="Image index-image wh-100" v-if="size.url" :src="size.url" :alt="alt" :style="imageStyle"/>
   </div>
 </template>
 
@@ -100,11 +100,6 @@
       left: 0;
       right: 0;
       bottom: 0;
-    }
-
-    .Image {
-      width: 100%;
-      height: 100%;
     }
   }
 </style>

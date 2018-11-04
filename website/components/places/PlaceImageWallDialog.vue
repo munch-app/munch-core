@@ -1,6 +1,6 @@
 <template>
   <dialog-navigation @next="$emit('next')" @prev="$emit('prev')" @close="$emit('close')" max-width="600px">
-    <div class="ImageWallDialog">
+    <div class="ImageWallDialog w-100">
       <div class="Header">
         <h3 class="text-ellipsis-1l">{{item.title || item.caption}}</h3>
         <a v-if="item.instagram" class="Author block" :href="`https://instagram.com/${item.instagram.username}`"
@@ -73,10 +73,6 @@
 </script>
 
 <style scoped lang="less">
-  .ImageWallDialog {
-    width: 100%;
-  }
-
   .Header {
     padding: 16px 24px;
 
