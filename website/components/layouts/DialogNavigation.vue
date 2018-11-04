@@ -1,6 +1,6 @@
 <template>
   <portal to="dialog-full">
-    <div class="DialogNavigation" @click.self="close">
+    <div ref="dialog" class="DialogNavigation" @click.self="close">
       <div class="DialogContent" :style="{maxWidth}">
         <div class="DialogControl DialogPrev">
           <div class="DialogControlButton flex-center" @click="prev">
@@ -27,6 +27,8 @@
 </template>
 
 <script>
+  import {disableBodyScroll, clearAllBodyScrollLocks} from 'body-scroll-lock';
+
   export default {
     name: "DialogNavigation",
     props: {
@@ -51,6 +53,7 @@
         }
       }
       document.addEventListener('keyup', this.$navigation)
+      disableBodyScroll(this.$refs.dialog)
     },
     beforeDestroy() {
       document.removeEventListener('keyup', this.$navigation)
@@ -58,12 +61,15 @@
     methods: {
       next() {
         this.$emit('next')
+        disableBodyScroll(this.$refs.dialog)
       },
       prev() {
         this.$emit('prev')
+        disableBodyScroll(this.$refs.dialog)
       },
       close() {
         this.$emit('close')
+        clearAllBodyScrollLocks()
       }
     }
   }
@@ -111,8 +117,8 @@
 
       &.DialogClose {
         .Icon {
-          width: 24px;
-          height: 24px;
+          width: 28px;
+          height: 28px;
         }
 
         .DialogControlButton {

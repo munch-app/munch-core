@@ -13,6 +13,10 @@
   width: 100%;
 }
 
+.h-100 {
+  height: 100%;
+}
+
 /**
  container default
  */
@@ -61,8 +65,8 @@
   max-width: 1200px;
 }
 
-.container-800:extend(.container) {
-  max-width: 800px;
+.container-768:extend(.container) {
+  max-width: 768px;
 }
 
 .container-remove-gutter {
@@ -105,5 +109,12 @@
    */
   &.r-5-3 {
     padding-top: 60%;
+  }
+
+  /**
+    Width: 100%, Height: 100%
+   */
+  &.r-1-1 {
+    padding-top: 100%;
   }
 }

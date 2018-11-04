@@ -1,5 +1,5 @@
 <template>
-  <div class="container Support prismic-content">
+  <div class="container prismic-content">
     <div v-html="title"></div>
     <div v-html="content"></div>
   </div>
@@ -20,8 +20,8 @@
 </script>
 
 <style lang="less" scoped>
-  .Support {
+  .prismic-content {
     margin-top: 24px;
-    margin-bottom: 24px;
+    padding-bottom: 24px;
   }
 </style>

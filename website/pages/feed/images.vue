@@ -2,8 +2,8 @@
   <div class="zero">
     <div class="container ImageWall">
       <div class="Header">
-        <h2>Munch Image Feed</h2>
-        <p>Tantalize your taste buds with the latest food images from Instagram</p>
+        <h2>Feed</h2>
+        <p>Feast your eyes</p>
       </div>
 
       <masonry-wall ref="masonry" :items="items" @append="onAppend" :min="2"

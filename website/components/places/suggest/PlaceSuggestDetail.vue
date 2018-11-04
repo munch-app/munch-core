@@ -1,10 +1,7 @@
 <template>
   <div>
-    <div class="DetailGroup">
-      <div class="input-text">
-        <label>Name</label>
-        <input>
-      </div>
+    <div class="input-group">
+      <input-text label="Name" v-model="data.place.name" required/>
       <div class="input-text">
         <label>Tags</label>
         <input>
@@ -15,49 +12,20 @@
       </div>
     </div>
 
-    <div class="DetailGroup">
+    <div class="input-group">
       <h2>Contact</h2>
 
-      <div class="input-text">
-        <label>Address</label>
-        <input>
-      </div>
+      <input-text label="Address" v-model="data.place.location.address" required/>
+      <input-text label="Website" v-model="data.place.website"/>
+      <input-text label="Phone" v-model="data.place.phone"/>
 
-      <div class="input-text">
-        <label>Website</label>
-        <input>
-      </div>
-
-      <div class="input-text">
-        <label>Phone</label>
-        <input>
-      </div>
     </div>
 
-    <div class="DetailGroup">
+    <div class="input-group">
       <h2>Hours</h2>
     </div>
 
-    <div class="DetailGroup">
-      <h2>Menu</h2>
-
-      <div class="input-text">
-        <label>Price Per Pax</label>
-        <input>
-      </div>
-
-      <div class="input-text">
-        <label>Menu URL</label>
-        <input type="url">
-      </div>
-
-      <div class="input-text">
-        <label>Menu Image</label>
-        <input type="image">
-      </div>
-    </div>
-
-    <div class="DetailGroup">
+    <div class="input-group">
       <h2>Others</h2>
 
       <div class="input-text">
@@ -69,16 +37,17 @@
 </template>
 
 <script>
+  import InputText from "../../core/InputText";
+
   export default {
-    name: "PlaceSuggestDetail"
+    name: "PlaceSuggestDetail",
+    components: {InputText},
+    props: {
+      data: Object
+    }
   }
 </script>
 
 <style scoped lang="less">
-  .DetailGroup {
-    margin-top: 32px;
-    h2 {
-      margin-bottom: 16px;
-    }
-  }
+
 </style>

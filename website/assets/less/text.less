@@ -59,9 +59,7 @@ p:extend(.text), .regular:extend(.text) {
   font-size: 12px;
 }
 
-.small-bold:extend(.text) {
-  font-size: 12px;
-  font-weight: 600;
+.small-bold:extend(.small, .weight-600) {
 }
 
 .weight-400 {
@@ -86,6 +84,10 @@ p:extend(.text), .regular:extend(.text) {
 
 .text-lowercase {
   text-transform: lowercase;
+}
+
+.text-underline {
+  text-decoration: underline;
 }
 
 .text-ellipsis-1-line {

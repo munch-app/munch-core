@@ -43,6 +43,17 @@
       }
     },
     mounted() {
+      if (!mapkit.$isInited) {
+        mapkit.init({
+          authorizationCallback: done => {
+            this.$axios.$get('/apple-maps/token')
+              .then(done)
+          },
+          language: "en"
+        })
+        mapkit.$isInited = true
+      }
+
       this.$map = new mapkit.Map(this.$refs.map, {
         showsUserLocation: this.options.showsUserLocation || false,
         showsUserLocationControl: this.options.showsUserLocationControl || true,

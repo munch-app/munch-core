@@ -1,5 +1,5 @@
 <template>
-  <div class="Default" :class="{'gutter-24': isSearch && showsMap}" lang="en">
+  <div class="Default" :class="{'gutter-24': isSearch && showsMap}" :lang="'en'">
     <nav class="Header index-top-elevation hr-bot bg-white">
       <div class="HeaderRow container">
         <header-logo class="Logo" :class="{'IsSuggest': isFocused('Suggest')}"/>
@@ -31,8 +31,6 @@
 
     <nav-footer/>
   </div>
-
-
 </template>
 
 <script>
@@ -85,15 +83,6 @@
         }
       }
     },
-    mounted() {
-      mapkit.init({
-        authorizationCallback: done => {
-          this.$axios.$get('/apple-maps/token')
-            .then(done)
-        },
-        language: "en"
-      })
-    }
   }
 </script>
 

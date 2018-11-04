@@ -4,7 +4,8 @@
       <a class="block" :href="`https://instagram.com/${item.instagram.username}`" target="_blank"
          rel="noreferrer nofollow noopener">
         <h6 class="text-ellipsis-2l b-a75">{{item.instagram.caption}}</h6>
-        <h6 class="text-ellipsis-1l Author">by <span class="s700">{{item.author}}</span> on {{format(item.createdMillis, 'mmm dd, yyyy')}}</h6>
+        <h6 class="text-ellipsis-1l Author">by <span class="s700">{{item.author}}</span> on {{format(item.createdMillis,
+          'mmm dd, yyyy')}}</h6>
       </a>
     </div>
 
@@ -13,7 +14,7 @@
                    width="800" height="1000" object-fit="contain"
                    max-height="calc(100vh - 94px - 48px - 128px - 24px)">
         <no-ssr>
-          <place-card-add-collection class="absolute" :place="place"/>
+          <place-card-add-collection class="absolute" :place="place" large/>
         </no-ssr>
       </image-sizes>
     </nuxt-link>
@@ -57,6 +58,9 @@
 <style scoped lang="less">
   .InstagramDialog {
     width: 100%;
+    @media (max-width: 768px) {
+      height: 110vh;
+    }
   }
 
   .InstagramHeader {
