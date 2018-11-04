@@ -1,12 +1,10 @@
 <template>
   <div class="HorizontalScrollViewWrapper" :class="{'container-full': container}">
     <div class="Navigation" :class="{container: container}" v-if="nav">
-      <div @click="prev" v-if="hasPrev" class="ScrollControlPrev index-navigation hover-pointer"
-           :class="{NavWhite: navWhite}"/>
-      <div @click="next" v-if="hasNext" class="ScrollControlNext index-navigation hover-pointer"
-           :class="{NavWhite: navWhite}"/>
+      <div @click="prev" v-if="hasPrev" class="ScrollControlPrev index-navigation hover-pointer"/>
+      <div @click="next" v-if="hasNext" class="ScrollControlNext index-navigation hover-pointer"/>
     </div>
-    <div class="HorizontalScrollView zero index-content" :class="{container}">
+    <div ref="scrollView" class="HorizontalScrollView zero index-content" :class="{container}">
       <div ref="scrollArea" class="ScrollArea index-content">
         <div class="Content" :style="style.content">
           <div v-if="container">
@@ -51,16 +49,12 @@
         type: Boolean,
         default: () => true
       },
-      navWhite: {
-        type: Boolean,
-        default: () => false
-      },
     },
     data() {
       return {windowWidth: 0, scrollWidth: 0, distance: 0, offset: 0}
     },
     mounted() {
-      this.windowWidth = window.innerWidth <= 1200 ? window.innerWidth : 1200
+      this.windowWidth = this.$refs.scrollView.scrollWidth
       this.distance = this.windowWidth * 0.7 // Distance to cover per nav click
       this.scrollWidth = this.$refs.scrollArea.scrollWidth
 
@@ -113,7 +107,7 @@
     overflow-y: hidden;
     position: relative;
 
-    &> .ScrollArea {
+    & > .ScrollArea {
       position: absolute;
       left: 0;
       right: 0;
@@ -125,7 +119,7 @@
       -webkit-overflow-scrolling: touch;
       scroll-behavior: smooth;
 
-      &> .Content {
+      & > .Content {
         display: flex;
 
         .Item {

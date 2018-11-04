@@ -2,8 +2,8 @@
   <div>
     <h2>{{card.title || 'Navigation Header'}}</h2>
 
-    <horizontal-scroll-view class="AnchorList container-remove-gutter" :items="anchors" :map-key="a => a._uniqueId"
-                            :nav-white="false" :padding="24">
+    <horizontal-scroll-view class="AnchorList" :items="anchors" :map-key="a => a._uniqueId"
+                            :padding="24" :container="false">
       <template slot-scope="{item}">
         <div class="Anchor hover-pointer bg-whisper100 border-3" v-scroll-to="{el: '#' + item.uniqueId,offset: -100}">
           {{item.title}}

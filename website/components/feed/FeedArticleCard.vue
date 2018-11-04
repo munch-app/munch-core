@@ -17,7 +17,7 @@
       <h4 class="s700" v-else>Place Mentioned</h4>
 
       <horizontal-scroll-view class="PlaceList container-remove-gutter" :items="places" :map-key="i => i.placeId"
-                              :nav-white="false" :padding="24">
+                              :padding="24">
         <template slot-scope="{item}">
           <div class="Card">
             <place-card :place="item" small/>
