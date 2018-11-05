@@ -3,3 +3,6 @@ User-Agent: *
 Disallow: /_health/
 Disallow: /profile
 Disallow: /authenticate
+
+User-agent: Googlebot-Image
+Disallow: /

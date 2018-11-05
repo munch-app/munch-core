@@ -32,7 +32,7 @@
     components: {FeedSelectedArticleDialog, FeedArticleCard},
     head() {
       const meta = [
-        {name: 'robots', content: `follow,index`}
+        {name: 'robots', content: `follow,noindex`}
       ]
       return {title: `Article Feed · Munch Singapore`, meta}
     },

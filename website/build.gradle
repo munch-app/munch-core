@@ -10,7 +10,7 @@ task publishWebsiteLocal {
   }
 }
 
-task publishWebsiteProduction {
+task publishProduction {
   doLast {
     exec {
       commandLine "docker", "build",
@@ -26,7 +26,7 @@ task publishWebsiteProduction {
   }
 }
 
-task publishWebsiteStaging {
+task publishStaging {
   doLast {
     exec {
       commandLine "docker", "build",

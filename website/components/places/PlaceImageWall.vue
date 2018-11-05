@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <masonry-wall ref="wall" id="PlaceImageWall" :items="items" @append="append" :min="2"
-                  :options="{lanes:{2:{padding: 8}}}">
+    <masonry-wall ref="wall" id="PlaceImageWall" :items="items" @append="append"
+                  :options="{lanes:{2:{padding: 8}},min:2, ssr: {default: 2}}">
       <template slot-scope="{item, index}">
         <div class="ImageItem hover-pointer" @click="onClickImage(index)">
           <image-size class="border-3" :image="{sizes: item.sizes}" grow="height">

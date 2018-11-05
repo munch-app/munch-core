@@ -6,8 +6,8 @@
         <p>Feast your eyes with fresh out the oven food shots by your favorite Instagrammers</p>
       </div>
 
-      <masonry-wall ref="masonry" :items="items" @append="onAppend" :min="2"
-                    :options="{lanes:{2:{padding: 8}}}"
+      <masonry-wall ref="masonry" :items="items" @append="onAppend"
+                    :options="{lanes:{2:{padding: 8}},min:2, ssr: {default: wall.lanes}}"
                     :persistence="{getter: 'feed/images/persistence', commit: 'feed/images/persistence'}">
         <template slot-scope="{item, index}">
           <div @click="selected = index">
@@ -42,10 +42,17 @@
       const meta = [
         {name: 'robots', content: `follow,index`}
       ]
-      return {title: `Images Feed · Munch Singapore`, meta}
+      return {title: `Feed · Munch Singapore`, meta}
     },
-    async fetch({store}) {
+    asyncData({store, isMobileOrTablet}) {
       return store.dispatch('feed/images/start')
+        .then(() => {
+          return {
+            wall: {
+              lanes: isMobileOrTablet ? 2 : 4
+            }
+          }
+        })
     },
     data() {
       return {

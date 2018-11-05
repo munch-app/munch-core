@@ -1,5 +1,5 @@
 <template>
-  <div ref="wall" class="MasonryWall" :style="style.wall">
+  <div ref="wall" class="MasonryWall" :style="style.wall" :class="{Ready: ready}">
     <div class="MasonryWallLane" v-for="(lane, index) in lanes" :key="index" :style="style.lane">
       <div class="MasonryWallItem" v-for="i in lane.indexes" :key="i" :style="style.item" :ref="`item_${i}`">
         <slot :item="items[i]" :index="i">{{items[i]}}</slot>
@@ -15,6 +15,14 @@
 <script>
   import _ from 'lodash'
 
+  const newLanes = (count) => {
+    const lanes = []
+    for (let i = 0; i < count; i++) {
+      lanes.push({i: i, indexes: []})
+    }
+    return lanes
+  }
+
   export default {
     name: "MasonryWall",
     props: {
@@ -22,12 +30,10 @@
         type: Array,
         required: true
       },
-      min: {
-        type: Number,
-        default: 1
-      },
+
       /**
-       * e.g.
+       * Masonry Wall config options
+       * Full Config Example
        * {
        *     lanes: {
        *         1: {
@@ -36,46 +42,69 @@
        *         2: {
        *             padding: 8
        *         }
-       *     }
+       *     },
+       *     width: 300, of Item padding included
+       *     padding: 12, Left Right Top Bottom
+       *     min: 1, min number of lanes
        * }
        */
-      options: {
-        type: Object,
-      },
-      width: {
-        type: Number,
-        default: 300
-      },
-      padding: {
-        type: Number,
-        default: 12,
-      },
-      persistence: {
-        type: Object
-      }
+      options: Object,
+
+      /**
+       * Persistence of Masonry Wall in vuex store
+       */
+      persistence: Object,
     },
     data() {
+      const count = this.options && this.options.ssr && this.options.ssr.default || 0
+      if (count > 0) {
+        const lanes = newLanes(count)
+        for (let i = 0; i < this.items.length; i++) {
+          lanes[i % count].indexes.push(i)
+        }
+
+        return {
+          lanes: lanes,
+          cursor: this.items.length,
+          ready: false
+        }
+      }
+
       return {
         lanes: [],
         cursor: 0,
+        ready: false
       }
     },
     mounted() {
+      // Mounted is only called in client side
       if (this.persistence && this.persistence.getter) {
         const {lanes, cursor} = JSON.parse(JSON.stringify(this.$store.getters[this.persistence.getter]))
-        this.lanes = lanes
-        this.cursor = cursor
+        if (lanes.length > 0) {
+          this.lanes = lanes
+          this.cursor = cursor
+        }
       }
 
-      this.redraw()
-      window.addEventListener('resize', this.redraw)
+      this.$redraw = () => {
+        const count = this.laneCount()
+        if (this.lanes.length !== count) {
+          console.log('Redraw triggered')
 
-      this.$nextTick(() => {
+          this.ready = false
+          this.cursor = 0
+          this.lanes.splice(0)
+          this.lanes.push(...newLanes(count))
+        }
+        this.ready = true
         this.fill()
-      })
+      }
+
+      this.$redraw()
+      window.addEventListener('resize', this.$redraw)
     },
     beforeDestroy() {
-      window.removeEventListener('resize', this.redraw)
+      window.removeEventListener('resize', this.$redraw)
 
       if (this.persistence && this.persistence.commit) {
         this.$store.commit(this.persistence.commit, {
@@ -85,8 +114,7 @@
     },
     computed: {
       style() {
-        const lane = this.options && this.options.lanes && this.options.lanes[this.lanes.length]
-        const padding = lane && lane.padding || this.padding
+        const padding = this.padding()
 
         return {
           wall: {
@@ -104,39 +132,26 @@
       }
     },
     methods: {
-      redraw() {
-        let length = Math.round(this.$refs.wall.scrollWidth / this.width)
-        if (length < this.min) length = this.min
-        if (this.lanes.length === length) return
-
-        this.cursor = 0
-        this.lanes.splice(0)
-        for (let i = 0; i < length; i++) {
-          this.lanes.push({indexes: []})
-        }
-      },
-
       fill() {
+        if (!this.ready) return
+
         if (this.cursor >= this.items.length) {
           // Request for more items
           this.$emit('append')
           return
         }
 
-        // Fill keep filling until no more items
-        if (this.cursor < this.items.length) {
-          this.$nextTick(() => {
-            const spacers = this.$refs.spacers
-            const spacer = _.maxBy(spacers, (spacer) => spacer.clientHeight || 0)
-            this.fillItem(spacer.dataset.lane)
-            this.fill()
-          })
-        }
+        // Keep filling until no more items
+        this.$nextTick(() => {
+          const spacers = this.$refs.spacers
+          const spacer = _.maxBy(spacers, (spacer) => spacer.clientHeight || 0)
+          this.fillItem(spacer.dataset.lane)
+          this.fill()
+        })
       },
 
       fillItem(laneIndex) {
         const lane = this.lanes[laneIndex]
-
         if (this.items[this.cursor]) {
           lane.indexes.push(this.cursor)
           this.cursor++
@@ -154,6 +169,22 @@
             this.$scrollTo(item[0], 500)
           }, 501)
         }
+      },
+
+      padding() {
+        const lane = this.options && this.options.lanes && this.options.lanes[this.lanes.length]
+        return lane && lane.padding || this.options.padding || 12
+      },
+      laneWidth() {
+        const lane = this.options && this.options.lanes && this.options.lanes[this.lanes.length]
+        return lane && lane.width || this.options.width || 300
+      },
+      laneCount() {
+        let length = Math.round(this.$refs.wall.scrollWidth / this.laneWidth())
+        if (this.options && this.options.min) {
+          if (length < this.options.min) return this.options.min
+        }
+        return length
       },
     }
   }
@@ -177,5 +208,9 @@
       padding-top: 300px;
       min-height: 100px;
     }
+  }
+
+  .MasonryWall:not(.Ready) {
+    opacity: 0;
   }
 </style>

@@ -117,9 +117,7 @@ module.exports = {
   modules: [
     '@nuxtjs/axios',
     '@nuxtjs/sitemap',
-
-    // 'bootstrap-vue/nuxt',
-
+    'nuxt-device-detect',
     '@nuxtjs/google-gtag',
     ['@nuxtjs/google-tag-manager', {
       id: 'GTM-KVBXWDJ',
@@ -152,6 +150,11 @@ module.exports = {
     routes: [
       '/support/privacy',
       '/support/terms',
+      {
+        url: '/feed/images',
+        changefreq: 'daily',
+        priority: 1
+      }
     ]
   }
 };

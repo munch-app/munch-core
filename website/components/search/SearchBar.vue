@@ -15,7 +15,7 @@
           Search
         </div>
         <div @click="onNavigation('/feed/images')" class="NavigationItem" :class="{Selected: route === 'feed-images'}">
-          Image Feed
+          Feed
         </div>
         <div v-if="isStaging" @click="onNavigation('/feed/articles')" class="NavigationItem" :class="{Selected: route === 'feed-articles'}">Article Feed</div>
       </div>

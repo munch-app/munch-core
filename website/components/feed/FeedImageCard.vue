@@ -1,6 +1,6 @@
 <template>
   <div class="ImageFeedCard hover-pointer">
-    <image-size class="border-3" :image="image" grow="height">
+    <image-size class="border-3" :image="image" grow="height" :alt="alt">
       <div class="ImageFeedContainer">
         <div class="Restaurant">
           <div class="Name" v-for="place in places" :key="place.placeId">
@@ -31,6 +31,9 @@
     computed: {
       image() {
         return this.item.image
+      },
+      alt() {
+        return this.places[0] && this.places[0].name
       },
       places() {
         return this.item.places.map(({placeId}) => {
