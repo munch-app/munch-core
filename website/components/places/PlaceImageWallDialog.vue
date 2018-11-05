@@ -18,7 +18,7 @@
       <image-sizes class="Image" :sizes="item.sizes"
                    width="800" height="1000" object-fit="contain"
                    max-height="calc(100vh - 80px - 48px - 64px)">
-        <div class="ImageContainer flex-column-end">
+        <div class="ImageContainer flex-column-justify-end">
           <a v-if="item.instagram" target="_blank" rel="noreferrer nofollow noopener"
              class="flex" :href="`https://instagram.com/${item.instagram.username}`">
             <simple-svg class="Icon" fill="white" :filepath="require('~/assets/icon/feed/instagram.svg')"/>
@@ -36,7 +36,7 @@
         <div class="Title text-ellipsis-3l" v-if="item.title">
           {{item.title}}
         </div>
-        <a class="ReadMore flex-row-end" target="_blank" rel="noreferrer nofollow noopener" :href="item.article.url">
+        <a class="ReadMore flex-justify-end" target="_blank" rel="noreferrer nofollow noopener" :href="item.article.url">
           <div class="s700">Read More</div>
         </a>
       </div>

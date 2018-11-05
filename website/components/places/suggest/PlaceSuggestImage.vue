@@ -23,17 +23,17 @@
     <no-ssr>
       <portal to="dialog-styled" v-if="dialog" class="Dialog">
         <h3>Flag Image</h3>
-        <div class="flex-space-between hover-pointer" @click="onFlag(dialog, 'NotRelated')">
+        <div class="flex-between hover-pointer" @click="onFlag(dialog, 'NotRelated')">
           <div class="text">Not related image</div>
           <div class="checkbox"/>
         </div>
 
-        <div class="flex-space-between hover-pointer" @click="onFlag(dialog, 'NotPlace')">
+        <div class="flex-between hover-pointer" @click="onFlag(dialog, 'NotPlace')">
           <div class="text">Does not belong to place</div>
           <div class="checkbox"/>
         </div>
 
-        <div class="flex-space-between hover-pointer" @click="onFlag(dialog, 'Explicit')">
+        <div class="flex-between hover-pointer" @click="onFlag(dialog, 'Explicit')">
           <div class="text">Explicit content</div>
           <div class="checkbox"/>
         </div>
@@ -55,7 +55,7 @@
     components: {ImageSizes},
     props: {
       data: Object,
-      changes: {
+      payload: {
         type: Object,
         twoWay: true
       }
@@ -79,6 +79,8 @@
       },
       onFlag(image, flag) {
         this.dialog = null
+
+        Vue.set(this.payload.removes.images, image.imageId, {flag, image})
       }
     }
   }

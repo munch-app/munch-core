@@ -16,7 +16,7 @@
     components: {InputText},
     props: {
       data: Object,
-      changes: Object
+      payload: Object
     }
   }
 </script>

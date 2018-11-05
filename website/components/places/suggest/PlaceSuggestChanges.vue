@@ -2,19 +2,39 @@
   <div class="Changes" v-if="hasChanges">
     <h2>Edits</h2>
     <div class="List">
-      <div v-for="(value, key) in changes" :key="key">
-        <p>{{key}}</p>
-        <p class="text-ellipsis-1l">{{value}}</p>
+      <div v-for="(value, key) in payload.removes.images" :key="key" class="flex-align-center">
+        <div class="wh-32px">
+          <div class="aspect r-1-1">
+            <image-sizes class="overflow-hidden border-3" :sizes="value.image.sizes" width="1" height="1"/>
+          </div>
+        </div>
+        <div class="m-left-16">
+          <h5>Image marked as <span class="error">{{value.flag}}</span></h5>
+        </div>
+      </div>
+
+      <div v-for="(value, key) in payload.removes.articles" :key="key" class="flex-align-center">
+        <div class="wh-32px">
+          <div class="aspect r-1-1 overflow-hidden border-3">
+            <image-sizes v-if="value.article.thumbnail" :sizes="value.article.thumbnail.sizes" width="1" height="1"/>
+            <div v-else class="bg-whisper200 wh-100"></div>
+          </div>
+        </div>
+        <div class="m-left-16">
+          <h5>Article marked as <span class="error">{{value.flag}}</span></h5>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+  import ImageSizes from "../../core/ImageSizes";
   export default {
     name: "PlaceSuggestChanges",
+    components: {ImageSizes},
     props: {
-      changes: {
+      payload: {
         type: Object
       }
     },
@@ -22,9 +42,10 @@
       return {hasChanges: false}
     },
     watch: {
-      changes: {
+      'payload.removes': {
         handler(val){
-          this.hasChanges = Object.keys(val).length > 0
+          const {images, articles} = val
+          this.hasChanges = Object.keys(images).length > 0 || Object.keys(articles).length > 0
         },
         deep: true
       },
@@ -37,8 +58,13 @@
     margin-top: 48px;
 
     .List {
-      margin-top: 24px;
-      margin-bottom: 24px;
+      margin-top: 16px;
+      margin-bottom: 16px;
+
+      > div {
+        padding-top: 8px;
+        padding-bottom: 8px;
+      }
     }
   }
 </style>

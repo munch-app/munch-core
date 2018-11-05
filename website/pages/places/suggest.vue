@@ -14,21 +14,22 @@
 
     <div class="Content">
       <keep-alive>
-        <component :data="data" :changes="changes" :is="selected"/>
+        <component :data="data" :payload="payload" :is="selected"/>
       </keep-alive>
     </div>
 
     <div class="Action">
-      <place-suggest-changes :changes="changes"/>
-      <div class="flex-row-end">
-        <button class="primary" @click="submitting = true">Submit</button>
+      <place-suggest-changes :payload="payload"/>
+
+      <div class="flex-justify-end">
+        <button class="primary" @click="onSubmit">Submit</button>
       </div>
     </div>
 
     <no-ssr>
       <portal to="dialog-styled" v-if="submitting" class="Dialog">
         <h3>Submitting Edits</h3>
-        <p>Thank you for your contribution.</p>
+        <h5 class="p500">Thank you for your contribution.</h5>
         <p>Own this restaurant?
           Drop us an email at restaurant@munch.space if there’s anything we can help with.</p>
 
@@ -51,7 +52,8 @@
   export default {
     components: {
       PlaceSuggestChanges,
-      PlaceSuggestMenu, PlaceSuggestImage, PlaceSuggestArticle, PlaceSuggestDetail, ImageSizes},
+      PlaceSuggestMenu, PlaceSuggestImage, PlaceSuggestArticle, PlaceSuggestDetail, ImageSizes
+    },
     asyncData({$axios, params, route}) {
       const placeId = route.query.placeId
       if (placeId) {
@@ -86,11 +88,47 @@
           {name: 'Image', component: 'PlaceSuggestImage'},
           {name: 'Article', component: 'PlaceSuggestArticle'},
         ],
-        changes: {},
-        submitting: false
+        submitting: false,
+
+        /**
+         * Payload to send to suggest service
+         */
+        payload: {
+          place: {},
+          removes: {
+            images: {}, // imageId: {flag: '', image: Object}
+            articles: {}, // articleId: {flag: '', article: Object}
+          },
+        },
       }
     },
-    computed: {}
+    computed: {},
+    methods: {
+      onSubmit() {
+        this.submitting = true
+
+        const place = this.data.place
+        const payload = {
+          place: {
+            placeId: this.placeId, // Determine if new entry or existing
+            name: place.name,
+            address: place.location.address,
+            pricePerPax: place.price.perPax,
+            phone: place.phone,
+            website: place.website,
+            description: place.description,
+            status: place.status
+          },
+          ...this.payload
+        }
+
+        console.log(payload)
+
+        setTimeout(() => {
+          this.submitting = false
+        }, 4000)
+      }
+    }
   }
 </script>
 

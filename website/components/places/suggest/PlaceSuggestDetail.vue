@@ -5,15 +5,15 @@
       <input-text label="Address" v-model="data.place.location.address" required/>
 
       <!--<div class="input-text">-->
-        <!--<label>Tags</label>-->
-        <!--<input>-->
+      <!--<label>Tags</label>-->
+      <!--<input>-->
       <!--</div>-->
       <!---->
     </div>
 
     <div class="input-group">
       <h2>Details</h2>
-      <input-text label="Price Per Pax" v-model="data.place.price.perPax"/>
+      <input-text label="Price Per Pax" v-model="data.place.price.perPax" type="number"/>
       <input-text label="Phone" v-model="data.place.phone"/>
       <input-text label="Website" v-model="data.place.website"/>
       <div class="input-text">
@@ -29,9 +29,15 @@
 
     <div class="input-group">
       <h2>Status</h2>
-      <p>Permanently Closed</p>
-      <p>Moved Permanently</p>
-      <p>Renovation</p>
+      <div class="flex StatusList">
+        <div class="weight-600 border-3 hover-pointer" v-for="status in statusList" :key="status"
+             @click="data.place.status.type = status.type"
+             :class="{ 'bg-success white': data.place.status.type === status.type && status.type === 'open',
+                       'bg-error white': data.place.status.type === status.type && status.type === 'closed',
+                       'bg-whisper100 b-a85': data.place.status.type !== status.type}">
+          {{status.name}}
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -44,11 +50,33 @@
     components: {InputText},
     props: {
       data: Object,
-      changes: Object
+      payload: Object
+    },
+    data() {
+      return {
+        statusList: [
+          {
+            name: 'Open',
+            type: 'open'
+          },
+          {
+            name: 'Permanently Closed',
+            type: 'closed'
+          }
+        ]
+      }
     }
   }
 </script>
 
 <style scoped lang="less">
+  .StatusList {
+    > div {
+      line-height: 26px;
+      font-size: 15px;
 
+      padding: 8px 20px;
+      margin-right: 20px;
+    }
+  }
 </style>

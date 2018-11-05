@@ -22,11 +22,11 @@
       <portal to="dialog-styled" v-if="showSetting">
         <h3>{{profile.name}}</h3>
         <h5>Search Preference</h5>
-        <div class="TagGroup flex-space-between hover-pointer" @click="toggleSearchTag('halal')">
+        <div class="TagGroup flex-between hover-pointer" @click="toggleSearchTag('halal')">
           <div class="text">Halal</div>
           <div class="checkbox" :class="{selected: isSearchPreference('halal')}"/>
         </div>
-        <div class="TagGroup flex-space-between hover-pointer" @click="toggleSearchTag('vegetarian options')">
+        <div class="TagGroup flex-between hover-pointer" @click="toggleSearchTag('vegetarian options')">
           <div class="text">Vegetarian Options</div>
           <div class="checkbox" :class="{selected: isSearchPreference('vegetarian options')}"/>
         </div>

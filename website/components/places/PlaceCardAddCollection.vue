@@ -1,5 +1,5 @@
 <template>
-  <div class="CollectionBtn w-100 index-content-overlay flex-row-end" :class="{Large: large}">
+  <div class="CollectionBtn w-100 index-content-overlay flex-justify-end" :class="{Large: large}">
     <div @click.prevent.stop="onClickAdd">
       <simple-svg class="AddIcon" fill="white" :filepath="require('~/assets/icon/place/add.svg')"/>
     </div>

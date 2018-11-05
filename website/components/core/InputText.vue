@@ -3,7 +3,9 @@
     <label>{{label}} <span class="error" v-if="required && value === ''">is required</span></label>
 
     <div class="relative">
-      <input :value="value" @input="onInput($event.target.value)" :placeholder="placeholder">
+      <input :value="value" @input="onInput($event.target.value)" :placeholder="placeholder"
+             :type="type"
+      >
 
       <div class="Clear absolute bg-white hover-pointer flex-center" @click="onInput('')">
         <simple-svg class="Icon" fill="black" filepath="/img/search/close.svg"/>
@@ -27,6 +29,10 @@
       required: {
         type: Boolean,
         default: false
+      },
+      type: {
+        type: String,
+        default: 'text'
       }
     },
     methods: {
