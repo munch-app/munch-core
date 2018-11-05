@@ -7,6 +7,12 @@
     <section class="Information">
       <div class="container">
         <section class="Name ContentBody">
+          <div v-if="place.status.type === 'closed'">
+            <h3 class="error">
+              Permanently Closed
+            </h3>
+          </div>
+
           <h1>{{place.name}}</h1>
           <div class="regular text">{{place.location.neighbourhood || place.location.street ||
             place.location.address}}
