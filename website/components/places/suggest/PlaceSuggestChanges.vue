@@ -8,7 +8,7 @@
             <image-sizes class="overflow-hidden border-3" :sizes="value.image.sizes" width="1" height="1"/>
           </div>
         </div>
-        <div class="m-left-16">
+        <div class="ml-16">
           <h5>Image marked as <span class="error">{{value.flag}}</span></h5>
         </div>
       </div>
@@ -20,7 +20,7 @@
             <div v-else class="bg-whisper200 wh-100"></div>
           </div>
         </div>
-        <div class="m-left-16">
+        <div class="ml-16">
           <h5>Article marked as <span class="error">{{value.flag}}</span></h5>
         </div>
       </div>

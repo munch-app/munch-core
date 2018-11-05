@@ -64,7 +64,6 @@ public final class ApiServer extends RestfulServer {
         if (exception instanceof AuthenticationException) {
             ApiRequest request = call.get(ApiRequest.class);
             logger.warn("AuthenticationException User: {}", request.optionalUserId().orElse(null));
-            return;
         }
         super.handleException(call, exception);
     }

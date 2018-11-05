@@ -54,6 +54,16 @@
       PlaceSuggestChanges,
       PlaceSuggestMenu, PlaceSuggestImage, PlaceSuggestArticle, PlaceSuggestDetail, ImageSizes
     },
+    head() {
+      const meta = []
+      meta.push({name: 'robots', content: `follow,index`})
+      meta.push({
+        hid: 'description',
+        name: 'description',
+        content: 'Suggest an place edit on Munch. Drop us an email at restaurant@munch.space if there’s anything we can help with.'
+      })
+      return {title: 'Suggest Place · Munch Singapore', meta,}
+    },
     asyncData({$axios, params, route}) {
       const placeId = route.query.placeId
       if (placeId) {

@@ -88,7 +88,6 @@ module.exports = {
     'vue-scrollto',
   ],
   plugins: [
-    '~/plugins/global',
     '~/plugins/axios',
     '~/plugins/vue-router',
 

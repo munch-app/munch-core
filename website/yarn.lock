@@ -1917,13 +1917,6 @@ cross-env@^5.0.1:
     cross-spawn "^6.0.5"
     is-windows "^1.0.0"
 
-cross-fetch@^2.2.0:
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-2.2.2.tgz#a47ff4f7fc712daba8f6a695a11c948440d45723"
-  dependencies:
-    node-fetch "2.1.2"
-    whatwg-fetch "2.0.4"
-
 cross-spawn@^5.0.1, cross-spawn@^5.1.0:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-5.1.0.tgz#e8bd0efee58fcff6f8f94510a0a554bbfa235449"
@@ -4634,10 +4627,6 @@ node-fetch@1.6.3:
     encoding "^0.1.11"
     is-stream "^1.0.1"
 
-node-fetch@2.1.2:
-  version "2.1.2"
-  resolved "http://registry.npmjs.org/node-fetch/-/node-fetch-2.1.2.tgz#ab884e8e7e57e38a944753cec706f788d1768bb5"
-
 node-fetch@^1.0.1:
   version "1.7.3"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-1.7.3.tgz#980f6f72d85211a5347c6b2bc18c5b84c3eb47ef"
@@ -5757,13 +5746,6 @@ prismic-helpers@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/prismic-helpers/-/prismic-helpers-1.0.0.tgz#8337420cf187f55fb7b7a8be755523c8696fc329"
 
-prismic-javascript@^1.5.0:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/prismic-javascript/-/prismic-javascript-1.5.0.tgz#d11a3489c73a643e9f5f6c1d9c6b552091d67656"
-  dependencies:
-    cross-fetch "^2.2.0"
-    promise-polyfill "8.0.0"
-
 prismic-javascript@^1.5.0-beta.2:
   version "1.5.0-beta.2"
   resolved "https://registry.yarnpkg.com/prismic-javascript/-/prismic-javascript-1.5.0-beta.2.tgz#e91a70dc19c0495e56ae4f60353f3544af49ebd1"
@@ -5776,13 +5758,6 @@ prismic-richtext@^0.4.2:
   dependencies:
     ramda "^0.25.0"
     uuid "^3.1.0"
-
-prismic-vue@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/prismic-vue/-/prismic-vue-1.3.0.tgz#ece80c332d2eeaabc56f8c0cb085dbba1ab5bb06"
-  dependencies:
-    prismic-dom "^2.1.0"
-    prismic-javascript "^1.5.0"
 
 private@^0.1.6, private@^0.1.7:
   version "0.1.8"
@@ -5819,10 +5794,6 @@ promise-inflight@^1.0.1:
 promise-polyfill@7.1.2:
   version "7.1.2"
   resolved "https://registry.yarnpkg.com/promise-polyfill/-/promise-polyfill-7.1.2.tgz#ab05301d8c28536301622d69227632269a70ca3b"
-
-promise-polyfill@8.0.0:
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/promise-polyfill/-/promise-polyfill-8.0.0.tgz#b47c7fc74052cc5b2132b703cca144f1a5eb56ef"
 
 promise@^7.1.1:
   version "7.3.1"

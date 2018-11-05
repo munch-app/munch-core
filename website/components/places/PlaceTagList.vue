@@ -39,7 +39,7 @@
   .PlaceTagList {
     display: flex;
     flex-wrap: wrap;
-    margin-bottom: -12px;
+    margin-bottom: -8px;
 
     .Tag {
       color: rgba(0, 0, 0, 0.8);
@@ -47,7 +47,7 @@
       font-weight: 600;
       padding: 5px 12px;
       margin-right: 12px;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
     }
   }
 </style>

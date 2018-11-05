@@ -27,7 +27,7 @@ import java.util.Map;
  * Project: munch-core
  */
 @Singleton
-public class PlaceService extends ApiService {
+public final class PlaceService extends ApiService {
 
     private final PlaceClient placeClient;
     private final BasicCardLoader basicReader;

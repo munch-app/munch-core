@@ -18,5 +18,6 @@ public final class PlaceModule extends ApiServiceModule {
 
         addService(PlaceService.class);
         addService(PlacePartnerService.class);
+        addService(SuggestPlaceService.class);
     }
 }

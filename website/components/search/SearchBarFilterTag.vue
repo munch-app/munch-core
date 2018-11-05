@@ -13,7 +13,7 @@
       </div>
     </div>
     <div class="LastRow TagRow" v-if="hiddenCount > 0" @click="hidden = !hidden">
-      <div class="Name s500">{{hidden ? 'See' : 'Hide'}} {{hiddenCount}} other filters with 0 results</div>
+      <div class="Name s500 weight-600">{{hidden ? 'See' : 'Hide'}} other filters</div>
     </div>
   </div>
 </template>

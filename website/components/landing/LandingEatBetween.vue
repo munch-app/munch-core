@@ -3,16 +3,17 @@
     <div class="BetweenContainer container">
       <div class="Input">
         <h1>EatBetween</h1>
-        <h2>Getting the gang together just got a whole lot easier</h2>
-        <search-bar-filter-between/>
+        <div class="Interaction">
+          <search-bar-filter-between/>
 
-        <div class="Action">
-          <div class="Button Cancel" @click="onClear">
-            Clear
-          </div>
-          <div class="Button Apply" @click="onApply"
-               :class="{'bg-s500 white weight-600': isApplicable, 'bg-s050 b-a85 weight-600': !isApplicable}">
-            {{applyText}}
+          <div class="Action">
+            <div class="Button Cancel" @click="onClear">
+              Clear
+            </div>
+            <div class="Button Apply" @click="onApply"
+                 :class="{'bg-s500 white weight-600': isApplicable, 'bg-s050 b-a85 weight-600': !isApplicable}">
+              {{applyText}}
+            </div>
           </div>
         </div>
       </div>
@@ -137,6 +138,10 @@
 
     .Input {
       width: 480px;
+    }
+
+    .Interaction {
+      min-height: 50vh;
     }
   }
 </style>

@@ -22,9 +22,14 @@
 
         <section class="Action">
           <no-ssr>
-            <div v-if="isLoggedIn" @click="showAddToCollection = true"
-                 class="Button elevation-1 elevation-hover-2 border-3 bg-white hover-pointer">
-              <simple-svg class="Icon" fill="rgba(0,0,0,0.75)" filepath="/img/places/action_add_collection.svg"/>
+            <div class="flex">
+              <div class="Button elevation-1 elevation-hover-2 border-3 bg-white hover-pointer" v-if="isStaging">
+                Suggest Edits
+              </div>
+              <div v-if="isLoggedIn" @click="showAddToCollection = true"
+                   class="Button elevation-1 elevation-hover-2 border-3 bg-white hover-pointer">
+                <simple-svg class="Icon" fill="rgba(0,0,0,0.75)" filepath="/img/places/action_add_collection.svg"/>
+              </div>
             </div>
           </no-ssr>
         </section>
@@ -158,7 +163,7 @@
         })
     },
     computed: {
-      ...mapGetters('user', ['isLoggedIn']),
+      ...mapGetters('user', ['isLoggedIn', 'isStaging']),
       place() {
         return this.data.place
       },
