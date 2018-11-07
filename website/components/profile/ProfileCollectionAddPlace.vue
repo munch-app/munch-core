@@ -1,6 +1,6 @@
 <template>
   <portal to="dialog">
-    <h3 class="text-ellipsis-1-line">Add To Collection</h3>
+    <h3 class="text-ellipsis-1l">Add To Collection</h3>
     <div class="ListView">
       <div class="">
         <div class="Collection flex hover-pointer" v-for="collection in list" :key="collection.collectionId"
@@ -9,8 +9,8 @@
           <div v-else class="Image bg-whisper200"/>
 
           <div class="Content">
-            <div class="Name text text-ellipsis-1-line">{{collection.name}}</div>
-            <div class="small-bold text-ellipsis-1-line">{{collection.count}} places</div>
+            <div class="Name text text-ellipsis-1l">{{collection.name}}</div>
+            <div class="small-bold text-ellipsis-1l">{{collection.count}} places</div>
           </div>
         </div>
       </div>
@@ -53,6 +53,9 @@
           .then(() => {
             const message = `Added '${this.place.name}' to '${collection.name}' collection.`
             this.$store.dispatch('addMessage', {message})
+          })
+          .catch(error => {
+            this.$store.dispatch('addError', error)
           })
         this.$emit('on-close')
       }

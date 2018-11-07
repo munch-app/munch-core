@@ -3,11 +3,17 @@ import authenticator from '~/services/authenticator'
 import * as Cookies from 'js-cookie'
 
 export default function ({$axios, store, req}) {
-  // $axios.onError(error => {
-  //   // TODO
-  //   throw({statusCode: 404, message: 'Not Found'})
-  //   // return $nuxt.error({statusCode: 404, message: 'Not Found'})
-  // })
+  $axios.onResponse(res => {
+    // Unwrap Meta
+    const meta = res.data.meta
+    if (meta) {
+      if (meta.error) {
+        throw({statusCode: 404, message: meta.error.message, meta})
+      } else if (meta.code === 404) {
+        throw({statusCode: 404, message: 'Not Found'})
+      }
+    }
+  })
 
   if (process.client) {
     $axios.onRequest(config => {

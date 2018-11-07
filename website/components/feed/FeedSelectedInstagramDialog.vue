@@ -9,7 +9,7 @@
       </a>
     </div>
 
-    <nuxt-link :to="`/places/${place.placeId}`" class="lh-0">
+    <nuxt-link :to="`/places/${place.placeId}`" class="lh-0" @click.capture="$track.view(`RIP`, 'Feed - Instagram')">
       <image-sizes class="InstagramImage" :sizes="item.image.sizes"
                    width="800" height="1000" object-fit="contain"
                    max-height="calc(100vh - 94px - 48px - 128px - 24px)">

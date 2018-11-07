@@ -8,17 +8,8 @@ const service = require('axios').create({
 service.interceptors.response.use(function (response) {
   return response;
 }, function (error) {
-  const meta = error.response && error.response.data && error.response.data.meta
-
-  if (meta && meta.error && meta.error.type) {
-    const {type, message} = meta.error
-    return Promise.reject(new Error(`${type}: ${message || ''}`))
-  }
-
-  if (meta.code === 404) {
-    throw({statusCode: 404, message: 'Not Found'})
-  }
-  return Promise.reject(error);
+  // Error response should be handled by ~/plugins/axios.js
+  return error.response
 });
 
 function getHeaders(req) {

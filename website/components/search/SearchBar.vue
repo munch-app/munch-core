@@ -165,18 +165,22 @@
       },
       onItemAssumption(assumption) {
         this.$store.dispatch('search/start', assumption.searchQuery)
+        this.$track.search(`Search - Assumption`, this.$store.getters['search/locationType'])
 
-        if (this.$route.name !== 'search') this.$router.push({path: '/search'})
         this.onBlur()
       },
       onItemPlace(place) {
         this.$router.push({path: '/places/' + place.placeId})
+        this.$track.view(`RIP`, 'Suggest')
+
         this.onBlur()
       },
       onNavigation(to) {
         if (to === '/search' && !this.$store.state.search.query) {
           this.$store.dispatch('filter/location', {type: 'Anywhere'})
           this.$store.dispatch('search/start')
+
+          this.$track.search(`Search - Navigation`, this.$store.getters['search/locationType'])
         } else {
           this.$router.push({path: to})
         }

@@ -31,6 +31,8 @@
       onClick(area) {
         this.$store.dispatch('filter/location', {areas: [area], type: 'Where'})
         this.$store.dispatch('search/start')
+
+        this.$track.search(`Search - Card: Area Cluster`, this.$store.getters['search/locationType'])
       }
     }
   }

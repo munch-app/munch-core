@@ -89,8 +89,6 @@
       this.$redraw = () => {
         const count = this.laneCount()
         if (this.lanes.length !== count) {
-          console.log('Redraw triggered')
-
           this.ready = false
           this.cursor = 0
           this.lanes.splice(0)

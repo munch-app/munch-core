@@ -14,7 +14,7 @@
           <div>
             <image-sizes class="Image border-3 overflow-hidden" v-if="article.thumbnail" :sizes="article.thumbnail.sizes">
               <div class="OverlayA20 relative hover-bg-a60 wh-100 flex-center">
-                <simple-svg class="wh-32px" fill="white" :filepath="require('~/assets/icon/close.svg')"/>
+                <simple-svg class="wh-32px" fill="white" :filepath="require('~/assets/icon/place/suggest/flag.svg')"/>
               </div>
             </image-sizes>
             <div v-else class="bg-whisper200 wh-100"></div>

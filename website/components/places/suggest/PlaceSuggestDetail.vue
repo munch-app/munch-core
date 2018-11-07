@@ -13,6 +13,7 @@
 
     <div class="input-group">
       <h2>Details</h2>
+      <!-- Price Details Required -->
       <input-text label="Price Per Pax" v-model="data.place.price.perPax" type="number"/>
       <input-text label="Phone" v-model="data.place.phone"/>
       <input-text label="Website" v-model="data.place.website"/>

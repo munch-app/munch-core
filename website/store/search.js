@@ -12,6 +12,13 @@ export const state = () => ({
 export const getters = {
   query: (state) => state.query,
   type: (state) => state.type,
+  locationType: (state) => {
+    return state.query
+      && state.query.filter
+      && state.query.filter.location
+      && state.query.filter.location.type
+      || ''
+  },
   cards: (state) => state.result.cards,
   more: (state) => state.more,
   loading: (state) => state.loading,
@@ -73,7 +80,6 @@ export const mutations = {
 function start({query, type}) {
   this.commit('search/start', {query, type})
   this.commit('filter/replace', query)
-  this.dispatch('search/gtag')
 }
 
 /**
@@ -134,20 +140,4 @@ export const actions = {
         commit('append', data)
       })
   },
-
-  gtag({commit, state}) {
-    const type = state.type
-    const query = state.query
-
-    if (type == null) return
-    if (!this.$gtag) return
-
-    const parameters = {}
-    parameters['event_category'] = (type || 'search').toLowerCase()
-
-    const locationType = query && query.filter && query.filter.location && query.filter.location.type || ''
-    parameters['event_label'] = `search_${locationType.toLowerCase()}`
-
-    this.$gtag('event', 'search', parameters)
-  }
 }

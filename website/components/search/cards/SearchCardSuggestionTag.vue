@@ -41,6 +41,8 @@
       onClick(tag) {
         this.$store.dispatch('filter/tag', tag)
         this.$store.dispatch('search/start')
+
+        this.$track.search(`Search - Card: Suggestion Tag`, this.$store.getters['search/locationType'])
       }
     }
   }

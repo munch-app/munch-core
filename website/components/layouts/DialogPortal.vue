@@ -75,6 +75,8 @@ Max-width of 400px if > 576vw
     border-radius: 3px;
     background: white;
     padding: 24px;
+
+    border: 1px solid rgba(0, 0, 0, .1);
   }
 
   // Responsive sizing
@@ -164,6 +166,7 @@ Max-width of 400px if > 576vw
 
   .Dialog.Blank {
     padding: 0;
+    border: 0;
     background: initial;
   }
 

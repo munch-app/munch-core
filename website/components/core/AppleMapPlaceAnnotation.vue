@@ -3,7 +3,7 @@
     <div ref="annotation">
       <div class="PlaceAnnotation hover-pointer" :class="{Hover: focused, Selected: selected}" @click="onClick">
         <div class="AnnotationDialog">
-          <nuxt-link class="DialogArea Selected initial" :to="'/places/' + place.placeId" v-if="selected">
+          <nuxt-link class="DialogArea Selected initial" :to="'/places/' + place.placeId" v-if="selected" @click.capture="$track.view(`RIP`, 'Map - Annotation')">
             <image-size v-if="image" class="Image index-content border-3-top" :image="image" :alt="place.name"/>
             <div v-else class="Image bg-whisper100"/>
 

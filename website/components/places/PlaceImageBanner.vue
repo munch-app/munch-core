@@ -32,10 +32,7 @@
     name: "PlaceImageBanner",
     components: {ImageSize},
     props: {
-      images: {
-        type: Array,
-        required: true
-      }
+      images: Array
     },
     computed: {
       list() {

@@ -150,6 +150,8 @@
         this.$store.commit('unfocus', 'Filter')
         this.$store.dispatch('filter/reset')
         this.$store.dispatch('search/start')
+
+        this.$track.search(`Search - Reset`, this.$store.getters['search/locationType'])
       }
     }
   }

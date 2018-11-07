@@ -29,7 +29,8 @@
       onClick(tag) {
         this.$store.commit('filter/putTag', tag.name)
         this.$store.dispatch('search/start')
-        if (this.$route.name !== 'search') this.$router.push({path: '/search'})
+
+        this.$track.search(`Search - PlaceTagList`, this.$store.getters['search/locationType'])
       }
     }
   }

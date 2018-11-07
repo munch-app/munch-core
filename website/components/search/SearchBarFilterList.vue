@@ -72,6 +72,8 @@
           this.$store.commit('filter/selected', null)
           this.$store.commit('unfocus', 'Filter')
           this.$store.dispatch('search/start')
+
+          this.$track.search(`Search - Filter`, this.$store.getters['search/locationType'])
         }
       },
     },

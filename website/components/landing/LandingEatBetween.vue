@@ -53,6 +53,7 @@
       onApply() {
         if (this.isApplicable) {
           this.$store.dispatch('search/start')
+          this.$track.search(`Search - Landing: EatBetween`, this.$store.getters['search/locationType'])
         }
       },
     }

@@ -2,7 +2,7 @@
   "name": "website",
   "version": "1.0.0",
   "description": "munch website",
-  "author": "Fuxing <lohfuxing@gmail.com>",
+  "author": "Fuxing Loh <fuxing@munch.space>",
   "private": true,
   "scripts": {
     "dev": "nuxt",
@@ -14,7 +14,6 @@
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.3.1",
-    "@nuxtjs/google-gtag": "^1.0.4",
     "@nuxtjs/google-tag-manager": "^2.1.0",
     "@nuxtjs/sitemap": "^0.1.1",
     "axios": "^0.18.0",

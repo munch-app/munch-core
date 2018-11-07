@@ -6,7 +6,7 @@
 
     <section class="Information">
       <div class="container">
-        <section class="Name ContentBody">
+        <section class="Name ContentBody w-100">
           <div v-if="place.status.type === 'closed'">
             <h3 class="error">
               Permanently Closed
@@ -17,21 +17,7 @@
           <div class="regular text">{{place.location.neighbourhood || place.location.street ||
             place.location.address}}
           </div>
-          <place-tag-list class="Tag" :tags="place.tags" :max="10"/>
-        </section>
-
-        <section class="Action">
-          <no-ssr>
-            <div class="flex">
-              <div class="Button elevation-1 elevation-hover-2 border-3 bg-white hover-pointer" v-if="isStaging">
-                Suggest Edits
-              </div>
-              <div v-if="isLoggedIn" @click="showAddToCollection = true"
-                   class="Button elevation-1 elevation-hover-2 border-3 bg-white hover-pointer">
-                <simple-svg class="Icon" fill="rgba(0,0,0,0.75)" filepath="/img/places/action_add_collection.svg"/>
-              </div>
-            </div>
-          </no-ssr>
+          <place-tag-list class="mt-8" :tags="place.tags" :max="10"/>
         </section>
 
         <section class="MainDetail ContentBody">
@@ -67,38 +53,33 @@
     </section>
 
     <no-ssr>
-      <profile-collection-add-place :place="place" v-if="showAddToCollection" @on-close="showAddToCollection = false"/>
+      <place-action :place="place"/>
     </no-ssr>
   </div>
 </template>
 
 <script>
-  import {mapGetters} from "vuex";
   import PlaceTagList from "../../components/places/PlaceTagList";
   import ImageSize from "../../components/core/ImageSize";
-  import MunchButton from "../../components/core/MunchButton";
   import PlaceMenu from "../../components/places/PlaceMenu";
   import GoogleEmbedMap from "../../components/core/GoogleEmbedMap";
   import PlaceAwardList from "../../components/places/PlaceAwardList";
   import PlaceLocation from "../../components/places/PlaceLocation";
   import PlaceAbout from "../../components/places/PlaceAbout";
   import PlaceDetail from "../../components/places/PlaceDetail";
-  import ProfileCollectionAddPlace from "../../components/profile/ProfileCollectionAddPlace";
   import PlaceImageWall from "../../components/places/PlaceImageWall";
   import PlaceArticleList from "../../components/places/PlaceArticleList";
   import PlaceImageBanner from "../../components/places/PlaceImageBanner";
-
-  const Activity = require('~/services/user/place-activity')
-
-  let clickAction
+  import PlaceAction from "../../components/places/PlaceAction";
 
   export default {
     components: {
+      PlaceAction,
       PlaceImageBanner,
       PlaceArticleList,
       PlaceImageWall,
-      ProfileCollectionAddPlace, PlaceDetail, PlaceAbout, PlaceLocation, PlaceAwardList,
-      GoogleEmbedMap, PlaceMenu, MunchButton, ImageSize, PlaceTagList
+      PlaceDetail, PlaceAbout, PlaceLocation, PlaceAwardList,
+      GoogleEmbedMap, PlaceMenu, ImageSize, PlaceTagList
     },
     head() {
       const meta = []
@@ -163,7 +144,6 @@
         })
     },
     computed: {
-      ...mapGetters('user', ['isLoggedIn', 'isStaging']),
       place() {
         return this.data.place
       },
@@ -189,95 +169,53 @@
       }
     },
     mounted() {
-      if (process.client) {
-        const placeId = this.place.placeId
-        Activity.start.call(this, placeId)
+      const placeId = this.place.placeId
+      const Activity = require('~/services/user/place-activity')
+      Activity.start.call(this, placeId)
 
-        clickAction = function () {
-          const action = this.dataset.placeActivity
-          const data = this.dataset.placeActivityData
-          Activity.click[action](placeId, data)
-        }
-
-        // Track all place activity clicks
-        document.querySelectorAll('a[data-place-activity]').forEach(anchor => {
-          anchor.addEventListener("click", clickAction, true);
-        })
+      this.$clickAction = function () {
+        const action = this.dataset.placeActivity
+        const data = this.dataset.placeActivityData
+        Activity.click[action](placeId, data)
       }
+
+      // Track all place activity clicks
+      document.querySelectorAll('a[data-place-activity]').forEach(anchor => {
+        anchor.addEventListener("click", this.$clickAction, true);
+      })
     },
     beforeDestroy() {
-      if (process.client) {
-        // Remove all place activity clicks
-        document.querySelectorAll('a[data-place-activity]').forEach(anchor => {
-          anchor.removeEventListener("click", clickAction, true)
-        })
-      }
+      // Remove all place activity clicks
+      document.querySelectorAll('a[data-place-activity]').forEach(anchor => {
+        anchor.removeEventListener("click", this.$clickAction, true)
+      })
     }
   }
 </script>
 
 <style lang="less" scoped>
   .PlacePage {
-    margin-bottom: 64px;
   }
 
-  section.ContentBody {
-    width: 100%;
-
+  .ContentBody {
     @media (min-width: 992px) {
-      width: 720px;
+      max-width: 720px;
     }
   }
 
   section {
+    margin-top: 48px;
     h2 {
       margin-bottom: 16px;
     }
   }
 
-  section.Name {
+  .Information,
+  .Name {
     margin-top: 24px;
-
-    .Tag {
-      margin-top: 8px;
-    }
   }
 
-  section.Action {
-    .Button {
-      margin-right: 16px;
-      margin-top: 16px;
-      padding: 8px;
-      width: 40px;
-      height: 40px;
-    }
-  }
-
-  section.MainDetail {
-    margin-top: 48px;
-  }
-
-  section.About {
-    margin-top: 48px;
-  }
-
-  section.Location {
-    margin-top: 48px;
-  }
-
-  section.Menu {
-    margin-top: 48px;
-  }
-
-  section.Article {
-    margin-top: 48px;
-  }
-
-  section.Images {
-    margin-top: 48px;
-  }
-
-  section.End {
-    margin-top: 64px;
+  .Banner {
+    margin-top: 0;
   }
 </style>

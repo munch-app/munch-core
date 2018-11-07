@@ -23,7 +23,8 @@ module.exports = {
       {rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700|Roboto'},
     ],
     script: [
-      {src: 'https://cdn.apple-mapkit.com/mk/5.x.x/mapkit.js'}
+      {src: 'https://cdn.apple-mapkit.com/mk/5.x.x/mapkit.js'},
+      {src: 'https://www.googletagmanager.com/gtag/js?id=UA-117480436-1'}
     ]
   },
   css: [
@@ -104,7 +105,7 @@ module.exports = {
     {src: '~/plugins/vue-touch', ssr: false},
     {src: '~/plugins/vue-loader', ssr: false},
     {src: '~/plugins/vuex-persistedstate', ssr: false},
-    {src: '~/plugins/gtag', ssr: false},
+    {src: '~/plugins/tracker', ssr: false},
   ],
   serverMiddleware: [
     {
@@ -117,26 +118,15 @@ module.exports = {
     '@nuxtjs/axios',
     '@nuxtjs/sitemap',
     'nuxt-device-detect',
-    '@nuxtjs/google-gtag',
+
     ['@nuxtjs/google-tag-manager', {
       id: 'GTM-KVBXWDJ',
+
+      // For use by other Tag Subscriber only, GA & GTAG is done natively
       pageTracking: true
     }],
     'nuxt-google-optimize',
   ],
-  'google-gtag': {
-    id: 'UA-117480436-1',
-    config: {
-      send_page_view: false,
-      'custom_map': {
-        'dimension1': 'from_action',
-        'dimension4': 'from_category',
-        'dimension3': 'from_search_location_type',
-      }
-    },
-    debug: false,
-    disableAutoPageTrack: true,
-  },
   axios: {},
   sitemap: {
     path: '/sitemap.xml',

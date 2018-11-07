@@ -1,14 +1,6 @@
 rootProject.name = 'munch-core'
 
 /**
- * Munch Consumer facing persistence data
- * Used only in API and don't require sharing between other services.
- * Data generated can be public facing available for public consumption.
- * Why is it not separated into it's own module in another project?
- */
-include 'data'
-
-/**
  * Munch Public API
  * Split into their various top level modules
  */

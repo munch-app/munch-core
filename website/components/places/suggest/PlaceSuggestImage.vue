@@ -12,7 +12,7 @@
           <div class="aspect r-1-1">
             <image-sizes class="overflow-hidden border-3" :sizes="image.sizes" width="1" height="1">
               <div class="OverlayA20 relative hover-bg-a60 wh-100 flex-center">
-                <simple-svg class="wh-32px" fill="white" :filepath="require('~/assets/icon/close.svg')"/>
+                <simple-svg class="wh-32px" fill="white" :filepath="require('~/assets/icon/place/suggest/flag.svg')"/>
               </div>
             </image-sizes>
           </div>

@@ -6,7 +6,7 @@
       </div>
     </div>
 
-    <nuxt-link :to="'/places/' + place.placeId" class="no-select ItemCard">
+    <nuxt-link :to="'/places/' + place.placeId" class="no-select ItemCard" @click.capture="$track.view(`RIP`, 'Collection - Card')">
       <image-size v-if="images" class="Image border-3" :image="images" :alt="place.name"/>
       <div v-else class="Image border-3 bg-whisper100"></div>
 

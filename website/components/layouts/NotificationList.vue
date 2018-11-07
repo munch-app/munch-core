@@ -1,24 +1,19 @@
 <template>
   <div class="NotificationList index-overlay" v-if="notifications">
     <div v-for="notification in notifications" :key="notification.id">
-      <div class="NotificationBox Error elevation-2" v-if="notification.type === 'error'">
-        <div class="heading">
-          {{notification.title || 'Error'}}
+      <div class="NotificationBox elevation-2"
+           :class="{
+           'Message': notification.type === 'message',
+           'Error': notification.type === 'error'
+           }">
+        <div>
+          <div class="heading" v-if="notification.title">
+            {{notification.title}}
+          </div>
+          <div class="text" v-if="notification.message">
+            {{notification.message}}
+          </div>
         </div>
-        <div class="text" v-if="notification.error || notification.message">
-          {{notification.message || notification.error}}
-        </div>
-      </div>
-      <div class="NotificationBox Message elevation-2" v-else-if="notification.type === 'message'">
-        <div class="heading" v-if="notification.title">
-          {{notification.title}}
-        </div>
-        <div class="text" v-if="notification.message">
-          {{notification.message}}
-        </div>
-      </div>
-      <div v-else class="text">
-        {{notification}}
       </div>
     </div>
   </div>
@@ -49,14 +44,27 @@
   .NotificationBox {
     transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
     width: 300px;
-    padding: 16px 24px;
+    padding: 16px 20px;
 
     position: relative;
     margin-top: 12px;
-    border-radius: 3px;
 
-    .heading {
-      margin-bottom: 4px;
+    border-radius: 4px;
+
+    > div {
+      .heading,
+      .text {
+        margin-bottom: 8px;
+      }
+      .heading {
+        font-size: 15px;
+        color: rgba(0, 0, 0, 0.85);
+      }
+      .text {
+        font-size: 15px;
+      }
+
+      margin-bottom: -8px;
     }
 
     &.Error {
@@ -65,6 +73,7 @@
 
     &.Message {
       background: #fdfdfd;
+      border: 1px solid rgba(0, 0, 0, .1);
     }
 
     animation-name: move-up;

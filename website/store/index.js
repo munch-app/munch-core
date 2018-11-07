@@ -1,6 +1,8 @@
 import _ from "lodash";
 import uuidv4 from "uuid/v4";
 
+const MUNCH_TEAM = /oNOfWjsL49giM0|sGtVZuFJwYhf5O|7onsywnak2SaVt|GoNd1yY0uVcA8p|CM8wAOSdenMD8d|41qibhP0VjR3qQ/g
+
 export const state = () => ({
   origin: process.env.origin,
   loading: false,
@@ -41,11 +43,21 @@ export const getters = {
    */
   isStaging: (state) => {
     return state.origin !== 'https://www.munch.app'
+  },
+
+  /**
+   * ONLY to be used to test feature, no security is implemented for this
+   *
+   * @returns {boolean} whether currently logged in user is part of the munch team
+   */
+  isMunchTeam: (state) => {
+    // state.user
+    const userId = state.user.profile && state.user.profile.userId
+    if (userId) return MUNCH_TEAM.test(userId.slice(0, 14))
   }
 }
 
 import {disableBodyScroll, clearAllBodyScrollLocks} from 'body-scroll-lock';
-
 
 export const mutations = {
   /**
@@ -112,6 +124,30 @@ export const mutations = {
   }
 }
 
+const TYPE_MAPPING = {
+  'munch.api.user.ItemAlreadyExistInPlaceCollection': {
+    title: 'Already Exist',
+    message: 'Place is already inside the collection.'
+  }
+}
+
+const parseError = (error) => {
+  if (error && error.meta && error.meta.error) {
+    const metaError = error.meta.error
+
+    const mapped = TYPE_MAPPING[metaError.type]
+    if (mapped) return mapped
+
+    const parts = metaError.type.split('\.')
+    return {
+      title: parts[parts.length - 1],
+      message: metaError.message
+    }
+  }
+
+  return {title: 'Unknown Error', message: error}
+}
+
 export const actions = {
   /**
    * @param commit
@@ -119,14 +155,14 @@ export const actions = {
    * @param error to add to the stack for display in notification
    */
   addError({commit, state}, error) {
-    console.log(error)
+    console.error(error)
     if (state.notifications.length > 30) {
       console.log('Too many concurrent notification. Not added')
       return
     }
 
     const id = uuidv4()
-    commit('addNotification', {type: 'error', error, id})
+    commit('addNotification', {type: 'error', id, ...parseError(error)})
     setTimeout(() => commit('removeNotification', {id}), 15000)
   },
 
@@ -146,6 +182,6 @@ export const actions = {
 
     const id = uuidv4()
     commit('addNotification', {type: type || 'message', message, title, id})
-    setTimeout(() => commit('removeNotification', {id}), 5000)
+    setTimeout(() => commit('removeNotification', {id}), 6000)
   }
 }

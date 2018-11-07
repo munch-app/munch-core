@@ -21,7 +21,7 @@
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
+  // Replace this with callback and merge into NotificationList.vue
 
   export default {
     name: "NotificationEvent",
@@ -56,12 +56,9 @@
         dummy.select();
         document.execCommand('copy')
         document.body.removeChild(dummy)
-        this.$store.dispatch('addMessage', {message: 'Link copied!'})
 
-        this.$gtag('event', 'share', {
-          'event_category': 'url',
-          'event_label': 'search_between'
-        })
+        this.$store.dispatch('addMessage', {title: 'Link copied!'})
+        this.$track.share('Search', 'EatBetween')
       },
       onCancel() {
         this.eatBetween = false
