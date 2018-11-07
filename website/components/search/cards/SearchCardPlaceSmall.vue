@@ -1,6 +1,6 @@
 <template>
   <!--// Deprecated?-->
-  <nuxt-link :to="'/places/' + place.placeId" @click.capture="$track.view(`RIP`, 'PlaceCard')">
+  <nuxt-link :to="'/places/' + place.placeId" @click.native="$track.view(`RIP`, 'PlaceCard')">
     <div class="elevation-1 Card border-3">
       <div class="Content">
         <div class="Name Title large weight-600 b-a80">{{place.name}}</div>

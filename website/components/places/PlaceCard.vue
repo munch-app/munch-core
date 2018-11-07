@@ -1,5 +1,5 @@
 <template>
-  <nuxt-link :to="'/places/' + place.placeId" @click.capture="$track.view(`RIP`, 'PlaceCard')">
+  <nuxt-link :to="'/places/' + place.placeId" @click.native="$track.view(`RIP`, 'PlaceCard')">
     <div class="Card relative" :class="{'Small': small}">
       <no-ssr>
         <place-card-add-collection class="absolute" :place="place"/>
@@ -36,9 +36,9 @@
   import {Hour, HourGroup} from './hour-group'
   import ImageSizes from "../core/ImageSizes";
   import PlaceCardAddCollection from "./PlaceCardAddCollection";
-  
+
   function abc1428240170610139() {
-    
+
   }
 
   export default {
