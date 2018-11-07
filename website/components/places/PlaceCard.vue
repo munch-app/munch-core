@@ -37,10 +37,6 @@
   import ImageSizes from "../core/ImageSizes";
   import PlaceCardAddCollection from "./PlaceCardAddCollection";
 
-  function abc1428240170610139() {
-
-  }
-
   export default {
     name: "PlaceCard",
     components: {PlaceCardAddCollection, ImageSizes},

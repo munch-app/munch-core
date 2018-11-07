@@ -34,19 +34,18 @@
         ]
       }
     },
-    asyncData({Prismic, params, error}) {
-      return Prismic.get('support_article', params.uid)
-        .then((document) => {
-          if (document && document.data) {
-            return {
-              title: Prismic.asText(document.data.title),
-              content: Prismic.asHtml(document.data.content),
-              description: Prismic.asText(document.data.content).substring(0, 300)
-            }
-          } else {
-            error({statusCode: 404, message: 'Support Article Not Found'})
+    asyncData({$prismic, params, error}) {
+      return $prismic.get('support_article', params.uid).then((document) => {
+        if (document && document.data) {
+          return {
+            title: $prismic.asText(document.data.title),
+            content: $prismic.asHtml(document.data.content),
+            description: $prismic.asText(document.data.content).substring(0, 300)
           }
-        })
+        } else {
+          error({statusCode: 404, message: 'Support Article Not Found'})
+        }
+      })
     }
   }
 </script>

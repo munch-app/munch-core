@@ -1,8 +1,6 @@
 import Prismic from 'prismic-javascript'
 import PrismicDOM from 'prismic-dom'
 
-const endpoint = 'https://munch.cdn.prismic.io/api/v2'
-
 function linkResolver(doc) {
   switch (doc.type) {
     case 'support':
@@ -10,33 +8,28 @@ function linkResolver(doc) {
     case 'support_article':
       return `/support/${doc.data.uid}`
 
-    // Deprecated
-    case 'privacy_policy':
-      return '/support/privacy'
-    case 'terms_of_use':
-      return '/support/terms'
-
     default:
       return `/page/${doc.id}`
   }
 }
 
-export default (context, inject) => {
-  context.Prismic = {
-    dom: PrismicDOM,
-    getSingle: (type) => {
-      return Prismic.getApi(endpoint, {req: context.req})
-        .then(Api => {
-          return Api.getSingle(type)
-        })
+export default ({context: {req}}, inject) => {
+  const getApi = Prismic.getApi('https://munch.cdn.prismic.io/api/v2', {req})
+
+  const prismic = {
+    single: (type) => getApi.then(api => {
+      return api.getSingle(type)
+    }),
+    get: (type, uid) => getApi.then(api => {
+      return api.getByUID(type, uid)
+    }),
+    asHtml: (content) => {
+      return content && PrismicDOM.RichText.asHtml(content, linkResolver)
     },
-    get: (type, uid) => {
-      return Prismic.getApi(endpoint, {req: context.req})
-        .then(Api => {
-          return Api.getByUID(type, uid)
-        })
+    asText: (content) => {
+      return content && PrismicDOM.RichText.asText(content)
     },
-    asHtml: (content) => content && PrismicDOM.RichText.asHtml(content, linkResolver),
-    asText: (content) => content && PrismicDOM.RichText.asText(content),
   }
+
+  inject('prismic', prismic)
 }

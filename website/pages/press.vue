@@ -43,28 +43,27 @@
     head() {
       return {title: 'Press Kit · Munch Singapore'}
     },
-    asyncData({Prismic}) {
-      return Prismic.getSingle('press')
-        .then(({data}) => {
-          return {
-            fact_sheet: {
-              title: Prismic.asHtml(data.fact_sheet_title),
-              content: Prismic.asHtml(data.fact_sheet_content),
-            },
-            press_coverage: {
-              title: Prismic.asHtml(data.press_coverage_title),
-              list: data.press_coverage_list
-            },
-            digital_asset: {
-              title: Prismic.asHtml(data.digital_asset_title),
-              list: data.digital_asset_list
-            },
-            contact_us: {
-              title: Prismic.asHtml(data.contact_us_title),
-              content: Prismic.asHtml(data.contact_us_content)
-            }
+    asyncData({$prismic}) {
+      return $prismic.single('press').then(({data}) => {
+        return {
+          fact_sheet: {
+            title: $prismic.asHtml(data.fact_sheet_title),
+            content: $prismic.asHtml(data.fact_sheet_content),
+          },
+          press_coverage: {
+            title: $prismic.asHtml(data.press_coverage_title),
+            list: data.press_coverage_list
+          },
+          digital_asset: {
+            title: $prismic.asHtml(data.digital_asset_title),
+            list: data.digital_asset_list
+          },
+          contact_us: {
+            title: $prismic.asHtml(data.contact_us_title),
+            content: $prismic.asHtml(data.contact_us_content)
           }
-        })
+        }
+      })
     },
     computed: {
       pressCoverageList() {

@@ -7,14 +7,13 @@
 
 <script>
   export default {
-    asyncData({Prismic}) {
-      return Prismic.getSingle('support')
-        .then((document) => {
-          return {
-            title: Prismic.asHtml(document.data.title),
-            content: Prismic.asHtml(document.data.content)
-          }
-        })
+    asyncData({$prismic}) {
+      return $prismic.single('support').then((document) => {
+        return {
+          title: $prismic.asHtml(document.data.title),
+          content: $prismic.asHtml(document.data.content)
+        }
+      })
     }
   }
 </script>
