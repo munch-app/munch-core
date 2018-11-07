@@ -151,7 +151,7 @@ Max-width of 400px if > 576vw
       margin-right: auto;
     }
 
-    @media (min-width: 576px){
+    @media (min-width: 576px) {
       min-width: 280px;
     }
   }

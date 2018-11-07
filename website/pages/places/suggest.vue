@@ -1,42 +1,41 @@
 <template>
-  <div class="Page container-768 zero">
-    <div class="Header">
-      <h2 v-if="payload.place.placeId">Suggest Edits: <span class="s700">{{payload.place.name}}</span></h2>
-      <h2 v-else>Suggest a new edit</h2>
-    </div>
+  <div class="Page container-768">
+    <div class="zero" v-if="!submitted">
+      <div class="Header">
+        <h2 v-if="payload.place.placeId">Suggest Edits: <span class="s700">{{payload.place.name}}</span></h2>
+        <h2 v-else>Suggest a new edit</h2>
+      </div>
 
-    <div class="Navigation hr-bot flex">
-      <div class="Tab border border-4-top weight-600 hover-pointer" v-for="tab in tabs" :key="tab.component"
-           :class="{'bg-s400 white': selected === tab.component}" @click="selected = tab.component">
-        {{tab.name}}
+      <div class="Navigation hr-bot flex">
+        <div class="Tab border border-4-top weight-600 hover-pointer" v-for="tab in tabs" :key="tab.component"
+             :class="{'bg-s400 white': selected === tab.component}" @click="selected = tab.component">
+          {{tab.name}}
+        </div>
+      </div>
+
+      <div class="Content">
+        <keep-alive>
+          <component :payload="payload" :is="selected"/>
+        </keep-alive>
+      </div>
+
+      <div class="Action">
+        <place-suggest-changes :payload="payload"/>
+
+        <div class="flex-justify-end">
+          <button class="primary" @click="onSubmit">Submit</button>
+        </div>
       </div>
     </div>
-
-    <div class="Content">
-      <keep-alive>
-        <component :payload="payload" :is="selected"/>
-      </keep-alive>
-    </div>
-
-    <div class="Action">
-      <place-suggest-changes :payload="payload"/>
-
-      <div class="flex-justify-end">
-        <button class="primary" @click="onSubmit">Submit</button>
-      </div>
+    <div v-else>
+      <h1 class="mt-8">Thank you for your contribution.</h1>
+      <p class="mt-24">Own this restaurant? Do you want us to optimise your page?
+        Drop us an email at <span class="weight-600">restaurant@munch.space</span> if there’s anything we can help with.
+      </p>
     </div>
 
     <no-ssr>
-      <portal to="dialog-styled" v-if="submitting" class="Dialog">
-        <h3>Submitting Edits</h3>
-        <h5 class="p500">Thank you for your contribution.</h5>
-        <p>Own this restaurant? Do you want us to optimise your page?
-          Drop us an email at restaurant@munch.space if there’s anything we can help with.</p>
-
-        <div class="right">
-          <button class="clear-elevated" @click="submitting = null">Cancel</button>
-        </div>
-      </portal>
+      <dialog-loading v-if="submitting"/>
     </no-ssr>
   </div>
 </template>
@@ -48,6 +47,7 @@
   import PlaceSuggestImage from "../../components/places/suggest/PlaceSuggestImage";
   import PlaceSuggestMenu from "../../components/places/suggest/PlaceSuggestMenu";
   import PlaceSuggestChanges from "../../components/places/suggest/PlaceSuggestChanges";
+  import DialogLoading from "../../components/layouts/DialogLoading";
 
   const newPayload = (data) => {
     const {place, images, articles} = data || {
@@ -87,6 +87,7 @@
 
   export default {
     components: {
+      DialogLoading,
       PlaceSuggestChanges,
       PlaceSuggestMenu, PlaceSuggestImage, PlaceSuggestArticle, PlaceSuggestDetail, ImageSizes
     },
@@ -120,23 +121,25 @@
           {name: 'Article', component: 'PlaceSuggestArticle'},
         ],
         submitting: false,
+        submitted: false
       }
     },
     methods: {
       onSubmit() {
+        if (window) window.scrollTo(0, 0)
         this.submitting = true
 
-        // TODO dialog loading
-        // Then show thank you message
         const payload = {
           place: this.payload.place,
           removes: this.payload.removes,
         }
-        console.log(payload)
+        return this.$axios.$post('/api/suggests/places', payload)
+          .then(({data}) => {
+            this.submitting = false
+            this.submitted = true
 
-        setTimeout(() => {
-          this.submitting = false
-        }, 6000)
+            console.log(data)
+          })
       }
     }
   }
