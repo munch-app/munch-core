@@ -98,14 +98,12 @@ export const actions = {
     if (!query) query = this.state.filter.query
     if (window) window.scrollTo(0, 0)
 
-    this.$router.replace({path: '/search'})
-
     start.call(this, {query, type: 'search'})
     return this.$axios.$post(`/api/search?page=${state.page}`, state.query)
       .then(({data, qid}) => {
         commit('append', data)
 
-        this.$router.replace({path: '/search', query: {qid}})
+        this.$router.push({path: '/search', query: {qid}})
       })
   },
 
@@ -128,7 +126,8 @@ export const actions = {
             commit('append', data)
           })
       }).catch(error => {
-        return this.$router.replace({path: '/search', query: {}})
+        const store = this.$store || this.app.store || this.store
+        store.dispatch('addError', error)
       })
   },
 

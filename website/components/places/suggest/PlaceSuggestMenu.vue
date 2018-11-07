@@ -15,8 +15,10 @@
     name: "PlaceSuggestMenu",
     components: {InputText},
     props: {
-      data: Object,
-      payload: Object
+      payload: {
+        type: Object,
+        twoWay: true
+      }
     }
   }
 </script>

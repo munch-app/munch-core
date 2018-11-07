@@ -4,11 +4,11 @@
                                                   href="https://partner.munch.app"
                                                   target="_blank">partner.munch.app</a></p>
 
-    <div class="Existing" v-if="data.articles.length > 0">
+    <div class="Existing" v-if="payload.articles.length > 0">
       <h2>Articles</h2>
 
       <div class="List">
-        <div class="Article flex hover-bg-a10 border-3 hover-pointer" v-for="article in data.articles"
+        <div class="Article flex hover-bg-a10 border-3 hover-pointer" v-for="article in payload.articles"
              :key="article.articleId"
              @click="onDialog(article)">
           <div>
@@ -62,7 +62,6 @@
     name: "PlaceSuggestArticle",
     components: {ImageSizes},
     props: {
-      data: Object,
       payload: {
         type: Object,
         twoWay: true

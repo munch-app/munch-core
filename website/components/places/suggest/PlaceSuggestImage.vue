@@ -62,14 +62,13 @@
     name: "PlaceSuggestImage",
     components: {ImageSizes},
     props: {
-      data: Object,
       payload: {
         type: Object,
         twoWay: true
       }
     },
     data() {
-      const {images} = this.data
+      const {images} = this.payload
       const last = images[images.length - 1]
       const next = {sort: last.sort || null}
 
@@ -81,11 +80,13 @@
     },
     mounted() {
       // Push Place Images
-      this.data.place.images.forEach(image => {
-        if (!_.filter(this.images, (i) => i.imageId === image.imageId)) {
-          this.images.push(image)
-        }
-      })
+      if (this.payload.origin) {
+        this.payload.origin.images.forEach(image => {
+          if (!_.filter(this.images, (i) => i.imageId === image.imageId)) {
+            this.images.push(image)
+          }
+        })
+      }
     },
     methods: {
       onMore() {
@@ -98,7 +99,7 @@
           'next.sort': this.next.sort
         }
 
-        return this.$axios.$get(`/api/places/${this.data.place.placeId}/images`, {params})
+        return this.$axios.$get(`/api/places/${this.payload.place.placeId}/images`, {params})
           .then(({data, next}) => {
             this.images.push(...data)
             this.loading = false

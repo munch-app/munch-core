@@ -37,15 +37,22 @@
     head() {
       return {title: 'Search · Munch Singapore'}
     },
-    async fetch({store, route}) {
-      const qid = route.query.qid
-      if (qid) {
-        return store.dispatch('search/startQid', qid)
+    asyncData({store, route}) {
+      if (!store.state.search.query && route.query.qid) {
+        return store.dispatch('search/startQid', route.query.qid)
+          .then(() => {
+            return {fromQid: true}
+          })
       }
+      return {fromQid: false}
     },
     mounted() {
       window.addEventListener("scroll", this.onScroll)
       this.onMapUpdate()
+
+      if (this.fromQid && this.query) {
+        this.$track.qid(`Search - ${this.locationType}`)
+      }
     },
     beforeDestroy() {
       window.removeEventListener("scroll", this.onScroll)
@@ -59,7 +66,7 @@
       }
     },
     computed: {
-      ...mapGetters('search', ['query', 'cards', 'more', 'showsMap', 'searched']),
+      ...mapGetters('search', ['query', 'cards', 'more', 'showsMap', 'searched', 'locationType']),
       ...mapGetters('filter', ['selected']),
     },
     watch: {

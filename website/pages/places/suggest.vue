@@ -1,7 +1,7 @@
 <template>
   <div class="Page container-768 zero">
     <div class="Header">
-      <h2 v-if="placeId">Suggest Edits: <span class="s700">{{data.place.name}}</span></h2>
+      <h2 v-if="payload.place.placeId">Suggest Edits: <span class="s700">{{payload.place.name}}</span></h2>
       <h2 v-else>Suggest a new edit</h2>
     </div>
 
@@ -14,7 +14,7 @@
 
     <div class="Content">
       <keep-alive>
-        <component :data="data" :payload="payload" :is="selected"/>
+        <component :payload="payload" :is="selected"/>
       </keep-alive>
     </div>
 
@@ -30,7 +30,7 @@
       <portal to="dialog-styled" v-if="submitting" class="Dialog">
         <h3>Submitting Edits</h3>
         <h5 class="p500">Thank you for your contribution.</h5>
-        <p>Own this restaurant?
+        <p>Own this restaurant? Do you want us to optimise your page?
           Drop us an email at restaurant@munch.space if there’s anything we can help with.</p>
 
         <div class="right">
@@ -48,6 +48,42 @@
   import PlaceSuggestImage from "../../components/places/suggest/PlaceSuggestImage";
   import PlaceSuggestMenu from "../../components/places/suggest/PlaceSuggestMenu";
   import PlaceSuggestChanges from "../../components/places/suggest/PlaceSuggestChanges";
+
+  const newPayload = (data) => {
+    const {place, images, articles} = data || {
+      images: [], articles: [],
+      place: {location: {}, price: {}, status: {type: 'open'}},
+    }
+
+    return {
+      // images and articles are helper payload
+      images,
+      articles,
+
+      // Editable Place Data
+      place: {
+        placeId: place.placeId, // Validity of PlaceId will determine if new edit or old edit
+        name: place.name || '',
+        description: place.description || '',
+        website: place.website || '',
+        phone: place.phone || '',
+        location: {
+          address: place.location.address || ''
+        },
+        price: {
+          perPax: place.price.perPax || ''
+        },
+        status: {
+          type: place.status.type
+        },
+      },
+      origin: place,
+      removes: {
+        images: {}, // imageId: {flag: ''}
+        articles: {}, // articleId: {flag: ''}
+      }
+    }
+  }
 
   export default {
     components: {
@@ -67,26 +103,11 @@
     asyncData({$axios, params, route}) {
       const placeId = route.query.placeId
       if (placeId) {
-        return $axios.$get(`/api/places/${placeId}`)
-          .then(({data}) => {
-            return {
-              placeId,
-              data: {
-                place: data.place,
-                images: data.images,
-                articles: data.articles,
-              },
-            }
-          })
+        return $axios.$get(`/api/places/${placeId}`).then(({data}) => {
+          return {payload: newPayload(data)}
+        })
       } else {
-        return {
-          placeId: null, // To determine it's a new entry.
-          data: {
-            place: {location: {}, price: {}, menu: {}},
-            images: [],
-            articles: [],
-          },
-        }
+        return {payload: newPayload()}
       }
     },
     data() {
@@ -99,44 +120,23 @@
           {name: 'Article', component: 'PlaceSuggestArticle'},
         ],
         submitting: false,
-
-        /**
-         * Payload to send to suggest service
-         */
-        payload: {
-          place: {},
-          removes: {
-            images: {}, // imageId: {flag: '', image: Object}
-            articles: {}, // articleId: {flag: '', article: Object}
-          },
-        },
       }
     },
-    computed: {},
     methods: {
       onSubmit() {
         this.submitting = true
 
-        const place = this.data.place
+        // TODO dialog loading
+        // Then show thank you message
         const payload = {
-          place: {
-            placeId: this.placeId, // Determine if new entry or existing
-            name: place.name,
-            address: place.location.address,
-            pricePerPax: place.price.perPax,
-            phone: place.phone,
-            website: place.website,
-            description: place.description,
-            status: place.status
-          },
-          ...this.payload
+          place: this.payload.place,
+          removes: this.payload.removes,
         }
-
         console.log(payload)
 
         setTimeout(() => {
           this.submitting = false
-        }, 4000)
+        }, 6000)
       }
     }
   }

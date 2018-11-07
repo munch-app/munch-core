@@ -74,6 +74,7 @@ module.exports = {
     ]
   },
   vendor: [
+    // Deprecate jQuery with Slick
     'jquery',
 
     'portal-vue',
@@ -87,6 +88,7 @@ module.exports = {
 
     'vuex-persistedstate',
     'vue-scrollto',
+    'vue-clipboard2'
   ],
   plugins: [
     '~/plugins/axios',
@@ -106,6 +108,7 @@ module.exports = {
     {src: '~/plugins/vue-loader', ssr: false},
     {src: '~/plugins/vuex-persistedstate', ssr: false},
     {src: '~/plugins/tracker', ssr: false},
+    {src: '~/plugins/vue-clipboard2', ssr: false},
   ],
   serverMiddleware: [
     {

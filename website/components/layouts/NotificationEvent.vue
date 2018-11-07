@@ -48,16 +48,9 @@
       clickEatBetween() {
         this.eatBetween = false
 
-        const dummy = document.createElement('input')
-        const text = window.location.href
+        this.$copyText(window.location.href).then(() => {}, (e) => {})
 
-        document.body.appendChild(dummy)
-        dummy.value = text;
-        dummy.select();
-        document.execCommand('copy')
-        document.body.removeChild(dummy)
-
-        this.$store.dispatch('addMessage', {title: 'Link copied!'})
+        this.$store.dispatch('addMessage', {title: 'Copied URL'})
         this.$track.share('Search', 'EatBetween')
       },
       onCancel() {

@@ -144,6 +144,10 @@ const parseError = (error) => {
       message: metaError.message
     }
   }
+  
+  if (error && error.statusCode === 404) {
+    return {title: 'Error', message: 'Object Not Found'}
+  }
 
   return {title: 'Unknown Error', message: error}
 }

@@ -15,6 +15,7 @@ Max-width of 400px if > 576vw
     <portal-target class="Dialog Blank elevation-3 index-elevation" name="dialog-blank"/>
     <portal-target class="Dialog W400 elevation-3 index-elevation" name="dialog-w400"/>
     <portal-target class="Dialog Styled elevation-3 index-elevation" name="dialog-styled"/>
+    <portal-target class="Dialog ActionSheet elevation-3 index-elevation" name="dialog-action-sheet"/>
     <portal-target class="Dialog elevation-3 index-elevation" name="dialog"/>
 
     <!-- Universal Dialog -->
@@ -50,7 +51,7 @@ Max-width of 400px if > 576vw
   }
 </script>
 
-<style lang="less">
+<style scoped lang="less">
   .DialogPortal {
     position: fixed;
     top: 0;
@@ -97,7 +98,34 @@ Max-width of 400px if > 576vw
     }
   }
 
-  .Dialog.Styled {
+  .W400 {
+    max-width: 400px;
+
+    @media (max-width: 575.98px) {
+      max-width: 576px;
+    }
+  }
+
+  .Blank,
+  .Full,
+  .ActionSheet {
+    padding: 0;
+  }
+
+  .Blank, .Full {
+    border: 0;
+    background: initial;
+  }
+
+  .Full {
+    max-width: 100vw;
+    width: 100vw;
+    max-height: 100vh;
+    height: 100vh;
+  }
+
+  .Styled,
+  .ActionSheet {
     display: flex;
     flex-direction: column;
 
@@ -113,7 +141,24 @@ Max-width of 400px if > 576vw
       left: 24px;
       right: 24px;
     }
+  }
 
+  .ActionSheet {
+    max-width: 320px;
+
+    @media (min-width: 300px) and (max-width: 575.98px) {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    @media (min-width: 576px){
+      min-width: 280px;
+    }
+  }
+</style>
+
+<style lang="less">
+  .Dialog.Styled {
     > div {
       margin-left: -12px;
       margin-right: -12px;
@@ -156,27 +201,29 @@ Max-width of 400px if > 576vw
     }
   }
 
-  .Dialog.W400 {
-    max-width: 400px;
+  .Dialog.ActionSheet {
+    padding-top: 10px;
 
-    @media (max-width: 575.98px) {
-      max-width: 576px;
+    hr {
+      margin-top: 10px;
     }
-  }
 
-  .Dialog.Blank {
-    padding: 0;
-    border: 0;
-    background: initial;
-  }
+    > div {
+      padding-top: 10px;
+      padding-bottom: 10px;
 
-  .Dialog.Full {
-    max-width: 100vw;
-    width: 100vw;
-    max-height: 100vh;
-    height: 100vh;
+      font-weight: 600;
+      font-size: 15px;
+      line-height: 1.5;
+      text-align: center;
 
-    padding: 0;
-    background: initial;
+      &.close {
+        font-weight: 400;
+      }
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
   }
 </style>

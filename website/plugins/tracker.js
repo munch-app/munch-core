@@ -59,6 +59,9 @@ export default async ({app, store}, inject) => {
     },
     view(category, label, others) {
       event.call(gtag, 'View', {category, label}, others)
+    },
+    qid(category, label, others) {
+      event.call(gtag, 'QID', {category, label}, others)
     }
   })
 

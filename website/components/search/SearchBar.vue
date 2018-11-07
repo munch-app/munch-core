@@ -11,13 +11,15 @@
 
     <div class="SearchSuggest elevation-3 index-top-elevation no-select" v-if="isExtended">
       <div class="Navigation index-top-elevation" v-if="isNavigation">
-        <div @click="onNavigation('/search')" class="NavigationItem" :class="{Selected: route.startsWith('search')}">
+        <div @click="onNavigationSearch" class="NavigationItem" :class="{Selected: route.startsWith('search')}">
           Search
         </div>
-        <div @click="onNavigation('/feed/images')" class="NavigationItem" :class="{Selected: route === 'feed-images'}">
+        <div @click="onNavigationFeedImage" class="NavigationItem" :class="{Selected: route === 'feed-images'}">
           Feed
         </div>
-        <div v-if="isStaging" @click="onNavigation('/feed/articles')" class="NavigationItem" :class="{Selected: route === 'feed-articles'}">Article Feed</div>
+        <div v-if="isStaging" @click="onNavigationFeedArticle" class="NavigationItem"
+             :class="{Selected: route === 'feed-articles'}">Article Feed
+        </div>
       </div>
       <div class="Results index-top-elevation">
         <div class="NoResult text" v-if="!hasResult && suggestions">
@@ -175,15 +177,23 @@
 
         this.onBlur()
       },
-      onNavigation(to) {
-        if (to === '/search' && !this.$store.state.search.query) {
+      onNavigationSearch() {
+        if (!this.$store.state.search.query) {
           this.$store.dispatch('filter/location', {type: 'Anywhere'})
           this.$store.dispatch('search/start')
 
           this.$track.search(`Search - Navigation`, this.$store.getters['search/locationType'])
-        } else {
-          this.$router.push({path: to})
+        } else if (this.$route.path !== '/search') {
+          this.$router.push({path: '/search'})
         }
+        this.onBlur()
+      },
+      onNavigationFeedImage() {
+        this.$router.push({path: '/feed/images'})
+        this.onBlur()
+      },
+      onNavigationFeedArticle() {
+        this.$router.push({path: '/feed/articles'})
         this.onBlur()
       },
       onFocus() {

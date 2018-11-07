@@ -7,7 +7,7 @@
     </a>
 
     <horizontal-scroll-view class="MenuImageList" :items="menu.images" :map-key="i => i.imageId" :container="false"
-                            :padding="24" v-if="isStaging">
+                            :padding="24" v-if="isStaging && menu.images.length > 0">
       <template slot-scope="{item}">
         <div class="MenuImageItem hover-pointer">
           <image-size :image="item" class="Image border-3">

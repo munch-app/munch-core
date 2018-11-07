@@ -16,21 +16,19 @@
     <div>
       <profile-collection-add-place :place="place" v-if="show.collection" @on-close="show.collection = false"/>
 
-      <portal to="dialog-blank" v-if="show.more">
-        <div class="MoreDialog bg-white border-4 border text-center text-ellipsis-1l">
-          <div @click="onSuggest">
-            Suggest Edits
-          </div>
-          <div @click="onAdd">
-            Add To Collection
-          </div>
-          <div @click="onShare">
-            Share
-          </div>
-          <hr>
-          <div @click="show.more = false">
-            Close
-          </div>
+      <portal to="dialog-action-sheet" v-if="show.more">
+        <div @click="onSuggest">
+          Suggest Edits
+        </div>
+        <div @click="onAdd">
+          Add To Collection
+        </div>
+        <div @click="onShare">
+          Share
+        </div>
+        <hr>
+        <div @click="show.more = false">
+          Close
         </div>
       </portal>
     </div>
@@ -87,14 +85,9 @@
 
           this.$track.share('RIP', 'Native Share')
         } else {
-          const dummy = document.createElement('input')
-          document.body.appendChild(dummy)
-          dummy.value = url
-          dummy.select();
-          document.execCommand('copy')
-          document.body.removeChild(dummy)
+          this.$copyText(url).then(() => {}, (e) => {})
 
-          this.$store.dispatch('addMessage', {title: 'Copied Link!'})
+          this.$store.dispatch('addMessage', {title: 'Copied URL!'})
           this.$track.share('RIP', 'Copied URL')
         }
       }
@@ -132,30 +125,5 @@
 
   .Action {
     padding: 4px;
-  }
-
-  .MoreDialog {
-    padding-top: 10px;
-
-    hr {
-      margin-top: 10px;
-    }
-
-    > div {
-      padding-top: 10px;
-      padding-bottom: 10px;
-
-      font-weight: 600;
-      font-size: 15px;
-      line-height: 1.5;
-
-      &:last-child {
-        font-weight: 400;
-      }
-
-      &:hover {
-        cursor: pointer;
-      }
-    }
   }
 </style>

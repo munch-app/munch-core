@@ -1,6 +1,7 @@
 <template>
   <div class="PriceView">
     <div class="PriceButtonList">
+      <!-- If click too quickly it will use the old '$' -->
       <div class="PriceButton hover-pointer" v-for="name in ['$','$$','$$$']" :key="name" @click="toggle(name)" :class="{
            'bg-p500 white': isSelectedPrice(name),
            'bg-peach100 b-a75': !isSelectedPrice(name)}">
