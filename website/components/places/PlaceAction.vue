@@ -152,6 +152,10 @@
       &:last-child {
         font-weight: 400;
       }
+
+      &:hover {
+        cursor: pointer;
+      }
     }
   }
 </style>

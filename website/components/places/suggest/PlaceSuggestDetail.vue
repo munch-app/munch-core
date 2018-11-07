@@ -24,14 +24,13 @@
     </div>
 
     <div class="input-group" v-if="false">
-      <!-- TODO: Hours Implementation-->
       <h2>Hours</h2>
     </div>
 
     <div class="input-group">
       <h2>Status</h2>
       <div class="flex StatusList">
-        <div class="weight-600 border-3 hover-pointer" v-for="status in statusList" :key="status"
+        <div class="weight-600 border-3 hover-pointer" v-for="status in statusList" :key="status.type"
              @click="data.place.status.type = status.type"
              :class="{ 'bg-success white': data.place.status.type === status.type && status.type === 'open',
                        'bg-error white': data.place.status.type === status.type && status.type === 'closed',

@@ -18,6 +18,12 @@
           </div>
         </div>
       </div>
+
+      <no-ssr class="flex-center" style="padding: 24px 0 48px 0">
+        <beat-loader color="#084E69" v-if="next.sort" size="14px"
+                     v-observe-visibility="{callback: (v) => v && onMore(),throttle:300}"
+        />
+      </no-ssr>
     </div>
 
     <no-ssr>
@@ -50,6 +56,8 @@
   import ImageSizes from "../../core/ImageSizes";
   import Vue from 'vue'
 
+  import _ from 'lodash'
+
   export default {
     name: "PlaceSuggestImage",
     components: {ImageSizes},
@@ -61,18 +69,42 @@
       }
     },
     data() {
+      const {images} = this.data
+      const last = images[images.length - 1]
+      const next = {sort: last.sort || null}
+
       return {
-        dialog: null
+        dialog: null,
+        loading: false,
+        images, next
       }
     },
-    computed: {
-      images() {
-        // TODO join images
-        // TODO Auto load everything
-        return this.data.images
-      }
+    mounted() {
+      // Push Place Images
+      this.data.place.images.forEach(image => {
+        if (!_.filter(this.images, (i) => i.imageId === image.imageId)) {
+          this.images.push(image)
+        }
+      })
     },
     methods: {
+      onMore() {
+        if (this.loading) return
+        if (!this.next.sort) return
+
+        this.loading = true
+        const params = {
+          size: 20,
+          'next.sort': this.next.sort
+        }
+
+        return this.$axios.$get(`/api/places/${this.data.place.placeId}/images`, {params})
+          .then(({data, next}) => {
+            this.images.push(...data)
+            this.loading = false
+            this.next.sort = next && next.sort || null
+          })
+      },
       onDialog(image) {
         this.dialog = image
         // Vue.set(this.changes, image.imageId, image)

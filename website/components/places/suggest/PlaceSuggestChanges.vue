@@ -1,8 +1,8 @@
 <template>
   <div class="Changes" v-if="hasChanges">
-    <h2>Edits</h2>
+    <h2>Suggest Removal</h2>
     <div class="List">
-      <div v-for="(value, key) in payload.removes.images" :key="key" class="flex-align-center">
+      <div v-for="(value, key) in payload.removes.images" :key="key" class="flex-align-center hover-pointer" @click="onRemove('images', key)">
         <div class="wh-32px">
           <div class="aspect r-1-1">
             <image-sizes class="overflow-hidden border-3" :sizes="value.image.sizes" width="1" height="1"/>
@@ -13,7 +13,7 @@
         </div>
       </div>
 
-      <div v-for="(value, key) in payload.removes.articles" :key="key" class="flex-align-center">
+      <div v-for="(value, key) in payload.removes.articles" :key="key" class="flex-align-center hover-pointer" @click="onRemove('images', key)">
         <div class="wh-32px">
           <div class="aspect r-1-1 overflow-hidden border-3">
             <image-sizes v-if="value.article.thumbnail" :sizes="value.article.thumbnail.sizes" width="1" height="1"/>
@@ -30,6 +30,8 @@
 
 <script>
   import ImageSizes from "../../core/ImageSizes";
+  import Vue from 'vue'
+
   export default {
     name: "PlaceSuggestChanges",
     components: {ImageSizes},
@@ -49,6 +51,11 @@
         },
         deep: true
       },
+    },
+    methods: {
+      onRemove(type, key) {
+        Vue.delete(this.payload.removes[type], key)
+      }
     }
   }
 </script>
