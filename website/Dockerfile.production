@@ -4,18 +4,18 @@ FROM node:8.12.0-alpine
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
+ENV HOST 0.0.0.0
+ENV NODE_ENV production
+EXPOSE 3000
+
 COPY package.json yarn.lock /usr/src/app/
 RUN yarn --pure-lockfile
 
+ENV API_MUNCH_APP https://api.munch.app/v0.15.0
 COPY . /usr/src/app/
 
-ENV API_URL_BROWSER https://www.munch.app/
-ENV API_MUNCH_APP https://api.munch.app/v0.15.0
-
-ENV HOST 0.0.0.0
-ENV NODE_ENV production
 ENV ORIGIN https://www.munch.app
-EXPOSE 3000
+ENV API_URL_BROWSER https://www.munch.app/
 
 RUN yarn run build
 CMD [ "yarn", "run", "start" ]
