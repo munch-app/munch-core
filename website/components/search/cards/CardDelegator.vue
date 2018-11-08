@@ -5,11 +5,6 @@
     v-if="isCardId('basic_Place_20171211')"
     :card="card"
   />
-  <search-card-place-small
-    class="Card no-select Initial Pointer"
-    v-else-if="isCardId('basic_SmallPlace_20180129')"
-    :place="card.place"
-  />
   <search-card-area-cluster-list
     class="Card no-select Initial FullWidth"
     v-else-if="isCardId('injected_AreaClusterList_20180621')"
@@ -54,7 +49,6 @@
   import SearchCardNoResult from "./SearchCardNoResult";
   import SearchCardNoResultLocation from "./SearchCardNoResultLocation";
   import SearchCardAreaClusterHeader from "./SearchCardAreaClusterHeader";
-  import SearchCardPlaceSmall from "./SearchCardPlaceSmall";
   import SearchCardSuggestionTag from "./SearchCardSuggestionTag";
   import SearchCardNavigationHeader from "./SearchCardNavigationHeader";
 
@@ -76,7 +70,6 @@
     components: {
       SearchCardNavigationHeader,
       SearchCardSuggestionTag,
-      SearchCardPlaceSmall,
       SearchCardAreaClusterHeader,
       SearchCardNoResultLocation,
       SearchCardNoResult, SearchCardHeader, SearchCardAreaClusterList, SearchCardPlace

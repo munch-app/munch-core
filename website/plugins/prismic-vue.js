@@ -13,7 +13,8 @@ function linkResolver(doc) {
   }
 }
 
-export default ({req}, inject) => {
+export default (context, inject) => {
+  const {req} = context
   const getApi = Prismic.getApi('https://munch.cdn.prismic.io/api/v2', {req})
 
   const prismic = {
@@ -31,5 +32,6 @@ export default ({req}, inject) => {
     },
   }
 
+  context.$prismic = prismic
   inject('prismic', prismic)
 }

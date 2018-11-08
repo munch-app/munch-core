@@ -22,7 +22,7 @@ function event(action, {category, label, value}, others) {
   else this('event', action, data)
 }
 
-export default async ({app, store}, inject) => {
+export default ({app, store}, inject) => {
   // @formatter:off
   window.dataLayer = window.dataLayer || []
   function gtag(){dataLayer.push(arguments)}

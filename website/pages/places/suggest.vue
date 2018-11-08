@@ -71,7 +71,7 @@
           address: place.location.address || ''
         },
         price: {
-          perPax: place.price.perPax || ''
+          perPax: place.price && place.price.perPax || 0
         },
         status: {
           type: place.status.type
