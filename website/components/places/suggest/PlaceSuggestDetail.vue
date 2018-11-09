@@ -19,7 +19,7 @@
       <input-text label="Website" v-model="payload.place.website"/>
       <div class="input-text">
         <label>Description</label>
-        <textarea v-model="payload.place.description"></textarea>
+        <textarea rows="4" v-model="payload.place.description"></textarea>
       </div>
     </div>
 

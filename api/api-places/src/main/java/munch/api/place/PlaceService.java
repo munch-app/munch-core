@@ -7,6 +7,7 @@ import munch.api.place.basic.BasicCardLoader;
 import munch.api.place.card.PlaceCard;
 import munch.api.place.query.QueryCardLoader;
 import munch.article.ArticleLinkClient;
+import munch.article.data.Article;
 import munch.data.client.PlaceClient;
 import munch.data.place.Place;
 import munch.gallery.PlaceImage;
@@ -60,6 +61,7 @@ public final class PlaceService extends ApiService {
             GET("", this::get);
             GET("/cards", this::getCards);
             GET("/images", this::getImages);
+            GET("/articles", this::getArticles);
         });
     }
 
@@ -112,5 +114,13 @@ public final class PlaceService extends ApiService {
         int size = call.querySize(20, 40);
 
         return placeImageClient.list(placeId, nextSort, size);
+    }
+
+    private NextNodeList<Article> getArticles(JsonCall call) {
+        int size = call.querySize(20, 40);
+        String placeId = call.pathString("placeId");
+        String nextSort = call.queryString("next.sort", null);
+
+        return articleLinkClient.list(placeId, nextSort, size);
     }
 }

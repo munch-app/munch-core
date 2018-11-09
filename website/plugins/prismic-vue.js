@@ -6,10 +6,10 @@ function linkResolver(doc) {
     case 'support':
       return '/support'
     case 'support_article':
-      return `/support/${doc.data.uid}`
+      return `/support/${doc.uid}`
 
     default:
-      return `/page/${doc.id}`
+      return `/page/${doc.uid}`
   }
 }
 

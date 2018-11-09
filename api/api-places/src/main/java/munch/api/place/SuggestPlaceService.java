@@ -1,11 +1,13 @@
 package munch.api.place;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import munch.api.ApiRequest;
 import munch.api.ApiService;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonResult;
+import munch.suggest.SuggestClient;
+import munch.suggest.SuggestPlace;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
@@ -17,6 +19,13 @@ import javax.inject.Singleton;
 @Singleton
 public final class SuggestPlaceService extends ApiService {
 
+    private final SuggestClient suggestClient;
+
+    @Inject
+    public SuggestPlaceService(SuggestClient suggestClient) {
+        this.suggestClient = suggestClient;
+    }
+
     @Override
     public void route() {
         PATH("/suggests/places", () -> {
@@ -27,8 +36,10 @@ public final class SuggestPlaceService extends ApiService {
     public JsonResult suggest(JsonCall call) {
         ApiRequest request = call.get(ApiRequest.class);
 
-        String userId = request.getUserId();
-        JsonNode payload = call.bodyAsJson();
-        return JsonResult.ok(payload);
+        SuggestPlace suggestPlace = call.bodyAsObject(SuggestPlace.class);
+        suggestPlace.setUserId(request.getUserId());
+
+        suggestClient.post(suggestPlace);
+        return JsonResult.ok();
     }
 }

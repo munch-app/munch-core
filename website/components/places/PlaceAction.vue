@@ -1,5 +1,5 @@
 <template>
-  <div class="PlaceActionContainer index-elevation w-100 flex" v-if="isStaging">
+  <div class="PlaceActionContainer index-elevation w-100 flex">
     <div class="PlaceActionBar bg-white w-100 flex-justify-center">
       <div class="Action hover-pointer" @click="onMore">
         <simple-svg class="Icon wh-48px" fill="black" :filepath="require('~/assets/icon/place/action/more.svg')"/>
@@ -58,14 +58,18 @@
     },
     computed: {
       ...mapGetters('user', ['isLoggedIn']),
-      ...mapGetters(['isStaging', 'isMunchTeam']),
     },
     methods: {
       onMore() {
         this.show.more = true
       },
       onSuggest() {
-        window.open(`/places/suggest?placeId=${this.place.placeId}`,'_blank');
+        if (this.isLoggedIn) {
+          window.open(`/places/suggest?placeId=${this.place.placeId}`,'_blank');
+        } else {
+          this.show.more = false
+          this.$store.commit('focus', 'Login')
+        }
       },
       onAdd() {
         this.show.more = false

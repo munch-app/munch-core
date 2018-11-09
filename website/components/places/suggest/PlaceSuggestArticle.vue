@@ -26,6 +26,12 @@
           </div>
         </div>
       </div>
+
+      <no-ssr class="flex-center" style="padding: 24px 0 48px 0">
+        <beat-loader color="#084E69" v-if="next.sort" size="14px"
+                     v-observe-visibility="{callback: (v) => v && onMore(),throttle:300}"
+        />
+      </no-ssr>
     </div>
 
     <no-ssr>
@@ -68,11 +74,34 @@
       }
     },
     data() {
+      const {articles} = this.payload
+      const last = articles[articles.length - 1]
+      const next = {sort: last.sort || null}
+
       return {
-        dialog: null
+        dialog: null,
+        loading: false,
+        articles, next
       }
     },
     methods: {
+      onMore() {
+        if (this.loading) return
+        if (!this.next.sort) return
+
+        this.loading = true
+        const params = {
+          size: 20,
+          'next.sort': this.next.sort
+        }
+
+        return this.$axios.$get(`/api/places/${this.payload.place.placeId}/articles`, {params})
+          .then(({data, next}) => {
+            this.articles.push(...data)
+            this.loading = false
+            this.next.sort = next && next.sort || null
+          })
+      },
       onDialog(article) {
         this.dialog = article
         // Vue.set(this.payload, image.imageId, image)

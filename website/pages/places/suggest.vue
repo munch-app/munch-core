@@ -1,38 +1,49 @@
 <template>
   <div class="Page container-768">
-    <div class="zero" v-if="!submitted">
-      <div class="Header">
-        <h2 v-if="payload.place.placeId">Suggest Edits: <span class="s700">{{payload.place.name}}</span></h2>
-        <h2 v-else>Suggest a new edit</h2>
+    <div v-if="payload.place.placeId">
+      <div v-if="submitted">
+        <h1 class="mt-8">Thank you for your contribution.</h1>
+        <p class="mt-24">Own this restaurant? Do you want us to optimise your page?
+          Drop us an email at <span class="weight-600">restaurant@munch.space</span> if there’s anything we can help
+          with.
+        </p>
       </div>
-
-      <div class="Navigation hr-bot flex">
-        <div class="Tab border border-4-top weight-600 hover-pointer" v-for="tab in tabs" :key="tab.component"
-             :class="{'bg-s400 white': selected === tab.component}" @click="selected = tab.component">
-          {{tab.name}}
+      <div class="zero" v-else>
+        <div class="Header">
+          <h2 v-if="payload.place.placeId">Suggest Edits: <span class="s700">{{payload.place.name}}</span></h2>
+          <h2 v-else>Suggest a new edit</h2>
         </div>
-      </div>
 
-      <div class="Content">
-        <keep-alive>
-          <component :payload="payload" :is="selected"/>
-        </keep-alive>
-      </div>
+        <div class="Navigation hr-bot flex">
+          <div class="Tab border border-4-top weight-600 hover-pointer" v-for="tab in tabs" :key="tab.component"
+               :class="{'bg-s400 white': selected === tab.component}" @click="selected = tab.component">
+            {{tab.name}}
+          </div>
+        </div>
 
-      <div class="Action">
-        <place-suggest-changes :payload="payload"/>
+        <div class="Content">
+          <keep-alive>
+            <component :payload="payload" :is="selected"/>
+          </keep-alive>
+        </div>
 
-        <div class="flex-justify-end">
-          <button class="primary" @click="onSubmit">Submit</button>
+        <div class="Action">
+          <place-suggest-changes :payload="payload"/>
+
+          <div class="flex-justify-end">
+            <button class="primary" @click="onSubmit">Submit</button>
+          </div>
         </div>
       </div>
     </div>
     <div v-else>
-      <h1 class="mt-8">Thank you for your contribution.</h1>
-      <p class="mt-24">Own this restaurant? Do you want us to optimise your page?
-        Drop us an email at <span class="weight-600">restaurant@munch.space</span> if there’s anything we can help with.
+      <h1 class="mt-8">Sorry, you can only suggest an edit for an existing place.</h1>
+      <p class="mt-24">
+        Drop us an email at <span class="weight-600">restaurant@munch.space</span> if there’s anything we can help
+        with.
       </p>
     </div>
+
 
     <no-ssr>
       <dialog-loading v-if="submitting"/>
@@ -68,7 +79,8 @@
         website: place.website || '',
         phone: place.phone || '',
         location: {
-          address: place.location.address || ''
+          address: place.location.address || '',
+          latLng: place.location.latLng
         },
         price: {
           perPax: place.price && place.price.perPax || 0
@@ -76,6 +88,10 @@
         status: {
           type: place.status.type
         },
+        // Implement in the future
+        hours: [],
+        tags: [],
+        menu: {}
       },
       origin: place,
       removes: {
@@ -137,8 +153,10 @@
           .then(({data}) => {
             this.submitting = false
             this.submitted = true
-
-            console.log(data)
+          })
+          .catch(error => {
+            this.submitting = false
+            this.$store.dispatch('addError', error)
           })
       }
     }

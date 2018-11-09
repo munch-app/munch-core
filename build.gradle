@@ -25,6 +25,7 @@ allprojects {
     ext.dataVersion = '4.10-SNAPSHOT'
     
     ext.tasteVersion = '1.0-SNAPSHOT'
+    ext.suggestVersion = '1.0-SNAPSHOT'
     ext.feedVersion = '1.0-SNAPSHOT'
     ext.instagramVersion = '1.0-SNAPSHOT'
     ext.articleVersion = '1.0-SNAPSHOT'

@@ -18,6 +18,7 @@ import javax.inject.Singleton;
  * Project: munch-core
  */
 @Singleton
+@Deprecated
 public final class PlacePartnerService extends ApiService {
     private final InstagramLinkClient instagramLinkClient;
     private final ArticleLinkClient articleLinkClient;
