@@ -15,6 +15,15 @@
 
   export default {
     components: {AppleMap, LandingEatBetween},
+    head() {
+      return this.$head({
+        graph: {
+          image: 'https://s3-ap-southeast-1.amazonaws.com/munch-static/Munch+Logo.png',
+          url: `https://www.munch.app/`,
+          keywords: 'food,discovery,food discovery,munch,singapore,munch app,delicious,discover delicious'
+        }
+      })
+    }
   }
 </script>
 

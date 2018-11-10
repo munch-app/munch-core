@@ -1,6 +1,7 @@
 <template>
-  <div :id="anchor" :class="{'Sticky index-elevation': card.sticky}">
+  <div :id="anchor" :class="{'Sticky index-top-elevation': card.sticky}">
     <h2>{{title}}</h2>
+    <hr>
   </div>
 </template>
 
@@ -27,16 +28,39 @@
 <style scoped lang="less">
   h2 {
     margin-top: 8px;
+    margin-bottom: 8px;
   }
 
   .Sticky {
+    background-color: white;
+
     position: sticky;
     top: calc(48px + 56px);
 
-    background-color: white;
-    z-index: 1;
 
-    padding-bottom: 18px !important;
-    margin-bottom: -18px !important;
+    /*padding-bottom: 18px !important;*/
+    /*margin-bottom: -18px !important;*/
+
+    @media(max-width: 576px) {
+      top: calc(56px);
+      flex: 0 0 calc(100% + 24px) !important;
+      max-width: calc(100% + 24px) !important;
+
+      margin-left: -12px;
+      margin-right: -12px;
+      padding-left: 24px !important;
+      padding-right: 24px !important;
+
+      hr {
+        margin-left: -24px;
+        margin-right: -24px;
+      }
+
+
+      h2 {
+        margin-top: -8px;
+        margin-bottom: 8px;
+      }
+    }
   }
 </style>

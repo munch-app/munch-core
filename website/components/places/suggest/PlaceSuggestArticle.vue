@@ -12,7 +12,8 @@
              :key="article.articleId"
              @click="onDialog(article)">
           <div>
-            <image-sizes class="Image border-3 overflow-hidden" v-if="article.thumbnail" :sizes="article.thumbnail.sizes">
+            <image-sizes class="Image border-3 overflow-hidden" v-if="article.thumbnail"
+                         :sizes="article.thumbnail.sizes">
               <div class="OverlayA20 relative hover-bg-a60 wh-100 flex-center">
                 <simple-svg class="wh-32px" fill="white" :filepath="require('~/assets/icon/place/suggest/flag.svg')"/>
               </div>
@@ -74,14 +75,12 @@
       }
     },
     data() {
-      const {articles} = this.payload
-      const last = articles[articles.length - 1]
-      const next = {sort: last.sort || null}
-
       return {
         dialog: null,
         loading: false,
-        articles, next
+        articles: [],
+        next: {sort: null},
+        more: true
       }
     },
     methods: {
@@ -90,9 +89,9 @@
         if (!this.next.sort) return
 
         this.loading = true
-        const params = {
-          size: 20,
-          'next.sort': this.next.sort
+        const params = {size: 20}
+        if (this.next.sort) {
+          params['next.sort'] = this.next.sort
         }
 
         return this.$axios.$get(`/api/places/${this.payload.place.placeId}/articles`, {params})
@@ -100,11 +99,11 @@
             this.articles.push(...data)
             this.loading = false
             this.next.sort = next && next.sort || null
+            this.more = !!this.next.sort
           })
       },
       onDialog(article) {
         this.dialog = article
-        // Vue.set(this.payload, image.imageId, image)
       },
       onFlag(article, flag) {
         this.dialog = null

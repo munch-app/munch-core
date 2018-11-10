@@ -38,7 +38,7 @@
       ...mapGetters('filter', ['selected', 'locationPoints']),
       buttons() {
         const query = this.$store.state.filter.query
-        const price = query.filter.price && query.filter.price.min !== undefined && query.filter.price
+        const price = query.filter.price && (query.filter.price.min && query.filter.price.max) && query.filter.price
         const cuisine = SearchBarFilterTag.$$reduce(query, 'cuisine')
         const amenities = SearchBarFilterTag.$$reduce(query, 'amenities')
         const establishments = SearchBarFilterTag.$$reduce(query, 'establishments')

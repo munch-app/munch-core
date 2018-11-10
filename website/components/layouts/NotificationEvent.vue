@@ -48,14 +48,12 @@
       clickEatBetween() {
         this.eatBetween = false
 
-        const qid = this.$route.query.qid
-        this.$router.replace({path: '/search', query: {qid, g: 'G1'}}, () => {
-          this.$copyText(window.location.href).then(() => {
-          }, (e) => {
-          })
-
+        const url = window.location.href + `&g=G1`
+        this.$copyText(url).then(() => {
           this.$store.dispatch('addMessage', {title: 'Copied URL'})
           this.$track.share('Search', 'G1: Eat Between')
+        }, (e) => {
+          this.$store.dispatch('addError', e)
         })
       },
       onCancel() {

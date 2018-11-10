@@ -69,6 +69,13 @@
     },
     data() {
       const {images} = this.payload
+      if (!images || images.length === 0) {
+        return {
+          dialog: null,
+          loading: false,
+          images: [], next: {}
+        }
+      }
       const last = images[images.length - 1]
       const next = {sort: last.sort || null}
 
