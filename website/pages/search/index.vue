@@ -51,7 +51,8 @@
       this.onMapUpdate()
 
       if (this.fromQid && this.query) {
-        this.$track.qid(`Search - ${this.locationType}`)
+        const g1 = this.$route.query.g === 'G1'
+        this.$track.qid(`Search - ${this.locationType}`, g1 ? 'G1: Eat Between' : undefined)
       }
     },
     beforeDestroy() {

@@ -8,7 +8,7 @@
         <simple-svg class="Icon" fill="black" filepath="/img/layouts/copy.svg"/>
 
         <div class="Close" @click.stop="onCancel">
-          <simple-svg class="Icon" fill="black" filepath="/img/layouts/close.svg" />
+          <simple-svg class="Icon" fill="black" filepath="/img/layouts/close.svg"/>
         </div>
       </div>
 
@@ -48,10 +48,15 @@
       clickEatBetween() {
         this.eatBetween = false
 
-        this.$copyText(window.location.href).then(() => {}, (e) => {})
+        const qid = this.$route.query.qid
+        this.$router.replace({path: '/search', query: {qid, g: 'G1'}}, () => {
+          this.$copyText(window.location.href).then(() => {
+          }, (e) => {
+          })
 
-        this.$store.dispatch('addMessage', {title: 'Copied URL'})
-        this.$track.share('Search', 'EatBetween')
+          this.$store.dispatch('addMessage', {title: 'Copied URL'})
+          this.$track.share('Search', 'G1: Eat Between')
+        })
       },
       onCancel() {
         this.eatBetween = false
