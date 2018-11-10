@@ -17,7 +17,7 @@
                             :filepath="require('~/assets/icon/feed/instagram.svg')"/>
                 <simple-svg v-if="item.profile.type === 'article'" class="Icon" fill="rgba(255,255,255,0.95)"
                             :filepath="require('~/assets/icon/feed/article.svg')"/>
-                <div class="Name text-ellipsis-1-line">{{item.profile.name}}</div>
+                <div class="Name text-ellipsis-1l">{{item.profile.name}}</div>
               </div>
             </div>
           </image-size>

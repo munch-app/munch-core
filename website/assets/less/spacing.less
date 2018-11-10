@@ -96,6 +96,10 @@
   }
 }
 
+.fixed {
+  position: fixed;
+}
+
 .relative {
   position: relative;
 }
@@ -104,19 +108,21 @@
   position: absolute;
 }
 
-.absolute-tblr:extend(.absolute) {
+.position-0 {
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
 }
 
+.absolute-0:extend(.absolute, .position-0) {
+}
+
 /**
   Aspect ratio utility
  */
 .aspect:extend(.relative, .w-100) {
-  > *:extend(.absolute-tblr) {
-
+  > *:extend(.absolute-0) {
   }
 
   /**

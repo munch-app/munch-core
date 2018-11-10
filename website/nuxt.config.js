@@ -10,6 +10,23 @@ module.exports = {
         hid: 'description', name: 'description',
         content: 'Munch helps users discover the perfect place to eat whether it’s the hottest new bar in town or a tasty hawker meal in the heartlands. Read the latest food articles and view mouth-watering images. With Munch always be able to discover delicious!'
       },
+      {
+        hid: 'og:title', name: 'og:title',
+        content: 'Discover Delicious · Munch Singapore'
+      },
+      {
+        hid: 'og:description', name: 'og:description',
+        content: 'Munch helps users discover the perfect place to eat whether it’s the hottest new bar in town or a tasty hawker meal in the heartlands. Read the latest food articles and view mouth-watering images. With Munch always be able to discover delicious!'
+      },
+      {
+        hid: 'og:image', name: 'og:image',
+        content: 'https://s3-ap-southeast-1.amazonaws.com/munch-static/Munch+Logo.png'
+      },
+      {
+        hid: 'og:type', name: 'article'
+      },
+      {name: 'og:site_name', content: 'Munch Singapore'},
+      {name: 'og:locale', content: 'en_uk'},
       {name: 'msapplication-TileColor', content: '#da532c'},
       {name: 'theme-color', content: '#ffffff'},
     ],
@@ -91,6 +108,7 @@ module.exports = {
     'vue-clipboard2'
   ],
   plugins: [
+    '~/plugins/head',
     '~/plugins/axios',
     '~/plugins/vue-router',
 

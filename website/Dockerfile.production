@@ -10,6 +10,7 @@ EXPOSE 3000
 COPY package.json yarn.lock /usr/src/app/
 RUN yarn --pure-lockfile
 
+# ENV must be after RUN yarn, else dev dependency will be ignored
 ENV NODE_ENV production
 
 ENV API_MUNCH_APP https://api.munch.app/v0.15.0

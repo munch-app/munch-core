@@ -39,10 +39,25 @@
   export default {
     components: {DialogNavigation, MasonryWall, FeedSelectedInstagramDialog, ImageSize, FeedImageCard},
     head() {
-      const meta = [
-        {name: 'robots', content: `follow,index`}
-      ]
-      return {title: `Feed · Munch Singapore`, meta}
+      return this.$head({
+        robots: {follow: true, index: true},
+        graph: {
+          title: `Feed · Munch Singapore`,
+          description: 'Feast your eyes with fresh out the oven food shots by your favorite Instagrammers',
+          url: `https://www.munch.app/feed/images`,
+          keywords: 'feed,images,food,discovery,munch,munch app,singapore,food',
+        },
+        breadcrumbs: [
+          {
+            name: 'Feed',
+            item: 'https://www.munch.app/feed'
+          },
+          {
+            name: 'Images',
+            item: `https://www.munch.app/feed/images`
+          },
+        ]
+      })
     },
     asyncData({store, isMobileOrTablet}) {
       return store.dispatch('feed/images/start')

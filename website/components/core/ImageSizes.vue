@@ -7,7 +7,7 @@ This is a rewrite of ImageSize with emphasis on
 <template>
   <div class="ImageSizes relative">
     <img v-if="url" :src="url" :alt="alt" :style="style.image"/>
-    <div class="ImageSlot absolute-tblr">
+    <div class="ImageSlot absolute-0">
       <slot></slot>
     </div>
   </div>
@@ -16,7 +16,30 @@ This is a rewrite of ImageSize with emphasis on
 <script>
   import _ from 'lodash'
 
+  const findUrl = (sizes, minWidth, minHeight) => {
+    // Better Validate This Method
+    const selected = {width: 0, height: 0, url: null}
+
+    sizes = _.sortBy(sizes, (s) => s.width)
+    sizes.forEach(size => {
+      // Found width & height
+      if (selected.width && selected.height) return
+
+      if (minWidth <= size.width) {
+        selected.width = size.width
+        selected.url = size.url
+      }
+      if (minHeight <= size.height) {
+        selected.height = size.height
+        selected.url = size.url
+      }
+    })
+
+    return selected.url || sizes && sizes[sizes.length - 1].url
+  }
+
   export default {
+    $$findUrl: findUrl,
     name: "ImageSizes",
     props: {
       alt: String,
@@ -52,24 +75,7 @@ This is a rewrite of ImageSize with emphasis on
       url() {
         const width = parseInt(this.width, 10)
         const height = parseInt(this.height, 10)
-        const selected = {width: 0, height: 0, url: null}
-
-        const sizes = _.sortBy(this.sizes, (s) => s.width)
-        sizes.forEach(size => {
-          // Found width & height
-          if (selected.width && selected.height) return
-
-          if (width <= size.width) {
-            selected.width = size.width
-            selected.url = size.url
-          }
-          if (height <= size.height) {
-            selected.height = size.height
-            selected.url = size.url
-          }
-        })
-
-        return selected.url || sizes && sizes[sizes.length - 1].url
+        return findUrl(this.sizes, width, height)
       },
       style() {
         const image = {

@@ -1,9 +1,9 @@
 <template>
-  <div class="HeaderLogo">
-    <div class="MobileAnchor" @click="$store.commit('toggleFocus', 'HeaderMenu')"/>
-    <nuxt-link to="/">
-      <img class="Image" src="~/assets/img/MunchLogo.svg">
-      <img class="HeaderIndicator" src="/img/layouts/caret-down.svg">
+  <div class="HeaderLogo relative">
+    <div class="MobileCaret absolute wh-100" @click="$store.commit('toggleFocus', 'HeaderMenu')"/>
+    <nuxt-link to="/" class="flex-align-center h-100 hover-pointer">
+      <img class="ImageLogo" src="~/assets/img/MunchLogo.svg">
+      <img class="Indicator" src="/img/layouts/caret-down.svg">
     </nuxt-link>
   </div>
 </template>
@@ -15,46 +15,20 @@
 </script>
 
 <style scoped lang="less">
-  .HeaderLogo {
-    position: relative;
+  .ImageLogo {
+    height: 36px;
+    width: 36px;
   }
 
-  .HeaderLogo a {
-    display: flex;
-    height: 100%;
-
-    margin-top: 10px;
-    margin-bottom: 10px;
-
-    &:hover {
-      cursor: pointer;
-    }
-
-    .Image {
-      float: left;
-      height: 36px;
-      width: 36px;
-    }
-
-    .HeaderIndicator {
-      display: block;
-      height: 36px;
-      width: 16px;
-      padding: 10px 0 10px 4px;
-
-      @media (min-width: 768px) {
-        display: none;
-      }
-    }
+  .Indicator {
+    height: 36px;
+    width: 16px;
+    padding: 10px 0 10px 4px;
   }
 
-  .MobileAnchor {
-    z-index: 1;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-
-    @media (min-width: 768px) {
+  @media (min-width: 768px) {
+    .Indicator,
+    .MobileCaret {
       display: none;
     }
   }

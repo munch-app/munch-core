@@ -1,3 +1,5 @@
+@import "spacing";
+
 .overflow-hidden {
   overflow: hidden;
 }
@@ -35,11 +37,8 @@
   }
 }
 
-hr {
-  margin-top: 16px;
-  margin-bottom: 16px;
+hr:extend(.hr-top, .mtb-16) {
   border: 0;
-  border-top: 1px solid rgba(0, 0, 0, .1);
 }
 
 .hr-top {

@@ -4,41 +4,25 @@
   export default {
     extends: index,
     head() {
-      const meta = []
-      meta.push({name: 'robots', content: 'follow,index'})
-
-      if (this.description) {
-        meta.push({hid: 'description', name: 'description', content: this.description})
-      }
-      if (this.keywords) {
-        meta.push({name: 'keywords', content: this.keywords})
-      }
-      return {
-        title: this.title || 'Search · Munch Singapore', meta,
-        __dangerouslyDisableSanitizers: ['script'],
-        script: [
+      return this.$head({
+        robots: {follow: true, index: true},
+        graph: {
+          title: this.title || 'Search · Munch Singapore',
+          description: this.description,
+          url: `https://www.munch.app/search/${this.name}`,
+          keywords: this.keywords,
+        },
+        breadcrumbs: [
           {
-            type: 'application/ld+json',
-            innerHTML: JSON.stringify({
-                "@context": "http://schema.org",
-                "@type": "BreadcrumbList",
-                "itemListElement": [{
-                  "@type": "ListItem",
-                  "position": 1,
-                  "name": "Search",
-                  "item": "https://www.munch.app/search"
-                }, {
-                  "@type": "ListItem",
-                  "position": 2,
-                  "name": this.title,
-                  "item": "https://www.munch.app/search/" + this.name
-                }]
-
-              }
-            )
-          }
+            name: 'Search',
+            item: 'https://www.munch.app/search'
+          },
+          {
+            name: this.title,
+            item: `https://www.munch.app/search/${this.name}`
+          },
         ]
-      }
+      })
     },
     asyncData({store, $axios, params, error}) {
       const named = params.named

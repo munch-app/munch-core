@@ -1,8 +1,8 @@
 <template>
-  <nav class="zero hr-top index-footer bg-white">
+  <nav class="zero hr-top index-6 bg-white">
     <div class="NavFooter flex container">
-      <div class="Brand">
-        <img class="Image" src="~/assets/img/MunchLogoTitled.svg">
+      <div class="Brand flex">
+        <img style="height: 40px" src="~/assets/img/MunchLogoTitled.svg">
       </div>
       <div class="Company">
         <h4 class="s500">Company</h4>
@@ -37,7 +37,7 @@
     }
   }
 
-  div.Brand, div.Company, div.Product {
+  .NavFooter {
     a {
       font-size: 15px;
       font-weight: 600;
@@ -53,19 +53,6 @@
       &:first-of-type {
         margin-top: 8px;
       }
-    }
-  }
-
-  div.Brand {
-    display: flex;
-    align-items: flex-start;
-
-    .Image {
-      height: 40px;
-    }
-
-    h4 {
-      margin-left: 16px;
     }
   }
 

@@ -1,16 +1,19 @@
 <template>
-  <div class="Default" :class="{'gutter-24': isSearch && showsMap}" :lang="'en'">
-    <nav class="Header index-top-elevation hr-bot bg-white">
-      <div class="HeaderRow container">
-        <header-logo class="Logo" :class="{'IsSuggest': isFocused('Suggest')}"/>
-        <div class="Search">
-          <search-bar class="SearchBar" @onText="onText" @onBlur="onBlur" @onFocus="onFocus"/>
+  <div class="Default flex-column" :class="{'gutter-24': isSearch && showsMap}" :lang="'en'">
+    <nav class="Header fixed w-100 index-top-elevation hr-bot bg-white">
+      <div class="container flex">
+        <header-logo class="mr-8" :class="{'IsSuggest': isFocused('Suggest')}"/>
+        <div class="Search mlr-8 mtb-8 flex-grow">
+          <search-bar class="SearchBar" @onBlur="onBlur" @onFocus="onFocus"/>
         </div>
-        <header-right class="HeaderMenu"/>
+        <header-right class="HeaderRight"/>
       </div>
     </nav>
 
     <div style="height: 56px"/>
+    <!--
+    TODO: This should be optimised, all top level component should be optimised
+    -->
     <header-menu/>
 
     <div style="height: 48px" v-if="isSearch"/>
@@ -27,7 +30,7 @@
 
     <!-- Elevation overlay for content -->
     <div @click="() => {}" :class="{'elevation-overlay index-content-overlay': isElevated}"></div>
-    <nuxt class="Content" :class="{'elevation-blur': isElevated}"/>
+    <nuxt class="flex-grow" :class="{'elevation-blur': isElevated}"/>
 
     <nav-footer/>
   </div>
@@ -54,9 +57,6 @@
       NavFooter, NotificationList, DialogPortal, ProfileOnBoarding, HeaderRight, SearchBarFilter,
       SearchBar, HeaderMenu, HeaderLogo
     },
-    data() {
-      return {text: ""}
-    },
     computed: {
       ...mapGetters(['isElevated', 'isFocused']),
       ...mapGetters('search', ['showsMap']),
@@ -71,9 +71,6 @@
       }
     },
     methods: {
-      onText(text) {
-        this.text = text
-      },
       onFocus() {
         this.$store.commit('focus', 'Suggest')
       },
@@ -88,61 +85,31 @@
 
 <style lang="less" scoped>
   .Default {
-    display: flex;
     min-height: 100vh;
-    flex-direction: column;
-
-    .Content {
-      flex: 1;
-    }
   }
 
   .Header {
-    position: fixed;
     top: 0;
     height: 56px;
-    width: 100%;
+  }
 
-    .HeaderRow {
-      display: flex;
+  .SearchBar {
+    width: 500px;
+  }
 
-      .Logo {
-        margin-right: 8px;
-      }
+  @media (max-width: 767.98px) {
+    .HeaderRight,
+    .IsSuggest {
+      display: none;
+    }
 
-      .Search {
-        margin: 8px 0 8px 0;
-        flex-grow: 1;
+    .Search {
+      margin-left: 0;
+      margin-right: 0;
+    }
 
-        a {
-          color: initial;
-          text-decoration: initial;
-        }
-
-        .BrandTitle {
-          line-height: 40px;
-          font-size: 16px;
-          font-weight: 600;
-          color: rgba(0, 0, 0, 0.8);
-        }
-      }
-
-      @media (max-width: 767.98px) {
-        .HeaderMenu, .IsSuggest {
-          display: none;
-        }
-      }
-
-      @media (min-width: 768px) {
-        .Search {
-          margin-left: 8px;
-          margin-right: 8px;
-        }
-
-        .SearchBar {
-          width: 500px;
-        }
-      }
+    .SearchBar {
+      width: auto;
     }
   }
 </style>

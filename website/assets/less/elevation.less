@@ -1,3 +1,5 @@
+@import "spacing";
+
 .elevation-0 {
   box-shadow: none;
 }
@@ -26,14 +28,10 @@
   box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.22);
 }
 
-.elevation-overlay {
+.elevation-overlay:extend(.position-0) {
   background: rgba(255, 255, 255, 0.88);
   position: fixed;
   overflow: hidden;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
 }
 
 .elevation-blur {
@@ -49,30 +47,30 @@
 }
 
 .hover-bg-a:extend(.cubic-bezier) {
-  background-color: rgba(0, 0, 0, 0.0);
+  background: rgba(0, 0, 0, 0.0);
 }
 
 .hover-bg-a10:extend(.hover-bg-a) {
   &:hover {
-    background-color: rgba(0, 0, 0, 0.1);
+    background: rgba(0, 0, 0, 0.1);
   }
 }
 
 .hover-bg-a20:extend(.hover-bg-a) {
   &:hover {
-    background-color: rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.2);
   }
 }
 
 .hover-bg:extend(.hover-bg-a), .hover-bg-a40:extend(.hover-bg-a) {
   &:hover {
-    background-color: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.4);
   }
 }
 
 
 .hover-bg-a60:extend(.hover-bg-a) {
   &:hover {
-    background-color: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.6);
   }
 }

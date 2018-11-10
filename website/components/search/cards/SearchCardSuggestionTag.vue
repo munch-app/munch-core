@@ -8,8 +8,8 @@
                               :padding="18">
         <template slot-scope="{item}">
           <div class="Tag text text-center bg-white border-4 hover-pointer" @click="onClick(item.name)">
-            <div class="Name text-ellipsis-1-line">{{item.name}}</div>
-            <div class="Count text-ellipsis-1-line">{{item.count}} places</div>
+            <div class="Name text-ellipsis-1l">{{item.name}}</div>
+            <div class="Count text-ellipsis-1l">{{item.count}} places</div>
           </div>
         </template>
       </horizontal-scroll-view>

@@ -1,11 +1,11 @@
 <template>
-  <div class="HeaderMenu container index-top-elevation no-select" v-if="isFocused('HeaderMenu')">
-    <ul class="NavLink elevation-3 text index-top-elevation">
-      <div class="MobileOnly">
+  <div class="HeaderMenu flex-justify-end container index-top-elevation no-select" v-if="isFocused('HeaderMenu')">
+    <ul class="NavLink fixed bg-white w-100 elevation-3 text index-top-elevation">
+      <div class="Mobile">
         <nuxt-link to="/">Home</nuxt-link>
         <nuxt-link to="/profile" v-if="isLoggedIn">Profile</nuxt-link>
         <a v-else @click="$store.commit('focus', 'Login')">Login</a>
-        <hr>
+        <hr class="mtb-8">
         <a href="https://partner.munch.app" target="_blank">Join as Partner</a>
       </div>
     </ul>
@@ -33,60 +33,41 @@
 </script>
 
 <style scoped lang="less">
-  .HeaderMenu {
-    @media (max-width: 767.98px) {
-      padding-right: 0;
-      padding-left: 0;
-    }
+  a {
+    font-size: 15px;
+    font-weight: 600;
+    display: block;
+    color: rgba(0, 0, 0, 0.75);
+    padding: 8px 24px;
 
-    @media (min-width: 768px) {
-      display: flex;
-      justify-content: flex-end;
+    &:hover {
+      cursor: pointer;
     }
   }
 
   .NavLink {
-    position: fixed;
-    background: white;
     padding: 8px 0;
-
-    hr {
-      margin: 8px 0;
-    }
-
-    a {
-      font-size: 15px;
-      font-weight: 600;
-      color: rgba(0, 0, 0, 0.75);
-      padding: 8px 15px;
-      display: block;
-
-      &:hover {
-        cursor: pointer;
-      }
-    }
-
-    width: 100%;
-
-    @media (min-width: 768px) {
-      width: 200px;
-      border-radius: 4px;
-      margin-top: -8px;
-
-      a {
-        padding: 8px 18px;
-      }
-    }
   }
 
   @media (min-width: 768px) {
-    .MobileOnly {
+    .NavLink {
+      width: 200px;
+      border-radius: 4px;
+      margin-top: -8px;
+    }
+
+    .Mobile {
       display: none;
     }
   }
 
   @media (max-width: 767.98px) {
-    .NonMobileOnly {
+    .HeaderMenu {
+      padding-right: 0;
+      padding-left: 0;
+    }
+
+    .NonMobile {
       display: none;
     }
   }

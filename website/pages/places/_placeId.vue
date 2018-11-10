@@ -1,5 +1,5 @@
 <template>
-  <div class="zero PlacePage">
+  <div class="zero">
     <section class="Banner">
       <place-image-banner :images="images" @onClickImage="(index) => $refs.imageWall.onClickImage(index)"/>
     </section>
@@ -60,7 +60,7 @@
 
 <script>
   import PlaceTagList from "../../components/places/PlaceTagList";
-  import ImageSize from "../../components/core/ImageSize";
+  import ImageSizes from "../../components/core/ImageSizes";
   import PlaceMenu from "../../components/places/PlaceMenu";
   import GoogleEmbedMap from "../../components/core/GoogleEmbedMap";
   import PlaceAwardList from "../../components/places/PlaceAwardList";
@@ -79,50 +79,37 @@
       PlaceArticleList,
       PlaceImageWall,
       PlaceDetail, PlaceAbout, PlaceLocation, PlaceAwardList,
-      GoogleEmbedMap, PlaceMenu, ImageSize, PlaceTagList
+      GoogleEmbedMap, PlaceMenu, ImageSizes, PlaceTagList
     },
     head() {
-      const meta = []
+      const place = this.place
+      const image = place.images && place.images[0] && ImageSizes.$$findUrl(place.images[0].sizes, 300, 300)
 
-      const index = this.place.taste.group >= 2 ? 'index' : 'noindex'
-      meta.push({name: 'robots', content: `follow,${index}`})
+      const tags = [place.name, ...place.tags.map(t => t.name)]
+      if (place.location.neighbourhood) tags.push(place.location.neighbourhood)
+      const keywords = tags.filter(tag => !!tag).join(',')
 
-      if (this.place.description) {
-        meta.push({hid: 'description', name: 'description', content: this.place.description})
-      }
-
-      const tags = [this.place.name, ...this.place.tags.map(tag => tag.name)]
-      if (this.place.location.neighbourhood) {
-        tags.push(this.place.location.neighbourhood)
-      }
-      meta.push({name: 'keywords', content: tags.filter(tag => !!tag).join(',')})
-
-      return {
-        title: `${this.place.name} · Munch Singapore`, meta,
-        __dangerouslyDisableSanitizers: ['script'],
-        script: [
+      return this.$head({
+        robots: {follow: true, index: place.taste.group >= 2},
+        graph: {
+          title: `${place.name} · Munch Singapore`,
+          description: place.description,
+          type: 'place',
+          image: image,
+          url: `https://www.munch.app/places/${place.placeId}`,
+          keywords,
+        },
+        breadcrumbs: [
           {
-            type: 'application/ld+json',
-            innerHTML: JSON.stringify({
-                "@context": "http://schema.org",
-                "@type": "BreadcrumbList",
-                "itemListElement": [{
-                  "@type": "ListItem",
-                  "position": 1,
-                  "name": "Places",
-                  "item": "https://www.munch.app/places"
-                }, {
-                  "@type": "ListItem",
-                  "position": 2,
-                  "name": this.place.name,
-                  "item": "https://www.munch.app/places/" + this.place.placeId
-                }]
-
-              }
-            )
-          }
+            name: 'Places',
+            item: 'https://www.munch.app/places'
+          },
+          {
+            name: place.name,
+            item: `https://www.munch.app/places/${place.placeId}`
+          },
         ]
-      }
+      })
     },
     data() {
       return {
@@ -132,7 +119,7 @@
     asyncData({$axios, params, error}) {
       return $axios.$get('/api/places/' + params.placeId)
         .then(({data}) => {
-          return {data: data};
+          return {data}
         })
         .catch((err) => {
           const response = err.response
@@ -193,10 +180,7 @@
   }
 </script>
 
-<style lang="less" scoped>
-  .PlacePage {
-  }
-
+<style scoped lang="less">
   .ContentBody {
     @media (min-width: 992px) {
       max-width: 720px;

@@ -17,31 +17,31 @@ a, p, ul, li, .text {
   margin-bottom: 8px;
 }
 
-h1:extend(.heading), .heading1:extend(.heading) {
+h1:extend(.heading) {
   font-size: 32px;
   line-height: 42px;
 }
 
-h2:extend(.heading), .heading2:extend(.heading) {
+h2:extend(.heading) {
   font-size: 24px;
   line-height: 32px;
 }
 
-h3:extend(.heading), .heading3:extend(.heading) {
+h3:extend(.heading) {
   font-size: 20px;
   line-height: 28px;
 }
 
-h4:extend(.heading), .heading4:extend(.heading) {
+h4:extend(.heading) {
   font-size: 18px;
   line-height: 1.5;
 }
 
-h5:extend(.heading), .heading4:extend(.heading) {
+h5:extend(.heading) {
   font-size: 16px;
 }
 
-h6:extend(.heading), .heading4:extend(.heading) {
+h6:extend(.heading) {
   font-size: 14px;
 }
 
@@ -70,10 +70,6 @@ p:extend(.text), .regular:extend(.text) {
   font-weight: 600;
 }
 
-.text-disabled {
-  color: rgba(0, 0, 0, 0.75);
-}
-
 .text-uppercase {
   text-transform: uppercase;
 }
@@ -90,12 +86,6 @@ p:extend(.text), .regular:extend(.text) {
   text-decoration: underline;
 }
 
-.text-ellipsis-1-line {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 .text-ellipsis {
   overflow: hidden;
   display: -webkit-box;
@@ -105,15 +95,19 @@ p:extend(.text), .regular:extend(.text) {
 .text-ellipsis-1l:extend(.text-ellipsis) {
   -webkit-line-clamp: 1;
 }
+
 .text-ellipsis-2l:extend(.text-ellipsis) {
   -webkit-line-clamp: 2;
 }
+
 .text-ellipsis-3l:extend(.text-ellipsis) {
   -webkit-line-clamp: 3;
 }
+
 .text-ellipsis-4l:extend(.text-ellipsis) {
   -webkit-line-clamp: 4;
 }
+
 .text-ellipsis-5l:extend(.text-ellipsis) {
   -webkit-line-clamp: 5;
 }

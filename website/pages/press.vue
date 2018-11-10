@@ -12,7 +12,7 @@
         <div class="Card" v-for="item in pressCoverageList" :key="item.url">
           <a class="elevation-2 elevation-hover-3 block border-3" :href="item.url" target="_blank">
             <img :src="item.image" class="border-3-top">
-            <h4 class="text-ellipsis-1-line">{{item.name}}</h4>
+            <h4 class="text-ellipsis-1l">{{item.name}}</h4>
           </a>
         </div>
       </div>
@@ -25,7 +25,7 @@
         <div class="Card" v-for="item in digitalAssetList" :key="item.url">
           <a class="elevation-2 elevation-hover-3 block border-3" :href="item.image" target="_blank">
             <img :src="item.image" class="border-3-top">
-            <h4 class="text-ellipsis-1-line">{{item.name}}</h4>
+            <h4 class="text-ellipsis-1l">{{item.name}}</h4>
           </a>
         </div>
       </div>

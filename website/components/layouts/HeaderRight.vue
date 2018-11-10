@@ -1,12 +1,12 @@
 <template>
   <no-ssr>
-    <div class="HeaderRight">
-      <a class="Partner text-ellipsis-1l" href="https://partner.munch.app" target="_blank">Join as Partner</a>
+    <div class="flex-align-center">
+      <a class="ml-16 mr-24 text-ellipsis-1l" href="https://partner.munch.app" target="_blank">Join as Partner</a>
 
       <a @click.prevent.stop="onClickLogin" class="hover-pointer" v-if="!isLoggedIn">Login</a>
       <nuxt-link to="/profile" v-else>{{displayName}}</nuxt-link>
 
-      <img v-if="false" class="Menu hover-pointer" src="/img/layouts/menu.svg" @click="onClickMenu"/>
+      <img v-if="false" class="ml-16 hover-pointer" src="/img/layouts/menu.svg" @click="onClickMenu"/>
     </div>
   </no-ssr>
 </template>
@@ -31,28 +31,14 @@
 </script>
 
 <style scoped lang="less">
-  .HeaderRight {
-    display: flex;
-    align-items: center;
+  a {
+    height: 32px;
+    line-height: 32px;
+    overflow: hidden;
 
-    .Partner {
-      margin-left: 16px;
-      margin-right: 24px;
-    }
+    font-size: 15px;
+    font-weight: 600;
 
-    a {
-      height: 32px;
-      line-height: 32px;
-      overflow: hidden;
-
-      font-size: 15px;
-      font-weight: 600;
-
-      color: rgba(0, 0, 0, 0.80);
-    }
-
-    img {
-      margin-left: 16px;
-    }
+    color: rgba(0, 0, 0, 0.80);
   }
 </style>
