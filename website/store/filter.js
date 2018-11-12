@@ -128,6 +128,8 @@ export const mutations = {
     state.query.filter.tag.positives = query.filter.tag.positives.map((tag) => {
       return tag.toLowerCase()
     })
+
+    state.loading = null
   },
 
   /**
@@ -246,12 +248,11 @@ export const mutations = {
       case 'location':
         if (state.query.filter.location.type === 'Between') {
           state.query.filter.location.points.splice(0)
+        }
+        if (state.user.latLng) {
+          state.query.filter.location.type = 'Nearby'
         } else {
-          if (state.user.latLng) {
-            state.query.filter.location.type = 'Nearby'
-          } else {
-            state.query.filter.location.type = 'Anywhere'
-          }
+          state.query.filter.location.type = 'Anywhere'
         }
         break
 

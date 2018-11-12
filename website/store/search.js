@@ -84,7 +84,6 @@ function start({query, type}) {
 
 /**
  * 3 ways to start searching
- *
  */
 export const actions = {
 

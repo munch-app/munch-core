@@ -1,10 +1,10 @@
 <template>
   <div class="HeaderLogo relative">
     <div class="MobileCaret absolute wh-100" @click="$store.commit('toggleFocus', 'HeaderMenu')"/>
-    <nuxt-link to="/" class="flex-align-center h-100 hover-pointer">
+    <a href="/" class="flex-align-center h-100 hover-pointer">
       <img class="ImageLogo" src="~/assets/img/MunchLogo.svg">
       <img class="Indicator" src="/img/layouts/caret-down.svg">
-    </nuxt-link>
+    </a>
   </div>
 </template>
 
