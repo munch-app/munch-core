@@ -18,9 +18,7 @@ module.exports = {
         hid: 'og:description', name: 'og:description',
         content: 'Munch helps users discover the perfect place to eat whether it’s the hottest new bar in town or a tasty hawker meal in the heartlands. Read the latest food articles and view mouth-watering images. With Munch always be able to discover delicious!'
       },
-      {
-        hid: 'og:type', name: 'article'
-      },
+      {hid: 'og:type', name: 'og:type', content: 'article'},
       {name: 'og:site_name', content: 'Munch Singapore'},
       {name: 'og:locale', content: 'en_uk'},
       {name: 'msapplication-TileColor', content: '#da532c'},
