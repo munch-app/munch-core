@@ -122,12 +122,8 @@
           return {data}
         })
         .catch((err) => {
-          const response = err.response
-          if (response && response.status === 404) {
-            error({statusCode: 404, message: 'Place Not Found'})
-          } else {
-            error({statusCode: 500, message: err.message})
-          }
+          if (err.statusCode === 404) error({statusCode: 404, message: 'Place Not Found'})
+          else if (err.statusCode) error(err)
         })
     },
     computed: {

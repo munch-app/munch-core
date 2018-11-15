@@ -35,12 +35,9 @@
             keywords: data.keywords
           }
         })
-      }).catch(({message, response}) => {
-        if (response && response.status === 404) {
-          error({statusCode: 404, message: 'Search Not Found'})
-        } else {
-          error({statusCode: 500, message: message})
-        }
+      }).catch((err) => {
+        if (err.statusCode === 404) error({statusCode: 404, message: 'Search Not Found'})
+        else if (err.statusCode) error(err)
       })
     },
   }
