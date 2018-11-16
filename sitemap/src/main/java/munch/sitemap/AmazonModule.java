@@ -24,7 +24,7 @@ public final class AmazonModule extends AbstractModule {
     @Singleton
     @Provides
     FileMapper provideMapper(AmazonS3 amazonS3) {
-        AwsFileEndpoint endpoint = new AwsFileEndpoint(Regions.AP_SOUTHEAST_1, "www.munch.app-sitemap");
+        AwsFileEndpoint endpoint = new AwsFileEndpoint(Regions.AP_SOUTHEAST_1, "www.munch.app");
         return new AwsFileMapper(amazonS3, endpoint);
     }
 

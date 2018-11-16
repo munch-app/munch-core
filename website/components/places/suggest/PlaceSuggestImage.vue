@@ -114,6 +114,12 @@
           })
       },
       onDialog(image) {
+        const flag = this.$route.query.flag
+        if (flag === 'NotRelated') {
+          this.onFlag(image, flag)
+        } else {
+          this.dialog = image
+        }
         this.dialog = image
         // Vue.set(this.changes, image.imageId, image)
       },
@@ -138,7 +144,7 @@
   .Image {
     padding: 8px;
 
-    flex: 0 0 20%;
+    flex: 0 0 25%;
 
     @media (max-width: 576px) {
       flex: 0 0 33.333%;

@@ -25,8 +25,8 @@
 
 <script>
   import {mapGetters} from 'vuex'
-  import FeedArticleCard from "../../components/feed/FeedArticleCard";
-  import FeedSelectedArticleDialog from "../../components/feed/FeedSelectedArticleDialog";
+  import FeedArticleCard from "../../components/feed/articles/FeedArticleCard";
+  import FeedSelectedArticleDialog from "../../components/feed/articles/FeedSelectedArticleDialog";
 
   export default {
     components: {FeedSelectedArticleDialog, FeedArticleCard},

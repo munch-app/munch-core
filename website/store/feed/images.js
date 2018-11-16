@@ -1,4 +1,5 @@
 const MAX_ITEMS = 500
+import _ from 'lodash'
 
 export const state = () => ({
   items: [],
@@ -13,6 +14,7 @@ export const state = () => ({
 export const getters = {
   items: (state) => state.items,
   more: (state) => !!state.next.from && state.items.length < MAX_ITEMS,
+  getItem: (state) => (itemId) => _.find(state.items, item => item.itemId === itemId),
   getPlace: (state) => (placeId) => state.places[placeId],
   persistence: (state) => state.persistence
 }

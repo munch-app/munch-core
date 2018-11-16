@@ -17,7 +17,7 @@
 </template>
 
 <script>
-  import ImageSize from "../core/ImageSize";
+  import ImageSize from "../../core/ImageSize";
 
   export default {
     name: "FeedImageCard",

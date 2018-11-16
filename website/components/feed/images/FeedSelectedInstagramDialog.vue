@@ -1,5 +1,5 @@
 <template>
-  <div class="InstagramDialog flex-align-stretch border-3 overflow-hidden">
+  <div class="w-100 flex-align-stretch border-3 overflow-hidden">
     <section class="flex-center">
       <nuxt-link :to="`/places/${place.placeId}`" class="lh-0" @click.native="$track.view(`RIP`, 'Feed - Instagram')">
         <image-sizes class="InstagramImage" :sizes="item.image.sizes"
@@ -8,26 +8,26 @@
         </image-sizes>
       </nuxt-link>
     </section>
-    <aside>
-      <div class="Header">
+    <aside class="p-24">
+      <feed-image-action :place="place"/>
+
+      <div class="mt-24">
         <a class="block" :href="`https://instagram.com/${item.instagram.username}`" target="_blank"
            rel="noreferrer nofollow noopener">
           <p class="text-ellipsis-3l subtext">{{item.instagram.caption}}</p>
 
-          <h5 class="text-ellipsis-2l mt-16">
+          <h5 class="text-ellipsis-2l mt-8">
             by <span class="s700">{{item.author}}</span> on {{formatMillis(item.createdMillis)}}
           </h5>
         </a>
-
-        <div class="mt-16">
-          <button class="border">Save</button>
-        </div>
       </div>
 
-      <div class="Information">
+
+
+      <div class="mt-32">
+        <h2 class="mb-24">Place Mentioned</h2>
 
         <div class="Place" v-if="place">
-          <h3 class="mb-16 secondary">Place Mentioned</h3>
           <place-card :place="place" :image="true"/>
         </div>
       </div>
@@ -37,14 +37,13 @@
 
 <script>
   import dateformat from 'dateformat'
-  import ImageSize from "../core/ImageSize";
-  import PlaceCard from "../places/PlaceCard";
-  import ImageSizes from "../core/ImageSizes";
-  import PlaceCardAddCollection from "../places/PlaceCardAddCollection";
+  import PlaceCard from "../../places/PlaceCard";
+  import ImageSizes from "../../core/ImageSizes";
+  import FeedImageAction from "./FeedImageAction";
 
   export default {
     name: "FeedSelectedInstagramDialog",
-    components: {PlaceCardAddCollection, ImageSizes, PlaceCard, ImageSize},
+    components: {FeedImageAction, ImageSizes, PlaceCard},
     props: {
       item: {
         type: Object,
@@ -66,28 +65,17 @@
 </script>
 
 <style scoped lang="less">
-  .InstagramDialog {
-    width: 100%;
-  }
-
   section {
     background-color: rgba(0, 0, 0, 0.75);
-    flex: 0 0 66.666%;
   }
 
   aside {
+    min-width: 260px;
+    max-width: 400px;
     flex: 0 0 33.333%;
   }
 
-  .Header {
-    padding: 16px 24px;
-  }
-
-  .Information {
-    padding: 16px 24px;
-  }
-
   .Place {
-    max-width: 320px;
+    max-width: 280px;
   }
 </style>

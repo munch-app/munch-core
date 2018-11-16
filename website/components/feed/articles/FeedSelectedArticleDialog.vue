@@ -39,8 +39,8 @@
 </template>
 
 <script>
-  import ImageSize from "../core/ImageSize";
-  import PlaceCard from "../places/PlaceCard";
+  import ImageSize from "../../core/ImageSize";
+  import PlaceCard from "../../places/PlaceCard";
 
   export default {
     name: "FeedSelectedArticleDialog",

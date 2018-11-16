@@ -31,9 +31,9 @@
 
 <script>
   import dateformat from 'dateformat'
-  import ImageSize from "../core/ImageSize";
-  import PlaceCard from "../places/PlaceCard";
-  import HorizontalScrollView from "../core/HorizontalScrollView";
+  import ImageSize from "../../core/ImageSize";
+  import PlaceCard from "../../places/PlaceCard";
+  import HorizontalScrollView from "../../core/HorizontalScrollView";
 
   export default {
     name: "FeedArticleCard",

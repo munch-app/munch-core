@@ -10,7 +10,7 @@
                     :options="{lanes:{2:{padding: 8}},min:2, ssr: {default: wall.lanes}}"
                     :persistence="{getter: 'feed/images/persistence', commit: 'feed/images/persistence'}">
         <template slot-scope="{item, index}">
-          <div @click="selected = index">
+          <div @click="onSelect(item, index)">
             <feed-image-card :item="item"/>
           </div>
         </template>
@@ -21,7 +21,7 @@
       <beat-loader color="#084E69" v-if="more" size="14px"/>
     </no-ssr>
 
-    <dialog-navigation v-if="selectedItem" @prev="selected--" @next="onNext" @close="selected = -1" max-width="800px">
+    <dialog-navigation v-if="selectedItem" @prev="selected--" @next="onNext" @close="selected = -1" max-width="1000px">
       <feed-selected-instagram-dialog v-if="selectedItem.instagram" :item="selectedItem"/>
     </dialog-navigation>
   </div>
@@ -29,11 +29,11 @@
 
 <script>
   import {mapGetters} from 'vuex'
-  import FeedImageCard from "../../components/feed/FeedImageCard";
-  import ImageSize from "../../components/core/ImageSize";
-  import FeedSelectedInstagramDialog from "../../components/feed/FeedSelectedInstagramDialog";
-  import MasonryWall from "../../components/core/MasonryWall";
-  import DialogNavigation from "../../components/layouts/DialogNavigation";
+  import FeedImageCard from "../../../components/feed/images/FeedImageCard";
+  import ImageSize from "../../../components/core/ImageSize";
+  import FeedSelectedInstagramDialog from "../../../components/feed/images/FeedSelectedInstagramDialog";
+  import MasonryWall from "../../../components/core/MasonryWall";
+  import DialogNavigation from "../../../components/layouts/DialogNavigation";
 
   export default {
     components: {DialogNavigation, MasonryWall, FeedSelectedInstagramDialog, ImageSize, FeedImageCard},
@@ -44,7 +44,7 @@
           title: `Feed · Munch Singapore`,
           description: 'The Feed features the best, most delicious places in Singapore. The Feed is a food guide like you’ve never seen or tasted. A must-see must-eat guide that will always leave your stomach rumbling and mouth dripping.',
           url: `https://www.munch.app/feed/images`,
-          keywords: 'feed,images,food,discovery,munch,munch app,singapore,food',
+          keywords: 'feed,images,food discovery,munch,munch app,singapore,food',
         },
         breadcrumbs: [
           {
@@ -82,6 +82,13 @@
     methods: {
       onAppend(then) {
         this.$store.dispatch('feed/images/append').then(then)
+      },
+      onSelect(item, index) {
+        if (window.innerWidth <= 768) {
+          this.$router.push({path: `/feed/images/${item.itemId}`})
+        } else {
+          this.selected = index
+        }
       },
       onNext() {
         this.selected++

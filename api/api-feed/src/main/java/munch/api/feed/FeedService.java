@@ -34,10 +34,62 @@ public final class FeedService extends ApiService {
 
     @Override
     public void route() {
-        PATH("/feed", () -> {
-            GET("/articles", this::articles);
-            GET("/images", this::images);
+        PATH("/feed/images", () -> {
+            GET("", this::queryImages);
+            GET("/:itemId", this::getImage);
         });
+
+        PATH("/feed/articles", () -> {
+            GET("", this::queryArticles);
+            GET("/:itemId", this::getArticle);
+        });
+    }
+
+    public JsonResult queryImages(JsonCall call) {
+        String country = call.queryString("country", "sgp");
+        String latLng = call.queryString("latLng", "1.3521,103.8198");
+
+        int from = call.queryInt("next.from", 0);
+        int size = call.querySize(20, 30);
+
+        NextNodeList<ImageFeedItem> items = imageFeedClient.query(country, latLng, from, size);
+        return result(items);
+    }
+
+    public JsonResult getImage(JsonCall call) {
+        String itemId = call.pathString("itemId");
+        ImageFeedItem feedItem = imageFeedClient.get(itemId);
+        if (feedItem == null) return JsonResult.notFound();
+        return get(feedItem);
+    }
+
+    public JsonResult queryArticles(JsonCall call) {
+        String country = call.queryString("country", "sgp");
+        String latLng = call.queryString("latLng", "1.3521,103.8198");
+        String nextSort = call.queryString("next.sort", null);
+        int size = call.querySize(20, 30);
+
+        NextNodeList<ArticleFeedItem> items = articleFeedClient.query(country, latLng, nextSort, size);
+        return result(items);
+    }
+
+    private JsonResult getArticle(JsonCall call) {
+        String itemId = call.pathString("itemId");
+        ArticleFeedItem feedItem = articleFeedClient.get(itemId);
+        if (feedItem == null) return JsonResult.notFound();
+        return get(feedItem);
+    }
+
+    private JsonResult get(FeedItem feedItem) {
+        Set<String> placeIds = new HashSet<>();
+        feedItem.getPlaces().forEach(place -> {
+            placeIds.add(place.getPlaceId());
+        });
+
+        return JsonResult.ok(Map.of(
+                "item", feedItem,
+                "places", placeClient.get(placeIds)
+        ));
     }
 
     private JsonResult result(NextNodeList<? extends FeedItem> items) {
@@ -58,27 +110,5 @@ public final class FeedService extends ApiService {
             result.put("next", items.getNext());
         }
         return result;
-    }
-
-    public JsonResult images(JsonCall call) {
-        String country = call.queryString("country", "sgp");
-        String latLng = call.queryString("latLng", "1.3521,103.8198");
-
-        int from = call.queryInt("next.from", 0);
-        int size = call.querySize(20, 30);
-
-        NextNodeList<ImageFeedItem> items = imageFeedClient.get(country, latLng, from, size);
-        return result(items);
-    }
-
-    public JsonResult articles(JsonCall call) {
-        String country = call.queryString("country", "sgp");
-        String latLng = call.queryString("latLng", "1.3521,103.8198");
-        String nextSort = call.queryString("next.sort", null);
-        int size = call.querySize(20, 30);
-
-
-        NextNodeList<ArticleFeedItem> items = articleFeedClient.get(country, latLng, nextSort, size);
-        return result(items);
     }
 }

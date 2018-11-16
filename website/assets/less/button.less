@@ -25,12 +25,22 @@ button {
   }
 
   &.border {
-    background: rgb(253, 253, 253);
+    background: rgb(252, 252, 252);
     border: 1px solid rgba(0, 0, 0, .15);
   }
 
   &.elevated:extend(.elevation-1) {
     padding-bottom: 7px;
+  }
+
+  &.small {
+    padding: 5px 16px !important;
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  &:hover {
+    cursor: pointer;
   }
 }
 

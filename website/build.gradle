@@ -10,6 +10,17 @@ task publishWebsiteLocal {
   }
 }
 
+task publishS3 {
+  doLast {
+    exec {
+      commandLine "docker", "build",
+        "-f", "Dockerfile.s3",
+        "-t", dockerTag + 's3', '.'
+    }
+    exec { commandLine "docker", "push", dockerTag + 's3' }
+  }
+}
+
 task publishProduction {
   doLast {
     exec {
