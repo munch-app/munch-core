@@ -31,6 +31,10 @@
     margin-bottom: 8px;
   }
 
+  hr {
+    display: none;
+  }
+
   .Sticky {
     background-color: white;
 
@@ -52,6 +56,7 @@
       padding-right: 24px !important;
 
       hr {
+        display: block;
         margin-left: -24px;
         margin-right: -24px;
       }

@@ -48,7 +48,7 @@ public final class SitemapGenerator {
      */
     public void uploadGenerated() throws IOException, ContentTypeError {
         for (File file : generate()) {
-            fileMapper.put(file.getName(), file, AccessControl.PublicRead);
+            fileMapper.put("sitemap/" + file.getName(), file, AccessControl.PublicRead);
         }
     }
 

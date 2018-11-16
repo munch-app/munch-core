@@ -27,8 +27,8 @@ ENV NODE_ENV production
 ENV API_MUNCH_APP https://api.munch.app/v0.15.0
 COPY . /usr/src/app/
 
-ENV ORIGIN https://www.munch.app
-ENV API_URL_BROWSER https://www.munch.app/
+ENV ORIGIN https://www3.munch.app
+ENV API_URL_BROWSER https://www3.munch.app/
 
 RUN yarn run build
 CMD [ "yarn", "run", "cloudfront" ]
