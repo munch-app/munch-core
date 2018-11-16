@@ -54,7 +54,7 @@
         </div>
 
         <div class="right">
-          <button class="clear-elevated" @click="dialog = null">Cancel</button>
+          <button class="elevated" @click="dialog = null">Cancel</button>
         </div>
       </portal>
     </no-ssr>

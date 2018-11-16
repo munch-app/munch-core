@@ -25,7 +25,7 @@
       <h3>Delete '{{data.name}}'?</h3>
       <p>You cannot recover a collection once it is deleted.</p>
       <div class="right">
-        <button class="clear-elevated" @click="deleting = false">Cancel</button>
+        <button class="elevated" @click="deleting = false">Cancel</button>
         <button class="secondary" @click="onDeleteCollection">Delete</button>
       </div>
     </portal>
@@ -35,7 +35,7 @@
       <input v-model="data.name" placeholder="Name">
       <input v-model="data.description" placeholder="Description">
       <div class="right">
-        <button class="clear-elevated" @click="editing = false">Cancel</button>
+        <button class="elevated" @click="editing = false">Cancel</button>
         <button class="secondary" @click="onEditCollection">Confirm</button>
       </div>
     </portal>

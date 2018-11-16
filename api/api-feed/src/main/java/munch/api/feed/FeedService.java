@@ -55,10 +55,7 @@ public final class FeedService extends ApiService {
         ));
 
         if (items.hasNext()) {
-            String sort = items.getNextString("sort", null);
-            if (sort != null) {
-                result.put("next", Map.of("sort", sort));
-            }
+            result.put("next", items.getNext());
         }
         return result;
     }
@@ -66,10 +63,11 @@ public final class FeedService extends ApiService {
     public JsonResult images(JsonCall call) {
         String country = call.queryString("country", "sgp");
         String latLng = call.queryString("latLng", "1.3521,103.8198");
-        String nextSort = call.queryString("next.sort", null);
+
+        int from = call.queryInt("next.from", 0);
         int size = call.querySize(20, 30);
 
-        NextNodeList<ImageFeedItem> items = imageFeedClient.get(country, latLng, nextSort, size);
+        NextNodeList<ImageFeedItem> items = imageFeedClient.get(country, latLng, from, size);
         return result(items);
     }
 

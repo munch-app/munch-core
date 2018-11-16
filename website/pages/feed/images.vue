@@ -21,8 +21,7 @@
       <beat-loader color="#084E69" v-if="more" size="14px"/>
     </no-ssr>
 
-    <dialog-navigation v-if="selectedItem" @prev="selected--" @next="onNext" @close="selected = -1"
-                       max-width="600px">
+    <dialog-navigation v-if="selectedItem" @prev="selected--" @next="onNext" @close="selected = -1" max-width="800px">
       <feed-selected-instagram-dialog v-if="selectedItem.instagram" :item="selectedItem"/>
     </dialog-navigation>
   </div>

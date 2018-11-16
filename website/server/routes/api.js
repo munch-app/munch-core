@@ -1,3 +1,4 @@
+// By doing this, instead for CORS, avoid preflight request, cheaper deployment.
 const {Router} = require('express');
 const router = Router();
 

@@ -32,7 +32,7 @@
         </div>
         <h5 class="hover-pointer" style="margin-top: 8px" @click="onSignOut">Sign Out</h5>
         <div class="right">
-          <button class="clear-elevated" @click="showSetting = false">Close</button>
+          <button class="elevated" @click="showSetting = false">Close</button>
         </div>
       </portal>
     </section>
@@ -80,7 +80,7 @@
         <input v-model="creating.name" placeholder="Name">
         <input v-model="creating.description" placeholder="Description">
         <div class="right">
-          <button class="clear-elevated" @click="creating = null">Cancel</button>
+          <button class="elevated" @click="creating = null">Cancel</button>
           <button class="secondary" @click="onCreate">Create</button>
         </div>
       </portal>

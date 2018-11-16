@@ -52,7 +52,7 @@
 
 <style lang="less" scoped>
   .prismic-content {
-    padding-bottom: 24px;
+    padding-bottom: 80px;
 
     display: flex;
     flex-wrap: wrap;

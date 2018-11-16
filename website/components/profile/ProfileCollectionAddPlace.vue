@@ -19,7 +19,7 @@
       </div>
     </div>
     <div>
-      <button class="clear-elevated hover-pointer" @click="$emit('on-close')">Close</button>
+      <button class="elevated hover-pointer" @click="$emit('on-close')">Close</button>
     </div>
   </portal>
 </template>

@@ -2,32 +2,34 @@
 @import "elevation";
 
 button {
-  &.primary, &.secondary, &.clear-elevated, &.clear {
-    border-radius: 4px;
-    border: 0;
-    color: white;
+  border-radius: 4px;
+  border: 0;
 
-    padding: 8px 24px;
+  padding: 8px 24px !important;
 
-    line-height: 1.5;
-    font-size: 16px;
-    font-weight: 600;
-  }
+  line-height: 1.5;
+  font-size: 16px;
+  font-weight: 600;
+
+  background: white;
+  color: black;
 
   &.primary {
     background: @Primary500;
+    color: white;
   }
 
   &.secondary {
     background: @Secondary500;
+    color: white;
   }
 
-  &.clear {
-    background: white;
-    color: black;
+  &.border {
+    background: rgb(253, 253, 253);
+    border: 1px solid rgba(0, 0, 0, .15);
   }
 
-  &.clear-elevated:extend(.elevation-1, button.clear) {
+  &.elevated:extend(.elevation-1) {
     padding-bottom: 7px;
   }
 }

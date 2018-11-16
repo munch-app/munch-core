@@ -29,7 +29,7 @@
       <portal to="dialog-styled" v-if="deleting">
         <h3>Delete '{{place.name}}' from '{{collection.name}}'?</h3>
         <div class="right">
-          <button class="clear-elevated" @click="deleting = false">Cancel</button>
+          <button class="elevated" @click="deleting = false">Cancel</button>
           <button class="secondary" @click="onDeleteItem">Delete</button>
         </div>
       </portal>

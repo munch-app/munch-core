@@ -166,7 +166,7 @@
 
   @media (min-width: 992px) {
     .DialogContent {
-      width: 50%;
+      width: 80%;
     }
   }
 </style>

@@ -1,27 +1,37 @@
 <template>
-  <div class="InstagramDialog flex-column border-3 overflow-hidden">
-    <div class="InstagramHeader">
-      <a class="block" :href="`https://instagram.com/${item.instagram.username}`" target="_blank"
-         rel="noreferrer nofollow noopener">
-        <h6 class="text-ellipsis-2l b-a75">{{item.instagram.caption}}</h6>
-        <h6 class="text-ellipsis-1l Author">by <span class="s700">{{item.author}}</span> on {{format(item.createdMillis,
-          'mmm dd, yyyy')}}</h6>
-      </a>
-    </div>
+  <div class="InstagramDialog flex-align-stretch border-3 overflow-hidden">
+    <section class="flex-center">
+      <nuxt-link :to="`/places/${place.placeId}`" class="lh-0" @click.native="$track.view(`RIP`, 'Feed - Instagram')">
+        <image-sizes class="InstagramImage" :sizes="item.image.sizes"
+                     width="800" height="1000" object-fit="contain"
+                     max-height="calc(100vh - 96px)">
+        </image-sizes>
+      </nuxt-link>
+    </section>
+    <aside>
+      <div class="Header">
+        <a class="block" :href="`https://instagram.com/${item.instagram.username}`" target="_blank"
+           rel="noreferrer nofollow noopener">
+          <p class="text-ellipsis-3l subtext">{{item.instagram.caption}}</p>
 
-    <nuxt-link :to="`/places/${place.placeId}`" class="lh-0" @click.native="$track.view(`RIP`, 'Feed - Instagram')">
-      <image-sizes class="InstagramImage" :sizes="item.image.sizes"
-                   width="800" height="1000" object-fit="contain"
-                   max-height="calc(100vh - 94px - 48px - 128px - 24px)">
-        <no-ssr>
-          <place-card-add-collection class="absolute" :place="place" large/>
-        </no-ssr>
-      </image-sizes>
-    </nuxt-link>
+          <h5 class="text-ellipsis-2l mt-16">
+            by <span class="s700">{{item.author}}</span> on {{formatMillis(item.createdMillis)}}
+          </h5>
+        </a>
 
-    <div class="Place" v-if="place">
-      <place-card :place="place" :image="false"/>
-    </div>
+        <div class="mt-16">
+          <button class="border">Save</button>
+        </div>
+      </div>
+
+      <div class="Information">
+
+        <div class="Place" v-if="place">
+          <h3 class="mb-16 secondary">Place Mentioned</h3>
+          <place-card :place="place" :image="true"/>
+        </div>
+      </div>
+    </aside>
   </div>
 </template>
 
@@ -50,7 +60,7 @@
       },
     },
     methods: {
-      format: dateformat,
+      formatMillis: (millis) => dateformat(millis, 'mmm dd, yyyy'),
     }
   }
 </script>
@@ -58,43 +68,26 @@
 <style scoped lang="less">
   .InstagramDialog {
     width: 100%;
-    @media (max-width: 768px) {
-      height: 110vh;
-    }
   }
 
-  .InstagramHeader {
-    padding: 16px 24px;
-
-    .Author {
-      margin-top: 8px;
-    }
-  }
-
-  .InstagramImage {
+  section {
     background-color: rgba(0, 0, 0, 0.75);
+    flex: 0 0 66.666%;
+  }
 
-    .ImageContainer {
-      padding: 16px 24px;
+  aside {
+    flex: 0 0 33.333%;
+  }
 
-      .Icon {
-        width: 22px;
-        height: 22px;
-      }
+  .Header {
+    padding: 16px 24px;
+  }
 
-      .Name {
-        margin-left: 3px;
-
-        height: 24px;
-        line-height: 22px;
-        font-size: 14px;
-        font-weight: 600;
-        color: white;
-      }
-    }
+  .Information {
+    padding: 16px 24px;
   }
 
   .Place {
-    padding: 16px 24px 24px;
+    max-width: 320px;
   }
 </style>

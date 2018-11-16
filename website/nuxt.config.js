@@ -53,7 +53,7 @@ module.exports = {
     // scrollBehavior: () => ({x: 0, y: 0})
   },
   env: {
-    origin: process.env.ORIGIN || 'http://localhost:3000'
+    origin: process.env.ORIGIN || 'http://localhost:3000',
   },
   build: {
     extend(config, {isDev, isClient, isServer}) {

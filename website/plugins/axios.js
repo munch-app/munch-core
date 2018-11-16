@@ -1,24 +1,27 @@
 import dateformat from 'dateformat'
-import authenticator from '~/services/authenticator'
 import * as Cookies from 'js-cookie'
+import authenticator from '~/services/authenticator'
 
-export default function ({$axios, store, req}) {
-  $axios.onResponse(res => {
-    // Unwrap Meta
-    const meta = res.data.meta
-    if (meta) {
-      if (meta.error) {
-        throw({statusCode: 404, message: meta.error.message, meta})
-      } else if (meta.code === 404) {
-        throw({statusCode: 404, message: 'Not Found'})
-      }
+function getLocalTime() {
+  return dateformat(new Date(), "yyyy-mm-dd'T'HH:MM:ss")
+}
+
+export default function (context, inject) {
+  const {$axios, store, req} = context
+
+  $axios.onResponse(({data}) => {
+    const meta = data && data.meta
+    if (meta && meta.code === 404) {
+      throw({statusCode: 404, message: 'Not Found'})
+    } else if (meta && meta.code === 404) {
+      throw({statusCode: meta.code, message: meta.error.message, meta})
     }
   })
 
   if (process.client) {
     $axios.onRequest(config => {
       // User Data from state
-      config.headers['User-Local-Time'] = dateformat(new Date(), "yyyy-mm-dd'T'HH:MM:ss")
+      config.headers['User-Local-Time'] = getLocalTime()
 
       const latLng = store.state.filter.user.latLng || Cookies.get('UserLatLng')
       if (latLng) config.headers['User-Lat-Lng'] = latLng
@@ -45,4 +48,9 @@ export default function ({$axios, store, req}) {
       return config
     });
   }
+
+  context.$api = {
+    get: (path, config) => $axios.$get('/api' + path, config)
+  }
+  inject('api', context.$api)
 }

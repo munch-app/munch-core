@@ -3,7 +3,7 @@ const MAX_ITEMS = 500
 export const state = () => ({
   items: [],
   places: {},
-  next: {sort: null},
+  next: {from: null},
   loading: false,
 
   // Persistence of feed structure
@@ -12,7 +12,7 @@ export const state = () => ({
 
 export const getters = {
   items: (state) => state.items,
-  more: (state) => !!state.next.sort && state.items.length < MAX_ITEMS,
+  more: (state) => !!state.next.from && state.items.length < MAX_ITEMS,
   getPlace: (state) => (placeId) => state.places[placeId],
   persistence: (state) => state.persistence
 }
@@ -27,7 +27,7 @@ export const mutations = {
     Object.keys(places).forEach(placeId => {
       state.places[placeId] = places[placeId]
     })
-    state.next.sort = next && next.sort || null
+    state.next.from = next && next.from || null
 
     state.loading = false
   },
@@ -64,8 +64,8 @@ export const actions = {
       'latLng': '1.3521,103.8198',
       'size': 20,
     }
-    if (state.next && state.next.sort) {
-      params['next.sort'] = state.next.sort
+    if (state.next && state.next.from) {
+      params['next.from'] = state.next.from
     }
     return this.$axios.$get(`/api/feed/images`, {params})
       .then(({data, next}) => {

@@ -20,7 +20,6 @@
 
 <style lang="less" scoped>
   .prismic-content {
-    margin-top: 24px;
-    padding-bottom: 24px;
+    padding-bottom: 80px;
   }
 </style>

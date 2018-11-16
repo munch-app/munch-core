@@ -116,12 +116,11 @@
         showAddToCollection: false
       }
     },
-    asyncData({$axios, params, error}) {
-      return $axios.$get('/api/places/' + params.placeId)
+    asyncData({$api, $axios, params, error}) {
+      return $api.get(`/places/${params.placeId}`)
         .then(({data}) => {
           return {data}
-        })
-        .catch((err) => {
+        }).catch((err) => {
           if (err.statusCode === 404) error({statusCode: 404, message: 'Place Not Found'})
           else if (err.statusCode) error(err)
         })
