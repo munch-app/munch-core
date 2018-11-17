@@ -1,15 +1,17 @@
 <template>
-  <div class="ImageFeedCard hover-pointer">
+  <div class="hover-pointer">
     <image-size class="border-3" :image="image" grow="height" :alt="alt">
-      <div class="ImageFeedContainer">
-        <div class="Restaurant">
-          <div class="Name" v-for="place in places" :key="place.placeId">
+      <div class="ImageFeedContainer wh-100 flex-column-justify-between hover-opacity hover-bg-a40">
+
+        <div class="flex-end">
+          <div class="RestaurantName" v-for="place in places" :key="place.placeId">
             {{place.name}}
           </div>
         </div>
-        <div class="Author">
-          <simple-svg class="Icon" fill="white" :filepath="require('~/assets/icon/feed/instagram.svg')"/>
-          <div class="Name">{{item.author}}</div>
+
+        <div class="flex">
+          <simple-svg class="wh-16px" fill="white" :filepath="require('~/assets/icon/feed/instagram.svg')"/>
+          <div class="AuthorName">{{item.author}}</div>
         </div>
       </div>
     </image-size>
@@ -33,7 +35,8 @@
         return this.item.image
       },
       alt() {
-        return this.places[0] && this.places[0].name
+        const place = this.places[0]
+        return place && place.name
       },
       places() {
         return this.item.places.map(({placeId}) => {
@@ -45,65 +48,30 @@
 </script>
 
 <style scoped lang="less">
-  a {
-    text-decoration: none;
-    color: black;
-  }
-
-  .ImageFeedCard {
-  }
-
   .ImageFeedContainer {
-    width: 100%;
-    height: 100%;
     padding: 10px;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-
-    .Restaurant {
-      .Name {
-        text-align: right;
-        margin-left: 4px;
-        margin-right: 4px;
-
-        height: 24px;
-        line-height: 24px;
-        font-size: 16px;
-        font-weight: 600;
-
-        color: white;
-      }
-    }
-
-    .Author {
-      display: flex;
-
-      .Icon {
-        width: 16px;
-        height: 16px;
-      }
-
-      .Name {
-        margin-left: 3px;
-
-        height: 16px;
-        line-height: 15px;
-        font-size: 13px;
-        font-weight: 600;
-        color: white;
-      }
-    }
   }
 
-  .ImageFeedContainer {
-    opacity: 0;
-    transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
+  .RestaurantName,
+  .AuthorName {
+    font-weight: 600;
+    color: white;
+  }
 
-    &:hover {
-      opacity: 1;
-      background-color: rgba(0,0,0,0.4);
-    }
+  .RestaurantName {
+    margin-left: 4px;
+    margin-right: 4px;
+
+    height: 24px;
+    line-height: 24px;
+    font-size: 16px;
+  }
+
+  .AuthorName {
+    margin-left: 3px;
+
+    height: 16px;
+    line-height: 15px;
+    font-size: 13px;
   }
 </style>

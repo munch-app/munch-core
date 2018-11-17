@@ -1,5 +1,5 @@
 <template>
-  <nuxt-link :to="'/places/' + place.placeId" @click.native="$track.view(`RIP`, 'PlaceCard')">
+  <nuxt-link :to="'/places/' + place.placeId" @click.native.capture="$track.view(`RIP`, 'PlaceCard')">
     <div class="Card relative" :class="{'Small': small}">
       <no-ssr>
         <place-card-add-collection class="absolute" :place="place"/>

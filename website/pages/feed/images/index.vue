@@ -84,6 +84,7 @@
         this.$store.dispatch('feed/images/append').then(then)
       },
       onSelect(item, index) {
+        this.$track.view('Feed Image', 'Instagram Card')
         if (window.innerWidth <= 768) {
           this.$router.push({path: `/feed/images/${item.itemId}`})
         } else {

@@ -52,6 +52,7 @@
         this.$store.dispatch('user/collections/putItem', {collectionId, placeId})
           .then(() => {
             const message = `Added '${this.place.name}' to '${collection.name}' collection.`
+            this.$track.collection('Add Place')
             this.$store.dispatch('addMessage', {message})
           })
           .catch(error => {

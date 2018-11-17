@@ -60,9 +60,12 @@ export default ({app, store}, inject) => {
     view(category, label, others) {
       event.call(gtag, 'View', {category, label}, others)
     },
+    collection(category, label, others) {
+      event.call(gtag, 'Collection', {category, label}, others)
+    },
     qid(category, label, others) {
       event.call(gtag, 'QID', {category, label}, others)
-    }
+    },
   })
 
   /**

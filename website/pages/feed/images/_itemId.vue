@@ -3,7 +3,7 @@
     <feed-image-action class="Action" :place="place"/>
 
     <section class="flex-center container-remove-gutter">
-      <nuxt-link :to="`/places/${place.placeId}`" class="lh-0" @click.native="$track.view(`RIP`, 'Feed - Instagram')">
+      <nuxt-link :to="`/places/${place.placeId}`" class="lh-0" @click.native.capture="$track.view(`RIP`, 'Feed - Instagram')">
         <image-sizes class="InstagramImage" :sizes="item.image.sizes"
                      width="800" height="1000" object-fit="contain"
                      max-height="calc(100vh - 96px)">
