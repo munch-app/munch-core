@@ -37,22 +37,20 @@
     }
   }
 
-  .NavFooter {
-    a {
-      font-size: 15px;
-      font-weight: 600;
-      color: rgba(0, 0, 0, 0.75);
+  a {
+    font-size: 15px;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.75);
 
-      padding: 4px 0;
-      display: block;
+    padding: 4px 0;
+    display: block;
 
-      &:hover {
-        cursor: pointer;
-      }
+    &:hover {
+      cursor: pointer;
+    }
 
-      &:first-of-type {
-        margin-top: 8px;
-      }
+    &:first-of-type {
+      margin-top: 8px;
     }
   }
 

@@ -1,7 +1,7 @@
 <template>
   <portal to="dialog-full">
     <div ref="dialog" class="DialogNavigation" @click.self="close">
-      <div class="DialogContent" :style="{maxWidth}">
+      <div class="DialogContent flex bg-white" :style="{maxWidth}">
         <div class="DialogControl DialogPrev">
           <div class="DialogControlButton flex-center" @click="prev">
             <simple-svg class="Icon" fill="white" :filepath="require('~/assets/icon/prev.svg')"/>
@@ -87,44 +87,40 @@
     position: fixed;
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
+  }
 
-    .DialogContent {
-      margin-left: auto;
-      margin-right: auto;
+  .DialogContent {
+    margin-left: auto;
+    margin-right: auto;
+  }
 
-      background: white;
+  .DialogControl {
+    .DialogControlButton {
+      position: fixed;
 
-      display: flex;
+      width: 80px;
+      height: 100px;
+      top: calc(50% - 50px);
     }
 
-    .DialogControl {
-      .DialogControlButton {
-        position: fixed;
+    .Icon {
+      width: 36px;
+      height: 36px;
+    }
 
-        width: 80px;
-        height: 100px;
-        top: calc(50% - 50px);
-      }
+    &.DialogPrev .DialogControlButton {
+      margin-left: -80px;
+    }
 
+    &.DialogClose {
       .Icon {
-        width: 36px;
-        height: 36px;
+        width: 28px;
+        height: 28px;
       }
 
-      &.DialogPrev .DialogControlButton {
-        margin-left: -80px;
-      }
-
-      &.DialogClose {
-        .Icon {
-          width: 28px;
-          height: 28px;
-        }
-
-        .DialogControlButton {
-          top: 0;
-          height: 48px;
-        }
+      .DialogControlButton {
+        top: 0;
+        height: 48px;
       }
     }
   }

@@ -15,7 +15,7 @@
 
     <div class="PriceGraph">
       <!-- Graph is disabled for now -->
-      <search-bar-filter-price-graph v-if="false" class="Graph" :price-graph="priceGraph"/>
+      <!--<search-bar-filter-price-graph v-if="false" class="Graph" :price-graph="priceGraph"/>-->
       <search-bar-filter-price-slider ref="slider" class="Slider" @drag-end="onDragEnd" v-model="value" :min="min" :max="max"/>
     </div>
   </div>
@@ -23,12 +23,11 @@
 
 <script>
   import {mapGetters} from 'vuex'
-  import SearchBarFilterPriceGraph from "./SearchBarFilterPriceGraph";
   import SearchBarFilterPriceSlider from "./SearchBarFilterPriceSlider";
 
   export default {
     name: "SearchBarFilterPrice",
-    components: {SearchBarFilterPriceSlider, SearchBarFilterPriceGraph},
+    components: {SearchBarFilterPriceSlider},
     data() {
       return {
         value: [0, 200],

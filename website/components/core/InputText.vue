@@ -8,7 +8,7 @@
       >
 
       <div class="Clear absolute bg-white hover-pointer flex-center" @click="onInput('')">
-        <simple-svg class="Icon" fill="black" filepath="/img/search/close.svg"/>
+        <simple-svg class="Icon" fill="black" :filepath="require('~/assets/icon/close.svg')"/>
       </div>
     </div>
   </div>

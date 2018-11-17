@@ -13,7 +13,7 @@
             </div>
 
             <div class="Clear hover-pointer" @click="onRemove(index)">
-              <simple-svg fill="black" filepath="/img/search/close.svg"/>
+              <simple-svg fill="black" :filepath="require('~/assets/icon/close.svg')"/>
             </div>
           </div>
 
@@ -42,7 +42,7 @@
                  placeholder="Search Location Name" v-model="search.text">
 
           <div class="Clear hover-pointer" @click="onSuggestCancel">
-            <simple-svg fill="black" filepath="/img/search/close.svg"/>
+            <simple-svg fill="black" :filepath="require('~/assets/icon/close.svg')"/>
           </div>
         </div>
       </div>

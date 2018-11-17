@@ -1,17 +1,21 @@
 <template>
   <div>
-    <div class="SearchCard bg-saltpan200 border-4 zero">
+    <div class="SearchCard overflow-hidden p-24 bg-saltpan200 border-4 zero">
       <h2 class="text weight-600">{{area.name}}</h2>
-      <div class="Content">
+      <div class="Content flex mt-8">
         <image-size v-if="image" class="Image border-4" :image="image"/>
+
+
         <div class="text">
           <div>{{area.description}}</div>
-          <div class="LastLine">
+
+          <div class="mt-8 flex">
             <div class="Count">
               <span class="weight-600">{{area.counts.total}} </span>
               <span>food spots</span>
             </div>
-            <div class="Address">{{area.location.address}}</div>
+
+            <div>{{area.location.address}}</div>
           </div>
         </div>
       </div>
@@ -40,16 +44,6 @@
 </script>
 
 <style scoped lang="less">
-  .SearchCard {
-    padding: 24px 24px;
-    overflow: hidden;
-  }
-
-  .Content {
-    margin-top: 8px;
-    display: flex;
-  }
-
   .Image {
     z-index: 1;
     padding-left: 150px;
@@ -59,16 +53,17 @@
     max-width: 280px;
   }
 
-  .LastLine {
-    display: flex;
-    margin-top: 8px;
-
-    .Count {
-      margin-right: 32px;
-    }
+  .Count {
+    margin-right: 32px;
   }
 
   @media (max-width: 575.98px) {
+    .SearchCard {
+      margin-left: -24px;
+      margin-right: -24px;
+      border-radius: 0;
+    }
+
     .Content {
       flex-direction: column;
     }

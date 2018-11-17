@@ -1,23 +1,29 @@
 <template>
   <div class="zero">
-    <div class="container ImageWall">
-      <div class="Header">
+    <div class="container">
+      <div class="mtb-24">
         <h2>Feed</h2>
-        <p>Feast your eyes with fresh out the oven food shots by your favorite Instagrammers</p>
+        <p class="mtb-8">Feast your eyes with fresh out the oven food shots by your favorite Instagrammers</p>
       </div>
 
       <masonry-wall ref="masonry" :items="items" @append="onAppend"
                     :options="{lanes:{2:{padding: 8}},min:2, ssr: {default: wall.lanes}}"
                     :persistence="{getter: 'feed/images/persistence', commit: 'feed/images/persistence'}">
         <template slot-scope="{item, index}">
-          <div @click="onSelect(item, index)">
+
+          <div v-if="item.injected">
+            <feed-image-injected-card :type="item.type"/>
+          </div>
+
+          <div v-else @click="onSelect(item, index)">
             <feed-image-card :item="item"/>
           </div>
+
         </template>
       </masonry-wall>
     </div>
 
-    <no-ssr class="flex-center" style="padding: 64px 0 64px 0">
+    <no-ssr class="flex-center" style="padding: 64px 0">
       <beat-loader color="#084E69" v-if="more" size="14px"/>
     </no-ssr>
 
@@ -30,13 +36,15 @@
 <script>
   import {mapGetters} from 'vuex'
   import FeedImageCard from "../../../components/feed/images/FeedImageCard";
-  import ImageSize from "../../../components/core/ImageSize";
   import FeedSelectedInstagramDialog from "../../../components/feed/images/FeedSelectedInstagramDialog";
   import MasonryWall from "../../../components/core/MasonryWall";
   import DialogNavigation from "../../../components/layouts/DialogNavigation";
+  import FeedImageInjectedCard from "../../../components/feed/images/FeedImageInjectedCard";
 
   export default {
-    components: {DialogNavigation, MasonryWall, FeedSelectedInstagramDialog, ImageSize, FeedImageCard},
+    components: {
+      FeedImageInjectedCard, DialogNavigation, MasonryWall, FeedSelectedInstagramDialog, FeedImageCard
+    },
     head() {
       return this.$head({
         robots: {follow: true, index: true},
@@ -44,7 +52,7 @@
           title: `Feed · Munch Singapore`,
           description: 'The Feed features the best, most delicious places in Singapore. The Feed is a food guide like you’ve never seen or tasted. A must-see must-eat guide that will always leave your stomach rumbling and mouth dripping.',
           url: `https://www.munch.app/feed/images`,
-          keywords: 'feed,images,food discovery,munch,munch app,singapore,food',
+          keywords: 'feed,images,food discovery,munch,munch app,singapore,food,instagram',
         },
         breadcrumbs: [
           {
@@ -64,13 +72,15 @@
           return {
             wall: {
               lanes: isMobileOrTablet ? 2 : 4
-            }
+            },
+            selected: -1
           }
         })
     },
-    data() {
-      return {
-        selected: -1
+    mounted() {
+      if (this.$route.query.g === 'GB9') {
+        this.$track.link('Feed Image', 'GB9: Activation Open')
+        this.$router.replace({})
       }
     },
     computed: {
@@ -100,20 +110,4 @@
 </script>
 
 <style scoped lang="less">
-  .ImageWall {
-    .Header {
-      margin-top: 24px;
-      margin-bottom: 24px;
-
-      p {
-        padding-top: 8px;
-        padding-bottom: 8px;
-      }
-    }
-  }
-
-  .LoadingIndicator {
-    padding-top: 24px;
-    padding-bottom: 48px;
-  }
 </style>

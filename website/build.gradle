@@ -10,14 +10,13 @@ task publishWebsiteLocal {
   }
 }
 
-task publishwww3 {
+task buildProduction {
   doLast {
     exec {
       commandLine "docker", "build",
-        "-f", "Dockerfile.www3",
-        "-t", dockerTag + 'www3', '.'
+        "-f", "Dockerfile.production",
+        "-t", dockerTag + 'production', '.'
     }
-    exec { commandLine "docker", "push", dockerTag + 'www3' }
   }
 }
 

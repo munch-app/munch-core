@@ -1,94 +1,43 @@
 <template>
-  <div class="PlaceAwardList">
-    <slick class="Slick" ref="slick" :options="options">
-      <div v-for="award in awards" :key="award.itemId">
-        <div class="Award no-select bg-whisper100">
-          <div>{{award.award.name}}</div>
-        </div>
+  <horizontal-scroll-view class="PlaceAwardList container-remove-gutter" :items="awards" :map-key="a => a.itemId"
+                          :padding="18">
+    <template slot-scope="{item}">
+      <div class="Award flex-center bg-whisper100 border-3">
+        <span class="text-center text-ellipsis-2l weight-600 b-a80">{{item.award.name}}</span>
       </div>
-    </slick>
-  </div>
+    </template>
+  </horizontal-scroll-view>
 </template>
 
 <script>
+  import HorizontalScrollView from "../core/HorizontalScrollView";
+
   export default {
     name: "PlaceAwardList",
+    components: {HorizontalScrollView},
     props: {
       awards: {
         type: Array,
         required: true
       }
-    },
-    data() {
-      return {
-        options: {
-          mobileFirst: true,
-          speed: 300,
-          infinite: false,
-          slidesToShow: 1,
-          variableWidth: true,
-          centerMode: false,
-          arrows: false,
-          slidesToScroll: 1,
-          dots: false,
-          responsive: [
-            {
-              breakpoint: 1200,
-              settings: {
-                slidesToScroll: 3,
-              }
-            },
-            {
-              breakpoint: 992,
-              settings: {
-                slidesToScroll: 2,
-              }
-            },
-            {
-              breakpoint: 576,
-              settings: {
-                slidesToScroll: 1,
-              }
-            }
-          ]
-        },
-      }
-    },
+    }
   }
 </script>
 
 <style scoped lang="less">
+  .PlaceAwardList {
+    height: 48px;
+  }
+
   .Award {
     width: 172px;
     height: 48px;
     padding: 0 8px;
-    border-radius: 3px;
-    margin-right: 8px;
-
-    div {
-      max-height: 33px;
-
-      color: rgba(0, 0, 0, 0.8);
-      font-size: 13px;
-      font-weight: 600;
-      line-height: 1.25;
-
-      text-align: center;
-      -webkit-line-clamp: 2;
-      overflow: hidden;
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-    }
   }
 
-  .Slick {
-    display: flex;
-    overflow: hidden;
-  }
-
-  .Award {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  span {
+    max-height: 33px;
+    font-size: 13px;
+    line-height: 1.25;
   }
 </style>

@@ -118,9 +118,6 @@
   }
 
   @media (max-width: 767.98px) {
-    .FilterListContainer {
-    }
-
     .FilterList {
       background: white;
       position: fixed;

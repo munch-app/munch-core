@@ -1,6 +1,8 @@
 export const state = () => ({
   type: null,
   query: null,
+  qid: null,
+
   page: 0,
   result: {cards: []},
 
@@ -53,6 +55,7 @@ export const mutations = {
 
     state.type = type
     state.query = query
+    state.qid = null
 
     state.more = true
     state.loading = true
@@ -69,11 +72,15 @@ export const mutations = {
     }
   },
 
-  append(state, cards) {
+  append(state, {cards, qid}) {
     state.more = cards.length > 0
     state.loading = false
     state.page += 1
     state.result.cards.push(...cards)
+
+    if (qid) {
+      state.qid = qid
+    }
   }
 }
 
@@ -100,8 +107,7 @@ export const actions = {
     start.call(this, {query, type: 'search'})
     return this.$axios.$post(`/api/search?page=${state.page}`, state.query)
       .then(({data, qid}) => {
-        commit('append', data)
-
+        commit('append', {cards: data, qid})
         this.$router.push({path: '/search', query: {qid}})
       })
   },
@@ -109,12 +115,12 @@ export const actions = {
   startNamed({commit, state}, query) {
     start.call(this, {query, type: 'named'})
     return this.$axios.$post(`/api/search?page=${state.page}`, state.query)
-      .then(({data}) => {
-        commit('append', data)
+      .then(({data, qid}) => {
+        commit('append', {cards: data, qid})
       })
   },
 
-  startQid({commit, state}, qid) {
+  startQID({commit, state}, qid) {
     return this.$axios.$get(`/api/search/qid/${qid}`)
       .then(({data}) => {
         if (!data) return Promise.reject(new Error('Not Found'))
@@ -122,7 +128,7 @@ export const actions = {
         start.call(this, {query: data, type: 'qid'})
         return this.$axios.$post(`/api/search?page=${state.page}`, data)
           .then(({data}) => {
-            commit('append', data)
+            commit('append', {cards: data, qid})
           })
       }).catch(error => {
         const store = this.$store || this.app.store || this.store
@@ -135,7 +141,7 @@ export const actions = {
 
     return this.$axios.$post(`/api/search?page=${state.page}`, state.query)
       .then(({data}) => {
-        commit('append', data)
+        commit('append', {cards: data})
       })
   },
 }

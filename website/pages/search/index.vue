@@ -1,13 +1,13 @@
 <template>
   <div class="zero Page">
-    <div class="SearchResult container" v-if="cards && query">
+    <div class="SearchResult flex container" v-if="cards && query">
       <div class="Result">
         <card-delegator v-for="card in cards" :key="card._uniqueId" :card="card" ref="cards"
                         @mouseover.native="onMouse(card, true)" @mouseleave.native="onMouse(card, false)"
         />
 
         <no-ssr>
-          <div class="LoadingIndicator flex-center" v-if="more"
+          <div class="flex-center w-100 p-24 mt-24" v-if="more"
                v-observe-visibility="{callback: (v) => visibleLoading(v),throttle:300}">
             <beat-loader color="#084E69" size="14px"/>
           </div>
@@ -15,7 +15,7 @@
       </div>
 
       <div class="MapView index-content-overlay" v-if="showsMap">
-        <apple-map ref="map" class="Map">
+        <apple-map ref="map" class="Map border-3">
           <apple-map-place-annotation v-for="place in map.places" :key="place.placeId" :place="place"
                                       :focused="map.focusedPlaceId === place.placeId"
           />
@@ -39,7 +39,7 @@
     },
     asyncData({store, route}) {
       if (!store.state.search.query && route.query.qid) {
-        return store.dispatch('search/startQid', route.query.qid)
+        return store.dispatch('search/startQID', route.query.qid)
           .then(() => {
             return {fromQid: true}
           })
@@ -51,9 +51,22 @@
       this.onMapUpdate()
 
       if (this.fromQid && this.query) {
-        const g1 = this.$route.query.g === 'G1'
-        this.$track.qid(`Search - ${this.locationType}`, g1 ? 'G1: Eat Between' : undefined)
+        this.$track.qid(`Search - ${this.locationType}`)
       }
+
+      if (this.$route.query.g === 'G1') {
+        this.$track.link('Search', 'G1: Eat Between')
+
+        let query = Object.assign({}, this.$route.query)
+        delete query.g
+        this.$router.replace({query})
+      }
+    },
+    beforeRouteUpdate(to, from, next) {
+      if (this.$store.state.search.qid !== to.query.qid) {
+        this.$store.dispatch('search/startQID', to.query.qid)
+      }
+      next()
     },
     beforeDestroy() {
       window.removeEventListener("scroll", this.onScroll)
@@ -124,8 +137,6 @@
   .SearchResult {
     margin-top: 12px;
     margin-bottom: 64px;
-
-    display: flex;
   }
 
   .Result {
@@ -157,14 +168,7 @@
       height: calc(100vh - 48px - 56px - 48px);
       width: 33vw;
 
-      border-radius: 3px;
       overflow: hidden;
     }
-  }
-
-  .LoadingIndicator {
-    width: 100%;
-    padding-top: 24px;
-    padding-bottom: 48px;
   }
 </style>

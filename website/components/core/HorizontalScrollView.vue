@@ -1,17 +1,21 @@
 <template>
-  <div class="HorizontalScrollViewWrapper" :class="{'container-full': container}">
-    <div class="Navigation" :class="{container: container}" v-if="nav">
-      <div @click="prev" v-if="hasPrev" class="ScrollControlPrev index-navigation hover-pointer"/>
-      <div @click="next" v-if="hasNext" class="ScrollControlNext index-navigation hover-pointer"/>
+  <div class="ScrollWrapper relative" :class="{'container-full': container}">
+    <div class="flex-align-center absolute wh-100" :class="{container: container}" v-if="nav">
+      <div @click="prev" v-if="hasPrev"
+           class="Control Prev elevation-1 relative index-navigation hover-pointer"/>
+      <div @click="next" v-if="hasNext"
+           class="Control Next elevation-1 relative index-navigation hover-pointer"/>
     </div>
-    <div ref="scrollView" class="HorizontalScrollView zero index-content" :class="{container}">
-      <div ref="scrollArea" class="ScrollArea index-content">
-        <div class="Content" :style="style.content">
+
+
+    <div ref="scrollView" class="ScrollView h-100 relative zero index-content" :class="{container}">
+      <div ref="scrollArea" class="ScrollArea absolute-0 index-content">
+        <div ref="contentArea" class="inline-flex" :style="style.content">
           <div v-if="container">
             <div class="gutter"/>
           </div>
 
-          <div class="Item" :style="style.item"
+          <div class="flex-shrink" :style="style.item"
                v-for="(item, index) in items" :key="mapKey(item)">
             <slot :item="item" :index="index">{{item}}</slot>
           </div>
@@ -51,12 +55,18 @@
       },
     },
     data() {
-      return {windowWidth: 0, scrollWidth: 0, distance: 0, offset: 0}
+      return {
+        contentWidth: 0,
+        scrollWidth: 0,
+        distance: 0, // Distance to cover per nav click
+        offset: 0 // Current offset
+      }
     },
     mounted() {
-      this.windowWidth = this.$refs.scrollView.scrollWidth
-      this.distance = this.windowWidth * 0.7 // Distance to cover per nav click
-      this.scrollWidth = this.$refs.scrollArea.scrollWidth
+      this.contentWidth = this.$refs.contentArea.scrollWidth
+      this.scrollWidth = this.$refs.scrollView.scrollWidth
+      this.distance = this.scrollWidth * 0.7
+
 
       this.notify()
     },
@@ -65,7 +75,7 @@
         return this.offset > 0
       },
       hasNext() {
-        return this.windowWidth < this.scrollWidth
+        return this.scrollWidth < this.contentWidth
       },
       style() {
         return {
@@ -85,12 +95,14 @@
         const scrollArea = this.$refs.scrollArea
         scrollArea.scrollLeft = scrollArea.scrollLeft - this.distance
         this.offset = scrollArea.scrollLeft - this.distance
+
         this.notify()
       },
       next() {
         const scrollArea = this.$refs.scrollArea
         scrollArea.scrollLeft = scrollArea.scrollLeft + this.distance
         this.offset = scrollArea.scrollLeft + this.distance
+
         this.notify()
       },
       notify() {
@@ -101,90 +113,62 @@
 </script>
 
 <style scoped lang="less">
-  .HorizontalScrollView {
-    height: 100%;
+  .ScrollWrapper {
+    overflow-y: visible;
+  }
+
+  .ScrollView {
     overflow-x: visible;
     overflow-y: hidden;
-    position: relative;
+  }
 
-    & > .ScrollArea {
+  .ScrollArea {
+    bottom: -24px;
+
+    overflow-x: scroll;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .Control {
+    width: 46px;
+    height: 46px;
+
+    border-radius: 23px;
+    background: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+
+    &::after {
       position: absolute;
-      left: 0;
-      right: 0;
-      top: 0;
-      bottom: -24px;
+      content: "";
 
-      overflow-x: scroll;
-      overflow-y: hidden;
-      -webkit-overflow-scrolling: touch;
-      scroll-behavior: smooth;
-
-      & > .Content {
-        display: flex;
-
-        .Item {
-          flex-shrink: 0;
-        }
-      }
+      top: calc(50%);
+      margin-top: -6px;
+      height: 14px;
+      width: 14px;
+      border-right: 2px solid rgba(0, 0, 0, 0.85);
+      border-bottom: 2px solid rgba(0, 0, 0, 0.85);
     }
   }
 
-  .Navigation {
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    display: flex;
+  .Control.Prev {
+    margin-left: -24px;
+    margin-right: auto;
 
-    .ScrollControlPrev, .ScrollControlNext {
-      position: relative;
-      height: 100%;
-      width: 48px;
-
-      transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
-
-      &::after {
-        position: absolute;
-        content: "";
-
-        top: calc(50%);
-        margin-top: -6px;
-        height: 14px;
-        width: 14px;
-        border-right: 2px solid black;
-        border-bottom: 2px solid black;
-      }
-    }
-
-    .ScrollControlPrev, .ScrollControlNext {
-      &.NavWhite::after {
-        border-right: 2px solid white;
-        border-bottom: 2px solid white;
-      }
-    }
-
-    .ScrollControlPrev {
-      margin-left: -3px;
-      margin-right: auto;
-
-      &::after {
-        margin-right: 12px;
-        transform: rotate(135deg);
-      }
-    }
-
-    .ScrollControlNext {
-      margin-left: auto;
-      margin-right: -25px;
-
-      &::after {
-        margin-left: 12px;
-        transform: rotate(-45deg);
-      }
+    &::after {
+      margin-left: 19px;
+      transform: rotate(135deg);
     }
   }
 
-  .HorizontalScrollViewWrapper {
-    overflow-y: visible;
-    position: relative;
+  .Control.Next {
+    margin-left: auto;
+    margin-right: -24px;
+
+    &::after {
+      margin-left: 13px;
+      transform: rotate(-45deg);
+    }
   }
 </style>

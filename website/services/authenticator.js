@@ -6,14 +6,16 @@ import 'firebase/auth'
 
 import * as Cookies from 'js-cookie'
 
-firebase.initializeApp({
-  apiKey: "AIzaSyAa_YPfjj3aLWjH2yzxY2qf23soSqWVLtE",
-  authDomain: "munch-core.firebaseapp.com",
-  databaseURL: "https://munch-core.firebaseio.com",
-  projectId: "munch-core",
-  storageBucket: "munch-core.appspot.com",
-  messagingSenderId: "951023944206"
-});
+if (!firebase.apps.length) {
+  firebase.initializeApp({
+    apiKey: "AIzaSyAa_YPfjj3aLWjH2yzxY2qf23soSqWVLtE",
+    authDomain: "munch-core.firebaseapp.com",
+    databaseURL: "https://munch-core.firebaseio.com",
+    projectId: "munch-core",
+    storageBucket: "munch-core.appspot.com",
+    messagingSenderId: "951023944206"
+  });
+}
 
 function getIdToken() {
   return new Promise(function (resolve, reject) {

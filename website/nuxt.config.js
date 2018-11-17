@@ -56,7 +56,7 @@ module.exports = {
     origin: process.env.ORIGIN || 'http://localhost:3000',
   },
   build: {
-    extend(config, {isDev, isClient, isServer}) {
+    extend(config, {isDev, isClient}) {
       if (isDev && isClient) {
         config.module.rules.push({
           enforce: 'pre',
@@ -66,28 +66,12 @@ module.exports = {
         })
       }
 
-      if (isServer) {
-        config.externals += [
-          require('webpack-node-externals')({
-            whitelist: ['vue-slick']
-          })
-        ]
-      }
-
       if (isDev) {
         config.devtool = 'eval-source-map'
       }
-    },
-    plugins: [
-      new webpack.ProvidePlugin({
-        '$': 'jquery'
-      })
-    ]
+    }
   },
   vendor: [
-    // Deprecate jQuery with Slick
-    'jquery',
-
     'portal-vue',
     'prismic-vue',
     'vue-rx',
@@ -95,8 +79,8 @@ module.exports = {
     'vue-simple-svg',
     'vue-browser-geolocation',
     'vue-observe-visibility',
-    'vue-slick',
 
+    // TODO: Remove PersistedState and use cookie to improve performance
     'vuex-persistedstate',
     'vue-scrollto',
     'vue-clipboard2'
@@ -113,7 +97,6 @@ module.exports = {
     '~/plugins/vue-simple-svg',
     '~/plugins/vue-browser-geolocation',
     '~/plugins/vue-observe-visibility',
-    '~/plugins/vue-slick',
     '~/plugins/vue-scrollto',
 
     {src: '~/plugins/vue-touch', ssr: false},

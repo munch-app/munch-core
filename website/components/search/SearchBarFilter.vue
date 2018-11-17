@@ -1,7 +1,7 @@
 <template>
   <nav class="no-select" v-on-clickaway="onClickAway">
-    <div class="FilterBar index-6 hr-bot">
-      <div class="Buttons container">
+    <div class="FilterBar index-6 hr-bot bg-white w-100 fixed">
+      <div class="Buttons h-100 flex-align-center container">
         <div v-for="button in buttons" :key="button.type" class="FilterButton" @click="onButton(button)"
              :class="{
              'bg-p500 white': button.type === selected,
@@ -15,7 +15,7 @@
           <div v-if="button.count">{{button.count}}</div>
         </div>
 
-        <div class="FilterButton elevation-hover-2 elevation-1 bg-white ClearAllButton" @click="onClearAll"
+        <div class="FilterButton ClearAllButton elevation-hover-2 elevation-1 bg-white" @click="onClearAll"
              v-if="isClearAll">
           <div>Clear All</div>
         </div>
@@ -159,73 +159,62 @@
 
 <style scoped lang="less">
   .FilterBar {
-    position: fixed;
     top: 56px;
     height: 48px;
-    width: 100%;
-    background: white;
-
-    /*box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05), 0 1px 1px rgba(0, 0, 0, 0.10);*/
   }
 
-  .Buttons {
-    height: 100%;
-    display: flex;
-    align-items: center;
+  .BulletDivider {
+    vertical-align: middle;
+    font-size: 9px;
+    margin: 0 4px;
+  }
 
-    .FilterButton {
-      font-size: 13px;
-      font-weight: 600;
+  .FilterButton {
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 28px;
+
+    border-radius: 3px;
+    padding: 0 12px;
+    height: 28px;
+    margin-right: 16px;
+
+    white-space: nowrap;
+    overflow: visible;
+
+    &:hover {
+      cursor: pointer;
+    }
+
+    div {
       line-height: 28px;
-
-      border-radius: 3px;
-      padding: 0 12px;
       height: 28px;
-      margin-right: 16px;
 
       white-space: nowrap;
       overflow: visible;
+    }
 
-      &:hover {
-        cursor: pointer;
-      }
+    display: flex;
 
-      div {
-        line-height: 28px;
-        height: 28px;
-
-        white-space: nowrap;
-        overflow: visible;
-
-        &.BulletDivider {
-          vertical-align: middle;
-          font-size: 9px;
-          margin: 0 4px;
-        }
-      }
-
+    @media (max-width: 767.98px) {
       display: none;
-      @media (min-width: 768px) {
-        display: flex;
-      }
     }
+  }
 
-    .FilterButton.Combined {
-      display: flex;
-      @media (min-width: 768px) {
-        display: none;
-      }
-    }
+  .Combined,
+  .Location,
+  .ClearAllButton {
+    display: flex;
+  }
 
-    .FilterButton.Location {
-      display: flex;
-    }
+  .ClearAllButton {
+    margin-left: auto;
+    margin-right: 0;
+  }
 
-    .ClearAllButton {
-      margin-left: auto;
-      margin-right: 0;
-
-      display: flex;
+  .Combined {
+    @media (min-width: 768px) {
+      display: none;
     }
   }
 </style>

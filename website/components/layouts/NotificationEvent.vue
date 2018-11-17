@@ -1,5 +1,5 @@
 <template>
-  <div class="NotificationEvent index-overlay">
+  <div class="NotificationEvent fixed mb-24 mr-24 index-overlay">
     <div class="NotificationBox EatBetweenEvent elevation-3 bg-white" v-if="eatBetween" @click="clickEatBetween">
       <div class="Header">
         <h4 class="p700">
@@ -70,11 +70,8 @@
 
 <style scoped lang="less">
   .NotificationEvent {
-    position: fixed;
     right: 0;
     bottom: 0;
-    margin-right: 24px;
-    margin-bottom: 24px;
   }
 
   .NotificationBox {

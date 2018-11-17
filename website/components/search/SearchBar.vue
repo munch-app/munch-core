@@ -5,7 +5,7 @@
              placeholder="Search e.g. Italian in Marina Bay" v-model="text" @focus="onFocus">
 
       <div class="Clear" :style="clearStyle" @click="onClear">
-        <simple-svg fill="black" filepath="/img/search/close.svg"/>
+        <simple-svg fill="black" :filepath="require('~/assets/icon/close.svg')"/>
       </div>
     </div>
 

@@ -4,6 +4,7 @@
       <div class="container flex">
         <header-logo class="mr-8" :class="{'IsSuggest': isFocused('Suggest')}"/>
         <div class="Search mlr-8 mtb-8 flex-grow">
+          <!-- SearchBar TODO: Optimise -->
           <search-bar class="SearchBar" @onBlur="onBlur" @onFocus="onFocus"/>
         </div>
         <header-right class="HeaderRight"/>
@@ -11,21 +12,19 @@
     </nav>
 
     <div style="height: 56px"/>
-    <!--
-    TODO: This should be optimised, all top level component should be optimised
-    -->
     <header-menu/>
 
     <div style="height: 48px" v-if="isSearch"/>
+    <!-- Search Bar Filter TODO: Optimise -->
     <search-bar-filter v-if="isSearch"/>
 
-    <!-- Dialog manager for system -->
+    <!-- Dialog manager for system TODO: Optimise -->
     <dialog-portal/>
 
     <!-- Notification List on the right -->
     <notification-list/>
 
-    <!-- Notification Even on the bottom -->
+    <!-- Notification Even on the bottom TODO: Optimise-->
     <notification-event/>
 
     <!-- Elevation overlay for content -->

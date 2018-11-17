@@ -31,6 +31,16 @@ export const mutations = {
     })
     state.next.from = next && next.from || null
 
+    if (state.items.length > 25
+      && !state.items[25].injected
+      && !this.getters['user/isLoggedIn']) {
+      state.items.splice(25, 0, {injected: true, type: 'activation:login'})
+    }
+
+    if (state.items.length > 50 && !state.items[50].injected) {
+      state.items.splice(50, 0, {injected: true, type: 'referral:share'})
+    }
+
     state.loading = false
   },
 
