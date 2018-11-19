@@ -35,7 +35,7 @@
     <div class="FilterBetween Search" :class="{OffScreen: !search.searching}">
       <div class="flex">
         <div class="Back hover-pointer" @click="search.searching = false">
-          <simple-svg fill="black" filepath="/img/search/back.svg"/>
+          <simple-svg fill="black" :filepath="require('~/assets/icon/prev.svg')"/>
         </div>
         <div class="SearchTextBar border-3 hover-pointer">
           <input ref="input" class="TextBar" type="text" @keyup="onKeyUp"

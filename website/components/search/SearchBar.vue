@@ -1,32 +1,24 @@
 <template>
-  <div v-on-clickaway="onBlur" class="SearchBar" :class="{'Extended': isExtended, 'elevation-2': searching}">
-    <div class="SearchTextBar no-select">
-      <input ref="input" class="TextBar" type="text" @keyup="onKeyUp"
+  <div v-on-clickaway="onBlur" class="SearchBar border-3 cubic-bezier no-select"
+       :class="{'Extended': isExtended, 'elevation-2': searching}">
+    <div class="SearchTextBar relative w-100">
+      <input ref="input" class="TextBar bg-white absolute wh-100" type="text" @keyup="onKeyUp"
              placeholder="Search e.g. Italian in Marina Bay" v-model="text" @focus="onFocus">
 
-      <div class="Clear" :style="clearStyle" @click="onClear">
+      <div class="Clear absolute hover-pointer" :style="clearStyle" @click="onClear">
         <simple-svg fill="black" :filepath="require('~/assets/icon/close.svg')"/>
       </div>
     </div>
 
-    <div class="SearchSuggest elevation-3 index-top-elevation no-select" v-if="isExtended">
-      <div class="Navigation index-top-elevation" v-if="isNavigation">
-        <div @click="onNavigationSearch" class="NavigationItem" :class="{Selected: route.startsWith('search')}">
-          Search
-        </div>
-        <div @click="onNavigationFeedImage" class="NavigationItem" :class="{Selected: route === 'feed-images'}">
-          Feed
-        </div>
-        <div v-if="isStaging" @click="onNavigationFeedArticle" class="NavigationItem"
-             :class="{Selected: route === 'feed-articles'}">Article Feed
-        </div>
-      </div>
+    <div class="SearchSuggest bg-white absolute elevation-3 index-top-elevation" v-if="isExtended">
+      <search-bar-navigation  v-if="isNavigation" @on-blur="onBlur"/>
+
       <div class="Results index-top-elevation">
         <div class="NoResult text" v-if="!hasResult && suggestions">
           Sorry! We couldn’t find results for '{{text}}'.
         </div>
-        <div class="Suggest" v-if="suggests">
-          <div class="SuggestCell bg-whisper100 text WhiteA85" v-for="suggest in suggests" :key="suggest"
+        <div class="Suggest flex-align-center" v-if="suggests">
+          <div class="SuggestCell hover-pointer bg-whisper100 text" v-for="suggest in suggests" :key="suggest"
                @click="onItemSuggest(suggest)">
             {{suggest}}
           </div>
@@ -56,10 +48,11 @@
   import {partition, pluck, filter, debounceTime, distinctUntilChanged, switchMap, map} from 'rxjs/operators'
   import SearchSuggestPlaceItem from "./suggest/SearchSuggestPlaceItem";
   import SearchSuggestAssumptionItem from "./suggest/SearchSuggestAssumptionItem";
+  import SearchBarNavigation from "./bar/SearchBarNavigation";
 
   export default {
     name: "SearchBar",
-    components: {SearchSuggestAssumptionItem, SearchSuggestPlaceItem},
+    components: {SearchBarNavigation, SearchSuggestAssumptionItem, SearchSuggestPlaceItem},
     data() {
       return {
         text: '',
@@ -177,25 +170,6 @@
 
         this.onBlur()
       },
-      onNavigationSearch() {
-        if (!this.$store.state.search.query) {
-          this.$store.dispatch('filter/location', {type: 'Anywhere'})
-          this.$store.dispatch('search/start')
-
-          this.$track.search(`Search - Navigation`, this.$store.getters['search/locationType'])
-        } else if (this.$route.path !== '/search') {
-          this.$router.push({path: '/search'})
-        }
-        this.onBlur()
-      },
-      onNavigationFeedImage() {
-        this.$router.push({path: '/feed/images'})
-        this.onBlur()
-      },
-      onNavigationFeedArticle() {
-        this.$router.push({path: '/feed/articles'})
-        this.onBlur()
-      },
       onFocus() {
         this.searching = true
         this.position = 0
@@ -262,105 +236,48 @@
 
 <style scoped lang="less">
   .SearchBar {
-    border-radius: 3px;
     border: 1px solid rgba(0, 0, 0, 0.08);
 
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
-
-    transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
     &:hover {
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     }
   }
 
-  .Extended {
-    @media (min-width: 768px) {
+  @media (min-width: 768px) {
+    .Extended {
       border-radius: 3px 3px 0 0;
     }
   }
 
   .SearchTextBar {
-    position: relative;
-    width: 100%;
     height: 38px;
+  }
 
-    .TextBar {
-      border-radius: 3px;
-      overflow: visible;
+  .TextBar {
+    overflow: visible;
 
-      position: absolute;
-      background-color: #FFFFFF;
-      border: none transparent;
-      width: 100%;
-      font-size: 17px;
-      height: 38px;
-      padding: 0 16px;
-      line-height: 2;
+    border: none transparent;
+    font-size: 17px;
+    padding: 0 16px;
+    line-height: 2;
 
-      color: rgba(0, 0, 0, 0.6);
+    color: rgba(0, 0, 0, 0.6);
 
-      &:focus {
-        outline: none;
-        color: black;
-      }
-    }
-
-    .Clear {
-      position: absolute;
-      right: 0;
-      width: 38px;
-      height: 38px;
-      padding: 10px;
-
-      &:hover {
-        cursor: pointer;
-      }
+    &:focus {
+      outline: none;
+      color: black;
     }
   }
 
-  @Nav2: #EFF2F7;
-  @Secondary400: #227190;
-
-  .Navigation {
-    display: flex;
-    margin: 16px 10px 16px 16px;
-    min-width: 355px;
-
-    @media (max-width: 767.98px) {
-      margin-left: 24px;
-    }
-
-    .NavigationItem {
-      text-decoration: initial !important;
-      padding: 10px 16px;
-      margin-right: 14px;
-
-      border-radius: 3px;
-      border: 1px solid rgba(0, 0, 0, 0.15);
-      text-transform: uppercase;
-
-      font-weight: 600;
-      font-size: 12px;
-      color: rgba(0, 0, 0, .75);
-
-      line-height: 1.5;
-      height: 38px;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: clip;
-
-      &:hover, &.Selected {
-        cursor: pointer;
-        color: white;
-        background: @Secondary400;
-        border: 1px solid @Secondary400;
-      }
-    }
+  .Clear {
+    right: 0;
+    width: 38px;
+    height: 38px;
+    padding: 10px;
   }
 
   .SearchSuggest {
-    background: white;
-    position: absolute;
     border: 1px solid rgba(0, 0, 0, 0.08);
     margin-left: -1px;
 
@@ -378,43 +295,34 @@
       margin-top: 0;
       border-radius: 0 0 3px 3px;
     }
+  }
 
-    .Item {
-      padding: 8px 15px;
-      clear: both;
-
-      &:hover, &.Highlight {
-        cursor: pointer;
-        background: @Nav2;
-      }
+  @Nav2: #EFF2F7;
+  .Item {
+    &:hover, &.Highlight {
+      cursor: pointer;
+      background: @Nav2;
     }
   }
 
   .Suggest {
-    padding: 8px 15px;
-    clear: both;
-    display: flex;
-    align-items: center;
-
     overflow-x: scroll;
     -webkit-overflow-scrolling: touch;
-
-    .SuggestCell {
-      font-size: 14px;
-      padding: 3px 12px;
-      margin-right: 10px;
-      border-radius: 12px;
-
-      white-space: nowrap;
-      overflow: visible;
-
-      &:hover {
-        cursor: pointer;
-      }
-    }
   }
 
-  .NoResult {
-    padding: 8px 15px;
+  .SuggestCell {
+    font-size: 14px;
+    padding: 3px 12px;
+    margin-right: 10px;
+    border-radius: 12px;
+
+    white-space: nowrap;
+    overflow: visible;
+  }
+
+  .Suggest,
+  .NoResult,
+  .Item{
+    padding: 8px 16px;
   }
 </style>

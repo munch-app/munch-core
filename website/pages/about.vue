@@ -128,7 +128,6 @@
 
   .Munch {
     background-size: cover;
-    /*background: url("/img/about/background.jpg") 100%;*/
 
     .Brand {
       display: flex;

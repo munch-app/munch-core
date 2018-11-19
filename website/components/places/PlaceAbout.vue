@@ -2,7 +2,9 @@
   <div v-if="hasAny">
     <h2>About</h2>
     <place-award-list class="AwardList" v-if="awards && awards.length > 0" :awards="awards"/>
-    <p class="Description" v-if="place.description">{{place.description}}</p>
+    <div v-if="place.description" @click="expanded = !expanded" class="hover-pointer">
+      <p class="Description" :class="{'text-ellipsis-4l': !expanded}">{{place.description}}</p>
+    </div>
   </div>
 </template>
 
@@ -20,6 +22,11 @@
       place: {
         type: Object,
         required: true
+      }
+    },
+    data() {
+      return {
+        expanded: false
       }
     },
     computed: {

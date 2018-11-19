@@ -5,10 +5,10 @@
         <h4 class="p700">
           Copy Link?
         </h4>
-        <simple-svg class="Icon" fill="black" filepath="/img/layouts/copy.svg"/>
+        <simple-svg class="Icon" fill="black" :filepath="require('~/assets/icon/copy.svg')"/>
 
         <div class="Close" @click.stop="onCancel">
-          <simple-svg class="Icon" fill="black" filepath="/img/layouts/close.svg"/>
+          <simple-svg class="Icon" fill="black" :filepath="require('~/assets/icon/close.svg')"/>
         </div>
       </div>
 

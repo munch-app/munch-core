@@ -6,7 +6,7 @@
       <a @click.prevent.stop="onClickLogin" class="flex-no-shrink" v-if="!isLoggedIn">Login</a>
       <nuxt-link to="/profile" v-else>{{displayName}}</nuxt-link>
 
-      <img v-if="false" class="ml-16 hover-pointer" src="/img/layouts/menu.svg" @click="onClickMenu"/>
+      <img v-if="false" class="ml-16 hover-pointer" src="~/assets/icon/menu.svg" @click="onClickMenu"/>
     </div>
   </no-ssr>
 </template>

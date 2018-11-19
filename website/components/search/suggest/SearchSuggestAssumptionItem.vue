@@ -1,9 +1,12 @@
 <template>
-  <div class="Assumption">
-    <simple-svg class="Icon" fill="rgba(0,0,0,0.75)" filepath="/img/search/assumption.svg"/>
+  <div class="flex-align-center">
+    <simple-svg class="wh-24px mr-16" fill="rgba(0,0,0,0.75)"
+                :filepath="require('~/assets/icon/search/assumption.svg')"/>
     <div v-for="token in tokens" :key="token.type + token.text">
-      <div :class="{'bg-whisper100': !highlight, 'bg-white': highlight}"
-           class="Tag Token border-3 b-a80" v-if="token.type === 'tag'">{{token.text}}</div>
+      <div :class="{'bg-whisper100': !highlight, 'bg-white': highlight}" class="Tag Token border-3 b-a80"
+           v-if="token.type === 'tag'">
+        {{token.text}}
+      </div>
       <div class="text Token border-3 b-a75" v-if="token.type === 'text'">
         <div>
           {{token.text}}
@@ -35,35 +38,16 @@
 </script>
 
 <style scoped lang="less">
-  .Assumption {
+  .Token {
+    font-size: 15px;
+    font-weight: 600;
+
+    line-height: 28px;
     height: 28px;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
+    margin-right: 8px;
+  }
 
-    .Icon {
-      float: left;
-      width: 24px;
-      height: 24px;
-      margin: 1px 15px 1px 0;
-    }
-
-    .Token {
-      font-size: 15px;
-      font-weight: 600;
-
-      line-height: 28px;
-      height: 28px;
-      margin-right: 8px;
-
-      &.Tag {
-        padding: 0 12px;
-      }
-
-      &.Text {
-        padding: 0;
-        font-weight: 600;
-      }
-    }
+  .Tag {
+    padding: 0 12px;
   }
 </style>

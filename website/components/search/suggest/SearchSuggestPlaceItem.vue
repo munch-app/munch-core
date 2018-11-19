@@ -1,8 +1,10 @@
 <template>
-  <div class="Place text">
-    <simple-svg class="Icon" fill="rgba(0,0,0,0.75)" filepath="/img/search/place.svg"/>
-    <span class="Name">{{place.name}}</span>
-    <span class="Location b-a85">, {{location}}</span>
+  <div class="Place flex-align-center">
+    <simple-svg class="wh-24px mr-16" fill="rgba(0,0,0,0.75)" :filepath="require('~/assets/icon/search/place.svg')"/>
+    <div class="text weight-600">
+      <div>{{place.name}}</div>
+      <div class="Location small">{{location}}</div>
+    </div>
   </div>
 </template>
 
@@ -26,25 +28,16 @@
 
 <style scoped lang="less">
   .Place {
-    height: 26px;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+  }
 
-    .Icon {
-      float: left;
-      width: 24px;
-      height: 24px;
-      margin: 1px 15px 1px 0;
-    }
+  .text {
+    line-height: 1.3;
 
-    span.Name {
-      font-weight: 600;
-    }
-
-    span.Location {
-      font-size: 14px;
-      font-weight: 400;
+    > div:first-child {
+      font-size: 15px;
     }
   }
 </style>
