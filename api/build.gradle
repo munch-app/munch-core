@@ -12,9 +12,6 @@ project('api-core') {
         // Core Clients
         compile group: 'munch-data', name: 'munch-data-data-client', version: dataVersion
         compile group: 'munch-user', name: 'munch-user-data-client', version: userVersion
-
-        testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: jUnitVersion
-        testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: jUnitVersion
     }
 }
 
@@ -22,8 +19,6 @@ configure(subprojects.findAll { !it.name.matches("api-core") }) {
     dependencies {
         compile project(':api:api-core')
         testCompile project(':api:api-core').sourceSets.test.output
-        testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: jUnitVersion
-        testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: jUnitVersion
     }
 }
 

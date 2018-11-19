@@ -120,12 +120,11 @@
         } else {
           this.dialog = image
         }
-        this.dialog = image
-        // Vue.set(this.changes, image.imageId, image)
       },
       onFlag(image, flag) {
         this.dialog = null
 
+        this.$store.dispatch('addMessage', {title: `Flagged as ${flag}`})
         Vue.set(this.payload.removes.images, image.imageId, {flag, image})
       }
     }

@@ -79,7 +79,7 @@
     },
     mounted() {
       if (this.$route.query.g === 'GB9') {
-        this.$track.link('Feed Image', 'GB9: Activation Open')
+        this.$track.link('Feed Image', 'GB9: Referral Open')
         this.$router.replace({})
       }
     },

@@ -32,7 +32,7 @@ Max-width of 400px if > 576vw
   import {disableBodyScroll, clearAllBodyScrollLocks} from 'body-scroll-lock';
 
   export default {
-    name: "DialogDelegator",
+    name: "DialogPortal",
     components: {ProfileOnBoarding},
     computed: {
       ...mapGetters(['isFocused']),

@@ -79,31 +79,34 @@ module.exports = {
     'vue-simple-svg',
     'vue-browser-geolocation',
     'vue-observe-visibility',
-
-    // TODO: Remove PersistedState and use cookie to improve performance
     'vuex-persistedstate',
     'vue-scrollto',
     'vue-clipboard2'
   ],
   plugins: [
+    // Plugins by Munch Team
     '~/plugins/head',
-    '~/plugins/axios',
-    '~/plugins/vue-router',
+    '~/plugins/router',
+    {src: '~/plugins/tracker', ssr: false},
 
+    // Core Plugin
+    '~/plugins/axios',
+    '~/plugins/vue-rx',
     '~/plugins/portal-vue',
     '~/plugins/prismic-vue',
-    '~/plugins/vue-rx',
+
+    // Useful Plugin
     '~/plugins/vue-clickaway',
     '~/plugins/vue-simple-svg',
-    '~/plugins/vue-browser-geolocation',
-    '~/plugins/vue-observe-visibility',
     '~/plugins/vue-scrollto',
-
+    '~/plugins/vue-observe-visibility',
+    {src: '~/plugins/vue-clipboard2', ssr: false},
     {src: '~/plugins/vue-touch', ssr: false},
+
+    // Replace if Possible
+    '~/plugins/vue-browser-geolocation',
     {src: '~/plugins/vue-loader', ssr: false},
     {src: '~/plugins/vuex-persistedstate', ssr: false},
-    {src: '~/plugins/tracker', ssr: false},
-    {src: '~/plugins/vue-clipboard2', ssr: false},
   ],
   serverMiddleware: [
     {

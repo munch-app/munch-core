@@ -45,18 +45,18 @@
 
         if (window.navigator && window.navigator.share) {
           window.navigator.share(url)
-          this.$track.share('Feed Image', 'GB9: Activation Share')
+          this.$track.share('Feed Image', 'GB9: Referral Share')
         } else {
           this.$copyText(url).then(() => {
             this.$store.dispatch('addMessage', {title: 'Copied URL!'})
-            this.$track.share('Feed Image', 'GB9: Activation Share')
+            this.$track.share('Feed Image', 'GB9: Referral Share')
           }, (e) => {
             this.$store.dispatch('addError', e)
           })
         }
       },
       onLogin() {
-        this.$track.login('Feed Image', 'GB8: Login Activation')
+        this.$track.login('Feed Image', 'GB8: Activation Login')
         this.$store.commit('focus', 'Login')
       }
     }

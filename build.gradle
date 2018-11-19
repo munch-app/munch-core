@@ -58,9 +58,14 @@ allprojects {
 
     dependencies {
         testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: jUnitVersion
+        testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: jUnitVersion
+        testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: jUnitVersion
         testCompile group: 'org.easytesting', name: 'fest-assert', version: '1.4'
 
         compile group: 'com.google.code.findbugs', name: 'annotations', version: '3.0.1u2'
+
+        compile group: 'munch.restful', name: 'restful-core', version: restfulVersion
+        compile group: 'com.google.inject', name: 'guice', version: guiceVersion
     }
 }
 
