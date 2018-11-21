@@ -46,15 +46,13 @@
 </script>
 
 <style scoped lang="less">
-  .CollectionBtn {
-    .AddIcon {
-      width: 30px;
-      height: 30px;
-      padding: 6px;
-    }
+  .AddIcon {
+    width: 30px;
+    height: 30px;
+    padding: 6px;
   }
 
-  .CollectionBtn.Large {
+  .Large {
     .AddIcon {
       width: 40px;
       height: 40px;

@@ -28,7 +28,7 @@
         <h2 class="mb-24">Place Mentioned</h2>
 
         <div class="Place" v-if="place">
-          <place-card :place="place" :image="true"/>
+          <place-card :place="place"/>
         </div>
       </div>
     </aside>

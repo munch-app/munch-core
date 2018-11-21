@@ -1,35 +1,40 @@
 <template>
-  <nuxt-link :to="'/places/' + place.placeId" @click.native.capture="$track.view(`RIP`, 'PlaceCard')">
+  <div @click.capture="onClick">
     <div class="Card relative" :class="{'Small': small}">
       <no-ssr>
         <place-card-add-collection class="absolute" :place="place"/>
       </no-ssr>
 
-      <div class="aspect r-5-3 border-3 overflow-hidden" v-if="image">
-        <image-sizes v-if="placeImage" :sizes="placeImage.sizes" :alt="place.name"/>
+      <div class="aspect r-5-3 border-3 overflow-hidden">
+        <image-sizes v-if="image" :sizes="image.sizes" :alt="place.name"/>
         <div v-else class="bg-whisper100"/>
       </div>
 
-      <div class="Content">
-        <div class="Name Title text-ellipsis-1l large weight-600 b-a80">{{place.name}}</div>
-        <div class="Tags">
-          <div class="Tag border-3" v-for="tag in placeTags" :key="tag.tagId" :class="{
-               'bg-peach100 weight-600 b-a80': tag.type === 'price',
-               'bg-whisper100 weight-400': tag.type !== 'price'}"
-          >
-            {{tag.name}}
-          </div>
-        </div>
+      <div class="mt-8">
+        <nuxt-link class="Title text-ellipsis-1l large weight-600 b-a80" :to="`/places/${place.placeId}`">
+          {{place.name}}
+        </nuxt-link>
 
-        <div class="LocationDistanceTiming small text-ellipsis-1l">
-          <span v-if="placeDistance">{{placeDistance}}, </span>
-          <span class="weight-600 b-a80">{{placeLocation}}</span>
-          <span v-if="placeTiming" class="b-a75 BulletDivider">•</span>
-          <span v-if="placeTiming" :class="placeTiming.class">{{placeTiming.text}}</span>
-        </div>
+        <nuxt-link :to="`/places/${place.placeId}`">
+          <div class="Tags flex-wrap mt-8">
+            <div class="Tag border-3 mr-8 mb-8" v-for="tag in tags" :key="tag.tagId" :class="{
+                 'bg-peach100 weight-600 b-a80': tag.type === 'price',
+                 'bg-whisper100 weight-400': tag.type !== 'price'}"
+            >
+              {{tag.name}}
+            </div>
+          </div>
+
+          <div class="LocationDistanceTiming mt-8 small text-ellipsis-1l">
+            <span v-if="distance">{{distance}}, </span>
+            <span class="weight-600 b-a80">{{location}}</span>
+            <span v-if="timing" class="b-a75 BulletDivider">•</span>
+            <span v-if="timing" :class="timing.class">{{timing.text}}</span>
+          </div>
+        </nuxt-link>
       </div>
     </div>
-  </nuxt-link>
+  </div>
 </template>
 
 <script>
@@ -48,22 +53,18 @@
       small: {
         type: Boolean,
         default: false
-      },
-      image: {
-        type: Boolean,
-        default: true
       }
     },
     computed: {
-      placeLocation() {
+      location() {
         return this.place.location.neighbourhood || this.place.location.street
       },
-      placeImage() {
+      image() {
         if (this.place.images && this.place.images[0]) {
           return this.place.images[0]
         }
       },
-      placeTags() {
+      tags() {
         const perPax = this.place.price && this.place.price.perPax
         const priceTax = perPax && [{type: 'price', name: `$${perPax.toFixed(0)}`}] || []
 
@@ -72,10 +73,10 @@
           ...this.place.tags
         ]
       },
-      placeDistance() {
+      distance() {
         return null
       },
-      placeTiming() {
+      timing() {
         if (this.place.hours.length === 0) return
 
         const group = new HourGroup(this.place.hours.map((h) => new Hour(h.day, h.open, h.close)))
@@ -90,50 +91,45 @@
             return {class: 'time-close', text: 'Closing Soon'}
         }
       },
+    },
+    methods: {
+      onClick() {
+        this.$track.view(`RIP`, 'PlaceCard')
+        this.$router.push({path: `/places/${this.place.placeId}`})
+      }
     }
   }
 </script>
 
 <style scoped lang="less">
-  .Content {
-    .Name {
-      height: 26px;
-      line-height: 26px;
-      margin-top: 6px;
-    }
+  .Name {
+    height: 26px;
+    line-height: 26px;
+  }
 
-    .Tags {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: flex-start;
-      overflow: hidden;
+  .Tags {
+    overflow: hidden;
 
-      min-height: 24px;
-      max-height: 64px;
-      margin-top: 4px;
-      margin-bottom: -8px;
+    min-height: 24px;
+    max-height: 64px;
+    margin-bottom: -8px;
+  }
 
-      .Tag {
-        font-size: 12px;
-        line-height: 24px;
-        padding: 0 8px;
-        margin-right: 8px;
-        margin-bottom: 8px;
-      }
-    }
+  .Tag {
+    font-size: 12px;
+    line-height: 24px;
+    padding: 0 8px;
+  }
 
-    .LocationDistanceTiming {
-      margin-top: 8px;
+  .LocationDistanceTiming {
+    font-weight: 600;
+    font-size: 13px;
+  }
 
-      font-weight: 600;
-      font-size: 13px;
-
-      .BulletDivider {
-        vertical-align: middle;
-        font-size: 12px;
-        margin: 0 3px;
-      }
-    }
+  .BulletDivider {
+    vertical-align: middle;
+    font-size: 12px;
+    margin: 0 3px;
   }
 
   .Small {
@@ -145,14 +141,14 @@
       min-height: 22px;
       max-height: 56px;
       margin-bottom: -6px;
+    }
 
-      .Tag {
-        font-size: 10px;
-        line-height: 22px;
-        padding: 0 7px;
-        margin-right: 6px;
-        margin-bottom: 6px;
-      }
+    .Tag {
+      font-size: 10px;
+      line-height: 22px;
+      padding: 0 7px;
+      margin-right: 6px;
+      margin-bottom: 6px;
     }
 
     .LocationDistanceTiming {
