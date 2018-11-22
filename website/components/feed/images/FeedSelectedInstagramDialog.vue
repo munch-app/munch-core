@@ -9,9 +9,8 @@
       </nuxt-link>
     </section>
     <aside class="p-24">
-      <feed-image-action :place="place"/>
 
-      <div class="mt-24">
+      <div>
         <a class="block" :href="`https://instagram.com/${item.instagram.username}`" target="_blank"
            rel="noreferrer nofollow noopener">
           <p class="text-ellipsis-3l subtext">{{item.instagram.caption}}</p>
@@ -22,7 +21,7 @@
         </a>
       </div>
 
-
+      <feed-image-action class="mt-24" :place="place"/>
 
       <div class="mt-32">
         <h2 class="mb-24">Place Mentioned</h2>

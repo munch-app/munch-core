@@ -2,7 +2,7 @@
   <aside>
     <button @click="onClickAdd" class="border small">Save</button>
     <nuxt-link :to="`/places/${place.placeId}`" class="lh-0" @click.native.capture="$track.view(`RIP`, 'Feed - Instagram')">
-      <button class="border ml-16 small">Open Place</button>
+      <button class="primary ml-16 small">Open Place</button>
     </nuxt-link>
 
     <no-ssr>

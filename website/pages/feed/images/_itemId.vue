@@ -1,7 +1,5 @@
 <template>
   <div class="zero container Page">
-    <feed-image-action class="Action" :place="place"/>
-
     <section class="flex-center container-remove-gutter">
       <nuxt-link :to="`/places/${place.placeId}`" class="lh-0" @click.native.capture="$track.view(`RIP`, 'Feed - Instagram')">
         <image-sizes class="InstagramImage" :sizes="item.image.sizes"
@@ -11,7 +9,9 @@
       </nuxt-link>
     </section>
 
-    <a class="block mt-24" :href="`https://instagram.com/${item.instagram.username}`" target="_blank"
+    <feed-image-action class="flex-end mtb-24" :place="place"/>
+
+    <a class="block" :href="`https://instagram.com/${item.instagram.username}`" target="_blank"
        rel="noreferrer nofollow noopener">
       <p class="text-ellipsis-2l subtext">{{item.instagram.caption}}</p>
 
@@ -69,11 +69,6 @@
 
   section {
     background-color: rgba(0, 0, 0, 0.75);
-  }
-
-  .Action {
-    flex: 0 0 33.333%;
-    padding: 16px 0;
   }
 
   .Place {
