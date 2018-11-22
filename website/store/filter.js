@@ -83,7 +83,7 @@ export const getters = {
 
     const location = state.query.filter.location
     if (location.type === 'Between' && location.points.length < 2) {
-      return 'Requires 2 Location'
+      return 'Requires 2 Locations'
     }
 
     const count = state.result.count

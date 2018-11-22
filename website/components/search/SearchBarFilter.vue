@@ -2,7 +2,7 @@
   <nav class="no-select" v-on-clickaway="onClickAway">
     <div class="FilterBar index-6 hr-bot bg-white w-100 fixed">
       <div class="Buttons h-100 flex-align-center container">
-        <div v-for="button in buttons" :key="button.type" class="FilterButton" @click="onButton(button)"
+        <div v-for="button in buttons" :key="button.type" class="FilterButton hover-pointer" @click="onButton(button)"
              :class="{
              'bg-p500 white': button.type === selected,
              'bg-whisper100 b-a75': button.type !== selected && !button.applied,
@@ -15,7 +15,7 @@
           <div v-if="button.count">{{button.count}}</div>
         </div>
 
-        <div class="FilterButton ClearAllButton elevation-hover-2 elevation-1 bg-white" @click="onClearAll"
+        <div class="FilterButton ClearAllButton hover-pointer elevation-hover-2 elevation-1 bg-white" @click="onClearAll"
              v-if="isClearAll">
           <div>Clear All</div>
         </div>
@@ -181,10 +181,6 @@
 
     white-space: nowrap;
     overflow: visible;
-
-    &:hover {
-      cursor: pointer;
-    }
 
     div {
       line-height: 28px;
