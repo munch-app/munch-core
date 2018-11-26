@@ -2,9 +2,6 @@
   <div class="About">
     <section class="Munch">
       <div class="Brand container-1200 content">
-        <div class="content-image">
-          <img src="/img/about/Munch Logo@3x.png">
-        </div>
         <div class="prismic-content">
           <div v-html="section1.heading"/>
           <div v-html="section1.paragraph"/>

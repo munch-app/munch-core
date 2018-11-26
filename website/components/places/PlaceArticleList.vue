@@ -5,11 +5,11 @@
       <div class="Controls">
         <div class="Left elevation-1 border-3" @click="prev"
              :class="{'bg-whisper100': hasPrev, 'bg-white': !hasPrev}">
-          <simple-svg class="Icon" fill="black" filepath="/img/places/caret_left.svg"/>
+          <simple-svg class="Icon" fill="black" :filepath="require('~/assets/icon/prev.svg')"/>
         </div>
         <div class="Right elevation-1 border-3" @click="next"
              :class="{'bg-whisper100': hasNext, 'bg-white': !hasNext}">
-          <simple-svg class="Icon" fill="black" filepath="/img/places/caret_right.svg"/>
+          <simple-svg class="Icon" fill="black" :filepath="require('~/assets/icon/next.svg')"/>
         </div>
       </div>
     </div>
@@ -23,7 +23,7 @@
             <image-size class="Thumbnail index-content border-3-top" :image="item.thumbnail"/>
             <div class="Content">
               <div class="text text-ellipsis-2l b-a85 Title">{{item.title}}</div>
-              <div class="text text-ellipsis-4l Description">{{item.content || item.description}}</div>
+              <div class="text text-ellipsis-4l Description">{{item.description}}</div>
 
               <div class="s700 Brand">
                 <simple-svg class="Icon" fill="black" :filepath="require('~/assets/icon/feed/article.svg')"/>

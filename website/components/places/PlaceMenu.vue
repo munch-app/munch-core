@@ -2,7 +2,7 @@
   <div class="PlaceMenu">
     <a class="WebsiteMenuButton elevation-1 border-3 border hover-pointer elevation-hover-2" v-if="menu.url"
        :href="menu.url" target="_blank" rel="noopener nofollow noreferrer">
-      <simple-svg class="Icon" fill="rgba(0, 0, 0, 0.75)" filepath="/img/places/open_tab.svg"/>
+      <simple-svg class="Icon" fill="rgba(0, 0, 0, 0.75)" :filepath="require('~/assets/icon/place/open.svg')"/>
       <div class="Label">Website Menu</div>
     </a>
 

@@ -16,7 +16,7 @@
           <a :href="article.url" target="_blank" rel="noreferrer noopener nofollow">
             <image-size class="Image index-content border-3" :image="article.thumbnail"/>
             <h3 class="Title text-ellipsis-2l">{{article.title}}</h3>
-            <p class="Content text-ellipsis-4l">{{article.content}}</p>
+            <p class="Content text-ellipsis-4l">{{article.description}}</p>
           </a>
 
           <a class="BrandButton" :href="article.domain.url">

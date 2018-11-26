@@ -13,11 +13,11 @@
         <div v-if="isEditable">
           <div v-if="!editing" @click="editing = true"
                class="button-action elevation-1 elevation-hover-2 border-3 bg-white hover-pointer">
-            <simple-svg class="Icon" fill="rgba(0,0,0,0.75)" filepath="/img/collections/edit.svg"/>
+            <simple-svg class="Icon" fill="rgba(0,0,0,.75)" filepath="/img/collections/edit.svg"/>
           </div>
           <div v-if="editing" @click="editing = false"
                class="button-action elevation-1 elevation-hover-2 border-3 bg-white hover-pointer">
-            <simple-svg class="Icon" fill="rgba(0,0,0,0.75)" filepath="/img/collections/done.svg"/>
+            <simple-svg class="Icon" fill="rgba(0,0,0,.75)" :filepath="require('~/assets/icon/done.svg')"/>
           </div>
         </div>
       </no-ssr>

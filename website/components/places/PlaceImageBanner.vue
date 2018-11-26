@@ -17,7 +17,7 @@
       <div class="Navigation">
         <div class="ShowButton border-3 border hover-pointer elevation-hover-2 bg-white"
              v-scroll-to="{el: '#PlaceImageWall',offset: -120}">
-          <simple-svg class="Icon" fill="rgba(0, 0, 0, 0.75)" filepath="/img/places/grid.svg"/>
+          <simple-svg class="Icon" fill="rgba(0, 0, 0, 0.75)" :filepath="require('~/assets/icon/place/grid.svg')"/>
           <div class="Label text-uppercase">SHOW IMAGES</div>
         </div>
       </div>

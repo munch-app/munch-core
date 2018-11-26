@@ -9,7 +9,7 @@
         <h6>by <span class="s700">{{item.author}}</span> on {{format(article.createdMillis, 'mmm dd, yyyy')}}</h6>
       </div>
 
-      <p class="Content text-ellipsis-3l">{{article.content}}</p>
+      <p class="Content text-ellipsis-3l">{{article.description}}</p>
     </a>
 
     <div class="Places">
