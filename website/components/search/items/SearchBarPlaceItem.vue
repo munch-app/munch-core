@@ -1,6 +1,6 @@
 <template>
   <div class="Place flex-align-center">
-    <simple-svg class="wh-24px mr-16" fill="rgba(0,0,0,0.75)" :filepath="require('~/assets/icon/search/place.svg')"/>
+    <simple-svg class="wh-24px mr-16" fill="rgba(0,0,0,.7)" :filepath="require('~/assets/icon/search/place.svg')"/>
     <div class="text weight-600">
       <div>{{place.name}}</div>
       <div class="Location small">{{location}}</div>
@@ -10,7 +10,7 @@
 
 <script>
   export default {
-    name: "SearchSuggestPlaceItem",
+    name: "SearchBarPlaceItem",
     props: {
       place: {
         type: Object,

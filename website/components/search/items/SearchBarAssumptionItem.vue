@@ -1,6 +1,6 @@
 <template>
   <div class="flex-align-center">
-    <simple-svg class="wh-24px mr-16" fill="rgba(0,0,0,0.75)"
+    <simple-svg class="wh-24px mr-16" fill="rgba(0,0,0,.7)"
                 :filepath="require('~/assets/icon/search/assumption.svg')"/>
     <div v-for="token in tokens" :key="token.type + token.text">
       <div :class="{'bg-whisper100': !highlight, 'bg-white': highlight}" class="Tag Token border-3 b-a80"
@@ -18,7 +18,7 @@
 
 <script>
   export default {
-    name: "SearchSuggestAssumptionItem",
+    name: "SearchBarAssumptionItem",
     props: {
       assumption: {
         type: Object,

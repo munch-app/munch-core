@@ -2,39 +2,41 @@
   <div v-on-clickaway="onBlur" class="SearchBar border-3 cubic-bezier no-select"
        :class="{'Extended': isExtended, 'elevation-2': searching}">
     <div class="SearchTextBar relative w-100">
-      <input ref="input" class="TextBar bg-white absolute wh-100" type="text" @keyup="onKeyUp"
-             placeholder="Search e.g. Italian in Marina Bay" v-model="text" @focus="onFocus">
+      <input ref="input" class="TextBar bg-white absolute wh-100" type="text"
+             @focus="onFocus" @keyup.up="onKeyUp" @keyup.down="onKeyDown" @keyup.enter="onKeyEnter"
+             placeholder="Search e.g. Italian in Marina Bay" v-model="text">
 
-      <div class="Clear absolute hover-pointer" :style="clearStyle" @click="onClear">
+      <div class="Clear absolute hover-pointer none" :class="{block: text.length}" @click="onClear">
         <simple-svg fill="black" :filepath="require('~/assets/icon/close.svg')"/>
       </div>
     </div>
 
     <div class="SearchSuggest bg-white absolute elevation-3 index-top-elevation" v-if="isExtended">
-      <search-bar-navigation  v-if="isNavigation" @on-blur="onBlur"/>
+      <search-bar-navigation v-if="isNavigation" @on-blur="onBlur"/>
 
-      <div class="Results index-top-elevation">
-        <div class="NoResult text" v-if="!hasResult && suggestions">
-          Sorry! We couldn’t find results for '{{text}}'.
-        </div>
-        <div class="Suggest flex-align-center" v-if="suggests">
-          <div class="SuggestCell hover-pointer bg-whisper100 text" v-for="suggest in suggests" :key="suggest"
-               @click="onItemSuggest(suggest)">
-            {{suggest}}
+      <div class="Results index-top-elevation" v-if="suggestions">
+        <div class="Items" v-if="items">
+          <div class="Item hover-pointer" v-for="(item, index) in items" :key="item.key"
+               @click="onItem(item)"
+               :class="{'Position': index === position}">
+
+            <search-bar-suggest-item
+              v-if="item.type === 'suggest'"
+              :suggest="item.object"/>
+
+            <search-bar-assumption-item
+              v-else-if="item.type === 'assumption'"
+              :assumption="item.object" :highlight="index === position"/>
+
+            <search-bar-place-item
+              v-else-if="item.type === 'place'"
+              :place="item.object"/>
           </div>
         </div>
-        <div class="Assumption" v-if="assumptions">
-          <div class="Item" v-for="assumption in assumptions" :key="assumption.count"
-               :class="{'Highlight': isPosition(assumption)}"
-               @click="onItemAssumption(assumption)">
-            <search-suggest-assumption-item :assumption="assumption" :highlight="isPosition(assumption)"/>
-          </div>
-        </div>
 
-        <div class="Place" v-if="places">
-          <div class="Item" v-for="place in places" :key="place.placeId" :class="{'Highlight': isPosition(place)}"
-               @click="onItemPlace(place)">
-            <search-suggest-place-item :place="place"/>
+        <div v-else>
+          <div class="p-16 text">
+            Sorry! We couldn't find results for <span class="weight-600 b-a85">{{text}}</span>.
           </div>
         </div>
       </div>
@@ -46,13 +48,15 @@
   import {mapGetters} from 'vuex'
   import {merge} from 'rxjs';
   import {partition, pluck, filter, debounceTime, distinctUntilChanged, switchMap, map} from 'rxjs/operators'
-  import SearchSuggestPlaceItem from "./suggest/SearchSuggestPlaceItem";
-  import SearchSuggestAssumptionItem from "./suggest/SearchSuggestAssumptionItem";
+
   import SearchBarNavigation from "./bar/SearchBarNavigation";
+  import SearchBarAssumptionItem from "./items/SearchBarAssumptionItem";
+  import SearchBarPlaceItem from "./items/SearchBarPlaceItem";
+  import SearchBarSuggestItem from "./items/SearchBarSuggestItem";
 
   export default {
     name: "SearchBar",
-    components: {SearchBarNavigation, SearchSuggestAssumptionItem, SearchSuggestPlaceItem},
+    components: {SearchBarSuggestItem, SearchBarPlaceItem, SearchBarAssumptionItem, SearchBarNavigation},
     data() {
       return {
         text: '',
@@ -61,28 +65,13 @@
         searching: false
       }
     },
-    mounted() {
-      // Auto focus refs.input if 'Suggest' is focused
-      if (this.isFocused('Suggest')) {
-        this.$refs.input.focus()
-      }
-    },
     watch: {
       loading() {
         this.text = ''
       }
     },
     computed: {
-      ...mapGetters(['isElevated', 'isFocused', 'isStaging']),
       ...mapGetters('search', ['loading']),
-      route() {
-        return this.$route.name
-      },
-      clearStyle() {
-        return {
-          'display': this.text.length > 0 ? 'block' : 'none'
-        }
-      },
       suggests() {
         if (this.suggestions && this.suggestions.suggests && this.suggestions.suggests.length > 0) {
           return this.suggestions.suggests
@@ -98,77 +87,74 @@
           return this.suggestions.places.slice(0, 10)
         }
       },
-      positions() {
-        let position = 0
-        return [
+      items() {
+        const items = [
+          // Assumption Items
           ...(this.assumptions || []).map(assumption => {
-            return {type: 'assumption', item: assumption, position: position++}
+            return {type: 'assumption', key: `a-${assumption.count}`, object: assumption}
           }),
+          // Place Items
           ...(this.places || []).map(place => {
-            return {type: 'place', item: place, position: position++}
+            return {type: 'place', key: `p-${place.placeId}`, object: place}
           })
         ]
+
+        if (items.length > 0) {
+          return items
+        }
+
+        if (items.length === 0 && this.suggests) {
+          return [{type: 'suggest', key: 's-', object: this.suggests[0]}]
+        }
       },
+      /**
+       * @returns {boolean} whether search bar is extended to drop down
+       */
       isExtended() {
-        return this.searching && (!this.text || this.hasResult || this.suggestions)
+        if (!this.searching) return false
+
+        return this.isNavigation || this.suggestions
       },
+      /**
+       * @returns {boolean} whether to show navigation bar
+       */
       isNavigation() {
         return !this.text
       },
-      hasResult() {
-        return this.suggests || this.assumptions || this.places
-      }
     },
     methods: {
-      onKeyUp(evt) {
-        switch (evt.keyCode) {
-          case 38: // Up
-            if (this.position === 0) break
-            this.position -= 1
-            break
-
-          case 40: // Down
-            if (this.position === this.positions.length - 1) break
-            this.position += 1
-            break
-
-          case 13: // Enter
-            if (this.positions.length < 0) {
-              return this.onBlur()
-            }
-
-            const object = this.positions && this.positions[this.position]
-            if (object) {
-              switch (object.type) {
-                case 'suggest':
-                  return this.onItemSuggest(object.item)
-                case 'assumption':
-                  return this.onItemAssumption(object.item)
-                case 'place':
-                  return this.onItemPlace(object.item)
-              }
-            }
-            break
-          default:
-            this.suggestions = null
-            this.searching = true
-            this.$emit('onText', this.text)
+      onKeyUp() {
+        if (this.position > 0) {
+          this.position -= 1
         }
       },
-      onItemSuggest(suggest) {
-        this.text = suggest
+      onKeyDown() {
+        if (this.position < this.items.length) {
+          this.position += 1
+        }
       },
-      onItemAssumption(assumption) {
-        this.$store.dispatch('search/start', assumption.searchQuery)
-        this.$track.search(`Search - Assumption`, this.$store.getters['search/locationType'])
+      onKeyEnter() {
+        if (!this.items) {
+          return this.onBlur()
+        }
 
-        this.onBlur()
+        this.onItem(this.items && this.items[this.position])
       },
-      onItemPlace(place) {
-        this.$router.push({path: '/places/' + place.placeId})
-        this.$track.view(`RIP`, 'Suggest')
+      onItem({type, object}) {
+        switch (type) {
+          case 'suggest':
+            return this.text = object
 
-        this.onBlur()
+          case 'assumption':
+            this.$store.dispatch('search/start', object.searchQuery)
+            this.$track.search(`Search - Assumption`, this.$store.getters['search/locationType'])
+            return this.onBlur()
+
+          case 'place':
+            this.$router.push({path: '/places/' + object.placeId})
+            this.$track.view(`RIP`, 'Suggest')
+            return this.onBlur()
+        }
       },
       onFocus() {
         this.searching = true
@@ -189,6 +175,7 @@
       },
       onBlur() {
         this.searching = false
+        this.$refs.input.blur()
         this.$emit('onBlur', this.text)
       },
       onClear() {
@@ -197,19 +184,15 @@
         this.position = 0
         this.$emit('onText', this.text)
       },
-      isPosition(object) {
-        const item = this.positions && this.positions[this.position] && this.positions[this.position].item
-        if (item && item.placeId && object.placeId) return item.placeId === object.placeId
-        if (item && item.tokens && object.tokens) return item.count === object.count
-        return false
-      }
     },
     subscriptions() {
       const [server, local] = this.$watchAsObservable('text').pipe(
         pluck('newValue'),
         map((text) => text.trim()),
-        debounceTime(200),
+        debounceTime(333),
         distinctUntilChanged(),
+
+        // Partition into 2 branch, server & local request
         partition(text => text !== '')
       )
 
@@ -297,32 +280,13 @@
     }
   }
 
-  @Nav2: #EFF2F7;
+  @Whisper100: #F0F0F8;
+
   .Item {
-    &:hover, &.Highlight {
-      cursor: pointer;
-      background: @Nav2;
-    }
-  }
-
-  .Suggest {
-    overflow-x: scroll;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .SuggestCell {
-    font-size: 14px;
-    padding: 3px 12px;
-    margin-right: 10px;
-    border-radius: 12px;
-
-    white-space: nowrap;
-    overflow: visible;
-  }
-
-  .Suggest,
-  .NoResult,
-  .Item{
     padding: 8px 16px;
+
+    &:hover, &.Position {
+      background: @Whisper100;
+    }
   }
 </style>

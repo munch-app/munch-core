@@ -2,7 +2,7 @@
   <div class="Default flex-column" :class="{'gutter-24': isSearch && showsMap}" :lang="'en'">
     <nav class="Header fixed w-100 index-top-elevation hr-bot bg-white">
       <div class="container flex">
-        <header-logo class="mr-8" :class="{'IsSuggest': isFocused('Suggest')}"/>
+        <header-logo class="mr-8" :class="{'IsSearching': searching}"/>
         <div class="Search mlr-8 mtb-8 flex-grow">
           <!-- SearchBar TODO: Optimise -->
           <search-bar class="SearchBar" @onBlur="onBlur" @onFocus="onFocus"/>
@@ -56,6 +56,9 @@
       NavFooter, NotificationList, DialogPortal, ProfileOnBoarding, HeaderRight, SearchBarFilter,
       SearchBar, HeaderMenu, HeaderLogo
     },
+    data() {
+      return {searching: false}
+    },
     computed: {
       ...mapGetters(['isElevated', 'isFocused']),
       ...mapGetters('search', ['showsMap']),
@@ -71,12 +74,10 @@
     },
     methods: {
       onFocus() {
-        this.$store.commit('focus', 'Suggest')
+        this.searching = true
       },
       onBlur() {
-        if (this.isFocused('Suggest')) {
-          this.$store.commit('unfocus', 'Suggest')
-        }
+        this.searching = false
       }
     },
   }
@@ -98,7 +99,7 @@
 
   @media (max-width: 767.98px) {
     .HeaderRight,
-    .IsSuggest {
+    .IsSearching {
       display: none;
     }
 
