@@ -17,12 +17,4 @@ public final class LandingRequest {
         this.call = call;
         this.apiRequest = call.get(ApiRequest.class);
     }
-
-    public JsonCall getCall() {
-        return call;
-    }
-
-    public ApiRequest getApiRequest() {
-        return apiRequest;
-    }
 }

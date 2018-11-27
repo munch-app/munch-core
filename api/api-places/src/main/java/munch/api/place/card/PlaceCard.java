@@ -19,6 +19,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Time: 12:35 AM
  * Project: munch-core
  */
+@Deprecated
 public interface PlaceCard<T> {
 
     /**

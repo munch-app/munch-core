@@ -17,6 +17,7 @@ import java.util.List;
  * Project: munch-core
  */
 @Singleton
+@Deprecated
 public final class PlaceCardSorter {
     private static final CardGroup[] CARD_GROUPS = new CardGroup[]{
             // NOTE: CardId must be updated when it is updated on the card site

@@ -1,4 +1,4 @@
-package munch.api.user;
+package munch.api.user.collection;
 
 import munch.restful.core.JsonUtils;
 import munch.restful.core.NextNodeList;

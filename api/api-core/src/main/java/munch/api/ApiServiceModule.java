@@ -12,16 +12,25 @@ import munch.restful.server.RestfulService;
  */
 public abstract class ApiServiceModule extends AbstractModule {
 
+    /**
+     * @param clazz of ApiService to add
+     */
     protected <T extends ApiService> void addService(Class<T> clazz) {
         Multibinder<RestfulService> binder = Multibinder.newSetBinder(binder(), RestfulService.class);
         binder.addBinding().to(clazz);
     }
 
+    /**
+     * @param clazz of HealthCheck to add
+     */
     protected <T extends HealthCheck> void addHealth(Class<T> clazz) {
         Multibinder<HealthCheck> binder = Multibinder.newSetBinder(binder(), HealthCheck.class);
         binder.addBinding().to(clazz);
     }
 
+    /**
+     * @param clazz of Cleaner to add
+     */
     protected <T extends ObjectCleaner> void addCleaner(Class<T> clazz) {
         Multibinder<ObjectCleaner> binder = Multibinder.newSetBinder(binder(), ObjectCleaner.class);
         binder.addBinding().to(clazz);

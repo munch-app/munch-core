@@ -8,7 +8,6 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.google.inject.Provides;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import munch.api.core.CoreModule;
@@ -44,16 +43,18 @@ public class ApiModule extends AbstractModule {
         install(new FeedModule());
     }
 
-    private FirebaseAuthenticationModule getAuthenticationModule() {
+    /**
+     * @return Firebase Authentication Module
+     */
+    private static FirebaseAuthenticationModule getAuthenticationModule() {
         Config config = ConfigFactory.load();
         final String projectId = config.getString("services.firebase.projectId");
         final String ssmKey = config.getString("services.firebase.ssmKey");
 
         try {
             AWSSimpleSystemsManagement client = AWSSimpleSystemsManagementClientBuilder.defaultClient();
-            GetParameterResult result = client.getParameter(new GetParameterRequest()
-                    .withName(ssmKey)
-                    .withWithDecryption(true)
+            GetParameterResult result = client.getParameter(
+                    new GetParameterRequest().withName(ssmKey).withWithDecryption(true)
             );
 
             String value = result.getParameter().getValue();
@@ -63,11 +64,6 @@ public class ApiModule extends AbstractModule {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Provides
-    Config provideConfig() {
-        return ConfigFactory.load();
     }
 
     /**

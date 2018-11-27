@@ -22,5 +22,12 @@ public final class PlaceCleaner extends ObjectCleaner<Place> {
     @Override
     protected void clean(Place place) {
         place.setNames(null);
+        place.setTaste(null);
+
+        place.setUpdatedMillis(null);
+        place.setCreatedMillis(null);
+
+        // This is deprecated
+        place.setRanking(null);
     }
 }

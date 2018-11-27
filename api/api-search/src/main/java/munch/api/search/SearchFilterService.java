@@ -52,9 +52,10 @@ public final class SearchFilterService extends ApiService {
             return FilterResult.from(count, tags, frequency);
         } else {
             JsonNode aggregations = postAggregation(request, true, true, true);
+
+            long count = ElasticOutput.parseCount(aggregations);
             Map<String, Integer> tags = ElasticOutput.parseTagCounts(aggregations);
             Map<Double, Integer> frequency = ElasticOutput.parsePriceFrequency(aggregations);
-            long count = ElasticOutput.parseCount(aggregations);
             return FilterResult.from(count, tags, frequency);
         }
     }
@@ -83,6 +84,9 @@ public final class SearchFilterService extends ApiService {
         return result.path("aggregations");
     }
 
+    /**
+     * ElasticInput parser
+     */
     private static final class ElasticInput {
         private static JsonNode aggTags() {
             ObjectNode tag = objectMapper.createObjectNode();
@@ -114,6 +118,9 @@ public final class SearchFilterService extends ApiService {
         }
     }
 
+    /**
+     * ElasticOutput parser
+     */
     private static final class ElasticOutput {
         private static Map<String, Integer> parseTagCounts(JsonNode aggregations) {
             Map<String, Integer> counts = new HashMap<>();

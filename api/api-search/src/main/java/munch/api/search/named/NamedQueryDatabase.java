@@ -1,4 +1,4 @@
-package munch.api.search;
+package munch.api.search.named;
 
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;

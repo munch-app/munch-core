@@ -2,6 +2,7 @@ package munch.api.user;
 
 import munch.api.ApiRequest;
 import munch.api.ApiService;
+import munch.api.user.collection.DefaultUserPlaceCollection;
 import munch.data.client.PlaceClient;
 import munch.data.place.Place;
 import munch.file.Image;

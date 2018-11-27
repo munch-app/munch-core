@@ -1,4 +1,4 @@
-package munch.api.search;
+package munch.api.search.named;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;

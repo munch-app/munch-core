@@ -6,7 +6,6 @@ import munch.api.ApiService;
 import munch.api.search.data.SearchQuery;
 import munch.api.search.elastic.ElasticQueryUtils;
 import munch.data.ElasticObject;
-import munch.data.client.AreaClient;
 import munch.data.client.ElasticClient;
 import munch.data.location.Area;
 import munch.data.location.Landmark;
@@ -33,13 +32,11 @@ import java.util.stream.Collectors;
 public final class SearchFilterBetweenService extends ApiService {
 
     private final GeocodeClient geocodeClient;
-    private final AreaClient areaClient;
     private final ElasticClient elasticClient;
 
     @Inject
-    public SearchFilterBetweenService(GeocodeClient geocodeClient, AreaClient areaClient, ElasticClient elasticClient) {
+    public SearchFilterBetweenService(GeocodeClient geocodeClient, ElasticClient elasticClient) {
         this.geocodeClient = geocodeClient;
-        this.areaClient = areaClient;
         this.elasticClient = elasticClient;
     }
 

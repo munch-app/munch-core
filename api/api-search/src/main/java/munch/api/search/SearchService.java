@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import munch.api.ApiService;
 import munch.api.search.data.NamedSearchQuery;
 import munch.api.search.data.SearchQuery;
+import munch.api.search.named.NamedDelegator;
 import munch.api.search.suggest.SuggestDelegator;
 import munch.restful.core.JsonUtils;
 import munch.restful.core.exception.ParamException;

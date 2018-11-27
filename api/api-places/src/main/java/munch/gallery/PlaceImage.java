@@ -26,7 +26,7 @@ public final class PlaceImage {
 
     private Article article;
     private Instagram instagram;
-    private long createdMillis;
+    private Long createdMillis;
 
     public String getImageId() {
         return imageId;
@@ -84,11 +84,11 @@ public final class PlaceImage {
         this.instagram = instagram;
     }
 
-    public long getCreatedMillis() {
+    public Long getCreatedMillis() {
         return createdMillis;
     }
 
-    public void setCreatedMillis(long createdMillis) {
+    public void setCreatedMillis(Long createdMillis) {
         this.createdMillis = createdMillis;
     }
 

@@ -18,5 +18,9 @@ public final class AreaCleaner extends ObjectCleaner<Area> {
     @Override
     protected void clean(Area data) {
         data.setLocationCondition(null);
+
+        data.setCreatedMillis(null);
+        data.setUpdatedMillis(null);
+        data.setNames(null);
     }
 }

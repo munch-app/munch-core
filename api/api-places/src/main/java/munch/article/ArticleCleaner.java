@@ -18,5 +18,6 @@ public final class ArticleCleaner extends ObjectCleaner<Article> {
     @Override
     protected void clean(Article data) {
         data.setCount(null);
+        data.setUpdatedMillis(null);
     }
 }

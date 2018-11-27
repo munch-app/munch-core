@@ -52,13 +52,20 @@ public final class ApiServer extends RestfulServer {
     }
 
     /**
-     * Before all calls
+     * Before all calls add a ApiRequest instance
+     * ApiRequest instance contains all the helper method for munch-core ApiService
      */
     public void before(Request request, Response response) {
         // See JsonCall.get & JsonCall.put to understand how it works
         request.attribute(ApiRequest.class.getName(), new ApiRequest(request, authenticator));
     }
 
+    /**
+     * Special handle AuthenticationException of tracking purpose
+     *
+     * @param call      json call
+     * @param exception to handle
+     */
     @Override
     protected void handleException(JsonCall call, StructuredException exception) {
         if (exception instanceof AuthenticationException) {

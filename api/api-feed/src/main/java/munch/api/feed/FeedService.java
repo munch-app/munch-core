@@ -2,13 +2,11 @@ package munch.api.feed;
 
 import munch.api.ApiService;
 import munch.data.client.PlaceCachedClient;
-import munch.feed.*;
+import munch.feed.FeedItem;
 import munch.restful.core.NextNodeList;
-import munch.restful.server.JsonCall;
 import munch.restful.server.JsonResult;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -19,68 +17,19 @@ import java.util.Set;
  * Time: 2:15 PM
  * Project: munch-core
  */
-@Singleton
-public final class FeedService extends ApiService {
-    private final PlaceCachedClient placeClient;
-    private final ImageFeedClient imageFeedClient;
-    private final ArticleFeedClient articleFeedClient;
+public abstract class FeedService extends ApiService {
+    protected final PlaceCachedClient placeClient;
 
     @Inject
-    public FeedService(PlaceCachedClient placeClient, ImageFeedClient imageFeedClient, ArticleFeedClient articleFeedClient) {
+    public FeedService(PlaceCachedClient placeClient) {
         this.placeClient = placeClient;
-        this.imageFeedClient = imageFeedClient;
-        this.articleFeedClient = articleFeedClient;
     }
 
-    @Override
-    public void route() {
-        PATH("/feed/images", () -> {
-            GET("", this::queryImages);
-            GET("/:itemId", this::getImage);
-        });
-
-        PATH("/feed/articles", () -> {
-            GET("", this::queryArticles);
-            GET("/:itemId", this::getArticle);
-        });
-    }
-
-    public JsonResult queryImages(JsonCall call) {
-        String country = call.queryString("country", "sgp");
-        String latLng = call.queryString("latLng", "1.3521,103.8198");
-
-        int from = call.queryInt("next.from", 0);
-        int size = call.querySize(20, 30);
-
-        NextNodeList<ImageFeedItem> items = imageFeedClient.query(country, latLng, from, size);
-        return result(items);
-    }
-
-    public JsonResult getImage(JsonCall call) {
-        String itemId = call.pathString("itemId");
-        ImageFeedItem feedItem = imageFeedClient.get(itemId);
-        if (feedItem == null) return JsonResult.notFound();
-        return get(feedItem);
-    }
-
-    public JsonResult queryArticles(JsonCall call) {
-        String country = call.queryString("country", "sgp");
-        String latLng = call.queryString("latLng", "1.3521,103.8198");
-        String nextSort = call.queryString("next.sort", null);
-        int size = call.querySize(20, 30);
-
-        NextNodeList<ArticleFeedItem> items = articleFeedClient.query(country, latLng, nextSort, size);
-        return result(items);
-    }
-
-    private JsonResult getArticle(JsonCall call) {
-        String itemId = call.pathString("itemId");
-        ArticleFeedItem feedItem = articleFeedClient.get(itemId);
-        if (feedItem == null) return JsonResult.notFound();
-        return get(feedItem);
-    }
-
-    private JsonResult get(FeedItem feedItem) {
+    /**
+     * @param feedItem to convert to json for delivery
+     * @return data: {item: {}, places: {placeId: {}}}
+     */
+    protected JsonResult asResult(FeedItem feedItem) {
         Set<String> placeIds = new HashSet<>();
         feedItem.getPlaces().forEach(place -> {
             placeIds.add(place.getPlaceId());
@@ -92,16 +41,18 @@ public final class FeedService extends ApiService {
         ));
     }
 
-    private JsonResult result(NextNodeList<? extends FeedItem> items) {
+    /**
+     * @param items to convert to json for delivery
+     * @return data: {items: [], places: {placeId: {}}}
+     */
+    protected JsonResult result(NextNodeList<? extends FeedItem> items) {
+        // Collect placeIds
         Set<String> placeIds = new HashSet<>();
-        items.forEach(feedItem -> {
-            feedItem.getPlaces().forEach(place -> {
-                placeIds.add(place.getPlaceId());
-            });
-        });
+        items.forEach(item -> item.getPlaces().forEach(place -> {
+            placeIds.add(place.getPlaceId());
+        }));
 
-        JsonResult result = JsonResult.ok();
-        result.put("data", Map.of(
+        JsonResult result = JsonResult.ok(Map.of(
                 "items", items,
                 "places", placeClient.get(placeIds)
         ));

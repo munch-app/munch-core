@@ -22,6 +22,7 @@ import java.util.List;
  * Project: munch-core
  */
 @Singleton
+@Deprecated
 public final class QueryCardLoader {
     private final List<PlaceDataCardLoader<?>> dataCardLoaders;
 

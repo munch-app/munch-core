@@ -2,7 +2,7 @@ package munch.permutation;
 
 import catalyst.utils.DateCompareUtils;
 import com.google.common.collect.Iterators;
-import munch.api.search.NamedQueryDatabase;
+import munch.api.search.named.NamedQueryDatabase;
 import munch.api.search.data.NamedSearchQuery;
 import munch.api.search.data.SearchQuery;
 import munch.data.client.AreaClient;

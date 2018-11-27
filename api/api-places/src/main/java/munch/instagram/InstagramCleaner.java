@@ -1,7 +1,6 @@
 package munch.instagram;
 
 import munch.api.ObjectCleaner;
-import munch.data.tag.Tag;
 import munch.instagram.data.InstagramMedia;
 
 import javax.inject.Singleton;
@@ -23,6 +22,9 @@ public final class InstagramCleaner extends ObjectCleaner<InstagramMedia> {
     @Override
     protected void clean(InstagramMedia data) {
         data.setCount(null);
+        data.setLocation(null);
         data.setVision(null);
+
+        data.setFilter(null);
     }
 }

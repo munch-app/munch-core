@@ -41,7 +41,7 @@ public final class ArticleLinkClient extends munch.article.link.ArticleLinkClien
         articles.removeIf(article -> {
             // No description article will be removed for now
             if (StringUtils.isAnyBlank(article.getTitle())) return true;
-            if (StringUtils.isAnyBlank(article.getDescription(), article.getContent())) return true;
+            if (StringUtils.isAnyBlank(article.getDescription())) return true;
             if (uniqueUrls.contains(article.getUrl())) return true;
 
             String pair = article.getDomainId() + "|" + article.getTitle();

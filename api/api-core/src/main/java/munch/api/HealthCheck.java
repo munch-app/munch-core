@@ -9,7 +9,8 @@ package munch.api;
 public abstract class HealthCheck {
 
     /**
-     * Health check, throw exception if failed
+     * Health check, implement checking logic and
+     * throw an exception if failed
      *
      * @throws Exception for failure
      */

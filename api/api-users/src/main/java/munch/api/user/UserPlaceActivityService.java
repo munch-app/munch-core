@@ -37,8 +37,8 @@ public final class UserPlaceActivityService extends ApiService {
         String userId = call.get(ApiRequest.class).getUserId();
         String placeId = call.pathString("placeId");
         long startedMillis = call.pathLong("startedMillis");
-        UserPlaceActivity placeActivity = call.bodyAsObject(UserPlaceActivity.class);
 
+        UserPlaceActivity placeActivity = call.bodyAsObject(UserPlaceActivity.class);
         activityClient.put(userId, placeId, startedMillis, placeActivity);
         return JsonResult.ok();
     }

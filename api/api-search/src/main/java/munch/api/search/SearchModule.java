@@ -16,6 +16,7 @@ import javax.inject.Singleton;
  * Project: munch-core
  */
 public final class SearchModule extends ApiServiceModule {
+
     @Override
     protected void configure() {
         Multibinder<SearchCardInjector.Loader> loaderBinder = Multibinder.newSetBinder(binder(), SearchCardInjector.Loader.class);

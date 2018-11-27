@@ -20,8 +20,13 @@ public final class TagCleaner extends ObjectCleaner<Tag> {
 
     @Override
     protected void clean(Tag data) {
+        data.setNames(null);
+
         data.setPlace(null);
         data.setSearch(null);
         data.setCounts(null);
+
+        data.setCreatedMillis(null);
+        data.setUpdatedMillis(null);
     }
 }

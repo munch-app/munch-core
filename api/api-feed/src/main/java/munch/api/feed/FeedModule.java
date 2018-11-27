@@ -11,6 +11,7 @@ import munch.api.ApiServiceModule;
 public final class FeedModule extends ApiServiceModule {
     @Override
     protected void configure() {
-        addService(FeedService.class);
+        addService(FeedImageService.class);
+        addService(FeedArticleService.class);
     }
 }

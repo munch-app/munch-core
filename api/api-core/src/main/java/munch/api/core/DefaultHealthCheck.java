@@ -8,7 +8,7 @@ import munch.api.HealthCheck;
  * Time: 8:03 PM
  * Project: munch-core
  */
-public class DefaultHealthCheck extends HealthCheck {
+public final class DefaultHealthCheck extends HealthCheck {
     @Override
     protected void check() {
 

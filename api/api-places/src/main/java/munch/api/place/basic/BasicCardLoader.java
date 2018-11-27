@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
  * Project: munch-core
  */
 @Singleton
+@Deprecated
 public final class BasicCardLoader {
     private static final ObjectMapper objectMapper = JsonUtils.objectMapper;
 

@@ -28,17 +28,16 @@ public final class CleanerTransformer extends JsonTransformer {
 
     @Override
     protected void clean(Object object) {
-        if (object instanceof Collection) {
-            ((Collection<?>) object).forEach(this::cleanEach);
-        } else if (object instanceof Map) {
-            ((Map<?, ?>) object).forEach((k, v) -> {
-                if (v instanceof Collection) {
-                    ((Collection<?>) v).forEach(this::cleanEach);
-                } else {
-                    cleanEach(v);
-                }
-            });
-        } else {
+        // Clean values in Map
+        if (object instanceof Map) {
+            ((Map<?, ?>) object).forEach((k, v) -> clean(v));
+        }
+        // Clean items in Collection
+        else if (object instanceof Collection) {
+            ((Collection<?>) object).forEach(this::clean);
+        }
+        // Clean object itself
+        else {
             cleanEach(object);
         }
     }

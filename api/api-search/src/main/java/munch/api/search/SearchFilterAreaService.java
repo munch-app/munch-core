@@ -2,16 +2,13 @@ package munch.api.search;
 
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
-import com.google.common.collect.Lists;
 import munch.api.ApiService;
 import munch.data.client.AreaClient;
-import munch.data.location.Area;
 import munch.restful.server.JsonCall;
-import munch.restful.server.JsonResult;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -25,16 +22,14 @@ import java.util.concurrent.TimeUnit;
 public final class SearchFilterAreaService extends ApiService {
 
     private final Supplier<List<Area>> supplier;
-    private Long millis;
 
     @Inject
     public SearchFilterAreaService(AreaClient areaClient) {
         this.supplier = Suppliers.memoizeWithExpiration(() -> {
-            List<Area> areas = Lists.newArrayList(areaClient.iterator());
-            millis = areas.stream()
-                    .max(Comparator.comparingLong(Area::getUpdatedMillis))
-                    .map(Area::getUpdatedMillis)
-                    .orElse(null);
+            List<Area> areas = new ArrayList<>();
+            areaClient.iterator().forEachRemaining(area -> {
+                areas.add(new Area(area.getAreaId(), area.getName()));
+            });
             return areas;
         }, 12, TimeUnit.HOURS);
 
@@ -46,19 +41,20 @@ public final class SearchFilterAreaService extends ApiService {
     public void route() {
         PATH("/search/filter/areas", () -> {
             GET("", this::get);
-            HEAD("", this::head);
         });
     }
 
     private List<Area> get(JsonCall call) {
-        List<Area> areas = supplier.get();
-        call.response().header("Last-Modified-Millis", String.valueOf(millis));
-        return areas;
+        return supplier.get();
     }
 
-    private JsonResult head(JsonCall call) {
-        supplier.get();
-        call.response().header("Last-Modified-Millis", String.valueOf(millis));
-        return JsonResult.ok();
+    private static class Area {
+        public String areaId;
+        public String name;
+
+        public Area(String areaId, String name) {
+            this.areaId = areaId;
+            this.name = name;
+        }
     }
 }

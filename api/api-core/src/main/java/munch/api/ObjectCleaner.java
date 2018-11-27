@@ -9,7 +9,7 @@ package munch.api;
 public abstract class ObjectCleaner<T> {
 
     /**
-     * @return class to clean
+     * @return class of data to clean
      */
     protected abstract Class<T> getClazz();
 

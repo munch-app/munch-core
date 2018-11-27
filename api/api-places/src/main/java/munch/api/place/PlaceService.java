@@ -90,6 +90,7 @@ public final class PlaceService extends ApiService {
      * @param call json call
      * @return {cards: List of PlaceCard, place: Place}
      */
+    @Deprecated
     private JsonResult getCards(JsonCall call) {
         Place place = placeClient.get(call.pathString("placeId"));
         if (place == null) return JsonResult.notFound();
