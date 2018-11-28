@@ -1,8 +1,6 @@
 package munch.api.search;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import munch.api.ApiRequest;
-import munch.api.search.data.SearchQuery;
 import munch.api.search.elastic.ElasticSpatialUtils;
 import munch.data.location.Area;
 import munch.restful.core.JsonUtils;
@@ -14,7 +12,6 @@ import javax.inject.Singleton;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 /**
  * This is the more generic SearchRequest loader
@@ -92,6 +89,9 @@ public final class SearchRequest {
         return false;
     }
 
+    /**
+     * @return if is anywhere, will resolve to anywhere if given type is invalid
+     */
     public boolean isAnywhere() {
         if (searchQuery.getFilter().getLocation().getType() == SearchQuery.Filter.Location.Type.Anywhere) return true;
         if (isNearby()) return false;
@@ -147,7 +147,6 @@ public final class SearchRequest {
      * @return whether there is price data
      */
     public boolean hasPrice() {
-        if (searchQuery.getFilter() == null) return false;
         if (searchQuery.getFilter().getPrice() == null) return false;
         if (searchQuery.getFilter().getPrice().getMin() != null) return true;
         if (searchQuery.getFilter().getPrice().getMax() != null) return true;
@@ -212,30 +211,23 @@ public final class SearchRequest {
 
     @Singleton
     public static final class Factory {
+
+        /**
+         * @param call JsonCall with body as SearchQuery
+         * @return SearchRequest
+         */
         public SearchRequest create(JsonCall call) {
-            SearchQuery searchQuery = call.bodyAsObject(SearchQuery.class);
-            fix(searchQuery);
-            return new SearchRequest(call, searchQuery);
+            return create(call, call.bodyAsObject(SearchQuery.class));
         }
 
+        /**
+         * @param call        JsonCall
+         * @param searchQuery custom search query
+         * @return SearchRequest
+         */
         public SearchRequest create(JsonCall call, SearchQuery searchQuery) {
-            fix(searchQuery);
+            SearchQuery.validate(searchQuery);
             return new SearchRequest(call, searchQuery);
-        }
-
-        public SearchRequest create(JsonCall call, Function<JsonNode, SearchQuery> mapper) {
-            SearchQuery searchQuery = mapper.apply(call.bodyAsJson());
-            fix(searchQuery);
-            return new SearchRequest(call, searchQuery);
-        }
-
-        private static void fix(SearchQuery query) {
-            if (query.getFilter() == null) query.setFilter(new SearchQuery.Filter());
-            if (query.getSort() == null) query.setSort(new SearchQuery.Sort());
-
-            if (query.getFilter().getLocation() == null) {
-                query.getFilter().setLocation(new SearchQuery.Filter.Location());
-            }
         }
     }
 }

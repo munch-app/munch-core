@@ -1,19 +1,22 @@
-package munch.api.search.data;
+package munch.api.search;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import munch.data.location.Area;
+import munch.data.tag.Tag;
+import munch.restful.core.exception.ValidationException;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
- * This is a structure for place query
- * If distance and polygon is both present, distance will be used
- * <p>
- * <p>
  * Created By: Fuxing Loh
  * Date: 20/4/2017
  * Time: 8:34 PM
@@ -22,7 +25,17 @@ import java.util.Set;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class SearchQuery {
-    public static final String VERSION = "2018-09-25";
+
+    /**
+     * Versions History:
+     * 2018-09-25
+     * - Changes in Filter.Location object
+     * <p>
+     * 2018-11-28
+     * - Changes in Filter.tags uses munch.data.tag.Tag now
+     * - Added strict validation for consistency
+     */
+    public static final String VERSION = "2018-11-28";
 
     private Filter filter = new Filter();
     private Sort sort = new Sort();
@@ -30,8 +43,9 @@ public final class SearchQuery {
     /**
      * Optional
      *
-     * @return Place additional filters
+     * @return NotNull Filter
      */
+    @NotNull
     public Filter getFilter() {
         return filter;
     }
@@ -40,6 +54,12 @@ public final class SearchQuery {
         this.filter = filter;
     }
 
+    /**
+     * Optional
+     *
+     * @return NotNull Sort
+     */
+    @NotNull
     public Sort getSort() {
         return sort;
     }
@@ -54,11 +74,13 @@ public final class SearchQuery {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Filter {
-        private Price price;
-        private Tag tag;
         private Hour hour;
-        private Location location;
+        private Price price;
+        private List<Tag> tags = new ArrayList<>();
+        private Location location = new Location();
 
+        @Valid
+        @Nullable
         public Price getPrice() {
             return price;
         }
@@ -67,14 +89,8 @@ public final class SearchQuery {
             this.price = price;
         }
 
-        public Tag getTag() {
-            return tag;
-        }
-
-        public void setTag(Tag tag) {
-            this.tag = tag;
-        }
-
+        @Valid
+        @Nullable
         public Hour getHour() {
             return hour;
         }
@@ -83,6 +99,17 @@ public final class SearchQuery {
             this.hour = hour;
         }
 
+        @NotNull
+        public List<Tag> getTags() {
+            return tags;
+        }
+
+        public void setTags(List<Tag> tags) {
+            this.tags = tags;
+        }
+
+        @Valid
+        @NotNull
         public Location getLocation() {
             return location;
         }
@@ -106,6 +133,7 @@ public final class SearchQuery {
                 this.name = name;
             }
 
+            @Nullable
             public Double getMin() {
                 return min;
             }
@@ -114,6 +142,7 @@ public final class SearchQuery {
                 this.min = min;
             }
 
+            @Nullable
             public Double getMax() {
                 return max;
             }
@@ -132,62 +161,49 @@ public final class SearchQuery {
             }
         }
 
-        @JsonIgnoreProperties(ignoreUnknown = true)
-        public static class Tag {
-            private Set<String> positives;
-            private Set<String> negatives;
-
-            @NotNull
-            public Set<String> getPositives() {
-                return positives;
-            }
-
-            public void setPositives(Set<String> positives) {
-                this.positives = positives;
-            }
-
-            @NotNull
-            public Set<String> getNegatives() {
-                return negatives;
-            }
-
-            public void setNegatives(Set<String> negatives) {
-                this.negatives = negatives;
-            }
-
-            @Override
-            public String toString() {
-                return "Tag{" +
-                        "positives=" + positives +
-                        ", negatives=" + negatives +
-                        '}';
-            }
-        }
-
+        /**
+         * Hour Filter with explicit timings.
+         * <p>
+         * For Dinner, Lunch, Breakfast, Supper.
+         * It should be queried with tagId in Filter.tags
+         */
         @JsonIgnoreProperties(ignoreUnknown = true)
         public static class Hour {
-            private String name;
+            private Type type;
 
             private String day;
             private String open;
             private String close;
 
-            /**
-             * @return name of hour filter
-             */
-            @Nullable
-            public String getName() {
-                return name;
+            public enum Type {
+                /**
+                 * OpenNow, requires {day,open,close}
+                 */
+                OpenNow,
+
+                /**
+                 * OpenDay, requires {day,open,close}
+                 */
+                OpenDay,
             }
 
-            public void setName(String name) {
-                this.name = name;
+            /**
+             * @return hour type, used more for ui purpose
+             */
+            @NotNull
+            public Type getType() {
+                return type;
+            }
+
+            public void setType(Type type) {
+                this.type = type;
             }
 
             /**
              * @return day which it is open
              */
             @NotNull
+            @Pattern(regexp = "mon|tue|wed|thu|fri|sat|sun")
             public String getDay() {
                 return day;
             }
@@ -197,6 +213,7 @@ public final class SearchQuery {
             }
 
             @NotNull
+            @Pattern(regexp = "[0-9]{2}:[0-9]{2}")
             public String getOpen() {
                 return open;
             }
@@ -206,6 +223,7 @@ public final class SearchQuery {
             }
 
             @NotNull
+            @Pattern(regexp = "[0-9]{2}:[0-9]{2}")
             public String getClose() {
                 return close;
             }
@@ -217,49 +235,25 @@ public final class SearchQuery {
             @Override
             public String toString() {
                 return "Hour{" +
-                        "name='" + name + '\'' +
+                        "type=" + type +
                         ", day='" + day + '\'' +
                         ", open='" + open + '\'' +
                         ", close='" + close + '\'' +
                         '}';
             }
+
+            @JsonIgnore
+            public String asText() {
+                if (type == Type.OpenNow) return "Open Now";
+                return StringUtils.capitalize(getDay()) + " " + getOpen() + " - " + getClose();
+            }
         }
 
         @JsonIgnoreProperties(ignoreUnknown = true)
         public static class Location {
-            private List<Area> areas;
-            private List<Point> points;
-            private Type type;
-
-            /**
-             * @return if no location default to anywhere
-             */
-            public List<Area> getAreas() {
-                return areas;
-            }
-
-            public void setAreas(List<Area> areas) {
-                this.areas = areas;
-            }
-
-            /**
-             * @return Points used by EatBetween
-             */
-            public List<Point> getPoints() {
-                return points;
-            }
-
-            public void setPoints(List<Point> points) {
-                this.points = points;
-            }
-
-            public Type getType() {
-                return type;
-            }
-
-            public void setType(Type type) {
-                this.type = type;
-            }
+            private Type type = Type.Anywhere;
+            private List<Area> areas = new ArrayList<>();
+            private List<Point> points = new ArrayList<>();
 
             public enum Type {
                 /**
@@ -288,6 +282,40 @@ public final class SearchQuery {
                 Anywhere
             }
 
+            /**
+             * @return if no location default to anywhere
+             */
+            @NotNull
+            public List<Area> getAreas() {
+                return areas;
+            }
+
+            public void setAreas(List<Area> areas) {
+                this.areas = areas;
+            }
+
+            /**
+             * @return Points used by EatBetween
+             */
+            @Valid
+            @NotNull
+            public List<Point> getPoints() {
+                return points;
+            }
+
+            public void setPoints(List<Point> points) {
+                this.points = points;
+            }
+
+            @NotNull
+            public Type getType() {
+                return type;
+            }
+
+            public void setType(Type type) {
+                this.type = type;
+            }
+
             @Override
             public String toString() {
                 return "Location{" +
@@ -297,10 +325,12 @@ public final class SearchQuery {
                         '}';
             }
 
+            @JsonIgnoreProperties(ignoreUnknown = true)
             public static class Point {
                 private String name;
                 private String latLng;
 
+                @NotBlank
                 public String getName() {
                     return name;
                 }
@@ -309,6 +339,8 @@ public final class SearchQuery {
                     this.name = name;
                 }
 
+                @NotNull
+                @Pattern(regexp = "^[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?),\\s*[-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)$")
                 public String getLatLng() {
                     return latLng;
                 }
@@ -330,9 +362,9 @@ public final class SearchQuery {
         @Override
         public String toString() {
             return "Filter{" +
-                    "price=" + price +
-                    ", tag=" + tag +
-                    ", hour=" + hour +
+                    "hour=" + hour +
+                    ", price=" + price +
+                    ", tags=" + tags +
                     ", location=" + location +
                     '}';
         }
@@ -348,7 +380,6 @@ public final class SearchQuery {
         public static final String TYPE_PRICE_LOWEST = "price_lowest";
         public static final String TYPE_PRICE_HIGHEST = "price_highest";
         public static final String TYPE_DISTANCE_NEAREST = "distance_nearest";
-        public static final String TYPE_RATING_HIGHEST = "rating_highest";
 
         private String type;
 
@@ -358,8 +389,8 @@ public final class SearchQuery {
          * @see Sort#TYPE_PRICE_LOWEST
          * @see Sort#TYPE_PRICE_HIGHEST
          * @see Sort#TYPE_DISTANCE_NEAREST
-         * @see Sort#TYPE_RATING_HIGHEST
          */
+        @Nullable
         public String getType() {
             return type;
         }
@@ -390,5 +421,24 @@ public final class SearchQuery {
                 ", sort=" + sort +
                 ", version=" + getVersion() +
                 '}';
+    }
+
+    /**
+     * @param query to validate so that it respect the annotations
+     * @throws ValidationException if other deep fields input by user
+     */
+    public static void validate(SearchQuery query) throws ValidationException {
+        if (query.getFilter() == null) query.setFilter(new SearchQuery.Filter());
+        if (query.getSort() == null) query.setSort(new SearchQuery.Sort());
+
+        if (query.getFilter().getLocation() == null) {
+            query.getFilter().setLocation(new SearchQuery.Filter.Location());
+        }
+
+        if (query.getFilter().getTags() == null) {
+            query.getFilter().setTags(List.of());
+        }
+
+        ValidationException.validate(query);
     }
 }

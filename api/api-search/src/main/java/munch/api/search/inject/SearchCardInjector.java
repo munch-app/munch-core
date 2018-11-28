@@ -2,7 +2,7 @@ package munch.api.search.inject;
 
 import munch.api.search.SearchRequest;
 import munch.api.search.cards.SearchCard;
-import munch.api.search.data.SearchQuery;
+import munch.api.search.SearchQuery;
 import munch.data.location.Area;
 import munch.restful.core.JsonUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -288,13 +288,8 @@ public final class SearchCardInjector {
                         if (query.getFilter().getPrice().getMin() != null) return true;
                         if (query.getFilter().getPrice().getMax() != null) return true;
                     }
-                    if (query.getFilter().getTag() != null) {
-                        if (query.getFilter().getTag().getPositives() != null) {
-                            if (!query.getFilter().getTag().getPositives().isEmpty()) return true;
-                        }
-                        if (query.getFilter().getTag().getNegatives() != null) {
-                            if (!query.getFilter().getTag().getNegatives().isEmpty()) return true;
-                        }
+                    if (!query.getFilter().getTags().isEmpty()) {
+                        return true;
                     }
                 }
 

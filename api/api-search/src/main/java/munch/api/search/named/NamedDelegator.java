@@ -3,12 +3,16 @@ package munch.api.search.named;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import munch.api.search.data.NamedSearchQuery;
+import munch.data.client.NamedQueryClient;
+import munch.data.named.NamedQuery;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -21,23 +25,26 @@ import java.util.concurrent.TimeUnit;
 public final class NamedDelegator {
     private static final Logger logger = LoggerFactory.getLogger(NamedDelegator.class);
 
-    private final LoadingCache<String, NamedSearchQuery> cache;
+    private final LoadingCache<String, NamedQuery> cache;
 
     @Inject
-    public NamedDelegator(NamedQueryDatabase database) {
+    public NamedDelegator(NamedQueryClient client) {
         cache = CacheBuilder.newBuilder()
                 .maximumSize(10_000)
                 .expireAfterWrite(30, TimeUnit.DAYS)
-                .build(CacheLoader.from(database::get));
+                .build(CacheLoader.from(slug -> {
+                    return client.get(slug,"2018-11-28");
+                }));
     }
 
     /**
-     * @param named to find
-     * @return named SearchQuery or null
+     * @param slug of named object
+     * @return NamedQuery
      */
-    public NamedSearchQuery delegate(String named) {
+    @Nullable
+    public NamedQuery delegate(String slug) {
         try {
-            return cache.getUnchecked(named);
+            return cache.getUnchecked(slug);
         } catch (Exception e) {
             return null;
         }

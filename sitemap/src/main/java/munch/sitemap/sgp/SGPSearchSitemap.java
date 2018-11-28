@@ -3,13 +3,12 @@ package munch.sitemap.sgp;
 import com.google.common.collect.Iterators;
 import com.redfin.sitemapgenerator.ChangeFreq;
 import com.redfin.sitemapgenerator.WebSitemapUrl;
-import munch.api.search.data.NamedSearchQuery;
+import munch.data.named.NamedQuery;
 import munch.sitemap.SitemapProvider;
 
 import javax.inject.Inject;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.Objects;
 
 /**
  * Created by: Fuxing
@@ -38,8 +37,9 @@ public final class SGPSearchSitemap implements SitemapProvider {
     }
 
     @Override
+    @SuppressWarnings("ConstantConditions")
     public Iterator<WebSitemapUrl> provide() {
-        Iterator<NamedSearchQuery> joined = Iterators.concat(
+        Iterator<NamedQuery> joined = Iterators.concat(
                 anywherePermutation.get(),
                 locationPermutation.get(),
                 tagLocationPermutation.get(),
@@ -48,8 +48,7 @@ public final class SGPSearchSitemap implements SitemapProvider {
 
         return Iterators.transform(joined, query -> {
             sleep();
-            Objects.requireNonNull(query);
-            return build("/search/" + query.getName(), new Date(query.getUpdatedMillis()), 0.5, ChangeFreq.MONTHLY);
+            return build("/search/" + query.getSlug(), new Date(query.getUpdatedMillis()), 0.5, ChangeFreq.MONTHLY);
         });
     }
 

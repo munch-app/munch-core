@@ -1,16 +1,14 @@
 package munch.permutation;
 
-import catalyst.utils.DateCompareUtils;
 import com.google.common.collect.Iterators;
-import munch.api.search.named.NamedQueryDatabase;
-import munch.api.search.data.NamedSearchQuery;
-import munch.api.search.data.SearchQuery;
+import munch.api.search.SearchQuery;
 import munch.data.client.AreaClient;
 import munch.data.client.LandmarkClient;
+import munch.data.client.NamedQueryClient;
 import munch.data.client.TagClient;
+import munch.data.named.NamedQuery;
 
 import javax.inject.Inject;
-import java.time.Duration;
 import java.util.Iterator;
 import java.util.Objects;
 
@@ -21,7 +19,7 @@ import java.util.Objects;
  * Project: munch-core
  */
 public abstract class PermutationEngine implements NamedQueryMapper {
-    protected NamedQueryDatabase database;
+    protected NamedQueryClient namedQueryClient;
 
     protected APISearchClient apiSearchClient;
     protected TagClient tagClient;
@@ -29,8 +27,8 @@ public abstract class PermutationEngine implements NamedQueryMapper {
     protected LandmarkClient landmarkClient;
 
     @Inject
-    void inject(NamedQueryDatabase database, APISearchClient apiSearchClient, TagClient tagClient, AreaClient areaClient, LandmarkClient landmarkClient) {
-        this.database = database;
+    void inject(NamedQueryClient namedQueryClient, APISearchClient apiSearchClient, TagClient tagClient, AreaClient areaClient, LandmarkClient landmarkClient) {
+        this.namedQueryClient = namedQueryClient;
         this.apiSearchClient = apiSearchClient;
         this.tagClient = tagClient;
         this.areaClient = areaClient;
@@ -38,31 +36,36 @@ public abstract class PermutationEngine implements NamedQueryMapper {
     }
 
     @SuppressWarnings("ConstantConditions")
-    public Iterator<NamedSearchQuery> get() {
-        Iterator<SearchQuery> iterator = Iterators.filter(iterator(), Objects::nonNull);
-        Iterator<NamedSearchQuery> mapped = Iterators.transform(iterator, this::map);
+    public Iterator<NamedQuery> get() {
+        Iterator<NamedQuery> mapped = Iterators.transform(iterator(), query -> {
+            if (query == null) return null;
 
-        mapped = Iterators.transform(mapped, namedQuery -> {
-            NamedSearchQuery existing = database.get(namedQuery.getName());
-            if (isUseExisting(existing, namedQuery)) return existing;
+            NamedQuery namedQuery = create(query);
+            if (!isValid(namedQuery)) return null;
 
-            namedQuery.setCount(apiSearchClient.count(namedQuery.getSearchQuery()));
-            if (validate(namedQuery)) {
-                database.put(namedQuery);
-                return namedQuery;
-            }
-            return null;
+            namedQueryClient.put(namedQuery);
+            return namedQuery;
         });
 
         return Iterators.filter(mapped, Objects::nonNull);
     }
 
-    private boolean isUseExisting(NamedSearchQuery existing, NamedSearchQuery mapped) {
-        if (existing == null) return false;
-        if (DateCompareUtils.after(existing.getUpdatedMillis(), Duration.ofDays(21))) return false;
-        if (existing.equals(mapped)) return true;
-        return false;
+    private NamedQuery create(SearchQuery searchQuery) {
+        NamedQuery namedQuery = new NamedQuery();
+        namedQuery.setSlug(getSlug(searchQuery));
+        namedQuery.setVersion(getVersion());
+        namedQuery.setUpdatedMillis(System.currentTimeMillis());
+
+        namedQuery.setTitle(getTitle(searchQuery));
+        namedQuery.setDescription(getDescription(searchQuery));
+
+        namedQuery.setAreas(searchQuery.getFilter().getLocation().getAreas());
+        namedQuery.setTags(searchQuery.getFilter().getTags());
+        namedQuery.setCount(apiSearchClient.count(searchQuery));
+
+        return namedQuery;
     }
+
 
     /**
      * @return iterator of SearchQuery to create permutation with, MUST be non duplicate
@@ -70,8 +73,8 @@ public abstract class PermutationEngine implements NamedQueryMapper {
     protected abstract Iterator<SearchQuery> iterator();
 
     /**
-     * @param namedSearchQuery query to validate
+     * @param namedQuery query to isValid
      * @return validation result
      */
-    protected abstract boolean validate(NamedSearchQuery namedSearchQuery);
+    protected abstract boolean isValid(NamedQuery namedQuery);
 }

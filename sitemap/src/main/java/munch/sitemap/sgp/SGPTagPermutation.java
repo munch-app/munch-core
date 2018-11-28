@@ -3,12 +3,11 @@ package munch.sitemap.sgp;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
+import munch.api.search.SearchQuery;
 import munch.api.search.assumption.AssumptionEngine;
-import munch.api.search.data.NamedSearchQuery;
-import munch.api.search.data.SearchQuery;
+import munch.data.named.NamedQuery;
 import munch.data.tag.Tag;
 import munch.permutation.PermutationEngine;
-import org.apache.commons.lang3.text.WordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +15,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Created by: Fuxing
@@ -47,40 +45,35 @@ public final class SGPTagPermutation extends PermutationEngine {
     @SuppressWarnings("ConstantConditions")
     protected Iterator<SearchQuery> iterator() {
         return Iterators.transform(getTags().iterator(), tags -> {
-            SearchQuery query = newSearchQuery();
-            Set<String> positives = tags.stream().map(tag -> tag.getName().toLowerCase()).collect(Collectors.toSet());
-            query.getFilter().getTag().setPositives(positives);
+            SearchQuery query = new SearchQuery();
+            query.getFilter().getTags().addAll(tags);
             query.getFilter().getLocation().setAreas(List.of(AssumptionEngine.SINGAPORE));
             return query;
         });
     }
 
     @Override
-    public String getName(SearchQuery searchQuery) {
-        return "sgp-" + joinTags(searchQuery, "-");
+    public String getSlug(SearchQuery searchQuery) {
+        String tags = joinTags(searchQuery, "-");
+        return "sgp-" + clean(tags);
     }
 
     @Override
     public String getTitle(SearchQuery searchQuery) {
-        String prefix = joinTags(searchQuery, ", ", WordUtils::capitalizeFully);
+        String prefix = joinTags(searchQuery, ", ");
         return prefix + " places in Singapore · Munch Singapore";
     }
 
     @Override
-    public String getKeywords(SearchQuery searchQuery) {
-        return joinTags(searchQuery, ",") + ",Singapore,Food";
-    }
-
-    @Override
     public String getDescription(SearchQuery searchQuery) {
-        String prefix = joinTags(searchQuery, ", ", WordUtils::capitalizeFully);
+        String prefix = joinTags(searchQuery, ", ");
         return prefix + " places in Singapore." +
                 "View images and articles from popular food bloggers. " +
                 "Find the best places by price, location, preferences on Munch!";
     }
 
     @Override
-    protected boolean validate(NamedSearchQuery namedSearchQuery) {
-        return namedSearchQuery.getCount() >= 10;
+    protected boolean isValid(NamedQuery namedQuery) {
+        return namedQuery.getCount() >= 10;
     }
 }

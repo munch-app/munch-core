@@ -9,7 +9,7 @@ package munch.api.search.assumption.data;
 public final class TagAssumptionToken extends AssumptionToken {
 
     public TagAssumptionToken(String text) {
-        setText(text);
+        super(text);
     }
 
     @Override

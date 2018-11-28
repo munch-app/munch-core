@@ -9,14 +9,14 @@ import java.util.Objects;
  * Project: munch-data
  */
 public abstract class AssumptionToken {
-    private String text;
+    private final String text;
+
+    public AssumptionToken(String text) {
+        this.text = text;
+    }
 
     public String getText() {
         return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
     }
 
     public abstract String getType();

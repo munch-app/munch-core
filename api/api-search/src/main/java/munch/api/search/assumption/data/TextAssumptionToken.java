@@ -8,7 +8,7 @@ package munch.api.search.assumption.data;
  */
 public final class TextAssumptionToken extends AssumptionToken {
     public TextAssumptionToken(String text) {
-        setText(text);
+        super(text);
     }
 
     @Override

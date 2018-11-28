@@ -1,6 +1,6 @@
 package munch.api.search.assumption.data;
 
-import munch.api.search.data.SearchQuery;
+import munch.api.search.SearchQuery;
 import munch.data.place.Place;
 
 import java.util.List;

@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Singleton;
 import edit.utils.LatLngUtils;
 import munch.api.search.SearchRequest;
-import munch.api.search.data.SearchQuery;
+import munch.api.search.SearchQuery;
 import munch.data.location.Area;
 import munch.restful.core.JsonUtils;
 import munch.restful.core.exception.ParamException;
@@ -36,10 +36,15 @@ public final class ElasticQueryUtils {
      * NOTE: This ElasticQueryUtils is only for Place data type
      *
      * @param request SearchRequest
-     * @return created bool node
+     * @param filters additional filters
+     * @return BoolQuery for Place data
      */
-    public static JsonNode make(SearchRequest request) {
-        return make(mustNot(request), filter(request));
+    public static JsonNode make(SearchRequest request, JsonNode... filters) {
+        ArrayNode filterArray = filter(request);
+        for (JsonNode filter : filters) {
+            filterArray.add(filter);
+        }
+        return make(filterArray);
     }
 
     /**
@@ -55,26 +60,10 @@ public final class ElasticQueryUtils {
 
     /**
      * NOTE: This ElasticQueryUtils is only for Place data type
-     *
-     * @param request SearchRequest
-     * @param filters additonal filters
-     * @return created bool node
      */
-    public static JsonNode make(SearchRequest request, JsonNode... filters) {
-        ArrayNode filterArray = filter(request);
-        for (JsonNode filter : filters) {
-            filterArray.add(filter);
-        }
-        return make(mustNot(request), filterArray);
-    }
-
-    /**
-     * NOTE: This ElasticQueryUtils is only for Place data type
-     */
-    public static JsonNode make(JsonNode mustNot, JsonNode filter) {
+    public static JsonNode make(JsonNode filter) {
         ObjectNode bool = mapper.createObjectNode();
         bool.set("must", mustMatchAll());
-        bool.set("must_not", mustNot);
         bool.set("filter", filter);
         return mapper.createObjectNode().set("bool", bool);
     }
@@ -105,27 +94,6 @@ public final class ElasticQueryUtils {
     }
 
     /**
-     * Filter to must not
-     *
-     * @param request SearchRequest.SearchQuery.Filter
-     * @return JsonNode must_not filter
-     */
-    private static JsonNode mustNot(SearchRequest request) {
-        SearchQuery.Filter filter = request.getSearchQuery().getFilter();
-
-        ArrayNode notArray = mapper.createArrayNode();
-        if (filter == null) return notArray;
-        if (filter.getTag() == null) return notArray;
-        if (filter.getTag().getNegatives() == null) return notArray;
-
-        // Must not filters
-        for (String tag : filter.getTag().getNegatives()) {
-            notArray.add(filterTerm("tags.name", tag.toLowerCase()));
-        }
-        return notArray;
-    }
-
-    /**
      * @param request SearchRequest.SearchQuery.Filter
      * @return JsonNode bool filter
      */
@@ -144,33 +112,21 @@ public final class ElasticQueryUtils {
         if (filter == null) return filterArray;
 
         // Filter to positive tags
-        Set<String> positives = new HashSet<>();
-
-        if (filter.getTag() != null && filter.getTag().getPositives() != null) {
-            for (String tag : filter.getTag().getPositives()) {
-                positives.add(tag.toLowerCase());
-            }
-        }
+        filter.getTags().forEach(tag -> {
+            if (tag.getTagId() == null) return;
+            filterArray.add(filterTerm("tags.tagId", tag.getTagId()));
+        });
 
         // Filter price
         filterPrice(filter.getPrice()).ifPresent(filterArray::add);
 
         // Filter hour
         filterHour(filter.getHour()).ifPresent(filterArray::add);
-        if (filter.getHour() != null) {
-            if (StringUtils.isNotBlank(filter.getHour().getName()) && filter.getHour().getOpen() == null) {
-                positives.add(filter.getHour().getName().toLowerCase());
-            }
-        }
 
         if (request.isBetween()) {
             filterArray.add(filterRange("taste.group", "gte", 2));
         }
 
-        // Accumulate positive tags
-        positives.forEach(s -> {
-            filterArray.add(filterTerm("tags.name", s));
-        });
         return filterArray;
     }
 
@@ -212,7 +168,7 @@ public final class ElasticQueryUtils {
         ObjectNode rangeFilter = mapper.createObjectNode();
         // Open/Close time intersects
         rangeFilter.putObject("range")
-                .putObject("hour." + hour.getDay().toLowerCase() + ".open_close")
+                .putObject("hour." + StringUtils.lowerCase(hour.getDay()) + ".open_close")
                 .put("relation", "intersects")
                 .put("gte", ElasticQueryUtils.timeAsInt(hour.getOpen()))
                 .put("lte", ElasticQueryUtils.timeAsInt(hour.getClose()));

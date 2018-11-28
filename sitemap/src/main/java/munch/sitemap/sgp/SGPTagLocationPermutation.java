@@ -2,12 +2,12 @@ package munch.sitemap.sgp;
 
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
-import munch.api.search.data.NamedSearchQuery;
-import munch.api.search.data.SearchQuery;
+import munch.api.search.SearchQuery;
 import munch.data.location.Area;
+import munch.data.named.NamedQuery;
+import munch.data.tag.Tag;
 import munch.permutation.LandmarkUtils;
 import munch.permutation.PermutationEngine;
-import org.apache.commons.lang3.text.WordUtils;
 
 import javax.inject.Singleton;
 import java.util.Iterator;
@@ -27,26 +27,24 @@ public final class SGPTagLocationPermutation extends PermutationEngine {
     @SuppressWarnings("ConstantConditions")
     @Override
     protected Iterator<SearchQuery> iterator() {
-        Set<Set<String>> tags = Lists.newArrayList(tagClient.iterator())
+        Set<Tag> tags = Lists.newArrayList(tagClient.iterator())
                 .stream()
                 .filter(tag -> tag.getCounts().getTotal() >= 100)
-                .map(tag -> Set.of(tag.getName().toLowerCase()))
                 .collect(Collectors.toSet());
 
         Iterator<Iterator<SearchQuery>> areas = Iterators.transform(areaClient.iterator(), area -> {
-            return Iterators.transform(tags.iterator(), positives -> {
-                SearchQuery query = newSearchQuery();
-                query.getFilter().getTag().setPositives(positives);
+            return Iterators.transform(tags.iterator(), tag -> {
+                SearchQuery query = new SearchQuery();
+                query.getFilter().getTags().add(tag);
                 query.getFilter().getLocation().setAreas(List.of(area));
                 return query;
             });
         });
 
         Iterator<Iterator<SearchQuery>> landmarks = Iterators.transform(landmarkClient.iterator(), landmark -> {
-            return Iterators.transform(tags.iterator(), positives -> {
-                SearchQuery query = newSearchQuery();
-                query.getFilter().getTag().setPositives(positives);
-
+            return Iterators.transform(tags.iterator(), tag -> {
+                SearchQuery query = new SearchQuery();
+                query.getFilter().getTags().add(tag);
                 Area area = LandmarkUtils.asArea(landmark, 1);
                 query.getFilter().getLocation().setAreas(List.of(area));
                 return query;
@@ -56,31 +54,28 @@ public final class SGPTagLocationPermutation extends PermutationEngine {
     }
 
     @Override
-    public String getName(SearchQuery searchQuery) {
-        return "sgp-" + getLocationName(searchQuery) + "-" + joinTags(searchQuery, "-");
+    protected boolean isValid(NamedQuery namedQuery) {
+        return namedQuery.getCount() >= 10;
+    }
+
+    @Override
+    public String getSlug(SearchQuery searchQuery) {
+        String location = getLocationName(searchQuery);
+        String tag = joinTags(searchQuery, "-");
+        return "sgp-" + clean(location + "-" + tag);
     }
 
     @Override
     public String getTitle(SearchQuery searchQuery) {
-        String tag = joinTags(searchQuery, ", ", WordUtils::capitalizeFully);
+        String tag = joinTags(searchQuery, ", ");
         return getLocationName(searchQuery) + ": " + tag + " Places · Munch Singapore";
     }
 
     @Override
-    public String getKeywords(SearchQuery searchQuery) {
-        return joinTags(searchQuery, ",") + "," + getLocationName(searchQuery) + ",Singapore,Food";
-    }
-
-    @Override
     public String getDescription(SearchQuery searchQuery) {
-        String prefix = joinTags(searchQuery, ", ", WordUtils::capitalizeFully);
+        String prefix = joinTags(searchQuery, ", ");
         return prefix + " places in and around " + getLocationName(searchQuery) + ". " +
                 "View images and articles from food bloggers. " +
                 "Find the best places by price, location, preferences on Munch!";
-    }
-
-    @Override
-    protected boolean validate(NamedSearchQuery namedSearchQuery) {
-        return namedSearchQuery.getCount() >= 10;
     }
 }

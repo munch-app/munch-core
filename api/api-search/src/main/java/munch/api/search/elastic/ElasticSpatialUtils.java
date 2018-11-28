@@ -6,7 +6,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Polygon;
 import edit.utils.LatLngUtils;
-import munch.api.search.data.SearchQuery;
+import munch.api.search.SearchQuery;
 import munch.restful.core.JsonUtils;
 
 import java.util.HashMap;

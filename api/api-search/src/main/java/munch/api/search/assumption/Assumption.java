@@ -1,4 +1,4 @@
-package munch.api.search.assumption.assumer;
+package munch.api.search.assumption;
 
 
 import munch.api.search.SearchRequest;

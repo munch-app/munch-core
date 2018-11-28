@@ -45,10 +45,6 @@ project('api-search') {
 
         compile group: 'location-service', name: 'location-service-client', version: locationVersion
         compile group: 'munch-taste', name: 'munch-taste-client', version: tasteVersion
-
-        
-        // NamedSearchQuery persistence
-        compile group: 'com.amazonaws', name: 'aws-java-sdk-dynamodb', version: awsVersion
     }
 }
 

@@ -1,4 +1,6 @@
-package munch.api.search.assumption.assumer;
+package munch.api.search.assumption.plugin;
+
+import munch.api.search.assumption.Assumption;
 
 import java.util.List;
 
@@ -8,7 +10,7 @@ import java.util.List;
  * Time: 1:45 AM
  * Project: munch-core
  */
-public abstract class Assumer {
+public abstract class AssumePlugin {
 
     public abstract List<Assumption> get();
 }

@@ -3,7 +3,6 @@ package munch.api.search;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import munch.api.ApiService;
-import munch.api.search.data.SearchQuery;
 import munch.api.search.elastic.ElasticQueryUtils;
 import munch.data.ElasticObject;
 import munch.data.client.ElasticClient;

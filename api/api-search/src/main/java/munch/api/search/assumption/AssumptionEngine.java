@@ -2,14 +2,12 @@ package munch.api.search.assumption;
 
 import com.google.common.base.Joiner;
 import edit.utils.PatternSplit;
+import munch.api.search.SearchQuery;
 import munch.api.search.SearchRequest;
-import munch.api.search.assumption.assumer.AssumerManager;
-import munch.api.search.assumption.assumer.Assumption;
 import munch.api.search.assumption.data.AssumptionQuery;
 import munch.api.search.assumption.data.AssumptionToken;
 import munch.api.search.assumption.data.TagAssumptionToken;
 import munch.api.search.assumption.data.TextAssumptionToken;
-import munch.api.search.data.SearchQuery;
 import munch.data.location.Area;
 import munch.data.location.Location;
 import org.apache.commons.lang3.StringUtils;
@@ -51,10 +49,10 @@ public class AssumptionEngine {
         SINGAPORE.setLocation(location);
     }
 
-    private final AssumerManager manager;
+    private final AssumeManager manager;
 
     @Inject
-    public AssumptionEngine(AssumerManager manager) {
+    public AssumptionEngine(AssumeManager manager) {
         this.manager = manager;
     }
 
@@ -211,15 +209,12 @@ public class AssumptionEngine {
 
         List<AssumptionToken> assumedTokens = new ArrayList<>();
         SearchQuery.Filter.Hour hour = query.getFilter().getHour();
-        if (hour != null && hour.getName() != null) {
-            assumedTokens.add(new TagAssumptionToken(hour.getName()));
+        if (hour != null) {
+            assumedTokens.add(new TagAssumptionToken(hour.asText()));
         }
-        SearchQuery.Filter.Tag tag = query.getFilter().getTag();
-        if (tag != null && tag.getPositives() != null) {
-            for (String tp : tag.getPositives()) {
-                assumedTokens.add(new TagAssumptionToken(tp));
-            }
-        }
+        query.getFilter().getTags().forEach(tag -> {
+            assumedTokens.add(new TagAssumptionToken(tag.getName()));
+        });
 
         return assumedTokens;
     }

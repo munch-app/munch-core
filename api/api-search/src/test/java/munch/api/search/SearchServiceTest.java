@@ -9,7 +9,6 @@ import munch.api.TestCase;
 import munch.api.search.cards.SearchHeaderCard;
 import munch.api.search.cards.SearchNoLocationCard;
 import munch.api.search.cards.SearchPlaceCard;
-import munch.api.search.data.SearchQuery;
 import munch.restful.client.RestfulRequest;
 import munch.restful.core.JsonUtils;
 import org.junit.jupiter.params.ParameterizedTest;

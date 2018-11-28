@@ -1,7 +1,8 @@
-package munch.api.search.assumption.assumer;
+package munch.api.search.assumption.plugin;
 
 import munch.api.search.SearchRequest;
-import munch.api.search.data.SearchQuery;
+import munch.api.search.SearchQuery;
+import munch.api.search.assumption.Assumption;
 import munch.data.client.AreaClient;
 import munch.data.location.Area;
 
@@ -20,7 +21,7 @@ import java.util.function.Consumer;
  * Project: munch-core
  */
 @Singleton
-public final class LocationAssumer extends Assumer {
+public final class LocationAssumePlugin extends AssumePlugin {
     private static final List<Assumption> EXPLICITS = List.of(
             Assumption.of(Assumption.Type.Location, "nearby", "Nearby", applyType(SearchQuery.Filter.Location.Type.Nearby)),
             Assumption.of(Assumption.Type.Location, "nearby me", "Nearby", applyType(SearchQuery.Filter.Location.Type.Nearby)),
@@ -31,7 +32,7 @@ public final class LocationAssumer extends Assumer {
     private final AreaClient areaClient;
 
     @Inject
-    public LocationAssumer(AreaClient areaClient) {
+    public LocationAssumePlugin(AreaClient areaClient) {
         this.areaClient = areaClient;
     }
 

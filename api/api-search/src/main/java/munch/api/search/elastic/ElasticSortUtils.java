@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import munch.api.search.SearchRequest;
-import munch.api.search.data.SearchQuery;
+import munch.api.search.SearchQuery;
 import munch.restful.core.JsonUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -49,10 +49,6 @@ public final class ElasticSortUtils {
                     logger.warn("Sort by distance by latLng not provided in query.latLng");
                     sortArray.add(sortDistance(request.getLatLng()));
                 }
-                break;
-            case SearchQuery.Sort.TYPE_RATING_HIGHEST:
-                // Not Implemented yet
-                sortArray.add(sortField("review.average", "desc"));
                 break;
 
             default:

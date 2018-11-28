@@ -1,8 +1,6 @@
 package munch.sitemap;
 
 import com.amazonaws.regions.Regions;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
-import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.google.inject.AbstractModule;
@@ -33,11 +31,5 @@ public final class AmazonModule extends AbstractModule {
     AmazonS3 provideAmazonS3() {
         AmazonS3ClientBuilder standard = AmazonS3ClientBuilder.standard();
         return standard.build();
-    }
-
-    @Provides
-    @Singleton
-    DynamoDB provideDynamoDB() {
-        return new DynamoDB(AmazonDynamoDBClientBuilder.defaultClient());
     }
 }

@@ -2,12 +2,15 @@ package munch.permutation;
 
 import com.mashape.unirest.http.HttpMethod;
 import com.typesafe.config.ConfigFactory;
-import munch.api.search.data.FilterResult;
-import munch.api.search.data.SearchQuery;
+import munch.api.search.SearchQuery;
+import munch.api.search.filter.FilterResult;
+import munch.data.location.Area;
+import munch.data.tag.Tag;
 import munch.restful.client.RestfulRequest;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.List;
 
 /**
  * Created by: Fuxing
@@ -22,6 +25,18 @@ public final class APISearchClient {
     @Inject
     public APISearchClient() {
         this.apiUrl = ConfigFactory.load().getString("api.url");
+    }
+
+    public long count(List<Area> areas, List<Tag> tags) {
+        SearchQuery query = new SearchQuery();
+        query.getFilter().setTags(tags);
+
+        SearchQuery.Filter.Location location = new SearchQuery.Filter.Location();
+        location.setType(SearchQuery.Filter.Location.Type.Where);
+        location.setAreas(areas);
+
+        query.getFilter().setLocation(location);
+        return count(query);
     }
 
     /**

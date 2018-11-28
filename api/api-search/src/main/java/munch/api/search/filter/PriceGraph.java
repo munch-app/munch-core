@@ -1,4 +1,4 @@
-package munch.api.search.data;
+package munch.api.search.filter;
 
 import java.util.*;
 import java.util.stream.Collectors;

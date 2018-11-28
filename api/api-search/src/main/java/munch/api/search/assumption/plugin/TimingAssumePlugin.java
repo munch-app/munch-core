@@ -1,7 +1,8 @@
-package munch.api.search.assumption.assumer;
+package munch.api.search.assumption.plugin;
 
 import munch.api.search.SearchRequest;
-import munch.api.search.data.SearchQuery;
+import munch.api.search.SearchQuery;
+import munch.api.search.assumption.Assumption;
 import munch.data.Hour;
 
 import java.time.LocalDateTime;
@@ -15,7 +16,7 @@ import java.util.function.Consumer;
  * Time: 1:36 AM
  * Project: munch-core
  */
-public final class TimingAssumer extends Assumer {
+public final class TimingAssumePlugin extends AssumePlugin {
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     protected static final Consumer<SearchRequest> ASSUMPTION_OPEN_NOW = request -> {
@@ -26,7 +27,7 @@ public final class TimingAssumer extends Assumer {
         if (query.getFilter() == null) query.setFilter(new SearchQuery.Filter());
         SearchQuery.Filter.Hour hour = new SearchQuery.Filter.Hour();
 
-        hour.setName("Open Now");
+        hour.setType(SearchQuery.Filter.Hour.Type.OpenNow);
         hour.setDay(Hour.Day.parse(dateTime.getDayOfWeek()).name());
         hour.setOpen(dateTime.format(TIME_FORMATTER));
 
