@@ -1,27 +1,27 @@
 <template>
   <div class="Detail">
-    <div class="Row Price" v-if="place.price && place.price.perPax">
-      <div class="Left s600">PRICE</div>
-      <div class="Right">~${{place.price.perPax.toFixed(1)}}/pax</div>
+    <div class="flex-align-center flex-justify-between tablet" v-if="place.price && place.price.perPax">
+      <h5>Price</h5>
+      <p class="text-ellipsis-1l">~${{place.price.perPax.toFixed(1)}}/pax</p>
     </div>
-    <div class="Row Phone" v-if="place.phone">
-      <div class="Left s600">PHONE</div>
-      <div class="Right">{{place.phone}}</div>
+    <div class="flex-align-center flex-justify-between tablet" v-if="place.phone">
+      <h5>Phone</h5>
+      <p class="text-ellipsis-1l">{{place.phone}}</p>
     </div>
-    <div class="Row Website" v-if="websiteUrl">
-      <div class="Left s600">WEBSITE</div>
-      <a :href="place.website"  class="Right" target="_blank" rel="noreferrer noopener nofollow">{{websiteUrl}}</a>
+    <div class="flex-align-center flex-justify-between" v-if="websiteUrl">
+      <h5>Website</h5>
+      <a :href="place.website" class="text-ellipsis-1l" target="_blank" rel="noreferrer noopener nofollow">http://{{websiteUrl}}</a>
     </div>
-    <div class="Row Hour" v-if="hours.length > 0">
-      <div class="Left s600">HOURS</div>
-      <place-hour-list :place-id="place.placeId" class="Right" :hours="hours"/>
+    <div class="flex-align-center flex-justify-between tablet" v-if="place.hours.length > 0">
+      <h5>Hours</h5>
+      <place-hour-list :place-id="place.placeId" :hours="place.hours"/>
     </div>
-    <div></div>
   </div>
 </template>
 
 <script>
   import PlaceHourList from "./PlaceHourList";
+
   function extractHostname(url) {
     let hostname;
     //find & remove protocol (http, ftp, etc.) and get hostname
@@ -64,53 +64,32 @@
           return extractHostname(url)
         }
       },
-      hours() {
-        if (this.place.hours) {
-          return this.place.hours
-        }
-      }
     }
   }
 </script>
 
 <style scoped lang="less">
   .Detail {
-    margin-bottom: -8px;
+    margin-bottom: -16px;
 
-    .Row {
-      display: flex;
-
-      .Left, .Right {
-        line-height: 24px;
-        margin-bottom: 8px;
-
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        overflow: hidden;
-      }
+    > div {
+      margin-bottom: 16px;
     }
 
-    .Row .Left {
-      font-size: 14px;
-      font-weight: 700;
+    h5 {
+      width: 80px;
+      margin-right: 18px;
+      text-transform: uppercase;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .Detail > div {
+      justify-content: flex-start;
     }
 
-    @media (max-width: 575.98px) {
-      .Row .Left {
-        width: 80px;
-      }
-
-      .Row .Right {
-        padding-left: 16px;
-        text-align: right;
-        flex-grow: 1;
-      }
-    }
-
-    @media (min-width: 576px) {
-      .Row .Left {
-        width: 120px;
-      }
+    h5 {
+      margin-right: 32px;
     }
   }
 </style>

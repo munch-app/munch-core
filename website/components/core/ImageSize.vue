@@ -1,4 +1,5 @@
 <template>
+  <!-- Deprecated: use ImageSizes instead -->
   <div class="ImageSize" :style="style">
     <div class="ImageSlot index-0">
       <slot></slot>

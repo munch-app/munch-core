@@ -4,57 +4,57 @@
       <place-image-banner :images="images" @onClickImage="(index) => $refs.imageWall.onClickImage(index)"/>
     </section>
 
-    <section class="Information">
-      <div class="container">
-        <section class="Name ContentBody w-100">
+    <section class="Information container flex-justify-between relative">
+      <div class="ContentBody flex-grow">
+        <section class="Max720 Name">
           <div v-if="place.status.type === 'closed'">
-            <h3 class="error">
-              Permanently Closed
-            </h3>
+            <h3 class="error">Permanently Closed</h3>
           </div>
 
           <h1>{{place.name}}</h1>
-          <div class="regular text">{{place.location.neighbourhood || place.location.street ||
-            place.location.address}}
+          <div class="regular">
+            {{place.location.neighbourhood || place.location.street || place.location.address}}
           </div>
+
           <place-tag-list class="mt-8" :tags="place.tags" :max="10"/>
         </section>
 
-        <section class="MainDetail ContentBody">
+        <section class="Max720">
           <place-detail :place="place"/>
         </section>
 
-        <section class="About ContentBody">
+        <section>
           <place-about :place="place" :awards="data.awards"/>
         </section>
 
-        <section class="Menu ContentBody" v-if="menu">
+        <section v-if="menu" class="Max720">
           <h2>Menu</h2>
           <place-menu :menu="menu"/>
         </section>
 
-        <section class="Location ContentBody">
+        <section class="Max720">
           <h2>Location</h2>
           <place-location :place-id="place.placeId" :location="place.location"/>
         </section>
+
+        <section v-if="articles">
+          <div>
+            <h2>{{place.name}} Articles</h2>
+          </div>
+        </section>
       </div>
+      <aside class="mt-24 flex-grow">
+        <place-floating-panel class="FloatingPanel" :place="place"/>
+      </aside>
     </section>
 
-    <section class="Article" v-if="articles">
-      <place-article-list :place-id="place.placeId" :preload="articles"/>
-    </section>
-
-    <section class="Images" v-if="images">
+    <section class="Images mb-64" v-if="images">
       <div class="container">
         <h2>{{place.name}} Images</h2>
       </div>
 
       <place-image-wall ref="imageWall" :place-id="place.placeId" :preload="images"/>
     </section>
-
-    <no-ssr>
-      <place-action :place="place"/>
-    </no-ssr>
   </div>
 </template>
 
@@ -71,9 +71,11 @@
   import PlaceArticleList from "../../components/places/PlaceArticleList";
   import PlaceImageBanner from "../../components/places/PlaceImageBanner";
   import PlaceAction from "../../components/places/PlaceAction";
+  import PlaceFloatingPanel from "../../components/places/PlaceFloatingPanel";
 
   export default {
     components: {
+      PlaceFloatingPanel,
       PlaceAction,
       PlaceImageBanner,
       PlaceArticleList,
@@ -170,25 +172,58 @@
 </script>
 
 <style scoped lang="less">
-  .ContentBody {
-    @media (min-width: 992px) {
-      max-width: 720px;
-    }
-  }
-
   section {
     margin-top: 48px;
+
     h2 {
       margin-bottom: 16px;
     }
   }
 
-  .Information,
   .Name {
     margin-top: 24px;
   }
 
+  .Information,
   .Banner {
     margin-top: 0;
   }
+
+  .Information {
+    @media (max-width: 991.98px) {
+      flex-direction: column;
+    }
+  }
+
+  .Max720 {
+    max-width: 720px;
+  }
+
+  .ContentBody {
+    @media (min-width: 992px) {
+      margin-right: 48px;
+    }
+  }
+
+  aside {
+    max-width: 360px;
+  }
+
+  .FloatingPanel {
+    @media (max-width: 991.98px) {
+      border-radius: 0;
+      border-style: solid none none none;
+
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+
+    @media (min-width: 992px) {
+      position: sticky;
+      top: 80px;
+    }
+  }
+
 </style>

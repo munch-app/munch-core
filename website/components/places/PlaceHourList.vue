@@ -1,11 +1,8 @@
 <template>
-  <div class="hover-pointer">
+  <div class="hover-pointer text">
     <div class="text-ellipsis-1l" @click="onPopover">
-      <span class="TodayShort">
-        {{Day.today().text.substring(0, 3)}}:
-      </span>
-      <span class="TodayLong">
-        {{Day.today().text}}:
+      <span class="subtext">
+        {{Day.today().text.substring(0, 3).toUpperCase()}}:
       </span>
       <span :class="{'time-open': todayOpen, 'time-close': !todayOpen}">
         {{timeRange}}
@@ -86,18 +83,6 @@
 </script>
 
 <style scoped lang="less">
-  @media (max-width: 575.98px) {
-    .TodayLong {
-      display: none;
-    }
-  }
-
-  @media (min-width: 576px) {
-    .TodayShort {
-      display: none;
-    }
-  }
-
   .DayList {
     > div {
       margin-bottom: 8px;
