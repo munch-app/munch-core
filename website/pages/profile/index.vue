@@ -47,11 +47,11 @@
         <div class="CollectionControl">
           <div v-if="!showCollectionButton" @click="showCollectionButton = true"
                class="CollectionButton elevation-1 elevation-hover-2 border-3 bg-white hover-pointer">
-            <simple-svg class="Icon" fill="rgba(0,0,0,.75)" filepath="/img/profile/edit.svg"/>
+            <simple-svg class="Icon" fill="rgba(0,0,0,.75)" :filepath="require('~/assets/icon/edit.svg')"/>
           </div>
           <div v-if="!showCollectionButton" @click="creating = {access: 'Public'}"
                class="CollectionButton elevation-1 elevation-hover-2 border-3 bg-white hover-pointer">
-            <simple-svg class="Icon" fill="rgba(0,0,0,.75)" filepath="/img/profile/add.svg"/>
+            <simple-svg class="Icon" fill="rgba(0,0,0,.75)" :filepath="require('~/assets/icon/add.svg')"/>
           </div>
           <div v-if="showCollectionButton" @click="showCollectionButton = false"
                class="CollectionButton elevation-1 elevation-hover-2 border-3 bg-white hover-pointer">

@@ -1,6 +1,6 @@
 <template>
-  <div class="CollectionBtn w-100 index-content-overlay flex-justify-end" :class="{Large: large}">
-    <div @click.prevent.stop="onClickAdd">
+  <div class="CollectionBtn w-100 index-content-overlay flex-justify-end">
+    <div @click.capture.stop.prevent="onClickAdd">
       <simple-svg class="AddIcon" fill="white" :filepath="require('~/assets/icon/place/add.svg')"/>
     </div>
 
@@ -19,10 +19,6 @@
       place: {
         type: Object,
         required: true
-      },
-      large: {
-        type: Boolean,
-        default: false
       }
     },
     data() {
@@ -50,13 +46,5 @@
     width: 30px;
     height: 30px;
     padding: 6px;
-  }
-
-  .Large {
-    .AddIcon {
-      width: 40px;
-      height: 40px;
-      padding: 8px;
-    }
   }
 </style>

@@ -5,11 +5,9 @@ import Vue from 'vue'
 export const state = () => ({
   query: {
     filter: {
-      price: {},
-      tag: {
-        positives: []
-      },
-      hour: {},
+      price: null,
+      hour: null,
+      tags: [],
       location: {
         areas: [],
         points: [],
@@ -26,7 +24,7 @@ export const state = () => ({
   },
   result: {
     count: null,
-    tags: {},
+    tagGraph: undefined,
     priceGraph: undefined,
   },
   startedLoading: null,
@@ -36,25 +34,19 @@ export const state = () => ({
 
 export const getters = {
   isSelectedTag: (state) => (tag) => {
-    tag = tag.toLowerCase()
-    const index = state.query.filter.tag.positives.indexOf(tag)
-    return index > -1
+    return _.some(state.query.filter.tags, t => tag.tagId === t.tagId)
   },
-
-  isSelectedTiming: (state) => (timing) => {
-    return state.query.filter.hour.name === timing
+  isSelectedTiming: (state) => (type) => {
+    return state.query.filter.hour && state.query.filter.hour.type === type
   },
-
   isSelectedLocationType: (state) => (location) => {
     // 4 possible types
     return state.query.filter.location.type === location
   },
-
   isSelectedLocationArea: (state) => (area) => {
     const index = _.findIndex(state.query.filter.location.areas, (a) => a.areaId === area.areaId)
     return index !== -1;
   },
-
   isSelectedPrice: (state) => (name) => {
     if (state.query.filter.price && state.result.priceGraph && state.result.priceGraph.ranges) {
       const range = state.result.priceGraph.ranges[name]
@@ -71,6 +63,9 @@ export const getters = {
   },
   priceGraph: (state) => {
     return state.result.priceGraph
+  },
+  tagGraph: (state) => {
+    return state.result.tagGraph
   },
   selected: (state) => {
     return state.selected
@@ -119,15 +114,12 @@ export const mutations = {
   replace(state, query) {
     state.query.sort = query.sort
 
-    state.query.filter.price = query.filter.price && !isNaN(query.filter.price.min) && !isNaN(query.filter.price.max) && query.filter.price || {}
-    state.query.filter.hour = query.filter.hour || {}
+    state.query.filter.price = query.filter.price && !isNaN(query.filter.price.min) && !isNaN(query.filter.price.max) && query.filter.price || null
+    state.query.filter.hour = query.filter.hour || null
     state.query.filter.location = query.filter.location || {type: 'Anywhere', areas: [], points: []}
+    if (!state.query.filter.tags) state.query.filter.tags = []
     if (!state.query.filter.location.areas) state.query.filter.location.areas = []
     if (!state.query.filter.location.points) state.query.filter.location.points = []
-
-    state.query.filter.tag.positives = query.filter.tag.positives.map((tag) => {
-      return tag.toLowerCase()
-    })
 
     state.loading = null
   },
@@ -143,10 +135,9 @@ export const mutations = {
   },
 
   putTag(state, tag) {
-    tag = tag.toLowerCase()
-    const index = state.query.filter.tag.positives.indexOf(tag)
+    const index = _.findIndex(state.query.filter.tags, t => tag.tagId === t.tagId)
     if (index === -1) {
-      state.query.filter.tag.positives.push(tag)
+      state.query.filter.tags.push(tag)
     }
   },
 
@@ -155,23 +146,22 @@ export const mutations = {
    * @param tag to toggle in search bar
    */
   toggleTag(state, tag) {
-    tag = tag.toLowerCase()
-    const index = state.query.filter.tag.positives.indexOf(tag)
+    const index = _.findIndex(state.query.filter.tags, t => tag.tagId === t.tagId)
     if (index === -1) {
-      state.query.filter.tag.positives.push(tag)
+      state.query.filter.tags.push(tag)
     } else {
-      state.query.filter.tag.positives.splice(index, 1)
+      state.query.filter.tags.splice(index, 1)
     }
   },
 
   /**
    * @param state
-   * @param timing tag to toggle in search bar
+   * @param type of timing
    */
-  toggleTiming(state, timing) {
-    if (state.query.filter.hour.name === timing) {
-      state.query.filter.hour = {}
-    } else if (timing === 'Open Now') {
+  toggleTiming(state, type) {
+    if (state.query.filter.hour) {
+      state.query.filter.hour = null
+    } else if (type === 'OpenNow') {
       const date = new Date()
       const day = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'][date.getDay()]
       const hours = date.getHours() < 10 ? `0${date.getHours()}` : `${date.getHours()}`
@@ -182,13 +172,11 @@ export const mutations = {
           : `${hours + 1}:${minutes - 30}`
 
       state.query.filter.hour = {
-        name: 'Open Now',
+        type: 'OpenNow',
         day: day,
         open: `${hours}:${minutes}`,
         close: close
       }
-    } else {
-      state.query.filter.hour = {name: timing}
     }
   },
 
@@ -225,49 +213,44 @@ export const mutations = {
 
   /**
    * @param state
-   * @param tags to remove if any
    */
-  clear(state, {tags}) {
+  clear(state) {
     switch (state.selected) {
-      case 'price':
-        state.query.filter.price = {}
+      case 'Price':
+        state.query.filter.price = null
         break
 
-      case 'cuisine':
-      case 'amenities':
-      case 'establishments':
-        tags.forEach(function (tag) {
-          tag = tag.toLowerCase()
-          const index = state.query.filter.tag.positives.indexOf(tag)
-          if (index !== -1) {
-            state.query.filter.tag.positives.splice(index, 1)
-          }
-        })
+      case 'Timing':
+        _.remove(state.query.filter.tags, t => t.type === 'Timing')
+        state.query.filter.hour = null
         break
 
-      case 'location':
+      case 'Cuisine':
+      case 'Amenities':
+      case 'Establishment':
+        _.remove(state.query.filter.tags, t => t.type === state.selected)
+        break
+
+      case 'Location':
         if (state.query.filter.location.type === 'Between') {
           state.query.filter.location.points.splice(0)
         }
+
         if (state.user.latLng) {
           state.query.filter.location.type = 'Nearby'
         } else {
           state.query.filter.location.type = 'Anywhere'
         }
         break
-
-      case 'timings':
-        state.query.filter.hour = {}
-        break
     }
   },
 
   reset(state) {
-    state.query.filter.price = {}
-    state.query.filter.location.type = 'Anywhere'
-    state.query.filter.hour = {}
-    state.query.filter.tag.positives.splice(0)
+    state.query.filter.price = null
+    state.query.filter.hour = null
 
+    state.query.filter.location.type = 'Anywhere'
+    state.query.filter.tags.splice(0)
     state.loading = false
   },
 
@@ -281,10 +264,9 @@ export const mutations = {
    * @param result to update
    */
   result(state, result) {
-
     state.result.count = result && result.count
-    state.result.tags = result && result.tags
 
+    Vue.set(state.result, 'tagGraph', result && result.tagGraph)
     Vue.set(state.result, 'priceGraph', result && result.priceGraph)
   },
 
@@ -329,8 +311,16 @@ export const actions = {
     if (query) commit('replace', query)
 
     // Search Preference Injection
+    // Need to change this, to support new operations
     const injections = this.getters['user/searchPreferenceTags']
-    injections.forEach(tag => commit('putTag', tag))
+    if (_.some(injections, t => 'halal' === t)) {
+      commit('putTag', {tagId: 'abb22d3d-7d23-4677-b4ef-a3e09f2f9ada', name: 'Halal', type: 'Amenities'})
+    }
+
+    if (_.some(injections, t => 'vegetarian options' === t)) {
+      commit('putTag', {tagId: 'fdf77b3b-8f90-419f-b711-dd25f97046fe', name: 'Vegetarian Options', type: 'Amenities'})
+    }
+
     return post.call(this, commit, state)
   },
 
@@ -346,7 +336,14 @@ export const actions = {
 
     // Search Preference Injection
     const injections = this.getters['user/searchPreferenceTags']
-    injections.forEach(tag => commit('putTag', tag))
+    if (_.some(injections, 'halal')) {
+      commit('putTag', {tagId: 'abb22d3d-7d23-4677-b4ef-a3e09f2f9ada', name: 'Halal', type: 'Amenities'})
+    }
+
+    if (_.some(injections, 'vegetarian options')) {
+      commit('putTag', {tagId: 'fdf77b3b-8f90-419f-b711-dd25f97046fe', name: 'Vegetarian Options', type: 'Amenities'})
+    }
+
     return post.call(this, commit, state)
   },
 

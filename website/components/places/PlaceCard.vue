@@ -1,5 +1,5 @@
 <template>
-  <div @click.capture="onClick">
+  <div @click="onClick">
     <div class="Card relative" :class="{'Small': small}">
       <no-ssr>
         <place-card-add-collection class="absolute" :place="place"/>

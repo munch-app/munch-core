@@ -19,7 +19,7 @@
       </div>
 
       <div class="Design flex-center">
-        <img src="/img/landing/4-guys@2x.png">
+        <img src="~/assets/img/home/4-guys.png">
       </div>
     </div>
   </div>

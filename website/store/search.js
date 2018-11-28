@@ -1,3 +1,5 @@
+import _ from "lodash"
+
 export const state = () => ({
   type: null,
   query: null,
@@ -41,15 +43,23 @@ export const mutations = {
   },
 
   start(state, {query, type}) {
-    if (!query.filter) query.filter = {}
-    if (!query.filter.tag) query.filter.tag = {}
-    if (!query.filter.tag.positives) query.filter.tag.positives = []
+    // Search Preference Injection
+    const injections = this.getters['user/searchPreferenceTags']
+    if (_.some(injections, t => 'halal' === t) && !_.some(query.filter.tags, t => t.tagId === 'abb22d3d-7d23-4677-b4ef-a3e09f2f9ada')) {
+      query.filter.tags.push({
+        tagId: 'abb22d3d-7d23-4677-b4ef-a3e09f2f9ada',
+        name: 'Halal',
+        type: 'Amenities'
+      })
+    }
 
-    // Inject user Search Preference
-    this.getters['user/searchPreferenceTags'].forEach(tag => {
-      const index = query.filter.tag.positives.indexOf(tag.toLowerCase())
-      if (index === -1) query.filter.tag.positives.push(tag)
-    })
+    if (_.some(injections, t => 'vegetarian options' === t) && !_.some(query.filter.tags, t => t.tagId === 'fdf77b3b-8f90-419f-b711-dd25f97046fe')) {
+      query.filter.tags.push({
+        tagId: 'fdf77b3b-8f90-419f-b711-dd25f97046fe',
+        name: 'Vegetarian Options',
+        type: 'Amenities'
+      })
+    }
 
     // Fix Between
 

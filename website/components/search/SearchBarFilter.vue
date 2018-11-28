@@ -7,29 +7,30 @@
              'bg-p500 white': button.type === selected,
              'bg-whisper100 b-a75': button.type !== selected && !button.applied,
              'bg-p050 black': button.type !== selected && button.applied,
-             'Combined': button.type === 'combined',
-             'Location': button.type === 'location',
+             'Combined': button.type === 'Combined',
+             'Location': button.type === 'Location',
              }">
           <div>{{button.name}}</div>
           <div class="BulletDivider" v-if="button.count">•</div>
           <div v-if="button.count">{{button.count}}</div>
         </div>
 
-        <div class="FilterButton ClearAllButton hover-pointer elevation-hover-2 elevation-1 bg-white" @click="onClearAll"
+        <div class="FilterButton ClearAllButton hover-pointer elevation-hover-2 elevation-1 bg-white"
+             @click="onClearAll"
              v-if="isClearAll">
           <div>Clear All</div>
         </div>
       </div>
     </div>
 
-    <search-bar-filter-list @selected="onButton"/>
+    <search-bar-filter-list @selected="onButton" v-if="selected"/>
   </nav>
 </template>
 
 <script>
+  import _ from "lodash"
   import {mapGetters} from 'vuex'
   import SearchBarFilterList from "./SearchBarFilterList";
-  import SearchBarFilterTag from "./SearchBarFilterTag";
 
   export default {
     name: "SearchBarFilter",
@@ -39,22 +40,25 @@
       buttons() {
         const query = this.$store.state.filter.query
         const price = query.filter.price && (query.filter.price.min && query.filter.price.max) && query.filter.price
-        const cuisine = SearchBarFilterTag.$$reduce(query, 'cuisine')
-        const amenities = SearchBarFilterTag.$$reduce(query, 'amenities')
-        const establishments = SearchBarFilterTag.$$reduce(query, 'establishments')
+
+        const cuisine = _.filter(query.filter.tags, t => t.type === 'Cuisine')
+        const establishment = _.filter(query.filter.tags, t => t.type === 'Establishment')
+        const amenities = _.filter(query.filter.tags, t => t.type === 'Amenities')
+        const timing = _.filter(query.filter.tags, t => t.type === 'Timing')
 
         const filters =
           (price ? 1 : 0) +
+          (query.filter.hour ? 1 : timing.length) +
           cuisine.length +
-          establishments.length +
-          amenities.length +
-          (query.filter.hour && query.filter.hour.name ? 1 : 0)
+          establishment.length +
+          amenities.length
 
         const locationName = () => {
           const type = query.filter.location && query.filter.location.type
           switch (type) {
             case 'Anywhere':
               return 'Anywhere'
+
             case 'Nearby':
               return 'Nearby'
 
@@ -65,6 +69,7 @@
                 }).join(', ')
               }
               return 'Location'
+
             case 'Between':
               const length = this.locationPoints.filter(bl => bl.name).length
               if (length > 1) return `Between ${length} Locations`
@@ -77,40 +82,40 @@
 
         return [
           {
-            type: 'location',
+            type: 'Location',
             name: locationName(),
             applied: query.filter.location && query.filter.location.type !== 'Anywhere'
           },
           {
-            type: 'price',
+            type: 'Price',
             name: price && (price.min || price.max) ? `$${price.min} - $${price.max}` : 'Price',
             applied: price && (price.min || price.max)
           },
           {
-            type: 'cuisine',
-            name: cuisine.length === 1 ? cuisine[0] : 'Cuisine',
+            type: 'Cuisine',
+            name: cuisine.length === 1 ? cuisine[0].name : 'Cuisine',
             count: cuisine.length > 1 ? cuisine.length : undefined,
             applied: cuisine.length > 0
           },
           {
-            type: 'amenities',
-            name: amenities.length === 1 ? amenities[0] : 'Amenities',
+            type: 'Amenities',
+            name: amenities.length === 1 ? amenities[0].name : 'Amenities',
             count: amenities.length > 1 ? amenities.length : undefined,
             applied: amenities.length > 0
           },
           {
-            type: 'establishments',
-            name: establishments.length === 1 ? establishments[0] : 'Establishments',
-            count: establishments.length > 1 ? establishments.length : undefined,
-            applied: establishments.length > 0
+            type: 'Establishment',
+            name: establishment.length === 1 ? establishment[0].name : 'Establishments',
+            count: establishment.length > 1 ? establishment.length : undefined,
+            applied: establishment.length > 0
           },
           {
-            type: 'timings',
-            name: query.filter.hour && query.filter.hour.name || 'Timings',
-            applied: query.filter.hour && query.filter.hour.name
+            type: 'Timing',
+            name: query.filter.hour && query.filter.hour.name || timing.length === 1 ? timing[0].name : 'Timings',
+            applied: query.filter.hour && query.filter.hour.name || timing.length > 0
           },
           {
-            type: 'combined',
+            type: 'Combined',
             name: 'Filters',
             count: filters,
             applied: filters > 0
@@ -123,8 +128,8 @@
 
         const filters =
           (price ? 1 : 0) +
-          (query.filter.tag.positives.length) +
-          (query.filter.hour && query.filter.hour.name ? 1 : 0)
+          (query.filter.hour ? 1 : 0) +
+          (query.filter.tags.length)
 
         return filters > 0
       }

@@ -1,4 +1,3 @@
-<!--suppress CssUnknownTarget-->
 <template>
   <portal to="dialog-w400" class="zero">
     <div class="relative">
@@ -58,7 +57,7 @@
   }
 
   .Banner {
-    background: url('/img/profile/onboarding_1.jpg') no-repeat center/cover;
+    background: url('~assets/img/profile/onboarding_1.jpg') no-repeat center/cover;
   }
 
   .Container {

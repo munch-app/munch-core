@@ -87,7 +87,6 @@
 
       const tags = [place.name, ...place.tags.map(t => t.name)]
       if (place.location.neighbourhood) tags.push(place.location.neighbourhood)
-      const keywords = tags.filter(tag => !!tag).join(',')
 
       return this.$head({
         robots: {follow: true, index: place.taste.group >= 2},
@@ -97,7 +96,6 @@
           type: 'place',
           image: image,
           url: `https://www.munch.app/places/${place.placeId}`,
-          keywords,
         },
         breadcrumbs: [
           {

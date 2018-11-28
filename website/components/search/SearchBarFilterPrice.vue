@@ -1,6 +1,6 @@
 <template>
   <div class="PriceView">
-    <div class="PriceButtonList">
+    <div class="PriceButtonList flex">
       <!-- If click too quickly it will use the old '$' -->
       <div class="PriceButton hover-pointer" v-for="name in ['$','$$','$$$']" :key="name" @click="toggle(name)" :class="{
            'bg-p500 white': isSelectedPrice(name),
@@ -9,11 +9,11 @@
       </div>
     </div>
 
-    <div class="Header">
+    <div class="mt-24">
       <h5>Price Per Pax</h5>
     </div>
 
-    <div class="PriceGraph">
+    <div class="PriceGraph mt-48">
       <!-- Graph is disabled for now -->
       <!--<search-bar-filter-price-graph v-if="false" class="Graph" :price-graph="priceGraph"/>-->
       <search-bar-filter-price-slider ref="slider" class="Slider" @drag-end="onDragEnd" v-model="value" :min="min" :max="max"/>
@@ -49,13 +49,18 @@
     },
     watch: {
       priceGraph(priceGraph) {
-        this.min = priceGraph.min
-        this.max = priceGraph.max
+        if (priceGraph) {
+          this.min = priceGraph.min
+          this.max = priceGraph.max
+        } else {
+          this.min = 0
+          this.max = 0
+        }
       },
       selected(selected) {
         switch (selected) {
-          case 'combined':
-          case 'price':
+          case 'Combined':
+          case 'Price':
             this.$refs.slider.refresh()
         }
       }
@@ -77,61 +82,42 @@
 </script>
 
 <style scoped lang="less">
-  .PriceView {
-    .Header {
-      margin-top: 24px;
-      margin-bottom: 0;
-    }
-  }
-
   .PriceButtonList {
-    display: flex;
-    flex-flow: row nowrap;
-
     overflow-x: scroll;
     -webkit-overflow-scrolling: touch;
 
     margin-left: -8px;
     margin-right: -8px;
+  }
 
-    .PriceButton {
-      font-size: 13px;
-      font-weight: 600;
+  .PriceButton {
+    font-size: 13px;
+    font-weight: 600;
 
-      text-align: center;
-      white-space: nowrap;
+    text-align: center;
+    white-space: nowrap;
 
-      border-radius: 3px;
-      line-height: 28px;
-      height: 28px;
-      width: 72px;
+    border-radius: 3px;
+    line-height: 28px;
+    height: 28px;
+    width: 72px;
 
-      margin-left: 8px;
-      margin-right: 8px;
+    margin: 0 8px;
+  }
 
-      &:hover {
-        cursor: pointer;
-      }
+  .Graph {
+    height: 100px;
+    margin-right: 6px;
+
+    @media (min-width: 768px) {
+      height: 165px;
+      width: 400px;
     }
   }
 
-  .PriceGraph {
-    margin-top: 48px;
-
-    .Graph {
-      height: 100px;
-      margin-right: 6px;
-
-      @media (min-width: 768px) {
-        height: 165px;
-        width: 400px;
-      }
-    }
-
-    .Slider {
-      margin-top: -6px;
-      margin-left: -6px;
-      margin-right: 6px;
-    }
+  .Slider {
+    margin-top: -6px;
+    margin-left: -6px;
+    margin-right: 6px;
   }
 </style>

@@ -1,45 +1,45 @@
 <template>
-  <div class="container" v-if="selected">
-    <div class="FilterListContainer index-elevation">
-      <div class="FilterList index-elevation" :class="`Selected-${selected}`">
-        <div class="Group Location" :class="{'Selected': selected === 'location'}">
-          <h2 class="FilterName">Where</h2>
+  <div class="container">
+    <div class="FilterListContainer bg-white index-elevation">
+      <div ref="scrollable" class="FilterList index-elevation" :class="`Selected-${selected}`">
+        <div class="Group Location" :class="{'Selected': selected === 'Location'}">
+          <h2>Where</h2>
           <search-bar-filter-location/>
         </div>
 
-        <div class="Group Price" :class="{'Selected': selected === 'price'}">
-          <h2 class="FilterName">Price</h2>
+        <div class="Group Price" :class="{'Selected': selected === 'Price'}">
+          <h2>Price</h2>
           <search-bar-filter-price/>
         </div>
 
-        <div class="Group Cuisine" :class="{'Selected': selected === 'cuisine'}">
-          <h2 class="FilterName">Cuisine</h2>
-          <search-bar-filter-tag type="cuisine"/>
+        <div class="Group Cuisine" :class="{'Selected': selected === 'Cuisine'}">
+          <h2>Cuisine</h2>
+          <search-bar-filter-tag type="Cuisine"/>
         </div>
 
-        <div class="Group Amenities" :class="{'Selected': selected === 'amenities'}">
-          <h2 class="FilterName">Amenities</h2>
-          <search-bar-filter-tag type="amenities"/>
+        <div class="Group Amenities" :class="{'Selected': selected === 'Amenities'}">
+          <h2>Amenities</h2>
+          <search-bar-filter-tag type="Amenities"/>
         </div>
 
-        <div class="Group Establishments" :class="{'Selected': selected === 'establishments'}">
-          <h2 class="FilterName">Establishments</h2>
-          <search-bar-filter-tag type="establishments"/>
+        <div class="Group Establishments" :class="{'Selected': selected === 'Establishment'}">
+          <h2>Establishments</h2>
+          <search-bar-filter-tag type="Establishment"/>
         </div>
 
-        <div class="Group Timing" :class="{'Selected': selected === 'timings'}">
-          <h2 class="FilterName">Timing</h2>
+        <div class="Group Timing" :class="{'Selected': selected === 'Timing'}">
+          <h2>Timing</h2>
           <search-bar-filter-timing/>
         </div>
       </div>
 
-      <div class="BottomBar index-elevation">
-        <div class="Button Cancel" @click="onClear">Clear</div>
-        <div class="Button Apply" @click="onApply" v-if="applyText"
-             :class="{'bg-s500 white weight-600': isApplicable, 'bg-s050 b-a85 weight-600': !isApplicable}">
+      <div class="BottomBar mt-16 flex-end index-elevation">
+        <button class="Cancel" @click="onClear">Clear</button>
+        <button class="Apply secondary" @click="onApply" v-if="applyText"
+                :class="{'bg-s500 white weight-600': isApplicable, 'bg-s050 b-a85 weight-600': !isApplicable}">
           {{applyText}}
-        </div>
-        <beat-loader v-else class="Button Apply bg-s050 flex-center" color="#084E69" size="8px"/>
+        </button>
+        <beat-loader v-else class="Apply border-3 bg-s050 flex-center" color="#084E69" size="8px"/>
       </div>
     </div>
   </div>
@@ -47,13 +47,12 @@
 
 <script>
   import {mapGetters} from 'vuex'
+  import {disableBodyScroll, clearAllBodyScrollLocks} from 'body-scroll-lock';
 
   import SearchBarFilterTag from "./SearchBarFilterTag";
   import SearchBarFilterTiming from "./SearchBarFilterTiming";
   import SearchBarFilterLocation from "./SearchBarFilterLocation";
   import SearchBarFilterPrice from "./SearchBarFilterPrice";
-
-  import {clearAllBodyScrollLocks} from 'body-scroll-lock';
 
   export default {
     name: "SearchBarFilterList",
@@ -61,11 +60,12 @@
     computed: {
       ...mapGetters('filter', ['count', 'selected', 'isSelectedLocationType', 'applyText', 'isApplicable']),
     },
+    mounted() {
+      disableBodyScroll(this.$refs.scrollable)
+    },
     methods: {
       onClear() {
-        const query = this.$store.state.filter.query
-        const tags = SearchBarFilterTag.$$reduce(query, this.selected)
-        this.$store.dispatch('filter/clear', {tags})
+        this.$store.dispatch('filter/clear')
       },
       onApply() {
         if (this.isApplicable) {
@@ -76,45 +76,18 @@
           this.$track.search(`Search - Filter`, this.$store.getters['search/locationType'])
         }
       },
-    },
-    watch: {
-      selected() {
-        if (window.innerWidth < 768) {
-          clearAllBodyScrollLocks()
-        }
-      }
     }
   }
 </script>
 
 <style scoped lang="less">
-  .FilterListContainer {
-    background: white;
-  }
-
-  .FilterName {
+  h2 {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
 
     padding-top: 24px;
     margin-bottom: 8px;
-  }
-
-  .BottomBar {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 16px;
-
-    .Button {
-      line-height: 1.5;
-      border-radius: 3px;
-      font-size: 16px;
-
-      &:hover {
-        cursor: pointer;
-      }
-    }
   }
 
   @media (max-width: 767.98px) {
@@ -126,9 +99,7 @@
       right: 0;
       height: calc(100vh - 72px - 56px - 48px);
 
-      padding-left: 24px;
-      padding-right: 24px;
-      padding-bottom: 24px;
+      padding: 0 24px 24px 24px;
 
       overflow-x: visible;
       overflow-y: auto;
@@ -145,7 +116,7 @@
       display: none;
     }
 
-    .FilterList.Selected-location {
+    .FilterList.Selected-Location {
       .Group {
         display: none;
       }
@@ -164,19 +135,16 @@
 
       background: white;
       box-shadow: 0 -1px 2px 0 rgba(0, 0, 0, 0.2), 0 -1px 3px 0 rgba(0, 0, 0, 0.1);
+    }
 
-      .Cancel {
-        display: none;
-      }
+    .Cancel {
+      display: none;
+    }
 
-      .Apply {
-        height: 48px;
-        line-height: 48px;
-        text-align: center;
-
-        margin: 12px 24px;
-        flex-grow: 1;
-      }
+    .Apply {
+      height: 48px;
+      margin: 12px 24px;
+      flex-grow: 1;
     }
   }
 
@@ -193,10 +161,7 @@
       margin-top: 8px;
     }
 
-    .FilterName {
-      display: none;
-    }
-
+    h2,
     .Group {
       display: none;
     }
@@ -205,17 +170,14 @@
       display: block;
     }
 
-    .BottomBar {
-      .Cancel {
-        padding: 6px 24px;
-      }
+    .Cancel {
+      padding: 6px 24px;
+    }
 
-      .Apply {
-        text-align: center;
-        padding: 6px 0;
-        width: 224px;
-        margin-left: 8px;
-      }
+    .Apply {
+      height: 40px;
+      width: 224px;
+      margin-left: 8px;
     }
   }
 </style>

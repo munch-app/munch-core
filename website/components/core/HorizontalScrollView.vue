@@ -153,7 +153,7 @@
   }
 
   .Control.Prev {
-    margin-left: -24px;
+    margin-left: -18px;
     margin-right: auto;
 
     &::after {
@@ -164,7 +164,7 @@
 
   .Control.Next {
     margin-left: auto;
-    margin-right: -24px;
+    margin-right: -18px;
 
     &::after {
       margin-left: 13px;

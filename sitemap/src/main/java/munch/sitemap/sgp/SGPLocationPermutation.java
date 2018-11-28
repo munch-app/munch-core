@@ -25,6 +25,8 @@ public final class SGPLocationPermutation extends PermutationEngine {
     protected Iterator<SearchQuery> iterator() {
         Iterator<SearchQuery> areas = Iterators.transform(areaClient.iterator(), area -> {
             SearchQuery query = new SearchQuery();
+
+            query.getFilter().getLocation().setType(SearchQuery.Filter.Location.Type.Where);
             query.getFilter().getLocation().setAreas(List.of(area));
             return query;
         });

@@ -2,7 +2,7 @@
   <div>
     <div v-if="editing" class="Editing">
       <div @click="deleting = true" class="hover-pointer">
-        <simple-svg class="Icon button-action elevation-1 bg-s300 border-3" fill="white" filepath="/img/collections/delete.svg"/>
+        <simple-svg class="Icon button-action elevation-1 bg-s300 border-3" fill="white" :filepath="require('~/assets/icon/close.svg')"/>
       </div>
     </div>
 

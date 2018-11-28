@@ -1,11 +1,18 @@
 <template>
   <div class="TimingCollectionContainer">
-    <div class="TimingCollection">
-      <div class="TimingCell" v-for="timing in timings" :key="timing" @click="toggle(timing)"
+    <div class="TimingCollection flex">
+      <div class="TimingCell hover-pointer" @click="toggleType('OpenNow')"
            :class="{
-         'bg-p500 white': isSelectedTiming(timing),
-         'bg-whisper100 b-a75': !isSelectedTiming(timing)}">
-        {{timing}}
+              'bg-p500 white': isSelectedTiming('OpenNow'),
+              'bg-whisper100 b-a75': !isSelectedTiming('OpenNow')
+           }">
+        Open Now
+      </div>
+      <div class="TimingCell hover-pointer" v-for="tag in timings" :key="tag.tagId" @click="toggleTag(tag)"
+           :class="{
+              'bg-p500 white': isSelectedTag(tag),
+              'bg-whisper100 b-a75': !isSelectedTag(tag)}">
+        {{tag.name}}
       </div>
       <div class="TimingCellRight"></div>
     </div>
@@ -19,15 +26,23 @@
     name: "SearchBarFilterTiming",
     data() {
       return {
-        timings: ['Open Now', 'Breakfast', 'Lunch', 'Dinner', 'Supper']
+        timings: [
+          {name: 'Breakfast', type: 'Timing', tagId: 'f749ab1a-358c-4ba2-adb8-04a3accf46cb'},
+          {name: 'Lunch', type: 'Timing', tagId: '1be094a8-b9f5-43ca-9af7-f0ae2d87afb2'},
+          {name: 'Dinner', type: 'Timing', tagId: '32d11ac3-afb2-4e1e-a798-97771958294c'},
+          {name: 'Supper', type: 'Amenities', tagId: '97c3121f-7947-4950-8a63-027ef1d6337a'},
+        ]
       }
     },
     computed: {
-      ...mapGetters('filter', ['isSelectedTiming'])
+      ...mapGetters('filter', ['isSelectedTiming', 'isSelectedTag'])
     },
     methods: {
-      toggle(timing) {
-        this.$store.dispatch('filter/timings', timing)
+      toggleType(type) {
+        this.$store.dispatch('filter/timings', type)
+      },
+      toggleTag(tag) {
+        this.$store.dispatch('filter/tag', tag)
       }
     }
   }
@@ -41,8 +56,6 @@
 
   .TimingCollection {
     padding: 8px 24px;
-    display: flex;
-    flex-flow: row nowrap;
     margin-left: -16px;
 
     overflow-x: scroll;
@@ -58,10 +71,6 @@
     border-radius: 3px;
     padding: 6px 20px;
     margin-left: 16px;
-
-    &:hover {
-      cursor: pointer;
-    }
   }
 
   .TimingCellRight {

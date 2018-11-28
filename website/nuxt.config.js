@@ -1,5 +1,3 @@
-const webpack = require('webpack')
-
 module.exports = {
   head: {
     title: 'Discover Delicious · Munch Singapore',
@@ -25,12 +23,11 @@ module.exports = {
       {name: 'theme-color', content: '#ffffff'},
     ],
     link: [
-      // TODO: All theses resources can be optimised
-      {rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png'},
-      {rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png'},
-      {rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16.png'},
-      {rel: 'manifest', href: '/site.webmanifest'},
-      {rel: 'mask-icon', href: '/safari-pinned-tab.svg', color: '#f05f3b'},
+      {rel: 'apple-touch-icon', sizes: '180x180', href: '/meta/apple-touch-icon/.1.png'},
+      {rel: 'icon', type: 'image/png', sizes: '32x32', href: '/meta/favicon-32x32.1.png'},
+      {rel: 'icon', type: 'image/png', sizes: '16x16', href: '/meta/favicon-16x16.1.png'},
+      {rel: 'manifest', href: '/meta/site.1.webmanifest'},
+      {rel: 'mask-icon', href: '/meta/safari-pinned-tab.1.svg', color: '#f05f3b'},
 
       {rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700|Roboto'},
     ],
@@ -38,9 +35,11 @@ module.exports = {
       {src: 'https://cdn.apple-mapkit.com/mk/5.x.x/mapkit.js'},
       {src: 'https://www.googletagmanager.com/gtag/js?id=UA-117480436-1'},
       {src: 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js', defer: true},
-      {
+
+      // Only in production
+      ...(process.env.NODE_ENV === 'production' ? [{
         innerHTML: '(adsbygoogle=window.adsbygoogle || []).push({google_ad_client: "ca-pub-7144155418390858", enable_page_level_ads:true});'
-      }
+      }] : [])
     ]
   },
   css: [

@@ -4,7 +4,6 @@
       <div class="container flex">
         <header-logo class="mr-8" :class="{'IsSearching': searching}"/>
         <div class="Search mlr-8 mtb-8 flex-grow">
-          <!-- SearchBar TODO: Optimise -->
           <search-bar class="SearchBar" @onBlur="onBlur" @onFocus="onFocus"/>
         </div>
         <header-right class="HeaderRight"/>
@@ -15,16 +14,16 @@
     <header-menu/>
 
     <div style="height: 48px" v-if="isSearch"/>
-    <!-- Search Bar Filter TODO: Optimise -->
+    <!-- Search Bar Filter -->
     <search-bar-filter v-if="isSearch"/>
 
-    <!-- Dialog manager for system TODO: Optimise -->
+    <!-- Dialog manager for system -->
     <dialog-portal/>
 
     <!-- Notification List on the right -->
     <notification-list/>
 
-    <!-- Notification Even on the bottom TODO: Optimise-->
+    <!-- Notification Event on the bottom -->
     <notification-event/>
 
     <!-- Elevation overlay for content -->

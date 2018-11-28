@@ -1,17 +1,20 @@
 <template>
   <div class="TagColumn">
-    <div class="TagRow" v-for="tag in list" :key="tag" @click="toggle(tag)"
-         v-if="!isHidden(tag) || !hidden"
+    <div class="TagRow" v-for="tag in tags" :key="tag.tagId" @click="toggle(tag)"
+         v-if="tag.count > 0 || !hidden"
          :class="{Selected: isSelectedTag(tag), Loading: loading}">
+
       <div class="Name">
-        {{tag}}
+        {{tag.name}}
       </div>
+
       <div class="Control">
-        <div v-if="!loading" class="Count">{{count(tag)}}</div>
+        <div v-if="!loading" class="Count weight-600 b-a75">{{countText(tag.count)}}</div>
         <div v-if="!loading || isSelectedTag(tag)" class="Checkbox"/>
         <beat-loader v-if="!isSelectedTag(tag) && loading" class="flex-center" color="#0A6284" size="6px"/>
       </div>
     </div>
+
     <div class="LastRow TagRow" v-if="hiddenCount > 0" @click="hidden = !hidden">
       <div class="Name s500 weight-600">{{hidden ? 'See' : 'Hide'}} other filters</div>
     </div>
@@ -19,44 +22,9 @@
 </template>
 
 <script>
-  import _ from 'lodash'
   import {mapGetters} from 'vuex'
 
-  const types = {
-    // TODO use cached and fetch from server logic
-    'cuisine': {
-      list: ['Singaporean', 'Japanese', 'Italian', 'Thai', 'Chinese', 'Korean', 'Mexican', 'Western', 'Indian', 'Cantonese', 'English', 'Fusion', 'Asian', 'Hainanese', 'American', 'French', 'Hong Kong', 'Teochew', 'Taiwanese', 'Malaysian', 'Shanghainese', 'Indonesian', 'Vietnamese', 'European', 'Peranakan', 'Sze Chuan', 'Spanish', 'Middle Eastern', 'Modern European', 'Filipino', 'Turkish', 'Hakka', 'German', 'Mediterranean', 'Swiss', 'Hawaiian', 'Australian'],
-    },
-    'amenities': {
-      list: ['Romantic', 'Supper', 'Brunch', 'Business Meal', 'Scenic View', 'Child-Friendly', 'Large Group', 'Vegetarian Options', 'Halal', 'Healthy', 'Alcohol', 'Vegetarian', 'Private Dining', 'Value For Money', 'Pet-Friendly', 'Live Music', 'Vegan', 'Vegan Options']
-    },
-    'establishments': {
-      list: ['Hawker', 'Drinks', 'Bakery', 'Dessert', 'Snacks', 'Cafe', 'Bars & Pubs', 'Fast Food', 'BBQ', 'Buffet', 'Hotpot & Steamboat', 'High Tea', 'Fine Dining']
-    }
-  }
-
-  function reduce(query, type) {
-    const bucket = {'cuisine': [], 'amenities': [], 'establishments': []}
-
-    function push(type, value) {
-      const found = _.find(types[type].list, (v) => v.toLowerCase() === value)
-      if (found) bucket[type].push(found)
-      return !!found
-    }
-
-    query.filter.tag.positives.forEach(value => {
-      value = value.toLowerCase()
-      if (push('cuisine', value)) return
-      if (push('establishments', value)) return
-      if (push('amenities', value)) return
-      bucket['amenities'].push(_.startCase(value))
-    })
-
-    return bucket[type]
-  }
-
   export default {
-    $$reduce: reduce,
     name: "SearchBarFilterTag",
     props: {
       type: {
@@ -66,61 +34,42 @@
     },
     data() {
       return {
-        ...types[this.type],
         hidden: true
       }
     },
     computed: {
-      ...mapGetters('filter', ['isSelectedTag', 'loading', 'isSelectedLocationType']),
+      ...mapGetters('filter', ['isSelectedTag', 'loading', 'isSelectedLocationType', 'tagGraph']),
+
+      /**
+       * List of Tags {tagId, name, type, count}
+       */
       tags() {
-        return this.$store.state.filter.result.tags
+        if (!this.tagGraph) return []
+
+        return this.tagGraph.tags
+          .filter(t => t.type === this.type)
       },
       hiddenCount() {
-        return this.list
-          .filter(tag => this.isHidden(tag))
+        if (!this.tagGraph) return 0
+
+        return this.tagGraph.tags
+          .filter(t => t.type === this.type && t.count === 0)
           .length
-      }
+      },
     },
     methods: {
-      count(tag) {
-        if (this.$store.state.filter.query.filter.tag.positives.length === 0) return ''
-        if (this.isSelectedTag(tag)) return ''
-
-        const count = this.tags && this.tags[tag.toLowerCase()]
+      toggle(tag) {
+        this.$store.dispatch('filter/tag', tag)
+      },
+      countText(count) {
         if (count) {
           if (count >= 100) return '100+'
           else if (count <= 10) return `${count}`
           else return `${Math.round(count / 10) * 10}+`
         }
         return '0'
-      },
-      isHidden(tag) {
-        if (this.$store.state.filter.query.filter.tag.positives.length === 0) return false
-        if (this.isSelectedTag(tag)) return false
-        const count = this.tags && this.tags[tag.toLowerCase()]
-        if (count) return count === 0
-        return true
-      },
-      toggle(tag) {
-        this.$store.dispatch('filter/tag', tag)
       }
     },
-    watch: {
-      tags(tags) {
-        this.list
-          .sort((a, b) => {
-            const ta = this.isSelectedTag(a)
-            const tb = this.isSelectedTag(b)
-            if (ta || tb) {
-              return tb - ta
-            }
-
-            const as = tags && tags[a.toLowerCase()] || 0
-            const bs = tags && tags[b.toLowerCase()] || 0
-            return bs - as
-          })
-      }
-    }
   }
 </script>
 
@@ -136,73 +85,73 @@
 
   .TagRow {
     display: flex;
-    align-items: center;
     padding: 8px 0;
 
     &:hover {
       cursor: pointer;
     }
+  }
 
-    .Name {
-      padding-right: 8px;
-      font-size: 16px;
-      line-height: 24px;
+  .Name {
+    padding-right: 8px;
+    font-size: 16px;
+    line-height: 24px;
 
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 
-      @media (min-width: 768px) {
-        padding-right: 80px;
-      }
+    @media (min-width: 768px) {
+      padding-right: 80px;
+    }
+  }
+
+  .Control {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    flex-grow: 1;
+
+    .Count {
+      margin-right: 16px;
+    }
+  }
+
+  .Checkbox {
+    height: 24px;
+    width: 24px;
+    position: relative;
+    display: inline-block;
+
+    &::before, &::after {
+      position: absolute;
+      content: "";
+      display: inline-block;
     }
 
-    .Control {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      flex-grow: 1;
+    &::before {
+      margin: 1px 0;
+      height: 22px;
+      width: 22px;
+      border-radius: 2px;
+      border: 2px solid rgba(0, 0, 0, .75);
+    }
 
-      .Count {
-        margin-right: 16px;
-      }
+    &::after {
+      height: 7px;
+      width: 11px;
+      border-left: 2px solid;
+      border-bottom: 2px solid;
 
-      .Checkbox {
-        height: 24px;
-        width: 24px;
-        position: relative;
-        display: inline-block;
+      transform: rotate(-45deg);
 
-        &::before, &::after {
-          position: absolute;
-          content: "";
-          display: inline-block;
-        }
+      left: 5px;
+      top: 7px;
+    }
 
-        &::before {
-          margin: 1px 0;
-          height: 22px;
-          width: 22px;
-          border-radius: 2px;
-          border: 2px solid rgba(0, 0, 0, 0.85);
-        }
-
-        &::after {
-          height: 7px;
-          width: 11px;
-          border-left: 2px solid;
-          border-bottom: 2px solid;
-
-          transform: rotate(-45deg);
-
-          left: 5px;
-          top: 7px;
-        }
-
-        &::after {
-          content: none;
-        }
-      }
+    &::after {
+      content: none;
     }
   }
 
@@ -222,12 +171,6 @@
     .Checkbox::before {
       border-color: @Primary500;
       background-color: @Primary500;
-    }
-  }
-
-  .LastRow {
-    .Name {
-      padding-right: 0;
     }
   }
 </style>

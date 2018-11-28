@@ -3,10 +3,10 @@
     <div class="Editing" v-if="showButton">
       <div v-if="isEditable">
         <div @click="deleting = true" class="hover-pointer">
-          <simple-svg class="Icon" fill="black" filepath="/img/profile/delete.svg"/>
+          <simple-svg class="Icon" fill="black" :filepath="require('~/assets/icon/close.svg')"/>
         </div>
         <div @click="editing = true" class="hover-pointer">
-          <simple-svg class="Icon" fill="black" filepath="/img/profile/edit.svg"/>
+          <simple-svg class="Icon" fill="black" :filepath="require('~/assets/icon/edit.svg')"/>
         </div>
       </div>
     </div>

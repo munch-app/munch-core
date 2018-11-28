@@ -1,9 +1,7 @@
 import createPersistedState from 'vuex-persistedstate'
-// TODO Replace this with cookies
+// TODO Redo this with new authentication caching on server site
 
 import * as Cookies from 'js-cookie'
-
-
 
 export default ({store}) => {
   createPersistedState({
