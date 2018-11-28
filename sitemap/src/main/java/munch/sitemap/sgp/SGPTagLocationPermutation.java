@@ -36,6 +36,8 @@ public final class SGPTagLocationPermutation extends PermutationEngine {
             return Iterators.transform(tags.iterator(), tag -> {
                 SearchQuery query = new SearchQuery();
                 query.getFilter().getTags().add(tag);
+
+                query.getFilter().getLocation().setType(SearchQuery.Filter.Location.Type.Where);
                 query.getFilter().getLocation().setAreas(List.of(area));
                 return query;
             });
@@ -45,6 +47,8 @@ public final class SGPTagLocationPermutation extends PermutationEngine {
             return Iterators.transform(tags.iterator(), tag -> {
                 SearchQuery query = new SearchQuery();
                 query.getFilter().getTags().add(tag);
+
+                query.getFilter().getLocation().setType(SearchQuery.Filter.Location.Type.Where);
                 Area area = LandmarkUtils.asArea(landmark, 1);
                 query.getFilter().getLocation().setAreas(List.of(area));
                 return query;

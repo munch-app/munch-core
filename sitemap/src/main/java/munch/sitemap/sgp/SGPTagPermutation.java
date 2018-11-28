@@ -47,6 +47,8 @@ public final class SGPTagPermutation extends PermutationEngine {
         return Iterators.transform(getTags().iterator(), tags -> {
             SearchQuery query = new SearchQuery();
             query.getFilter().getTags().addAll(tags);
+
+            query.getFilter().getLocation().setType(SearchQuery.Filter.Location.Type.Where);
             query.getFilter().getLocation().setAreas(List.of(AssumptionEngine.SINGAPORE));
             return query;
         });

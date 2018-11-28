@@ -27,6 +27,8 @@ public final class SGPAnywherePermutation extends PermutationEngine {
 
             SearchQuery query = new SearchQuery();
             query.getFilter().getTags().add(tag);
+
+            query.getFilter().getLocation().setType(SearchQuery.Filter.Location.Type.Where);
             query.getFilter().getLocation().setAreas(List.of(AssumptionEngine.SINGAPORE));
             return query;
         });

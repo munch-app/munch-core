@@ -32,6 +32,8 @@ public final class SGPLocationPermutation extends PermutationEngine {
         Iterator<SearchQuery> landmarks = Iterators.transform(landmarkClient.iterator(), landmark -> {
             SearchQuery query = new SearchQuery();
             Area area = LandmarkUtils.asArea(landmark, 1.0);
+
+            query.getFilter().getLocation().setType(SearchQuery.Filter.Location.Type.Where);
             query.getFilter().getLocation().setAreas(List.of(area));
             return query;
         });
