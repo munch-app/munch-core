@@ -52,7 +52,6 @@
           title: `Feed · Munch Singapore`,
           description: 'The Feed features the best, most delicious places in Singapore. The Feed is a food guide like you’ve never seen or tasted. A must-see must-eat guide that will always leave your stomach rumbling and mouth dripping.',
           url: `https://www.munch.app/feed/images`,
-          keywords: 'feed,images,food discovery,munch,munch app,singapore,food,instagram',
         },
         breadcrumbs: [
           {

@@ -35,7 +35,7 @@ function metaRobots(robots) {
 function metaGraph(graph) {
   if (!graph) return []
 
-  const {title, description, image, url, type, keywords} = graph
+  const {title, description, image, url, type} = graph
   const meta = []
   if (title) {
     meta.push({hid: 'og:title', name: 'og:title', content: title})
@@ -52,9 +52,6 @@ function metaGraph(graph) {
   }
   if (type) {
     meta.push({hid: 'og:type', name: 'og:type', content: type})
-  }
-  if (keywords) {
-    meta.push({hid: 'keywords', name: 'keywords', content: keywords})
   }
   return meta
 }

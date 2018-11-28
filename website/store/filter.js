@@ -114,10 +114,10 @@ export const mutations = {
   replace(state, query) {
     state.query.sort = query.sort
 
+    state.query.filter.tags = query.filter.tags
     state.query.filter.price = query.filter.price && !isNaN(query.filter.price.min) && !isNaN(query.filter.price.max) && query.filter.price || null
     state.query.filter.hour = query.filter.hour || null
     state.query.filter.location = query.filter.location || {type: 'Anywhere', areas: [], points: []}
-    if (!state.query.filter.tags) state.query.filter.tags = []
     if (!state.query.filter.location.areas) state.query.filter.location.areas = []
     if (!state.query.filter.location.points) state.query.filter.location.points = []
 
