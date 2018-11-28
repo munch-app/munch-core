@@ -82,20 +82,16 @@
       GoogleEmbedMap, PlaceMenu, ImageSizes, PlaceTagList
     },
     head() {
-      const place = this.place
-      const image = place.images && place.images[0] && ImageSizes.$$findUrl(place.images[0].sizes, 300, 300)
-
-      const tags = [place.name, ...place.tags.map(t => t.name)]
-      if (place.location.neighbourhood) tags.push(place.location.neighbourhood)
+      const {placeId, name, description, images, taste} = this.place
 
       return this.$head({
-        robots: {follow: true, index: place.taste.group >= 2},
+        robots: {follow: true, index: taste.group >= 2},
         graph: {
-          title: `${place.name} · Munch Singapore`,
-          description: place.description,
+          title: `${name} · Munch Singapore`,
+          description: description,
           type: 'place',
-          image: image,
-          url: `https://www.munch.app/places/${place.placeId}`,
+          image: images && images[0] && ImageSizes.$$findUrl(images[0].sizes, 300, 300),
+          url: `https://www.munch.app/places/${placeId}`,
         },
         breadcrumbs: [
           {
@@ -103,8 +99,8 @@
             item: 'https://www.munch.app/places'
           },
           {
-            name: place.name,
-            item: `https://www.munch.app/places/${place.placeId}`
+            name: name,
+            item: `https://www.munch.app/places/${placeId}`
           },
         ]
       })
@@ -114,8 +110,8 @@
         showAddToCollection: false
       }
     },
-    asyncData({$api, $axios, params, error}) {
-      return $api.get(`/places/${params.placeId}`)
+    asyncData({$api, $axios, params: {placeId}, error}) {
+      return $api.get(`/places/${placeId}`)
         .then(({data}) => {
           return {data}
         }).catch((err) => {
