@@ -5,7 +5,7 @@ import munch.api.search.cards.SearchCard;
 import munch.api.search.cards.SearchCardParser;
 import munch.api.search.elastic.ElasticQueryUtils;
 import munch.api.search.elastic.ElasticSortUtils;
-import munch.api.search.inject.SearchCardInjector;
+import munch.api.search.plugin.SearchCardPlugin;
 import munch.data.client.ElasticClient;
 import munch.data.place.Place;
 import munch.restful.core.JsonUtils;
@@ -26,12 +26,12 @@ public final class SearchDelegator {
     private final ElasticClient elasticClient;
 
     private final SearchCardParser cardParser;
-    private final SearchCardInjector cardInjector;
+    private final SearchCardPlugin.Runner cardInjector;
 
     private final GlobalTasteClient tasteClient;
 
     @Inject
-    public SearchDelegator(ElasticClient elasticClient, SearchCardParser cardParser, SearchCardInjector cardInjector, GlobalTasteClient tasteClient) {
+    public SearchDelegator(ElasticClient elasticClient, SearchCardParser cardParser, SearchCardPlugin.Runner cardInjector, GlobalTasteClient tasteClient) {
         this.elasticClient = elasticClient;
         this.cardParser = cardParser;
         this.cardInjector = cardInjector;
@@ -45,16 +45,23 @@ public final class SearchDelegator {
     public List<SearchCard> delegate(SearchRequest request) {
         if (request.getPage() >= getMaxPage(request)) return List.of();
 
-        List<Place> places = searchPlaces(request, getPageSize(request));
-        // For EB might need to use different logic to sort the data
+        List<Place> places = searchPlaces(request);
         places = tasteClient.sort(places, request.getLocalTime());
 
         List<SearchCard> cards = cardParser.parse(places, request);
-        cardInjector.inject(cards, request);
+        cardInjector.run(cards, request);
         return cards;
     }
 
-    private List<Place> searchPlaces(SearchRequest request, int pageSize) {
+    /**
+     * @param request search request
+     * @return List of Place if empty if request don't support search
+     */
+    private List<Place> searchPlaces(SearchRequest request) {
+        // Only Search Screen returns Place results
+        if (request.getScreen() != SearchRequest.Screen.search) return List.of();
+
+        int pageSize = getPageSize(request);
         ObjectNode root = JsonUtils.createObjectNode();
         root.put("from", request.getPage() * pageSize);
         root.put("size", pageSize);

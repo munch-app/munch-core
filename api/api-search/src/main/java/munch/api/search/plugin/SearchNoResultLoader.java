@@ -1,4 +1,4 @@
-package munch.api.search.inject;
+package munch.api.search.plugin;
 
 import munch.api.search.cards.SearchNoResultCard;
 
@@ -11,7 +11,7 @@ import java.util.List;
  * Time: 1:48 AM
  * Project: munch-core
  */
-public final class SearchNoResultLoader implements SearchCardInjector.Loader {
+public final class SearchNoResultLoader implements SearchCardPlugin {
     private static final SearchNoResultCard CARD_NO_RESULT = new SearchNoResultCard();
 
     @Override
@@ -20,7 +20,7 @@ public final class SearchNoResultLoader implements SearchCardInjector.Loader {
         if (request.isCardsMoreThan(0)) return List.of();
 
         // Is Between will generate it's own No Result Card
-        if (request.isBetween()) return List.of();
+        if (request.getRequest().isBetween()) return null;
         return of(10_000, CARD_NO_RESULT);
     }
 }

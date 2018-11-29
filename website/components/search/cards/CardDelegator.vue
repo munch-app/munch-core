@@ -2,7 +2,7 @@
   <search-card-place
     class="Card no-select Initial Pointer"
     :class="{WithMap: showsMap}"
-    v-if="isCardId('basic_Place_20171211')"
+    v-if="isCardId('Place_2018-12-29')"
     :card="card"
   />
   <search-card-area-cluster-list
@@ -12,7 +12,7 @@
   />
   <search-card-header
     class="Card no-select Initial FullWidth NoBottom"
-    v-else-if="isCardId('injected_Header_20180120')"
+    v-else-if="isCardId('Header_2018-11-29')"
     :card="card"
   />
   <search-card-navigation-header

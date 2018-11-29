@@ -1,4 +1,4 @@
-package munch.api.search.inject;
+package munch.api.search.plugin;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  * Project: munch-core
  */
 @Singleton
-public final class SearchSuggestionTagLoader implements SearchCardInjector.Loader {
+public final class SearchSuggestionTagLoader implements SearchCardPlugin {
 
     private final ElasticClient elasticClient;
 
@@ -49,7 +49,7 @@ public final class SearchSuggestionTagLoader implements SearchCardInjector.Loade
         if (!request.isFirstPage()) return List.of();
         if (!request.isFullPage()) return List.of();
         if (!request.isNatural()) return List.of();
-        if (request.isBetween()) return List.of();
+        if (request.getRequest().isBetween()) return List.of();
 
         Map<String, Integer> tagMap = aggTags(request.getRequest());
         if (tagMap.isEmpty()) return List.of();
@@ -64,7 +64,7 @@ public final class SearchSuggestionTagLoader implements SearchCardInjector.Loade
 
         // Only return if more then 3
         SearchSuggestedTagCard card = new SearchSuggestedTagCard();
-        card.setLocationName(request.getLocationName(null));
+        card.setLocationName(request.getRequest().getLocationName(null));
         card.setTags(tags);
         return of(20, card);
     }

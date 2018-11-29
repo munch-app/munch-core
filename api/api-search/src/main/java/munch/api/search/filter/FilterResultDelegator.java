@@ -22,11 +22,13 @@ public final class FilterResultDelegator {
 
     private final ElasticClient elasticClient;
     private final FilterTagDatabase tagDatabase;
+    private final FilterPriceGrapher priceGrapher;
 
     @Inject
-    public FilterResultDelegator(ElasticClient elasticClient, FilterTagDatabase tagDatabase) {
+    public FilterResultDelegator(ElasticClient elasticClient, FilterTagDatabase tagDatabase, FilterPriceGrapher priceGrapher) {
         this.elasticClient = elasticClient;
         this.tagDatabase = tagDatabase;
+        this.priceGrapher = priceGrapher;
     }
 
     public FilterResult delegate(SearchRequest request) {
@@ -61,7 +63,7 @@ public final class FilterResultDelegator {
         FilterResult result = new FilterResult();
         result.setCount(count);
         result.setTagGraph(tagDatabase.getGraph(tags));
-        result.setPriceGraph(PriceGraph.fromFrequency(frequency));
+        result.setPriceGraph(priceGrapher.getGraph(frequency));
         return result;
     }
 

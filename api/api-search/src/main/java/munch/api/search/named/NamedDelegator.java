@@ -5,14 +5,12 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import munch.data.client.NamedQueryClient;
 import munch.data.named.NamedQuery;
-import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -32,9 +30,7 @@ public final class NamedDelegator {
         cache = CacheBuilder.newBuilder()
                 .maximumSize(10_000)
                 .expireAfterWrite(30, TimeUnit.DAYS)
-                .build(CacheLoader.from(slug -> {
-                    return client.get(slug,"2018-11-28");
-                }));
+                .build(CacheLoader.from(slug -> client.get(slug,"2018-11-28")));
     }
 
     /**

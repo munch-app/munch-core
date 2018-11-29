@@ -1,4 +1,4 @@
-package munch.api.search.inject;
+package munch.api.search.plugin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -19,7 +19,7 @@ import java.util.List;
  * Project: munch-core
  */
 @Singleton
-public final class SearchAreaClusterListLoader implements SearchCardInjector.Loader {
+public final class SearchAreaClusterListLoader implements SearchCardPlugin {
     private final ObjectMapper mapper = JsonUtils.objectMapper;
     private final ElasticClient elasticClient;
 
@@ -34,7 +34,7 @@ public final class SearchAreaClusterListLoader implements SearchCardInjector.Loa
         if (request.isComplex()) return List.of();
 
         // Only for Nearby & Anywhere
-        if (!(request.isNearby() || request.isAnywhere())) return List.of();
+        if (!(request.getRequest().isNearby() || request.getRequest().isAnywhere())) return List.of();
 
         String latLng = request.getLatLngContext();
         if (latLng == null) return List.of();

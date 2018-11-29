@@ -28,7 +28,7 @@ public final class SearchCardParser {
         }
 
         return places.stream()
-                .map(SearchCardParser::parse)
+                .map(SearchPlaceCard::new)
                 .collect(Collectors.toList());
     }
 
@@ -52,15 +52,9 @@ public final class SearchCardParser {
             cards.add(card);
 
             map.get(neighbourhood).forEach(place -> {
-                cards.add(parse(place));
+                cards.add(new SearchPlaceCard(place));
             });
         }
         return cards;
-    }
-
-    private static SearchPlaceCard parse(Place place) {
-        SearchPlaceCard card = new SearchPlaceCard();
-        card.setPlace(place);
-        return card;
     }
 }

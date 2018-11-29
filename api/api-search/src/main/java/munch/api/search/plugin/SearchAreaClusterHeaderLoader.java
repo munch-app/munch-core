@@ -1,4 +1,4 @@
-package munch.api.search.inject;
+package munch.api.search.plugin;
 
 import munch.api.search.cards.SearchAreaClusterHeaderCard;
 import munch.data.location.Area;
@@ -13,15 +13,17 @@ import java.util.List;
  * Project: munch-core
  */
 @Singleton
-public final class SearchAreaClusterHeaderLoader implements SearchCardInjector.Loader {
+public final class SearchAreaClusterHeaderLoader implements SearchCardPlugin {
 
     @Override
     public List<Position> load(Request request) {
         if (!request.isFirstPage()) return List.of();
-        if (!request.isWhere()) return List.of();
-        if (request.getAreas().size() != 1) return List.of();
+        if (!request.getRequest().isWhere()) return List.of();
 
-        Area area = request.getAreas().get(0);
+        List<Area> areas = request.getRequest().getAreas();
+        if (areas.size() != 1) return List.of();
+
+        Area area = areas.get(0);
         if (area.getType() != Area.Type.Cluster) return List.of();
 
         SearchAreaClusterHeaderCard card = new SearchAreaClusterHeaderCard();

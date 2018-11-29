@@ -56,8 +56,8 @@ public final class FilterTagDatabase {
                 .collect(Collectors.toList());
     }
 
-    public TagGraph getGraph(Map<String, Integer> tags) {
-        TagGraph tagGraph = new TagGraph();
+    public FilterResult.TagGraph getGraph(Map<String, Integer> tags) {
+        FilterResult.TagGraph tagGraph = new FilterResult.TagGraph();
         tagGraph.setTags(getFilterTags(tags));
 
         tagGraph.getTags().sort((o1, o2) -> Long.compare(o2.getCount(), o1.getCount()));

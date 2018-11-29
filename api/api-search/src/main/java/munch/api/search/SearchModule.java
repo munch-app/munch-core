@@ -2,7 +2,8 @@ package munch.api.search;
 
 import com.google.inject.multibindings.Multibinder;
 import munch.api.ApiServiceModule;
-import munch.api.search.inject.*;
+import munch.api.search.cards.SearchPlaceCard;
+import munch.api.search.plugin.*;
 
 /**
  * Created by: Fuxing
@@ -14,17 +15,20 @@ public final class SearchModule extends ApiServiceModule {
 
     @Override
     protected void configure() {
-        Multibinder<SearchCardInjector.Loader> loaderBinder = Multibinder.newSetBinder(binder(), SearchCardInjector.Loader.class);
+        Multibinder<SearchCardPlugin> loaderBinder = Multibinder.newSetBinder(binder(), SearchCardPlugin.class);
         loaderBinder.addBinding().to(SearchAreaClusterListLoader.class);
         loaderBinder.addBinding().to(SearchAreaClusterHeaderLoader.class);
         loaderBinder.addBinding().to(SearchNoResultLoader.class);
         loaderBinder.addBinding().to(SearchNoLocationLoader.class);
-        loaderBinder.addBinding().to(SearchHeaderLoader.class);
+        loaderBinder.addBinding().to(SearchHeaderPlugin.class);
         loaderBinder.addBinding().to(SearchSuggestionTagLoader.class);
         loaderBinder.addBinding().to(SearchBetweenLoader.class);
+        loaderBinder.addBinding().to(SearchHomeTabPlugin.class);
 
         addService(SearchService.class);
         addService(SuggestService.class);
         addService(SearchFilterService.class);
+
+        addCleaner(SearchPlaceCard.Cleaner.class);
     }
 }

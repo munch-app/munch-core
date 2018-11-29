@@ -17,7 +17,7 @@ import java.util.List;
  * This is the more generic SearchRequest loader
  * Used for: suggest, search, filter
  * <p>
- * SearchCardInjector.Request is used for search with cards tools
+ * Runner.Request is used for search with cards tools
  * <p>
  * Created by: Fuxing
  * Date: 16/6/18
@@ -40,11 +40,29 @@ public final class SearchRequest {
         this.localDateTime = call.get(ApiRequest.class).optionalLocalTime().orElse(null);
     }
 
+    public enum Screen {
+        search,
+        home,
+        location,
+        award,
+        collection
+    }
+
     /**
      * @return HTTP JsonCall Request
      */
     public JsonCall getCall() {
         return call;
+    }
+
+    /**
+     * @return Current screen
+     */
+    public Screen getScreen() {
+        String screen = call.queryString("screen", null);
+        if (StringUtils.isBlank(screen)) return Screen.search;
+
+        return Screen.valueOf(screen);
     }
 
     /**

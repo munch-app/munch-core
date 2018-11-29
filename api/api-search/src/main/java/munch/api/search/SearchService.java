@@ -51,12 +51,6 @@ public final class SearchService extends ApiService {
 
             // Generic user executed search, qid will be generated and returned
             POST("", this::search);
-
-            // Search pages
-            POST("/home", this::search);
-            POST("/award", this::search);
-            POST("/location", this::search);
-            POST("/collection", this::search);
         });
     }
 

@@ -47,7 +47,7 @@ public final class SearchHeaderCard implements SearchCard {
 
     @Override
     public String getCardId() {
-        return "injected_Header_20180120";
+        return "Header_2018-11-29";
     }
 
     @Override

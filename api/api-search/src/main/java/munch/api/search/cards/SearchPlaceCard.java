@@ -1,7 +1,12 @@
 package munch.api.search.cards;
 
 
+import munch.api.ObjectCleaner;
+import munch.api.core.PlaceCleaner;
 import munch.data.place.Place;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * Created by: Fuxing
@@ -9,12 +14,16 @@ import munch.data.place.Place;
  * Time: 2:57 PM
  * Project: munch-core
  */
-public class SearchPlaceCard implements SearchCard {
-    private Place place;
+public final class SearchPlaceCard implements SearchCard {
+    private final Place place;
+
+    public SearchPlaceCard(Place place) {
+        this.place = place;
+    }
 
     @Override
     public String getCardId() {
-        return "basic_Place_20171211";
+        return "Place_2018-12-29";
     }
 
     @Override
@@ -26,16 +35,25 @@ public class SearchPlaceCard implements SearchCard {
         return place;
     }
 
-    public void setPlace(Place place) {
-        this.place = place;
-    }
 
-    @Deprecated
-    public final static class Small extends SearchPlaceCard {
+    @Singleton
+    public static class Cleaner extends ObjectCleaner<SearchPlaceCard> {
+
+        private final PlaceCleaner placeCleaner;
+
+        @Inject
+        public Cleaner(PlaceCleaner placeCleaner) {
+            this.placeCleaner = placeCleaner;
+        }
 
         @Override
-        public String getCardId() {
-            return "basic_SmallPlace_20180129";
+        protected Class<SearchPlaceCard> getClazz() {
+            return SearchPlaceCard.class;
+        }
+
+        @Override
+        protected void clean(SearchPlaceCard data) {
+            placeCleaner.clean(data.getPlace());
         }
     }
 }

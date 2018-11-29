@@ -35,7 +35,7 @@ public final class PlaceCleaner extends ObjectCleaner<Place> {
     }
 
     @Override
-    protected void clean(Place place) {
+    public void clean(Place place) {
         place.setNames(null);
         place.setUpdatedMillis(null);
         place.setCreatedMillis(null);

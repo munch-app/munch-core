@@ -1,4 +1,4 @@
-package munch.api.search.inject;
+package munch.api.search.plugin;
 
 import munch.api.search.cards.SearchHeaderCard;
 import munch.api.search.cards.SearchNavigationHeader;
@@ -14,11 +14,11 @@ import java.util.stream.Collectors;
  * Project: munch-core
  */
 @Singleton
-public final class SearchBetweenLoader implements SearchCardInjector.Loader {
+public final class SearchBetweenLoader implements SearchCardPlugin {
 
     @Override
     public List<Position> load(Request request) {
-        if (!request.isBetween()) return null;
+        if (!request.getRequest().isBetween()) return null;
 
         List<SearchHeaderCard> headers = request.getCards().stream()
                 .filter(searchCard -> searchCard instanceof SearchHeaderCard)

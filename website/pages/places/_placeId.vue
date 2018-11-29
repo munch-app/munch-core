@@ -23,7 +23,7 @@
           <place-detail :place="place"/>
         </section>
 
-        <section v-if="data.awards.length > 0 || place.description">
+        <section v-if="data.awards.length > 0 || place.description" class="Max720">
           <place-about :place="place" :awards="data.awards"/>
         </section>
 
