@@ -6,7 +6,7 @@
 
     <section class="Information container flex-justify-between relative">
       <div class="ContentBody flex-grow">
-        <section class="Max720 Name">
+        <section class="Max720 mt-32">
           <div v-if="place.status.type === 'closed'">
             <h3 class="error">Permanently Closed</h3>
           </div>
@@ -19,39 +19,38 @@
           <place-tag-list class="mt-8" :tags="place.tags" :max="10"/>
         </section>
 
-        <section class="Max720">
+        <section class="Max720 mtb-32">
           <place-detail :place="place"/>
         </section>
 
-        <section>
+        <section v-if="data.awards.length > 0 || place.description">
           <place-about :place="place" :awards="data.awards"/>
         </section>
 
-        <section v-if="menu" class="Max720">
-          <h2>Menu</h2>
+        <section v-if="menu" class="Max720 mtb-48">
+          <h2 class="mb-16">Menu</h2>
           <place-menu :menu="menu"/>
         </section>
 
-        <section class="Max720">
-          <h2>Location</h2>
+        <section class="Max720 mtb-48">
+          <h2 class="mb-16">Location</h2>
           <place-location :place-id="place.placeId" :location="place.location"/>
         </section>
 
-        <section v-if="articles">
-          <div>
-            <h2>{{place.name}} Articles</h2>
-          </div>
+        <section class="mb-32 mt-64" v-if="articles">
+          <h2 class="mb-32">{{place.name}} Articles</h2>
+          <place-article-wall :place-id="place.placeId" :preload="articles"/>
         </section>
       </div>
 
-      <aside class="mt-24">
+      <aside class="mt-24 flex-grow">
         <place-floating-panel class="FloatingPanel" :place="place"/>
       </aside>
     </section>
 
-    <section class="Images mb-64" v-if="images">
+    <section class="mb-64" v-if="images">
       <div class="container">
-        <h2>{{place.name}} Images</h2>
+        <h2 class="mb-32">{{place.name}} Images</h2>
       </div>
 
       <place-image-wall ref="imageWall" :place-id="place.placeId" :preload="images"/>
@@ -73,9 +72,11 @@
   import PlaceImageBanner from "../../components/places/PlaceImageBanner";
   import PlaceAction from "../../components/places/PlaceAction";
   import PlaceFloatingPanel from "../../components/places/PlaceFloatingPanel";
+  import PlaceArticleWall from "../../components/places/PlaceArticleWall";
 
   export default {
     components: {
+      PlaceArticleWall,
       PlaceFloatingPanel,
       PlaceAction,
       PlaceImageBanner,
@@ -173,23 +174,6 @@
 </script>
 
 <style scoped lang="less">
-  section {
-    margin-top: 48px;
-
-    h2 {
-      margin-bottom: 16px;
-    }
-  }
-
-  .Name {
-    margin-top: 24px;
-  }
-
-  .Information,
-  .Banner {
-    margin-top: 0;
-  }
-
   .Information {
     @media (max-width: 991.98px) {
       flex-direction: column;
@@ -207,8 +191,7 @@
   }
 
   aside {
-    width: 360px;
-    flex-grow: 1;
+    max-width: 360px;
   }
 
   .FloatingPanel {

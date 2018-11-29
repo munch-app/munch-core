@@ -1,6 +1,5 @@
 <template>
-  <div v-if="hasAny">
-    <h2>About</h2>
+  <div>
     <place-award-list class="AwardList" v-if="awards && awards.length > 0" :awards="awards"/>
     <div v-if="place.description" @click="expanded = !expanded" class="hover-pointer">
       <p class="Description" :class="{'text-ellipsis-4l': !expanded}">{{place.description}}</p>
@@ -29,12 +28,6 @@
         expanded: false
       }
     },
-    computed: {
-      hasAny() {
-        return (this.awards && this.awards.length > 0)
-          || this.place.description
-      }
-    }
   }
 </script>
 

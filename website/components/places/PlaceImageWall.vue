@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <masonry-wall ref="wall" id="PlaceImageWall" :items="items" @append="append"
-                  :options="{lanes:{2:{padding: 8}},min:2, ssr: {default: 2}}">
+                  :options="{width: 250, lanes:{2:{padding: 8}},min:2, ssr: {default: 2}}">
       <template slot-scope="{item, index}">
         <div class="ImageItem hover-pointer" @click="onClickImage(index)">
           <image-size class="border-3" :image="{sizes: item.sizes}" grow="height">
@@ -105,38 +105,38 @@
 <style scoped lang="less">
   .ImageContainer {
     padding: 10px;
+  }
 
-    .Title {
-      text-align: right;
-      margin-left: 4px;
-      margin-right: 4px;
+  .Title {
+    text-align: right;
+    margin-left: 4px;
+    margin-right: 4px;
 
-      line-height: 24px;
-      font-size: 16px;
-      font-weight: 600;
+    line-height: 24px;
+    font-size: 16px;
+    font-weight: 600;
 
-      min-height: 24px;
-      max-height: 48px;
-      color: white;
-    }
+    min-height: 24px;
+    max-height: 48px;
+    color: white;
+  }
 
-    .Author {
-      display: flex;
+  .Author {
+    display: flex;
+  }
 
-      .Icon {
-        width: 16px;
-        height: 16px;
-      }
+  .Icon {
+    width: 16px;
+    height: 16px;
+  }
 
-      .Name {
-        margin-left: 3px;
+  .Name {
+    margin-left: 3px;
 
-        height: 16px;
-        line-height: 15px;
-        font-size: 13px;
-        font-weight: 600;
-        color: white;
-      }
-    }
+    height: 16px;
+    line-height: 15px;
+    font-size: 13px;
+    font-weight: 600;
+    color: white;
   }
 </style>

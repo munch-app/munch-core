@@ -23,6 +23,7 @@ public final class ArticleCleaner extends ObjectCleaner<Article> {
         data.setCount(null);
         data.setUpdatedMillis(null);
         data.setContent(null);
+        data.setTags(null);
 
         @Valid Image image = data.getThumbnail();
         if (image != null) {
