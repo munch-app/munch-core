@@ -1,10 +1,7 @@
 package munch.api.search;
 
 import munch.api.ApiService;
-import munch.api.search.filter.FilterArea;
-import munch.api.search.filter.FilterAreaDatabase;
-import munch.api.search.filter.FilterResult;
-import munch.api.search.filter.FilterResultDelegator;
+import munch.api.search.filter.*;
 import munch.restful.server.JsonCall;
 
 import javax.inject.Inject;
@@ -24,12 +21,14 @@ public final class SearchFilterService extends ApiService {
     private final FilterResultDelegator resultDelegator;
 
     private final FilterAreaDatabase areaDatabase;
+    private final FilterBetweenDatabase betweenDatabase;
 
     @Inject
-    public SearchFilterService(SearchRequest.Factory searchRequestFactory, FilterResultDelegator resultDelegator, FilterAreaDatabase areaDatabase) {
+    public SearchFilterService(SearchRequest.Factory searchRequestFactory, FilterResultDelegator resultDelegator, FilterAreaDatabase areaDatabase, FilterBetweenDatabase betweenDatabase) {
         this.searchRequestFactory = searchRequestFactory;
         this.resultDelegator = resultDelegator;
         this.areaDatabase = areaDatabase;
+        this.betweenDatabase = betweenDatabase;
     }
 
     @Override
@@ -37,6 +36,7 @@ public final class SearchFilterService extends ApiService {
         PATH("/search/filter", () -> {
             POST("", this::post);
             GET("/areas", this::getAreas);
+            POST("/between/search", this::betweenSearch);
         });
     }
 
@@ -54,5 +54,9 @@ public final class SearchFilterService extends ApiService {
      */
     public List<FilterArea> getAreas(JsonCall call) {
         return areaDatabase.get();
+    }
+
+    public List<SearchQuery.Filter.Location.Point> betweenSearch(JsonCall call) {
+        return betweenDatabase.search(call);
     }
 }

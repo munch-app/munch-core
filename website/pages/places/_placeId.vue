@@ -43,7 +43,8 @@
           </div>
         </section>
       </div>
-      <aside class="mt-24 flex-grow">
+
+      <aside class="mt-24">
         <place-floating-panel class="FloatingPanel" :place="place"/>
       </aside>
     </section>
@@ -206,7 +207,8 @@
   }
 
   aside {
-    max-width: 360px;
+    width: 360px;
+    flex-grow: 1;
   }
 
   .FloatingPanel {

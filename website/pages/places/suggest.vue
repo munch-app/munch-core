@@ -149,7 +149,7 @@
           place: this.payload.place,
           removes: this.payload.removes,
         }
-        return this.$axios.$post('/api/suggests/places', payload)
+        return this.$axios.$post('/api/users/suggests/places', payload)
           .then(({data}) => {
             this.submitting = false
             this.submitted = true

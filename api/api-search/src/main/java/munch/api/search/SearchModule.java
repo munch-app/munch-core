@@ -24,7 +24,7 @@ public final class SearchModule extends ApiServiceModule {
         loaderBinder.addBinding().to(SearchBetweenLoader.class);
 
         addService(SearchService.class);
+        addService(SuggestService.class);
         addService(SearchFilterService.class);
-        addService(SearchFilterBetweenService.class);
     }
 }

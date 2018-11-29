@@ -2,6 +2,9 @@ package munch.article;
 
 import munch.api.ObjectCleaner;
 import munch.article.data.Article;
+import munch.file.Image;
+
+import javax.validation.Valid;
 
 /**
  * Created by: Fuxing
@@ -19,5 +22,11 @@ public final class ArticleCleaner extends ObjectCleaner<Article> {
     protected void clean(Article data) {
         data.setCount(null);
         data.setUpdatedMillis(null);
+        data.setContent(null);
+
+        @Valid Image image = data.getThumbnail();
+        if (image != null) {
+            image.setProfile(null);
+        }
     }
 }

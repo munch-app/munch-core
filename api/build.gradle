@@ -28,8 +28,6 @@ project('api-places') {
         compile group: 'article-system', name: 'article-system-link-client', version: articleVersion
         compile group: 'article-system', name: 'article-system-data-client', version: articleVersion
         
-        compile group: 'munch-suggest', name: 'munch-suggest-client', version: suggestVersion
-
         compile group: 'file-service', name: 'file-service-client', version: fileVersion
 
         compile group: 'catalyst', name: 'catalyst-link-client', version: catalystVersion
@@ -48,12 +46,6 @@ project('api-search') {
     }
 }
 
-project('api-landing') {
-    dependencies {
-        compile project(':api:api-users')
-    }
-}
-
 project('api-feed') {
     dependencies {
         compile project(':api:api-users')
@@ -65,6 +57,7 @@ project('api-feed') {
 
 project('api-users') {
     dependencies {
+        compile group: 'munch-suggest', name: 'munch-suggest-client', version: suggestVersion
         compile group: 'munch-notification', name: 'munch-notification-client', version: notificationVersion
     }
 }
@@ -76,7 +69,6 @@ dependencies {
     compile project(':api:api-users')
     compile project(':api:api-places')
     compile project(':api:api-search')
-    compile project(':api:api-landing')
     compile project(':api:api-feed')
 }
 

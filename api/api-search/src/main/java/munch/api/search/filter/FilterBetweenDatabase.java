@@ -1,8 +1,8 @@
-package munch.api.search;
+package munch.api.search.filter;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import munch.api.ApiService;
+import munch.api.search.SearchQuery;
 import munch.api.search.elastic.ElasticQueryUtils;
 import munch.data.ElasticObject;
 import munch.data.client.ElasticClient;
@@ -23,27 +23,20 @@ import java.util.stream.Collectors;
 
 /**
  * Created by: Fuxing
- * Date: 24/9/18
- * Time: 6:51 PM
+ * Date: 29/11/18
+ * Time: 8:21 AM
  * Project: munch-core
  */
 @Singleton
-public final class SearchFilterBetweenService extends ApiService {
+public final class FilterBetweenDatabase {
 
     private final GeocodeClient geocodeClient;
     private final ElasticClient elasticClient;
 
     @Inject
-    public SearchFilterBetweenService(GeocodeClient geocodeClient, ElasticClient elasticClient) {
+    public FilterBetweenDatabase(GeocodeClient geocodeClient, ElasticClient elasticClient) {
         this.geocodeClient = geocodeClient;
         this.elasticClient = elasticClient;
-    }
-
-    @Override
-    public void route() {
-        PATH("/search/filter/between", () -> {
-            POST("/search", this::search);
-        });
     }
 
     public List<SearchQuery.Filter.Location.Point> search(JsonCall call) {
@@ -97,7 +90,7 @@ public final class SearchFilterBetweenService extends ApiService {
         return list;
     }
 
-    private SearchQuery.Filter.Location.Point asPoint(String name, String latLng) {
+    private static SearchQuery.Filter.Location.Point asPoint(String name, String latLng) {
         SearchQuery.Filter.Location.Point point = new SearchQuery.Filter.Location.Point();
         point.setName(name);
         point.setLatLng(latLng);

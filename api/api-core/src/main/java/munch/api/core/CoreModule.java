@@ -15,6 +15,7 @@ public final class CoreModule extends ApiServiceModule {
 
         addCleaner(AreaCleaner.class);
         addCleaner(TagCleaner.class);
+        addCleaner(LandmarkCleaner.class);
         addCleaner(PlaceCleaner.class);
     }
 }

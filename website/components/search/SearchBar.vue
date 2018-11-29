@@ -162,7 +162,7 @@
         this.$emit('onFocus')
 
         if (this.suggestions === null && this.text && this.text.length > 0) {
-          this.$axios.$post('/api/search/suggest', {
+          this.$axios.$post('/api/suggest', {
             "text": text,
             "searchQuery": {
               "filter": {},
@@ -199,7 +199,7 @@
       const suggestions = merge(
         server.pipe(
           switchMap((text) => {
-            return this.$axios.$post('/api/search/suggest', {
+            return this.$axios.$post('/api/suggest', {
               "text": text,
               "searchQuery": {
                 "filter": {},

@@ -1,12 +1,8 @@
 package munch.api.search;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import munch.api.ApiService;
 import munch.api.search.named.NamedDelegator;
-import munch.api.search.suggest.SuggestDelegator;
 import munch.data.named.NamedQuery;
-import munch.restful.core.JsonUtils;
-import munch.restful.core.exception.ParamException;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonResult;
 import munch.user.client.UserSearchQueryClient;
@@ -17,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -33,16 +28,14 @@ public final class SearchService extends ApiService {
 
     private final SearchRequest.Factory searchRequestFactory;
     private final SearchDelegator searchRequestDelegator;
-    private final SuggestDelegator suggestDelegator;
     private final NamedDelegator namedDelegator;
 
     private final UserSearchQueryClient userSearchQueryClient;
 
     @Inject
-    public SearchService(SearchRequest.Factory searchRequestFactory, SearchDelegator searchRequestDelegator, SuggestDelegator suggestDelegator, NamedDelegator namedDelegator, UserSearchQueryClient userSearchQueryClient) {
+    public SearchService(SearchRequest.Factory searchRequestFactory, SearchDelegator searchRequestDelegator, NamedDelegator namedDelegator, UserSearchQueryClient userSearchQueryClient) {
         this.searchRequestFactory = searchRequestFactory;
         this.searchRequestDelegator = searchRequestDelegator;
-        this.suggestDelegator = suggestDelegator;
         this.namedDelegator = namedDelegator;
         this.userSearchQueryClient = userSearchQueryClient;
     }
@@ -56,8 +49,14 @@ public final class SearchService extends ApiService {
             // QID is user executed query, executed query contains a unique id
             GET("/qid/:qid", this::qid);
 
+            // Generic user executed search, qid will be generated and returned
             POST("", this::search);
-            POST("/suggest", this::suggest);
+
+            // Search pages
+            POST("/home", this::search);
+            POST("/award", this::search);
+            POST("/location", this::search);
+            POST("/collection", this::search);
         });
     }
 
@@ -107,22 +106,5 @@ public final class SearchService extends ApiService {
         result.put("data", searchRequestDelegator.delegate(searchRequest));
         result.put("qid", userSearchQuery.getQid());
         return result;
-    }
-
-    /**
-     * @param call with search query and text in body
-     * @return {assumptions: [], places:[], suggests: []}
-     */
-    private Map<String, Object> suggest(JsonCall call) {
-        JsonNode body = call.bodyAsJson();
-
-        String text = body.path("text").asText();
-        SearchQuery query = JsonUtils.toObject(body.path("searchQuery"), SearchQuery.class);
-
-        ParamException.requireNonNull("text", text);
-        ParamException.requireNonNull("searchQuery", query);
-
-        SearchRequest searchRequest = searchRequestFactory.create(call, query);
-        return suggestDelegator.delegate(text, searchRequest);
     }
 }

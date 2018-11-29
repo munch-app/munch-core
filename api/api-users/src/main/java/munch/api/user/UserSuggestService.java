@@ -1,4 +1,4 @@
-package munch.api.place;
+package munch.api.user;
 
 import munch.api.ApiRequest;
 import munch.api.ApiService;
@@ -17,18 +17,18 @@ import javax.inject.Singleton;
  * Project: munch-core
  */
 @Singleton
-public final class SuggestPlaceService extends ApiService {
+public final class UserSuggestService extends ApiService {
 
     private final SuggestClient suggestClient;
 
     @Inject
-    public SuggestPlaceService(SuggestClient suggestClient) {
+    public UserSuggestService(SuggestClient suggestClient) {
         this.suggestClient = suggestClient;
     }
 
     @Override
     public void route() {
-        PATH("/suggests/places", () -> {
+        PATH("/users/suggests/places", () -> {
             POST("", this::suggest);
         });
     }

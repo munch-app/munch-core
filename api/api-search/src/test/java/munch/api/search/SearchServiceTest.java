@@ -37,7 +37,7 @@ class SearchServiceTest extends AbstractServiceTest {
     @ParameterizedTest
     @MethodSource("suggestProvider")
     void suggest(TestCase test) {
-        RestfulRequest request = client.post("/search/suggest");
+        RestfulRequest request = client.post("/suggest");
         test.asResponse(request);
     }
 
