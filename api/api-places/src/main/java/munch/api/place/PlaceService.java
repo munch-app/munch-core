@@ -3,9 +3,6 @@ package munch.api.place;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import munch.api.ApiService;
-import munch.api.place.basic.BasicCardLoader;
-import munch.api.place.card.PlaceCard;
-import munch.api.place.query.QueryCardLoader;
 import munch.article.ArticleLinkClient;
 import munch.article.data.Article;
 import munch.data.client.PlaceClient;
@@ -17,8 +14,6 @@ import munch.restful.server.JsonCall;
 import munch.restful.server.JsonResult;
 import munch.user.client.AwardCollectionClient;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,9 +26,6 @@ import java.util.Map;
 public final class PlaceService extends ApiService {
 
     private final PlaceClient placeClient;
-    private final BasicCardLoader basicReader;
-    private final QueryCardLoader cardLoader;
-    private final PlaceCardSorter cardSorter;
 
     private final ArticleLinkClient articleLinkClient;
     private final AwardCollectionClient awardCollectionClient;
@@ -41,12 +33,8 @@ public final class PlaceService extends ApiService {
     private final PlaceImageClient placeImageClient;
 
     @Inject
-    public PlaceService(PlaceClient placeClient, BasicCardLoader basicReader, QueryCardLoader cardLoader,
-                        PlaceCardSorter cardSorter, ArticleLinkClient articleLinkClient, AwardCollectionClient awardCollectionClient, PlaceImageClient placeImageClient) {
+    public PlaceService(PlaceClient placeClient, ArticleLinkClient articleLinkClient, AwardCollectionClient awardCollectionClient, PlaceImageClient placeImageClient) {
         this.placeClient = placeClient;
-        this.basicReader = basicReader;
-        this.cardLoader = cardLoader;
-        this.cardSorter = cardSorter;
         this.articleLinkClient = articleLinkClient;
         this.awardCollectionClient = awardCollectionClient;
         this.placeImageClient = placeImageClient;
@@ -59,7 +47,6 @@ public final class PlaceService extends ApiService {
     public void route() {
         PATH("/places/:placeId", () -> {
             GET("", this::get);
-            GET("/cards", this::getCards);
             GET("/images", this::getImages);
             GET("/articles", this::getArticles);
         });
@@ -81,28 +68,6 @@ public final class PlaceService extends ApiService {
                 "awards", awardCollectionClient.list(placeId, null, 10),
                 "articles", articleLinkClient.list(placeId, null, 10),
                 "images", placeImageClient.list(placeId, null, 10)
-        ));
-    }
-
-    /**
-     * GET = /places/:placeId/cards
-     *
-     * @param call json call
-     * @return {cards: List of PlaceCard, place: Place}
-     */
-    @Deprecated
-    private JsonResult getCards(JsonCall call) {
-        Place place = placeClient.get(call.pathString("placeId"));
-        if (place == null) return JsonResult.notFound();
-
-        List<PlaceCard> cards = new ArrayList<>();
-        cards.addAll(basicReader.generateCards(place));
-        cards.addAll(cardLoader.load(place));
-        cards = cardSorter.sort(cards);
-
-        return JsonResult.ok(Map.of(
-                "cards", cards,
-                "place", place
         ));
     }
 
