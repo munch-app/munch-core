@@ -1,5 +1,6 @@
 package munch.api.search.plugin;
 
+import munch.api.search.SearchRequest;
 import munch.api.search.cards.SearchNoLocationCard;
 
 import java.util.List;
@@ -10,13 +11,14 @@ import java.util.List;
  * Time: 2:29 AM
  * Project: munch-core
  */
-public final class SearchNoLocationLoader implements SearchCardPlugin {
+public final class SearchNoLocationPlugin implements SearchCardPlugin {
     private static final SearchNoLocationCard CARD_NO_LOCATION = new SearchNoLocationCard();
 
     @Override
     public List<Position> load(Request request) {
-        if (!request.isFirstPage()) return List.of();
-        if (request.getRequest().hasUserLatLng()) return List.of();
+        if (!request.getRequest().isScreen(SearchRequest.Screen.search)) return null;
+        if (!request.isFirstPage()) return null;
+        if (request.getRequest().hasUserLatLng()) return null;
 
         return of(-10_000, CARD_NO_LOCATION);
     }

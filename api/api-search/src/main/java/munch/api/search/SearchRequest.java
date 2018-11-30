@@ -66,6 +66,18 @@ public final class SearchRequest {
     }
 
     /**
+     * @param screens if check if any
+     * @return true if any match
+     */
+    public boolean isScreen(Screen... screens) {
+        Screen current = getScreen();
+        for (Screen screen : screens) {
+            if (current == screen) return true;
+        }
+        return false;
+    }
+
+    /**
      * @return page number user is on
      */
     public int getPage() {

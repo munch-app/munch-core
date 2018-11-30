@@ -43,17 +43,12 @@
       onShare() {
         const url = window.location.href + `?g=GB9`
 
-        if (window.navigator && window.navigator.share) {
-          window.navigator.share(url)
+        this.$copyText(url).then(() => {
+          this.$store.dispatch('addMessage', {title: 'Copied URL!'})
           this.$track.share('Feed Image', 'GB9: Referral Share')
-        } else {
-          this.$copyText(url).then(() => {
-            this.$store.dispatch('addMessage', {title: 'Copied URL!'})
-            this.$track.share('Feed Image', 'GB9: Referral Share')
-          }, (e) => {
-            this.$store.dispatch('addError', e)
-          })
-        }
+        }, (e) => {
+          this.$store.dispatch('addError', e)
+        })
       },
       onLogin() {
         this.$track.login('Feed Image', 'GB8: Activation Login')

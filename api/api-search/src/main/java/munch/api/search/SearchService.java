@@ -27,15 +27,15 @@ public final class SearchService extends ApiService {
 
 
     private final SearchRequest.Factory searchRequestFactory;
-    private final SearchDelegator searchRequestDelegator;
+    private final SearchDelegator searchDelegator;
     private final NamedDelegator namedDelegator;
 
     private final UserSearchQueryClient userSearchQueryClient;
 
     @Inject
-    public SearchService(SearchRequest.Factory searchRequestFactory, SearchDelegator searchRequestDelegator, NamedDelegator namedDelegator, UserSearchQueryClient userSearchQueryClient) {
+    public SearchService(SearchRequest.Factory searchRequestFactory, SearchDelegator searchDelegator, NamedDelegator namedDelegator, UserSearchQueryClient userSearchQueryClient) {
         this.searchRequestFactory = searchRequestFactory;
-        this.searchRequestDelegator = searchRequestDelegator;
+        this.searchDelegator = searchDelegator;
         this.namedDelegator = namedDelegator;
         this.userSearchQueryClient = userSearchQueryClient;
     }
@@ -97,7 +97,7 @@ public final class SearchService extends ApiService {
         }
 
         JsonResult result = JsonResult.ok();
-        result.put("data", searchRequestDelegator.delegate(searchRequest));
+        result.put("data", searchDelegator.delegate(searchRequest));
         result.put("qid", userSearchQuery.getQid());
         return result;
     }

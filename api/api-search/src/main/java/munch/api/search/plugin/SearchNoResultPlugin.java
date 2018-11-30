@@ -1,5 +1,6 @@
 package munch.api.search.plugin;
 
+import munch.api.search.SearchRequest;
 import munch.api.search.cards.SearchNoResultCard;
 
 import java.util.List;
@@ -11,13 +12,14 @@ import java.util.List;
  * Time: 1:48 AM
  * Project: munch-core
  */
-public final class SearchNoResultLoader implements SearchCardPlugin {
+public final class SearchNoResultPlugin implements SearchCardPlugin {
     private static final SearchNoResultCard CARD_NO_RESULT = new SearchNoResultCard();
 
     @Override
     public List<Position> load(Request request) {
-        if (!request.isFirstPage()) return List.of();
-        if (request.isCardsMoreThan(0)) return List.of();
+        if (!request.getRequest().isScreen(SearchRequest.Screen.search)) return null;
+        if (!request.isFirstPage()) return null;
+        if (request.isCardsMoreThan(0)) return null;
 
         // Is Between will generate it's own No Result Card
         if (request.getRequest().isBetween()) return null;

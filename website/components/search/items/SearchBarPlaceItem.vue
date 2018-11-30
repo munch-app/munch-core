@@ -3,7 +3,10 @@
     <simple-svg class="wh-24px mr-16" fill="rgba(0,0,0,.7)" :filepath="require('~/assets/icon/search/place.svg')"/>
     <div class="text weight-600">
       <div>{{place.name}}</div>
-      <div class="Location small">{{location}}</div>
+      <div class="Location small">
+        <span v-if="area" class="black">{{area.name}}, </span>
+        <span class="b-a75">{{`${location.neighbourhood}`}}</span>
+      </div>
     </div>
   </div>
 </template>
@@ -18,9 +21,12 @@
       }
     },
     computed: {
+      area() {
+        const areas = this.place.areas
+        return areas && areas[0]
+      },
       location() {
-        return this.place.location.street
-          || place.location.neighbourhood
+        return this.place.location
       }
     }
   }
@@ -39,5 +45,9 @@
     > div:first-child {
       font-size: 15px;
     }
+  }
+
+  .Location {
+    margin-top: 2px;
   }
 </style>

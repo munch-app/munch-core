@@ -107,18 +107,12 @@
         this.show.more = false
 
         const url = window.location.href
-        if (window.navigator && window.navigator.share) {
-          window.navigator.share(url)
-
-          this.$track.share('RIP', 'Native Share')
-        } else {
-          this.$copyText(url).then(() => {
-          }, (e) => {
-          })
-
+        this.$copyText(url).then(() => {
           this.$store.dispatch('addMessage', {title: 'Copied URL!'})
           this.$track.share('RIP', 'Copied URL')
-        }
+        }, (e) => {
+          this.$store.dispatch('addError', e)
+        })
       }
     }
   }
