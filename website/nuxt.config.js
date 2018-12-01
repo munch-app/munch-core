@@ -23,7 +23,7 @@ module.exports = {
       {name: 'theme-color', content: '#ffffff'},
     ],
     link: [
-      {rel: 'apple-touch-icon', sizes: '180x180', href: '/meta/apple-touch-icon/.1.png'},
+      {rel: 'apple-touch-icon', sizes: '180x180', href: '/meta/apple-touch-icon.1.png'},
       {rel: 'icon', type: 'image/png', sizes: '32x32', href: '/meta/favicon-32x32.1.png'},
       {rel: 'icon', type: 'image/png', sizes: '16x16', href: '/meta/favicon-16x16.1.png'},
       {rel: 'manifest', href: '/meta/site.1.webmanifest'},

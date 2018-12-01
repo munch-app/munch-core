@@ -22,23 +22,22 @@ task buildProduction {
 
 // Remember to comment out when doing major changes
 // To prevent accidental push
-
-//task publishProduction {
-//  doLast {
-//    exec {
-//      commandLine "docker", "build",
-//        "-f", "Dockerfile.production",
-//        "-t", dockerTag + 'production', '.'
-//    }
-//    exec { commandLine "docker", "push", dockerTag + 'production' }
-//    exec {
-//      commandLine 'aws', 'ecs', 'update-service',
-//        '--cluster', 'munch-core',
-//        '--service', 'Website',
-//        '--force-new-deployment'
-//    }
-//  }
-//}
+task publishProduction {
+  doLast {
+    exec {
+      commandLine "docker", "build",
+        "-f", "Dockerfile.production",
+        "-t", dockerTag + 'production', '.'
+    }
+    exec { commandLine "docker", "push", dockerTag + 'production' }
+    exec {
+      commandLine 'aws', 'ecs', 'update-service',
+        '--cluster', 'munch-core',
+        '--service', 'Website',
+        '--force-new-deployment'
+    }
+  }
+}
 
 task publishStaging {
   doLast {

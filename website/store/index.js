@@ -119,8 +119,11 @@ export const mutations = {
   unfocus(state, name) {
     if (state.focus.name === name) {
       state.focus.is = false
-      clearAllBodyScrollLocks()
     }
+
+    // Issues with Search bar navigation, might cascade into other bugs if I change this now
+    // Fix in the future
+    clearAllBodyScrollLocks()
   }
 }
 
