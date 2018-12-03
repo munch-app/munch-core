@@ -58,6 +58,12 @@ public final class TagAssumePlugin {
             if (query.getFilter() == null) query.setFilter(new SearchQuery.Filter());
             if (query.getFilter().getTags() == null) query.getFilter().setTags(new ArrayList<>());
 
+            tag.setNames(null);
+            tag.setPlace(null);
+            tag.setCounts(null);
+            tag.setSearch(null);
+            tag.setCreatedMillis(null);
+            tag.setUpdatedMillis(null);
             query.getFilter().getTags().add(tag);
         };
     }

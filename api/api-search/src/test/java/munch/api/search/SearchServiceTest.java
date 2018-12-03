@@ -57,7 +57,7 @@ class SearchServiceTest extends AbstractServiceTest {
 
                             int size = 0;
                             for (JsonNode card : cards) {
-                                if (card.path("_cardId").asText().equals(new SearchPlaceCard(place).getCardId())) {
+                                if (card.path("_cardId").asText().equals(new SearchPlaceCard(null).getCardId())) {
                                     size++;
                                 }
                             }
@@ -80,7 +80,7 @@ class SearchServiceTest extends AbstractServiceTest {
 
                             int size = 0;
                             for (JsonNode card : cards) {
-                                if (card.path("_cardId").asText().equals(new SearchPlaceCard(place).getCardId())) {
+                                if (card.path("_cardId").asText().equals(new SearchPlaceCard(null).getCardId())) {
                                     size++;
                                 }
                             }

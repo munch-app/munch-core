@@ -44,7 +44,6 @@ public final class SearchRequest {
         search,
         home,
         location,
-        award,
         collection
     }
 

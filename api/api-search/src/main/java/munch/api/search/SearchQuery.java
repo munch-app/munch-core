@@ -26,6 +26,8 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class SearchQuery {
 
+    // TODO: Search Screen
+
     /**
      * Versions History:
      * 2018-09-25
@@ -37,6 +39,7 @@ public final class SearchQuery {
      */
     public static final String VERSION = "2018-11-28";
 
+    // TODO: Collection Search
     private Filter filter = new Filter();
     private Sort sort = new Sort();
 

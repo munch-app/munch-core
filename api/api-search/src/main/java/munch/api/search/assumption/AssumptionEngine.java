@@ -121,7 +121,7 @@ public class AssumptionEngine {
         request = request.deepCopy();
 
         SearchQuery query = request.getSearchQuery();
-        query.getFilter().getLocation().setAreas(List.of(SINGAPORE));
+        query.getFilter().getLocation().setType(SearchQuery.Filter.Location.Type.Anywhere);
 
         assumedTokens = new ArrayList<>(assumedTokens);
         assumedTokens.add(new TagAssumptionToken("Anywhere"));
@@ -133,7 +133,7 @@ public class AssumptionEngine {
         if (!request.hasUserLatLng()) return Optional.empty();
 
         SearchQuery query = request.getSearchQuery();
-        query.getFilter().getLocation().setAreas(null);
+        query.getFilter().getLocation().setType(SearchQuery.Filter.Location.Type.Nearby);
 
         assumedTokens = new ArrayList<>(assumedTokens);
         assumedTokens.add(new TagAssumptionToken("Nearby"));
