@@ -25,7 +25,7 @@ public final class FilterAreaDatabase {
         this.supplier = Suppliers.memoizeWithExpiration(() -> {
             List<FilterArea> areas = new ArrayList<>();
             areaClient.iterator().forEachRemaining(area -> {
-                areas.add(new FilterArea(area.getAreaId(), area.getName()));
+                areas.add(new FilterArea(area.getAreaId(), area.getName(), area.getType()));
             });
             return areas;
         }, 12, TimeUnit.HOURS);

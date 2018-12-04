@@ -1,5 +1,7 @@
 package munch.api.search.filter;
 
+import munch.data.location.Area;
+
 /**
  * Truncated version of munch.data.location.Area
  *
@@ -10,10 +12,12 @@ package munch.api.search.filter;
  */
 public final class FilterArea {
     public String areaId;
+    public Area.Type type;
     public String name;
 
-    public FilterArea(String areaId, String name) {
+    public FilterArea(String areaId, String name, Area.Type type) {
         this.areaId = areaId;
         this.name = name;
+        this.type = type;
     }
 }

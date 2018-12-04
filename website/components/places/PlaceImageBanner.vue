@@ -104,7 +104,8 @@
     padding: 8px 10px;
 
     @media (max-width: 767.98px) {
-      margin: 0 16px 16px;
+      margin-right: 0;
+      margin-bottom: 24px;
     }
   }
 </style>
