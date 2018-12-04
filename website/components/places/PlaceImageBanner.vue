@@ -4,7 +4,7 @@
       <div class="ImageRow mt-24">
         <div class="ImageList flex mt-24 overflow-hidden border-3">
           <div class="Image hover-pointer" v-for="(image, index) in list"
-               :key="index" @click.native="$emit('onClickImage', index)">
+               :key="index" @click="$emit('onClickImage', index)">
             <div class="aspect r-1-1">
               <image-sizes class="overflow-hidden border-3" :sizes="image.sizes" width="1000"/>
             </div>
@@ -104,7 +104,8 @@
     padding: 8px 10px;
 
     @media (max-width: 767.98px) {
-      margin: 0 16px 16px;
+      margin-right: 0;
+      margin-bottom: 24px;
     }
   }
 </style>

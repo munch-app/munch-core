@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="container-remove-gutter">
     <horizontal-scroll-view ref="scroll" class="PlaceArticleList" :items="items" :map-key="a => a.articleId"
-                            :padding="24" :container="false">
+                            :padding="24" :container="true">
 
       <template slot-scope="{item,index}">
         <a :href="item.url" target="_blank" rel="noreferrer noopener nofollow" data-place-activity="partnerArticleItem"
@@ -87,6 +87,10 @@
 
   .ArticleCard {
     width: 330px;
+
+    @media (max-width: 330px + 48px) {
+      width: calc(100vw - 48px - 24px);
+    }
   }
 
   .Thumbnail {
