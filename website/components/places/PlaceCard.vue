@@ -55,6 +55,30 @@
         default: false
       }
     },
+    data() {
+      return {
+        timing: null
+      }
+    },
+    mounted() {
+      if (this.place.hours.length === 0) return
+
+      const group = new HourGroup(this.place.hours.map((h) => new Hour(h.day, h.open, h.close)))
+      switch (group.isOpen()) {
+        case 'open':
+          this.timing = {class: 'time-open', text: 'Open Now'}
+          break
+        case 'closed':
+          this.timing = {class: 'time-close', text: 'Closed Now'}
+          break
+        case 'opening':
+          this.timing = {class: 'time-open', text: 'Opening Soon'}
+          break
+        case 'closing':
+          this.timing = {class: 'time-close', text: 'Closing Soon'}
+          break
+      }
+    },
     computed: {
       location() {
         return this.place.location.neighbourhood || this.place.location.street
@@ -75,21 +99,6 @@
       },
       distance() {
         return null
-      },
-      timing() {
-        if (this.place.hours.length === 0) return
-
-        const group = new HourGroup(this.place.hours.map((h) => new Hour(h.day, h.open, h.close)))
-        switch (group.isOpen()) {
-          case 'open':
-            return {class: 'time-open', text: 'Open Now'}
-          case 'closed':
-            return {class: 'time-close', text: 'Closed Now'}
-          case 'opening':
-            return {class: 'time-open', text: 'Opening Soon'}
-          case 'closing':
-            return {class: 'time-close', text: 'Closing Soon'}
-        }
       },
     },
     methods: {
