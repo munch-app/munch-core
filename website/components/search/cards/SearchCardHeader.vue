@@ -1,5 +1,7 @@
 <template>
-  <div :id="anchor" :class="{'Sticky index-top-elevation': card.sticky}">
+  <!-- Cannot use index-7 because it covers the Search Suggest DropDown-->
+  <!-- Cannot use index-5 because it don't cover the Search Filter-->
+  <div :id="anchor" :class="{'Sticky index-6': card.sticky}">
     <h2>{{title}}</h2>
     <hr>
   </div>

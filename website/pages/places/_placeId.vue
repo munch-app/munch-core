@@ -68,7 +68,6 @@
   import PlaceAbout from "../../components/places/PlaceAbout";
   import PlaceDetail from "../../components/places/PlaceDetail";
   import PlaceImageWall from "../../components/places/PlaceImageWall";
-  import PlaceArticleList from "../../components/places/PlaceArticleList";
   import PlaceImageBanner from "../../components/places/PlaceImageBanner";
   import PlaceAction from "../../components/places/PlaceAction";
   import PlaceFloatingPanel from "../../components/places/PlaceFloatingPanel";
@@ -80,7 +79,6 @@
       PlaceFloatingPanel,
       PlaceAction,
       PlaceImageBanner,
-      PlaceArticleList,
       PlaceImageWall,
       PlaceDetail, PlaceAbout, PlaceLocation, PlaceAwardList,
       GoogleEmbedMap, PlaceMenu, ImageSizes, PlaceTagList
