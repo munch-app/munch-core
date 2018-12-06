@@ -6,6 +6,8 @@ import munch.feed.ArticleFeedItem;
 import munch.restful.core.NextNodeList;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -18,6 +20,7 @@ import javax.inject.Singleton;
  */
 @Singleton
 public final class FeedArticleService extends FeedService {
+    private static final Logger logger = LoggerFactory.getLogger(FeedArticleService.class);
 
     private final ArticleFeedClient articleFeedClient;
 
