@@ -44,6 +44,8 @@ public final class CleanerTransformer extends JsonTransformer {
 
     @SuppressWarnings("unchecked")
     private void cleanEach(Object object) {
+        if (object == null) return;
+
         String name = object.getClass().getName();
         ObjectCleaner cleaner = cleanerMap.get(name);
         if (cleaner == null) return;
