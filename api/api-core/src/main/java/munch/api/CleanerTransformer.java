@@ -4,14 +4,14 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.ser.BeanSerializerFactory;
-import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
 import munch.restful.core.exception.JsonException;
 import munch.restful.server.JsonTransformer;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -24,29 +24,42 @@ import java.util.Set;
 @Singleton
 public final class CleanerTransformer extends JsonTransformer {
 
-    private final BeanSerializerFactoryWithVisibleConstructingMethod beanSerializer = new BeanSerializerFactoryWithVisibleConstructingMethod();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    /**
+     * Dunno wtf I am doing just copying from:
+     * https://stackoverflow.com/questions/25511604/jackson-json-modify-object-before-serialization/25513874
+     */
     @Inject
     public CleanerTransformer(Set<ObjectCleaner> cleaners) {
-        SimpleModule module = new SimpleModule();
-        cleaners.forEach(cleaner -> {
-            JsonSerializer<Object> serializer = new JsonSerializer<>() {
-                JavaType type = TypeFactory.defaultInstance().constructType(cleaner.getClazz());
+        Map<Class<?>, JsonSerializer<?>> serializerMap = new HashMap<>();
 
-                @Override
-                @SuppressWarnings("unchecked")
-                public void serialize(Object value, JsonGenerator gen, SerializerProvider provider) throws IOException {
-                    cleaner.clean(value);
+        SimpleModule module = new SimpleModule() {
+            @Override
+            public void setupModule(SetupContext context) {
+                super.setupModule(context);
+                context.addBeanSerializerModifier(new BeanSerializerModifier() {
+                    @Override
+                    public JsonSerializer modifySerializer(SerializationConfig config, BeanDescription desc, JsonSerializer serializer) {
+                        for (ObjectCleaner cleaner : cleaners) {
+                            if (cleaner.getClazz() == desc.getBeanClass()) {
+                                return serializerMap.computeIfAbsent(cleaner.getClazz(), aClass -> new JsonSerializer() {
 
-                    BeanDescription description = provider.getConfig().introspect(type);
-                    JsonSerializer<Object> defaultSerializer = beanSerializer.constructBeanSerializer(provider, description);
-                    defaultSerializer.serialize(value, gen, provider);
+                                    @Override
+                                    @SuppressWarnings("unchecked")
+                                    public void serialize(Object value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+                                        cleaner.clean(value);
+                                        serializer.serialize(value, gen, serializers);
+                                    }
+                                });
+                            }
+                        }
 
-                }
-            };
-            module.addSerializer(cleaner.getClazz(), serializer);
-        });
+                        return serializer;
+                    }
+                });
+            }
+        };
         objectMapper.registerModule(module);
     }
 
@@ -57,21 +70,5 @@ public final class CleanerTransformer extends JsonTransformer {
         } catch (JsonProcessingException e) {
             throw new JsonException(e);
         }
-    }
-
-    /**
-     * Dunno wtf I am doing just copying from:
-     * https://stackoverflow.com/questions/25511604/jackson-json-modify-object-before-serialization/25513874#25513874
-     */
-    static class BeanSerializerFactoryWithVisibleConstructingMethod extends BeanSerializerFactory {
-        BeanSerializerFactoryWithVisibleConstructingMethod() {
-            super(BeanSerializerFactory.instance.getFactoryConfig());
-        }
-
-        @Override
-        public JsonSerializer<Object> constructBeanSerializer(SerializerProvider prov, BeanDescription beanDesc) throws JsonMappingException {
-            return super.constructBeanSerializer(prov, beanDesc);
-        }
-
     }
 }
