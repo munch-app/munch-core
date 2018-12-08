@@ -46,8 +46,7 @@
 
 <script>
   import {mapGetters} from 'vuex'
-  import {merge} from 'rxjs';
-  import {partition, pluck, filter, debounceTime, distinctUntilChanged, switchMap, map} from 'rxjs/operators'
+  import {filter, pluck, tap, debounceTime, distinctUntilChanged, switchMap, map} from 'rxjs/operators'
 
   import SearchBarNavigation from "./bar/SearchBarNavigation";
   import SearchBarAssumptionItem from "./items/SearchBarAssumptionItem";
@@ -134,11 +133,9 @@
         }
       },
       onKeyEnter() {
-        if (!this.items) {
-          return this.onBlur()
-        }
+        if (!this.items) return
 
-        this.onItem(this.items && this.items[this.position])
+        this.onItem(this.items[this.position])
       },
       onItem({type, object}) {
         switch (type) {
@@ -162,15 +159,10 @@
         this.$emit('onFocus')
 
         if (this.suggestions === null && this.text && this.text.length > 0) {
-          this.$axios.$post('/api/suggest', {
-            "text": text,
-            "searchQuery": {
-              "filter": {},
-              "sort": {}
-            }
-          }, {progress: false}).then(suggestions => {
-            this.suggestions = suggestions
-          })
+          this.$axios.$post('/api/suggest', {"text": text, "searchQuery": {}}, {progress: false})
+            .then(suggestions => {
+              this.suggestions = suggestions
+            })
         }
       },
       onBlur() {
@@ -186,30 +178,20 @@
       },
     },
     subscriptions() {
-      const [server, local] = this.$watchAsObservable('text').pipe(
+      const observable = this.$watchAsObservable('text').pipe(
         pluck('newValue'),
+        tap(() => this.suggestions = null),
         map((text) => text.trim()),
-        debounceTime(333),
+        filter((text) => text.length > 1),
         distinctUntilChanged(),
-
-        // Partition into 2 branch, server & local request
-        partition(text => text !== '')
+        debounceTime(333),
       )
 
-      const suggestions = merge(
-        server.pipe(
-          switchMap((text) => {
-            return this.$axios.$post('/api/suggest', {
-              "text": text,
-              "searchQuery": {
-                "filter": {},
-                "sort": {}
-              }
-            }, {progress: false})
-          }),
-          map(({data}) => data))
-        ,
-        local.pipe(map((text) => null))
+      const suggestions = observable.pipe(
+        switchMap((text) => {
+          return this.$axios.$post('/api/suggest', {"text": text, "searchQuery": {}}, {progress: false})
+        }),
+        map(({data}) => data)
       )
 
       return {suggestions}
