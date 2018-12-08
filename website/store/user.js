@@ -45,16 +45,26 @@ export const mutations = {
 }
 
 export const actions = {
+  signInCustomToken({commit}, token) {
+    return authenticator.signInCustomToken(token)
+      .then(() => {
+        return this.$axios.$post('/api/users/authenticate')
+          .then(({data: {profile, setting}}) => {
+            return commit('setUser', {profile, setting})
+          })
+      }).catch(error => {
+        const store = this.$store || this.app.store || this.store
+        return store.dispatch('addError', error)
+      })
+  },
+
   signInFacebook({commit}) {
     return authenticator.signInFacebook()
       .then(() => {
         return this.$axios.$post('/api/users/authenticate')
-          .then(({data}) => {
-            return data
+          .then(({data: {profile, setting}}) => {
+            return commit('setUser', {profile, setting})
           })
-      })
-      .then(({profile, setting}) => {
-        return commit('setUser', {profile, setting})
       }).catch(error => {
         const store = this.$store || this.app.store || this.store
         return store.dispatch('addError', error)

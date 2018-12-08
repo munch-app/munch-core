@@ -78,6 +78,9 @@ export default ({app, store}, inject) => {
    * Track each page view
    */
   app.router.beforeEach((to, from, next) => {
+    // Never Track Authenticate Page
+    if (to.name === 'authenticate') return next()
+
     const data = {
       'page_title': to.name,
       'page_path': to.fullPath

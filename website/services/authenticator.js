@@ -50,6 +50,10 @@ function getIdToken() {
 
 export default {
   getIdToken,
+  signInCustomToken(token) {
+    return firebase.auth().signInWithCustomToken(token)
+      .then(() => getIdToken())
+  },
   signInFacebook() {
     return firebase.auth().signInWithPopup(new firebase.auth.FacebookAuthProvider())
       .then(() => getIdToken())

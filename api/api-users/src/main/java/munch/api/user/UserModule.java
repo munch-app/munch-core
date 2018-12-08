@@ -11,7 +11,9 @@ import munch.api.ApiServiceModule;
 public final class UserModule extends ApiServiceModule {
     @Override
     protected void configure() {
+        addService(UserAuthenticationService.class);
         addService(UserService.class);
+
         addService(UserPlaceCollectionService.class);
         addService(UserPlaceCollectionItemService.class);
         addService(UserPlaceActivityService.class);
