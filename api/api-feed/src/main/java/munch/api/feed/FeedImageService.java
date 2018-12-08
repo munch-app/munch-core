@@ -41,7 +41,6 @@ public final class FeedImageService extends FeedService {
 
         int from = call.queryInt("next.from", 0);
         int size = call.querySize(20, 30);
-        // TODO: Null Places Problem
 
         NextNodeList<ImageFeedItem> items = imageFeedClient.query(country, latLng, from, size);
         return result(items);

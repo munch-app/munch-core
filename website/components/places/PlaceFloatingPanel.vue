@@ -26,12 +26,12 @@
       </div>
     </div>
 
-    <div class="flex-end p-16-24">
+    <div class="BottomBar flex-end p-16-24">
       <button class="border mr-16" @click="onMore">
         <simple-svg class="wh-24px" fill="black" :filepath="require('~/assets/icon/place/more.svg')"/>
       </button>
       <button class="secondary" @click="onSave">
-        Save
+        Save Place
       </button>
     </div>
 
@@ -124,6 +124,12 @@
 
     > div {
       margin-top: 24px;
+    }
+  }
+
+  .BottomBar {
+    @media (max-width: 992px) {
+      padding: 12px 24px;
     }
   }
 </style>

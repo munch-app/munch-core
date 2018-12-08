@@ -2,6 +2,7 @@ package munch.api.feed;
 
 import munch.api.ApiService;
 import munch.data.client.PlaceCachedClient;
+import munch.data.place.Place;
 import munch.feed.FeedItem;
 import munch.restful.core.NextNodeList;
 import munch.restful.server.JsonResult;
@@ -52,10 +53,19 @@ public abstract class FeedService extends ApiService {
             placeIds.add(place.getPlaceId());
         }));
 
+        Map<String, Place> places = placeClient.get(placeIds);
+
         JsonResult result = JsonResult.ok(Map.of(
                 "items", items,
-                "places", placeClient.get(placeIds)
+                "places", places
         ));
+
+        items.removeIf(item -> {
+            for (String placeId : places.keySet()) {
+                if (places.get(placeId) == null) return true;
+            }
+            return false;
+        });
 
         if (items.hasNext()) {
             result.put("next", items.getNext());

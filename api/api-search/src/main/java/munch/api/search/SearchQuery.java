@@ -28,6 +28,11 @@ public final class SearchQuery {
 
     // TODO: Search Screen
 
+    /*
+    Collection { Name, ID }
+    Screen = [Search, Collection, Location, Home, Occasion]
+     */
+
     /**
      * Versions History:
      * 2018-09-25
