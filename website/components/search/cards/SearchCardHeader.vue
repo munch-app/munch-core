@@ -43,11 +43,10 @@
     position: sticky;
     top: calc(48px + 56px);
 
-
     /*padding-bottom: 18px !important;*/
     /*margin-bottom: -18px !important;*/
 
-    @media(max-width: 576px) {
+    @media (max-width: 576px) {
       top: calc(56px);
       flex: 0 0 calc(100% + 24px) !important;
       max-width: calc(100% + 24px) !important;
@@ -62,7 +61,6 @@
         margin-left: -24px;
         margin-right: -24px;
       }
-
 
       h2 {
         margin-top: -8px;

@@ -46,7 +46,6 @@
           {{item.caption}}
         </div>
       </div>
-
     </div>
   </dialog-navigation>
 </template>

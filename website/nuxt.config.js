@@ -85,7 +85,8 @@ module.exports = {
     'vue-observe-visibility',
     'vuex-persistedstate',
     'vue-scrollto',
-    'vue-clipboard2'
+    'vue-clipboard2',
+    'vue-script2',
   ],
   plugins: [
     // Plugins by Munch Team
@@ -98,6 +99,9 @@ module.exports = {
     '~/plugins/vue-rx',
     '~/plugins/portal-vue',
     '~/plugins/prismic-vue',
+
+    // Required Plugin
+    {src: '~/plugins/vue-google-adsense', ssr: false},
 
     // Useful Plugin
     '~/plugins/vue-clickaway',
