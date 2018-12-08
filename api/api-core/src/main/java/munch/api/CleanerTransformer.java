@@ -1,13 +1,19 @@
 package munch.api;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.ser.BeanSerializerFactory;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+import munch.restful.core.exception.JsonException;
 import munch.restful.server.JsonTransformer;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.Collection;
+import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Created by: Fuxing
@@ -18,38 +24,54 @@ import java.util.stream.Collectors;
 @Singleton
 public final class CleanerTransformer extends JsonTransformer {
 
-    private final Map<String, ObjectCleaner> cleanerMap;
+    private final BeanSerializerFactoryWithVisibleConstructingMethod beanSerializer = new BeanSerializerFactoryWithVisibleConstructingMethod();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Inject
     public CleanerTransformer(Set<ObjectCleaner> cleaners) {
-        this.cleanerMap = cleaners.stream()
-                .collect(Collectors.toMap(o -> o.getClazz().getName(), o -> o));
+        SimpleModule module = new SimpleModule();
+        cleaners.forEach(cleaner -> {
+            JsonSerializer<Object> serializer = new JsonSerializer<>() {
+                JavaType type = TypeFactory.defaultInstance().constructType(cleaner.getClazz());
+
+                @Override
+                @SuppressWarnings("unchecked")
+                public void serialize(Object value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+                    cleaner.clean(value);
+
+                    BeanDescription description = provider.getConfig().introspect(type);
+                    JsonSerializer<Object> defaultSerializer = beanSerializer.constructBeanSerializer(provider, description);
+                    defaultSerializer.serialize(value, gen, provider);
+
+                }
+            };
+            module.addSerializer(cleaner.getClazz(), serializer);
+        });
+        objectMapper.registerModule(module);
     }
 
     @Override
-    protected void clean(Object object) {
-        // Clean values in Map
-        if (object instanceof Map) {
-            ((Map<?, ?>) object).forEach((k, v) -> clean(v));
-        }
-        // Clean items in Collection
-        else if (object instanceof Collection) {
-            ((Collection<?>) object).forEach(this::clean);
-        }
-        // Clean object itself
-        else {
-            cleanEach(object);
+    protected String toString(Map<String, Object> map) {
+        try {
+            return objectMapper.writeValueAsString(map);
+        } catch (JsonProcessingException e) {
+            throw new JsonException(e);
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private void cleanEach(Object object) {
-        if (object == null) return;
+    /**
+     * Dunno wtf I am doing just copying from:
+     * https://stackoverflow.com/questions/25511604/jackson-json-modify-object-before-serialization/25513874#25513874
+     */
+    static class BeanSerializerFactoryWithVisibleConstructingMethod extends BeanSerializerFactory {
+        BeanSerializerFactoryWithVisibleConstructingMethod() {
+            super(BeanSerializerFactory.instance.getFactoryConfig());
+        }
 
-        String name = object.getClass().getName();
-        ObjectCleaner cleaner = cleanerMap.get(name);
-        if (cleaner == null) return;
+        @Override
+        public JsonSerializer<Object> constructBeanSerializer(SerializerProvider prov, BeanDescription beanDesc) throws JsonMappingException {
+            return super.constructBeanSerializer(prov, beanDesc);
+        }
 
-        cleaner.clean(object);
     }
 }
