@@ -7220,6 +7220,13 @@ vue-eslint-parser@^2.0.3:
     esquery "^1.0.0"
     lodash "^4.17.4"
 
+vue-google-adsense@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/vue-google-adsense/-/vue-google-adsense-1.2.0.tgz#b3d99acde7005511f4c712ca4645e97ac0852453"
+  dependencies:
+    vue "^2.5.13"
+    vue-script2 "2.0.1"
+
 vue-hot-reload-api@^2.2.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/vue-hot-reload-api/-/vue-hot-reload-api-2.3.0.tgz#97976142405d13d8efae154749e88c4e358cf926"
@@ -7261,6 +7268,14 @@ vue-router@^3.0.1:
 vue-rx@^6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/vue-rx/-/vue-rx-6.0.0.tgz#9f002a96dc54bd43ff7fc199262c7ebc15211e0a"
+
+vue-script2@2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/vue-script2/-/vue-script2-2.0.1.tgz#3d35c3eb3f5e59298a8efc9b7aa71bded97a9b53"
+
+vue-script2@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/vue-script2/-/vue-script2-2.0.3.tgz#74a53a51cc72eeb0c8935f40f0155968a94a2d7c"
 
 vue-scrollto@^2.13.0:
   version "2.13.0"

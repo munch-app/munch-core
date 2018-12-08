@@ -15,10 +15,14 @@
             <feed-image-injected-card :type="item.type"/>
           </div>
 
+          <Adsense v-else-if="item.isAdSense"
+                   data-ad-client="ca-pub-7144155418390858"
+                   data-ad-slot="8523575861">
+          </Adsense>
+
           <div v-else @click="onSelect(item, index)">
             <feed-image-card :item="item"/>
           </div>
-
         </template>
       </masonry-wall>
     </div>
