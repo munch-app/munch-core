@@ -62,7 +62,7 @@
     },
     data() {
       return {
-        items: this.preload || [],
+        items: [...this.preload || []],
         selected: -1,
         loading: false,
         next: {sort: null}
