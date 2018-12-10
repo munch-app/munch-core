@@ -21,6 +21,6 @@ public final class SearchHomeTabPlugin implements SearchCardPlugin {
         if (!request.isFirstPage()) return null;
         if (!request.getRequest().isFeature(SearchQuery.Feature.Home)) return null;
 
-        return of(0, new SearchHomeTabCard());
+        return of(-1000, new SearchHomeTabCard());
     }
 }

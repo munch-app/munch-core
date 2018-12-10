@@ -76,7 +76,7 @@ class SearchServiceTest extends AbstractServiceTest {
                             assertThat(cards.get(0).path("_cardId").asText())
                                     .isEqualTo(new SearchNoLocationCard().getCardId());
                             assertThat(cards.get(1).path("_cardId").asText())
-                                    .isEqualTo(new SearchHeaderCard().getCardId());
+                                    .isEqualTo(new SearchHeaderCard("").getCardId());
 
                             int size = 0;
                             for (JsonNode card : cards) {

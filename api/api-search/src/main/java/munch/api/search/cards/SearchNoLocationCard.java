@@ -10,11 +10,6 @@ public final class SearchNoLocationCard implements SearchCard {
 
     @Override
     public String getCardId() {
-        return "injected_NoLocation_20171020";
-    }
-
-    @Override
-    public String getUniqueId() {
-        return getCardId();
+        return "NoLocation_2017-10-20";
     }
 }

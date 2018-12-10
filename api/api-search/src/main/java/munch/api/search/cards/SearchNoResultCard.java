@@ -9,11 +9,6 @@ package munch.api.search.cards;
 public final class SearchNoResultCard implements SearchCard {
     @Override
     public String getCardId() {
-        return "injected_NoResult_20171208";
-    }
-
-    @Override
-    public String getUniqueId() {
-        return getCardId();
+        return "NoResult_2017-12-08";
     }
 }

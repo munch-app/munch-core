@@ -49,6 +49,6 @@ public final class SearchHomePopularPlacePlugin implements SearchCardPlugin {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
         SearchHomePopularPlaceCard card = new SearchHomePopularPlaceCard(collection, places);
-        return of(2, card);
+        return of(-10, card);
     }
 }

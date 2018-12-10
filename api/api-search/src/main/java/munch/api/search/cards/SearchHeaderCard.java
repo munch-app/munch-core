@@ -11,26 +11,17 @@ import org.apache.commons.lang3.RandomStringUtils;
  */
 public final class SearchHeaderCard implements SearchCard {
 
-    private String title;
-    private String uniqueId;
+    private final String title;
+    private final String uniqueId;
     private boolean sticky;
 
-    public SearchHeaderCard() {
-    }
-
     public SearchHeaderCard(String title) {
-        setTitle(title);
+        this.title = title;
+        this.uniqueId = "h_" + KeyUtils.sha256Base64Url(title) + RandomStringUtils.randomAlphanumeric(3);
     }
 
     public String getTitle() {
         return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-        if (uniqueId == null) {
-            setUniqueId("h_" + KeyUtils.sha256Base64Url(title) + RandomStringUtils.randomAlphanumeric(3));
-        }
     }
 
     public boolean isSticky() {
@@ -39,10 +30,6 @@ public final class SearchHeaderCard implements SearchCard {
 
     public void setSticky(boolean sticky) {
         this.sticky = sticky;
-    }
-
-    public void setUniqueId(String uniqueId) {
-        this.uniqueId = uniqueId;
     }
 
     @Override

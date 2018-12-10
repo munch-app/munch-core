@@ -7,7 +7,7 @@
   />
   <search-card-area-cluster-list
     class="Card no-select Initial FullWidth"
-    v-else-if="isCardId('injected_AreaClusterList_20180621')"
+    v-else-if="isCardId('AreaClusterList_2018-06-21')"
     :areas="card.areas"
   />
   <search-card-header
@@ -17,24 +17,21 @@
   />
   <search-card-navigation-header
     class="Card no-select Initial FullWidth"
-    v-else-if="isCardId('injected_NavigationHeader_20181102')"
+    v-else-if="isCardId('NavigationHeader_2018-11-02')"
     :card="card"
   />
   <search-card-no-result
     class="Card no-select Initial FullWidth"
-    v-else-if="isCardId('injected_NoResult_20171208')"
+    v-else-if="isCardId('NoResult_2017-12-08')"
   />
-  <search-card-no-result-location
-    class="Card no-select Initial FullWidth"
-    v-else-if="isCardId('injected_NoResultLocation_20171208')"/>
   <search-card-area-cluster-header
     class="Card no-select Initial FullWidth"
-    v-else-if="isCardId('injected_AreaClusterHeader_20180621')"
+    v-else-if="isCardId('AreaClusterHeader_2018-06-21')"
     :area="card.area"
   />
   <search-card-suggestion-tag
     class="Card no-select Initial FullWidth"
-    v-else-if="isCardId('injected_SuggestedTag_20180511')"
+    v-else-if="isCardId('SuggestedTag_2018-05-11')"
     :card="card"
   />
   <div v-else style="display: none"></div>
@@ -47,7 +44,6 @@
   import SearchCardAreaClusterList from "./SearchCardAreaClusterList";
   import SearchCardHeader from "./SearchCardHeader";
   import SearchCardNoResult from "./SearchCardNoResult";
-  import SearchCardNoResultLocation from "./SearchCardNoResultLocation";
   import SearchCardAreaClusterHeader from "./SearchCardAreaClusterHeader";
   import SearchCardSuggestionTag from "./SearchCardSuggestionTag";
   import SearchCardNavigationHeader from "./SearchCardNavigationHeader";
@@ -71,7 +67,6 @@
       SearchCardNavigationHeader,
       SearchCardSuggestionTag,
       SearchCardAreaClusterHeader,
-      SearchCardNoResultLocation,
       SearchCardNoResult, SearchCardHeader, SearchCardAreaClusterList, SearchCardPlace
     },
     props: {

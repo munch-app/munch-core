@@ -59,7 +59,7 @@ public final class SearchHomeAwardCollectionPlugin implements SearchCardPlugin {
                 .map(Optional::get)
                 .collect(Collectors.toList());
 
-        return of(3, new SearchHomeAwardCollectionCard(collections));
+        return of(-1, new SearchHomeAwardCollectionCard(collections));
     }
 
     private List<Optional<UserPlaceCollection>> load() {

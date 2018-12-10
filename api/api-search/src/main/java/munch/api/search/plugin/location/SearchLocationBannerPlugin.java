@@ -26,6 +26,6 @@ public final class SearchLocationBannerPlugin implements SearchCardPlugin {
         if (!request.isFirstPage()) return null;
         if (!request.getRequest().isFeature(SearchQuery.Feature.Location)) return null;
 
-        return of(-1, new SearchLocationBannerCard());
+        return of(-10, new SearchLocationBannerCard());
     }
 }

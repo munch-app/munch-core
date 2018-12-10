@@ -50,6 +50,6 @@ public final class SearchHomeRecentPlacePlugin implements SearchCardPlugin {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
-        return of(1, new SearchHomeRecentPlaceCard(places));
+        return of(-100, new SearchHomeRecentPlaceCard(places));
     }
 }

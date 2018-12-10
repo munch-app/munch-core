@@ -57,11 +57,6 @@ public final class SearchSuggestedTagCard implements SearchCard {
 
     @Override
     public String getCardId() {
-        return "injected_SuggestedTag_20180511";
-    }
-
-    @Override
-    public String getUniqueId() {
-        return getCardId();
+        return "SuggestedTag_2018-05-11";
     }
 }

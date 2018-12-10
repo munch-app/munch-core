@@ -7,6 +7,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import munch.api.search.SearchQuery;
 import munch.api.search.cards.SearchLocationAreaCard;
+import munch.api.search.elastic.ElasticQueryUtils;
 import munch.api.search.plugin.SearchCardPlugin;
 import munch.data.client.AreaClient;
 import munch.data.client.ElasticClient;
@@ -41,16 +42,16 @@ public final class SearchLocationAreaPlugin implements SearchCardPlugin {
         this.elasticClient = elasticClient;
         this.loadingCache = CacheBuilder.newBuilder()
                 .expireAfterWrite(13, TimeUnit.HOURS)
-                .build(CacheLoader.from(input -> {
-                    return Optional.ofNullable(areaClient.get(input));
+                .build(CacheLoader.from(areaId -> {
+                    return Optional.ofNullable(areaClient.get(areaId));
                 }));
     }
 
     @Nullable
     @Override
     public List<Position> load(Request request) {
-        if (!request.getRequest().isFeature(SearchQuery.Feature.Location)) return null;
         if (!request.isFirstPage()) return null;
+        if (!request.getRequest().isFeature(SearchQuery.Feature.Location)) return null;
 
         List<SearchLocationAreaCard> cards = getAreas().stream()
                 .filter(Optional::isPresent)
@@ -65,7 +66,7 @@ public final class SearchLocationAreaPlugin implements SearchCardPlugin {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
-        return of(0, cards);
+        return of(-1, cards);
     }
 
     private List<Place> searchPlace(Area area, int size) {
@@ -74,13 +75,16 @@ public final class SearchLocationAreaPlugin implements SearchCardPlugin {
         root.put("size", size);
 
         ObjectNode bool = JsonUtils.createObjectNode();
+        root.set("query", JsonUtils.createObjectNode().set("bool", bool));
 
         ArrayNode filter = bool.putArray("filter");
         filter.add(ElasticUtils.filterTerm("dataType", "Place"));
-        filter.add(ElasticUtils.filterTerm("areas.areaId", area.getAreaId()));
-        bool.set("filter", filter);
+        filter.add(ElasticUtils.filterTerm("status.type", "open"));
 
-        root.set("query", JsonUtils.createObjectNode().set("bool", bool));
+        // Polygon points is required.
+        if (area.getLocation().getPolygon() == null) return List.of();
+        filter.add(ElasticQueryUtils.filterPolygon(area.getLocation().getPolygon().getPoints()));
+
         root.set("sort", ElasticUtils.sortField("taste.importance", "desc"));
         return elasticClient.searchHitsHits(root);
     }

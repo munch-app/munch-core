@@ -22,7 +22,7 @@ public final class SearchAreaClusterHeaderCard implements SearchCard {
 
     @Override
     public String getCardId() {
-        return "injected_AreaClusterHeader_20180621";
+        return "AreaClusterHeader_2018-06-21";
     }
 
     @Override

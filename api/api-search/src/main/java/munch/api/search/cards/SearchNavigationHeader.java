@@ -51,7 +51,7 @@ public final class SearchNavigationHeader implements SearchCard {
 
     @Override
     public String getCardId() {
-        return "injected_NavigationHeader_20181102";
+        return "NavigationHeader_2018-11-02";
     }
 
     @Override
