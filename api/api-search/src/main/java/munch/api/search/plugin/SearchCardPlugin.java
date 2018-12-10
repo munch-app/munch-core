@@ -3,7 +3,6 @@ package munch.api.search.plugin;
 import munch.api.search.SearchQuery;
 import munch.api.search.SearchRequest;
 import munch.api.search.cards.SearchCard;
-import munch.data.location.Area;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
@@ -33,6 +32,16 @@ public interface SearchCardPlugin {
      */
     default List<Position> of(int index, SearchCard... cards) {
         if (cards.length == 0) return List.of();
+
+        List<Position> positions = new ArrayList<>();
+        for (SearchCard card : cards) {
+            positions.add(new Position(card, index++));
+        }
+        return positions;
+    }
+
+    default List<Position> of(int index, List<? extends SearchCard> cards) {
+        if (cards.isEmpty()) return List.of();
 
         List<Position> positions = new ArrayList<>();
         for (SearchCard card : cards) {

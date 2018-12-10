@@ -12,9 +12,4 @@ public final class SearchHomeTabCard implements SearchCard {
     public String getCardId() {
         return "HomeTab_2018-11-29";
     }
-
-    @Override
-    public String getUniqueId() {
-        return getCardId();
-    }
 }

@@ -1,7 +1,8 @@
-package munch.api.search.plugin;
+package munch.api.search.plugin.home;
 
 import munch.api.search.SearchQuery;
 import munch.api.search.cards.SearchHomeTabCard;
+import munch.api.search.plugin.SearchCardPlugin;
 
 import javax.inject.Singleton;
 import java.util.List;

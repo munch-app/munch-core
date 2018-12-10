@@ -1,5 +1,6 @@
 package munch.api.search;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import munch.api.ApiService;
 import munch.api.search.filter.*;
 import munch.restful.server.JsonCall;
@@ -36,6 +37,7 @@ public final class SearchFilterService extends ApiService {
         PATH("/search/filter", () -> {
             POST("", this::post);
             GET("/areas", this::getAreas);
+            POST("/areas/search", this::searchAreas);
             POST("/between/search", this::betweenSearch);
         });
     }
@@ -54,6 +56,12 @@ public final class SearchFilterService extends ApiService {
      */
     public List<FilterArea> getAreas(JsonCall call) {
         return areaDatabase.get();
+    }
+
+    public List<FilterArea> searchAreas(JsonCall call) {
+        JsonNode json = call.bodyAsJson();
+        String text = json.path("text").asText();
+        return areaDatabase.search(text, 20);
     }
 
     public List<SearchQuery.Filter.Location.Point> betweenSearch(JsonCall call) {

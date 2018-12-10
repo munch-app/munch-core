@@ -3,7 +3,7 @@
     <div class="container">
       <div class="mtb-24">
         <h2>Feed</h2>
-        <p class="mtb-8">Feast your eyes with fresh out the oven food shots by your favorite Instagrammers</p>
+        <p class="mtb-8">Feast your eyes with fresh out the oven food shots by your favorite Instagrammers.</p>
       </div>
 
       <masonry-wall ref="masonry" :items="items" @append="onAppend"

@@ -1,7 +1,8 @@
-package munch.api.search.plugin;
+package munch.api.search.plugin.location;
 
 import munch.api.search.SearchQuery;
 import munch.api.search.cards.SearchLocationBannerCard;
+import munch.api.search.plugin.SearchCardPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +26,6 @@ public final class SearchLocationBannerPlugin implements SearchCardPlugin {
         if (!request.isFirstPage()) return null;
         if (!request.getRequest().isFeature(SearchQuery.Feature.Location)) return null;
 
-        return of(0, new SearchLocationBannerCard());
+        return of(-1, new SearchLocationBannerCard());
     }
 }

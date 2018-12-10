@@ -13,5 +13,4 @@ public final class SearchLocationBannerCard implements SearchCard {
         return "LocationBanner_2018-12-10";
     }
 
-
 }
