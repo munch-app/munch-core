@@ -145,28 +145,6 @@
           return this.data.articles
         }
       }
-    },
-    mounted() {
-      const placeId = this.place.placeId
-      const Activity = require('~/services/user/place-activity')
-      Activity.start.call(this, placeId)
-
-      this.$clickAction = function () {
-        const action = this.dataset.placeActivity
-        const data = this.dataset.placeActivityData
-        Activity.click[action](placeId, data)
-      }
-
-      // Track all place activity clicks
-      document.querySelectorAll('a[data-place-activity]').forEach(anchor => {
-        anchor.addEventListener("click", this.$clickAction, true);
-      })
-    },
-    beforeDestroy() {
-      // Remove all place activity clicks
-      document.querySelectorAll('a[data-place-activity]').forEach(anchor => {
-        anchor.removeEventListener("click", this.$clickAction, true)
-      })
     }
   }
 </script>

@@ -28,8 +28,6 @@
 <script>
   import {Day, days, Hour, HourGroup} from './hour-group'
 
-  const Activity = require('~/services/user/place-activity')
-
   export default {
     name: "PlaceHourList",
     props: {
@@ -71,7 +69,6 @@
       },
       onPopover() {
         this.popover = !this.popover
-        Activity.click.hours(this.placeId)
       },
       onCancel() {
         if (this.popover) {

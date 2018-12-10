@@ -4,7 +4,7 @@
     <div class="Landmark text" v-if="landmark">{{landmark.min}} min from <span>{{landmark.name}}</span></div>
 
     <div class="GoogleMap">
-      <a class="Interaction" data-place-activity="mapExternal" target="_blank" :href="`https://www.google.com/maps?q=${location.latLng}`" style="height: 224px"></a>
+      <a class="Interaction" target="_blank" :href="`https://www.google.com/maps?q=${location.latLng}`" style="height: 224px"></a>
       <google-embed-map :lat-lng="location.latLng" height="224"/>
     </div>
   </div>

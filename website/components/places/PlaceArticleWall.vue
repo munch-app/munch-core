@@ -4,8 +4,7 @@
                             :padding="24" :container="true">
 
       <template slot-scope="{item,index}">
-        <a :href="item.url" target="_blank" rel="noreferrer noopener nofollow" data-place-activity="partnerArticleItem"
-           :data-place-activity-data="index">
+        <a :href="item.url" target="_blank" rel="noreferrer noopener nofollow">
           <div class="ArticleCard border border-3 hover-pointer overflow-hidden">
             <div>
               <image-sizes class="Thumbnail index-content border-3-top" v-if="item.thumbnail"

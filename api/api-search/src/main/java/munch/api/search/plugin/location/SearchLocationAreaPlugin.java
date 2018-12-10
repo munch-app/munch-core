@@ -20,7 +20,6 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -35,16 +34,16 @@ import java.util.stream.Collectors;
 public final class SearchLocationAreaPlugin implements SearchCardPlugin {
 
     private final ElasticClient elasticClient;
-    private final LoadingCache<String, Optional<Area>> loadingCache;
+    private final AreaClient areaClient;
+    private final LoadingCache<String, Optional<SearchLocationAreaCard>> loadingCache;
 
     @Inject
     public SearchLocationAreaPlugin(ElasticClient elasticClient, AreaClient areaClient) {
         this.elasticClient = elasticClient;
+        this.areaClient = areaClient;
         this.loadingCache = CacheBuilder.newBuilder()
                 .expireAfterWrite(13, TimeUnit.HOURS)
-                .build(CacheLoader.from(areaId -> {
-                    return Optional.ofNullable(areaClient.get(areaId));
-                }));
+                .build(CacheLoader.from(this::loadCard));
     }
 
     @Nullable
@@ -53,43 +52,15 @@ public final class SearchLocationAreaPlugin implements SearchCardPlugin {
         if (!request.isFirstPage()) return null;
         if (!request.getRequest().isFeature(SearchQuery.Feature.Location)) return null;
 
-        List<SearchLocationAreaCard> cards = getAreas().stream()
+        List<SearchLocationAreaCard> cards = loadCards().stream()
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .map(area -> {
-                    List<Place> places = searchPlace(area, 10);
-                    if (places.isEmpty()) return null;
-
-                    places.forEach(place -> place.getAreas().clear());
-                    return new SearchLocationAreaCard(area, places);
-                })
-                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
         return of(-1, cards);
     }
 
-    private List<Place> searchPlace(Area area, int size) {
-        ObjectNode root = JsonUtils.createObjectNode();
-        root.put("from", 0);
-        root.put("size", size);
-
-        ObjectNode bool = JsonUtils.createObjectNode();
-        root.set("query", JsonUtils.createObjectNode().set("bool", bool));
-
-        ArrayNode filter = bool.putArray("filter");
-        filter.add(ElasticUtils.filterTerm("dataType", "Place"));
-        filter.add(ElasticUtils.filterTerm("status.type", "open"));
-
-        // Polygon points is required.
-        if (area.getLocation().getPolygon() == null) return List.of();
-        filter.add(ElasticQueryUtils.filterPolygon(area.getLocation().getPolygon().getPoints()));
-
-        root.set("sort", ElasticUtils.sortField("taste.importance", "desc"));
-        return elasticClient.searchHitsHits(root);
-    }
-
-    private List<Optional<Area>> getAreas() {
+    private List<Optional<SearchLocationAreaCard>> loadCards() {
         return List.of(
                 // 1. Orchard
                 loadingCache.getUnchecked("2e3c2ba4-24ff-495d-a4e5-330b70564d9a"),
@@ -112,5 +83,42 @@ public final class SearchLocationAreaPlugin implements SearchCardPlugin {
                 // 10. Jurong East
                 loadingCache.getUnchecked("4eecfcc0-d0a0-492b-9be9-fd2d47316884")
         );
+    }
+
+    private Optional<SearchLocationAreaCard> loadCard(String areaId) {
+        Area area = areaClient.get(areaId);
+        if (area == null) return Optional.empty();
+
+        List<Place> places = searchPlace(area, 6);
+        if (places.isEmpty()) return Optional.empty();
+
+        places.forEach(place -> place.getAreas().clear());
+
+        area.setNames(null);
+        area.setCounts(null);
+        area.setHours(null);
+        area.setImages(null);
+
+        return Optional.of(new SearchLocationAreaCard(area, places));
+    }
+
+    private List<Place> searchPlace(Area area, int size) {
+        ObjectNode root = JsonUtils.createObjectNode();
+        root.put("from", 0);
+        root.put("size", size);
+
+        ObjectNode bool = JsonUtils.createObjectNode();
+        root.set("query", JsonUtils.createObjectNode().set("bool", bool));
+
+        ArrayNode filter = bool.putArray("filter");
+        filter.add(ElasticUtils.filterTerm("dataType", "Place"));
+        filter.add(ElasticUtils.filterTerm("status.type", "open"));
+
+        // Polygon points is required.
+        if (area.getLocation().getPolygon() == null) return List.of();
+        filter.add(ElasticQueryUtils.filterPolygon(area.getLocation().getPolygon().getPoints()));
+
+        root.set("sort", ElasticUtils.sortField("taste.importance", "desc"));
+        return elasticClient.searchHitsHits(root);
     }
 }

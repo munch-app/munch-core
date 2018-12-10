@@ -37,6 +37,9 @@
     props: {
       images: Array
     },
+    mounted() {
+      console.log(this.images)
+    },
     computed: {
       list() {
         return this.images.slice(0, 10)
