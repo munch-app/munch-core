@@ -1,6 +1,6 @@
 package munch.api.search.plugin;
 
-import munch.api.search.SearchRequest;
+import munch.api.search.SearchQuery;
 import munch.api.search.cards.SearchHomeTabCard;
 
 import javax.inject.Singleton;
@@ -17,7 +17,7 @@ public final class SearchHomeTabPlugin implements SearchCardPlugin {
 
     @Override
     public List<Position> load(Request request) {
-        if (request.getRequest().getScreen() == SearchRequest.Screen.home) {
+        if (request.getRequest().isFeature(SearchQuery.Feature.Home)) {
             return of(0, new SearchHomeTabCard());
         }
         return null;

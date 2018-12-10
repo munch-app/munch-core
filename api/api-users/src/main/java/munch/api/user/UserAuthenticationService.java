@@ -106,7 +106,6 @@ public final class UserAuthenticationService extends ApiService {
         setting = new UserSetting();
         setting.setUserId(userId);
         setting.setMailings(Map.of("munch", true));
-        setting.setSearch(new UserSetting.Search());
         settingClient.put(userId, setting);
         return setting;
     }

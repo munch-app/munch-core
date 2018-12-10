@@ -30,14 +30,14 @@ public final class SearchService extends ApiService {
     private final SearchDelegator searchDelegator;
     private final NamedDelegator namedDelegator;
 
-    private final UserSearchQueryClient userSearchQueryClient;
+    private final UserSearchQueryClient userQueryClient;
 
     @Inject
-    public SearchService(SearchRequest.Factory searchRequestFactory, SearchDelegator searchDelegator, NamedDelegator namedDelegator, UserSearchQueryClient userSearchQueryClient) {
+    public SearchService(SearchRequest.Factory searchRequestFactory, SearchDelegator searchDelegator, NamedDelegator namedDelegator, UserSearchQueryClient userQueryClient) {
         this.searchRequestFactory = searchRequestFactory;
         this.searchDelegator = searchDelegator;
         this.namedDelegator = namedDelegator;
-        this.userSearchQueryClient = userSearchQueryClient;
+        this.userQueryClient = userQueryClient;
     }
 
     @Override
@@ -61,7 +61,7 @@ public final class SearchService extends ApiService {
     @Nullable
     public Object qid(JsonCall call) {
         String qid = call.pathString("qid");
-        UserSearchQuery userSearchQuery = userSearchQueryClient.get(qid);
+        UserSearchQuery userSearchQuery = userQueryClient.get(qid);
         if (userSearchQuery == null) return null;
         return userSearchQuery.getSearchQuery();
     }
@@ -83,22 +83,24 @@ public final class SearchService extends ApiService {
      */
     private JsonResult search(JsonCall call) {
         SearchRequest searchRequest = searchRequestFactory.create(call);
-        UserSearchQuery userSearchQuery = userSearchQueryClient.create(searchRequest.getUserId(), searchRequest.getSearchQuery());
+
+        JsonResult result = JsonResult.ok();
+        result.put("data", searchDelegator.delegate(searchRequest));
 
         // Persist SearchQuery if first Page Search.
         if (searchRequest.getPage() == 0) {
+            UserSearchQuery userQuery = userQueryClient.create(searchRequest.getUserId(), searchRequest.getSearchQuery());
+
+            result.put("qid", userQuery.getQid());
             CompletableFuture.runAsync(() -> {
                 try {
-                    userSearchQueryClient.put(userSearchQuery);
+                    userQueryClient.put(userQuery);
                 } catch (Exception e) {
-                    logger.warn("Failed to persist UserSearchQuery: {}", userSearchQuery, e);
+                    logger.warn("Failed to persist UserSearchQuery: {}", userQuery, e);
                 }
             });
         }
 
-        JsonResult result = JsonResult.ok();
-        result.put("data", searchDelegator.delegate(searchRequest));
-        result.put("qid", userSearchQuery.getQid());
         return result;
     }
 }

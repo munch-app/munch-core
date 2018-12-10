@@ -59,7 +59,7 @@ public final class SearchDelegator {
      */
     private List<Place> searchPlaces(SearchRequest request) {
         // Only Search Screen returns Place results
-        if (request.getScreen() != SearchRequest.Screen.search) return List.of();
+        if (request.getFeature() != SearchQuery.Feature.Search) return List.of();
 
         int pageSize = getPageSize(request);
         ObjectNode root = JsonUtils.createObjectNode();

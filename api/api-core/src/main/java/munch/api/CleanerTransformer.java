@@ -24,7 +24,7 @@ import java.util.Set;
 @Singleton
 public final class CleanerTransformer extends JsonTransformer {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
 
     /**
      * Dunno wtf I am doing just copying from:
@@ -60,6 +60,8 @@ public final class CleanerTransformer extends JsonTransformer {
                 });
             }
         };
+
+        objectMapper = new ObjectMapper();
         objectMapper.registerModule(module);
     }
 

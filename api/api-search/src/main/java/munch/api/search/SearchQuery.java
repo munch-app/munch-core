@@ -26,12 +26,16 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class SearchQuery {
 
-    // TODO: Search Screen
-
-    /*
-    Collection { Name, ID }
-    Screen = [Search, Collection, Location, Home, Occasion]
+    /**
+     * Feature to execute
      */
+    public enum Feature {
+        Home,
+        Search,
+        Location,
+        Collection,
+        Occasion
+    }
 
     /**
      * Versions History:
@@ -41,12 +45,42 @@ public final class SearchQuery {
      * 2018-11-28
      * - Changes in Filter.tags uses munch.data.tag.Tag now
      * - Added strict validation for consistency
+     * <p>
+     * 2018-12-09
+     * - Added Screen into part of SearchQuery from query string
+     * - Added Collection Search
      */
-    public static final String VERSION = "2018-11-28";
+    public static final String VERSION = "2018-12-09";
 
-    // TODO: Collection Search
+    private Feature feature = Feature.Search;
+    private Collection collection;
+
     private Filter filter = new Filter();
     private Sort sort = new Sort();
+
+    /**
+     * @return Feature to execute
+     */
+    @NotNull
+    public Feature getFeature() {
+        return feature;
+    }
+
+    public void setFeature(Feature feature) {
+        this.feature = feature;
+    }
+
+    /**
+     * @return Collection Search
+     */
+    @Nullable
+    public Collection getCollection() {
+        return collection;
+    }
+
+    public void setCollection(Collection collection) {
+        this.collection = collection;
+    }
 
     /**
      * Optional
@@ -415,6 +449,36 @@ public final class SearchQuery {
         }
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static final class Collection {
+        private String name;
+        private String collectionId;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getCollectionId() {
+            return collectionId;
+        }
+
+        public void setCollectionId(String collectionId) {
+            this.collectionId = collectionId;
+        }
+
+        @Override
+        public String toString() {
+            return "Collection{" +
+                    "name='" + name + '\'' +
+                    ", collectionId='" + collectionId + '\'' +
+                    '}';
+        }
+    }
+
     /**
      * @return version of SearchQuery
      */
@@ -425,7 +489,9 @@ public final class SearchQuery {
     @Override
     public String toString() {
         return "SearchQuery{" +
-                "filter=" + filter +
+                "feature=" + feature +
+                ", collection=" + collection +
+                ", filter=" + filter +
                 ", sort=" + sort +
                 ", version=" + getVersion() +
                 '}';
@@ -436,6 +502,9 @@ public final class SearchQuery {
      * @throws ValidationException if other deep fields input by user
      */
     public static void validate(SearchQuery query) throws ValidationException {
+        // Default to Feature.Search if none
+        if (query.getFeature() == null) query.setFeature(Feature.Search);
+
         if (query.getFilter() == null) query.setFilter(new SearchQuery.Filter());
         if (query.getSort() == null) query.setSort(new SearchQuery.Sort());
 

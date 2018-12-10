@@ -16,8 +16,11 @@ public final class UserModule extends ApiServiceModule {
 
         addService(UserPlaceCollectionService.class);
         addService(UserPlaceCollectionItemService.class);
-        addService(UserPlaceActivityService.class);
 
         addService(UserSuggestService.class);
+
+        addService(UserSearchPreferenceService.class);
+        addService(UserSavedPlaceService.class);
+        addService(UserRecentPlaceService.class);
     }
 }

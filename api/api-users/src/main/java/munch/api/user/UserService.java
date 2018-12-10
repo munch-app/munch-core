@@ -8,8 +8,6 @@ import munch.user.client.UserProfileClient;
 import munch.user.client.UserSettingClient;
 import munch.user.data.UserProfile;
 import munch.user.data.UserSetting;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -22,8 +20,6 @@ import javax.inject.Singleton;
  */
 @Singleton
 public final class UserService extends ApiService {
-    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
-
     private final UserProfileClient profileClient;
     private final UserSettingClient settingClient;
 
@@ -38,8 +34,6 @@ public final class UserService extends ApiService {
         PATH("/users", () -> {
             GET("/profile", this::getProfile);
             GET("/setting", this::getSetting);
-
-            PATCH("/setting/search", this::patchSearchSetting);
         });
     }
 
@@ -54,18 +48,4 @@ public final class UserService extends ApiService {
         if (setting != null) return setting;
         return new UserSetting();
     }
-
-
-
-    public UserSetting patchSearchSetting(JsonCall call) {
-        String userId = call.get(ApiRequest.class).getUserId();
-        UserSetting setting = settingClient.get(userId);
-        if (setting == null) setting = new UserSetting();
-
-        setting.setSearch(call.bodyAsObject(UserSetting.Search.class));
-        settingClient.put(userId, setting);
-        return setting;
-    }
-
-
 }

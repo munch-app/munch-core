@@ -40,13 +40,6 @@ public final class SearchRequest {
         this.localDateTime = call.get(ApiRequest.class).optionalLocalTime().orElse(null);
     }
 
-    public enum Screen {
-        search,
-        home,
-        location,
-        collection
-    }
-
     /**
      * @return HTTP JsonCall Request
      */
@@ -55,23 +48,20 @@ public final class SearchRequest {
     }
 
     /**
-     * @return Current screen
+     * @return Current Feature
      */
-    public Screen getScreen() {
-        String screen = call.queryString("screen", null);
-        if (StringUtils.isBlank(screen)) return Screen.search;
-
-        return Screen.valueOf(screen);
+    public SearchQuery.Feature getFeature() {
+        return searchQuery.getFeature();
     }
 
     /**
-     * @param screens if check if any
-     * @return true if any match
+     * @param features to check if any chosen
+     * @return whether any match
      */
-    public boolean isScreen(Screen... screens) {
-        Screen current = getScreen();
-        for (Screen screen : screens) {
-            if (current == screen) return true;
+    public boolean isFeature(SearchQuery.Feature... features) {
+        SearchQuery.Feature current = getFeature();
+        for (SearchQuery.Feature feature : features) {
+            if (current == feature) return true;
         }
         return false;
     }

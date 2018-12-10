@@ -1,6 +1,6 @@
 package munch.api.search.plugin;
 
-import munch.api.search.SearchRequest;
+import munch.api.search.SearchQuery;
 import munch.api.search.cards.SearchNoLocationCard;
 
 import java.util.List;
@@ -16,7 +16,7 @@ public final class SearchNoLocationPlugin implements SearchCardPlugin {
 
     @Override
     public List<Position> load(Request request) {
-        if (!request.getRequest().isScreen(SearchRequest.Screen.search)) return null;
+        if (!request.getRequest().isFeature(SearchQuery.Feature.Search)) return null;
         if (!request.isFirstPage()) return null;
         if (request.getRequest().hasUserLatLng()) return null;
 
