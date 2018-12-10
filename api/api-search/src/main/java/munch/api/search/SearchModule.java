@@ -4,6 +4,8 @@ import com.google.inject.multibindings.Multibinder;
 import munch.api.ApiServiceModule;
 import munch.api.search.cards.SearchPlaceCard;
 import munch.api.search.plugin.*;
+import munch.api.search.plugin.home.SearchHomeAwardCollectionPlugin;
+import munch.api.search.plugin.home.SearchHomePopularPlacePlugin;
 import munch.api.search.plugin.home.SearchHomeRecentPlacePlugin;
 import munch.api.search.plugin.home.SearchHomeTabPlugin;
 import munch.api.search.plugin.location.SearchLocationAreaPlugin;
@@ -30,6 +32,8 @@ public final class SearchModule extends ApiServiceModule {
 
         loaderBinder.addBinding().to(SearchHomeTabPlugin.class);
         loaderBinder.addBinding().to(SearchHomeRecentPlacePlugin.class);
+        loaderBinder.addBinding().to(SearchHomePopularPlacePlugin.class);
+        loaderBinder.addBinding().to(SearchHomeAwardCollectionPlugin.class);
 
         loaderBinder.addBinding().to(SearchLocationBannerPlugin.class);
         loaderBinder.addBinding().to(SearchLocationAreaPlugin.class);

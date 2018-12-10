@@ -18,9 +18,9 @@ public final class SearchHomeTabPlugin implements SearchCardPlugin {
 
     @Override
     public List<Position> load(Request request) {
-        if (request.getRequest().isFeature(SearchQuery.Feature.Home)) {
-            return of(0, new SearchHomeTabCard());
-        }
-        return null;
+        if (!request.isFirstPage()) return null;
+        if (!request.getRequest().isFeature(SearchQuery.Feature.Home)) return null;
+
+        return of(0, new SearchHomeTabCard());
     }
 }

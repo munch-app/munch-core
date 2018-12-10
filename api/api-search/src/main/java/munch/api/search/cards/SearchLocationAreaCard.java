@@ -12,13 +12,20 @@ import java.util.List;
  * Project: munch-core
  */
 public final class SearchLocationAreaCard implements SearchCard {
-
     private final Area area;
     private final List<Place> places;
 
     public SearchLocationAreaCard(Area area, List<Place> places) {
         this.area = area;
         this.places = places;
+    }
+
+    public Area getArea() {
+        return area;
+    }
+
+    public List<Place> getPlaces() {
+        return places;
     }
 
     @Override
