@@ -29,7 +29,7 @@
   section {
     margin-top: -30px;
 
-    background: url("~/assets/img/search/location-banner.jpg") no-repeat center/cover;;
+    background: url("~/assets/img/search/location-banner.jpg") no-repeat center/cover;
     height: 300px;
   }
 

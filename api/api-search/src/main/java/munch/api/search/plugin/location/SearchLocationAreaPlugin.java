@@ -89,7 +89,7 @@ public final class SearchLocationAreaPlugin implements SearchCardPlugin {
         Area area = areaClient.get(areaId);
         if (area == null) return Optional.empty();
 
-        List<Place> places = searchPlace(area, 6);
+        List<Place> places = searchPlace(area, 10);
         if (places.isEmpty()) return Optional.empty();
 
         places.forEach(place -> place.getAreas().clear());

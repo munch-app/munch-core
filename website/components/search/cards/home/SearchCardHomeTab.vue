@@ -6,8 +6,11 @@
     <horizontal-scroll-view class="FeatureList container-remove-gutter mt-16" :items="features" :map-key="a => a.id"
                             :padding="24">
       <template slot-scope="{item}">
-        <div class="FeatureCard bg-whisper100 border-4 hover-pointer flex-center text-center" @click="onClick(item)">
-          <h5>{{item.name}}</h5>
+        <div class="FeatureCard border-3 overflow-hidden hover-pointer" @click="onClick(item)"
+             :style="{backgroundImage: `url('${item.image}')`}">
+          <div class="Overlay wh-100 flex-center text-center">
+            <h4 class="white">{{item.name}}</h4>
+          </div>
         </div>
       </template>
     </horizontal-scroll-view>
@@ -37,9 +40,21 @@
     data() {
       return {
         features: [
-          {name: 'Dining with Friends', id: 'EatBetween', image: ''},
-          {name: 'Food Inspiration', id: 'Feed', image: ''},
-          {name: 'Discover by Neighborhood', id: 'Location', image: ''},
+          {
+            name: 'Dining with Friends',
+            id: 'EatBetween',
+            image: require('~/assets/img/search/home-tab-between.jpg')
+          },
+          {
+            name: 'Food Inspiration',
+            id: 'Feed',
+            image: require('~/assets/img/search/home-tab-feed.jpg')
+          },
+          {
+            name: 'Discover by Neighborhood',
+            id: 'Location',
+            image: require('~/assets/img/search/home-tab-location.jpg')
+          },
         ]
       }
     },
@@ -63,6 +78,13 @@
 </script>
 
 <style scoped lang="less">
+  //noinspection CssUnknownTarget
+  /*FeatureCard {*/
+  /*background-image: url("~/assets/img/search/home-tab-location.jpg");*/
+  /*background-repeat: no-repeat;*/
+  /*background-*/
+  //}
+
   .FeatureList {
     height: 88px;
   }
@@ -71,6 +93,11 @@
     height: 88px;
     width: 180px;
 
+    background: no-repeat center/cover;
+  }
+
+  .Overlay {
+    background: rgba(0, 0, 0, 0.4);
     padding: 24px;
   }
 </style>

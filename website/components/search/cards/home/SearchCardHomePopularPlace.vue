@@ -7,7 +7,7 @@
       </div>
 
       <div class="none tablet-b desktop-b">
-        <button class="secondary-outline w-100" @click="onMore">Show all popular places</button>
+        <div class="weight-600 s700 hover-pointer" @click="onMore">Show all popular places</div>
       </div>
     </div>
 
