@@ -69,6 +69,10 @@ export const mutations = {
   },
 
   append(state, {cards, qid}) {
+    console.log(cards)
+    console.log(qid)
+    console.log(state)
+
     state.more = cards.length > 0
     state.loading = false
     state.page += 1
@@ -99,7 +103,7 @@ export const actions = {
 
     return this.$axios.$post(`/api/search?page=${state.page}`, state.query)
       .then(({data, qid}) => {
-        commit('append', {cards: data, qid})
+        return commit('append', {cards: data, qid})
       })
   },
 

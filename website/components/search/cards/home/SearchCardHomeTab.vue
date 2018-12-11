@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2>{{salutation}}, {{name}}. Find the perfect spot on Munch.</h2>
-    <p class="b-a75" v-if="!isLoggedIn">(Not Samantha? Create an account <span class="p500">here</span>.)</p>
+    <p class="b-a75" v-if="!isLoggedIn">(Not Samantha? Create an account <span @click="onCreateAccount" class="p500 hover-pointer">here</span>.)</p>
 
     <horizontal-scroll-view class="FeatureList container-remove-gutter mt-16" :items="features" :map-key="a => a.id"
                             :padding="24">
@@ -78,6 +78,9 @@
             this.$router.push({path: '/feed/images'})
             break
         }
+      },
+      onCreateAccount() {
+        this.$store.commit('focus', 'Login')
       }
     }
   }
