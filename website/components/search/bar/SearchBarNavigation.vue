@@ -22,14 +22,10 @@
     },
     methods: {
       onNavigationSearch() {
-        if (!this.$store.state.search.query) {
-          this.$store.dispatch('filter/location', {type: 'Anywhere'})
-          this.$store.dispatch('search/start')
+        this.$store.dispatch('filter/location', {type: 'Anywhere'})
+        this.$store.dispatch('search/start')
 
-          this.$track.search(`Search - Navigation`, this.$store.getters['search/locationType'])
-        } else if (this.$route.path !== '/search') {
-          this.$router.push({path: '/search'})
-        }
+        this.$track.search(`Search - Navigation`, this.$store.getters['search/locationType'])
         this.$emit('on-blur')
       },
       onNavigationFeedImage() {

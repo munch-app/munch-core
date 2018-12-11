@@ -6,10 +6,7 @@ import munch.api.search.cards.SearchPlaceCard;
 import munch.api.search.plugin.*;
 import munch.api.search.plugin.collection.SearchCollectionHeaderPlugin;
 import munch.api.search.plugin.collection.SearchCollectionItemPlugin;
-import munch.api.search.plugin.home.SearchHomeAwardCollectionPlugin;
-import munch.api.search.plugin.home.SearchHomePopularPlacePlugin;
-import munch.api.search.plugin.home.SearchHomeRecentPlacePlugin;
-import munch.api.search.plugin.home.SearchHomeTabPlugin;
+import munch.api.search.plugin.home.*;
 import munch.api.search.plugin.location.SearchLocationAreaPlugin;
 import munch.api.search.plugin.location.SearchLocationBannerPlugin;
 
@@ -24,7 +21,7 @@ public final class SearchModule extends ApiServiceModule {
     @Override
     protected void configure() {
         Multibinder<SearchCardPlugin> loaderBinder = Multibinder.newSetBinder(binder(), SearchCardPlugin.class);
-        loaderBinder.addBinding().to(SearchAreaClusterListLoader.class);
+        loaderBinder.addBinding().to(SearchAreaClusterListPlugin.class);
         loaderBinder.addBinding().to(SearchAreaClusterHeaderLoader.class);
         loaderBinder.addBinding().to(SearchNoResultPlugin.class);
         loaderBinder.addBinding().to(SearchNoLocationPlugin.class);
@@ -33,6 +30,7 @@ public final class SearchModule extends ApiServiceModule {
         loaderBinder.addBinding().to(SearchBetweenLoader.class);
 
         loaderBinder.addBinding().to(SearchHomeTabPlugin.class);
+        loaderBinder.addBinding().to(SearchHomeNearbyPlugin.class);
         loaderBinder.addBinding().to(SearchHomeRecentPlacePlugin.class);
         loaderBinder.addBinding().to(SearchHomePopularPlacePlugin.class);
         loaderBinder.addBinding().to(SearchHomeAwardCollectionPlugin.class);

@@ -2,6 +2,7 @@ package munch.api.search.plugin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import munch.api.search.SearchQuery;
 import munch.api.search.cards.SearchAreaClusterListCard;
 import munch.data.client.ElasticClient;
 import munch.data.elastic.ElasticUtils;
@@ -19,17 +20,18 @@ import java.util.List;
  * Project: munch-core
  */
 @Singleton
-public final class SearchAreaClusterListLoader implements SearchCardPlugin {
+public final class SearchAreaClusterListPlugin implements SearchCardPlugin {
     private final ObjectMapper mapper = JsonUtils.objectMapper;
     private final ElasticClient elasticClient;
 
     @Inject
-    public SearchAreaClusterListLoader(ElasticClient elasticClient) {
+    public SearchAreaClusterListPlugin(ElasticClient elasticClient) {
         this.elasticClient = elasticClient;
     }
 
     @Override
     public List<Position> load(Request request) {
+        if (!request.getRequest().isFeature(SearchQuery.Feature.Search)) return null;
         if (!request.isFirstPage()) return List.of();
         if (request.isComplex()) return List.of();
 
