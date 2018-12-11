@@ -1,7 +1,7 @@
 <template>
   <div class="zero Page">
     <div class="SearchResult flex container" v-if="cards && query">
-      <div class="Result">
+      <div class="Result flex-wrap flex-grow w-100">
         <card-delegator v-for="card in cards" :key="card._uniqueId" :card="card" ref="cards"
                         @mouseover.native="onMouse(card, true)" @mouseleave.native="onMouse(card, false)"
         />
@@ -14,8 +14,8 @@
         </no-ssr>
       </div>
 
-      <div class="MapView index-content-overlay" v-if="showsMap">
-        <apple-map ref="map" class="Map border-3">
+      <div class="MapView ml-24 relative flex-no-shrink index-content-overlay" v-if="showsMap">
+        <apple-map ref="map" class="Map fixed border-3 overflow-hidden">
           <apple-map-place-annotation v-for="place in map.places" :key="place.placeId" :place="place"
                                       :focused="map.focusedPlaceId === place.placeId"
           />
@@ -140,11 +140,6 @@
   }
 
   .Result {
-    width: 100%;
-
-    display: flex;
-    flex-wrap: wrap;
-    flex-grow: 1;
     align-self: flex-start;
 
     margin-right: -12px;
@@ -152,23 +147,16 @@
   }
 
   .MapView {
-    flex-shrink: 0;
-    position: relative;
-
     width: 33vw;
-    margin-left: 24px;
 
     @media (max-width: 991.98px) {
       display: none;
     }
+  }
 
-    .Map {
-      position: fixed;
-      margin-top: 12px;
-      height: calc(100vh - 48px - 56px - 48px);
-      width: 33vw;
-
-      overflow: hidden;
-    }
+  .Map {
+    margin-top: 12px;
+    height: calc(100vh - 48px - 56px - 48px);
+    width: 33vw;
   }
 </style>

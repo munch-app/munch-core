@@ -300,7 +300,7 @@ function post(commit, state) {
     })
     .catch(error => {
       commit('loading', false)
-      return this.commit('addError', error)
+      return this.dispatch('addError', error)
     })
 }
 
@@ -310,16 +310,10 @@ export const actions = {
     commit('loading', true)
     if (query) commit('replace', query)
 
-    // Search Preference Injection
-    // Need to change this, to support new operations
-    const injections = this.getters['user/searchPreferenceTags']
-    if (_.some(injections, t => 'halal' === t)) {
-      commit('putTag', {tagId: 'abb22d3d-7d23-4677-b4ef-a3e09f2f9ada', name: 'Halal', type: 'Amenities'})
-    }
-
-    if (_.some(injections, t => 'vegetarian options' === t)) {
-      commit('putTag', {tagId: 'fdf77b3b-8f90-419f-b711-dd25f97046fe', name: 'Vegetarian Options', type: 'Amenities'})
-    }
+    // User Search Preference Injection
+    this.getters['user/searchPreference'].requirements.forEach(tag => {
+      commit('putTag', tag)
+    })
 
     return post.call(this, commit, state)
   },
@@ -334,15 +328,10 @@ export const actions = {
     commit('loading', true)
     commit('reset')
 
-    // Search Preference Injection
-    const injections = this.getters['user/searchPreferenceTags']
-    if (_.some(injections, 'halal')) {
-      commit('putTag', {tagId: 'abb22d3d-7d23-4677-b4ef-a3e09f2f9ada', name: 'Halal', type: 'Amenities'})
-    }
-
-    if (_.some(injections, 'vegetarian options')) {
-      commit('putTag', {tagId: 'fdf77b3b-8f90-419f-b711-dd25f97046fe', name: 'Vegetarian Options', type: 'Amenities'})
-    }
+    // User Search Preference Injection
+    this.getters['user/searchPreference'].requirements.forEach(tag => {
+      commit('putTag', tag)
+    })
 
     return post.call(this, commit, state)
   },

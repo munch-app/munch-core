@@ -1,9 +1,13 @@
 <template>
-  <div @click="onClick">
+  <div @click="onClick" class="hover-pointer">
     <div class="Card relative" :class="{'Small': small}">
-      <no-ssr>
-        <place-card-add-collection class="absolute" :place="place"/>
-      </no-ssr>
+      <div class="absolute w-100 index-content-overlay flex-justify-end">
+        <div @click.capture.stop.prevent="onClickHeart">
+          <simple-svg v-if="isSaved" class="HeartIcon" fill="white"
+                      :filepath="require('~/assets/icon/place/heart-filled.svg')"/>
+          <simple-svg v-else class="HeartIcon" fill="white" :filepath="require('~/assets/icon/place/heart.svg')"/>
+        </div>
+      </div>
 
       <div class="aspect r-5-3 border-3 overflow-hidden">
         <image-sizes v-if="image" :sizes="image.sizes" :alt="place.name"/>
@@ -38,13 +42,14 @@
 </template>
 
 <script>
+  import {mapGetters} from "vuex";
+
   import {Hour, HourGroup} from './hour-group'
   import ImageSizes from "../core/ImageSizes";
-  import PlaceCardAddCollection from "./PlaceCardAddCollection";
 
   export default {
     name: "PlaceCard",
-    components: {PlaceCardAddCollection, ImageSizes},
+    components: {ImageSizes},
     props: {
       place: {
         type: Object,
@@ -80,6 +85,10 @@
       }
     },
     computed: {
+      ...mapGetters('user', ['isLoggedIn']),
+      isSaved() {
+        return this.$store.getters['user/places/isSaved'](this.place.placeId)
+      },
       location() {
         return this.place.location.neighbourhood || this.place.location.street
       },
@@ -105,6 +114,17 @@
       onClick() {
         this.$track.view(`RIP`, 'PlaceCard')
         this.$router.push({path: `/places/${this.place.placeId}`})
+      },
+      onClickHeart() {
+        if (this.isSaved) {
+          this.$store.dispatch('user/places/deletePlace', {place: this.place})
+        } else {
+          if (this.isLoggedIn) {
+            this.$store.dispatch('user/places/putPlace', {place: this.place})
+          } else {
+            this.$store.commit('focus', 'Login')
+          }
+        }
       }
     }
   }
@@ -163,5 +183,11 @@
     .LocationDistanceTiming {
       font-size: 11px;
     }
+  }
+
+  .HeartIcon {
+    width: 32px;
+    height: 32px;
+    padding: 6px;
   }
 </style>

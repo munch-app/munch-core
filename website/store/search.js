@@ -43,25 +43,11 @@ export const mutations = {
   },
 
   start(state, {query, type}) {
-    // Search Preference Injection
-    const injections = this.getters['user/searchPreferenceTags']
-    if (_.some(injections, t => 'halal' === t) && !_.some(query.filter.tags, t => t.tagId === 'abb22d3d-7d23-4677-b4ef-a3e09f2f9ada')) {
-      query.filter.tags.push({
-        tagId: 'abb22d3d-7d23-4677-b4ef-a3e09f2f9ada',
-        name: 'Halal',
-        type: 'Amenities'
-      })
-    }
-
-    if (_.some(injections, t => 'vegetarian options' === t) && !_.some(query.filter.tags, t => t.tagId === 'fdf77b3b-8f90-419f-b711-dd25f97046fe')) {
-      query.filter.tags.push({
-        tagId: 'fdf77b3b-8f90-419f-b711-dd25f97046fe',
-        name: 'Vegetarian Options',
-        type: 'Amenities'
-      })
-    }
-
-    // Fix Between
+    // User Search Preference Injection
+    this.getters['user/searchPreference'].requirements.forEach(tag => {
+      if (_.some(query.filter.tags, t => t.tagId === tag.tagId)) return
+      query.filter.tags.push(tag)
+    })
 
     state.type = type
     state.query = query
@@ -103,6 +89,14 @@ function start({query, type}) {
  * 3 ways to start searching
  */
 export const actions = {
+  feature({commit, state}, query) {
+    start.call(this, {query, type: 'search'})
+
+    return this.$axios.$post(`/api/search?page=${state.page}`, state.query)
+      .then(({data, qid}) => {
+        commit('append', {cards: data, qid})
+      })
+  },
 
   /**
    * @param commit internal

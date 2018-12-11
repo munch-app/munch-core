@@ -45,6 +45,8 @@ public final class SearchHomeRecentPlacePlugin implements SearchCardPlugin {
         if (userId == null) return null;
 
         NextNodeList<UserRecentPlace> recentPlaces = recentPlaceClient.list(userId, null, 20);
+        if (recentPlaces.isEmpty()) return null;
+
         Map<String, Place> map = placeCachedClient.get(recentPlaces.stream().map(UserRecentPlace::getPlaceId));
         List<Place> places = recentPlaces.stream().map(rp -> map.get(rp.getPlaceId()))
                 .filter(Objects::nonNull)

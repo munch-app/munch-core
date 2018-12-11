@@ -6,9 +6,9 @@ const service = require('axios').create({
   baseURL: process.env.API_MUNCH_APP
 });
 
-service.interceptors.response.use(function (response) {
-  return response;
-}, function (error) {
+service.interceptors.response.use(response => {
+  return response
+}, error => {
   // Error response should be handled by ~/plugins/axios.js
   return error.response
 });

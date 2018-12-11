@@ -34,6 +34,30 @@
     v-else-if="isCardId('SuggestedTag_2018-05-11')"
     :card="card"
   />
+  <!-- Home Cards -->
+  <search-card-home-tab
+    class="Card no-select Initial FullWidth"
+    v-else-if="isCardId('HomeTab_2018-11-29')"
+  />
+  <search-card-home-recent-place
+    class="Card no-select Initial FullWidth"
+    v-else-if="isCardId('HomeRecentPlace_2018-12-10')"
+    :card="card"
+  />
+  <search-card-home-popular-place
+    class="Card no-select Initial FullWidth"
+    v-else-if="isCardId('HomePopularPlace_2018-12-10')"
+    :card="card"
+  />
+  <search-card-home-award-collection
+    class="Card no-select Initial FullWidth"
+    v-else-if="isCardId('HomeAwardCollection_2018-12-10')"
+    :card="card"
+  />
+
+  <!-- Location Cards -->
+
+
   <div v-else style="display: none"></div>
 </template>
 
@@ -47,6 +71,10 @@
   import SearchCardAreaClusterHeader from "./SearchCardAreaClusterHeader";
   import SearchCardSuggestionTag from "./SearchCardSuggestionTag";
   import SearchCardNavigationHeader from "./SearchCardNavigationHeader";
+  import SearchCardHomeTab from "./home/SearchCardHomeTab";
+  import SearchCardHomeRecentPlace from "./home/SearchCardHomeRecentPlace";
+  import SearchCardHomePopularPlace from "./home/SearchCardHomePopularPlace";
+  import SearchCardHomeAwardCollection from "./home/SearchCardHomeAwardCollection";
 
   function isElementInViewport(el) {
     const topBar = 56 + 48 // Top Bar
@@ -58,12 +86,17 @@
     function isWithin(y) {
       return (topBar + padding) <= y && y <= (height - padding)
     }
+
     return isWithin(rect.top) || isWithin(rect.bottom)
   }
 
   export default {
     name: "CardDelegator",
     components: {
+      SearchCardHomeAwardCollection,
+      SearchCardHomePopularPlace,
+      SearchCardHomeRecentPlace,
+      SearchCardHomeTab,
       SearchCardNavigationHeader,
       SearchCardSuggestionTag,
       SearchCardAreaClusterHeader,
@@ -88,6 +121,67 @@
     }
   }
 </script>
+<style lang="less">
+  .CardList.PlaceList {
+    height: calc(60vw * 0.6 + 132px);
+
+    @media (min-width: 500px) {
+      height: calc((100vw - 48px - 24px) / 2 * 0.6 + 132px);
+    }
+
+    @media (min-width: 768px) {
+      height: calc((100vw - 48px - 48px) / 3 * 0.6 + 132px);
+    }
+
+    @media (min-width: 1200px) {
+      height: calc((100vw - 160px - 72px) / 4 * 0.6 + 132px);
+    }
+
+    @media (min-width: 1600px) {
+      height: calc((100vw - 160px - 96px) / 5 * 0.6 + 132px);
+    }
+  }
+
+  .CardList .CardItem {
+    width: 60vw;
+
+    @media (min-width: 500px) {
+      width: calc((100vw - 48px - 24px) / 2);
+    }
+
+    @media (min-width: 768px) {
+      width: calc((100vw - 48px - 48px) / 3);
+    }
+
+    @media (min-width: 1200px) {
+      width: calc((100vw - 160px - 72px) / 4);
+    }
+
+    @media (min-width: 1600px) {
+      width: calc((100vw - 160px - 96px) / 5);
+    }
+  }
+
+  .CardList.Square, .CardList.Square .CardItem {
+    height: 60vw;
+
+    @media (min-width: 500px) {
+      height: calc((100vw - 48px - 24px) / 2);
+    }
+
+    @media (min-width: 768px) {
+      height: calc((100vw - 48px - 48px) / 3);
+    }
+
+    @media (min-width: 1200px) {
+      height: calc((100vw - 160px - 72px) / 4);
+    }
+
+    @media (min-width: 1600px) {
+      height: calc((100vw - 160px - 96px) / 5);
+    }
+  }
+</style>
 
 <style scoped lang="less">
   .Card {

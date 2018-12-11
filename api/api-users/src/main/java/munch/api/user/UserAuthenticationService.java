@@ -10,8 +10,10 @@ import munch.restful.server.JsonResult;
 import munch.restful.server.firebase.FirebaseAuthenticatedToken;
 import munch.restful.server.firebase.FirebaseAuthenticator;
 import munch.user.client.UserProfileClient;
+import munch.user.client.UserSearchPreferenceClient;
 import munch.user.client.UserSettingClient;
 import munch.user.data.UserProfile;
+import munch.user.data.UserSearchPreference;
 import munch.user.data.UserSetting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -32,16 +35,19 @@ public final class UserAuthenticationService extends ApiService {
     private static final Logger logger = LoggerFactory.getLogger(UserAuthenticationService.class);
 
     private final FirebaseAuthenticator authenticator;
+
     private final UserProfileClient profileClient;
     private final UserSettingClient settingClient;
+    private final UserSearchPreferenceClient preferenceClient;
 
     private final MunchMailingListClient munchMailingListClient;
 
     @Inject
-    public UserAuthenticationService(FirebaseAuthenticator authenticator, UserProfileClient profileClient, UserSettingClient settingClient, MunchMailingListClient munchMailingListClient) {
+    public UserAuthenticationService(FirebaseAuthenticator authenticator, UserProfileClient profileClient, UserSettingClient settingClient, UserSearchPreferenceClient preferenceClient, MunchMailingListClient munchMailingListClient) {
         this.authenticator = authenticator;
         this.profileClient = profileClient;
         this.settingClient = settingClient;
+        this.preferenceClient = preferenceClient;
         this.munchMailingListClient = munchMailingListClient;
     }
 
@@ -70,10 +76,12 @@ public final class UserAuthenticationService extends ApiService {
 
         UserProfile profile = updateProfile(userId, token.getFirebaseToken());
         UserSetting setting = updateSetting(userId, profile);
+        UserSearchPreference searchPreference = updatePreference(userId);
 
         return result(200, Map.of(
                 "profile", profile,
-                "setting", setting
+                "setting", setting,
+                "searchPreference", searchPreference
         ));
     }
 
@@ -108,5 +116,17 @@ public final class UserAuthenticationService extends ApiService {
         setting.setMailings(Map.of("munch", true));
         settingClient.put(userId, setting);
         return setting;
+    }
+
+    private UserSearchPreference updatePreference(String userId) {
+        UserSearchPreference preference = preferenceClient.get(userId);
+        if (preference != null) return preference;
+
+        preference = new UserSearchPreference();
+        preference.setUserId(userId);
+        preference.setRequirements(Set.of());
+        preference.setUpdatedMillis(System.currentTimeMillis());
+        preferenceClient.put(userId, preference);
+        return preference;
     }
 }

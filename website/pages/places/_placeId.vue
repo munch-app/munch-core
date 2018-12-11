@@ -59,6 +59,8 @@
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
+
   import PlaceTagList from "../../components/places/PlaceTagList";
   import ImageSizes from "../../components/core/ImageSizes";
   import PlaceMenu from "../../components/places/PlaceMenu";
@@ -69,7 +71,6 @@
   import PlaceDetail from "../../components/places/PlaceDetail";
   import PlaceImageWall from "../../components/places/PlaceImageWall";
   import PlaceImageBanner from "../../components/places/PlaceImageBanner";
-  import PlaceAction from "../../components/places/PlaceAction";
   import PlaceFloatingPanel from "../../components/places/PlaceFloatingPanel";
   import PlaceArticleWall from "../../components/places/PlaceArticleWall";
 
@@ -77,7 +78,6 @@
     components: {
       PlaceArticleWall,
       PlaceFloatingPanel,
-      PlaceAction,
       PlaceImageBanner,
       PlaceImageWall,
       PlaceDetail, PlaceAbout, PlaceLocation, PlaceAwardList,
@@ -121,7 +121,16 @@
           else if (err.statusCode) error(err)
         })
     },
+    mounted() {
+      if (!this.isLoggedIn) return
+
+      return this.$api.put(`/users/recent/places/${this.place.placeId}`)
+        .catch(error => {
+          this.$store.dispatch('addError', error)
+        })
+    },
     computed: {
+      ...mapGetters('user', ['isLoggedIn']),
       place() {
         return this.data.place
       },

@@ -31,19 +31,17 @@
         <simple-svg class="wh-24px" fill="black" :filepath="require('~/assets/icon/place/more.svg')"/>
       </button>
       <button class="secondary" @click="onSave">
-        Save Place
+        Add Place
       </button>
     </div>
 
     <div>
-      <profile-collection-add-place :place="place" v-if="show.collection" @on-close="show.collection = false"/>
-
       <portal to="dialog-action-sheet" v-if="show.more">
         <div @click="onSuggest">
           Suggest Edits
         </div>
-        <div @click="onSave">
-          Add To Collection
+        <div @click="onAdd">
+          Add Place
         </div>
         <div @click="onShare">
           Share
@@ -59,12 +57,11 @@
 
 <script>
   import {mapGetters} from "vuex";
-  import ProfileCollectionAddPlace from "../profile/ProfileCollectionAddPlace";
   import PlaceHourList from "./PlaceHourList";
 
   export default {
     name: "PlaceFloatingPanel",
-    components: {PlaceHourList, ProfileCollectionAddPlace},
+    components: {PlaceHourList},
     props: {
       place: {
         type: Object,
@@ -74,7 +71,6 @@
     data() {
       return {
         show: {
-          collection: false,
           more: false
         }
       }
@@ -94,11 +90,11 @@
           this.$store.commit('focus', 'Login')
         }
       },
-      onSave() {
+      onAdd() {
         this.show.more = false
 
         if (this.isLoggedIn) {
-          this.show.collection = true
+          this.$store.dispatch('user/places/putPlace', {place: this.place})
         } else {
           this.$store.commit('focus', 'Login')
         }

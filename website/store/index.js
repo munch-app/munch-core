@@ -147,7 +147,7 @@ const parseError = (error) => {
       message: metaError.message
     }
   }
-  
+
   if (error && error.statusCode === 404) {
     return {title: 'Error', message: 'Object Not Found'}
   }
@@ -156,6 +156,13 @@ const parseError = (error) => {
 }
 
 export const actions = {
+  nuxtServerInit({commit}, {req}) {
+    if (req.cookies.MunchUser) {
+      const user = JSON.parse(req.cookies.MunchUser)
+      this.commit('user/setUser', user)
+    }
+  },
+
   /**
    * @param commit
    * @param state

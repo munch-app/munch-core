@@ -101,7 +101,9 @@ module.exports = {
     '~/plugins/prismic-vue',
 
     // Required Plugin
+    '~/plugins/vue-browser-geolocation',
     {src: '~/plugins/vue-google-adsense', ssr: false},
+    {src: '~/plugins/vuex-persistedstate', ssr: false},
 
     // Useful Plugin
     '~/plugins/vue-clickaway',
@@ -110,11 +112,7 @@ module.exports = {
     '~/plugins/vue-observe-visibility',
     {src: '~/plugins/vue-clipboard2', ssr: false},
     {src: '~/plugins/vue-touch', ssr: false},
-
-    // Replace if Possible
-    '~/plugins/vue-browser-geolocation',
     {src: '~/plugins/vue-loader', ssr: false},
-    {src: '~/plugins/vuex-persistedstate', ssr: false},
   ],
   serverMiddleware: [
     {
@@ -144,6 +142,7 @@ module.exports = {
     exclude: [
       "/profile",
       "/authenticate",
+      "/logout",
     ],
     routes: [
       '/support/privacy',

@@ -1,14 +1,12 @@
 <template>
-  <no-ssr>
-    <div class="flex-align-center">
-      <a class="ml-16 mr-24 text-ellipsis-1l" href="https://partner.munch.app" target="_blank">Join as Partner</a>
+  <div class="flex-align-center">
+    <a class="ml-16 mr-24 text-ellipsis-1l" href="https://partner.munch.app" target="_blank">Join as Partner</a>
 
-      <a @click.prevent.stop="onClickLogin" class="flex-no-shrink" v-if="!isLoggedIn">Login</a>
-      <nuxt-link to="/profile" v-else>{{displayName}}</nuxt-link>
+    <a @click.prevent.stop="onClickLogin" class="flex-no-shrink" v-if="!isLoggedIn">Login</a>
+    <nuxt-link to="/profile" v-else>{{displayName}}</nuxt-link>
 
-      <img v-if="false" class="ml-16 hover-pointer" src="~/assets/icon/menu.svg" @click="onClickMenu"/>
-    </div>
-  </no-ssr>
+    <img v-if="false" class="ml-16 hover-pointer" src="~/assets/icon/menu.svg" @click="onClickMenu"/>
+  </div>
 </template>
 
 <script>

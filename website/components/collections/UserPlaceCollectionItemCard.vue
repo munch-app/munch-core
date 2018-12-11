@@ -91,17 +91,7 @@
     },
     methods: {
       onDeleteItem() {
-        const collectionId = this.collection.collectionId
-        const placeId = this.place.placeId
-        return this.$store.dispatch('user/collections/deleteItem', {collectionId, placeId})
-          .then(() => {
-            this.deleting = false
-            this.$emit('on-delete')
-            const message = `Removed '${this.place.name}' to '${this.collection.name}' collection.`
-            this.$store.dispatch('addMessage', {message})
-          }).catch(error => {
-            this.$store.dispatch('addError', error)
-          })
+
       },
     }
   }

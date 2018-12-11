@@ -8,13 +8,13 @@
         robots: {follow: true, index: true},
         graph: {
           image: 'https://s3-ap-southeast-1.amazonaws.com/munch-static/Munch+Logo.png',
-          url: `https://www.munch.app/`,
+          url: `https://www.munch.app/location`,
         }
       })
     },
     asyncData({store}) {
       return store.dispatch('search/feature', {
-        feature: 'Home',
+        feature: 'Location',
 
         // Technically filter, sort ignored, but present to respect SearchQuery constraints
         filter: {
