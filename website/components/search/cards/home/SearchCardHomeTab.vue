@@ -14,16 +14,20 @@
         </div>
       </template>
     </horizontal-scroll-view>
+
+    <search-filter-between-dialog v-if="isBetween" @cancel="isBetween = false"/>
   </div>
 </template>
 
 <script>
   import {mapGetters} from 'vuex'
   import HorizontalScrollView from "../../../core/HorizontalScrollView";
+  import SearchBarFilterBetween from "../../SearchBarFilterBetween";
+  import SearchFilterBetweenDialog from "../../dialog/SearchFilterBetweenDialog";
 
   export default {
     name: "SearchCardHomeTab",
-    components: {HorizontalScrollView},
+    components: {SearchFilterBetweenDialog, SearchBarFilterBetween, HorizontalScrollView},
     computed: {
       ...mapGetters('user', ['isLoggedIn', 'displayName']),
       name() {
@@ -39,6 +43,7 @@
     },
     data() {
       return {
+        isBetween: false,
         features: [
           {
             name: 'Dining with Friends',
@@ -62,6 +67,7 @@
       onClick({id}) {
         switch (id) {
           case "EatBetween":
+            this.isBetween = true
             break
 
           case "Location":
@@ -78,13 +84,6 @@
 </script>
 
 <style scoped lang="less">
-  //noinspection CssUnknownTarget
-  /*FeatureCard {*/
-  /*background-image: url("~/assets/img/search/home-tab-location.jpg");*/
-  /*background-repeat: no-repeat;*/
-  /*background-*/
-  //}
-
   .FeatureList {
     height: 88px;
   }

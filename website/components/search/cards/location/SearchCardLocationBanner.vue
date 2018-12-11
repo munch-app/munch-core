@@ -5,22 +5,31 @@
         <div class="flex-column">
           <h1 class="white">Discover by neighbourhood</h1>
           <p class="white">Enter a location and we’ll tell you what’s delicious around.</p>
-          <button class="s700 mt-24">Enter Location</button>
+          <button class="s700 mt-24" @click="isDialog = true">Enter Location</button>
         </div>
       </div>
     </section>
+
+    <search-filter-area-dialog v-if="isDialog" @cancel="isDialog = false"/>
   </div>
 </template>
 
 <script>
+  import SearchFilterAreaDialog from "../../dialog/SearchFilterAreaDialog";
   export default {
     name: "SearchCardLocationBanner",
+    components: {SearchFilterAreaDialog},
     props: {
       card: {
         type: Object,
         required: true
       }
     },
+    data() {
+      return {
+        isDialog: false
+      }
+    }
   }
 </script>
 
