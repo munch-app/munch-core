@@ -69,10 +69,6 @@ export const mutations = {
   },
 
   append(state, {cards, qid}) {
-    console.log(cards)
-    console.log(qid)
-    console.log(state)
-
     state.more = cards.length > 0
     state.loading = false
     state.page += 1
