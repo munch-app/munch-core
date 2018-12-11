@@ -64,11 +64,26 @@ public final class SearchHomeAwardCollectionPlugin implements SearchCardPlugin {
 
     private List<Optional<UserPlaceCollection>> load() {
         return List.of(
+                // Bib Gourmand 2018
+                loadingCache.getUnchecked("5219a732-1f42-4af4-a432-031e3397978b"),
+                // One Michelin Star 2018
+                loadingCache.getUnchecked("313d7952-3d45-4457-b20d-06ac7fd7e95e"),
+                // Two Michelin Star 2018
+                loadingCache.getUnchecked("60cd9bef-7a5e-4ab4-b4ad-cd10c829a48f"),
+                // Asia's 50 Best Restaurants 2018
+                loadingCache.getUnchecked("f6289dd9-f3fd-40f0-9977-1cef5ab30298"),
+                // G Restaurant Awards 2018
+                loadingCache.getUnchecked("46bc1ae0-6df1-4bac-97e0-39e734ba8e28"),
+                // T.Dining Best Restaurants 2017/18
+                loadingCache.getUnchecked("1280f846-ef05-42f6-a868-e13024790c6e"),
+                // Best Asian Restaurant 2017
+                loadingCache.getUnchecked("965a6aaf-39cf-47ec-9f41-52924478dd24"),
+                // World Gourmet Summit Awards 2018
+                loadingCache.getUnchecked("713f1cb5-7e9e-4a0d-a9e2-b0151d0bdb34"),
+                // Best Asian Restaurants Gold Award 2018
                 loadingCache.getUnchecked("0501cdbd-cd50-43cd-a2cc-de6ff53fda51"),
-                loadingCache.getUnchecked("d559afb0-9207-40ec-9455-15a9556210f6"),
-                loadingCache.getUnchecked("e021df92-5a9e-4f7a-9da2-b58036f0f795"),
-                loadingCache.getUnchecked("2e67856c-a50b-4e39-9945-d7668c9161ca"),
-                loadingCache.getUnchecked("8ae830ab-9885-4359-b3f7-60973c7c8152")
+                // Best Asian Restaurants Silver Award 2018
+                loadingCache.getUnchecked("9cfdab08-6f51-4f28-803f-5b92ee0f7e8b")
         );
     }
 

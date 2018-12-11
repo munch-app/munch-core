@@ -3,7 +3,7 @@ import * as Cookies from 'js-cookie'
 
 export const state = () => ({
   profile: null,
-  searchPreference: {requirements: []}
+  searchPreference: null
 })
 
 export const getters = {
@@ -11,7 +11,7 @@ export const getters = {
   userId: (state) => state.profile && state.profile.userId,
   isLoggedIn: (state) => !!state.profile,
   displayName: (state) => state.profile && state.profile.name,
-  searchPreference: (state) => state.searchPreference
+  searchPreference: (state) => state.searchPreference || {requirements: []}
 }
 
 export const mutations = {
@@ -25,7 +25,7 @@ export const mutations = {
 
   clear(state) {
     state.profile = null
-    state.searchPreference = {requirements: []}
+    state.searchPreference = null
   },
 }
 

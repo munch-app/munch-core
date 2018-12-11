@@ -52,7 +52,7 @@ public final class UserPlaceCollectionItemService extends ApiService {
             if (place != null) return new Item(item, place);
 
             // Delete Item saved in Collection if it don't exist anymore
-            collectionClient.deleteItem(collectionId, item.getPlaceId());
+//            collectionClient.deleteItem(collectionId, item.getPlaceId());
             return null;
         });
 
@@ -72,7 +72,7 @@ public final class UserPlaceCollectionItemService extends ApiService {
         if (place != null) return new Item(item, place);
 
         // Delete Item saved in Collection if it don't exist anymore
-        collectionClient.deleteItem(collectionId, placeId);
+//        collectionClient.deleteItem(collectionId, placeId);
         return null;
     }
 

@@ -30,7 +30,7 @@
       <button class="border mr-16" @click="onMore">
         <simple-svg class="wh-24px" fill="black" :filepath="require('~/assets/icon/place/more.svg')"/>
       </button>
-      <button class="secondary" @click="onSave">
+      <button class="secondary" @click="onAdd">
         Add Place
       </button>
     </div>

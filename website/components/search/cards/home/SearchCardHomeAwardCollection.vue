@@ -8,7 +8,7 @@
                             :padding="24">
       <template slot-scope="{item}">
         <image-sizes class="CardItem overflow-hidden border-3" :sizes="item.image.sizes" width="1000">
-          <div class="Overlay flex-center p-24 cubic-bezier hover-pointer">
+          <div class="Overlay flex-center p-24 cubic-bezier hover-pointer" @click="onClick(item)">
             <h3 class="text-center white">
               {{item.name}}
             </h3>
@@ -32,19 +32,15 @@
         required: true
       }
     },
-    computed: {}
+    methods: {
+      onClick({collectionId}) {
+        this.$router.push({path: `/collections/${collectionId}`})
+      }
+    }
   }
 </script>
 
 <style scoped lang="less">
-  .CardList {
-
-  }
-
-  .CardItem {
-
-  }
-
   .Overlay {
     background: rgba(0, 0, 0, 0.5);
 

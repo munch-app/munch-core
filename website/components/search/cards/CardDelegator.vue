@@ -56,7 +56,23 @@
   />
 
   <!-- Location Cards -->
+  <search-card-location-banner
+    class="Card no-select Initial FullWidth"
+    v-else-if="isCardId('LocationBanner_2018-12-10')"
+    :card="card"
+  />
+  <search-card-location-area
+    class="Card no-select Initial FullWidth"
+    v-else-if="isCardId('LocationArea_2018-12-10')"
+    :card="card"
+  />
 
+  <!-- Collection Cards -->
+  <search-card-collection-header
+    class="Card no-select Initial FullWidth"
+    v-else-if="isCardId('CollectionHeader_2018-12-11')"
+    :card="card"
+  />
 
   <div v-else style="display: none"></div>
 </template>
@@ -75,6 +91,9 @@
   import SearchCardHomeRecentPlace from "./home/SearchCardHomeRecentPlace";
   import SearchCardHomePopularPlace from "./home/SearchCardHomePopularPlace";
   import SearchCardHomeAwardCollection from "./home/SearchCardHomeAwardCollection";
+  import SearchCardLocationBanner from "./location/SearchCardLocationBanner";
+  import SearchCardLocationArea from "./location/SearchCardLocationArea";
+  import SearchCardCollectionHeader from "./collection/SearchCardCollectionHeader";
 
   function isElementInViewport(el) {
     const topBar = 56 + 48 // Top Bar
@@ -93,6 +112,9 @@
   export default {
     name: "CardDelegator",
     components: {
+      SearchCardCollectionHeader,
+      SearchCardLocationArea,
+      SearchCardLocationBanner,
       SearchCardHomeAwardCollection,
       SearchCardHomePopularPlace,
       SearchCardHomeRecentPlace,

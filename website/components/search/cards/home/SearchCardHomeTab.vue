@@ -45,7 +45,18 @@
     },
     methods: {
       onClick({id}) {
+        switch (id) {
+          case "EatBetween":
+            break
 
+          case "Location":
+            this.$router.push({path: '/locations'})
+            break
+
+          case "Feed":
+            this.$router.push({path: '/feed/images'})
+            break
+        }
       }
     }
   }
@@ -53,11 +64,11 @@
 
 <style scoped lang="less">
   .FeatureList {
-    height: 80px !important;
+    height: 88px;
   }
 
   .FeatureCard {
-    height: 80px;
+    height: 88px;
     width: 180px;
 
     padding: 24px;

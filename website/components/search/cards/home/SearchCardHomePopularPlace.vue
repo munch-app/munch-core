@@ -1,14 +1,27 @@
 <template>
-  <div>
-    <h2 class="mt-24">Popular Places in Singapore</h2>
-    <p class="b-a75">Where the cool kids and food geeks go.</p>
+  <div class="mt-24">
+    <div class="flex-between flex-justify-center">
+      <div>
+        <h2>Popular Places in Singapore</h2>
+        <p class="b-a75">Where the cool kids and food geeks go.</p>
+      </div>
 
-    <horizontal-scroll-view class="CardList PlaceList container-remove-gutter mt-24" :items="card.places" :map-key="a => a.placeId"
+      <div class="none tablet-b desktop-b">
+        <button class="secondary-outline w-100" @click="onMore">Show all popular places</button>
+      </div>
+    </div>
+
+    <horizontal-scroll-view class="CardList PlaceList container-remove-gutter mt-24" :items="card.places"
+                            :map-key="a => a.placeId"
                             :padding="24">
       <template slot-scope="{item}">
         <place-card class="CardItem" :place="item"/>
       </template>
     </horizontal-scroll-view>
+
+    <div class="none mobile-b mt-24">
+      <button class="secondary-outline w-100" @click="onMore">Show all popular places</button>
+    </div>
   </div>
 </template>
 
@@ -23,6 +36,12 @@
       card: {
         type: Object,
         required: true
+      }
+    },
+    methods: {
+      onMore() {
+        const collectionId = this.card.collection.collectionId
+        this.$router.push({path: `/collections/${collectionId}`})
       }
     }
   }

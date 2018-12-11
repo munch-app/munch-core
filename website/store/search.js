@@ -90,6 +90,11 @@ function start({query, type}) {
  */
 export const actions = {
   feature({commit, state}, query) {
+    // Technically filter, sort ignored, but present to respect SearchQuery constraints
+    query.sort = query.sort || {}
+    query.filter = query.filter || {location: {type: 'Anywhere', points: [], areas: []}, tags: []}
+    if (typeof window !== 'undefined') window.scrollTo(0, 0)
+
     start.call(this, {query, type: 'search'})
 
     return this.$axios.$post(`/api/search?page=${state.page}`, state.query)
@@ -106,7 +111,7 @@ export const actions = {
    */
   start({commit, state}, query) {
     if (!query) query = this.state.filter.query
-    if (window) window.scrollTo(0, 0)
+    if (typeof window !== 'undefined') window.scrollTo(0, 0)
 
     start.call(this, {query, type: 'search'})
     return this.$axios.$post(`/api/search?page=${state.page}`, state.query)
