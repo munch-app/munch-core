@@ -1,5 +1,7 @@
 package munch.api.search.cards;
 
+import munch.api.search.filter.FilterTag;
+
 import java.util.List;
 
 /**
@@ -10,49 +12,20 @@ import java.util.List;
  */
 public final class SearchSuggestedTagCard implements SearchCard {
 
-    private String locationName;
-    private List<Tag> tags;
+    private final String locationName;
+    private final List<FilterTag> tags;
+
+    public SearchSuggestedTagCard(String locationName, List<FilterTag> tags) {
+        this.locationName = locationName;
+        this.tags = tags;
+    }
 
     public String getLocationName() {
         return locationName;
     }
 
-    public void setLocationName(String locationName) {
-        this.locationName = locationName;
-    }
-
-    public List<Tag> getTags() {
+    public List<FilterTag> getTags() {
         return tags;
-    }
-
-    public void setTags(List<Tag> tags) {
-        this.tags = tags;
-    }
-
-    public static class Tag {
-        private String name;
-        private long count;
-
-        public Tag(String name, long count) {
-            this.name = name;
-            this.count = count;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public long getCount() {
-            return count;
-        }
-
-        public void setCount(long count) {
-            this.count = count;
-        }
     }
 
     @Override

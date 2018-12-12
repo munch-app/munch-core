@@ -7,7 +7,7 @@
       <horizontal-scroll-view class="TagList" :items="card.tags" :map-key="i => i.name" :container="false"
                               :padding="18">
         <template slot-scope="{item}">
-          <div class="Tag text text-center bg-white border-4 hover-pointer" @click="onClick(item.name)">
+          <div class="Tag text text-center bg-white border-4 hover-pointer" @click="onClick(item)">
             <div class="Name text-ellipsis-1l">{{item.name}}</div>
             <div class="Count text-ellipsis-1l">{{item.count}} places</div>
           </div>

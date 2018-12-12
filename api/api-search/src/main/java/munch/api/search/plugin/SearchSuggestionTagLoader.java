@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import munch.api.search.SearchRequest;
 import munch.api.search.cards.SearchSuggestedTagCard;
 import munch.api.search.elastic.ElasticQueryUtils;
+import munch.api.search.filter.FilterTag;
+import munch.api.search.filter.FilterTagDatabase;
 import munch.data.client.ElasticClient;
 import munch.data.client.TagClient;
 import munch.data.tag.Tag;
@@ -15,6 +17,7 @@ import javax.inject.Singleton;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -27,12 +30,14 @@ import java.util.stream.Collectors;
 public final class SearchSuggestionTagLoader implements SearchCardPlugin {
 
     private final ElasticClient elasticClient;
+    private final FilterTagDatabase tagDatabase;
 
     private final Map<String, Tag> tags = new HashMap<>();
 
     @Inject
-    public SearchSuggestionTagLoader(TagClient tagClient, ElasticClient elasticClient) {
+    public SearchSuggestionTagLoader(TagClient tagClient, ElasticClient elasticClient, FilterTagDatabase tagDatabase) {
         this.elasticClient = elasticClient;
+        this.tagDatabase = tagDatabase;
 
         tagClient.iterator().forEachRemaining(tag -> {
             switch (tag.getType()) {
@@ -54,18 +59,18 @@ public final class SearchSuggestionTagLoader implements SearchCardPlugin {
         Map<String, Integer> tagMap = aggTags(request.getRequest());
         if (tagMap.isEmpty()) return List.of();
 
-        List<SearchSuggestedTagCard.Tag> tags = tagMap.entrySet().stream()
+        List<FilterTag> tags = tagMap.entrySet().stream()
                 .filter(this::filter)
                 .sorted((o1, o2) -> Integer.compare(o2.getValue(), o1.getValue()))
-                .map(e -> new SearchSuggestedTagCard.Tag(e.getKey(), e.getValue()))
+                .map(e -> tagDatabase.getTag(e.getKey(), e.getValue()))
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
         if (tags.size() < 4) return List.of();
 
         // Only return if more then 3
-        SearchSuggestedTagCard card = new SearchSuggestedTagCard();
-        card.setLocationName(request.getRequest().getLocationName(null));
-        card.setTags(tags);
+        String locationName = request.getRequest().getLocationName(null);
+        SearchSuggestedTagCard card = new SearchSuggestedTagCard(locationName, tags);
         return of(20, card);
     }
 
@@ -90,7 +95,7 @@ public final class SearchSuggestionTagLoader implements SearchCardPlugin {
     private static JsonNode aggTags() {
         ObjectNode tag = JsonUtils.createObjectNode();
         tag.putObject("terms")
-                .put("field", "tags.name")
+                .put("field", "tags.tagId")
                 .put("size", 200);
         return tag;
     }

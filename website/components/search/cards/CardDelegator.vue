@@ -1,75 +1,75 @@
 <template>
   <search-card-place
-    class="Card no-select Initial Pointer"
+    class="Card Initial Pointer"
     :class="{WithMap: showsMap}"
     v-if="isCardId('Place_2018-12-29')"
     :card="card"
   />
   <search-card-area-cluster-list
-    class="Card no-select Initial FullWidth"
+    class="Card Initial FullWidth"
     v-else-if="isCardId('AreaClusterList_2018-06-21')"
     :areas="card.areas"
   />
   <search-card-header
-    class="Card no-select Initial FullWidth NoBottom"
+    class="Card Initial FullWidth NoBottom"
     v-else-if="isCardId('Header_2018-11-29')"
     :card="card"
   />
   <search-card-navigation-header
-    class="Card no-select Initial FullWidth"
+    class="Card Initial FullWidth"
     v-else-if="isCardId('NavigationHeader_2018-11-02')"
     :card="card"
   />
   <search-card-no-result
-    class="Card no-select Initial FullWidth"
+    class="Card Initial FullWidth"
     v-else-if="isCardId('NoResult_2017-12-08')"
   />
   <search-card-area-cluster-header
-    class="Card no-select Initial FullWidth"
+    class="Card Initial FullWidth"
     v-else-if="isCardId('AreaClusterHeader_2018-06-21')"
     :area="card.area"
   />
   <search-card-suggestion-tag
-    class="Card no-select Initial FullWidth"
+    class="Card Initial FullWidth"
     v-else-if="isCardId('SuggestedTag_2018-05-11')"
     :card="card"
   />
   <!-- Home Cards -->
   <search-card-home-tab
-    class="Card no-select Initial FullWidth"
+    class="Card Initial FullWidth"
     v-else-if="isCardId('HomeTab_2018-11-29')"
   />
   <search-card-home-recent-place
-    class="Card no-select Initial FullWidth"
+    class="Card Initial FullWidth"
     v-else-if="isCardId('HomeRecentPlace_2018-12-10')"
     :card="card"
   />
   <search-card-home-popular-place
-    class="Card no-select Initial FullWidth"
+    class="Card Initial FullWidth"
     v-else-if="isCardId('HomePopularPlace_2018-12-10')"
     :card="card"
   />
   <search-card-home-award-collection
-    class="Card no-select Initial FullWidth"
+    class="Card Initial FullWidth"
     v-else-if="isCardId('HomeAwardCollection_2018-12-10')"
     :card="card"
   />
 
   <!-- Location Cards -->
   <search-card-location-banner
-    class="Card no-select Initial FullWidth"
+    class="Card Initial FullWidth"
     v-else-if="isCardId('LocationBanner_2018-12-10')"
     :card="card"
   />
   <search-card-location-area
-    class="Card no-select Initial FullWidth"
+    class="Card Initial FullWidth"
     v-else-if="isCardId('LocationArea_2018-12-10')"
     :card="card"
   />
 
   <!-- Collection Cards -->
   <search-card-collection-header
-    class="Card no-select Initial FullWidth"
+    class="Card Initial FullWidth"
     v-else-if="isCardId('CollectionHeader_2018-12-11')"
     :card="card"
   />
