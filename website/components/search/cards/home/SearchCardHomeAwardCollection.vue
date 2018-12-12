@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2 class="mt-24">Award-Winning Places</h2>
+    <h2 class="mt-24">Award Winning Places</h2>
     <p class="b-a75">If trophies were edible, you'd have em' at theses joints.</p>
 
     <horizontal-scroll-view class="CardList Square container-remove-gutter mt-24" :items="card.collections"

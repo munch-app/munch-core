@@ -103,7 +103,7 @@
 
         return [
           ...priceTax,
-          ...this.place.tags
+          ...this.place.tags || [{name: "Restaurant", tagId: '216e7264-f4c9-40a4-86a2-d49793fb49c9', type: 'Establishment'}]
         ]
       },
       distance() {

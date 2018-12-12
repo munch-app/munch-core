@@ -2,14 +2,13 @@ package munch.api.search.plugin;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import munch.api.search.SearchQuery;
 import munch.api.search.SearchRequest;
 import munch.api.search.cards.SearchSuggestedTagCard;
 import munch.api.search.elastic.ElasticQueryUtils;
 import munch.api.search.filter.FilterTag;
 import munch.api.search.filter.FilterTagDatabase;
 import munch.data.client.ElasticClient;
-import munch.data.client.TagClient;
-import munch.data.tag.Tag;
 import munch.restful.core.JsonUtils;
 
 import javax.inject.Inject;
@@ -27,56 +26,41 @@ import java.util.stream.Collectors;
  * Project: munch-core
  */
 @Singleton
-public final class SearchSuggestionTagLoader implements SearchCardPlugin {
+public final class SearchSuggestionTagPlugin implements SearchCardPlugin {
 
     private final ElasticClient elasticClient;
     private final FilterTagDatabase tagDatabase;
 
-    private final Map<String, Tag> tags = new HashMap<>();
-
     @Inject
-    public SearchSuggestionTagLoader(TagClient tagClient, ElasticClient elasticClient, FilterTagDatabase tagDatabase) {
+    public SearchSuggestionTagPlugin(ElasticClient elasticClient, FilterTagDatabase tagDatabase) {
         this.elasticClient = elasticClient;
         this.tagDatabase = tagDatabase;
-
-        tagClient.iterator().forEachRemaining(tag -> {
-            switch (tag.getType()) {
-                case Amenities:
-                case Cuisine:
-                    this.tags.put(tag.getName().toLowerCase(), tag);
-
-            }
-        });
     }
 
     @Override
     public List<Position> load(Request request) {
-        if (!request.isFirstPage()) return List.of();
-        if (!request.isFullPage()) return List.of();
-        if (!request.isNatural()) return List.of();
-        if (request.getRequest().isBetween()) return List.of();
+        if (!request.getRequest().isFeature(SearchQuery.Feature.Search)) return null;
+
+        if (!request.isFirstPage()) return null;
+        if (!request.isFullPage()) return null;
+        if (!request.isNatural()) return null;
+        if (request.getRequest().isBetween()) return null;
 
         Map<String, Integer> tagMap = aggTags(request.getRequest());
-        if (tagMap.isEmpty()) return List.of();
+        if (tagMap.isEmpty()) return null;
 
         List<FilterTag> tags = tagMap.entrySet().stream()
-                .filter(this::filter)
-                .sorted((o1, o2) -> Integer.compare(o2.getValue(), o1.getValue()))
+                .filter(e -> e.getValue() >= 10)
                 .map(e -> tagDatabase.getTag(e.getKey(), e.getValue()))
                 .filter(Objects::nonNull)
+                .sorted((o1, o2) -> Long.compare(o2.getCount(), o1.getCount()))
                 .collect(Collectors.toList());
 
-        if (tags.size() < 4) return List.of();
+        if (tags.size() < 4) return null;
 
         // Only return if more then 3
         String locationName = request.getRequest().getLocationName(null);
-        SearchSuggestedTagCard card = new SearchSuggestedTagCard(locationName, tags);
-        return of(20, card);
-    }
-
-    private boolean filter(Map.Entry<String, Integer> entry) {
-        if (entry.getValue() < 10) return false;
-        return tags.containsKey(entry.getKey().toLowerCase());
+        return of(20, new SearchSuggestedTagCard(locationName, tags));
     }
 
     private Map<String, Integer> aggTags(SearchRequest request) {

@@ -26,7 +26,7 @@ public final class SearchModule extends ApiServiceModule {
         loaderBinder.addBinding().to(SearchNoResultPlugin.class);
         loaderBinder.addBinding().to(SearchNoLocationPlugin.class);
         loaderBinder.addBinding().to(SearchHeaderPlugin.class);
-        loaderBinder.addBinding().to(SearchSuggestionTagLoader.class);
+        loaderBinder.addBinding().to(SearchSuggestionTagPlugin.class);
         loaderBinder.addBinding().to(SearchBetweenLoader.class);
 
         loaderBinder.addBinding().to(SearchHomeTabPlugin.class);

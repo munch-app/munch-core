@@ -56,7 +56,7 @@
             image: require('~/assets/img/search/home-tab-feed.jpg')
           },
           {
-            name: 'Discover by Neighborhood',
+            name: 'Discover by Neighbourhood',
             id: 'Location',
             image: require('~/assets/img/search/home-tab-location.jpg')
           },
@@ -99,7 +99,7 @@
   }
 
   .Overlay {
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.5);
     padding: 24px;
   }
 </style>
