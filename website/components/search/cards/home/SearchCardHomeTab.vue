@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>{{salutation}}, {{name}}. Find the perfect spot on Munch.</h2>
+    <h2>{{salutation}}, {{name}}. Feeling hungry?</h2>
     <p class="b-a75" v-if="!isLoggedIn">(Not Samantha? Create an account <span @click="onCreateAccount" class="p500 hover-pointer">here</span>.)</p>
 
     <horizontal-scroll-view class="FeatureList container-remove-gutter mt-16" :items="features" :map-key="a => a.id"
@@ -9,7 +9,7 @@
         <div class="FeatureCard border-3 overflow-hidden hover-pointer" @click="onClick(item)"
              :style="{backgroundImage: `url('${item.image}')`}">
           <div class="Overlay wh-100 flex-center text-center">
-            <h4 class="white">{{item.name}}</h4>
+            <h4 class="TabName white">{{item.name}}</h4>
           </div>
         </div>
       </template>
@@ -46,17 +46,17 @@
         isBetween: false,
         features: [
           {
-            name: 'Dining with Friends',
+            name: 'EatBetween',
             id: 'EatBetween',
             image: require('~/assets/img/search/home-tab-between.jpg')
           },
           {
-            name: 'Food Inspiration',
+            name: 'Inspiration',
             id: 'Feed',
             image: require('~/assets/img/search/home-tab-feed.jpg')
           },
           {
-            name: 'Discover by Neighbourhood',
+            name: 'Neighbourhoods',
             id: 'Location',
             image: require('~/assets/img/search/home-tab-location.jpg')
           },
@@ -99,7 +99,11 @@
   }
 
   .Overlay {
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.6);
     padding: 24px;
+  }
+
+  .TabName {
+    font-size: 20px;
   }
 </style>

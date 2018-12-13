@@ -186,8 +186,8 @@
   }
 
   .HeartIcon {
-    width: 32px;
-    height: 32px;
-    padding: 6px;
+    width: 40px;
+    height: 40px;
+    padding: 8px;
   }
 </style>
