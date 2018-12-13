@@ -17,7 +17,7 @@
   import HorizontalScrollView from "../../core/HorizontalScrollView";
 
   export default {
-    name: "SearchCardNavigationHeader",
+    name: "SearchCardBetweenHeader",
     components: {HorizontalScrollView},
     props: {
       card: {

@@ -9,13 +9,13 @@ import java.util.stream.Collectors;
  * Time: 6:04 AM
  * Project: munch-core
  */
-public final class SearchNavigationHeader implements SearchCard {
+public final class SearchBetweenHeaderCard implements SearchCard {
 
     private String title;
     private String description;
     private List<Anchor> anchors;
 
-    public SearchNavigationHeader(List<SearchHeaderCard> headerCards) {
+    public SearchBetweenHeaderCard(List<SearchHeaderCard> headerCards) {
         this.anchors = headerCards.stream()
                 .map(card -> {
                     Anchor anchor = new Anchor();
@@ -51,7 +51,7 @@ public final class SearchNavigationHeader implements SearchCard {
 
     @Override
     public String getCardId() {
-        return "NavigationHeader_2018-11-02";
+        return "BetweenHeader_2018-12-13";
     }
 
     @Override

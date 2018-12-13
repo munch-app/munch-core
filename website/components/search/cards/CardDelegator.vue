@@ -1,39 +1,47 @@
 <template>
+  <!-- Default Cards -->
   <search-card-place
     class="Card Initial Pointer"
     :class="{WithMap: showsMap}"
     v-if="isCardId('Place_2018-12-29')"
     :card="card"
   />
-  <search-card-area-cluster-list
-    class="Card Initial FullWidth"
-    v-else-if="isCardId('AreaClusterList_2018-06-21')"
-    :areas="card.areas"
-  />
   <search-card-header
     class="Card Initial FullWidth NoBottom"
     v-else-if="isCardId('Header_2018-11-29')"
-    :card="card"
-  />
-  <search-card-navigation-header
-    class="Card Initial FullWidth"
-    v-else-if="isCardId('NavigationHeader_2018-11-02')"
     :card="card"
   />
   <search-card-no-result
     class="Card Initial FullWidth"
     v-else-if="isCardId('NoResult_2017-12-08')"
   />
+
+  <!-- Area Cluster Card -->
+  <search-card-area-cluster-list
+    class="Card Initial FullWidth"
+    v-else-if="isCardId('AreaClusterList_2018-06-21')"
+    :areas="card.areas"
+  />
   <search-card-area-cluster-header
     class="Card Initial FullWidth"
     v-else-if="isCardId('AreaClusterHeader_2018-06-21')"
     :area="card.area"
   />
+
+  <!-- Suggestion Card -->
   <search-card-suggestion-tag
     class="Card Initial FullWidth"
     v-else-if="isCardId('SuggestedTag_2018-05-11')"
     :card="card"
   />
+
+  <!-- Between Cards -->
+  <search-card-between-header
+    class="Card Initial FullWidth"
+    v-else-if="isCardId('BetweenHeader_2018-12-13')"
+    :card="card"
+  />
+
   <!-- Home Cards -->
   <search-card-home-tab
     class="Card Initial FullWidth"
@@ -86,7 +94,7 @@
   import SearchCardNoResult from "./SearchCardNoResult";
   import SearchCardAreaClusterHeader from "./SearchCardAreaClusterHeader";
   import SearchCardSuggestionTag from "./SearchCardSuggestionTag";
-  import SearchCardNavigationHeader from "./SearchCardNavigationHeader";
+  import SearchCardBetweenHeader from "./SearchCardBetweenHeader";
   import SearchCardHomeTab from "./home/SearchCardHomeTab";
   import SearchCardHomeRecentPlace from "./home/SearchCardHomeRecentPlace";
   import SearchCardHomePopularPlace from "./home/SearchCardHomePopularPlace";
@@ -119,7 +127,7 @@
       SearchCardHomePopularPlace,
       SearchCardHomeRecentPlace,
       SearchCardHomeTab,
-      SearchCardNavigationHeader,
+      SearchCardBetweenHeader,
       SearchCardSuggestionTag,
       SearchCardAreaClusterHeader,
       SearchCardNoResult, SearchCardHeader, SearchCardAreaClusterList, SearchCardPlace

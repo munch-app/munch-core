@@ -1,7 +1,7 @@
 package munch.api.search.plugin;
 
 import munch.api.search.cards.SearchHeaderCard;
-import munch.api.search.cards.SearchNavigationHeader;
+import munch.api.search.cards.SearchBetweenHeaderCard;
 
 import javax.inject.Singleton;
 import java.util.List;
@@ -26,7 +26,7 @@ public final class SearchBetweenLoader implements SearchCardPlugin {
                 .collect(Collectors.toList());
         if (headers.isEmpty()) return null;
 
-        SearchNavigationHeader card = new SearchNavigationHeader(headers);
+        SearchBetweenHeaderCard card = new SearchBetweenHeaderCard(headers);
         card.setTitle("Ideal EatBetween Locations");
         return of(-1, card);
     }
