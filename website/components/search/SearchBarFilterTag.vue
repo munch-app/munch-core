@@ -79,7 +79,7 @@
 
     @media (min-width: 768px) {
       // 104 Height of nav bar
-      max-height: calc(90vh - 104px - 64px);
+      /*max-height: calc(90vh - 104px - 64px);*/
     }
   }
 

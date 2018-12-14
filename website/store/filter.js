@@ -226,9 +226,13 @@ export const mutations = {
         break
 
       case 'Cuisine':
-      case 'Amenities':
       case 'Establishment':
         _.remove(state.query.filter.tags, t => t.type === state.selected)
+        break
+
+      case 'Amenities':
+        _.remove(state.query.filter.tags, t => t.type === 'Amenities')
+        _.remove(state.query.filter.tags, t => t.type === 'Requirement')
         break
 
       case 'Location':

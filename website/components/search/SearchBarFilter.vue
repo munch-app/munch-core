@@ -43,7 +43,7 @@
 
         const cuisine = _.filter(query.filter.tags, t => t.type === 'Cuisine')
         const establishment = _.filter(query.filter.tags, t => t.type === 'Establishment')
-        const amenities = _.filter(query.filter.tags, t => t.type === 'Amenities')
+        const amenities = _.filter(query.filter.tags, t => t.type === 'Amenities' || t.type === 'Requirement')
         const timing = _.filter(query.filter.tags, t => t.type === 'Timing')
 
         const filters =

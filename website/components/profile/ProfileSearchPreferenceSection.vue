@@ -24,11 +24,11 @@
           {
             tagId: 'abb22d3d-7d23-4677-b4ef-a3e09f2f9ada',
             name: 'Halal',
-            type: 'Amenities'
+            type: 'Requirement'
           }, {
             tagId: 'fdf77b3b-8f90-419f-b711-dd25f97046fe',
             name: 'Vegetarian Options',
-            type: 'Amenities'
+            type: 'Requirement'
           }
         ]
       }
