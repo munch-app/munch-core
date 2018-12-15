@@ -62,7 +62,7 @@
     padding: 8px 24px;
     margin-left: -16px;
 
-    overflow-x: scroll;
+    overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
 

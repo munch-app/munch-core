@@ -2,10 +2,12 @@
   <div class="PriceView">
     <div class="PriceButtonList flex">
       <!-- If click too quickly it will use the old '$' -->
-      <div class="PriceButton hover-pointer" v-for="name in ['$','$$','$$$']" :key="name" @click="toggle(name)" :class="{
+      <div class="PriceButton hover-pointer flex-center" v-for="name in ['$','$$','$$$']" :key="name" @click="toggle(name)" :class="{
            'bg-p500 white': isSelectedPrice(name),
-           'bg-peach100 b-a75': !isSelectedPrice(name)}">
-        {{name}}
+           'bg-whisper100 b-a75': !isSelectedPrice(name)}">
+        <span>
+          {{name}}
+        </span>
       </div>
     </div>
 
@@ -83,26 +85,26 @@
 
 <style scoped lang="less">
   .PriceButtonList {
-    overflow-x: scroll;
+    overflow-x: auto;
     -webkit-overflow-scrolling: touch;
 
-    margin-left: -8px;
-    margin-right: -8px;
+    margin-left: -9px;
+    margin-right: -9px;
   }
 
   .PriceButton {
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 600;
 
     text-align: center;
     white-space: nowrap;
 
     border-radius: 3px;
-    line-height: 28px;
-    height: 28px;
-    width: 72px;
 
-    margin: 0 8px;
+    height: 32px;
+    width: 80px;
+
+    margin: 0 9px;
   }
 
   .Graph {
