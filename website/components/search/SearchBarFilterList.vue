@@ -14,12 +14,14 @@
 
         <div class="Group Cuisine" :class="{'Selected': selected === 'Cuisine'}">
           <h2>Cuisine</h2>
-          <search-bar-filter-tag type="Cuisine"/>
+          <div class="ScrollList">
+            <search-bar-filter-tag type="Cuisine"/>
+          </div>
         </div>
 
         <div class="Group Amenities" :class="{'Selected': selected === 'Amenities'}">
           <h2>Amenities</h2>
-          <div>
+          <div class="ScrollList">
             <h4>Requirements</h4>
             <search-bar-filter-tag type="Requirement"/>
 
@@ -30,7 +32,9 @@
 
         <div class="Group Establishments" :class="{'Selected': selected === 'Establishment'}">
           <h2>Establishments</h2>
-          <search-bar-filter-tag type="Establishment"/>
+          <div class="ScrollList">
+            <search-bar-filter-tag type="Establishment"/>
+          </div>
         </div>
 
         <div class="Group Timing" :class="{'Selected': selected === 'Timing'}">
@@ -167,14 +171,14 @@
       margin-top: 8px;
     }
 
+    .ScrollList {
+      overflow-y: auto;
+      max-height: calc(90vh - 104px - 64px);
+    }
+
     h2,
     .Group {
       display: none;
-    }
-
-    .Group {
-      overflow-y: auto;
-      max-height: calc(90vh - 104px - 64px);
     }
 
     .Group.Selected {

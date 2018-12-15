@@ -74,15 +74,6 @@
 </script>
 
 <style scoped lang="less">
-  .TagColumn {
-    overflow-y: auto;
-
-    @media (min-width: 768px) {
-      // 104 Height of nav bar
-      /*max-height: calc(90vh - 104px - 64px);*/
-    }
-  }
-
   .TagRow {
     display: flex;
     padding: 8px 0;

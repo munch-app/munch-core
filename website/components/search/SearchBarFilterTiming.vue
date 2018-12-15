@@ -1,17 +1,10 @@
 <template>
   <div class="TimingCollectionContainer">
     <div class="TimingCollection flex">
-      <div class="TimingCell hover-pointer" @click="toggleType('OpenNow')"
+      <div class="TimingCell hover-pointer" v-for="tag in timings" :key="tag.tagId" @click="toggle(tag)"
            :class="{
-              'bg-p500 white': isSelectedTiming('OpenNow'),
-              'bg-whisper100 b-a75': !isSelectedTiming('OpenNow')
-           }">
-        Open Now
-      </div>
-      <div class="TimingCell hover-pointer" v-for="tag in timings" :key="tag.tagId" @click="toggleTag(tag)"
-           :class="{
-              'bg-p500 white': isSelectedTag(tag),
-              'bg-whisper100 b-a75': !isSelectedTag(tag)}">
+              'bg-p500 white': isSelected(tag),
+              'bg-whisper100 b-a75': !isSelected(tag)}">
         {{tag.name}}
       </div>
       <div class="TimingCellRight"></div>
@@ -21,12 +14,15 @@
 
 <script>
   import {mapGetters} from 'vuex'
+  import HorizontalScrollView from "../core/HorizontalScrollView";
 
   export default {
     name: "SearchBarFilterTiming",
+    components: {HorizontalScrollView},
     data() {
       return {
         timings: [
+          {name: 'Open Now'},
           {name: 'Breakfast', type: 'Timing', tagId: 'f749ab1a-358c-4ba2-adb8-04a3accf46cb'},
           {name: 'Lunch', type: 'Timing', tagId: '1be094a8-b9f5-43ca-9af7-f0ae2d87afb2'},
           {name: 'Dinner', type: 'Timing', tagId: '32d11ac3-afb2-4e1e-a798-97771958294c'},
@@ -38,12 +34,20 @@
       ...mapGetters('filter', ['isSelectedTiming', 'isSelectedTag'])
     },
     methods: {
-      toggleType(type) {
-        this.$store.dispatch('filter/timings', type)
+      toggle(tag) {
+        if (tag.tagId) {
+          this.$store.dispatch('filter/tag', tag)
+        } else {
+          this.$store.dispatch('filter/timings', 'OpenNow')
+        }
       },
-      toggleTag(tag) {
-        this.$store.dispatch('filter/tag', tag)
-      }
+      isSelected(tag) {
+        if (tag.tagId) {
+          return this.isSelectedTag(tag)
+        } else {
+          return this.isSelectedTiming('OpenNow')
+        }
+      },
     }
   }
 </script>
