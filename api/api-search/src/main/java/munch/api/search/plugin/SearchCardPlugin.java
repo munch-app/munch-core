@@ -3,14 +3,17 @@ package munch.api.search.plugin;
 import munch.api.search.SearchQuery;
 import munch.api.search.SearchRequest;
 import munch.api.search.cards.SearchCard;
+import munch.api.search.cards.SearchPlaceCard;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Search Card Loader
@@ -198,56 +201,44 @@ public interface SearchCardPlugin {
      */
     @Singleton
     final class Runner {
+        private static final Comparator<Position> COMPARATOR;
 
+        static {
+            Comparator<Position> comparator = Comparator.comparingInt(o -> o.index);
+            comparator = comparator.thenComparing(o -> !(o.card instanceof SearchPlaceCard));
+            comparator = comparator.thenComparing(o -> o.card.getCardId());
+            COMPARATOR = comparator;
+        }
 
-        private final Set<SearchCardPlugin> loaders;
+        private final Set<SearchCardPlugin> plugins;
 
         @Inject
-        public Runner(Set<SearchCardPlugin> loaders) {
-            this.loaders = loaders;
+        public Runner(Set<SearchCardPlugin> plugins) {
+            this.plugins = plugins;
         }
 
         /**
          * @param cards         to inject into
          * @param searchRequest SearchRequest
          */
-        public void run(List<SearchCard> cards, SearchRequest searchRequest) {
+        public List<SearchCard> run(List<SearchCard> cards, SearchRequest searchRequest) {
             Request request = new Request(cards, searchRequest);
 
-            // Negative = Placed above content
-            List<Position> negatives = new ArrayList<>();
+            List<Position> positions = new ArrayList<>();
 
-            // Positive = Placed in content
-            List<Position> positives = new ArrayList<>();
-
-            // Collect into Negatives & Positives
-            for (SearchCardPlugin loader : loaders) {
-                List<Position> positions = loader.load(request);
-                if (positions == null) continue;
-
-                for (Position position : positions) {
-                    if (position.index < 0) negatives.add(position);
-                    else positives.add(position);
-                }
+            for (int i = 0; i < cards.size(); i++) {
+                positions.add(new Position(cards.get(i), i));
             }
 
-            // Put from last first so that the index number won't be corrupted
-            positives.sort((o1, o2) -> Integer.compare(o2.index, o1.index));
-            for (Position positive : positives) {
-                int index = positive.index;
-                if (index < cards.size()) {
-                    cards.add(index, positive.card);
-                } else {
-                    cards.add(positive.card);
-                }
+            for (SearchCardPlugin loader : plugins) {
+                List<Position> loaded = loader.load(request);
+                if (loaded != null) positions.addAll(loaded);
             }
 
-            // Put from last first so that it will be in order
-            negatives.sort((o1, o2) -> Integer.compare(o2.index, o1.index));
-            for (Position negative : negatives) {
-                cards.add(0, negative.card);
-            }
+            return positions.stream()
+                    .sorted(COMPARATOR)
+                    .map(position -> position.card)
+                    .collect(Collectors.toList());
         }
-
     }
 }

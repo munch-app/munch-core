@@ -1,7 +1,7 @@
 package munch.api.search.plugin.home;
 
 import munch.api.search.SearchQuery;
-import munch.api.search.cards.SearchHomeNearbyCard;
+import munch.api.search.cards.SearchHomeTabCard;
 import munch.api.search.plugin.SearchCardPlugin;
 
 import javax.inject.Singleton;
@@ -21,6 +21,6 @@ public final class SearchHomeTabPlugin implements SearchCardPlugin {
         if (!request.isFirstPage()) return null;
         if (!request.getRequest().isFeature(SearchQuery.Feature.Home)) return null;
 
-        return of(-1000, new SearchHomeNearbyCard());
+        return of(-1000, new SearchHomeTabCard());
     }
 }

@@ -1,5 +1,10 @@
 package munch.api.search;
 
+import catalyst.airtable.AirtableModule;
+import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagement;
+import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagementClientBuilder;
+import com.amazonaws.services.simplesystemsmanagement.model.GetParameterRequest;
+import com.amazonaws.services.simplesystemsmanagement.model.GetParameterResult;
 import com.google.inject.multibindings.Multibinder;
 import munch.api.ApiServiceModule;
 import munch.api.search.cards.SearchPlaceCard;
@@ -29,6 +34,8 @@ public final class SearchModule extends ApiServiceModule {
         loaderBinder.addBinding().to(SearchSuggestionTagPlugin.class);
         loaderBinder.addBinding().to(SearchBetweenLoader.class);
 
+        loaderBinder.addBinding().to(SearchHomeDTJEPlugin.class);
+
         loaderBinder.addBinding().to(SearchHomeTabPlugin.class);
         loaderBinder.addBinding().to(SearchHomeNearbyPlugin.class);
         loaderBinder.addBinding().to(SearchHomeRecentPlacePlugin.class);
@@ -46,5 +53,16 @@ public final class SearchModule extends ApiServiceModule {
         addService(SearchFilterService.class);
 
         addCleaner(SearchPlaceCard.Cleaner.class);
+
+        install(new AirtableModule(getAirtableKey()));
+    }
+
+    private String getAirtableKey() {
+        AWSSimpleSystemsManagement client = AWSSimpleSystemsManagementClientBuilder.defaultClient();
+        GetParameterResult result = client.getParameter(new GetParameterRequest()
+                .withName("munch-corpus.AirtableKey")
+                .withWithDecryption(true));
+
+        return result.getParameter().getValue();
     }
 }

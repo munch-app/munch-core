@@ -48,7 +48,8 @@ public final class SearchHomePopularPlacePlugin implements SearchCardPlugin {
         List<Place> places = items.stream().map(item -> placeMap.get(item.getPlaceId()))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
+
         SearchHomePopularPlaceCard card = new SearchHomePopularPlaceCard(collection, places);
-        return of(-10, card);
+        return of(-7, card);
     }
 }

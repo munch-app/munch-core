@@ -49,7 +49,7 @@ public final class SearchDelegator {
         places = tasteClient.sort(places, request.getLocalTime());
 
         List<SearchCard> cards = cardParser.parse(places, request);
-        cardInjector.run(cards, request);
+        cards = cardInjector.run(cards, request);
         return cards;
     }
 
