@@ -1,12 +1,15 @@
 <template>
-  <div class="PlaceTagList flex-wrap">
-    <div class="text Tag bg-whisper100 border-3 hover-pointer" v-for="tag in tagMax" :key="tag.tagId" @click="onClick(tag)">
+  <div class="PlaceTagList flex-wrap" v-if="filteredTag.length > 0">
+    <div class="text Tag bg-whisper100 border-3 hover-pointer" v-for="tag in filteredTag" :key="tag.tagId"
+         @click="onClick(tag)">
       {{tag.name}}
     </div>
   </div>
 </template>
 
 <script>
+  import _ from 'lodash'
+
   export default {
     name: "PlaceTagList",
     props: {
@@ -14,15 +17,11 @@
         required: true,
         type: Array
       },
-      max: {
-        required: false,
-        type: Number,
-        default: () => 5
-      },
     },
     computed: {
-      tagMax() {
-        return this.tags.slice(0, this.max)
+      filteredTag() {
+        const tags = _.filter(this.tags, tag => tag.type !== 'timing')
+        return tags.slice(0, 10)
       }
     },
     methods: {

@@ -99,11 +99,15 @@
       },
       tags() {
         const perPax = this.place.price && this.place.price.perPax
-        const priceTax = perPax && [{type: 'price', name: `$${perPax.toFixed(0)}`}] || []
+        const priceTag = perPax && [{type: 'price', name: `$${perPax.toFixed(0)}`}] || []
+
+        const tags = this.place.tags.length === 0
+          ? [{name: "Restaurant", tagId: '216e7264-f4c9-40a4-86a2-d49793fb49c9', type: 'Establishment'}]
+          : this.place.tags
 
         return [
-          ...priceTax,
-          ...this.place.tags || [{name: "Restaurant", tagId: '216e7264-f4c9-40a4-86a2-d49793fb49c9', type: 'Establishment'}]
+          ...priceTag,
+          ...tags
         ]
       },
       distance() {

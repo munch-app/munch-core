@@ -16,7 +16,7 @@
             {{place.location.neighbourhood || place.location.street || place.location.address}}
           </div>
 
-          <place-tag-list class="mt-8" :tags="place.tags" :max="10"/>
+          <place-tag-list class="mt-8" :tags="place.tags"/>
         </section>
 
         <section class="Max720 mtb-32">
