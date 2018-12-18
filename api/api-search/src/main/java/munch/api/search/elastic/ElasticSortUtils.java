@@ -53,6 +53,7 @@ public final class ElasticSortUtils {
 
             default:
             case SearchQuery.Sort.TYPE_MUNCH_RANK:
+                sortArray.add(sortField("taste.group", "desc"));
                 sortArray.add(sortField("taste.importance", "desc"));
                 break;
         }
