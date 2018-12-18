@@ -6,12 +6,13 @@
                         @mouseover.native="onMouse(card, true)" @mouseleave.native="onMouse(card, false)"
         />
 
-        <no-ssr>
-          <div class="flex-center w-100 p-24 mt-24" v-if="more"
-               v-observe-visibility="{callback: (v) => visibleLoading(v),throttle:300}">
-            <beat-loader color="#084E69" size="14px"/>
-          </div>
-        </no-ssr>
+        <div class="flex-center w-100" style="height: 64px">
+          <no-ssr>
+            <div class="p-24" v-if="more" v-observe-visibility="{callback: (v) => visibleLoading(v),throttle:300}">
+              <beat-loader color="#084E69" size="14px"/>
+            </div>
+          </no-ssr>
+        </div>
       </div>
 
       <div class="MapView ml-24 relative flex-no-shrink index-content-overlay" v-if="showsMap">
