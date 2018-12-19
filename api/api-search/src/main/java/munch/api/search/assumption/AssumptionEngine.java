@@ -58,16 +58,16 @@ public class AssumptionEngine {
 
     public List<AssumptionQuery> assume(SearchRequest request, String text) {
         Map<String, Assumption> assumptionMap = manager.get();
-        text = text.trim();
         List<Object> tokenList = tokenize(assumptionMap, text);
 
         // Validate
         if (tokenList.isEmpty()) return List.of();
         if (tokenList.size() == 1) {
-            // Only one token, check if token is explicit
+            // Only one token, check if token is not String
             Object token = tokenList.get(0);
             if (token instanceof String) return List.of();
         }
+
         for (Object token : tokenList) {
             if (token instanceof String) {
                 // Stop-words checking
@@ -87,6 +87,7 @@ public class AssumptionEngine {
         List<AssumptionToken> assumedTokens = asToken(request.getSearchQuery(), tokenList);
         List<Assumption> assumptions = asAssumptions(tokenList);
         request = createSearchRequest(request, assumptions);
+        request.getSearchQuery().setFeature(SearchQuery.Feature.Search);
 
         String location = getLocation(tokenList);
         if (location != null) {
@@ -231,7 +232,9 @@ public class AssumptionEngine {
 
     private List<Object> tokenize(Map<String, Assumption> assumptionMap, String text) {
         if (StringUtils.isBlank(text)) return List.of();
-        Assumption assumption = assumptionMap.get(text.toLowerCase());
+        text = text.trim().toLowerCase();
+
+        Assumption assumption = assumptionMap.get(text);
         if (assumption != null) return List.of(assumption);
 
 

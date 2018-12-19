@@ -5,15 +5,15 @@
     </section>
 
     <div class="container flex mt-16">
-      <button v-for="tab in tabs" :key="tab" class="mr-24" :class="selected === tab ? 'secondary' : 'border'"
-              @click="selected = tab">
-        {{tab}}
+      <button v-for="tab in tabs" :key="tab.id" class="mr-24" :class="selected === tab.id ? 'secondary' : 'border'"
+              @click="selected = tab.id">
+        {{tab.name}}
       </button>
     </div>
 
     <div class="container">
-      <profile-saved-place-section v-if="selected === 'Places'"/>
-      <profile-search-preference-section v-if="selected === 'Preferences'"/>
+      <profile-saved-place-section v-if="selected === 'places'"/>
+      <profile-search-preference-section v-if="selected === 'preferences'"/>
     </div>
   </div>
 </template>
@@ -27,8 +27,14 @@
     components: {ProfileSearchPreferenceSection, ProfileSavedPlaceSection},
     data() {
       return {
-        selected: 'Places',
-        tabs: ['Places', 'Preferences']
+        selected: 'places',
+        tabs: [{
+          id: 'places',
+          name: 'Your Places'
+        }, {
+          id: 'preferences',
+          name: 'Preferences'
+        }]
       }
     },
     computed: {

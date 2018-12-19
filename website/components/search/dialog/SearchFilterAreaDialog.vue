@@ -11,7 +11,7 @@
     </div>
 
     <div class="AreaList flex-column">
-      <div class="Area" v-for="area in display" :key="area.areaId" @click="onArea(area)">
+      <div class="Area hover-pointer" v-for="area in display" :key="area.areaId" @click="onArea(area)">
         <h5 class="text-ellipsis-1l">{{area.name}}</h5>
       </div>
     </div>

@@ -3,6 +3,9 @@ package munch.api.search.filter;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import munch.data.client.AreaClient;
 import munch.data.client.ElasticClient;
 import munch.data.elastic.ElasticUtils;
@@ -27,6 +30,8 @@ public final class FilterAreaDatabase {
     private final Supplier<List<FilterArea>> supplier;
     private final ElasticClient elasticClient;
 
+    private final LoadingCache<String, Area> cache;
+
     @Inject
     public FilterAreaDatabase(AreaClient areaClient, ElasticClient elasticClient) {
         this.supplier = Suppliers.memoizeWithExpiration(() -> {
@@ -40,6 +45,12 @@ public final class FilterAreaDatabase {
 
         // Preload
         this.supplier.get();
+
+        // Area Cache
+        this.cache = CacheBuilder.newBuilder()
+                .expireAfterAccess(10, TimeUnit.HOURS)
+                .maximumSize(1000)
+                .build(CacheLoader.from(areaClient::get));
     }
 
     public List<FilterArea> get() {
@@ -60,5 +71,16 @@ public final class FilterAreaDatabase {
         return areas.stream()
                 .map(a -> new FilterArea(a.getAreaId(), a.getName(), a.getType()))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * @param area any Area that might be truncated
+     * @return Full Area with all the data
+     */
+    public Area resolve(Area area) {
+        if (area.getLocation() != null) return area;
+        if (area.getAreaId() == null) return area;
+
+        return cache.getUnchecked(area.getAreaId());
     }
 }

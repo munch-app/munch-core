@@ -2,16 +2,19 @@ package munch.api.search;
 
 import munch.api.ApiRequest;
 import munch.api.search.elastic.ElasticSpatialUtils;
+import munch.api.search.filter.FilterAreaDatabase;
 import munch.data.location.Area;
 import munch.restful.core.JsonUtils;
 import munch.restful.server.JsonCall;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This is the more generic SearchRequest loader
@@ -231,6 +234,13 @@ public final class SearchRequest {
     @Singleton
     public static final class Factory {
 
+        private final FilterAreaDatabase areaDatabase;
+
+        @Inject
+        public Factory(FilterAreaDatabase areaDatabase) {
+            this.areaDatabase = areaDatabase;
+        }
+
         /**
          * @param call JsonCall with body as SearchQuery
          * @return SearchRequest
@@ -246,7 +256,21 @@ public final class SearchRequest {
          */
         public SearchRequest create(JsonCall call, SearchQuery searchQuery) {
             SearchQuery.validate(searchQuery);
+            resolve(searchQuery);
             return new SearchRequest(call, searchQuery);
+        }
+
+        /**
+         * @param searchQuery needs to be resolved as some data are truncated
+         */
+        private void resolve(SearchQuery searchQuery) {
+            List<Area> areas = searchQuery.getFilter().getLocation().getAreas();
+            if (!areas.isEmpty()) {
+                List<Area> resolved = areas.stream()
+                        .map(areaDatabase::resolve)
+                        .collect(Collectors.toList());
+                searchQuery.getFilter().getLocation().setAreas(resolved);
+            }
         }
     }
 }
