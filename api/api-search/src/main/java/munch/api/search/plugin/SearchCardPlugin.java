@@ -168,6 +168,12 @@ public interface SearchCardPlugin {
         }
 
         /**
+         * is Complex if:
+         * - has sort
+         * - has filter hour
+         * - has filter price
+         * - has filter tags
+         *
          * @param query to check
          * @return whether query is complex meaning; user has custom selection
          */

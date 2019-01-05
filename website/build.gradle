@@ -10,15 +10,15 @@ task publishWebsiteLocal {
   }
 }
 
-task buildProduction {
-  doLast {
-    exec {
-      commandLine "docker", "build",
-        "-f", "Dockerfile.production",
-        "-t", dockerTag + 'production', '.'
-    }
-  }
-}
+//task buildProduction {
+//  doLast {
+//    exec {
+//      commandLine "docker", "build",
+//        "-f", "Dockerfile.production",
+//        "-t", dockerTag + 'production', '.'
+//    }
+//  }
+//}
 
 // Remember to comment out when doing major changes
 // To prevent accidental push

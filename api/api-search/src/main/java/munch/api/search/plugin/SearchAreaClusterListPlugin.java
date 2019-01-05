@@ -32,19 +32,34 @@ public final class SearchAreaClusterListPlugin implements SearchCardPlugin {
     @Override
     public List<Position> load(Request request) {
         if (!request.getRequest().isFeature(SearchQuery.Feature.Search)) return null;
-        if (!request.isFirstPage()) return List.of();
-        if (request.isComplex()) return List.of();
+        if (!request.isFirstPage()) return null;
+        if (request.isComplex()) return null;
 
-        // Only for Nearby & Anywhere
-        if (!(request.getRequest().isNearby() || request.getRequest().isAnywhere())) return List.of();
+        if (!isApplicable(request)) return null;
 
         String latLng = request.getLatLngContext();
-        if (latLng == null) return List.of();
+        if (latLng == null) return null;
 
         List<Area> areas = getNearbyAreas(latLng, 6);
-        if (areas.isEmpty()) return List.of();
+        if (areas.isEmpty()) return null;
 
         return of(-1_000, new SearchAreaClusterListCard(areas));
+    }
+
+    private static boolean isApplicable(Request request) {
+        if (request.getRequest().isNearby()) return true;
+        if (request.getRequest().isAnywhere()) return true;
+        if (request.getRequest().isWhere()) {
+            if (request.getRequest().getAreas().size() != 1) return false;
+
+            Area area = request.getRequest().getAreas().get(0);
+            switch (area.getType()) {
+                case Region:
+                case City:
+                    return true;
+            }
+        }
+        return false;
     }
 
     private List<Area> getNearbyAreas(String latLng, int size) {
