@@ -6,6 +6,7 @@ import munch.feed.ImageFeedItem;
 import munch.restful.core.NextNodeList;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonResult;
+import munch.user.client.UserSavedPlaceClient;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -22,8 +23,8 @@ public final class FeedImageService extends FeedService {
     private final ImageFeedClient imageFeedClient;
 
     @Inject
-    public FeedImageService(PlaceCachedClient placeClient, ImageFeedClient imageFeedClient) {
-        super(placeClient);
+    public FeedImageService(PlaceCachedClient placeClient, ImageFeedClient imageFeedClient, UserSavedPlaceClient savedPlaceClient) {
+        super(placeClient, savedPlaceClient);
         this.imageFeedClient = imageFeedClient;
     }
 
@@ -51,6 +52,6 @@ public final class FeedImageService extends FeedService {
         ImageFeedItem feedItem = imageFeedClient.get(itemId);
 
         if (feedItem == null) return JsonResult.notFound();
-        return asResult(feedItem);
+        return asResult(call, feedItem);
     }
 }

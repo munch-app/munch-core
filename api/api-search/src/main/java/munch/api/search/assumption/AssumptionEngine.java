@@ -62,8 +62,9 @@ public class AssumptionEngine {
 
         // Validate
         if (tokenList.isEmpty()) return List.of();
+
+        // Only one token, check if token is not String
         if (tokenList.size() == 1) {
-            // Only one token, check if token is not String
             Object token = tokenList.get(0);
             if (token instanceof String) return List.of();
         }
@@ -90,12 +91,13 @@ public class AssumptionEngine {
         request.getSearchQuery().setFeature(SearchQuery.Feature.Search);
 
         String location = getLocation(tokenList);
+
+        // Contains location token
         if (location != null) {
             return List.of(createLocation(location, text, assumedTokens, request));
         }
 
         List<AssumptionQuery> list = new ArrayList<>();
-        createCurrent(text, assumedTokens, request).ifPresent(list::add);
         createNearby(text, assumedTokens, request).ifPresent(list::add);
         list.add(createAnywhere(text, assumedTokens, request));
         return list;

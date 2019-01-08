@@ -1,9 +1,9 @@
 <template>
   <div class="flex-align-center">
-    <a class="ml-16 mr-24 text-ellipsis-1l" href="https://partner.munch.app" target="_blank">Join as Partner</a>
+    <a class="ml-16 flex-shrink mr-24 text-ellipsis-1l" href="https://partner.munch.app" target="_blank">Join as Partner</a>
 
     <a @click.prevent.stop="onClickLogin" class="flex-no-shrink" v-if="!isLoggedIn">Login</a>
-    <nuxt-link to="/profile" v-else>{{displayName}}</nuxt-link>
+    <nuxt-link class="flex-no-shrink" to="/profile" v-else>{{displayName}}</nuxt-link>
 
     <img v-if="false" class="ml-16 hover-pointer" src="~/assets/icon/menu.svg" @click="onClickMenu"/>
   </div>

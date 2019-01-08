@@ -26,13 +26,15 @@
       </div>
     </div>
 
-    <div class="BottomBar flex-end p-16-24">
-      <button class="border mr-16" @click="onMore">
+    <div class="BottomBar flex-end">
+      <div @click="onMore" class="p-8 mr-8">
         <simple-svg class="wh-24px" fill="black" :filepath="require('~/assets/icon/place/more.svg')"/>
-      </button>
-      <button class="secondary" @click="onAdd">
-        Add Place
-      </button>
+      </div>
+      <div @click="onAdd" class="p-8">
+        <simple-svg v-if="user.savedPlace" class="wh-24px" fill="black"
+                    :filepath="require('~/assets/icon/place/heart-filled.svg')"/>
+        <simple-svg v-else class="wh-24px" fill="black" :filepath="require('~/assets/icon/place/heart.svg')"/>
+      </div>
     </div>
 
     <div>
@@ -66,6 +68,10 @@
       place: {
         type: Object,
         required: true
+      },
+      user: {
+        type: Object,
+        required: true
       }
     },
     data() {
@@ -94,7 +100,13 @@
         this.show.more = false
 
         if (this.isLoggedIn) {
-          this.$store.dispatch('user/places/putPlace', {place: this.place})
+          if (this.user.savedPlace) {
+            this.user.savedPlace = null
+            this.$store.dispatch('user/places/deletePlace', {place: this.place})
+          } else {
+            this.user.savedPlace = {}
+            this.$store.dispatch('user/places/putPlace', {place: this.place})
+          }
         } else {
           this.$store.commit('focus', 'Login')
         }
@@ -124,8 +136,11 @@
   }
 
   .BottomBar {
+    padding: 16px 16px;
+
     @media (max-width: 992px) {
-      padding: 12px 24px;
+      padding-top: 6px;
+      padding-bottom: 6px;
     }
   }
 </style>

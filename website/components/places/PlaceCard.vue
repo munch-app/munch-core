@@ -3,9 +3,8 @@
     <div class="Card relative" :class="{'Small': small}">
       <div class="absolute w-100 index-content-overlay flex-justify-end">
         <div @click.capture.stop.prevent="onClickHeart">
-          <simple-svg v-if="isSaved" class="HeartIcon" fill="white"
+          <simple-svg v-if="saved === true" class="HeartIcon" fill="white"
                       :filepath="require('~/assets/icon/place/heart-filled.svg')"/>
-          <simple-svg v-else class="HeartIcon" fill="white" :filepath="require('~/assets/icon/place/heart.svg')"/>
         </div>
       </div>
 
@@ -58,7 +57,8 @@
       small: {
         type: Boolean,
         default: false
-      }
+      },
+      saved: Object,
     },
     data() {
       return {
@@ -86,9 +86,6 @@
     },
     computed: {
       ...mapGetters('user', ['isLoggedIn']),
-      isSaved() {
-        return this.$store.getters['user/places/isSaved'](this.place.placeId)
-      },
       location() {
         return this.place.location.neighbourhood || this.place.location.street
       },
@@ -120,15 +117,7 @@
         this.$router.push({path: `/places/${this.place.placeId}`})
       },
       onClickHeart() {
-        if (this.isSaved) {
-          this.$store.dispatch('user/places/deletePlace', {place: this.place})
-        } else {
-          if (this.isLoggedIn) {
-            this.$store.dispatch('user/places/putPlace', {place: this.place})
-          } else {
-            this.$store.commit('focus', 'Login')
-          }
-        }
+        this.$store.dispatch('user/places/deletePlace', {place: this.place})
       }
     }
   }

@@ -41,11 +41,11 @@
   }
 
   .Tag {
-    color: rgba(0, 0, 0, 0.8);
-    font-size: 13px;
+    color: rgba(0, 0, 0, 0.75);
+    font-size: 12px;
     font-weight: 600;
 
-    padding: 6px 13px;
+    padding: 5px 10px;
 
     margin-right: 10px;
     margin-bottom: 10px;

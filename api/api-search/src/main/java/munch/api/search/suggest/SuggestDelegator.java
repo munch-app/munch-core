@@ -49,6 +49,9 @@ public final class SuggestDelegator {
         );
     }
 
+    /**
+     * A list of suggest text
+     */
     private List<String> suggestNames(String text, SearchRequest request) {
         JsonNode results = elasticClient.search(ElasticSuggestUtils.make(text, request.getLatLng(), 6))
                 .path("suggest")
@@ -70,6 +73,9 @@ public final class SuggestDelegator {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * A list of suggest places searched with the text
+     */
     private List<Place> suggestPlaces(String text, SearchRequest request) {
         ObjectNode root = JsonUtils.createObjectNode();
         root.put("from", 0);
@@ -78,7 +84,7 @@ public final class SuggestDelegator {
         ObjectNode boolNode = queryNode.putObject("bool");
 
         // must: {?}
-        JsonNode must = ElasticQueryUtils.multiMatch(text, "name");
+        JsonNode must = ElasticQueryUtils.multiMatch(text, "names");
         String latLng = request.getLatLng();
         boolNode.set("must", withFunctionScoreMust(latLng, must));
 

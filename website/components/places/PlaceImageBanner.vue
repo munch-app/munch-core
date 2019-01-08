@@ -105,7 +105,7 @@
 
     @media (max-width: 767.98px) {
       margin-right: 0;
-      margin-bottom: 24px;
+      margin-bottom: 16px;
     }
   }
 </style>

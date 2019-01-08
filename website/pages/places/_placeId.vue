@@ -44,7 +44,7 @@
       </div>
 
       <aside class="mt-24 flex-grow">
-        <place-floating-panel class="FloatingPanel" :place="place"/>
+        <place-floating-panel class="FloatingPanel" :place="place" :user="user"/>
       </aside>
     </section>
 
@@ -134,6 +134,9 @@
       place() {
         return this.data.place
       },
+      user() {
+        return this.data.user
+      },
       hours() {
         if (this.data.place.hours && this.data.place.hours.length > 0) {
           return this.data.place.hours
@@ -153,7 +156,7 @@
         if (this.data.articles.length > 0) {
           return this.data.articles
         }
-      }
+      },
     }
   }
 </script>

@@ -1,19 +1,19 @@
 <template>
   <div class="Detail">
     <div class="flex-align-center flex-justify-between tablet" v-if="place.price && place.price.perPax">
-      <h5>Price</h5>
+      <h5 class="s700">Price</h5>
       <p class="text-ellipsis-1l">~${{place.price.perPax.toFixed(1)}}/pax</p>
     </div>
     <div class="flex-align-center flex-justify-between tablet" v-if="place.phone">
-      <h5>Phone</h5>
+      <h5 class="s700">Phone</h5>
       <p class="text-ellipsis-1l">{{place.phone}}</p>
     </div>
     <div class="flex-align-center flex-justify-between" v-if="websiteUrl">
-      <h5>Website</h5>
+      <h5 class="s700">Website</h5>
       <a :href="place.website" class="text-ellipsis-1l" target="_blank" rel="noreferrer noopener nofollow">http://{{websiteUrl}}</a>
     </div>
     <div class="flex-align-center flex-justify-between tablet" v-if="place.hours.length > 0">
-      <h5>Hours</h5>
+      <h5 class="s700">Hours</h5>
       <place-hour-list :place-id="place.placeId" :hours="place.hours"/>
     </div>
   </div>
@@ -80,6 +80,7 @@
       width: 80px;
       margin-right: 18px;
       text-transform: uppercase;
+      font-size: 15px;
     }
   }
 

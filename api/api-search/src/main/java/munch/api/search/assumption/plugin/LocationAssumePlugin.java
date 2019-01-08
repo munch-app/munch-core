@@ -23,6 +23,8 @@ import java.util.function.Consumer;
 @Singleton
 public final class LocationAssumePlugin extends AssumePlugin {
     private static final List<Assumption> EXPLICITS = List.of(
+            Assumption.of(Assumption.Type.Location, "anywhere", "Anywhere", applyType(SearchQuery.Filter.Location.Type.Anywhere)),
+
             Assumption.of(Assumption.Type.Location, "nearby", "Nearby", applyType(SearchQuery.Filter.Location.Type.Nearby)),
             Assumption.of(Assumption.Type.Location, "nearby me", "Nearby", applyType(SearchQuery.Filter.Location.Type.Nearby)),
             Assumption.of(Assumption.Type.Location, "near me", "Near Me", applyType(SearchQuery.Filter.Location.Type.Nearby)),

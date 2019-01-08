@@ -1,7 +1,7 @@
 <template>
   <section class="Places mt-24 mb-64 flex-wrap">
     <div class="Card" v-for="item in items" :key="item.placeId">
-      <place-card :place="item.place"/>
+      <place-card :place="item.place" :saved="true"/>
     </div>
 
     <no-ssr class="w-100 flex-center mtb-24">

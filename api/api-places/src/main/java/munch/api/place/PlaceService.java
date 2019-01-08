@@ -2,6 +2,7 @@ package munch.api.place;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import munch.api.ApiRequest;
 import munch.api.ApiService;
 import munch.article.ArticleLinkClient;
 import munch.article.data.Article;
@@ -13,7 +14,9 @@ import munch.restful.core.NextNodeList;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonResult;
 import munch.user.client.AwardCollectionClient;
+import munch.user.client.UserSavedPlaceClient;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -31,13 +34,15 @@ public final class PlaceService extends ApiService {
     private final AwardCollectionClient awardCollectionClient;
 
     private final PlaceImageClient placeImageClient;
+    private final UserSavedPlaceClient savedPlaceClient;
 
     @Inject
-    public PlaceService(PlaceClient placeClient, ArticleLinkClient articleLinkClient, AwardCollectionClient awardCollectionClient, PlaceImageClient placeImageClient) {
+    public PlaceService(PlaceClient placeClient, ArticleLinkClient articleLinkClient, AwardCollectionClient awardCollectionClient, PlaceImageClient placeImageClient, UserSavedPlaceClient savedPlaceClient) {
         this.placeClient = placeClient;
         this.articleLinkClient = articleLinkClient;
         this.awardCollectionClient = awardCollectionClient;
         this.placeImageClient = placeImageClient;
+        this.savedPlaceClient = savedPlaceClient;
     }
 
     /**
@@ -63,12 +68,25 @@ public final class PlaceService extends ApiService {
         Place place = placeClient.get(placeId);
         if (place == null) return JsonResult.notFound();
 
+
         return JsonResult.ok(Map.of(
                 "place", place,
                 "awards", awardCollectionClient.list(placeId, null, 10),
                 "articles", articleLinkClient.list(placeId, null, 10),
-                "images", placeImageClient.list(placeId, null, 10)
+                "images", placeImageClient.list(placeId, null, 10),
+                "user", getUser(call, placeId)
         ));
+    }
+
+    private Map<String, Object> getUser(JsonCall call, String placeId) {
+        ApiRequest request = call.get(ApiRequest.class);
+        if (!request.optionalUserId().isPresent()) return Map.of();
+
+        String userId = request.optionalUserId().get();
+
+        Map<String, Object> user = new HashMap<>();
+        user.put("savedPlace", savedPlaceClient.get(userId, placeId));
+        return user;
     }
 
     /**

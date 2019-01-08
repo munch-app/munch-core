@@ -6,6 +6,7 @@ import munch.feed.ArticleFeedItem;
 import munch.restful.core.NextNodeList;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonResult;
+import munch.user.client.UserSavedPlaceClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,8 +26,8 @@ public final class FeedArticleService extends FeedService {
     private final ArticleFeedClient articleFeedClient;
 
     @Inject
-    public FeedArticleService(PlaceCachedClient placeClient, ArticleFeedClient articleFeedClient) {
-        super(placeClient);
+    public FeedArticleService(PlaceCachedClient placeClient, ArticleFeedClient articleFeedClient, UserSavedPlaceClient savedPlaceClient) {
+        super(placeClient, savedPlaceClient);
         this.articleFeedClient = articleFeedClient;
     }
 
@@ -53,6 +54,6 @@ public final class FeedArticleService extends FeedService {
         String itemId = call.pathString("itemId");
         ArticleFeedItem feedItem = articleFeedClient.get(itemId);
         if (feedItem == null) return JsonResult.notFound();
-        return asResult(feedItem);
+        return asResult(call, feedItem);
     }
 }
