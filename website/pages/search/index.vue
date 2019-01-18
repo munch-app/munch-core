@@ -55,8 +55,9 @@
         this.$track.qid(`Search - ${this.locationType}`)
       }
 
-      if (this.$route.query.g === 'G1') {
-        this.$track.link('Search', 'G1: Eat Between')
+      const g = this.$route.query.g;
+      if (g) {
+        this.$track.link('Search', g)
 
         let query = Object.assign({}, this.$route.query)
         delete query.g
