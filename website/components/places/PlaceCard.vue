@@ -58,7 +58,7 @@
         type: Boolean,
         default: false
       },
-      saved: Object,
+      saved: Boolean,
     },
     data() {
       return {

@@ -72,6 +72,9 @@ export default ({app, store}, inject) => {
     login(category, label, others) {
       event.call(gtag, 'Login', {category, label}, others)
     },
+    download(category, label, others) {
+      event.call(gtag, 'Download', {category, label}, others)
+    },
   })
 
   /**
