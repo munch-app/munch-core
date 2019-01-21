@@ -16,7 +16,7 @@
           </div>
 
           <div class="flex-shrink" :style="style.item"
-               v-for="(item, index) in items" :key="mapKey(item)">
+               v-for="(item, index) in items" :key="mapKey(item, index)">
             <slot :item="item" :index="index">{{item}}</slot>
           </div>
 

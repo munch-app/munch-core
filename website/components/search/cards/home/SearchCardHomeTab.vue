@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>{{salutation}}, {{name}}. Feeling hungry?</h2>
+    <h2>{{salutation}}, {{name}}.</h2>
     <p class="b-a75" v-if="!isLoggedIn">(Not Samantha? Create an account <span @click="onCreateAccount" class="p500 hover-pointer">here</span>.)</p>
 
     <horizontal-scroll-view class="FeatureList container-remove-gutter mt-16" :items="features" :map-key="a => a.id"

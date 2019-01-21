@@ -24,17 +24,22 @@ button {
     color: white;
   }
 
-  &.secondary-outline {
+  &.outline {
+    padding-top: 7px !important;
+    padding-bottom: 7px !important;
+  }
+
+  &.secondary-outline:extend(button.outline) {
     color: @Secondary500;
     border: 1px solid @Secondary500;
   }
 
-  &.primary-outline {
+  &.primary-outline:extend(button.outline) {
     color: @Primary500;
     border: 1px solid @Primary500;
   }
 
-  &.border {
+  &.border:extend(button.outline) {
     background: rgb(252, 252, 252);
     border: 1px solid rgba(0, 0, 0, .15);
   }

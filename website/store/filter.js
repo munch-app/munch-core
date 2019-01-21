@@ -283,11 +283,14 @@ export const mutations = {
     state.loading = loading
     state.startedLoading = new Date()
   },
-
   updateBetweenLocation(state, {point, index}) {
     const points = state.query.filter.location.points
     if (point) {
-      points.splice(index, 1, point)
+      if (index) {
+        points.splice(index, 1, point)
+      } else {
+        points.push(point)
+      }
     } else {
       points.splice(index, 1)
     }

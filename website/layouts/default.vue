@@ -93,7 +93,7 @@
   }
 
   .SearchBar {
-    width: 500px;
+    max-width: 500px;
   }
 
   @media (max-width: 767.98px) {

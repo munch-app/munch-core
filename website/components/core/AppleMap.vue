@@ -28,6 +28,8 @@
     )
   }
 
+  let onMapReadyQueue = []
+
   export default {
     Coordinate,
     name: "AppleMap",
@@ -70,6 +72,10 @@
         showsMapTypeControl: this.options.showsMapTypeControl || false,
       })
       this.$map.region = CoordinateRegion(this.region)
+      onMapReadyQueue.forEach((func) => {
+        func(this.$map)
+      })
+      onMapReadyQueue.splice(0)
     },
     methods: {
       centerAnnotations() {
@@ -77,6 +83,13 @@
           animate: true,
           padding: new mapkit.Padding(64, 64, 64, 64)
         })
+      },
+      onMapLoaded(func) {
+        if (this.$map) {
+          func(this.$map)
+        } else {
+          onMapReadyQueue.push(func)
+        }
       }
     }
   }
