@@ -116,9 +116,10 @@
             break
 
           case "Search":
+            this.$store.dispatch('filter/location', {type: 'Anywhere'})
+            this.$store.dispatch('search/start')
+
             document.getElementById('globalSearchBar').focus()
-            this.$store.commit('search/clear')
-            this.$router.push({path: '/search'})
             break
         }
       },

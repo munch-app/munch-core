@@ -12,9 +12,7 @@
     </div>
 
     <div class="SearchSuggest bg-white absolute elevation-3 index-top-elevation" v-if="isExtended">
-      <search-bar-navigation v-if="isNavigation" @on-blur="onBlur"/>
-
-      <div class="Results index-top-elevation" v-if="suggestions">
+      <div class="Results index-top-elevation">
         <div class="Items" v-if="items">
           <div class="Item hover-pointer" v-for="(item, index) in items" :key="item.key"
                @click="onItem(item)"
@@ -31,6 +29,10 @@
             <search-bar-place-item
               v-else-if="item.type === 'place'"
               :place="item.object"/>
+
+            <search-bar-default-item
+              v-else-if="item.type === 'default'"
+              :name="item.object"/>
           </div>
         </div>
 
@@ -48,14 +50,14 @@
   import {mapGetters} from 'vuex'
   import {filter, pluck, tap, debounceTime, distinctUntilChanged, switchMap, map} from 'rxjs/operators'
 
-  import SearchBarNavigation from "./bar/SearchBarNavigation";
   import SearchBarAssumptionItem from "./items/SearchBarAssumptionItem";
   import SearchBarPlaceItem from "./items/SearchBarPlaceItem";
   import SearchBarSuggestItem from "./items/SearchBarSuggestItem";
+  import SearchBarDefaultItem from "./items/SearchBarDefaultItem";
 
   export default {
     name: "SearchBar",
-    components: {SearchBarSuggestItem, SearchBarPlaceItem, SearchBarAssumptionItem, SearchBarNavigation},
+    components: {SearchBarDefaultItem, SearchBarSuggestItem, SearchBarPlaceItem, SearchBarAssumptionItem},
     data() {
       return {
         text: '',
@@ -87,6 +89,14 @@
         }
       },
       items() {
+        if (!this.text) {
+          return [
+            {type: 'default', object: 'Feed'},
+            {type: 'default', object: 'Nearby'},
+            {type: 'default', object: 'Anywhere'}
+          ]
+        }
+
         const items = [
           // Assumption Items
           ...(this.assumptions || []).map(assumption => {
@@ -110,15 +120,7 @@
        * @returns {boolean} whether search bar is extended to drop down
        */
       isExtended() {
-        if (!this.searching) return false
-
-        return this.isNavigation || this.suggestions
-      },
-      /**
-       * @returns {boolean} whether to show navigation bar
-       */
-      isNavigation() {
-        return !this.text
+        return this.searching;
       },
     },
     methods: {
@@ -150,6 +152,44 @@
           case 'place':
             this.$router.push({path: '/places/' + object.placeId})
             this.$track.view(`RIP`, 'Suggest')
+            return this.onBlur()
+
+          case 'default':
+            return this.onDefault({name: object})
+        }
+      },
+      onDefault({name}) {
+        switch (name) {
+          case 'Nearby':
+            this.$store.commit('filter/loading', true)
+            this.onBlur()
+
+            return this.$getLocation({
+              enableHighAccuracy: true,
+              timeout: 8000,
+              maximumAge: 15000
+            }).then(coordinates => {
+              return this.$store.commit('filter/updateLatLng', `${coordinates.lat},${coordinates.lng}`)
+            }).then(() => {
+              this.$store.commit('filter/loading', false)
+              return this.$store.dispatch('filter/location', {type: 'Nearby'})
+            }).then(() => {
+              return this.$store.dispatch('search/start')
+            }).catch(error => {
+              return this.$store.dispatch('addMessage', {
+                type: 'error',
+                title: 'Location Not Available',
+                message: 'Is location service enabled?'
+              })
+            })
+
+          case 'Anywhere':
+            this.$store.dispatch('filter/location', {type: 'Anywhere'})
+            this.$store.dispatch('search/start')
+            return this.onBlur()
+
+          case 'Feed':
+            this.$router.push({path: '/feed/images'})
             return this.onBlur()
         }
       },
@@ -204,6 +244,7 @@
     border: 1px solid rgba(0, 0, 0, 0.08);
 
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
+
     &:hover {
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     }

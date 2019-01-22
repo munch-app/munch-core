@@ -18,12 +18,14 @@
         </div>
       </div>
 
-      <div class="BetweenDialog bg-white p-16-24">
+      <div class="BetweenDialog bg-white p-16-24 overflow-hidden">
         <div class="text">Enter everyone’s location and we’ll find the most ideal spot for a meal together.</div>
 
-        <horizontal-scroll-view class="PointList mt-8 container-remove-gutter" :items="locationPoints"
-                                :map-key="(_, i) => i"
-                                :padding="16" v-if="locationPoints.length > 0">
+        <search-filter-between-search ref="search"/>
+
+        <horizontal-scroll-view v-if="locationPoints.length > 0" :items="locationPoints"
+                                class="PointList mt-8 container-remove-gutter"
+                                :map-key="(_, i) => i" :padding="16">
           <template slot-scope="{item, index}">
             <div class="hover-pointer" @click="onRemove(index)">
               <div class="Point flex-row flex-align-center bg-whisper100 border-3">
@@ -51,8 +53,6 @@
         </div>
       </div>
     </div>
-
-    <search-filter-between-search ref="search"/>
   </portal>
 </template>
 

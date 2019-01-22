@@ -62,7 +62,8 @@
           maximumAge: 15000
         }).then(coordinates => {
           this.$store.commit('filter/updateLatLng', `${coordinates.lat},${coordinates.lng}`)
-          this.$store.commit('filter/loading', false)
+          return this.$store.commit('filter/loading', false)
+        }).then(() => {
           return this.$store.dispatch('filter/location', {type: 'Nearby'})
         }).catch(error => {
           return this.$store.dispatch('addMessage', {

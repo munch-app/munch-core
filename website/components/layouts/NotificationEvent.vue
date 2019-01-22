@@ -1,3 +1,4 @@
+<!-- Deprecate THIS -->
 <template>
   <div class="NotificationEvent fixed mb-24 mr-24 index-overlay">
     <div class="NotificationBox EatBetweenEvent elevation-3 bg-white" v-if="eatBetween" @click="clickEatBetween">

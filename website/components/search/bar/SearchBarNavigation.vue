@@ -1,14 +1,6 @@
 <template>
-  <div class="Navigation flex index-top-elevation">
-    <div @click="onNavigationSearch" class="NavigationItem" :class="{Selected: route.startsWith('search')}">
-      SEARCH
-    </div>
-    <div @click="onNavigationFeedImage" class="NavigationItem" :class="{Selected: route === 'feed-images'}">
-      FEED
-    </div>
-    <div v-if="isStaging" @click="onNavigationFeedArticle" class="NavigationItem"
-         :class="{Selected: route === 'feed-articles'}">ARTICLE FEED
-    </div>
+  <div class="Navigation flex-column index-top-elevation">
+
   </div>
 </template>
 
@@ -17,23 +9,23 @@
 
   export default {
     name: "SearchBarNavigation",
-    data() {
-      return {items: ['SEARCH', 'FEED', 'ARTICLE FEED']}
-    },
     methods: {
-      onNavigationSearch() {
+      onNearby() {
         this.$store.dispatch('filter/location', {type: 'Anywhere'})
         this.$store.dispatch('search/start')
 
         this.$track.search(`Search - Navigation`, this.$store.getters['search/locationType'])
         this.$emit('on-blur')
       },
-      onNavigationFeedImage() {
-        this.$router.push({path: '/feed/images'})
+      onAnywhere() {
+        this.$store.dispatch('filter/location', {type: 'Anywhere'})
+        this.$store.dispatch('search/start')
+
+        this.$track.search(`Search - Navigation`, this.$store.getters['search/locationType'])
         this.$emit('on-blur')
       },
-      onNavigationFeedArticle() {
-        this.$router.push({path: '/feed/articles'})
+      onFeed() {
+        this.$router.push({path: '/feed/images'})
         this.$emit('on-blur')
       },
     },
@@ -48,38 +40,21 @@
 
 <style scoped lang="less">
   .Navigation {
-    margin: 16px 10px 16px 16px;
-    min-width: 355px;
+    margin: 10px 10px 10px 16px;
 
     @media (max-width: 767.98px) {
       margin-left: 24px;
     }
   }
 
-  @Secondary400: #227190;
   .NavigationItem {
-    text-decoration: initial !important;
-    padding: 10px 16px;
-    margin-right: 14px;
-
-    border-radius: 3px;
-    border: 1px solid rgba(0, 0, 0, 0.15);
-
+    padding: 10px 0;
     font-weight: 600;
-    font-size: 12px;
-    color: rgba(0, 0, 0, .75);
+    color: rgba(0, 0, 0, 0.75);
+    display: flex;
 
-    line-height: 1.5;
-    height: 38px;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: clip;
-
-    &:hover, &.Selected {
+    &:hover {
       cursor: pointer;
-      color: white;
-      background: @Secondary400;
-      border: 1px solid @Secondary400;
     }
   }
 </style>

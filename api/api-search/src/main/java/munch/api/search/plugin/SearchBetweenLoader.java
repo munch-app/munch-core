@@ -27,7 +27,7 @@ public final class SearchBetweenLoader implements SearchCardPlugin {
         if (headers.isEmpty()) return null;
 
         SearchBetweenHeaderCard card = new SearchBetweenHeaderCard(headers);
-        card.setTitle("Ideal Locations");
+        card.setTitle("Ideal EatBetween Locations");
         return of(-1, card);
     }
 }
