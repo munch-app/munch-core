@@ -99,7 +99,7 @@
         return this.$axios.$get(`/api/places/${this.placeId}/images`, {params})
           .then(({data, next}) => {
             // Currently add one ad every 20 images because size = 20
-            this.items.push({isAdSense: true})
+            // this.items.push({isAdSense: true})
             this.items.push(...data)
             this.loading = false
             this.next.sort = next && next.sort || null

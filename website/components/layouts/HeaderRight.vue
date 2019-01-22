@@ -1,6 +1,8 @@
 <template>
-  <div class="flex-align-center">
-    <button class="primary small ml-16 mr-8" @click="onClickGetTheApp">GET THE APP</button>
+  <div class="flex-align-center" :class="{Clear: clear}">
+    <button class="primary small ml-16 mr-8" @click="onClickGetTheApp">GET THE
+      APP
+    </button>
     <a class="ml-16 flex-shrink mr-24 text-ellipsis-1l" href="https://partner.munch.app" target="_blank">Join as
       Partner</a>
 
@@ -56,6 +58,12 @@
       ...mapGetters(['isFocused']),
       ...mapGetters('user', ['isLoggedIn', 'displayName']),
     },
+    props: {
+      clear: {
+        type: Boolean,
+        default: false
+      }
+    },
     methods: {
       mobileOS() {
         const userAgent = navigator.userAgent || navigator.vendor || window.opera;
@@ -105,13 +113,18 @@
       }
     },
     mounted() {
-      if (Cookies.get('GetAppDialog') === 'seen') return
+      if (this.$route.query.ad === 'GB20') {
+        this.$store.commit('toggleFocus', 'HeaderRightGetApp')
+        this.$track.download('GetAppDialog', 'GB20: Instagram Banner')
+      } else {
+        if (Cookies.get('GetAppDialog') === 'seen') return
 
-      setTimeout(() => {
-        Cookies.set('GetAppDialog', 'seen');
-        this.$store.commit('focus', 'HeaderRightGetApp')
-        this.$track.view('GetAppDialog', 'GB13: Popup GetAppDialog')
-      }, 21000)
+        setTimeout(() => {
+          Cookies.set('GetAppDialog', 'seen');
+          this.$store.commit('focus', 'HeaderRightGetApp')
+          this.$track.view('GetAppDialog', 'GB13: Popup GetAppDialog')
+        }, 21000)
+      }
     }
   }
 </script>
@@ -125,10 +138,16 @@
     font-size: 15px;
     font-weight: 600;
 
-    color: rgba(0, 0, 0, 0.80);
+    color: rgba(0, 0, 0, 0.8);
 
     &:hover {
       cursor: pointer;
+    }
+  }
+
+  .Clear {
+    a {
+      color: white;
     }
   }
 

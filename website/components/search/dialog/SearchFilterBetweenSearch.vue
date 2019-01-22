@@ -2,7 +2,7 @@
   <div class="elevation-overlay index-dialog" :class="{OffScreen: !searching}">
     <div class="absolute-0 Search elevation-2 overflow-hidden">
       <div class="bg-white wh-100 flex-column">
-        <div class="p-16-24 hr-bot flex-align-center flex-justify-between">
+        <div class="p-16-24 flex-no-shrink hr-bot flex-align-center flex-justify-between">
           <h3>EatBetween Search</h3>
           <simple-svg @click.native="onCancel" class="wh-24px hover-pointer" fill="black"
                       :filepath="require('~/assets/icon/close.svg')"/>
@@ -10,12 +10,12 @@
 
         <div class="p-16-24">
           <div class="SearchTextBar border-3 hover-pointer">
-            <input ref="input" class="TextBar" type="text" @keyup="onKeyUp" placeholder="Search Here" v-model="text">
+            <input ref="input" class="TextBar" type="text" placeholder="Search Here" v-model="text">
           </div>
         </div>
 
         <div class="mlr-24 mb-24 flex-grow Result">
-          <div class="SuggestCell hr-bot text" v-for="(location, index) in suggestions"
+          <div class="text-ellipsis-1l SuggestCell hr-bot text" v-for="(location, index) in suggestions"
                :key="index" @click="onLocation(location)"
                :class="{'bg-whisper100': position === index}"
           >
@@ -40,6 +40,12 @@
 
         suggestions: [],
       }
+    },
+    mounted() {
+      document.addEventListener('keyup', this.onKeyUp)
+    },
+    beforeDestroy() {
+      document.removeEventListener('keyup', this.onKeyUp)
     },
     subscriptions() {
       return {

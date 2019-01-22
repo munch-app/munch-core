@@ -1,12 +1,12 @@
 <template>
   <div class="Default flex-column" :class="{'gutter-24': isSearch && showsMap}" :lang="'en'">
-    <nav class="Header fixed w-100 index-top-elevation hr-bot bg-white">
+    <nav class="Header fixed w-100 index-top-elevation hr-bot bg-white" :class="{Clear: isClear}">
       <div class="container flex">
-        <header-logo class="mr-8" :class="{'IsSearching': searching}"/>
+        <header-logo class="mr-8" :clear="isClear" :class="{'IsSearching': searching}"/>
         <div class="Search mlr-8 mtb-8 flex-grow">
           <search-bar class="SearchBar" @onBlur="onBlur" @onFocus="onFocus"/>
         </div>
-        <header-right class="HeaderRight"/>
+        <header-right class="HeaderRight" :clear="isClear"/>
       </div>
     </nav>
 
@@ -56,20 +56,33 @@
       SearchBar, HeaderMenu, HeaderLogo
     },
     data() {
-      return {searching: false}
+      return {searching: false, scrolledHeight: false}
     },
     computed: {
       ...mapGetters(['isElevated', 'isFocused']),
-      ...mapGetters('search', ['showsMap']),
+      ...mapGetters('search', ['showsMap', 'query']),
       route() {
         return this.$route.name
       },
       isSearch() {
-        return this.$route.name && this.$route.name.startsWith('search')
+        return this.route && this.route.startsWith('search')
+      },
+      isClear() {
+        if (this.isIndex) {
+          if (this.scrolledHeight) return false
+          return this.query && this.query.feature && this.query.feature === 'Home'
+        }
+        return false
       },
       isIndex() {
         return this.$route.name === 'index'
       }
+    },
+    mounted() {
+      window.addEventListener('scroll', this.onScroll)
+    },
+    beforeDestroy() {
+      window.removeEventListener('scroll', this.onScroll)
     },
     methods: {
       onFocus() {
@@ -77,6 +90,11 @@
       },
       onBlur() {
         this.searching = false
+      },
+      onScroll(event) {
+        const scrolled = window.innerHeight - 240 < window.scrollY
+        if (scrolled === this.scrolledHeight) return
+        this.scrolledHeight = scrolled
       }
     },
   }
@@ -90,6 +108,20 @@
   .Header {
     top: 0;
     height: 56px;
+  }
+
+  .Search{
+    height: 36px;
+  }
+
+  .Clear {
+    background: rgba(0, 0, 0, 0);
+    border-style: none none none none;
+
+    .SearchBar {
+      position: absolute;
+      top: -1000000000px;
+    }
   }
 
   .SearchBar {

@@ -2,7 +2,7 @@
   <div v-on-clickaway="onBlur" class="SearchBar border-3 cubic-bezier no-select"
        :class="{'Extended': isExtended, 'elevation-2': searching}">
     <div class="SearchTextBar relative w-100">
-      <input ref="input" class="TextBar bg-white absolute wh-100" type="text"
+      <input id="globalSearchBar" ref="input" class="TextBar bg-white absolute wh-100" type="text"
              @focus="onFocus" @keyup.up="onKeyUp" @keyup.down="onKeyDown" @keyup.enter="onKeyEnter"
              placeholder="Search e.g. Italian in Orchard" v-model="text">
 

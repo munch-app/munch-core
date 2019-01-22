@@ -1,27 +1,40 @@
 <template>
-  <portal to="dialog-w400">
-    <h2 class="mb-8">Locations</h2>
+  <portal to="dialog-full">
+    <div class="index-dialog">
+      <div class="absolute-0 Search elevation-2 overflow-hidden">
+        <div class="bg-white wh-100 flex-column">
+          <div class="flex-no-shrink p-16-24 hr-bot flex-align-center flex-justify-between">
+            <h3>Locations</h3>
+            <simple-svg @click.native="$emit('cancel')" class="wh-24px hover-pointer" fill="black"
+                        :filepath="require('~/assets/icon/close.svg')"/>
+          </div>
 
-    <div class="SearchTextBar border-3 hover-pointer mb-8">
-      <input ref="input" class="TextBar border-3" type="text" placeholder="Search Location" v-model="text">
+          <div class="p-16-24">
+            <div class="SearchTextBar border-3 hover-pointer">
+              <input ref="input" class="TextBar" type="text" @keyup="onKeyUp" placeholder="Search Here" v-model="text">
+            </div>
+          </div>
+          <div class="flex-center mtb-24" v-if="loading">
+            <beat-loader color="#084E69" size="14px"/>
+          </div>
 
-      <div class="Clear absolute hover-pointer" @click="text = ''">
-        <simple-svg fill="black" :filepath="require('~/assets/icon/close.svg')"/>
+          <div class="mlr-24 mb-24 flex-grow Result">
+            <div class="SuggestCell hr-bot text" v-for="(area, index) in display"
+                 :key="index" @click="onArea(area)"
+                 :class="{'bg-whisper100': position === index}"
+            >
+              {{area.name}}
+            </div>
+          </div>
+        </div>
+
+        <!--<div class="AreaList flex-column">-->
+          <!--<div class="Area hover-pointer" v-for="area in display" :key="area.areaId" @click="onArea(area)">-->
+            <!--<h5 class="text-ellipsis-1l">{{area.name}}</h5>-->
+          <!--</div>-->
+        <!--</div>-->
+
       </div>
-    </div>
-
-    <div class="AreaList flex-column">
-      <div class="Area hover-pointer" v-for="area in display" :key="area.areaId" @click="onArea(area)">
-        <h5 class="text-ellipsis-1l">{{area.name}}</h5>
-      </div>
-    </div>
-
-    <div class="flex-center mtb-24" v-if="loading">
-      <beat-loader color="#084E69" size="14px"/>
-    </div>
-
-    <div class="mt-24 flex-end">
-      <button class="border" @click="$emit('cancel')">Cancel</button>
     </div>
   </portal>
 </template>
@@ -37,10 +50,13 @@
         text: '',
         loading: true,
         areas: [],
-        searched: []
+        searched: [],
+
+        position: 0,
       }
     },
     mounted() {
+      document.addEventListener('keyup', this.onKeyUp)
       this.$api.get('/search/filter/areas')
         .then(({data}) => {
           this.loading = false
@@ -50,7 +66,27 @@
           this.$store.dispatch('addError', err)
         })
     },
+    beforeDestroy() {
+      document.removeEventListener('keyup', this.onKeyUp)
+    },
     methods: {
+      onKeyUp(evt) {
+        switch (evt.keyCode) {
+          case 38: // Up
+            if (this.position !== 0) this.position -= 1
+            break
+
+          case 40: // Down
+            if (this.position !== this.display.length - 1) this.position += 1
+            break
+
+          case 13: // Enter
+            if (this.display && this.position < this.display.length) {
+              this.onArea(this.display[this.position])
+            }
+            break
+        }
+      },
       onArea(area) {
         this.$store.dispatch('filter/reset')
         this.$store.dispatch('filter/location', {areas: [area], type: 'Where'})
@@ -79,6 +115,19 @@
 </script>
 
 <style scoped lang="less">
+  .Search {
+    @media (min-width: 768px) {
+      border-radius: 4px;
+      width: 400px;
+
+      top: 64px;
+      bottom: 64px;
+
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+
   .SearchTextBar {
     border: 1px solid rgba(0, 0, 0, 0.2);
 
@@ -115,15 +164,18 @@
     }
   }
 
-  .AreaList {
-    overflow-y: scroll;
-    overflow-x: hidden;
-    height: 60vh;
+
+  .Result {
+    overflow-y: auto;
   }
 
-  .Area {
-    padding-top: 6px;
-    padding-bottom: 6px;
-    min-width: 375px;
+  .SuggestCell {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    height: 40px;
+    line-height: 40px;
+    padding: 0 16px;
   }
 </style>

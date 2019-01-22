@@ -27,7 +27,7 @@ export const mutations = {
   append(state, {items, places, next}) {
     state.items.push(...items)
     // Currently add one ad every 20 images because size = 20
-    state.items.push({isAdSense: true})
+    // state.items.push({isAdSense: true})
 
     Object.keys(places).forEach(placeId => {
       state.places[placeId] = places[placeId]
