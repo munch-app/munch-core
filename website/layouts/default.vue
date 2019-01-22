@@ -17,7 +17,10 @@
     <!-- Search Bar Filter -->
     <search-bar-filter v-if="isSearch"/>
 
-    <!-- Dialog manager for system -->
+    <!-- Notification Portal -->
+    <notification-portal/>
+
+    <!-- Dialog Portal -->
     <dialog-portal/>
 
     <!-- Notification List on the right -->
@@ -48,10 +51,11 @@
   import NotificationList from "../components/layouts/NotificationList";
   import NavFooter from "../components/layouts/NavFooter";
   import NotificationEvent from "../components/layouts/NotificationEvent";
+  import NotificationPortal from "../components/layouts/NotificationPortal";
 
   export default {
     components: {
-      NotificationEvent,
+      NotificationPortal, NotificationEvent,
       NavFooter, NotificationList, DialogPortal, ProfileOnBoarding, HeaderRight, SearchBarFilter,
       SearchBar, HeaderMenu, HeaderLogo
     },
@@ -110,7 +114,7 @@
     height: 56px;
   }
 
-  .Search{
+  .Search {
     height: 36px;
   }
 

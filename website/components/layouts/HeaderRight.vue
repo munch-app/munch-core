@@ -9,10 +9,10 @@
     <a @click.prevent.stop="onClickLogin" class="flex-no-shrink" v-if="!isLoggedIn">Login</a>
     <nuxt-link class="flex-no-shrink" to="/profile" v-else>{{displayName}}</nuxt-link>
 
-    <portal to="dialog-blank" v-if="isFocused('HeaderRightGetApp')">
-      <div class="none tablet-b desktop-b">
+    <div>
+      <portal to="dialog-blank" v-if="getApp === 'GetAppDialog'">
         <div class="flex-row bg-white border-4 overflow-hidden" id="dialog-portal-scroll"
-             v-on-clickaway="onCloseGetApp">
+             v-on-clickaway="closeGetApp">
           <div class="flex-shrink bg-p100 ImageBanner">
             <img src="~/assets/img/account/download-feed-ios.jpg">
           </div>
@@ -27,9 +27,9 @@
             </div>
           </div>
         </div>
-      </div>
+      </portal>
 
-      <div class="MobileBanner mobile fixed">
+      <portal to="notification" v-if="getApp === 'GetAppNotification'">
         <div class="flex-column bg-whisper050 hr-top p-16-24">
           <div class="flex-row">
             <img style="height: 40px" src="~/assets/img/MunchLogo.svg">
@@ -39,12 +39,12 @@
             </div>
           </div>
           <div class="flex-end">
-            <button class="small mr-16" @click="onCloseGetApp">NO THANKS</button>
-            <button class="primary small" @click="onClickGetApp">GET THE APP</button>
+            <button class="small mr-16" @click="closeGetApp">NO THANKS</button>
+            <button class="primary small" @click="onClickStore">GET THE APP</button>
           </div>
         </div>
-      </div>
-    </portal>
+      </portal>
+    </div>
   </div>
 </template>
 
@@ -64,7 +64,17 @@
         default: false
       }
     },
+    data() {
+      return {
+        getApp: null
+      }
+    },
     methods: {
+      onClickLogin() {
+        this.$store.commit('focus', 'Login')
+      },
+
+      // MARK: GetApp Dialog & Notification
       mobileOS() {
         const userAgent = navigator.userAgent || navigator.vendor || window.opera;
 
@@ -79,22 +89,23 @@
 
         return "unknown";
       },
-      onClickMenu() {
-        this.$store.commit('toggleFocus', 'HeaderMenu')
-      },
-      onClickLogin() {
-        this.$store.commit('focus', 'Login')
-      },
       onClickGetTheApp() {
-        this.$store.commit('toggleFocus', 'HeaderRightGetApp')
+        this.openGetApp()
         this.$track.download('GetAppDialog', 'GB14: Clicked GetAppDialog')
-
+      },
+      openGetApp() {
         Cookies.set('GetAppDialog', 'seen')
+
+        if (window.innerWidth <= 768) {
+          this.getApp = 'GetAppNotification'
+        } else {
+          this.getApp = 'GetAppDialog'
+        }
       },
-      onCloseGetApp() {
-        this.$store.commit('unfocus', 'HeaderRightGetApp')
+      closeGetApp() {
+        this.getApp = null
       },
-      onClickGetApp() {
+      onClickStore() {
         if (this.mobileOS() === 'Android') {
           this.onClickAndroid()
         } else {
@@ -102,29 +113,28 @@
         }
       },
       onClickIOS() {
-        this.$store.commit('unfocus', 'HeaderRightGetApp')
+        this.closeGetApp()
         this.$track.download('AppleAppStore', 'GB15: GetAppDialog')
         window.open('https://itunes.apple.com/sg/app/munch-food-discovery/id1255436754?mt=8', '_blank');
       },
       onClickAndroid() {
-        this.$store.commit('unfocus', 'HeaderRightGetApp')
+        this.closeGetApp()
         this.$track.download('GooglePlayStore', 'GB15: GetAppDialog')
         window.open('https://play.google.com/store/apps/details?id=app.munch.munchapp', '_blank');
-      }
+      },
     },
     mounted() {
-      if (this.$route.query.ad === 'GB20') {
-        this.$store.commit('toggleFocus', 'HeaderRightGetApp')
-        this.$track.download('GetAppDialog', 'GB20: Instagram Banner')
-      } else {
-        if (Cookies.get('GetAppDialog') === 'seen') return
-
-        setTimeout(() => {
-          Cookies.set('GetAppDialog', 'seen');
-          this.$store.commit('focus', 'HeaderRightGetApp')
-          this.$track.view('GetAppDialog', 'GB13: Popup GetAppDialog')
-        }, 21000)
+      if (this.$route.query.download === 'GB20') {
+        this.openGetApp()
+        this.$track.download('GetAppDialog', 'GB20')
+        return
       }
+
+      if (Cookies.get('GetAppDialog') === 'seen') return
+      setTimeout(() => {
+        this.openGetApp()
+        this.$track.view('GetAppDialog', 'GB13: Popup GetAppDialog')
+      }, 21000)
     }
   }
 </script>
@@ -157,11 +167,5 @@
 
   .ContentRight {
     padding: 32px;
-  }
-
-  .MobileBanner {
-    bottom: 0;
-    left: 0;
-    right: 0;
   }
 </style>
