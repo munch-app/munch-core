@@ -25,6 +25,7 @@ public final class SearchBetweenHeaderCard implements SearchCard {
                 }).collect(Collectors.toList());
     }
 
+    @Deprecated
     public String getTitle() {
         return title;
     }

@@ -133,10 +133,10 @@
   .Result {
     overflow-y: auto;
     // 48 + 172
-    max-height: calc(90vh - 220px);
+    height: calc(90vh - 260px);
 
     @media(min-width: 768px) {
-      max-height: calc(80vh - 260px);
+      height: calc(80vh - 260px);
     }
   }
 

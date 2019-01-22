@@ -1,6 +1,6 @@
 <template>
   <portal to="dialog-full">
-    <div class="flex-column wh-100">
+    <div class="BetweenScreen flex-column wh-100">
       <div class="flex flex-grow">
         <apple-map ref="map" class="flex-grow">
           <apple-map-marker-annotation v-for="(point, index) in locationPoints" :name="point.name"
@@ -11,7 +11,7 @@
                                        :icon="require('~/assets/icon/search/flag.svg')" color="s500"/>
         </apple-map>
 
-        <div class="container absolute h-48px flex-align-center flex-justify-between">
+        <div class="Header container absolute h-48px flex-align-center flex-justify-between">
           <h3>EatBetween</h3>
           <simple-svg @click.native="$emit('cancel')" class="wh-24px hover-pointer" fill="black"
                       :filepath="require('~/assets/icon/close.svg')"/>
@@ -141,6 +141,22 @@
 
   .Cancel {
     margin-left: 6px;
+  }
+
+  @media (max-width: 768px) {
+    .Header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+    }
+
+    .BetweenScreen {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
   }
 
   .BetweenDialog {
