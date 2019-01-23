@@ -8,20 +8,22 @@
                                        :icon="require('~/assets/icon/search/place.svg')"/>
 
           <apple-map-marker-annotation v-if="centroid" :lat-lng="centroid"
-                                       :icon="require('~/assets/icon/search/flag.svg')" color="s500"/>
+                                       :icon="require('~/assets/icon/search/flag.svg')"
+                                       color="s500"/>
         </apple-map>
 
-        <div class="Header container absolute h-48px flex-align-center flex-justify-between">
+        <div class="index-0 Header container absolute h-48px flex-align-center flex-justify-between"
+             :class="{Searching: searching}">
           <h3>EatBetween</h3>
           <simple-svg @click.native="$emit('cancel')" class="wh-24px hover-pointer" fill="black"
                       :filepath="require('~/assets/icon/close.svg')"/>
         </div>
       </div>
 
-      <div class="BetweenDialog bg-white p-16-24 overflow-hidden">
+      <div class="index-1 BetweenDialog bg-white p-16-24 overflow-hidden">
         <div class="text">Enter everyone’s location and we’ll find the most ideal spot for a meal together.</div>
 
-        <search-filter-between-search ref="search"/>
+        <search-filter-between-search ref="search" @close="searching = false"/>
 
         <horizontal-scroll-view v-if="locationPoints.length > 0" :items="locationPoints"
                                 class="PointList mt-8 container-remove-gutter"
@@ -85,7 +87,8 @@
     },
     data() {
       return {
-        centroid: null
+        centroid: null,
+        searching: false,
       }
     },
     mounted() {
@@ -108,6 +111,7 @@
     },
     methods: {
       onSearch() {
+        this.searching = true
         this.$refs.search.start()
       },
       onRemove(index) {
@@ -145,14 +149,19 @@
 
   @media (max-width: 768px) {
     .Header {
-      position: fixed;
+      position: absolute;
       top: 0;
       left: 0;
       right: 0;
+
+      &.Searching {
+        display: none;
+      }
     }
 
     .BetweenScreen {
       position: fixed;
+      top: 0;
       bottom: 0;
       left: 0;
       right: 0;

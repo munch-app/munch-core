@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>{{card.title || 'Navigation Header'}}</h2>
+    <h2>Ideal Locations</h2>
 
     <horizontal-scroll-view class="AnchorList mt-16" :items="anchors" :map-key="a => a._uniqueId"
                             :padding="24" :container="false">

@@ -88,6 +88,8 @@
         this.suggestions = []
         this.text = ''
         this.position = 0
+
+        this.$emit('close')
       },
       onLocation(point) {
         this.onCancel()
