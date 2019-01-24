@@ -4,6 +4,12 @@
       <div class="Brand flex">
         <img style="height: 40px" src="~/assets/img/MunchLogoTitled.svg">
       </div>
+      <div class="MunchApp">
+        <h4 class="s500">Munch App</h4>
+        <a href="https://itunes.apple.com/sg/app/munch-food-discovery/id1255436754" target="_blank">Munch iOS App</a>
+        <a href="https://play.google.com/store/apps/details?id=app.munch.munchapp" target="_blank">Munch Android</a>
+      </div>
+
       <div class="Company">
         <h4 class="s500">Company</h4>
         <nuxt-link to="/support">Support</nuxt-link>

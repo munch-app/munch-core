@@ -3,10 +3,15 @@
     <section class="HomeTab container-remove-gutter" :class="current.id">
       <div class="Overlay wh-100">
         <div class="container">
-          <h1>{{salutation}}, {{name}}.</h1>
-          <p v-if="!isLoggedIn">(Not Samantha? Create an account <span @click="onCreateAccount"
-                                                                       class="text-underline hover-pointer">here</span>.)
-          </p>
+          <div v-if="isLoggedIn">
+            <h1>{{salutation}}, {{name}}.</h1>
+          </div>
+          <div v-else>
+            <h1>{{salutation}}, Samantha.</h1>
+            <p class="hover-pointer" @click="onCreateAccount">(Not Samantha? Create an account
+              <span class="text-underline ">here</span>.)
+            </p>
+          </div>
           <div class="FeatureList TopSpacing flex-row container-remove-gutter">
             <div>
               <div class="gutter"/>
@@ -42,8 +47,6 @@
       </div>
     </section>
 
-
-    <search-filter-between-dialog v-if="isBetween" @cancel="isBetween = false"/>
     <search-filter-area-dialog v-if="isLocation" @cancel="isLocation = false"/>
   </div>
 </template>
@@ -77,7 +80,6 @@
     data() {
       return {
         index: 0,
-        isBetween: false,
         isLocation: false,
         features: [
           {
@@ -108,7 +110,7 @@
       onClick() {
         switch (this.current.id) {
           case "EatBetween":
-            this.isBetween = true
+            this.$router.push({path: `/search/filter/between`})
             break
 
           case "Location":

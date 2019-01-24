@@ -125,9 +125,10 @@
     },
     mounted() {
       if (this.$route.query.download === 'GB20') {
-        this.openGetApp()
-        this.$track.download('GetAppDialog', 'GB20')
-        return
+        return setTimeout(() => {
+          this.openGetApp()
+          this.$track.download('GetAppDialog', 'GB20: Forced GetAppDialog')
+        }, 1000);
       }
 
       if (Cookies.get('GetAppDialog') === 'seen') return

@@ -6,6 +6,8 @@
         <nuxt-link to="/profile" v-if="isLoggedIn">Profile</nuxt-link>
         <a v-else @click="$store.commit('focus', 'Login')">Login</a>
         <hr class="mtb-8">
+        <a href="https://itunes.apple.com/sg/app/munch-food-discovery/id1255436754" target="_blank">Get Munch iOS App</a>
+        <a href="https://play.google.com/store/apps/details?id=app.munch.munchapp" target="_blank">Get Munch Android App</a>
         <a href="https://partner.munch.app" target="_blank">Join as Partner</a>
       </div>
     </ul>

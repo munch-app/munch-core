@@ -69,7 +69,11 @@
         return this.$route.name
       },
       isSearch() {
-        return this.route && this.route.startsWith('search')
+        if (this.route && this.route.startsWith('search')) {
+          if (this.route.startsWith('search-filter')) return false
+          return true
+        }
+        return false
       },
       isClear() {
         if (this.isIndex) {
