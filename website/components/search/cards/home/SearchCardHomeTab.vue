@@ -37,12 +37,12 @@
       </div>
     </section>
 
-    <section class="Feed border-3 mt-48 relative">
+    <section class="Feed border-3 mt-48 relative hover-pointer" @click="onFeed">
       <div class="wh-100 flex-center">
         <div class="Padded p-24 flex-column flex-align-center">
           <h2 class="white">The sexiest thing you’ll see on the Internet - ever.</h2>
           <h5 class="white mt-8 mb-32">(Warning! Not Safe For Waist. NSFW)</h5>
-          <button @click="onFeed()" class="secondary-outline">Explore Feed</button>
+          <button class="secondary-outline">Explore Feed</button>
         </div>
       </div>
     </section>
