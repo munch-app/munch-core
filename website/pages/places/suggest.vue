@@ -4,7 +4,7 @@
       <div v-if="submitted">
         <h1 class="mt-8">Thank you for your contribution.</h1>
         <p class="mt-24">Own this restaurant? Do you want us to optimise your page?
-          Drop us an email at <span class="weight-600">restaurant@munch.space</span> if there’s anything we can help
+          Drop us an email at <span class="weight-600">restaurant@munch.app</span> if there’s anything we can help
           with.
         </p>
       </div>

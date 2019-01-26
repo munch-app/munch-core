@@ -10,7 +10,9 @@
 
       <div class="aspect r-5-3 border-3 overflow-hidden">
         <image-sizes v-if="image" :sizes="image.sizes" :alt="place.name"/>
-        <div v-else class="bg-whisper100"/>
+        <div v-else class="bg-whisper100 flex-end wh-100">
+          <div class="small-bold mb-4 mr-4">No Image Available</div>
+        </div>
       </div>
 
       <div class="mt-8">
