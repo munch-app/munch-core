@@ -1,37 +1,41 @@
 <template>
-  <div class="container Press">
+  <div class="container mb-64">
     <section class="prismic-content">
       <div v-html="fact_sheet.title"/>
       <div v-html="fact_sheet.content"/>
     </section>
 
-    <section class="PressCoverage">
+    <section class="PressCoverage mt-64">
       <div v-html="press_coverage.title"/>
 
       <div class="PressCoverageList">
         <div class="Card" v-for="item in pressCoverageList" :key="item.url">
           <a class="elevation-2 elevation-hover-3 block border-3" :href="item.url" target="_blank">
-            <img :src="item.image" class="border-3-top">
-            <h4 class="text-ellipsis-1l">{{item.name}}</h4>
+            <div class="aspect r-5-3 bg-whisper050 flex-center border-3 overflow-hidden">
+              <img class="wh-100" :src="item.image">
+            </div>
+            <h5 class="mt-16 text-ellipsis-1l">{{item.name}}</h5>
           </a>
         </div>
       </div>
     </section>
 
-    <section class="DigitalAsset">
+    <section class="DigitalAsset mt-64">
       <div v-html="digital_asset.title"/>
 
       <div class="PressCoverageList">
         <div class="Card" v-for="item in digitalAssetList" :key="item.url">
           <a class="elevation-2 elevation-hover-3 block border-3" :href="item.image" target="_blank">
-            <img :src="item.image" class="border-3-top">
-            <h4 class="text-ellipsis-1l">{{item.name}}</h4>
+            <div class="aspect r-1-1 bg-whisper050 flex-center border-3 overflow-hidden">
+              <img class="wh-100" :src="item.image">
+            </div>
+            <h5 class="mt-16 text-ellipsis-1l">{{item.name}}</h5>
           </a>
         </div>
       </div>
     </section>
 
-    <section>
+    <section class="mt-64">
       <div v-html="contact_us.title"/>
       <div v-html="contact_us.content"/>
     </section>
@@ -88,14 +92,6 @@
 </script>
 
 <style scoped lang="less">
-  .Press {
-    margin-bottom: 64px;
-  }
-
-  section {
-    margin-top: 32px;
-  }
-
   .PressCoverageList {
     display: flex;
     flex-wrap: wrap;
@@ -103,12 +99,9 @@
     margin-left: -12px;
 
     .Card {
-      margin-top: 16px;
-
       flex: 0 0 100%;
       max-width: 100%;
-      padding-right: 12px;
-      padding-left: 12px;
+      padding: 12px;
 
       @media (min-width: 576px) {
         flex: 0 0 50%;
@@ -120,26 +113,31 @@
         max-width: 25%;
       }
 
-      h4 {
-        padding: 12px 16px;
+      @media (min-width: 992px) {
+        flex: 0 0 20%;
+        max-width: 20%;
+      }
+
+      @media (min-width: 1200px) {
+        flex: 0 0 16.666666667%;
+        max-width: 16.666666667%;
+      }
+
+      a {
+        padding: 24px 24px 8px 24px;
       }
     }
   }
 
   .PressCoverage {
-    .Card img {
+    img {
       object-fit: cover;
-      height: 140px;
-      width: 100%;
     }
   }
 
   .DigitalAsset {
-    .Card img {
-      padding: 16px;
+    img {
       object-fit: contain;
-      height: 150px;
-      width: 100%;
     }
   }
 </style>
