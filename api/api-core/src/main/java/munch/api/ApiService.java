@@ -1,5 +1,6 @@
 package munch.api;
 
+import munch.restful.server.JsonRoute;
 import munch.restful.server.JsonService;
 import munch.restful.server.JsonTransformer;
 
@@ -36,4 +37,35 @@ public abstract class ApiService implements JsonService {
         return transformer;
     }
 
+    public void GET(String path, ApiRoute route) {
+        GET(path, (JsonRoute) route);
+    }
+
+    public void POST(String path, ApiRoute route) {
+        POST(path, (JsonRoute) route);
+    }
+
+    public void POST(String path, String acceptType, ApiRoute route) {
+        POST(path, acceptType, (JsonRoute) route);
+    }
+
+    public void PUT(String path, ApiRoute route) {
+        PUT(path, (JsonRoute) route);
+    }
+
+    public void PUT(String path, String acceptType, ApiRoute route) {
+        PUT(path, acceptType, (JsonRoute) route);
+    }
+
+    public void DELETE(String path, ApiRoute route) {
+        DELETE(path, (JsonRoute) route);
+    }
+
+    public void HEAD(String path, ApiRoute route) {
+        HEAD(path, (JsonRoute) route);
+    }
+
+    public void PATCH(String path, ApiRoute route) {
+        PATCH(path, (JsonRoute) route);
+    }
 }

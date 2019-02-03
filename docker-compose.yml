@@ -2,18 +2,14 @@ version: '2'
 
 services:
   # Munch Api
-  munch-api:
+  api.munch.app:
     image: munch-core/service-api
     environment:
       - MUNCH_SERVICE_DATA_URL=http://data:8000
       - MUNCH_SERVICE_SEARCH_URL=http://search:8000
       - SERVICE_NOMINATIM_URL=http://nominatim:8080
     ports:
-      - "8800:8000"
-  nominatim:
-    image: fuxingloh/nominatim-docker-singapore:2.5
-    ports:
-      - "9888:8080"
+      - "8880:8000"
 
 
 
