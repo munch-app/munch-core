@@ -33,35 +33,56 @@ public abstract class AbstractCreatorService extends ApiService {
     }
 
     /**
+     * if creatorId is _ the resources must do the authentication
+     *
+     * @return whether authentication is required, creatorId:_, the resources will authenticate instead.
+     */
+    private boolean requireAuthentication(JsonCall call) {
+        final String creatorId = call.pathString("creatorId");
+        return !creatorId.equals("_");
+    }
+
+    /**
+     * if creatorId is _ the resources must do the authentication
+     *
      * @param call JsonCall to validate that creatorId is authenticated
      */
     protected void authenticateCreator(JsonCall call) {
+        if (!requireAuthentication(call)) return;
+
+        authenticateCreator(call, call.pathString("creatorId"));
+    }
+
+    protected void authenticateCreator(JsonCall call, String creatorId) {
         final ApiRequest request = call.get(ApiRequest.class);
         final String userId = request.getUserId();
-        final String creatorId = call.pathString("creatorId");
 
         CreatorUser user = creatorUserClient.get(creatorId, userId);
-        if (user == null) throw new ForbiddenException("creator");
+        if (user == null) throw new ForbiddenException("Creator Forbidden");
 
         // Add CreatorUser to global session
         call.put(user, CreatorUser.class);
     }
 
     protected void authenticateSeries(JsonCall call) {
+        if (!requireAuthentication(call)) return;
+
         final String creatorId = call.pathString("creatorId");
         final String seriesId = call.pathString("seriesId");
 
         CreatorSeries series = seriesClient.get(seriesId);
         if (series == null) throw new ForbiddenException("creator");
-        if (!series.getCreatorId().equals(creatorId)) throw new ForbiddenException("creator");
+        if (!series.getCreatorId().equals(creatorId)) throw new ForbiddenException("Creator Forbidden");
     }
 
     protected void authenticateStory(JsonCall call) {
+        if (!requireAuthentication(call)) return;
+
         final String creatorId = call.pathString("creatorId");
         final String storyId = call.pathString("storyId");
 
         CreatorStory story = storyClient.get(storyId);
         if (story == null) throw new ForbiddenException("creator");
-        if (!story.getCreatorId().equals(creatorId)) throw new ForbiddenException("creator");
+        if (!story.getCreatorId().equals(creatorId)) throw new ForbiddenException("Creator Forbidden");
     }
 }

@@ -26,6 +26,8 @@ export const mutations = {
   clear(state) {
     state.profile = null
     state.searchPreference = null
+
+    Cookies.remove('MunchUser')
   },
 }
 
@@ -71,7 +73,8 @@ export const actions = {
 
   logout({commit}) {
     authenticator.signOut()
-    Cookies.remove('MunchUser')
-    commit('clear')
+
+    this.commit('user/clear')
+    this.commit('creator/clear')
   },
 }

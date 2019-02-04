@@ -1,6 +1,7 @@
 package munch.api.creator;
 
 import munch.restful.core.NextNodeList;
+import munch.restful.core.exception.ForbiddenException;
 import munch.restful.server.JsonCall;
 import munch.user.client.CreatorSeriesClient;
 import munch.user.client.CreatorSeriesStoryClient;
@@ -29,6 +30,7 @@ public final class CreatorSeriesService extends AbstractCreatorService {
     }
 
     @Override
+    @SuppressWarnings("Duplicates")
     public void route() {
         PATH("/creators/:creatorId/series", () -> {
             BEFORE("", this::authenticateCreator);
@@ -39,9 +41,9 @@ public final class CreatorSeriesService extends AbstractCreatorService {
             PATH("/:seriesId", () -> {
                 BEFORE("", this::authenticateSeries);
 
+                GET("", this::get);
                 PATCH("", this::patch);
                 DELETE("", this::delete);
-
                 PATH("/stories", () -> {
                     GET("", this::listStory);
 
@@ -62,6 +64,16 @@ public final class CreatorSeriesService extends AbstractCreatorService {
         CreatorSeriesClient.ListMethod method = call.queryEnum("sort", CreatorSeriesClient.ListMethod.class, CreatorSeriesClient.ListMethod.sort);
         String next = call.queryString("next." + method.nextName(), null);
         return seriesClient.list(method, creatorId, next, size);
+    }
+
+    public CreatorSeries get(JsonCall call) {
+        String seriesId = call.pathString("seriesId");
+
+        CreatorSeries series = seriesClient.get(seriesId);
+        if (series == null) throw new ForbiddenException("Creator Forbidden");
+
+        authenticateCreator(call, series.getCreatorId());
+        return series;
     }
 
     public CreatorSeries post(JsonCall call) {

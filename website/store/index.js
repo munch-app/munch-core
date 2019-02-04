@@ -156,10 +156,17 @@ const parseError = (error) => {
 }
 
 export const actions = {
+  /**
+   * This is only called on store/index.js. The current file you are at.
+   */
   nuxtServerInit({commit}, {req}) {
     if (req.cookies.MunchUser) {
       const user = JSON.parse(req.cookies.MunchUser)
       this.commit('user/setUser', user)
+
+
+      const creator = req.cookies.MunchCreator && JSON.parse(req.cookies.MunchCreator)
+      if (creator) this.commit('creator/setCreator', creator)
     }
   },
 

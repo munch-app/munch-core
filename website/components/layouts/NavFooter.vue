@@ -1,5 +1,5 @@
 <template>
-  <nav class="zero hr-top index-6 bg-white">
+  <nav class="zero hr-top index-6 bg-white" v-if="isVisible">
     <div class="NavFooter flex container">
       <div class="Brand flex">
         <img style="height: 40px" src="~/assets/img/MunchLogoTitled.svg">
@@ -29,7 +29,14 @@
 
 <script>
   export default {
-    name: "NavFooter"
+    name: "NavFooter",
+    computed: {
+      isVisible() {
+        const name = this.$route.name
+        if (name.startsWith('creator')) return false
+        return true
+      },
+    }
   }
 </script>
 

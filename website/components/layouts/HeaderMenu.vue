@@ -1,14 +1,28 @@
 <template>
   <div class="HeaderMenu flex-justify-end container index-top-elevation no-select" v-if="isFocused('HeaderMenu')">
-    <ul class="NavLink fixed bg-white w-100 elevation-3 text index-top-elevation">
+    <ul class="NavLink fixed bg-white w-100 elevation-3 text index-top-elevation border">
       <div class="Mobile">
         <nuxt-link to="/">Home</nuxt-link>
         <nuxt-link to="/profile" v-if="isLoggedIn">Profile</nuxt-link>
         <a v-else @click="$store.commit('focus', 'Login')">Login</a>
+        <nuxt-link to="/logout" v-if="isLoggedIn">Sign out</nuxt-link>
         <hr class="mtb-8">
+        <a href="https://partner.munch.app" target="_bla20nk">Join as Partner</a>
         <a href="https://itunes.apple.com/sg/app/munch-food-discovery/id1255436754" target="_blank">Get Munch iOS App</a>
         <a href="https://play.google.com/store/apps/details?id=app.munch.munchapp" target="_blank">Get Munch Android App</a>
-        <a href="https://partner.munch.app" target="_blank">Join as Partner</a>
+      </div>
+
+      <div v-if="creatorName">
+        <nuxt-link to="/creator/profiles"><span class="s700 weight-600">Creator: {{creatorName}}</span></nuxt-link>
+        <nuxt-link to="/creator/stories" v-if="isLoggedIn">Articles</nuxt-link>
+        <nuxt-link to="/creator/series" v-if="isLoggedIn">Series</nuxt-link>
+        <hr class="mtb-8">
+      </div>
+
+      <div class="NonMobile">
+        <nuxt-link to="/profile" v-if="isLoggedIn">Profile</nuxt-link>
+        <nuxt-link to="/support" v-if="isLoggedIn">Help</nuxt-link>
+        <nuxt-link to="/logout" v-if="isLoggedIn">Sign out</nuxt-link>
       </div>
     </ul>
     <div v-on-clickaway="onClickAway"></div>
@@ -23,6 +37,7 @@
     computed: {
       ...mapGetters(['isFocused']),
       ...mapGetters('user', ['isLoggedIn']),
+      ...mapGetters('creator', ['creatorName']),
     },
     methods: {
       onClickAway() {

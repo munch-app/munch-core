@@ -6,7 +6,13 @@
     </a>
 
     <a @click.prevent.stop="onClickLogin" class="flex-no-shrink" v-if="!isLoggedIn">Login</a>
-    <nuxt-link class="flex-no-shrink" to="/profile" v-else>{{displayName}}</nuxt-link>
+
+    <div class="flex-no-shrink hover-pointer" v-else @click="$store.commit('toggleFocus', 'HeaderMenu')">
+      <div class="ProfileImage">
+        <img class="wh-100" v-if="profile.photoUrl" :src="profile.photoUrl">
+        <div v-else class="bg-whisper100 wh-100"></div>
+      </div>
+    </div>
 
     <portal to="dialog-blank" v-if="getApp === 'GetAppDialog'">
       <div class="flex-row bg-white border-4 overflow-hidden" id="dialog-portal-scroll"
@@ -53,7 +59,7 @@
     name: "HeaderRight",
     computed: {
       ...mapGetters(['isFocused']),
-      ...mapGetters('user', ['isLoggedIn', 'displayName']),
+      ...mapGetters('user', ['isLoggedIn', 'displayName', 'profile']),
     },
     props: {
       clear: {
@@ -91,6 +97,7 @@
         this.$track.download('GetAppDialog', 'GB14: Clicked GetAppDialog')
       },
       openGetApp() {
+        // TODO: Change to localStorage
         Cookies.set('GetAppDialog', 'seen')
 
         if (window.innerWidth <= 768) {
@@ -132,7 +139,7 @@
       setTimeout(() => {
         this.openGetApp()
         this.$track.view('GetAppDialog', 'GB13: Popup GetAppDialog')
-      }, 21000)
+      }, 45000)
     }
   }
 </script>
@@ -165,5 +172,15 @@
 
   .ContentRight {
     padding: 32px;
+  }
+
+  .ProfileImage {
+    height: 40px;
+    width: 40px;
+    margin-top: 4px;
+
+    > * {
+      border-radius: 50%;
+    }
   }
 </style>

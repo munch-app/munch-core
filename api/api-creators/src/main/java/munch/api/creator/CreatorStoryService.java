@@ -2,6 +2,7 @@ package munch.api.creator;
 
 import munch.restful.core.NextNodeList;
 import munch.restful.core.exception.BadRequestException;
+import munch.restful.core.exception.ForbiddenException;
 import munch.restful.server.JsonCall;
 import munch.user.client.CreatorStoryClient;
 import munch.user.client.CreatorStoryClient.ListMethod;
@@ -32,6 +33,7 @@ public final class CreatorStoryService extends AbstractCreatorService {
     }
 
     @Override
+    @SuppressWarnings("Duplicates")
     public void route() {
         PATH("/creators/:creatorId/stories", () -> {
             BEFORE("", this::authenticateCreator);
@@ -42,6 +44,7 @@ public final class CreatorStoryService extends AbstractCreatorService {
             PATH("/:storyId", () -> {
                 BEFORE("", this::authenticateStory);
 
+                GET("", this::get);
                 PATCH("", this::patch);
                 DELETE("", this::delete);
                 PATH("/items", () -> {
@@ -62,6 +65,16 @@ public final class CreatorStoryService extends AbstractCreatorService {
         ListMethod method = call.queryEnum("sort", ListMethod.class, ListMethod.sort);
         String next = call.queryString("next." + method.nextName(), null);
         return storyClient.list(method, creatorId, next, size);
+    }
+
+    public CreatorStory get(JsonCall call) {
+        String storyId = call.pathString("storyId");
+
+        CreatorStory story = storyClient.get(storyId);
+        if (story == null) throw new ForbiddenException("Creator Forbidden");
+
+        authenticateCreator(call, story.getCreatorId());
+        return story;
     }
 
     public CreatorStory post(JsonCall call) {
