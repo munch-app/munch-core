@@ -66,7 +66,7 @@
   }
 </script>
 
-<style lang="less" scoped>
+<style scoped lang="less">
   .Marker {
     width: 32px;
     height: 32px;

@@ -1,5 +1,5 @@
 <template>
-  <div class="container-1200 mtb-48">
+  <div class="container-1200 mtb-32">
     <div class="flex-between">
       <h1>{{creatorName}} Stories</h1>
       <button class="secondary-outline small" @click="onNewStory">Write a story</button>
@@ -34,6 +34,7 @@
   import {mapGetters} from "vuex";
 
   export default {
+    layout: 'creator',
     head() {
       return {title: `${this.creatorName} Articles · Munch Creator`}
     },

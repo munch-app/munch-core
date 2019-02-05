@@ -8,6 +8,7 @@ export const state = () => ({
 
 export const getters = {
   profile: (state) => state.profile || {},
+  profileImageUrl: (state) => state.profile && state.profile.photoUrl,
   userId: (state) => state.profile && state.profile.userId,
   isLoggedIn: (state) => state.profile && !!state.profile.name,
   displayName: (state) => state.profile && state.profile.name,

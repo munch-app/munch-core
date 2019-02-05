@@ -7,13 +7,6 @@
 
     <a @click.prevent.stop="onClickLogin" class="flex-no-shrink" v-if="!isLoggedIn">Login</a>
 
-    <div class="flex-no-shrink hover-pointer" v-else @click="$store.commit('toggleFocus', 'HeaderMenu')">
-      <div class="ProfileImage">
-        <img class="wh-100" v-if="profile.photoUrl" :src="profile.photoUrl">
-        <div v-else class="bg-whisper100 wh-100"></div>
-      </div>
-    </div>
-
     <portal to="dialog-blank" v-if="getApp === 'GetAppDialog'">
       <div class="flex-row bg-white border-4 overflow-hidden" id="dialog-portal-scroll"
            v-on-clickaway="closeGetApp">
@@ -172,15 +165,5 @@
 
   .ContentRight {
     padding: 32px;
-  }
-
-  .ProfileImage {
-    height: 40px;
-    width: 40px;
-    margin-top: 4px;
-
-    > * {
-      border-radius: 50%;
-    }
   }
 </style>

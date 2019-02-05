@@ -1,6 +1,6 @@
 // By doing this, instead for CORS, avoid preflight request, cheaper deployment.
-const {Router} = require('express');
-const router = Router();
+const {Router} = require('express')
+const router = Router()
 
 const service = require('axios').create({
   baseURL: process.env.API_MUNCH_APP
@@ -11,7 +11,7 @@ service.interceptors.response.use(response => {
 }, error => {
   // Error response should be handled by ~/plugins/axios.js
   return error.response
-});
+})
 
 function getHeaders(req) {
   const localTime = req.headers['user-local-time']
@@ -41,8 +41,8 @@ router.use('/api', function (req, res, next) {
     headers: getHeaders(req),
     data: req.body
   }).then(({data}) => {
-    res.json(data);
+    res.json(data)
   }).catch(next)
-});
+})
 
-module.exports = router;
+module.exports = router

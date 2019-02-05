@@ -1,5 +1,5 @@
-const {Router} = require('express');
-const router = Router();
+const {Router} = require('express')
+const router = Router()
 
 /**
  * To auto login if user session token expired
@@ -26,4 +26,4 @@ router.use('/', function (req, res, next) {
   })
 })
 
-module.exports = router;
+module.exports = router

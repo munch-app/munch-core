@@ -1,5 +1,5 @@
 <template>
-  <div class="HeaderMenu flex-justify-end container index-top-elevation no-select" v-if="isFocused('HeaderMenu')">
+  <div class="HeaderMenu flex-justify-end index-top-elevation no-select" v-if="isFocused('HeaderMenu')">
     <ul class="NavLink fixed bg-white w-100 elevation-3 text index-top-elevation border">
       <div class="Mobile">
         <nuxt-link to="/">Home</nuxt-link>

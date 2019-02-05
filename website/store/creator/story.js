@@ -1,20 +1,45 @@
 export const state = () => ({
   story: null,
-  items: null,
+  items: [],
+  next: null,
+  loading: false,
 })
 
 export const getters = {
   story: (state) => state.story,
   storyTitle: (state) => state.story && state.story.title,
-  creatorId: (state) => state.story && state.story.creatorId,
   storyId: (state) => state.story && state.story.storyId,
+  creatorId: (state) => state.story && state.story.creatorId,
 }
 
 export const mutations = {
   set(state, story) {
     state.story = story
-    state.items = null
+    state.items = []
+    state.loading = true
   },
+
+  appendItems(state, {items, next}) {
+    state.items.push(...items)
+    state.next = next
+    state.loading = !!next
+  }
+}
+
+function appendItems({commit, state}, story) {
+  const {creatorId, storyId} = story
+
+  if (!(state.story && state.story.storyId === storyId)) return
+  if (!state.loading) return
+
+  let params = {size: 30, sort: 'sort'}
+  if (state.next) params['next.sort'] = next.sort
+
+  return this.$api.get(`/creators/${creatorId}/stories/${storyId}/items`, {params})
+    .then(({data, next}) => {
+      commit('appendItems', {items: data, next})
+      return appendItems.call(this, {commit, state}, story)
+    })
 }
 
 export const actions = {
@@ -27,6 +52,7 @@ export const actions = {
    */
   start({commit, state}, story) {
     commit('set', story)
+    appendItems.call(this, {commit, state}, story)
     return story
   },
 

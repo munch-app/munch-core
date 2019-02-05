@@ -1,5 +1,5 @@
 <template>
-  <div class="container-1200 mtb-48">
+  <div class="container-1200 mtb-32">
     <div class="flex-between">
       <h2>New Story:</h2>
       <button class="secondary-outline small" @click="onCreate">
@@ -48,6 +48,7 @@
   import TextAuto from "../../../components/core/TextAuto";
 
   export default {
+    layout: 'creator',
     components: {TextAuto, InputText},
     mixins: [validationMixin],
     head() {

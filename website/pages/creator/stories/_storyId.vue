@@ -1,8 +1,6 @@
 <template>
-  <div class="container-1200 mtb-48">
+  <div class="container-1200 mtb-32">
     <text-auto class="h1 Input" v-model.trim="story.title" placeholder="Title"/>
-    <text-auto class="subtext Input" v-model.trim="story.subtitle" placeholder="Subtitle"/>
-    <text-auto class="regular Input" v-model.trim="story.body" placeholder="Body"/>
 
   </div>
 </template>
@@ -15,12 +13,13 @@
   import {required, minLength, maxLength} from 'vuelidate/lib/validators'
 
   export default {
+    layout: 'creator',
     components: {TextAuto},
     mixins: [validationMixin],
     head() {
       return {title: `${this.storyTitle || 'Story'} · ${this.creatorName}`}
     },
-    asyncData({$api, store, params: {storyId}, error}) {
+    asyncData({$api, store, params: {storyId}, $error}) {
       const story = store.state.creator.story.story
       if (story && story.storyId === storyId) return {story}
 
@@ -28,32 +27,11 @@
         return store.dispatch('creator/story/start', data).then((story) => {
           return {story}
         })
-      }).catch((err) => {
-        if (err.statusCode === 404) error({statusCode: 404, message: 'Story Not Found'})
-        else if (err.statusCode === 403) error({statusCode: 403, message: 'Forbidden'})
-        else store.dispatch('addError', err)
-      })
+      }).catch((err) => $error(err))
     },
     computed: {
       ...mapGetters('creator', ['creatorName', 'creatorId']),
       ...mapGetters('creator/story', ['storyId', 'storyTitle']),
-    },
-    validations: {
-      story: {
-        title: {
-          required,
-          minLength: minLength(3),
-          maxLength: maxLength(250)
-        },
-        subtitle: {
-          minLength: minLength(3),
-          maxLength: maxLength(100)
-        },
-        body: {
-          minLength: minLength(3),
-          maxLength: maxLength(3000)
-        },
-      },
     },
   }
 </script>

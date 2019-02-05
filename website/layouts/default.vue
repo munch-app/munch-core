@@ -7,27 +7,18 @@
           <search-bar class="SearchBar" @onBlur="onBlur" @onFocus="onFocus"/>
         </div>
         <header-right class="HeaderRight" :clear="isClear"/>
+        <header-profile/>
       </div>
     </nav>
 
     <div style="height: 56px"/>
-    <header-menu/>
+    <header-menu class="container"/>
 
     <div style="height: 48px" v-if="isSearch"/>
     <!-- Search Bar Filter -->
     <search-bar-filter v-if="isSearch"/>
 
-    <!-- Notification Portal -->
-    <notification-portal/>
-
-    <!-- Dialog Portal -->
-    <dialog-portal/>
-
-    <!-- Notification List on the right -->
-    <notification-list/>
-
-    <!-- Notification Event on the bottom -->
-    <notification-event/>
+    <layout-default/>
 
     <!-- Elevation overlay for content -->
     <div @click="() => {}" :class="{'elevation-overlay index-content-overlay': isElevated}"></div>
@@ -38,26 +29,22 @@
 </template>
 
 <script>
+  import HeaderProfile from "../components/layouts/HeaderProfile";
   if (process.browser) require('intersection-observer')
-
   import {mapGetters} from 'vuex'
+
+  import LayoutDefault from "../components/layouts/LayoutDefault";
   import HeaderLogo from "../components/layouts/HeaderLogo";
   import HeaderMenu from "../components/layouts/HeaderMenu";
   import SearchBar from "../components/search/SearchBar";
   import SearchBarFilter from "../components/search/SearchBarFilter";
   import HeaderRight from "../components/layouts/HeaderRight";
-  import ProfileOnBoarding from "../components/profile/ProfileOnBoarding";
-  import DialogPortal from "../components/layouts/DialogPortal";
-  import NotificationList from "../components/layouts/NotificationList";
   import NavFooter from "../components/layouts/NavFooter";
-  import NotificationEvent from "../components/layouts/NotificationEvent";
-  import NotificationPortal from "../components/layouts/NotificationPortal";
 
   export default {
     components: {
-      NotificationPortal, NotificationEvent,
-      NavFooter, NotificationList, DialogPortal, ProfileOnBoarding, HeaderRight, SearchBarFilter,
-      SearchBar, HeaderMenu, HeaderLogo
+      HeaderProfile,
+      LayoutDefault, NavFooter, HeaderRight, SearchBarFilter, SearchBar, HeaderMenu, HeaderLogo
     },
     data() {
       return {searching: false, scrolledHeight: false}
@@ -108,7 +95,7 @@
   }
 </script>
 
-<style lang="less" scoped>
+<style scoped lang="less">
   .Default {
     min-height: 100vh;
   }

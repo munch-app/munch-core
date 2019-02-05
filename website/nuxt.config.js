@@ -61,8 +61,8 @@ module.exports = {
     origin: process.env.ORIGIN || 'http://localhost:3000',
   },
   build: {
-    extend(config, {isDev, isClient}) {
-      if (isDev && isClient) {
+    extend(config, {isDev}) {
+      if (isDev && process.client) {
         config.module.rules.push({
           enforce: 'pre',
           test: /\.(js|vue)$/,
@@ -76,22 +76,10 @@ module.exports = {
       }
     }
   },
-  vendor: [
-    'portal-vue',
-    'prismic-vue',
-    'vue-rx',
-    'vue-clickaway',
-    'vue-simple-svg',
-    'vue-browser-geolocation',
-    'vue-observe-visibility',
-    'vuex-persistedstate',
-    'vue-scrollto',
-    'vue-clipboard2',
-    'vue-script2',
-  ],
   plugins: [
     // Plugins by Munch Team
     '~/plugins/head',
+    '~/plugins/error',
     '~/plugins/router',
     {src: '~/plugins/tracker', ssr: false},
 
@@ -116,9 +104,7 @@ module.exports = {
     {src: '~/plugins/vue-loader', ssr: false},
   ],
   serverMiddleware: [
-    {
-      path: '/_health', handler: (req, res) => res.end('ok')
-    },
+    {path: '/_health', handler: (req, res) => res.end('ok')},
     '~/server/index.js',
     '~/server/redirect.js'
   ],
@@ -155,4 +141,4 @@ module.exports = {
       }
     ]
   }
-};
+}

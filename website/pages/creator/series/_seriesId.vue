@@ -5,6 +5,7 @@
 </template>
 <script>
   export default {
+    layout: 'creator',
     head() {
       return {title: 'My Series · Munch Creator'}
     },

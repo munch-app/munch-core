@@ -1,5 +1,5 @@
 <template>
-  <div class="container-1200 mtb-48">
+  <div class="container-1200 mtb-32">
     <h1 class="mb-32">Your creator profiles</h1>
 
     <div v-if="profiles.length > 0" class="CardList flex-wrap">
@@ -17,6 +17,7 @@
 
 <script>
   export default {
+    layout: 'creator',
     head() {
       return {title: 'My Profiles · Munch Creator'}
     },
