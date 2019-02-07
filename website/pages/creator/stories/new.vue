@@ -17,8 +17,7 @@
           Title must have lesser than {{$v.title.$params.maxLength.max}} letters.
         </p>
       </div>
-      <text-auto class="Title w-100" v-model.trim="$v.title.$model" placeholder="Title">
-      </text-auto>
+      <text-auto class="h1" v-model="$v.title.$model" placeholder="Title"/>
     </div>
 
     <div class="mt-32">
@@ -109,10 +108,8 @@
           this.$api.post(`/creators/${this.creatorId}/stories`, {
             title: this.title,
             type: this.type
-          }).then(({data}) => {
-            return this.$store.dispatch('creator/story/start', data).then(() => {
-              this.$router.push({path: `/creator/stories/${data.storyId}`})
-            })
+          }).then(({data: {storyId, title, type}}) => {
+            this.$router.push({path: `/creator/stories/${storyId}`, query: {title, type, 'new': ''}})
           }).catch(error => {
             return this.$store.dispatch('addError', error)
           })
@@ -123,23 +120,6 @@
 </script>
 
 <style scoped lang="less">
-  .Title {
-    font-size: 32px;
-    font-weight: 600;
-    color: rgba(0, 0, 0, 0.75);
-
-    border: none;
-
-    &:focus {
-      outline: none;
-      color: rgba(0, 0, 0, 0.75);
-    }
-
-    &::placeholder {
-      color: rgba(0, 0, 0, 0.5);
-    }
-  }
-
   .TypeList {
     margin: -8px;
 

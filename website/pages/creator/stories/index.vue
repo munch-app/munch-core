@@ -84,11 +84,7 @@
         })
       },
       onStory(story) {
-        this.$store.dispatch('creator/story/start', story).then(() => {
-          this.$router.push({path: `/creator/stories/${story.storyId}`})
-        }).catch(error => {
-          return this.$store.dispatch('addError', error)
-        })
+        this.$router.push({path: `/creator/stories/${story.storyId}`})
       }
     },
   }

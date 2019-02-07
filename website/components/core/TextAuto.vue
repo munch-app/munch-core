@@ -1,23 +1,23 @@
 <template>
   <textarea
     rows="1"
-    @focus="resize"
     v-model="val"
     :style="computedStyles"
+
+    @focus="onFocus"
+    @blur="onBlur"
+    @select="onSelect"
   ></textarea>
 </template>
 <script>
   export default {
     name: 'TextAuto',
-    created() {
-      this.updateVal() // fill val with initial value passed via the same name prop
-    },
     mounted() {
-      this.resize() // perform initial height adjustment
+      this.resize()
     },
     props: {
       value: {
-        type: [String],
+        type: String,
         default: ''
       },
       minHeight: {
@@ -38,9 +38,7 @@
     },
     data() {
       return {
-        // data property for v-model binding with real textarea tag
-        val: null,
-        // works when content height becomes more then value of the maxHeight property
+        val: this.value,
         maxHeightScroll: false
       }
     },
@@ -67,8 +65,15 @@
       }
     },
     methods: {
-      updateVal() {
-        this.val = this.value
+      onFocus() {
+        this.resize()
+        this.$emit('focus')
+      },
+      onSelect() {
+        this.$emit('select')
+      },
+      onBlur() {
+        this.$emit('blur')
       },
       resize: function () {
         const important = this.isHeightImportant ? 'important' : ''
@@ -91,13 +96,28 @@
       }
     },
     watch: {
-      value() {
-        this.updateVal()
-      },
       val(val) {
         this.$nextTick(this.resize)
         this.$emit('input', val)
+        this.$emit('change', val)
       }
     }
   }
 </script>
+
+<style scoped lang="less">
+  textarea {
+    width: 100%;
+    border: none;
+    color: rgba(0, 0, 0, 0.75);
+
+    &:focus {
+      outline: none;
+      color: rgba(0, 0, 0, 0.75);
+    }
+
+    &::placeholder {
+      color: rgba(0, 0, 0, 0.6);
+    }
+  }
+</style>

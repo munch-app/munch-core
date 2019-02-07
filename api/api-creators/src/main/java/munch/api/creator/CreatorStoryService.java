@@ -49,7 +49,7 @@ public final class CreatorStoryService extends AbstractCreatorService {
                 DELETE("", this::delete);
                 PATH("/items", () -> {
                     GET("", this::listItem);
-                    POST("/:itemId", this::postItem);
+                    POST("", this::postItem);
                     PATCH("/:itemId", this::patchItem);
                     DELETE("/:itemId", this::deleteItem);
                 });

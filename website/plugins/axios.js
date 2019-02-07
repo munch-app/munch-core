@@ -53,6 +53,7 @@ export default function (context, inject) {
     get: (path, config) => $axios.$get('/api' + path, config),
     put: (path, data, config) => $axios.$put('/api' + path, data, config),
     post: (path, data, config) => $axios.$post('/api' + path, data, config),
+    patch: (path, data, config) => $axios.$patch('/api' + path, data, config),
     delete: (path, data, config) => $axios.$delete('/api' + path, data, config),
   }
   inject('api', context.$api)

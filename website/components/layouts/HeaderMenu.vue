@@ -14,7 +14,7 @@
 
       <div v-if="creatorName">
         <nuxt-link to="/creator/profiles"><span class="s700 weight-600">Creator: {{creatorName}}</span></nuxt-link>
-        <nuxt-link to="/creator/stories" v-if="isLoggedIn">Articles</nuxt-link>
+        <nuxt-link to="/creator/stories" v-if="isLoggedIn">Stories</nuxt-link>
         <nuxt-link to="/creator/series" v-if="isLoggedIn">Series</nuxt-link>
         <hr class="mtb-8">
       </div>
