@@ -164,7 +164,6 @@ export const actions = {
       const user = JSON.parse(req.cookies.MunchUser)
       this.commit('user/setUser', user)
 
-
       const creator = req.cookies.MunchCreator && JSON.parse(req.cookies.MunchCreator)
       if (creator) this.commit('creator/setCreator', creator)
     }

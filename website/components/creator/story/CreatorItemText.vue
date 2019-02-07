@@ -88,21 +88,21 @@
   }
 
   .heading1 {
-    font-weight: 600 !important;;
-    font-size: 32px !important;;
-    line-height: 42px !important;;
+    font-weight: 600 !important;
+    font-size: 32px !important;
+    line-height: 42px !important;
   }
 
   .heading2 {
-    font-weight: 600 !important;;
-    font-size: 24px !important;;
-    line-height: 32px !important;;
+    font-weight: 600 !important;
+    font-size: 24px !important;
+    line-height: 32px !important;
   }
 
   .body {
     font-weight: 400 !important;
-    font-size: 19px !important;;
-    line-height: 1.5 !important;;
+    font-size: 19px !important;
+    line-height: 1.5 !important;
   }
 
   .TextFloating {

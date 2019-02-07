@@ -9,7 +9,10 @@
     </div>
 
     <div class="flex-align-center flex-justify-end ml-8 flex-grow">
-      <button class="secondary-outline small">Publish</button>
+      <button class="secondary-outline small mr-16" @click="onSave">
+        {{saving ? 'Saving' : 'Save'}}
+      </button>
+      <button class="secondary small" @click="onPublish">Publish</button>
     </div>
   </div>
 </template>
@@ -28,10 +31,22 @@
         ]
       }
     },
+    props: {
+      saving: {
+        type: Boolean,
+        required: true,
+      }
+    },
     methods: {
       onAdd(type) {
-        this.$emit('on-type', type)
+        this.$emit('add', type)
       },
+      onSave() {
+        this.$emit('save')
+      },
+      onPublish() {
+        this.$emit('publish')
+      }
     }
   }
 </script>

@@ -13,7 +13,7 @@ export default function (context, inject) {
     const meta = data && data.meta
     if (meta && meta.code === 404) {
       throw({statusCode: 404, message: 'Not Found'})
-    } else if (meta && meta.code === 404) {
+    } else if (meta && meta.code >= 300) {
       throw({statusCode: meta.code, message: meta.error.message, meta})
     }
   })

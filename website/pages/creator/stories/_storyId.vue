@@ -12,7 +12,7 @@
                     @move-up="onMoveUp" @move-down="onMoveDown" @delete="onDelete" @change="onChange"/>
     </div>
 
-    <creator-add-item class="mt-48" @on-type="onNewItem"/>
+    <creator-add-item class="mtb-48" :saving="saving" @add="onNewItem" @save="onSave" @publish="onPublish"/>
   </div>
 </template>
 
@@ -20,7 +20,6 @@
   import {mapGetters} from "vuex";
   import Vue from 'vue';
   import TextAuto from "../../../components/core/TextAuto";
-
   import CreatorItem from "../../../components/creator/story/CreatorItem";
   import CreatorAddItem from "../../../components/creator/story/CreatorAddItem";
 
@@ -44,6 +43,7 @@
       return {
         items: [],
         loading: true,
+        saving: false,
       }
     },
     asyncData({$api, params: {storyId}, query, $error}) {
@@ -91,6 +91,12 @@
         }
         this.items.push(item)
       },
+      onSave() {
+        this.update()
+      },
+      onPublish() {
+        // TODO
+      },
       onMoveUp(item) {
         const index = this.items.indexOf(item)
 
@@ -127,15 +133,25 @@
       },
       onChange(item) {
         item.$updated = new Date().getTime()
+
+        switch (item.type) {
+          case 'image':
+            this.update()
+        }
       },
       update() {
         this.updateStory()
         this.updateItems()
+
+        setTimeout(() => {
+          this.saving = false
+        }, 3000)
       },
       updateStory() {
         const updated = this.story.$updated
         if (!updated) return
 
+        this.saving = true
         return this.$api.patch(`/creators/${this.creatorId}/stories/${this.storyId}`, this.story).then(() => {
           console.log('Patched Story')
 
@@ -180,6 +196,8 @@
 
         this.items.forEach(item => {
           if (item.$updated) {
+            this.saving = true
+
             if (item.$deleted) {
               deleteItem.call(this, item)
             } else {

@@ -1,10 +1,17 @@
 // By doing this, instead for CORS, avoid preflight request, cheaper deployment.
 const {Router} = require('express')
 const router = Router()
+const fs = require('fs')
+
+const multer = require('multer')
+
+// TODO:  Memory Storage needs to be optimise to massive deployment
+const upload = multer({storage: multer.memoryStorage()})
+const FormData = require('form-data')
 
 const service = require('axios').create({
   baseURL: process.env.API_MUNCH_APP
-});
+})
 
 service.interceptors.response.use(response => {
   return response
@@ -13,30 +20,28 @@ service.interceptors.response.use(response => {
   return error.response
 })
 
-function getHeaders(req) {
-  const localTime = req.headers['user-local-time']
-  const latLng = req.headers['user-lat-lng']
+function getHeaders(req, headers) {
   const authentication = req.headers['authorization']
-  const contentType = req.headers['content-type']
-  const headers = {}
-
-  if (localTime) headers['User-Local-Time'] = localTime
-  if (latLng) headers['User-Lat-Lng'] = latLng
   if (authentication) headers['Authorization'] = authentication
-  if (contentType) headers['Content-Type'] = contentType
   return headers
 }
 
-router.use('/api', function (req, res, next) {
+router.post('/files/creators/:creatorId/images', upload.single('file'), function (req, res, next) {
+  const form = new FormData()
+  const file = req.file
+  form.append('file', file.buffer, file.originalname);
+
   service.request({
-    url: req.url.replace(/^\/api/, ''),
+    url: req.url.replace(/^\/files/, ''),
     params: req.query,
-    method: req.method,
-    headers: getHeaders(req),
-    data: req.body
+    headers: getHeaders(req, form.getHeaders()),
+    method: 'post',
+    data: form
   }).then(({data}) => {
     res.json(data)
   }).catch(next)
 })
 
 module.exports = router
+
+

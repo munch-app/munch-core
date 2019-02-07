@@ -67,6 +67,7 @@ project('api-users') {
 
 project('api-creators') {
     dependencies {
+        compile group: 'file-service', name: 'file-service-client', version: fileVersion
     }
 }
 

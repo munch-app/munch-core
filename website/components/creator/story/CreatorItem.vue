@@ -9,6 +9,8 @@
       <creator-item-text v-if="isText" :item="item" @change="onChange"/>
       <creator-item-line v-else-if="item.type === 'line'"/>
       <creator-item-html v-else-if="item.type === 'html'" :item="item" @change="onChange"/>
+      <creator-item-place v-else-if="item.type === 'munchPlace'" :item="item" @change="onChange"/>
+      <creator-item-image v-else-if="item.type === 'image'" :item="item" @change="onChange"/>
       <p v-else>{{item}}</p>
     </div>
 
@@ -22,10 +24,12 @@
   import CreatorItemText from "./CreatorItemText";
   import CreatorItemLine from "./CreatorItemLine";
   import CreatorItemHtml from "./CreatorItemHtml";
+  import CreatorItemPlace from "./CreatorItemPlace";
+  import CreatorItemImage from "./CreatorItemImage";
 
   export default {
     name: "CreatorItem",
-    components: {CreatorItemHtml, CreatorItemLine, CreatorItemText},
+    components: {CreatorItemImage, CreatorItemPlace, CreatorItemHtml, CreatorItemLine, CreatorItemText},
     props: {
       item: {
         type: Object,
