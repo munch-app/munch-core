@@ -8,15 +8,16 @@
         <h2>Loading...</h2>
       </div>
 
-      <creator-item v-for="item in items" :key="item.itemId" :item="item" v-if="!item.$deleted"
+      <creator-item v-for="item in items" :key="item.sort" :item="item" v-if="!item.$deleted"
                     @move-up="onMoveUp" @move-down="onMoveDown" @delete="onDelete" @change="onChange"/>
     </div>
 
-    <creator-add-item class="mtb-48" :saving="saving" @add="onNewItem" @save="onSave" @publish="onPublish"/>
+    <creator-add-item class="mtb-48" :story="story" @add="onNewItem" @save="onSave" @publish="onPublish"/>
   </div>
 </template>
 
 <script>
+  import _ from 'lodash';
   import {mapGetters} from "vuex";
   import Vue from 'vue';
   import TextAuto from "../../../components/core/TextAuto";
@@ -43,7 +44,6 @@
       return {
         items: [],
         loading: true,
-        saving: false,
       }
     },
     asyncData({$api, params: {storyId}, query, $error}) {
@@ -58,6 +58,7 @@
     mounted() {
       this.$$autoUpdate = setInterval(this.update, 10000)
       this.appendItems()
+      window.onbeforeunload = this.onBeforeUnload
     },
     beforeDestroy() {
       clearInterval(this.$$autoUpdate)
@@ -85,7 +86,6 @@
           type,
           sort: millis,
           storyId: this.story.storyId,
-          itemId: `post-${millis}`,
           $updated: millis,
           $new: true
         }
@@ -93,6 +93,11 @@
       },
       onSave() {
         this.update()
+      },
+      onBeforeUnload() {
+        const message = 'You have unsaved changes!'
+        if (this.story.$updated) return message
+        if (_.some(this.items, i => i.$updated)) return message
       },
       onPublish() {
         // TODO
@@ -142,16 +147,11 @@
       update() {
         this.updateStory()
         this.updateItems()
-
-        setTimeout(() => {
-          this.saving = false
-        }, 3000)
       },
       updateStory() {
         const updated = this.story.$updated
         if (!updated) return
 
-        this.saving = true
         return this.$api.patch(`/creators/${this.creatorId}/stories/${this.storyId}`, this.story).then(() => {
           console.log('Patched Story')
 
@@ -196,8 +196,6 @@
 
         this.items.forEach(item => {
           if (item.$updated) {
-            this.saving = true
-
             if (item.$deleted) {
               deleteItem.call(this, item)
             } else {

@@ -13,7 +13,7 @@
       </div>
     </div>
 
-    <div v-if="stories">
+    <div v-if="stories" class="mtb-32">
       <div v-for="story in stories" :key="story.storyId"
            class="mtb-24 hr-bot hover-pointer"
            @click="onStory(story)">
@@ -22,10 +22,16 @@
         <p class="subtext">Last edited </p>
       </div>
 
-      <div class="mtb-24 p-16-24 bg-whisper100 border-4" v-if="stories.length === 0">
-        <h2>No stories found</h2>
-        <p class="text-underline hover-pointer" @click="onNewStory">Write a new story for {{creatorName}}.</p>
+      <div v-if="stories.length === 0" class="flex">
+        <div class="p-24 bg-whisper100 border-4 flex-shrink">
+          <h2>No Stories Found</h2>
+          <p class="s700 hover-pointer" @click="onNewStory">Write a new story for {{creatorName}}.</p>
+        </div>
       </div>
+    </div>
+
+    <div class="flex-center" v-if="next">
+      <button class="secondary-outline" @click="onLoadMore">Load More</button>
     </div>
   </div>
 </template>
@@ -44,10 +50,7 @@
     asyncData({$api, store}) {
       const creatorId = store.state.creator.profile.creatorId
       return $api.get(`/creators/${creatorId}/stories`, {
-        params: {
-          size: 30,
-          sort: 'statusDraft',
-        }
+        params: {size: 30, sort: 'statusDraft'}
       }).then(({data, next}) => {
         return {stories: data, next}
       })
@@ -74,14 +77,34 @@
         this.stories = null
 
         this.$api.get(`/creators/${this.creatorId}/stories`, {
-          params: {
-            size: 30,
-            sort: type,
-          }
+          params: {size: 30, sort: type}
         }).then(({data, next}) => {
           this.stories = data
           this.next = next
         })
+      },
+      onLoadMore() {
+        console.log(this.next)
+        const params = {size: 30, sort: this.selected}
+
+        switch (this.selected) {
+          case 'statusDraft':
+          case 'statusPublished':
+            params['next.statusSort'] = this.next.statusSort
+            break
+
+          case 'typeAward':
+          case 'typeGuide':
+          case 'typeBlog':
+            params['next.typeSort'] = this.next.typeSort
+            break
+        }
+
+        this.$api.get(`/creators/${this.creatorId}/stories`, {params})
+          .then(({data, next}) => {
+            this.stories.push(...data)
+            this.next = next
+          })
       },
       onStory(story) {
         this.$router.push({path: `/creator/stories/${story.storyId}`})

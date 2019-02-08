@@ -1,8 +1,10 @@
 <template>
-  <div class="CreatorItem mtb-24 flex-row">
+  <div class="CreatorItem flex-row" :class="classes">
     <div class="flex-align-center mr-16">
-      <simple-svg @click.native="onMoveUp" class="Icon hover-pointer wh-24px" fill="black" :filepath="require('~/assets/icon/creator/up.svg')"/>
-      <simple-svg @click.native="onMoveDown" class="Icon hover-pointer wh-24px" fill="black" :filepath="require('~/assets/icon/creator/down.svg')"/>
+      <simple-svg @click.native="onMoveUp" class="Icon hover-pointer wh-24px" fill="black"
+                  :filepath="require('~/assets/icon/creator/up.svg')"/>
+      <simple-svg @click.native="onMoveDown" class="Icon hover-pointer wh-24px" fill="black"
+                  :filepath="require('~/assets/icon/creator/down.svg')"/>
     </div>
 
     <div class="flex-grow">
@@ -15,7 +17,8 @@
     </div>
 
     <div class="flex-align-center flex-justify-end ml-16" @click="onDelete">
-      <simple-svg class="Icon hover-pointer wh-24px" fill="black" :filepath="require('~/assets/icon/creator/trash.svg')"/>
+      <simple-svg class="Icon hover-pointer wh-24px" fill="black"
+                  :filepath="require('~/assets/icon/creator/trash.svg')"/>
     </div>
   </div>
 </template>
@@ -48,6 +51,21 @@
 
           default:
             return false
+        }
+      },
+      classes() {
+        switch (this.item.type) {
+          case 'body':
+            return 'mb-24'
+
+          case 'heading1':
+            return 'mt-48 mb-8'
+
+          case 'heading2':
+            return 'mb-8'
+
+          default:
+            return 'mtb-24'
         }
       }
     },

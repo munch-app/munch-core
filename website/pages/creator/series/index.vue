@@ -13,16 +13,18 @@
       </div>
     </div>
 
-    <div v-if="series">
+    <div v-if="series" class="mtb-32">
       <div v-for="s in series" :key="s.seriesId" class="mtb-24 hr-bot hover-pointer" @click="onSeries(s)">
         <h3>{{s.title}}</h3>
         <p v-if="s.subtitle">{{s.subtitle}}</p>
         <p class="subtext">Last edited </p>
       </div>
 
-      <div class="mtb-24 p-16-24 bg-whisper100 border-4" v-if="series.length === 0">
-        <h2>No series found</h2>
-        <p class="text-underline hover-pointer" @click="onNewSeries">Create a new series for {{creatorName}}.</p>
+      <div v-if="series.length === 0" class="flex">
+        <div class="p-24 bg-whisper100 border-4 flex-shrink">
+          <h2>No Series Found</h2>
+          <p class="s700 hover-pointer" @click="onNewSeries">Create a new series for {{creatorName}}.</p>
+        </div>
       </div>
     </div>
   </div>
@@ -61,6 +63,8 @@
     methods: {
       onNewSeries() {
         // TODO
+      },
+      onTab(type) {
       },
       onSeries(series) {
 

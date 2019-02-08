@@ -160,13 +160,13 @@ Max-width of 400px if > 576vw
 <style lang="less">
   .Dialog.Styled {
     > div {
-      margin-left: -12px;
-      margin-right: -12px;
+      margin-left: -8px;
+      margin-right: -8px;
       margin-bottom: 8px;
 
       > * {
-        margin-left: 12px;
-        margin-right: 12px;
+        margin-left: 8px;
+        margin-right: 8px;
       }
     }
 
@@ -209,13 +209,14 @@ Max-width of 400px if > 576vw
     }
 
     > div {
-      padding-top: 10px;
-      padding-bottom: 10px;
+      padding-top: 12px;
+      padding-bottom: 12px;
 
       font-weight: 600;
-      font-size: 15px;
+      font-size: 16px;
       line-height: 1.5;
       text-align: center;
+      color: rgba(0, 0, 0, 0.75);
 
       &.close {
         font-weight: 400;
