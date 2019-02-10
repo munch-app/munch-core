@@ -18,7 +18,7 @@
         <nuxt-link to="/creator/profiles">
           <span class="s500">{{creatorName}}</span>
         </nuxt-link>
-        <nuxt-link to="/creator/stories" v-if="isLoggedIn">Content</nuxt-link>
+        <nuxt-link to="/creator/contents" v-if="isLoggedIn">Contents</nuxt-link>
         <nuxt-link to="/creator/series" v-if="isLoggedIn">Series</nuxt-link>
         <hr class="mtb-8">
       </div>

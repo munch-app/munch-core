@@ -2,6 +2,11 @@
 const {Router} = require('express')
 const router = Router()
 
+// TODO:  Memory Storage needs to be optimise for massive deployment
+const multer = require('multer')
+const upload = multer({storage: multer.memoryStorage()})
+const FormData = require('form-data')
+
 const service = require('axios').create({
   baseURL: process.env.API_MUNCH_APP
 });
@@ -27,16 +32,31 @@ function getHeaders(req) {
   return headers
 }
 
-router.use('/api', function (req, res, next) {
+function route(req, res, next, {headers, data}) {
   service.request({
     url: req.url.replace(/^\/api/, ''),
     params: req.query,
     method: req.method,
-    headers: getHeaders(req),
-    data: req.body
+    headers: {...getHeaders(req), ...(headers || {})},
+    data: data || req.body
   }).then(({data}) => {
     res.json(data)
   }).catch(next)
+}
+
+const fileRoutes = ['/api/creators/:creatorId/contents/:contentId/images']
+fileRoutes.forEach(path => {
+  router.post(path, upload.single('file'), function (req, res, next) {
+    const form = new FormData()
+    const file = req.file
+    form.append('file', file.buffer, file.originalname);
+
+    route(req, res, next, {headers: form.getHeaders(), data: form})
+  })
+})
+
+router.use('/api', function (req, res, next) {
+  route(req, res, next)
 })
 
 module.exports = router

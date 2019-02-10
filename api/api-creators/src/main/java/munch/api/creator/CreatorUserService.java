@@ -4,8 +4,8 @@ import munch.restful.core.NextNodeList;
 import munch.restful.core.exception.ForbiddenException;
 import munch.restful.server.JsonCall;
 import munch.user.client.CreatorUserClient;
-import munch.user.client.CreatorUserClient.ListMethod;
 import munch.user.data.CreatorUser;
+import munch.user.data.CreatorUserIndex;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -46,9 +46,9 @@ public final class CreatorUserService extends AbstractCreatorService {
         final String creatorId = call.pathString("creatorId");
         final int size = call.querySize(20, 50);
 
-        ListMethod method = call.queryEnum("sort", ListMethod.class, ListMethod.userId);
-        String next = call.queryString("next." + method.nextName(), null);
-        return creatorUserClient.list(method, creatorId, next, size);
+        CreatorUserIndex index = call.queryEnum("index", CreatorUserIndex.class, CreatorUserIndex.userId);
+        String next = call.queryString("next." + index.nextName(), null);
+        return creatorUserClient.list(index, creatorId, next, size);
     }
 
     private void authenticateAdmin(JsonCall call) {

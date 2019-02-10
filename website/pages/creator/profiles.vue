@@ -30,7 +30,7 @@
     methods: {
       onSelectProfile(profile) {
         this.$store.commit('creator/setCreator', {profile})
-        this.$router.push({path: '/creator/stories'})
+        this.$router.push({path: '/creator/contents'})
       }
     }
   }

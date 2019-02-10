@@ -4,9 +4,11 @@ import munch.restful.core.NextNodeList;
 import munch.restful.core.exception.ForbiddenException;
 import munch.restful.server.JsonCall;
 import munch.user.client.CreatorSeriesClient;
-import munch.user.client.CreatorSeriesStoryClient;
+import munch.user.client.CreatorSeriesContentClient;
 import munch.user.data.CreatorSeries;
-import munch.user.data.CreatorSeriesStory;
+import munch.user.data.CreatorSeriesContent;
+import munch.user.data.CreatorSeriesContentIndex;
+import munch.user.data.CreatorSeriesIndex;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -21,12 +23,12 @@ import javax.inject.Singleton;
 public final class CreatorSeriesService extends AbstractCreatorService {
 
     private final CreatorSeriesClient seriesClient;
-    private final CreatorSeriesStoryClient seriesStoryClient;
+    private final CreatorSeriesContentClient seriesContentClient;
 
     @Inject
-    public CreatorSeriesService(CreatorSeriesClient seriesClient, CreatorSeriesStoryClient seriesStoryClient) {
+    public CreatorSeriesService(CreatorSeriesClient seriesClient, CreatorSeriesContentClient seriesContentClient) {
         this.seriesClient = seriesClient;
-        this.seriesStoryClient = seriesStoryClient;
+        this.seriesContentClient = seriesContentClient;
     }
 
     @Override
@@ -44,13 +46,13 @@ public final class CreatorSeriesService extends AbstractCreatorService {
                 GET("", this::get);
                 PATCH("", this::patch);
                 DELETE("", this::delete);
-                PATH("/stories", () -> {
-                    GET("", this::listStory);
+                PATH("/contents", () -> {
+                    GET("", this::listContent);
 
-                    BEFORE("/:storyId", this::authenticateStory);
-                    POST("/:storyId", this::postStory);
-                    PATCH("/:storyId", this::patchStory);
-                    DELETE("/:storyId", this::deleteStory);
+                    BEFORE("/:contentId", this::authenticateContent);
+                    POST("/:contentId", this::postContent);
+                    PATCH("/:contentId", this::patchContent);
+                    DELETE("/:contentId", this::deleteContent);
                 });
             });
         });
@@ -61,9 +63,9 @@ public final class CreatorSeriesService extends AbstractCreatorService {
         final String creatorId = call.pathString("creatorId");
         final int size = call.querySize(20, 40);
 
-        CreatorSeriesClient.ListMethod method = call.queryEnum("sort", CreatorSeriesClient.ListMethod.class, CreatorSeriesClient.ListMethod.sort);
-        String next = call.queryString("next." + method.nextName(), null);
-        return seriesClient.list(method, creatorId, next, size);
+        CreatorSeriesIndex index = call.queryEnum("index", CreatorSeriesIndex.class, CreatorSeriesIndex.sortId);
+        String next = call.queryString("next." + index.getRangeName(), null);
+        return seriesClient.list(index, creatorId, next, size);
     }
 
     public CreatorSeries get(JsonCall call) {
@@ -95,31 +97,31 @@ public final class CreatorSeriesService extends AbstractCreatorService {
         return seriesClient.delete(creatorId, seriesId);
     }
 
-    public NextNodeList<CreatorSeriesStory> listStory(JsonCall call) {
+    public NextNodeList<CreatorSeriesContent> listContent(JsonCall call) {
         final String seriesId = call.pathString("seriesId");
         final int size = call.querySize(20, 40);
 
-        CreatorSeriesStoryClient.ListMethod method = call.queryEnum("sort", CreatorSeriesStoryClient.ListMethod.class, CreatorSeriesStoryClient.ListMethod.sort);
-        String next = call.queryString("next." + method.nextName(), null);
-        return seriesStoryClient.list(method, seriesId, next, size);
+        CreatorSeriesContentIndex index = call.queryEnum("index", CreatorSeriesContentIndex.class, CreatorSeriesContentIndex.sortId);
+        String next = call.queryString("next." + index.getRangeName(), null);
+        return seriesContentClient.list(index, seriesId, next, size);
     }
 
-    public CreatorSeriesStory postStory(JsonCall call) {
-        CreatorSeriesStory seriesStory = call.bodyAsObject(CreatorSeriesStory.class);
-        seriesStory.setSeriesId(call.pathString("seriesId"));
-        seriesStory.setStoryId(call.pathString("storyId"));
-        return seriesStoryClient.post(seriesStory);
+    public CreatorSeriesContent postContent(JsonCall call) {
+        CreatorSeriesContent seriesContent = call.bodyAsObject(CreatorSeriesContent.class);
+        seriesContent.setSeriesId(call.pathString("seriesId"));
+        seriesContent.setContentId(call.pathString("contentId"));
+        return seriesContentClient.post(seriesContent);
     }
 
-    public CreatorSeriesStory patchStory(JsonCall call) {
+    public CreatorSeriesContent patchContent(JsonCall call) {
         final String seriesId = call.pathString("seriesId");
-        final String storyId = call.pathString("storyId");
-        return seriesStoryClient.patch(seriesId, storyId, call.bodyAsJson());
+        final String contentId = call.pathString("contentId");
+        return seriesContentClient.patch(seriesId, contentId, call.bodyAsJson());
     }
 
-    public CreatorSeriesStory deleteStory(JsonCall call) {
+    public CreatorSeriesContent deleteContent(JsonCall call) {
         final String seriesId = call.pathString("seriesId");
-        final String storyId = call.pathString("storyId");
-        return seriesStoryClient.delete(seriesId, storyId);
+        final String contentId = call.pathString("contentId");
+        return seriesContentClient.delete(seriesId, contentId);
     }
 }

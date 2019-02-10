@@ -14,7 +14,8 @@ public final class CreatorModule extends ApiServiceModule {
         addService(UserCreatorProfileService.class);
 
         // CreatorId based Service
-        addService(CreatorStoryService.class);
+        addService(CreatorContentService.class);
+        addService(CreatorContentDraftService.class);
         addService(CreatorSeriesService.class);
         addService(CreatorUserService.class);
 

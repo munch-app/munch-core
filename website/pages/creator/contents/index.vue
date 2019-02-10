@@ -5,7 +5,7 @@
         <h1>Your content</h1>
         <h6><span class="s500">{{creatorName}}</span></h6>
       </div>
-      <button class="secondary-outline small" @click="onNewStory">New Content</button>
+      <button class="secondary-outline small" @click="onNewContent">New Content</button>
     </div>
 
     <div class="hr-bot mt-32 ArticleTabs flex-wrap no-select">
@@ -16,17 +16,17 @@
       </div>
     </div>
 
-    <div v-if="stories" class="mtb-16">
-      <div v-for="story in stories" :key="story.storyId" @click="onStory(story)"
+    <div v-if="contents" class="mtb-16">
+      <div v-for="content in contents" :key="content.contentId" @click="onContent(content)"
            class="mtb-8 p-24-0 hr-bot hover-pointer">
-        <h3>{{story.title}}</h3>
+        <h3>{{content.title}}</h3>
         <div class="back-text">
-          <div v-if="story.subtitle">{{story.subtitle}}</div>
-          <div>Last edited on {{formatMillis(story.updatedMillis)}}</div>
+          <div v-if="content.body">{{content.body}}</div>
+          <div>Last edited on {{formatMillis(content.updatedMillis)}}</div>
         </div>
       </div>
 
-      <div v-if="stories.length === 0" class="flex-center">
+      <div v-if="contents.length === 0" class="flex-center">
         <div class="p-32">
           <h3 v-if="selected === 'statusDraft'">You have no drafts.</h3>
           <h3 v-if="selected === 'statusPublished'">You don't have any published content yet.</h3>
@@ -54,10 +54,10 @@
     },
     asyncData({$api, store}) {
       const creatorId = store.state.creator.profile.creatorId
-      return $api.get(`/creators/${creatorId}/stories`, {
-        params: {size: 50, sort: 'statusDraft'}
+      return $api.get(`/creators/${creatorId}/contents`, {
+        params: {size: 50, index: 'draft'}
       }).then(({data, next}) => {
-        return {stories: data, next}
+        return {contents: data, next}
       })
     },
     data() {
@@ -71,44 +71,39 @@
     },
     methods: {
       formatMillis: (millis) => dateformat(millis, 'mmm dd, yyyy'),
-      onNewStory() {
-        this.$router.push({path: '/creator/stories/new'})
+      onNewContent() {
+        this.$router.push({path: '/creator/contents/new'})
       },
       onTab(type) {
         this.selected = type
-        this.stories = null
+        this.contents = null
 
-        this.$api.get(`/creators/${this.creatorId}/stories`, {
-          params: {size: 50, sort: type}
+        this.$api.get(`/creators/${this.creatorId}/contents`, {
+          params: {size: 50, index: type}
         }).then(({data, next}) => {
-          this.stories = data
+          this.contents = data
           this.next = next
         })
       },
       onLoadMore() {
-        const params = {size: 50, sort: this.selected}
+        const params = {size: 50, index: this.selected}
 
         switch (this.selected) {
-          case 'statusDraft':
-          case 'statusPublished':
-            params['next.statusSort'] = this.next.statusSort
-            break
-
-          case 'typeAward':
-          case 'typeGuide':
-          case 'typeBlog':
-            params['next.typeSort'] = this.next.typeSort
+          case 'draft':
+          case 'published':
+          case 'archived':
+            params['next.sortId'] = this.next.sortId
             break
         }
 
-        this.$api.get(`/creators/${this.creatorId}/stories`, {params})
+        this.$api.get(`/creators/${this.creatorId}/contents`, {params})
           .then(({data, next}) => {
-            this.stories.push(...data)
+            this.contents.push(...data)
             this.next = next
           })
       },
-      onStory(story) {
-        this.$router.push({path: `/creator/stories/${story.storyId}`})
+      onContent(content) {
+        this.$router.push({path: `/creator/contents/${content.contentId}`})
       },
     },
   }

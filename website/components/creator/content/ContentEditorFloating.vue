@@ -15,7 +15,7 @@
         <div class="ButtonFloating" @click="onClickType(commands, 'place')">
           <simple-svg fill="black" :filepath="require('~/assets/icon/creator/place.svg')"/>
         </div>
-        <div class="ButtonFloating" @click="onClickType(commands, 'image')">
+        <div v-if="contentId" class="ButtonFloating" @click="onClickType(commands, 'image')">
           <simple-svg fill="black" :filepath="require('~/assets/icon/creator/image.svg')"/>
         </div>
         <div class="ButtonFloating" @click="onClickType(commands, 'line')">
@@ -45,7 +45,8 @@
     name: "ContentEditorFloating",
     components: {ContentEditorPlaceDialog, ImageSizes, EditorFloatingMenu},
     props: {
-      editor: Object
+      editor: Object,
+      contentId: String
     },
     data() {
       return {
@@ -85,7 +86,7 @@
         const form = new FormData()
         form.append('file', file, file.name)
 
-        return this.$axios.$post(`/files/creators/${this.creatorId}/images`, form)
+        return this.$api.post(`/creators/${this.creatorId}/contents/${this.contentId}/images`, form)
           .then(({data}) => {
             console.log(data)
             commands['image']({image: data, caption: null})

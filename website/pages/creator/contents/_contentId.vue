@@ -1,7 +1,7 @@
 <template>
   <div class="container-768 mtb-48 relative">
     <content-editor-bubble :editor="editor"/>
-    <content-editor-floating :editor="editor" @save="saveContent"/>
+    <content-editor-floating :editor="editor" :content-id="content.contentId" @save="saveContent"/>
 
     <editor-content class="Editor" :editor="editor"/>
 
@@ -55,7 +55,7 @@
     layout: 'creator',
     components: {ContentEditorFloating, ContentEditorBubble, EditorContent},
     head() {
-      const title = this.content && this.content.title || 'Story'
+      const title = this.content && this.content.title || 'Content'
       return {title: `Editing ${title} · ${this.creatorName}`}
     },
     computed: {
@@ -73,12 +73,26 @@
     asyncData({$api, params: {contentId}, $error}) {
       if (contentId === 'new') {
         return {
-          content: {}
+          content: {},
+          draft: {
+            type: "doc",
+            content: [
+              {
+                type: "heading",
+                attrs: {level: 1},
+                content: [{type: "text", text: ""}]
+              },
+              {
+                type: "text",
+                content: [{type: "text", text: ""}]
+              },
+            ],
+          }
         }
       }
 
-      return $api.get(`/creators/_/stories/${contentId}`)
-        .then(({data}) => ({content: data}))
+      return $api.get(`/creators/_/contents/${contentId}`)
+        .then(({data: {content, draft}}) => ({content, draft}))
         .catch((err) => $error(err))
     },
     mounted() {
@@ -101,87 +115,9 @@
           new Image(),
           new Place(),
         ],
-        content: {
-          "type": "doc",
-          "content": [
-            {
-              "type": "heading",
-              "attrs": {
-                "level": 1
-              },
-              "content": [
-                {
-                  "type": "text",
-                  "text": "Yay Headlines!"
-                }
-              ]
-            },
-            {
-              "type": "line"
-            },
-            {
-              "type": "paragraph",
-              "content": [
-                {
-                  "type": "text",
-                  "text": "All these "
-                },
-                {
-                  "type": "text",
-                  "text": "cool tags"
-                },
-                {
-                  "type": "text",
-                  "text": " are working now."
-                }
-              ]
-            },
-            {
-              "type": "place",
-              "attrs": {
-                "placeId": "8c142e63-a36e-4f37-824c-e44be636fe37",
-                "placeName": "Horizon Bistronomy"
-              }
-            },
-            {
-              "type": "paragraph",
-              "content": [
-                {
-                  "type": "text",
-                  "text": "More Text"
-                }
-              ]
-            },
-            {
-              "type": "image",
-              "attrs": {
-                "image": {
-                  "imageId": "CLZgk2juQGazBPfOGJ6R7A",
-                  "sizes": [
-                    {
-                      "height": 160,
-                      "width": 328,
-                      "url": "https://s3.dualstack.ap-southeast-1.amazonaws.com/mimg-s/CLZgk2juQGazBPfOGJ6R7A_328x160.jpg"
-                    },
-                    {
-                      "height": 320,
-                      "width": 656,
-                      "url": "https://s3.dualstack.ap-southeast-1.amazonaws.com/mimg-s/CLZgk2juQGazBPfOGJ6R7A_656x320.jpg"
-                    },
-                    {
-                      "height": 500,
-                      "width": 1024,
-                      "url": "https://s3.dualstack.ap-southeast-1.amazonaws.com/mimg-s/CLZgk2juQGazBPfOGJ6R7A_1024x500.jpg"
-                    }
-                  ]
-                },
-                "caption": null
-              }
-            }
-          ]
-        },
+        content: this.draft,
         onUpdate: ({getJSON}) => {
-          this.content = getJSON()
+          this.draft = getJSON()
         },
       })
     },
@@ -200,6 +136,9 @@
       saveContent() {
       },
       deleteContent() {
+        // return this.$api.delete(`/creators/${this.content.creatorId}/contents/${this.content.contentId}`).then(() => {
+        //   this.$router.push({path: '/creator/contents'})
+        // }).catch((err) => this.$store.dispatch('addError', err))
       },
       publishContent() {
 

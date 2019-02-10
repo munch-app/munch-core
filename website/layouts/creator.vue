@@ -4,7 +4,7 @@
       <div class="container-1200 flex-between h-100">
         <header-logo class="mr-8"/>
         <div class="flex flex-grow">
-          <nuxt-link to="/creator/stories">
+          <nuxt-link to="/creator/contents">
             <h3 class="CreatorName text-ellipsis-1l">{{creatorName}}</h3>
           </nuxt-link>
         </div>

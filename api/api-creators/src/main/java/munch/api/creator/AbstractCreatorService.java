@@ -4,16 +4,18 @@ import munch.api.ApiRequest;
 import munch.api.ApiService;
 import munch.restful.core.exception.ForbiddenException;
 import munch.restful.server.JsonCall;
+import munch.user.client.CreatorContentClient;
 import munch.user.client.CreatorSeriesClient;
-import munch.user.client.CreatorStoryClient;
 import munch.user.client.CreatorUserClient;
+import munch.user.data.CreatorContent;
 import munch.user.data.CreatorSeries;
-import munch.user.data.CreatorStory;
 import munch.user.data.CreatorUser;
 
 import javax.inject.Inject;
 
 /**
+ * This implementation is a little messy, should be rewritten.
+ * <p>
  * Created by: Fuxing
  * Date: 2019-02-02
  * Time: 23:29
@@ -23,13 +25,13 @@ public abstract class AbstractCreatorService extends ApiService {
 
     private CreatorUserClient creatorUserClient;
     private CreatorSeriesClient seriesClient;
-    private CreatorStoryClient storyClient;
+    private CreatorContentClient contentClient;
 
     @Inject
-    void inject(CreatorUserClient creatorUserClient, CreatorSeriesClient seriesClient, CreatorStoryClient storyClient) {
+    void inject(CreatorUserClient creatorUserClient, CreatorSeriesClient seriesClient, CreatorContentClient contentClient) {
         this.creatorUserClient = creatorUserClient;
         this.seriesClient = seriesClient;
-        this.storyClient = storyClient;
+        this.contentClient = contentClient;
     }
 
     /**
@@ -37,9 +39,14 @@ public abstract class AbstractCreatorService extends ApiService {
      *
      * @return whether authentication is required, creatorId:_, the resources will authenticate instead.
      */
-    private boolean requireAuthentication(JsonCall call) {
-        final String creatorId = call.pathString("creatorId");
-        return !creatorId.equals("_");
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    private boolean requireAuthentication(JsonCall call, String... names) {
+        for (String name : names) {
+            final String value = call.pathString(name);
+            if (value.equals("_")) return false;
+        }
+
+        return true;
     }
 
     /**
@@ -48,7 +55,7 @@ public abstract class AbstractCreatorService extends ApiService {
      * @param call JsonCall to validate that creatorId is authenticated
      */
     protected void authenticateCreator(JsonCall call) {
-        if (!requireAuthentication(call)) return;
+        if (!requireAuthentication(call, "creatorId")) return;
 
         authenticateCreator(call, call.pathString("creatorId"));
     }
@@ -57,32 +64,48 @@ public abstract class AbstractCreatorService extends ApiService {
         final ApiRequest request = call.get(ApiRequest.class);
         final String userId = request.getUserId();
 
+        // Check if already authenticated
+        if (call.get(CreatorUser.class) != null) return;
+
         CreatorUser user = creatorUserClient.get(creatorId, userId);
         if (user == null) throw new ForbiddenException("Creator Forbidden");
 
-        // Add CreatorUser to global session
+        // Add CreatorUser to session for future access
         call.put(user, CreatorUser.class);
     }
 
     protected void authenticateSeries(JsonCall call) {
-        if (!requireAuthentication(call)) return;
+        if (!requireAuthentication(call, "creatorId")) return;
 
         final String creatorId = call.pathString("creatorId");
         final String seriesId = call.pathString("seriesId");
 
+        // Check if already authenticated
+        if (call.get(CreatorSeries.class) != null) return;
+
         CreatorSeries series = seriesClient.get(seriesId);
         if (series == null) throw new ForbiddenException("creator");
         if (!series.getCreatorId().equals(creatorId)) throw new ForbiddenException("Creator Forbidden");
+
+        // Add CreatorSeries to session for future access
+        call.put(series, CreatorSeries.class);
+
     }
 
-    protected void authenticateStory(JsonCall call) {
-        if (!requireAuthentication(call)) return;
+    protected void authenticateContent(JsonCall call) {
+        if (!requireAuthentication(call, "creatorId", "contentId")) return;
 
         final String creatorId = call.pathString("creatorId");
-        final String storyId = call.pathString("storyId");
+        final String contentId = call.pathString("contentId");
 
-        CreatorStory story = storyClient.get(storyId);
-        if (story == null) throw new ForbiddenException("creator");
-        if (!story.getCreatorId().equals(creatorId)) throw new ForbiddenException("Creator Forbidden");
+        // Check if already authenticated
+        if (call.get(CreatorContent.class) != null) return;
+
+        CreatorContent content = contentClient.get(contentId);
+        if (content == null) throw new ForbiddenException("creator");
+        if (!content.getCreatorId().equals(creatorId)) throw new ForbiddenException("Creator Forbidden");
+
+        // Add CreatorContent to session for future access
+        call.put(content, CreatorContent.class);
     }
 }
