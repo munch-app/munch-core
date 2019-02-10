@@ -14,6 +14,7 @@ const service = require('axios').create({
 service.interceptors.response.use(response => {
   return response
 }, error => {
+  console.log(error)
   // Error response should be handled by ~/plugins/axios.js
   return error.response
 })
@@ -32,13 +33,16 @@ function getHeaders(req) {
   return headers
 }
 
-function route(req, res, next, {headers, data}) {
+function route(req, res, next, options) {
+  const optionalHeaders = options && options.headers || {}
+  const optionalData = options && options.data
+
   service.request({
     url: req.url.replace(/^\/api/, ''),
     params: req.query,
     method: req.method,
-    headers: {...getHeaders(req), ...(headers || {})},
-    data: data || req.body
+    headers: {...getHeaders(req), ...optionalHeaders},
+    data: optionalData || req.body
   }).then(({data}) => {
     res.json(data)
   }).catch(next)

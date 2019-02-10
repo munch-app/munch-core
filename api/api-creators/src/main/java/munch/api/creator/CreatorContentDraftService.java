@@ -67,7 +67,11 @@ public final class CreatorContentDraftService extends AbstractCreatorService {
         authenticateCreator(call, creatorId);
 
         CreatorContentDraft draft = draftClient.getLatest(creatorId, contentId);
-        if (draft == null) throw new ForbiddenException("Creator Forbidden");
+        if (draft == null) {
+            draft = new CreatorContentDraft();
+            draft.setType("doc");
+            draft.setContent(List.of());
+        }
 
         return JsonResult.ok(Map.of(
                 "content", content,

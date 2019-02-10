@@ -91,9 +91,9 @@ public final class CreatorContentItemUtils {
     public static Image getImage(CreatorContentDraft draft) {
         List<CreatorContentItem> items = getItems(draft);
         for (CreatorContentItem item : items) {
-            Objects.requireNonNull(item.getBody());
             if (noneType(item, Type.image)) continue;
 
+            Objects.requireNonNull(item.getBody());
             JsonNode imageNode = item.getBody().path("image");
             return JsonUtils.toObject(imageNode, Image.class);
         }
@@ -132,6 +132,8 @@ public final class CreatorContentItemUtils {
                     break;
 
                 case "heading":
+                    if (node.getContent() == null) continue;
+
                     long level = Objects.requireNonNull(attrs).path("level").asLong();
                     if (items.isEmpty() && level == 1) {
                         items.add(newTextItem(items.size(), Type.title, node));
@@ -143,6 +145,8 @@ public final class CreatorContentItemUtils {
                     break;
 
                 case "paragraph":
+                    if (node.getContent() == null) continue;
+
                     items.add(newTextItem(items.size(), Type.text, node));
                     break;
             }

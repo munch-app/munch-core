@@ -19,10 +19,10 @@
     <div v-if="contents" class="mtb-16">
       <div v-for="content in contents" :key="content.contentId" @click="onContent(content)"
            class="mtb-8 p-24-0 hr-bot hover-pointer">
-        <h3>{{content.title}}</h3>
-        <div class="back-text">
-          <div v-if="content.body">{{content.body}}</div>
-          <div>Last edited on {{formatMillis(content.updatedMillis)}}</div>
+        <h3>{{content.title || 'Untitled Content'}}</h3>
+        <div class="b-a60">
+          <div class="regular mb-8" v-if="content.body">{{content.body}}</div>
+          <div class="subtext">Last edited on {{formatMillis(content.updatedMillis)}}</div>
         </div>
       </div>
 

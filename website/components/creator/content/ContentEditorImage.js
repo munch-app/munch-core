@@ -19,8 +19,8 @@ export default class Image extends Node {
       group: 'block',
       draggable: true,
 
-      parseDOM: [{tag: 'div',}],
-      toDOM: node => ['div', node.attrs],
+      parseDOM: [{tag: 'unknown',}],
+      toDOM: node => ['unknown', node.attrs],
     }
   }
 
