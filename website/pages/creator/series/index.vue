@@ -1,8 +1,11 @@
 <template>
   <div class="container-1200 mtb-32">
     <div class="flex-between">
-      <h1>{{creatorName}} Series</h1>
-      <button class="secondary-outline small" @click="onNewSeries">Create a series</button>
+      <div>
+        <h1>Your series</h1>
+        <h6><span class="s500">{{creatorName}}</span></h6>
+      </div>
+      <button class="secondary-outline small" @click="onNewSeries">Create Series</button>
     </div>
 
     <div class="hr-bot mt-32 SeriesTabs flex-wrap no-select">
@@ -16,7 +19,7 @@
     <div v-if="series" class="mtb-32">
       <div v-for="s in series" :key="s.seriesId" class="mtb-24 hr-bot hover-pointer" @click="onSeries(s)">
         <h3>{{s.title}}</h3>
-        <p v-if="s.subtitle">{{s.subtitle}}</p>
+        <p v-if="s.body">{{s.body}}</p>
         <p class="subtext">Last edited </p>
       </div>
 
@@ -30,6 +33,7 @@
   </div>
 </template>
 <script>
+  import dateformat from 'dateformat'
   import {mapGetters} from "vuex";
 
   export default {
@@ -61,6 +65,7 @@
       }
     },
     methods: {
+      formatMillis: (millis) => dateformat(millis, 'mmm dd, yyyy'),
       onNewSeries() {
         // TODO
       },

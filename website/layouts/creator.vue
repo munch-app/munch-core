@@ -3,9 +3,12 @@
     <nav class="Header fixed w-100 index-top-elevation hr-bot bg-white">
       <div class="container-1200 flex-between h-100">
         <header-logo class="mr-8"/>
-        <div class="flex-grow">
-          <h3 class="CreatorName text-ellipsis-1l">{{creatorName}}</h3>
+        <div class="flex flex-grow">
+          <nuxt-link to="/creator/stories">
+            <h3 class="CreatorName text-ellipsis-1l">{{creatorName}}</h3>
+          </nuxt-link>
         </div>
+        <portal-target name="creator-header-right"/>
         <header-profile/>
       </div>
     </nav>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="ContentImage">
     <div v-if="item.image">
       <image-sizes :sizes="item.image.sizes" width="1000" height="1000" object-fit="contain"/>
     </div>

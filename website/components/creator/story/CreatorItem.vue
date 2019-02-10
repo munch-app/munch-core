@@ -59,7 +59,7 @@
             return 'mb-24'
 
           case 'heading1':
-            return 'mt-48 mb-8'
+            return 'mt-32 mb-8'
 
           case 'heading2':
             return 'mb-8'

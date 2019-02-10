@@ -19,7 +19,7 @@ router.use('/', function (req, res, next) {
 /**
  * Paths that require authentication
  */
-['/profile'].forEach(path => {
+['/profile', '/creator'].forEach(path => {
   router.use(path, function (req, res, next) {
     if (req.cookies.IdToken) return next()
     return res.redirect('/authenticate?redirect=' + encodeURIComponent(req.url))

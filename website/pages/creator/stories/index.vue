@@ -1,8 +1,11 @@
 <template>
   <div class="container-1200 mtb-32">
     <div class="flex-between">
-      <h1>{{creatorName}} Stories</h1>
-      <button class="secondary-outline small" @click="onNewStory">Write a story</button>
+      <div>
+        <h1>Your content</h1>
+        <h6><span class="s500">{{creatorName}}</span></h6>
+      </div>
+      <button class="secondary-outline small" @click="onNewStory">New Content</button>
     </div>
 
     <div class="hr-bot mt-32 ArticleTabs flex-wrap no-select">
@@ -13,36 +16,38 @@
       </div>
     </div>
 
-    <div v-if="stories" class="mtb-32">
-      <div v-for="story in stories" :key="story.storyId"
-           class="mtb-24 hr-bot hover-pointer"
-           @click="onStory(story)">
+    <div v-if="stories" class="mtb-16">
+      <div v-for="story in stories" :key="story.storyId" @click="onStory(story)"
+           class="mtb-8 p-24-0 hr-bot hover-pointer">
         <h3>{{story.title}}</h3>
-        <p v-if="story.subtitle">{{story.subtitle}}</p>
-        <p class="subtext">Last edited </p>
+        <div class="back-text">
+          <div v-if="story.subtitle">{{story.subtitle}}</div>
+          <div>Last edited on {{formatMillis(story.updatedMillis)}}</div>
+        </div>
       </div>
 
-      <div v-if="stories.length === 0" class="flex">
-        <div class="p-24 bg-whisper100 border-4 flex-shrink">
-          <h2>No Stories Found</h2>
-          <p class="s700 hover-pointer" @click="onNewStory">Write a new story for {{creatorName}}.</p>
+      <div v-if="stories.length === 0" class="flex-center">
+        <div class="p-32">
+          <h3 v-if="selected === 'statusDraft'">You have no drafts.</h3>
+          <h3 v-if="selected === 'statusPublished'">You don't have any published content yet.</h3>
         </div>
       </div>
     </div>
 
-    <div class="flex-center" v-if="next">
+    <div class="flex-center mtb-32" v-if="next">
       <button class="secondary-outline" @click="onLoadMore">Load More</button>
     </div>
   </div>
 </template>
 
 <script>
+  import dateformat from 'dateformat'
   import {mapGetters} from "vuex";
 
   export default {
     layout: 'creator',
     head() {
-      return {title: `${this.creatorName} Articles · Munch Creator`}
+      return {title: `${this.creatorName} Content · Munch Creator`}
     },
     computed: {
       ...mapGetters('creator', ['creatorName', 'creatorId']),
@@ -50,7 +55,7 @@
     asyncData({$api, store}) {
       const creatorId = store.state.creator.profile.creatorId
       return $api.get(`/creators/${creatorId}/stories`, {
-        params: {size: 30, sort: 'statusDraft'}
+        params: {size: 50, sort: 'statusDraft'}
       }).then(({data, next}) => {
         return {stories: data, next}
       })
@@ -60,15 +65,12 @@
         tabs: [
           {name: 'Drafts', type: 'statusDraft'},
           {name: 'Published', type: 'statusPublished'},
-
-          {name: 'Guides', type: 'typeGuide'},
-          {name: 'Awards', type: 'typeAward'},
-          {name: 'Blog', type: 'typeBlog'},
         ],
         selected: 'statusDraft'
       }
     },
     methods: {
+      formatMillis: (millis) => dateformat(millis, 'mmm dd, yyyy'),
       onNewStory() {
         this.$router.push({path: '/creator/stories/new'})
       },
@@ -77,15 +79,14 @@
         this.stories = null
 
         this.$api.get(`/creators/${this.creatorId}/stories`, {
-          params: {size: 30, sort: type}
+          params: {size: 50, sort: type}
         }).then(({data, next}) => {
           this.stories = data
           this.next = next
         })
       },
       onLoadMore() {
-        console.log(this.next)
-        const params = {size: 30, sort: this.selected}
+        const params = {size: 50, sort: this.selected}
 
         switch (this.selected) {
           case 'statusDraft':
@@ -108,7 +109,7 @@
       },
       onStory(story) {
         this.$router.push({path: `/creator/stories/${story.storyId}`})
-      }
+      },
     },
   }
 </script>

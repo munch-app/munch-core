@@ -8,13 +8,17 @@
         <nuxt-link to="/logout" v-if="isLoggedIn">Sign out</nuxt-link>
         <hr class="mtb-8">
         <a href="https://partner.munch.app" target="_bla20nk">Join as Partner</a>
-        <a href="https://itunes.apple.com/sg/app/munch-food-discovery/id1255436754" target="_blank">Get Munch iOS App</a>
-        <a href="https://play.google.com/store/apps/details?id=app.munch.munchapp" target="_blank">Get Munch Android App</a>
+        <a href="https://itunes.apple.com/sg/app/munch-food-discovery/id1255436754" target="_blank">Get Munch iOS
+          App</a>
+        <a href="https://play.google.com/store/apps/details?id=app.munch.munchapp" target="_blank">Get Munch Android
+          App</a>
       </div>
 
       <div v-if="creatorName">
-        <nuxt-link to="/creator/profiles"><span class="s700 weight-600">Creator: {{creatorName}}</span></nuxt-link>
-        <nuxt-link to="/creator/stories" v-if="isLoggedIn">Stories</nuxt-link>
+        <nuxt-link to="/creator/profiles">
+          <span class="s500">{{creatorName}}</span>
+        </nuxt-link>
+        <nuxt-link to="/creator/stories" v-if="isLoggedIn">Content</nuxt-link>
         <nuxt-link to="/creator/series" v-if="isLoggedIn">Series</nuxt-link>
         <hr class="mtb-8">
       </div>
