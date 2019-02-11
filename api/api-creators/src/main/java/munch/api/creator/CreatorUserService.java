@@ -28,10 +28,10 @@ public final class CreatorUserService extends AbstractCreatorService {
 
     @Override
     public void route() {
-        PATH("/creators/:creatorId/users", () -> {
+        AUTHENTICATED("/creators/:creatorId/users", () -> {
             GET("", this::list);
 
-            PATH("/:userId", () -> {
+            AUTHENTICATED("/:userId", () -> {
                 BEFORE("", this::authenticateAdmin);
 
                 POST("", this::post);
@@ -46,7 +46,7 @@ public final class CreatorUserService extends AbstractCreatorService {
         final int size = call.querySize(20, 50);
 
         CreatorUserIndex index = call.queryEnum("index", CreatorUserIndex.class, CreatorUserIndex.userId);
-        String next = call.queryString("next." + index.nextName(), null);
+        String next = call.queryString("next." + index.getRangeName(), null);
         return creatorUserClient.list(index, creatorId, next, size);
     }
 

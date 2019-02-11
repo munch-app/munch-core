@@ -39,7 +39,7 @@
     <div class="mtb-64">
       <h2 class="b-a60">Content in Series Preview</h2>
       <div class="mt-24 ContentInSeries flex">
-        <div v-for="option in [{}, {}, {}]">
+        <div v-for="option in [{}, {}, {}]" class="flex-grow">
           <search-series-content-card :content="content" :options="option"/>
         </div>
       </div>

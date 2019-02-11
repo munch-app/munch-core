@@ -10,6 +10,7 @@ import munch.user.client.CreatorUserClient;
 import munch.user.data.CreatorContent;
 import munch.user.data.CreatorSeries;
 import munch.user.data.CreatorUser;
+import spark.RouteGroup;
 
 import javax.inject.Inject;
 
@@ -22,7 +23,6 @@ import javax.inject.Inject;
  * Project: munch-core
  */
 public abstract class AbstractCreatorService extends ApiService {
-    private static boolean initialised = false;
 
     private CreatorUserClient creatorUserClient;
     private CreatorSeriesClient seriesClient;
@@ -35,14 +35,22 @@ public abstract class AbstractCreatorService extends ApiService {
         this.contentClient = contentClient;
     }
 
+    /**
+     * Authenticated route
+     */
+    protected void AUTHENTICATED(String path, RouteGroup routeGroup) {
+        super.PATH(path, () -> {
+            BEFORE("", this::before);
+            BEFORE("/*", this::before);
+
+            routeGroup.addRoutes();
+        });
+    }
+
     @Override
-    public void start() {
-        if (initialised) return;
-
-        BEFORE("/creators/*", this::before);
-        super.start();
-
-        initialised = true;
+    @Deprecated
+    public void PATH(String path, RouteGroup routeGroup) {
+        throw new RuntimeException("Use AUTHENTICATED instead");
     }
 
     private void before(JsonCall call) {
@@ -54,7 +62,7 @@ public abstract class AbstractCreatorService extends ApiService {
             authenticateUser(call, creatorId);
         }
 
-        if (contentId != null) {
+        if (contentId != null && !contentId.equals("_")) {
             authenticateContent(call, creatorId, contentId);
         }
 
@@ -64,6 +72,8 @@ public abstract class AbstractCreatorService extends ApiService {
     }
 
     private void authenticateUser(JsonCall call, String creatorId) {
+        if (call.get(CreatorUser.class) != null) return;
+
         final ApiRequest request = call.get(ApiRequest.class);
         final String userId = request.getUserId();
 
@@ -72,7 +82,10 @@ public abstract class AbstractCreatorService extends ApiService {
         call.put(user, CreatorUser.class);
     }
 
+    @SuppressWarnings("Duplicates")
     private void authenticateContent(JsonCall call, String creatorId, String contentId) {
+        if (call.get(CreatorContent.class) != null) return;
+
         CreatorContent content = contentClient.get(contentId);
         if (content == null) throw new ForbiddenException("Creator Forbidden");
 
@@ -85,7 +98,10 @@ public abstract class AbstractCreatorService extends ApiService {
         call.put(content, CreatorContent.class);
     }
 
+    @SuppressWarnings("Duplicates")
     private void authenticateSeries(JsonCall call, String creatorId, String seriesId) {
+        if (call.get(CreatorSeries.class) != null) return;
+
         CreatorSeries series = seriesClient.get(seriesId);
         if (series == null) throw new ForbiddenException("Creator Forbidden");
 

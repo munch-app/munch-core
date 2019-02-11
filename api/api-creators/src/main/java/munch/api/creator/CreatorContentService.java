@@ -3,6 +3,7 @@ package munch.api.creator;
 import munch.restful.core.NextNodeList;
 import munch.restful.server.JsonCall;
 import munch.user.client.CreatorContentClient;
+import munch.user.client.CreatorContentItemClient;
 import munch.user.data.CreatorContent;
 import munch.user.data.CreatorContentIndex;
 
@@ -19,20 +20,22 @@ import javax.inject.Singleton;
 public final class CreatorContentService extends AbstractCreatorService {
 
     private final CreatorContentClient contentClient;
+    private final CreatorContentItemClient itemClient;
 
     @Inject
-    public CreatorContentService(CreatorContentClient contentClient) {
+    public CreatorContentService(CreatorContentClient contentClient, CreatorContentItemClient itemClient) {
         this.contentClient = contentClient;
+        this.itemClient = itemClient;
     }
 
     @Override
     @SuppressWarnings("Duplicates")
     public void route() {
-        PATH("/creators/:creatorId/contents", () -> {
+        AUTHENTICATED("/creators/:creatorId/contents", () -> {
             GET("", this::list);
             POST("", this::post);
 
-            PATH("/:contentId", () -> {
+            AUTHENTICATED("/:contentId", () -> {
                 GET("", this::get);
                 PATCH("", this::patch);
                 DELETE("", this::delete);
@@ -70,6 +73,12 @@ public final class CreatorContentService extends AbstractCreatorService {
     public CreatorContent delete(JsonCall call) {
         String creatorId = call.pathString("creatorId");
         String contentId = call.pathString("contentId");
+
+        // Remove all item inside
+        itemClient.iterator(contentId, 30).forEachRemaining(item -> {
+            itemClient.delete(item.getContentId(), item.getItemId());
+        });
+
         return contentClient.delete(creatorId, contentId);
     }
 }

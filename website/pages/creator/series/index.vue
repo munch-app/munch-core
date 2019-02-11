@@ -16,19 +16,28 @@
       </div>
     </div>
 
-    <div v-if="series" class="mtb-32">
-      <div v-for="s in series" :key="s.seriesId" class="mtb-24 hr-bot hover-pointer" @click="onSeries(s)">
-        <h3>{{s.title}}</h3>
-        <p v-if="s.body">{{s.body}}</p>
-        <p class="subtext">Last edited </p>
-      </div>
-
-      <div v-if="series.length === 0" class="flex">
-        <div class="p-24 bg-whisper100 border-4 flex-shrink">
-          <h2>No Series Found</h2>
-          <p class="s700 hover-pointer" @click="onNewSeries">Create a new series for {{creatorName}}.</p>
+    <div v-if="series" class="mtb-16">
+      <div v-for="s in series" :key="s.seriesId" @click="onSeries(s)"
+           class="mtb-8 p-24-0 hr-bot hover-pointer">
+        <h3>{{s.title || 'Untitled Series'}}</h3>
+        <div class="b-a60">
+          <div class="regular mb-8" v-if="s.body">{{s.body}}</div>
+          <div class="subtext">Last edited on {{formatMillis(s.updatedMillis)}}</div>
         </div>
       </div>
+
+
+      <div v-if="series.length === 0" class="flex-center">
+        <div class="p-32">
+          <h3 v-if="selected === 'draft'">You have no drafts.</h3>
+          <h3 v-if="selected === 'published'">You don't have any published series yet.</h3>
+          <h3 v-if="selected === 'archived'">You don't have any archived series yet.</h3>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex-center mtb-32" v-if="next">
+      <button class="secondary-outline" @click="onLoadMore">Load More</button>
     </div>
   </div>
 </template>
@@ -42,15 +51,12 @@
       return {title: `${this.creatorName} Series · Munch Creator`}
     },
     computed: {
-      ...mapGetters('creator', ['creatorName']),
+      ...mapGetters('creator', ['creatorName', 'creatorId']),
     },
     asyncData({$api, store}) {
       const creatorId = store.state.creator.profile.creatorId
       return $api.get(`/creators/${creatorId}/series`, {
-        params: {
-          size: 30,
-          sort: 'statusDraft',
-        }
+        params: {size: 50, index: 'draft'}
       }).then(({data, next}) => {
         return {series: data, next}
       })
@@ -68,12 +74,38 @@
     methods: {
       formatMillis: (millis) => dateformat(millis, 'mmm dd, yyyy'),
       onNewSeries() {
-        // TODO
+        this.$router.push({path: '/creator/series/new'})
       },
       onTab(type) {
+        this.selected = type
+        this.series = null
+
+        this.$api.get(`/creators/${this.creatorId}/series`, {
+          params: {size: 50, index: type}
+        }).then(({data, next}) => {
+          this.series = data
+          this.next = next
+        })
+      },
+      onLoadMore() {
+        const params = {size: 50, index: this.selected}
+
+        switch (this.selected) {
+          case 'draft':
+          case 'published':
+          case 'archived':
+            params['next.sortId'] = this.next.sortId
+            break
+        }
+
+        this.$api.get(`/creators/${this.creatorId}/series`, {params})
+          .then(({data, next}) => {
+            this.series.push(...data)
+            this.next = next
+          })
       },
       onSeries(series) {
-
+        this.$router.push({path: `/creator/series/${series.seriesId}`})
       }
     }
   }

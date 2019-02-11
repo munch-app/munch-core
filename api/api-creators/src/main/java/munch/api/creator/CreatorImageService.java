@@ -40,7 +40,7 @@ public final class CreatorImageService extends AbstractCreatorService {
 
     @Override
     public void route() {
-        PATH("/creators/:creatorId/contents/:contentId/images", () -> {
+        AUTHENTICATED("/creators/:creatorId/contents/:contentId/images", () -> {
             POST("", this::post);
         });
     }

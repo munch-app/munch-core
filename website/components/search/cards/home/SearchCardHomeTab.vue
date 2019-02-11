@@ -86,7 +86,7 @@
             name: 'EatBetween',
             id: 'EatBetween',
             message: 'Enter everyone’s location and we’ll find the most ideal spot for a meal together.',
-            hint: 'Enter Locations',
+            hint: 'Try EatBetween',
             icon: require('~/assets/icon/search/between.svg'),
           },
           {

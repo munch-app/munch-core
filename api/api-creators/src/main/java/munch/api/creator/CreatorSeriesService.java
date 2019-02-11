@@ -33,15 +33,16 @@ public final class CreatorSeriesService extends AbstractCreatorService {
     @Override
     @SuppressWarnings("Duplicates")
     public void route() {
-        PATH("/creators/:creatorId/series", () -> {
+        AUTHENTICATED("/creators/:creatorId/series", () -> {
             GET("", this::list);
             POST("", this::post);
 
-            PATH("/:seriesId", () -> {
+            AUTHENTICATED("/:seriesId", () -> {
                 GET("", this::get);
                 PATCH("", this::patch);
                 DELETE("", this::delete);
-                PATH("/contents", () -> {
+
+                AUTHENTICATED("/contents", () -> {
                     GET("", this::listContent);
 
                     POST("/:contentId", this::postContent);
@@ -82,6 +83,12 @@ public final class CreatorSeriesService extends AbstractCreatorService {
     public CreatorSeries delete(JsonCall call) {
         String creatorId = call.pathString("creatorId");
         String seriesId = call.pathString("seriesId");
+
+
+        seriesContentClient.iterator(CreatorSeriesContentIndex.sortId, seriesId, 30).forEachRemaining(content -> {
+            seriesContentClient.delete(content.getSeriesId(), content.getContentId());
+        });
+
         return seriesClient.delete(creatorId, seriesId);
     }
 

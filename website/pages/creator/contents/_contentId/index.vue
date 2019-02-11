@@ -42,13 +42,7 @@
       }
     },
     data() {
-      return {
-        editor: null,
-        header: {
-          more: false,
-          deleting: false,
-        },
-      }
+      return {editor: null}
     },
     asyncData({$api, params: {contentId}, $error}) {
       if (contentId === 'new') {

@@ -45,7 +45,7 @@ public final class CreatorContentDraftService extends AbstractCreatorService {
     @Override
     @SuppressWarnings("Duplicates")
     public void route() {
-        PATH("/creators/:creatorId/contents/:contentId/drafts", () -> {
+        AUTHENTICATED("/creators/:creatorId/contents/:contentId/drafts", () -> {
             GET("", this::get);
             POST("", this::post);
             PUT("", this::put);

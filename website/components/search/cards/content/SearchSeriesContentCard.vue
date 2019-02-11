@@ -4,7 +4,7 @@
       <image-sizes v-if="imageSizes" :sizes="imageSizes" :alt="content.subtitle"/>
       <div v-else class="bg-s500 flex-end wh-100"/>
       <div class="absolute-0 flex-center p-24 ImageOverlay">
-        <h2 class="white text-ellipsis-2l">{{content.title}}</h2>
+        <h2 class="white text-ellipsis-2l text-center">{{content.title}}</h2>
       </div>
     </div>
 
