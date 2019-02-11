@@ -1,7 +1,6 @@
 package munch.api.creator;
 
 import munch.restful.core.NextNodeList;
-import munch.restful.core.exception.ForbiddenException;
 import munch.restful.server.JsonCall;
 import munch.user.client.CreatorContentClient;
 import munch.user.data.CreatorContent;
@@ -30,14 +29,10 @@ public final class CreatorContentService extends AbstractCreatorService {
     @SuppressWarnings("Duplicates")
     public void route() {
         PATH("/creators/:creatorId/contents", () -> {
-            BEFORE("", this::authenticateCreator);
-
             GET("", this::list);
             POST("", this::post);
 
             PATH("/:contentId", () -> {
-                BEFORE("", this::authenticateContent);
-
                 GET("", this::get);
                 PATCH("", this::patch);
                 DELETE("", this::delete);
@@ -56,13 +51,7 @@ public final class CreatorContentService extends AbstractCreatorService {
     }
 
     public CreatorContent get(JsonCall call) {
-        String contentId = call.pathString("contentId");
-
-        CreatorContent content = contentClient.get(contentId);
-        if (content == null) throw new ForbiddenException("Creator Forbidden");
-
-        authenticateCreator(call, content.getCreatorId());
-        return content;
+        return call.get(CreatorContent.class);
     }
 
     public CreatorContent post(JsonCall call) {

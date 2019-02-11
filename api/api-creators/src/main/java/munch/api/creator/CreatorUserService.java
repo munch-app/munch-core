@@ -29,7 +29,6 @@ public final class CreatorUserService extends AbstractCreatorService {
     @Override
     public void route() {
         PATH("/creators/:creatorId/users", () -> {
-            BEFORE("", this::authenticateCreator);
             GET("", this::list);
 
             PATH("/:userId", () -> {

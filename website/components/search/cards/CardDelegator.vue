@@ -170,6 +170,10 @@
     @media (min-width: 1600px) {
       height: calc((100vw - 160px - 96px) / 5 * 0.6 + 132px);
     }
+
+    @media (min-width: 1920px) {
+      height: calc((100vw - 160px - 120px) / 6 * 0.6 + 132px);
+    }
   }
 
   .CardList .CardItem {
@@ -190,6 +194,10 @@
     @media (min-width: 1600px) {
       width: calc((100vw - 160px - 96px) / 5);
     }
+
+    @media (min-width: 1920px) {
+      width: calc((100vw - 160px - 120px) / 6);
+    }
   }
 
   .CardList.Square, .CardList.Square .CardItem {
@@ -209,6 +217,10 @@
 
     @media (min-width: 1600px) {
       height: calc((100vw - 160px - 96px) / 5);
+    }
+
+    @media (min-width: 1920px) {
+      height: calc((100vw - 160px - 120px) / 6);
     }
   }
 </style>
@@ -241,6 +253,11 @@
     @media (min-width: 1600px) {
       flex: 0 0 20%;
       max-width: 20%;
+    }
+
+    @media (min-width: 1920px) {
+      flex: 0 0 16.666667%;
+      max-width: 16.666667%;
     }
 
     &.WithMap {

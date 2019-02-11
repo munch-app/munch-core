@@ -28,8 +28,9 @@
 
       <div v-if="contents.length === 0" class="flex-center">
         <div class="p-32">
-          <h3 v-if="selected === 'statusDraft'">You have no drafts.</h3>
-          <h3 v-if="selected === 'statusPublished'">You don't have any published content yet.</h3>
+          <h3 v-if="selected === 'draft'">You have no drafts.</h3>
+          <h3 v-if="selected === 'published'">You don't have any published content yet.</h3>
+          <h3 v-if="selected === 'archived'">You don't have any archived content yet.</h3>
         </div>
       </div>
     </div>
@@ -63,10 +64,11 @@
     data() {
       return {
         tabs: [
-          {name: 'Drafts', type: 'statusDraft'},
-          {name: 'Published', type: 'statusPublished'},
+          {name: 'Drafts', type: 'draft'},
+          {name: 'Published', type: 'published'},
+          {name: 'Archived', type: 'archived'},
         ],
-        selected: 'statusDraft'
+        selected: 'draft'
       }
     },
     methods: {

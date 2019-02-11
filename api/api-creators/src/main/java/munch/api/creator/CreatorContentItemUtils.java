@@ -80,8 +80,6 @@ public final class CreatorContentItemUtils {
     }
 
     private static boolean noneType(CreatorContentItem item, Type... types) {
-        Objects.requireNonNull(item.getBody());
-
         for (Type type : types) {
             if (item.getType() == type) return false;
         }
@@ -89,6 +87,7 @@ public final class CreatorContentItemUtils {
     }
 
     public static Image getImage(CreatorContentDraft draft) {
+        // TODO: Read from File Service
         List<CreatorContentItem> items = getItems(draft);
         for (CreatorContentItem item : items) {
             if (noneType(item, Type.image)) continue;

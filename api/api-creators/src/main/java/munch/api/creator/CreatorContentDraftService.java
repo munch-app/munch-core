@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import munch.restful.core.JsonUtils;
 import munch.restful.core.KeyUtils;
-import munch.restful.core.exception.ForbiddenException;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonResult;
 import munch.user.client.CreatorContentClient;
@@ -47,26 +46,19 @@ public final class CreatorContentDraftService extends AbstractCreatorService {
     @SuppressWarnings("Duplicates")
     public void route() {
         PATH("/creators/:creatorId/contents/:contentId/drafts", () -> {
-            BEFORE("", this::authenticateCreator);
-            BEFORE("", this::authenticateContent);
-
             GET("", this::get);
             POST("", this::post);
             PUT("", this::put);
+
             PATCH("/publish", this::publish);
         });
     }
 
     public JsonResult get(JsonCall call) {
-        final String contentId = call.pathString("contentId");
-
-        CreatorContent content = contentClient.get(contentId);
-        if (content == null) throw new ForbiddenException("Creator Forbidden");
-
+        CreatorContent content = call.get(CreatorContent.class);
         final String creatorId = content.getCreatorId();
-        authenticateCreator(call, creatorId);
 
-        CreatorContentDraft draft = draftClient.getLatest(creatorId, contentId);
+        CreatorContentDraft draft = draftClient.getLatest(creatorId, content.getContentId());
         if (draft == null) {
             draft = new CreatorContentDraft();
             draft.setType("doc");
@@ -103,6 +95,7 @@ public final class CreatorContentDraftService extends AbstractCreatorService {
 
         CreatorContentDraft draft = call.bodyAsObject(CreatorContentDraft.class);
         CreatorContent content = call.get(CreatorContent.class);
+        content.setSortId(KeyUtils.randomMillisUUID());
 
         CreatorContentItemUtils.patchContent(content, draft);
         content = contentClient.patch(creatorId, contentId, JsonUtils.toTree(content));

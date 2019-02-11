@@ -1,5 +1,5 @@
 <template>
-  <div class="ContentPlace">
+  <div class="ContentPlace" @click.capture.stop>
     <div v-if="loading">
       <p>Loading...</p>
     </div>

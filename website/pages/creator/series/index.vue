@@ -58,10 +58,11 @@
     data() {
       return {
         tabs: [
-          {name: 'Drafts', type: 'statusDraft'},
-          {name: 'Published', type: 'statusPublished'},
+          {name: 'Drafts', type: 'draft'},
+          {name: 'Published', type: 'published'},
+          {name: 'Archived', type: 'archived'},
         ],
-        selected: 'statusDraft'
+        selected: 'draft'
       }
     },
     methods: {

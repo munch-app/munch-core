@@ -12,7 +12,7 @@ import javax.inject.Inject;
  * Time: 5:04 PM
  * Project: munch-core
  */
-public abstract class ApiService implements JsonService {
+public abstract class ApiService implements JsonService<JsonRoute> {
 
     private CleanerTransformer transformer;
 

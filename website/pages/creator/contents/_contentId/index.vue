@@ -6,37 +6,10 @@
     <editor-content class="Editor" :editor="editor" :class="{Started: started}"/>
 
     <!--<code class="lh-1">-->
-      <!--<pre>{{draft}}</pre>-->
+    <!--<pre>{{draft}}</pre>-->
     <!--</code>-->
 
-    <portal to="creator-header-right">
-      <div class="flex-align-center mr-8 relative">
-        <button @click="publishContent" class="secondary-outline tiny mr-8">Ready to publish?</button>
-        <button @click="header.more = !header.more" class="small">
-          <simple-svg class="wh-20px" fill="black" :filepath="require('~/assets/icon/more.svg')"/>
-        </button>
-
-        <div class="CreatorHeader absolute no-select" v-if="header.more"
-             @click="header.more = false" v-on-clickaway="() => {if(header.more) header.more = false}">
-          <div class="border-3 bg-white w-100 elevation-2 text index-top-elevation border lh-1">
-            <div @click="saveContent">Save content</div>
-            <div @click="header.deleting = true">Delete content</div>
-            <div>Add to series</div>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <portal to="dialog-styled" v-if="header.deleting">
-          <h3>Are you sure?</h3>
-          <p>Once the content is deleted, you cannot recover it.</p>
-          <div class="right">
-            <button class="border" @click="header.deleting = false">Cancel</button>
-            <button class="secondary" @click="deleteContent">Confirm</button>
-          </div>
-        </portal>
-      </div>
-    </portal>
+    <content-nav-header @delete="deleteContent" @save="saveContent" @publish="publishContent"/>
   </div>
 </template>
 
@@ -50,10 +23,11 @@
   import Line from '../../../../components/creator/content/ContentEditorLine'
   import Image from '../../../../components/creator/content/ContentEditorImage'
   import Place from '../../../../components/creator/content/ContentEditorPlace'
+  import ContentNavHeader from "../../../../components/creator/content/ContentNavHeader";
 
   export default {
     layout: 'creator',
-    components: {ContentEditorFloating, ContentEditorBubble, EditorContent},
+    components: {ContentNavHeader, ContentEditorFloating, ContentEditorBubble, EditorContent},
     head() {
       const title = this.content && this.content.title || 'Content'
       return {title: `Editing ${title} · ${this.creatorName}`}
@@ -179,32 +153,12 @@
         if (!this.contentId) return
 
         this.saveContent().then(() => {
-          this.$router.push({path: `/creator/contents/${this.contentId}/publishing`})
+          this.$router.push({path: `/creator/contents/${this.contentId}/publish`})
         })
       }
     }
   }
 </script>
-
-<style scoped lang="less">
-  .CreatorHeader {
-    top: 40px;
-    right: 0;
-
-    > div {
-      padding: 8px 0;
-
-      > div {
-        padding: 8px 24px;
-        font-size: 14px;
-
-        &:hover {
-          cursor: pointer;
-        }
-      }
-    }
-  }
-</style>
 
 <style lang="less">
   .ProseMirror {
