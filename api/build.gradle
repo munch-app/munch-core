@@ -71,6 +71,11 @@ project('api-creators') {
     }
 }
 
+project('api-contents') {
+    dependencies {
+    }
+}
+
 dependencies {
     compile group: 'com.amazonaws', name: 'aws-java-sdk-ssm', version: awsVersion
 

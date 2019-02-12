@@ -3,6 +3,8 @@ package munch.api.creator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import munch.file.Image;
+import munch.file.ImageClient;
+import munch.file.ImageMeta;
 import munch.restful.core.JsonUtils;
 import munch.restful.core.KeyUtils;
 import munch.user.data.CreatorContent;
@@ -12,6 +14,8 @@ import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -24,15 +28,32 @@ import static munch.user.data.CreatorContentItem.Type;
  * Time: 23:26
  * Project: munch-core
  */
-public final class CreatorContentItemUtils {
+@Singleton
+public final class CreatorContentItemResolver {
 
-    private CreatorContentItemUtils() {/**/}
+    private final ImageClient imageClient;
+
+    @Inject
+    public CreatorContentItemResolver(ImageClient imageClient) {
+        this.imageClient = imageClient;
+    }
+
+    public Image resolveImage(String imageId) {
+        if (imageId == null) return null;
+
+        ImageMeta image = imageClient.get(imageId);
+        if (image == null) return null;
+
+        image.setMeta(null);
+        image.setSource(null);
+        return image;
+    }
 
     /**
      * @param content to patch with data from draft
      * @param draft   to patch content with
      */
-    public static void patchContent(CreatorContent content, CreatorContentDraft draft) {
+    public void patchContent(CreatorContent content, CreatorContentDraft draft) {
         if (content.getStatus() == CreatorContent.Status.published) return;
 
         content.setTitle(getTitle(draft));
@@ -40,7 +61,7 @@ public final class CreatorContentItemUtils {
         content.setImage(getImage(draft));
     }
 
-    public static String getTitle(CreatorContentDraft draft) {
+    public String getTitle(CreatorContentDraft draft) {
         List<CreatorContentItem> items = getItems(draft);
         for (CreatorContentItem item : items) {
             if (noneType(item, Type.title, Type.h1, Type.h2)) continue;
@@ -52,7 +73,7 @@ public final class CreatorContentItemUtils {
         return null;
     }
 
-    public static String getBody(CreatorContentDraft draft) {
+    public String getBody(CreatorContentDraft draft) {
         List<CreatorContentItem> items = getItems(draft);
         for (CreatorContentItem item : items) {
             if (noneType(item, Type.text)) continue;
@@ -79,15 +100,7 @@ public final class CreatorContentItemUtils {
         return text.trim();
     }
 
-    private static boolean noneType(CreatorContentItem item, Type... types) {
-        for (Type type : types) {
-            if (item.getType() == type) return false;
-        }
-        return true;
-    }
-
-    public static Image getImage(CreatorContentDraft draft) {
-        // TODO: Read from File Service
+    public Image getImage(CreatorContentDraft draft) {
         List<CreatorContentItem> items = getItems(draft);
         for (CreatorContentItem item : items) {
             if (noneType(item, Type.image)) continue;
@@ -100,7 +113,7 @@ public final class CreatorContentItemUtils {
         return null;
     }
 
-    public static List<CreatorContentItem> getItems(CreatorContentDraft draft) {
+    public List<CreatorContentItem> getItems(CreatorContentDraft draft) {
         List<CreatorContentItem> items = new ArrayList<>();
 
         for (CreatorContentDraft.Node node : draft.getContent()) {
@@ -123,10 +136,11 @@ public final class CreatorContentItemUtils {
                 case "image":
                     Objects.requireNonNull(attrs);
                     Image image = JsonUtils.toObject(attrs.path("image"), Image.class);
+                    image = resolveImage(image.getImageId());
 
                     ObjectNode imageNode = JsonUtils.createObjectNode();
                     imageNode.put("caption", attrs.path("caption").asText());
-                    imageNode.put("image", JsonUtils.toTree(image));
+                    imageNode.set("image", JsonUtils.toTree(image));
                     items.add(newItem(items.size(), Type.image, imageNode));
                     break;
 
@@ -184,5 +198,12 @@ public final class CreatorContentItemUtils {
         }
 
         return null;
+    }
+
+    private static boolean noneType(CreatorContentItem item, Type... types) {
+        for (Type type : types) {
+            if (item.getType() == type) return false;
+        }
+        return true;
     }
 }

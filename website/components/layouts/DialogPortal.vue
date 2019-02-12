@@ -14,6 +14,7 @@ Max-width of 400px if > 576vw
     <portal-target class="Dialog Full index-elevation" name="dialog-full"/>
     <portal-target class="Dialog Blank elevation-3 index-elevation" name="dialog-blank"/>
     <portal-target class="Dialog W400 elevation-3 index-elevation" name="dialog-w400"/>
+    <portal-target class="Dialog W768 elevation-3 index-elevation" name="dialog-w768"/>
     <portal-target class="Dialog Styled elevation-3 index-elevation" name="dialog-styled"/>
     <portal-target class="Dialog ActionSheet elevation-3 index-elevation" name="dialog-action-sheet"/>
     <portal-target class="Dialog elevation-3 index-elevation" name="dialog"/>
@@ -104,6 +105,12 @@ Max-width of 400px if > 576vw
     @media (max-width: 575.98px) {
       max-width: 576px;
     }
+  }
+
+  .W768 {
+    min-width: 768px;
+    max-height: 80vh;
+    overflow-y: auto;
   }
 
   .Blank,

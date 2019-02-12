@@ -2,6 +2,7 @@ package munch.api.creator;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import munch.file.Image;
 import munch.restful.core.JsonUtils;
 import munch.restful.core.KeyUtils;
 import munch.restful.server.JsonCall;
@@ -35,11 +36,14 @@ public final class CreatorContentDraftService extends AbstractCreatorService {
     private final CreatorContentItemClient itemClient;
     private final CreatorContentDraftClient draftClient;
 
+    private final CreatorContentItemResolver itemResolver;
+
     @Inject
-    public CreatorContentDraftService(CreatorContentClient contentClient, CreatorContentItemClient itemClient, CreatorContentDraftClient draftClient) {
+    public CreatorContentDraftService(CreatorContentClient contentClient, CreatorContentItemClient itemClient, CreatorContentDraftClient draftClient, CreatorContentItemResolver itemResolver) {
         this.contentClient = contentClient;
         this.itemClient = itemClient;
         this.draftClient = draftClient;
+        this.itemResolver = itemResolver;
     }
 
     @Override
@@ -79,7 +83,7 @@ public final class CreatorContentDraftService extends AbstractCreatorService {
         CreatorContent content = new CreatorContent();
         content.setCreatorId(creatorId);
 
-        CreatorContentItemUtils.patchContent(content, draft);
+        itemResolver.patchContent(content, draft);
         content = contentClient.post(content);
         draftClient.putLatest(creatorId, content.getContentId(), draft);
 
@@ -97,7 +101,7 @@ public final class CreatorContentDraftService extends AbstractCreatorService {
         CreatorContent content = call.get(CreatorContent.class);
         content.setSortId(KeyUtils.randomMillisUUID());
 
-        CreatorContentItemUtils.patchContent(content, draft);
+        itemResolver.patchContent(content, draft);
         content = contentClient.patch(creatorId, contentId, JsonUtils.toTree(content));
         draftClient.putLatest(creatorId, content.getContentId(), draft);
 
@@ -118,7 +122,7 @@ public final class CreatorContentDraftService extends AbstractCreatorService {
 
         // Future: Linked Type Validation
 
-        List<CreatorContentItem> items = CreatorContentItemUtils.getItems(draft);
+        List<CreatorContentItem> items = itemResolver.getItems(draft);
         linkPlace(content, items, body);
         putItems(content, items);
         content = putContent(content, items, body);
@@ -165,9 +169,10 @@ public final class CreatorContentDraftService extends AbstractCreatorService {
         patch.put("body", body.path("body").asText());
         patch.put("subtitle", body.path("subtitle").asText());
         patch.put("status", "published");
-        patch.put("platform", CreatorContentItemUtils.getPlatform(items));
+        patch.put("platform", CreatorContentItemResolver.getPlatform(items));
 
-        patch.set("image", body.path("image"));
+        Image image = itemResolver.resolveImage(body.path("image").path("imageId").asText());
+        patch.set("image", JsonUtils.toTree(image));
         patch.set("tags", body.path("tags"));
         return contentClient.patch(content.getCreatorId(), content.getContentId(), patch);
     }

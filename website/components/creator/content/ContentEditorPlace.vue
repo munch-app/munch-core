@@ -6,9 +6,10 @@
     <div v-else-if="place" class="PlaceCard">
       <place-card :place="place"/>
     </div>
-    <div v-else>
-      <h2>{{placeName}}</h2>
-      <h3>Place Not Found</h3>
+    <div v-else class="p-16-24 bg-peach100 border-3">
+      <h5>Previously Selected Place Not Found</h5>
+      <h4>Name: {{placeName}}</h4>
+      <div class="subtext m-0">Place is either deleted, removed or merged into another place.</div>
     </div>
   </div>
 </template>

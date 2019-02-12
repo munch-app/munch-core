@@ -64,19 +64,40 @@
       <input ref="fileInput" type="file" accept="image/x-png,image/gif,image/jpeg" @change="onFileChanged">
     </div>
 
-    <portal to="dialog-styled" v-if="show.image">
+    <portal to="dialog-w768" v-if="show.image">
       <div v-on-clickaway="onAwayImage" class="zero">
         <div>
-          <button @click="onUploadImage" class="secondary-outline w-100 m-0">
+          <button @click="onUploadImage" class="secondary-outline m-0">
             Upload Image
           </button>
         </div>
 
-        <h3 class="mtb-24">Image from Content</h3>
-        <div v-for="image in images" @click="onSelectImage(image)">
-          <div class="aspect r-10-3 border-3 overflow-hidden mtb-24">
-            <image-sizes :sizes="image.sizes"/>
+        <div v-if="images.length > 0">
+          <h4 class="mtb-24">Select Image from Content</h4>
+          <div v-for="image in images" @click="onSelectImage(image)">
+            <div class="aspect r-10-3 border-3 overflow-hidden mtb-24">
+              <image-sizes :sizes="image.sizes"/>
+            </div>
           </div>
+        </div>
+
+        <h4 class="mt-24 mb-16">Select Image from Place</h4>
+        <div v-if="places">
+          <div v-for="place in places">
+            <h4 class="mt-24 mb-16">{{place.place.name}}</h4>
+            <div class="flex-wrap SelectImageList">
+              <div class="SelectImage" v-for="image in place.images" @click="onSelectImage(image)">
+                <div class="aspect r-5-2 border-3 overflow-hidden">
+                  <image-sizes width="1" :sizes="image.sizes"/>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div v-else>
+          <button class="secondary-outline small" @click="loadPlaceImages">
+            Load Place Images
+          </button>
         </div>
       </div>
     </portal>
@@ -85,6 +106,7 @@
 
 <script>
   import _ from 'lodash'
+  import Vue from 'vue'
   import {mapGetters} from "vuex"
   import ContentNavHeader from "../../../../components/creator/content/ContentNavHeader";
   import TextAuto from "../../../../components/core/TextAuto";
@@ -102,7 +124,8 @@
       return {
         show: {
           image: false,
-        }
+        },
+        places: null
       }
     },
     asyncData({$api, params: {contentId}, $error}) {
@@ -130,7 +153,12 @@
         return images.map(value => {
           return value.attrs.image
         })
-      }
+      },
+      placeItems() {
+        const content = this.draft.content
+        const images = _.filter(content, c => c.type === 'place')
+        return images.map(value => value.attrs)
+      },
     },
     methods: {
       onPublish(linkedType) {
@@ -166,6 +194,16 @@
         return this.$api.delete(`/creators/${this.creatorId}/contents/${this.contentId}`).then(() => {
           this.$router.push({path: '/creator/contents'})
         }).catch((err) => this.$store.dispatch('addError', err))
+      },
+      loadPlaceImages() {
+        this.places = []
+
+        this.placeItems.forEach(({placeId}) => {
+          return this.$api.get(`/places/${placeId}`)
+            .then(({data}) => {
+              this.places.push(data)
+            })
+        })
       },
       onAwayImage() {
         this.show.image = false
@@ -220,5 +258,15 @@
 
   .MobileContentPreview {
     max-width: 320px;
+  }
+
+  .SelectImageList {
+    margin: -8px;
+  }
+
+  .SelectImage {
+    flex-basis: 25%;
+    max-width: 25%;
+    padding: 8px;
   }
 </style>

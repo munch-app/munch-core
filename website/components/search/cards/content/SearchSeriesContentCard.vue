@@ -31,6 +31,10 @@
     computed: {
       imageSizes() {
         return this.content && this.content.image && this.content.image.sizes
+      },
+      imageCredit() {
+        const image = this.content && this.content.image
+        return null
       }
     }
   }
