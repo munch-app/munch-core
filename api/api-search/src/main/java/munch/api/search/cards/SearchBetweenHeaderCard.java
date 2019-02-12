@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
  */
 public final class SearchBetweenHeaderCard implements SearchCard {
 
-    private String title;
     private String description;
     private List<Anchor> anchors;
 
@@ -23,15 +22,6 @@ public final class SearchBetweenHeaderCard implements SearchCard {
                     anchor.setUniqueId(card.getUniqueId());
                     return anchor;
                 }).collect(Collectors.toList());
-    }
-
-    @Deprecated
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public String getDescription() {

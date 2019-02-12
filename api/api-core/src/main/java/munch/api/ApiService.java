@@ -1,8 +1,8 @@
 package munch.api;
 
-import munch.restful.server.JsonRoute;
-import munch.restful.server.JsonService;
+import munch.restful.server.JsonCall;
 import munch.restful.server.JsonTransformer;
+import munch.restful.server.RequestService;
 
 import javax.inject.Inject;
 
@@ -12,7 +12,7 @@ import javax.inject.Inject;
  * Time: 5:04 PM
  * Project: munch-core
  */
-public abstract class ApiService implements JsonService<JsonRoute> {
+public abstract class ApiService implements RequestService<ApiRequest> {
 
     private CleanerTransformer transformer;
 
@@ -37,35 +37,8 @@ public abstract class ApiService implements JsonService<JsonRoute> {
         return transformer;
     }
 
-    public void GET(String path, ApiRoute route) {
-        GET(path, (JsonRoute) route);
-    }
-
-    public void POST(String path, ApiRoute route) {
-        POST(path, (JsonRoute) route);
-    }
-
-    public void POST(String path, String acceptType, ApiRoute route) {
-        POST(path, acceptType, (JsonRoute) route);
-    }
-
-    public void PUT(String path, ApiRoute route) {
-        PUT(path, (JsonRoute) route);
-    }
-
-    public void PUT(String path, String acceptType, ApiRoute route) {
-        PUT(path, acceptType, (JsonRoute) route);
-    }
-
-    public void DELETE(String path, ApiRoute route) {
-        DELETE(path, (JsonRoute) route);
-    }
-
-    public void HEAD(String path, ApiRoute route) {
-        HEAD(path, (JsonRoute) route);
-    }
-
-    public void PATCH(String path, ApiRoute route) {
-        PATCH(path, (JsonRoute) route);
+    @Override
+    public ApiRequest request(JsonCall call) {
+        return call.get(ApiRequest.class);
     }
 }

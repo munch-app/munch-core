@@ -36,11 +36,7 @@ public interface SearchCardPlugin {
     default List<Position> of(int index, SearchCard... cards) {
         if (cards.length == 0) return List.of();
 
-        List<Position> positions = new ArrayList<>();
-        for (SearchCard card : cards) {
-            positions.add(new Position(card, index++));
-        }
-        return positions;
+        return of(index, List.of(cards));
     }
 
     default List<Position> of(int index, List<? extends SearchCard> cards) {
@@ -51,6 +47,10 @@ public interface SearchCardPlugin {
             positions.add(new Position(card, index++));
         }
         return positions;
+    }
+
+    default Position ofPosition(int index, SearchCard card) {
+        return new Position(card, index);
     }
 
     /**

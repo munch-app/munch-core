@@ -14,6 +14,7 @@ import munch.restful.core.NextNodeList;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonResult;
 import munch.user.client.AwardCollectionClient;
+import munch.user.client.UserRatedPlaceClient;
 import munch.user.client.UserSavedPlaceClient;
 
 import java.util.HashMap;
@@ -34,15 +35,18 @@ public final class PlaceService extends ApiService {
     private final AwardCollectionClient awardCollectionClient;
 
     private final PlaceImageClient placeImageClient;
+
     private final UserSavedPlaceClient savedPlaceClient;
+    private final UserRatedPlaceClient ratedPlaceClient;
 
     @Inject
-    public PlaceService(PlaceClient placeClient, ArticleLinkClient articleLinkClient, AwardCollectionClient awardCollectionClient, PlaceImageClient placeImageClient, UserSavedPlaceClient savedPlaceClient) {
+    public PlaceService(PlaceClient placeClient, ArticleLinkClient articleLinkClient, AwardCollectionClient awardCollectionClient, PlaceImageClient placeImageClient, UserSavedPlaceClient savedPlaceClient, UserRatedPlaceClient ratedPlaceClient) {
         this.placeClient = placeClient;
         this.articleLinkClient = articleLinkClient;
         this.awardCollectionClient = awardCollectionClient;
         this.placeImageClient = placeImageClient;
         this.savedPlaceClient = savedPlaceClient;
+        this.ratedPlaceClient = ratedPlaceClient;
     }
 
     /**
@@ -86,6 +90,7 @@ public final class PlaceService extends ApiService {
 
         Map<String, Object> user = new HashMap<>();
         user.put("savedPlace", savedPlaceClient.get(userId, placeId));
+        user.put("ratedPlace", ratedPlaceClient.get(userId, placeId));
         return user;
     }
 

@@ -1,7 +1,8 @@
 package munch.api.search.plugin;
 
-import munch.api.search.cards.SearchHeaderCard;
 import munch.api.search.cards.SearchBetweenHeaderCard;
+import munch.api.search.cards.SearchBetweenReferralCard;
+import munch.api.search.cards.SearchHeaderCard;
 
 import javax.inject.Singleton;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
  * Project: munch-core
  */
 @Singleton
-public final class SearchBetweenLoader implements SearchCardPlugin {
+public final class SearchBetweenPlugin implements SearchCardPlugin {
 
     @Override
     public List<Position> load(Request request) {
@@ -26,8 +27,9 @@ public final class SearchBetweenLoader implements SearchCardPlugin {
                 .collect(Collectors.toList());
         if (headers.isEmpty()) return null;
 
-        SearchBetweenHeaderCard card = new SearchBetweenHeaderCard(headers);
-        card.setTitle("Ideal EatBetween Locations");
-        return of(-1, card);
+        return List.of(
+                ofPosition(-1, new SearchBetweenHeaderCard(headers)),
+                ofPosition(5, new SearchBetweenReferralCard())
+        );
     }
 }
