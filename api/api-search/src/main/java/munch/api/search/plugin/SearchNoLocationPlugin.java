@@ -17,6 +17,8 @@ public final class SearchNoLocationPlugin implements SearchCardPlugin {
     @Override
     public List<Position> load(Request request) {
         if (!request.getRequest().isFeature(SearchQuery.Feature.Search)) return null;
+        if (request.getRequest().isWhere()) return null;
+        if (request.getRequest().isBetween()) return null;
         if (!request.isFirstPage()) return null;
         if (request.getRequest().hasUserLatLng()) return null;
 
