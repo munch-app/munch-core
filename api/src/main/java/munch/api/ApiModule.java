@@ -13,6 +13,7 @@ import com.typesafe.config.ConfigFactory;
 import munch.api.core.CoreModule;
 import munch.api.creator.CreatorModule;
 import munch.api.feed.FeedModule;
+import munch.api.location.LocationModule;
 import munch.api.place.PlaceModule;
 import munch.api.search.SearchModule;
 import munch.api.user.UserModule;
@@ -41,6 +42,7 @@ public class ApiModule extends AbstractModule {
         install(new SearchModule());
         install(new FeedModule());
         install(new CreatorModule());
+        install(new LocationModule());
     }
 
     /**

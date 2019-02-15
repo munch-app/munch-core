@@ -12,6 +12,7 @@ include 'api:api-places'
 include 'api:api-users'
 include 'api:api-creators'
 include 'api:api-contents'
+include 'api:api-locations'
 
 /**
  * Munch App Website
