@@ -3,7 +3,7 @@
     <div class="wh-100 flex-column mt-16">
       <div class="flex-align-center flex-justify-between">
         <div class="SearchTextBar border-3 hover-pointer">
-          <input ref="input" class="TextBar" type="text" placeholder="Search Here" v-model="text">
+          <input ref="input" class="TextBar" type="text" placeholder="Search here" v-model="text">
         </div>
         <div>
           <simple-svg @click.native="onCancel" class="wh-24px hover-pointer ml-16" fill="black"

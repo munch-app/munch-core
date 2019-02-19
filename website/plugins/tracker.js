@@ -34,8 +34,13 @@ export default ({app, store}, inject) => {
       'dimension1': 'from_action',
       'dimension4': 'from_category',
       'dimension3': 'from_search_location_type',
+      'dimension5': 'id',
     }
   })
+
+  // Set the user ID using signed-in user_id.
+  const userId = store.state.user.profile && store.state.user.profile.userId;
+  if (userId) gtag('set', {'user_id': userId});
   // @formatter:on
 
   /**
@@ -57,9 +62,6 @@ export default ({app, store}, inject) => {
     search(category, label, others) {
       event.call(gtag, 'Search', {category, label}, others)
     },
-    view(category, label, others) {
-      event.call(gtag, 'View', {category, label}, others)
-    },
     qid(category, label, others) {
       event.call(gtag, 'QID', {category, label}, others)
     },
@@ -75,6 +77,21 @@ export default ({app, store}, inject) => {
     download(category, label, others) {
       event.call(gtag, 'Download', {category, label}, others)
     },
+
+    // New recommended tracking (>0.19.0), it follows the Native App Tracking
+    view(name, label, others) {
+      event.call(gtag, 'View', {category: name, label}, others)
+    },
+    click(name, label, others) {
+      event.call(gtag, 'Click', {category: name, label}, others)
+    },
+
+    setUserId(userId) {
+      gtag('set', {'user_id': userId});
+    },
+    clearUserData() {
+
+    }
   })
 
   /**

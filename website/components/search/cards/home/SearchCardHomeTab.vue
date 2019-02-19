@@ -129,6 +129,7 @@
         this.$store.commit('focus', 'Login')
       },
       onFeed() {
+        this.$track.click('search_card_click', 'HomeTab_2018-11-29')
         this.$router.push({path: '/feed/images'})
       }
     }
