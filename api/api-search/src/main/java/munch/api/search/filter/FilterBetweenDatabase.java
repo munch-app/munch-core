@@ -3,9 +3,9 @@ package munch.api.search.filter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import munch.api.search.SearchQuery;
-import munch.api.search.elastic.ElasticQueryUtils;
 import munch.data.ElasticObject;
 import munch.data.client.ElasticClient;
+import munch.data.elastic.ElasticUtils;
 import munch.data.location.Area;
 import munch.data.location.Landmark;
 import munch.location.Country;
@@ -67,7 +67,7 @@ public final class FilterBetweenDatabase {
         ObjectNode boolNode = queryNode.putObject("bool");
 
         // must: {?}
-        boolNode.set("must", ElasticQueryUtils.multiMatch(text, "name", "names"));
+        boolNode.set("must", ElasticUtils.multiMatch(text, "name", "names"));
 
         boolNode.putArray("filter")
                 .addObject()

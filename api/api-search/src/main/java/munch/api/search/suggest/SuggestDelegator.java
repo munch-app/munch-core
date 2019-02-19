@@ -11,6 +11,7 @@ import munch.api.search.elastic.ElasticQueryUtils;
 import munch.api.search.elastic.ElasticSortUtils;
 import munch.api.search.elastic.ElasticSuggestUtils;
 import munch.data.client.ElasticClient;
+import munch.data.elastic.ElasticUtils;
 import munch.data.place.Place;
 import munch.restful.core.JsonUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -84,7 +85,7 @@ public final class SuggestDelegator {
         ObjectNode boolNode = queryNode.putObject("bool");
 
         // must: {?}
-        JsonNode must = ElasticQueryUtils.multiMatch(text, "names");
+        JsonNode must = ElasticUtils.multiMatch(text, "names");
         String latLng = request.getLatLng();
         boolNode.set("must", withFunctionScoreMust(latLng, must));
 

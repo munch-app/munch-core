@@ -6,8 +6,9 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Singleton;
 import edit.utils.LatLngUtils;
-import munch.api.search.SearchRequest;
 import munch.api.search.SearchQuery;
+import munch.api.search.SearchRequest;
+import munch.data.elastic.ElasticUtils;
 import munch.data.location.Area;
 import munch.restful.core.JsonUtils;
 import munch.restful.core.exception.ParamException;
@@ -16,7 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 /**
@@ -48,49 +50,17 @@ public final class ElasticQueryUtils {
     }
 
     /**
-     * @param filters to fill
-     * @return created bool node
-     */
-    public static JsonNode make(ArrayNode filters) {
-        ObjectNode bool = mapper.createObjectNode();
-        bool.set("must", mustMatchAll());
-        bool.set("filter", filters);
-        return mapper.createObjectNode().set("bool", bool);
-    }
-
-    /**
      * NOTE: This ElasticQueryUtils is only for Place data type
-     */
-    public static JsonNode make(JsonNode filter) {
-        ObjectNode bool = mapper.createObjectNode();
-        bool.set("must", mustMatchAll());
-        bool.set("filter", filter);
-        return mapper.createObjectNode().set("bool", bool);
-    }
-
-    /**
-     * Search with text on name
      *
-     * @return JsonNode must filter
+     * @param node filter or filters
+     * @return created Bool Node
      */
-    public static JsonNode mustMatchAll() {
-        ObjectNode root = mapper.createObjectNode();
-        root.putObject("match_all");
-        return root;
-    }
+    public static JsonNode make(JsonNode node) {
+        ObjectNode bool = mapper.createObjectNode();
 
-    public static JsonNode multiMatch(String query, String field, String... fields) {
-        ObjectNode root = JsonUtils.createObjectNode();
-        ObjectNode match = root.putObject("multi_match");
-
-        match.put("query", query);
-        match.put("type", "phrase_prefix");
-        ArrayNode fieldsNode = match.putArray("fields");
-        fieldsNode.add(field);
-        for (String each : fields) {
-            fieldsNode.add(each);
-        }
-        return root;
+        bool.set("must", ElasticUtils.mustMatchAll());
+        bool.set("filter", node);
+        return mapper.createObjectNode().set("bool", bool);
     }
 
     /**
@@ -101,8 +71,8 @@ public final class ElasticQueryUtils {
         SearchQuery searchQuery = request.getSearchQuery();
 
         ArrayNode filterArray = mapper.createArrayNode();
-        filterArray.add(filterTerm("dataType", "Place"));
-        filterArray.add(filterTerm("status.type", "open"));
+        filterArray.add(ElasticUtils.filterTerm("dataType", "Place"));
+        filterArray.add(ElasticUtils.filterTerm("status.type", "open"));
 
         // Filter 'Container' else 'Location' else 'LatLng' else none
         filterLocation(request).ifPresent(filterArray::add);
@@ -114,7 +84,7 @@ public final class ElasticQueryUtils {
         // Filter to positive tags
         filter.getTags().forEach(tag -> {
             if (tag.getTagId() == null) return;
-            filterArray.add(filterTerm("tags.tagId", tag.getTagId()));
+            filterArray.add(ElasticUtils.filterTerm("tags.tagId", tag.getTagId()));
         });
 
         // Filter price
@@ -124,7 +94,7 @@ public final class ElasticQueryUtils {
         filterHour(filter.getHour()).ifPresent(filterArray::add);
 
         if (request.isBetween()) {
-            filterArray.add(filterRange("taste.group", "gte", 2));
+            filterArray.add(ElasticUtils.filterRange("taste.group", "gte", 2));
         }
 
         return filterArray;
@@ -241,7 +211,7 @@ public final class ElasticQueryUtils {
         if (area.getLocation().getPolygon() == null) return null;
 
         if (area.getType() == Area.Type.Cluster) {
-            return filterTerm("areas.areaId", area.getAreaId());
+            return ElasticUtils.filterTerm("areas.areaId", area.getAreaId());
         }
 
         List<String> points = area.getLocation().getPolygon().getPoints();
@@ -297,80 +267,6 @@ public final class ElasticQueryUtils {
                 .add(point.getLng())
                 .add(point.getLat());
         polygon.put("relation", "intersects");
-        return filter;
-    }
-
-    /**
-     * @param name name of term
-     * @param text text of term
-     * @return JsonNode =  { "term" : { "name" : "text" } }
-     */
-    public static JsonNode filterTerm(String name, String text) {
-        ObjectNode filter = mapper.createObjectNode();
-        filter.putObject("term").put(name, text);
-        return filter;
-    }
-
-    /**
-     * @param name name of term
-     * @param num  value to filter
-     * @return JsonNode =  { "term" : { "name" : "text" } }
-     */
-    public static JsonNode filterTerm(String name, int num) {
-        ObjectNode filter = mapper.createObjectNode();
-        filter.putObject("term").put(name, num);
-        return filter;
-    }
-
-    public static JsonNode filterTerm(String name, boolean value) {
-        ObjectNode filter = mapper.createObjectNode();
-        filter.putObject("term").put(name, value);
-        return filter;
-    }
-
-    /**
-     * @param name  name of terms
-     * @param texts texts of terms
-     * @return JsonNode =  { "terms" : { "name" : "text" } }
-     */
-    public static JsonNode filterTerms(String name, Collection<String> texts) {
-        ObjectNode filter = mapper.createObjectNode();
-        ArrayNode terms = filter.putObject("terms").putArray(name);
-        for (String text : texts) {
-            terms.add(text.toLowerCase());
-        }
-        return filter;
-    }
-
-    /**
-     * E.g. createdDate > 1000 is "createdDate", "gt", 1000
-     *
-     * @param name     name of field to filter
-     * @param operator operator in english form, e.g. gte, lt
-     * @param value    value to compare again
-     * @return filter range json
-     */
-    public static JsonNode filterRange(String name, String operator, long value) {
-        ObjectNode filter = mapper.createObjectNode();
-        filter.putObject("range")
-                .putObject(name)
-                .put(operator, value);
-        return filter;
-    }
-
-    /**
-     * E.g. createdDate > 1000 is "createdDate", "gt", 1000
-     *
-     * @param name     name of field to filter
-     * @param operator operator in english form, e.g. gte, lt
-     * @param value    value to compare again
-     * @return filter range json
-     */
-    public static JsonNode filterRange(String name, String operator, double value) {
-        ObjectNode filter = mapper.createObjectNode();
-        filter.putObject("range")
-                .putObject(name)
-                .put(operator, value);
         return filter;
     }
 
