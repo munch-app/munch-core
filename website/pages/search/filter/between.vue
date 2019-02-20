@@ -25,19 +25,19 @@
         </div>
 
         <div class="index-1 BetweenDialog bg-white p-16-24 overflow-hidden">
-          <div class="text mb-16">Enter everyone’s location and we’ll find the most ideal spot for a meal together.
+          <div class="text mb-16">Enter everyone’s location to find the most ideal spot for a meal together.
           </div>
 
           <search-filter-between-search ref="search" @close="searching = false"/>
 
           <div v-if="!searching">
             <div class="LocationItemList">
-              <div class="LocationItem flex-align-center"
+              <div class="LocationItem PointItem flex-align-center"
                    v-if="locationPoints.length > 0" v-for="(point, index) in locationPoints">
-                <simple-svg class="wh-24px flex-no-shrink" :filepath="require('~/assets/icon/location/Location_Pin.svg')"
-                            fill="#F05F3B"/>
+                <simple-svg class="ml-8 wh-24px flex-no-shrink" fill="#F05F3B"
+                            :filepath="require('~/assets/icon/location/Location_Pin.svg')"/>
                 <div class="mlr-8 flex-grow hr-bot">
-                  <p class="lh-1">{{point.name}}</p>
+                  <p class="lh-1 text-ellipsis-1l">{{point.name}}</p>
                 </div>
                 <div @click="onRemove(index)" class="hover-pointer flex-no-shrink">
                   <simple-svg class="wh-20px" :filepath="require('~/assets/icon/location/Location_Cancel.svg')"/>
@@ -45,9 +45,9 @@
               </div>
             </div>
 
-            <div class="LocationItem flex-align-center hover-pointer" @click="onSearch"
+            <div class="LocationItem flex-align-center hover-pointer border border-4" @click="onSearch"
                  v-if="locationPoints.length < 10">
-              <simple-svg class="wh-24px" :filepath="require('~/assets/icon/location/Location_Pin.svg')"
+              <simple-svg class="EnterPin wh-24px" :filepath="require('~/assets/icon/location/Location_Pin.svg')"
                           fill="rgba(0,0,0,0.6)"/>
               <div class="mlr-8 flex-grow">
                 <p class="b-a60 lh-1">Enter location</p>
@@ -57,7 +57,7 @@
 
           <div class="mt-16 mb-8 flex">
             <button class="flex-grow" @click="onApply" v-if="applyText"
-                    :class="{'bg-s500 white weight-600': isApplicable, 'bg-s050 b-a85 weight-600': !isApplicable}">
+                    :class="{'bg-s500 white weight-600': isApplicable, 'b-a85 weight-600': !isApplicable}">
               {{applyText}}
             </button>
             <beat-loader v-else class="flex-grow border-3 bg-s050 flex-center p-16" color="#084E69" size="8px"/>
@@ -161,6 +161,16 @@
     p {
       padding: 12px 0;
     }
+  }
+
+  .PointItem:last-child {
+    div {
+      border: none;
+    }
+  }
+
+  .EnterPin {
+    margin-left: 7px;
   }
 
   .ImageLogo {

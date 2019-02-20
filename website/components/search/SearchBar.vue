@@ -35,7 +35,6 @@
               :name="item.object"/>
           </div>
         </div>
-
         <div v-else>
           <div class="p-16 text">
             Sorry! We couldn't find results for <span class="weight-600 b-a85">{{text}}</span>.
@@ -120,7 +119,10 @@
        * @returns {boolean} whether search bar is extended to drop down
        */
       isExtended() {
-        return this.searching;
+        if (this.searching) {
+          if (this.suggestions === null) return false;
+          return true;
+        }
       },
     },
     methods: {
