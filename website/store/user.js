@@ -18,7 +18,7 @@ export const getters = {
 export const mutations = {
   setUser(state, {profile}) {
     state.profile = profile
-    if (profile.userId) this.$tracker.setUserId(profile.userId)
+    if (profile.userId && this.$track) this.$track.setUserId(profile.userId)
   },
 
   setSearchPreference(state, searchPreference) {
@@ -30,7 +30,7 @@ export const mutations = {
     state.searchPreference = null
 
     Cookies.remove('MunchUser')
-    this.$tracker.clearUserData()
+    if (this.$track) this.$track.clearUserData()
   },
 }
 

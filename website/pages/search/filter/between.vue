@@ -25,37 +25,42 @@
         </div>
 
         <div class="index-1 BetweenDialog bg-white p-16-24 overflow-hidden">
-          <div class="text">Enter everyone’s location and we’ll find the most ideal spot for a meal together.</div>
+          <div class="text mb-16">Enter everyone’s location and we’ll find the most ideal spot for a meal together.
+          </div>
 
           <search-filter-between-search ref="search" @close="searching = false"/>
 
-          <horizontal-scroll-view v-if="locationPoints.length > 0" :items="locationPoints"
-                                  class="PointList mt-8 container-remove-gutter"
-                                  :map-key="(_, i) => i" :padding="16">
-            <template slot-scope="{item, index}">
-              <div class="hover-pointer" @click="onRemove(index)">
-                <div class="Point flex-row flex-align-center bg-whisper100 border-3">
-                  <div class="flex-no-shrink text-nowrap text">
-                    {{item.name}}
-                  </div>
-
-                  <div class="wh-16px Cancel flex-no-shrink">
-                    <simple-svg fill="black" :filepath="require('~/assets/icon/close.svg')"/>
-                  </div>
+          <div v-if="!searching">
+            <div class="LocationItemList">
+              <div class="LocationItem flex-align-center"
+                   v-if="locationPoints.length > 0" v-for="(point, index) in locationPoints">
+                <simple-svg class="wh-24px flex-no-shrink" :filepath="require('~/assets/icon/location/Location_Pin.svg')"
+                            fill="#F05F3B"/>
+                <div class="mlr-8 flex-grow hr-bot">
+                  <p class="lh-1">{{point.name}}</p>
+                </div>
+                <div @click="onRemove(index)" class="hover-pointer flex-no-shrink">
+                  <simple-svg class="wh-20px" :filepath="require('~/assets/icon/location/Location_Cancel.svg')"/>
                 </div>
               </div>
-            </template>
-          </horizontal-scroll-view>
+            </div>
 
-          <div class="mt-16 flex">
-            <button class="secondary-outline mr-16" @click.capture="onSearch">
-              + Location
-            </button>
+            <div class="LocationItem flex-align-center hover-pointer" @click="onSearch"
+                 v-if="locationPoints.length < 10">
+              <simple-svg class="wh-24px" :filepath="require('~/assets/icon/location/Location_Pin.svg')"
+                          fill="rgba(0,0,0,0.6)"/>
+              <div class="mlr-8 flex-grow">
+                <p class="b-a60 lh-1">Enter location</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-16 mb-8 flex">
             <button class="flex-grow" @click="onApply" v-if="applyText"
                     :class="{'bg-s500 white weight-600': isApplicable, 'bg-s050 b-a85 weight-600': !isApplicable}">
               {{applyText}}
             </button>
-            <beat-loader v-else class="flex-grow border-3 bg-s050 flex-center" color="#084E69" size="8px"/>
+            <beat-loader v-else class="flex-grow border-3 bg-s050 flex-center p-16" color="#084E69" size="8px"/>
           </div>
         </div>
       </div>
@@ -152,22 +157,20 @@
     padding-right: 12px !important;
   }
 
-  .PointList, .Point {
-    height: 28px;
-  }
-
-  .Point {
-    padding-left: 10px;
-    padding-right: 8px;
-  }
-
-  .Cancel {
-    margin-left: 6px;
+  .LocationItem {
+    p {
+      padding: 12px 0;
+    }
   }
 
   .ImageLogo {
     height: 36px;
     width: 36px;
+  }
+
+  .LocationItemList {
+    max-height: 60vh;
+    overflow-y: auto;
   }
 
   @media (max-width: 768px) {
@@ -188,6 +191,10 @@
       bottom: 0;
       left: 0;
       right: 0;
+    }
+
+    .LocationItemList {
+      max-height: 20vh;
     }
   }
 

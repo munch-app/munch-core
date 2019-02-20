@@ -40,7 +40,7 @@
   .Sticky {
     background-color: white;
 
-    position: sticky;
+    position: sticky !important;
     top: calc(48px + 56px);
 
     /*padding-bottom: 18px !important;*/

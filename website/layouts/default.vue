@@ -1,7 +1,7 @@
 <template>
   <div class="Default flex-column" :class="{'gutter-24': isSearch && showsMap}" :lang="'en'">
     <nav class="Header fixed w-100 index-top-elevation hr-bot bg-white" :class="{Clear: isClear}">
-      <div class="container flex">
+      <div class="container flex-align-center">
         <header-logo class="mr-8" :clear="isClear" :class="{'IsSearching': searching}"/>
         <div class="Search mlr-8 mtb-8 flex-grow">
           <search-bar class="SearchBar" @onBlur="onBlur" @onFocus="onFocus"/>

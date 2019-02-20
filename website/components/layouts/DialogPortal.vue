@@ -177,6 +177,10 @@ Max-width of 400px if > 576vw
       }
     }
 
+    > div:last-child {
+      margin-bottom: 0;
+    }
+
     h1, h2, h3, h4, h5, h6, p {
       margin-bottom: 8px;
     }
