@@ -25,7 +25,7 @@
         </div>
 
         <div v-if="!loading && text === ''">
-          <h4 class="mb-8">Saved Locations</h4>
+          <h4 class="mb-8" v-if="saved.length > 0">Saved Locations</h4>
           <div class="hover-pointer flex-align-center" v-for="loc in saved" @click="onLocation(loc, {input: 'history', type: loc.type})">
             <simple-svg v-if="loc.type === 'home'" class="wh-24px flex-no-shrink"
                         :filepath="require('~/assets/icon/location/Location_Home.svg')"/>
@@ -41,7 +41,7 @@
             </div>
           </div>
 
-          <h4 class="mt-16 mb-8">Recent Searches</h4>
+          <h4 class="mt-16 mb-8" v-if="recent.length > 0">Recent Searches</h4>
           <div class="hover-pointer flex-align-center" v-for="loc in recent" @click="onLocation(loc, {input: 'history', type: loc.type})">
             <simple-svg class="wh-24px flex-no-shrink" :filepath="require('~/assets/icon/location/Location_Recent.svg')"/>
             <div class="m-8 text text-ellipsis-1l flex-grow">
@@ -190,7 +190,7 @@
       onLocation(location, {type, input}) {
         this.onCancel()
 
-        if (type && input) {
+        if (type && input && this.isLoggedIn) {
           this.$api.post('/users/locations', {type, input, name: location.name, latLng: location.latLng})
             .then(() => {
               this.refresh()
@@ -206,6 +206,9 @@
         this.recent.splice(0)
         this.loading = true
 
+        if (!this.isLoggedIn) {
+          return
+        }
         this.$api.get('/users/locations', {params: {size: 40}})
           .then(({data}) => {
             if (data) {
