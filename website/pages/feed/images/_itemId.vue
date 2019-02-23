@@ -44,7 +44,7 @@
         return {item, places: {}, back: true}
       }
 
-      return $api.get(`/feed/images/${params.itemId}`)
+      return $api.get(`/feed/items/${params.itemId}`)
         .then(({data: {item, places}}) => {
           return {item, places, back: false}
         })

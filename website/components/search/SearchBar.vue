@@ -92,7 +92,7 @@
           return [
             {type: 'default', object: 'Feed'},
             {type: 'default', object: 'Nearby'},
-            {type: 'default', object: 'Anywhere'}
+            {type: 'default', object: 'Anywhere'},
           ]
         }
 

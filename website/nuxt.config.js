@@ -130,6 +130,11 @@ module.exports = {
       "/profile",
       "/authenticate",
       "/logout",
+      "/creator",
+      "/creator/contents",
+      "/creator/profiles",
+      "/creator/series",
+      "/feed/articles",
     ],
     routes: [
       '/support/privacy',

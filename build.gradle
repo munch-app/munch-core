@@ -5,7 +5,7 @@ allprojects {
     apply plugin: 'maven-publish'
 
     group 'munch-core'
-    version '0.19.0'
+    version '0.20.0'
 
     ext.dockerRegistryUrl = '197547471367.dkr.ecr.ap-southeast-1.amazonaws.com/'
 
@@ -15,7 +15,7 @@ allprojects {
 
     ext.catalystVersion = '3.2'
 
-    ext.restfulVersion = '2.7.1'
+    ext.restfulVersion = '2.7.3'
     ext.fileVersion = '1.2.17'
     ext.locationVersion = '1.1.3'
 
@@ -26,7 +26,7 @@ allprojects {
 
     ext.tasteVersion = '1.0-SNAPSHOT'
     ext.suggestVersion = '1.0-SNAPSHOT'
-    ext.feedVersion = '1.0-SNAPSHOT'
+    ext.feedVersion = '2.0-SNAPSHOT'
     ext.instagramVersion = '1.0-SNAPSHOT'
     ext.articleVersion = '1.0-SNAPSHOT'
 

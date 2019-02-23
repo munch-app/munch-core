@@ -2,7 +2,9 @@ User-Agent: *
 Disallow: /_health/
 Disallow: /profile
 Disallow: /authenticate
+Disallow: /creator
 
 User-agent: Googlebot-Image
 Disallow: /places
 Disallow: /search
+Disallow: /feed
