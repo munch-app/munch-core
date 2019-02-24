@@ -93,6 +93,7 @@
             {type: 'default', object: 'Feed'},
             {type: 'default', object: 'Nearby'},
             {type: 'default', object: 'Anywhere'},
+            {type: 'default', object: 'EatBetween'},
           ]
         }
 
@@ -193,6 +194,11 @@
           case 'Feed':
             this.$router.push({path: '/feed/images'})
             return this.onBlur()
+
+          case 'EatBetween':
+            this.$router.push({path: `/search/filter/between`})
+            return this.onBlur()
+
         }
       },
       onFocus() {

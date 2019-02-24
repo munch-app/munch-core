@@ -1,6 +1,6 @@
 <template>
   <div class="Default flex-align-center">
-    <simple-svg class="wh-24px mr-16" fill="rgba(0,0,0,.7)" :filepath="icon"/>
+    <simple-svg class="wh-24px mr-16" fill="rgba(0,0,0,.8)" :filepath="icon"/>
     <div class="text weight-600">
       <div>{{name}}</div>
     </div>
@@ -25,6 +25,8 @@
             return require('~/assets/icon/search/nearby.svg')
           case 'Anywhere':
             return require('~/assets/icon/search/anywhere.svg')
+          case 'EatBetween':
+            return require('~/assets/icon/search/between.svg')
         }
       }
     }

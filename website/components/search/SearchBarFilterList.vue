@@ -191,7 +191,7 @@
 
     .Apply {
       height: 40px;
-      width: 224px;
+      min-width: 224px;
       margin-left: 8px;
     }
   }

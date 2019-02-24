@@ -54,13 +54,11 @@ export const actions = {
     commit('loading')
 
     const params = {
-      'country': 'sgp',
-      'latLng': '1.3521,103.8198',
       'size': 20
     }
-    return this.$axios.$get(`/api/feed/images`, {params})
-      .then(({data, next}) => {
-        commit('append', {items: data.items, places: data.places, next})
+    return this.$api.post(`/feed/query`, {params})
+      .then(({data, places, next}) => {
+        commit('append', {items: data, places, next})
       })
   },
 
@@ -71,16 +69,14 @@ export const actions = {
     commit('loading')
 
     const params = {
-      'country': 'sgp',
-      'latLng': '1.3521,103.8198',
       'size': 20,
     }
     if (state.next && state.next.from) {
       params['next.from'] = state.next.from
     }
-    return this.$axios.$get(`/api/feed/images`, {params})
-      .then(({data, next}) => {
-        commit('append', {items: data.items, places: data.places, next})
+    return this.$api.post(`/feed/query`, {params})
+      .then(({data, places, next}) => {
+        commit('append', {items: data, places, next})
       })
   }
 }

@@ -36,7 +36,7 @@ public final class FeedItemService extends ApiService {
     @Override
     public void route() {
         PATH("/feed/items", () -> {
-            POST("/:itemId", this::get);
+            GET("/:itemId", this::get);
         });
     }
 

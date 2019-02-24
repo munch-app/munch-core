@@ -16,7 +16,9 @@
           <div class="index-0 Header container absolute h-48px flex-align-center flex-justify-between"
                :class="{Searching: searching}">
             <div class="flex-align-center">
-              <img class="ImageLogo mr-8" src="~/assets/img/MunchLogo.svg">
+              <a href="/" class="flex-center">
+                <img class="ImageLogo mr-8" src="~/assets/img/MunchLogo.svg">
+              </a>
               <h3>EatBetween</h3>
             </div>
             <simple-svg @click.native="onCancel" class="wh-24px hover-pointer" fill="black"
@@ -37,7 +39,7 @@
                 <simple-svg class="ml-8 wh-24px flex-no-shrink" fill="#F05F3B"
                             :filepath="require('~/assets/icon/location/Location_Pin.svg')"/>
                 <div class="mlr-8 flex-grow hr-bot">
-                  <p class="lh-1 text-ellipsis-1l">{{point.name}}</p>
+                  <p class="text-ellipsis-1l">{{point.name}}</p>
                 </div>
                 <div @click="onRemove(index)" class="hover-pointer flex-no-shrink">
                   <simple-svg class="wh-20px" :filepath="require('~/assets/icon/location/Location_Cancel.svg')"/>
@@ -159,7 +161,7 @@
 
   .LocationItem {
     p {
-      padding: 12px 0;
+      margin: 10px 0;
     }
   }
 
