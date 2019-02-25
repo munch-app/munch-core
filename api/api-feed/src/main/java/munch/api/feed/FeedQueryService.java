@@ -46,6 +46,7 @@ public final class FeedQueryService extends ApiService {
 
         Map<String, Place> places = getPlaces(items);
         validateItems(items, places);
+
         return JsonResult.ok(items)
                 .put("places", places);
     }
@@ -65,7 +66,9 @@ public final class FeedQueryService extends ApiService {
     private void validateItems(NextNodeList<FeedItem> items, Map<String, Place> places) {
         items.removeIf(item -> {
             for (String placeId : places.keySet()) {
-                if (places.get(placeId) == null) return true;
+                Place place = places.get(placeId);
+                if (place == null) return true;
+                if (place.getStatus().getType() != Place.Status.Type.open) return true;
             }
             return false;
         });
