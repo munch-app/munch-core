@@ -1,9 +1,9 @@
 <template>
   <div class="p-12" @click="more = true">
-    <div class="bg-whisper100 border-3 p-16-24">
+    <div class="bg-whisper100 border-3 p-16-24 hover-pointer">
       <div v-if="content">
         <h3 class="text-ellipsis-2l">{{content.title}}</h3>
-        <p>{{content.body}}</p>
+        <p class="text-ellipsis-3l">{{content.body}}</p>
         <div class="small">{{sortId}}</div>
       </div>
       <div v-else>
@@ -12,11 +12,26 @@
     </div>
 
     <div v-if="more">
-      <portal to="dialog-styled">
-        <input-text label="SortId" v-model="changeSort"/>
-        <button class="secondary" @click="$emit('change-sort', changeSort)">Apply Sort Id Changes</button>
+      <portal to="dialog-w768">
+        <div>
+          <input-text label="SortId" v-model="changeSort"/>
+          <p class="mtb-16">SortId determine the arrangement of Content in the series. Descending order.</p>
+          <div class="flex-end">
+            <button class="secondary" @click="$emit('change-sort', changeSort)">Apply Sort</button>
+          </div>
+        </div>
 
-        <div class="right">
+
+        <hr class="mtb-16">
+        <div>
+          <h3 class="mb-16">Remove from series</h3>
+          <input-text label="Type: (remove from series)" v-model="deleteConfirm"/>
+          <div class="flex-end" v-if="deleteConfirm === 'remove from series'">
+            <button class="danger mt-16" @click="$emit('delete')">Confirm</button>
+          </div>
+        </div>
+
+        <div class="flex-end mtb-16">
           <button class="border" @click="more = false">Cancel</button>
         </div>
       </portal>
@@ -41,7 +56,7 @@
       }
     },
     data() {
-      return {content: null, more: false, changeSort: ''}
+      return {content: null, more: false, changeSort: this.sortId, deleteConfirm: ''}
     },
     computed: {
       ...mapGetters('creator', ['creatorId']),
@@ -56,5 +71,4 @@
 </script>
 
 <style scoped lang="less">
-
 </style>

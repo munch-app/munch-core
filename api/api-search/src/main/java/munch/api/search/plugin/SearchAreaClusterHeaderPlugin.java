@@ -13,7 +13,7 @@ import java.util.List;
  * Project: munch-core
  */
 @Singleton
-public final class SearchAreaClusterHeaderLoader implements SearchCardPlugin {
+public final class SearchAreaClusterHeaderPlugin implements SearchCardPlugin {
 
     @Override
     public List<Position> load(Request request) {

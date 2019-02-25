@@ -15,7 +15,9 @@
       <div class="ContentInSeries flex-wrap" v-if="contents">
         <content-in-series v-for="content in contents" :key="content.contentId" :content-id="content.contentId"
                            :sort-id="content.sortId"
-                           @change-sort="(s) => patchContent(content.contentId, s)"/>
+                           @change-sort="(s) => patchContent(content.contentId, s)"
+                           @delete="deleteContent(content.contentId)"
+        />
       </div>
     </div>
 
@@ -149,6 +151,13 @@
           })
           .catch((err) => this.$store.dispatch('addError', err))
       },
+      deleteContent(contentId) {
+        return this.$api.delete(`/creators/${this.creatorId}/series/${this.seriesId}/contents/${contentId}`)
+          .then(() => {
+            this.reloadContents()
+          })
+          .catch((err) => this.$store.dispatch('addError', err))
+      },
       reloadContents() {
         this.contents = null
         this.next = null
@@ -190,8 +199,18 @@
     margin: -12px;
 
     > div {
-      flex-basis: 33.33333%;
-      max-width: 33.33333%;
+      flex: 0 0 100%;
+      max-width: 100%;
+
+      @media (min-width: 768px) {
+        flex: 0 0 50%;
+        max-width: 50%;
+      }
+
+      @media (min-width: 992px) {
+        flex: 0 0 33.33333%;
+        max-width: 33.33333%;
+      }
     }
   }
 </style>

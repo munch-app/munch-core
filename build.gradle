@@ -5,7 +5,7 @@ allprojects {
     apply plugin: 'maven-publish'
 
     group 'munch-core'
-    version '0.20.0'
+    version '0.21.0'
 
     ext.dockerRegistryUrl = '197547471367.dkr.ecr.ap-southeast-1.amazonaws.com/'
 

@@ -35,7 +35,6 @@ public final class SearchPlaceCard implements SearchCard {
         return place;
     }
 
-
     @Singleton
     public static class Cleaner extends ObjectCleaner<SearchPlaceCard> {
 
