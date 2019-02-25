@@ -60,7 +60,7 @@
     }
   }
 
-  @media (max-width: 575.98px) {
+  @media (max-width: 768px) {
     .NavFooter {
       flex-direction: column;
     }

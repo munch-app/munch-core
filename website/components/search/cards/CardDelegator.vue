@@ -63,6 +63,13 @@
     :card="card"
   />
 
+  <!-- Series Card -->
+  <search-card-series-list
+    class="Card Initial FullWidth"
+    v-else-if="isCardId('SeriesList_2019-02-25')"
+    :card="card"
+  />
+
   <!-- Location Cards -->
   <search-card-location-banner
     class="Card Initial FullWidth"
@@ -102,6 +109,7 @@
   import SearchCardLocationBanner from "./location/SearchCardLocationBanner";
   import SearchCardLocationArea from "./location/SearchCardLocationArea";
   import SearchCardCollectionHeader from "./collection/SearchCardCollectionHeader";
+  import SearchCardSeriesList from "./content/SearchCardSeriesList";
 
   function isElementInViewport(el) {
     const topBar = 56 + 48 // Top Bar
@@ -120,6 +128,7 @@
   export default {
     name: "CardDelegator",
     components: {
+      SearchCardSeriesList,
       SearchCardCollectionHeader,
       SearchCardLocationArea,
       SearchCardLocationBanner,
@@ -201,26 +210,26 @@
   }
 
   .CardList.Square, .CardList.Square .CardItem {
-    height: 60vw;
+    height: calc(60vw * 1.2);
 
     @media (min-width: 500px) {
-      height: calc((100vw - 48px - 24px) / 2);
+      height: calc(((100vw - 48px - 24px) / 2) * 1.2);
     }
 
     @media (min-width: 768px) {
-      height: calc((100vw - 48px - 48px) / 3);
+      height: calc(((100vw - 48px - 48px) / 3) * 1.2);
     }
 
     @media (min-width: 1200px) {
-      height: calc((100vw - 160px - 72px) / 4);
+      height: calc(((100vw - 160px - 72px) / 4) * 1.2);
     }
 
     @media (min-width: 1600px) {
-      height: calc((100vw - 160px - 96px) / 5);
+      height: calc(((100vw - 160px - 96px) / 5) * 1.2);
     }
 
     @media (min-width: 1920px) {
-      height: calc((100vw - 160px - 120px) / 6);
+      height: calc(((100vw - 160px - 120px) / 6) * 1.2);
     }
   }
 </style>

@@ -32,8 +32,14 @@ public final class SearchQuery {
     public enum Feature {
         Home,
         Search,
-        Location,
+
+        // Deprecating
         Collection,
+
+        @Deprecated
+        Location,
+
+        @Deprecated
         Occasion
     }
 

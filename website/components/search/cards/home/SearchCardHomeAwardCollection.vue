@@ -8,7 +8,7 @@
                             :padding="24">
       <template slot-scope="{item}">
         <image-sizes class="CardItem overflow-hidden border-3" :sizes="item.image.sizes" width="1000">
-          <div class="Overlay flex-center p-24 cubic-bezier hover-pointer" @click="onClick(item)">
+          <div class="Overlay flex-align-end flex-justify-center p-24 cubic-bezier hover-pointer" @click="onClick(item)">
             <h3 class="text-center white">
               {{item.name}}
             </h3>

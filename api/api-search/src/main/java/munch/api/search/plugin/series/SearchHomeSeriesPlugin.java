@@ -1,5 +1,7 @@
 package munch.api.search.plugin.series;
 
+import munch.api.search.SearchQuery;
+
 import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +17,9 @@ public final class SearchHomeSeriesPlugin extends AbstractSearchSeriesListPlugin
 
     @Override
     public List<Position> load(Request request) {
+        if (!request.isFirstPage()) return null;
+        if (!request.getRequest().isFeature(SearchQuery.Feature.Home)) return null;
+
         List<Position> positions = new ArrayList<>();
 
         // Top 10s
