@@ -1,6 +1,6 @@
 <template>
-  <div class="ContentImage mtb-24">
-    <image-sizes :sizes="image.sizes" width="1000" height="1000" object-fit="contain"/>
+  <div>
+    <image-sizes class="border-4 overflow-hidden" :sizes="image.sizes" height="1000"/>
   </div>
 </template>
 

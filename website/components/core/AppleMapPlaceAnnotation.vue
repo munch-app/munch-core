@@ -88,14 +88,13 @@
         return this.$refs.annotation
       }, {data: this.place})
 
-      const map = this.$parent.$map
-      if (map) {
+      this.$parent.onMapLoaded((map) => {
         map.addAnnotation(this.$annotation)
-      }
+      })
     },
     beforeDestroy() {
       const map = this.$parent.$map
-      if (map) {
+      if (map && this.$annotation) {
         map.removeAnnotation(this.$annotation)
       }
     }

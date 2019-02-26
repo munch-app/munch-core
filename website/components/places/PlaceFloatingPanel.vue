@@ -17,7 +17,7 @@
 
       <div v-if="place.hours.length > 0">
         <h6>Opening Hours</h6>
-        <place-hour-list :place-id="place.placeId" :hours="place.hours"/>
+        <place-hour-list :hours="place.hours"/>
       </div>
 
       <div>

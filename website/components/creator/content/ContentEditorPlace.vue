@@ -1,25 +1,21 @@
 <template>
-  <div class="ContentPlace" @click.capture.stop>
+  <div class="ContentPlace mt-48 mb-24" @click.capture.stop>
     <div v-if="loading">
       <p>Loading...</p>
     </div>
-    <div v-else-if="place" class="PlaceCard">
-      <place-card :place="place"/>
-    </div>
-    <div v-else class="p-16-24 bg-peach100 border-3">
-      <h5>Previously Selected Place Not Found</h5>
-      <h4>Name: {{placeName}}</h4>
-      <div class="subtext m-0">Place is either deleted, removed or merged into another place.</div>
+    <div v-else class="PlaceCard">
+      <content-place :place="place" :place-id="placeId" :place-name="placeName"/>
     </div>
   </div>
 </template>
 
 <script>
   import PlaceCard from "../../places/PlaceCard";
+  import ContentPlace from "../../../pages/contents/ContentPlace";
 
   export default {
     name: "ContentEditorPlace",
-    components: {PlaceCard},
+    components: {ContentPlace, PlaceCard},
     props: ['node', 'updateAttrs', 'editable'],
     computed: {
       placeId: {
@@ -67,13 +63,7 @@
 </script>
 
 <style scoped lang="less">
-  .ContentPlace {
-    margin-top: 32px;
-    margin-bottom: 32px;
-  }
-
   .PlaceCard {
-    max-width: 240px;
     white-space: initial;
   }
 </style>

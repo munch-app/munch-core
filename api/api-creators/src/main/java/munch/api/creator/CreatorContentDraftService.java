@@ -123,6 +123,8 @@ public final class CreatorContentDraftService extends AbstractCreatorService {
         // Future: Linked Type Validation
 
         List<CreatorContentItem> items = itemResolver.getItems(draft);
+
+        cleanItems(contentId);
         linkPlace(content, items, body);
         putItems(content, items);
         content = putContent(content, items, body);
@@ -155,11 +157,6 @@ public final class CreatorContentDraftService extends AbstractCreatorService {
             itemClient.put(item);
         }
 
-        // Cleaning Up Items
-        itemClient.list(contentId, items.get(items.size() - 1).getItemId(), 30).toIterator(next -> {
-            return itemClient.list(contentId, next.path("itemId").asText(), 30);
-        }).forEachRemaining(item -> itemClient.delete(contentId, item.getItemId()));
-
         return items;
     }
 
@@ -175,5 +172,11 @@ public final class CreatorContentDraftService extends AbstractCreatorService {
         patch.set("image", JsonUtils.toTree(image));
         patch.set("tags", body.path("tags"));
         return contentClient.patch(content.getCreatorId(), content.getContentId(), patch);
+    }
+
+    private void cleanItems(String contentId) {
+        itemClient.list(contentId, null, 30).toIterator(next -> {
+            return itemClient.list(contentId, next.path("itemId").asText(), 30);
+        }).forEachRemaining(item -> itemClient.delete(contentId, item.getItemId()));
     }
 }

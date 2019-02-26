@@ -17,14 +17,14 @@
     </div>
 
     <div v-if="contents" class="mtb-16">
-      <div v-for="content in contents" :key="content.contentId" @click="onContent(content)"
-           class="mtb-8 p-24-0 hr-bot hover-pointer">
+      <nuxt-link :to="`/creator/contents/${content.contentId}`" v-for="content in contents" :key="content.contentId"
+           class="mtb-8 p-24-0 hr-bot hover-pointer block">
         <h3>{{content.title || 'Untitled Content'}}</h3>
         <div class="b-a60">
           <div class="regular mb-8" v-if="content.body">{{content.body}}</div>
           <div class="subtext">Last edited on {{formatMillis(content.updatedMillis)}}</div>
         </div>
-      </div>
+      </nuxt-link>
 
       <div v-if="contents.length === 0" class="flex-center">
         <div class="p-32">
@@ -103,9 +103,6 @@
             this.contents.push(...data)
             this.next = next
           })
-      },
-      onContent(content) {
-        this.$router.push({path: `/creator/contents/${content.contentId}`})
       },
     },
   }

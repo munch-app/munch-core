@@ -87,6 +87,7 @@ dependencies {
 
     compile project(':api:api-core')
     compile project(':api:api-creators')
+    compile project(':api:api-contents')
     compile project(':api:api-users')
     compile project(':api:api-places')
     compile project(':api:api-search')

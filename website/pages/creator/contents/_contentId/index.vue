@@ -165,8 +165,25 @@
     p {
       font-size: 19px;
       line-height: 1.8;
-      margin-bottom: 24px;
+      color: rgba(0, 0, 0, 0.8);
+
+      margin-top: 16px;
+      margin-bottom: 32px;
     }
+
+    h1 {
+      margin-top: 64px;
+      margin-bottom: 16px;
+
+      &:first-child {
+        margin-top: 0;
+      }
+    }
+
+    h2 {
+      margin-bottom: 16px;
+    }
+
 
     &:not(.Started) {
       h1:first-child::before {

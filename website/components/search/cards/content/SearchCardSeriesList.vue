@@ -58,14 +58,14 @@
     methods: {
       prev() {
         let scrollable = this.$refs.scrollable
-        let scrollLeft = scrollable.scrollLeft - this.cardWidth * 2
+        let scrollLeft = scrollable.scrollLeft - this.cardWidth
         scrollable.scrollLeft = scrollLeft
 
         this.notifyButton({scrollLeft})
       },
       next() {
         let scrollable = this.$refs.scrollable
-        let scrollLeft = scrollable.scrollLeft + this.cardWidth * 2
+        let scrollLeft = scrollable.scrollLeft + this.cardWidth
         scrollable.scrollLeft = scrollLeft
 
         this.notifyButton({scrollLeft})
@@ -144,9 +144,16 @@
     .ContentCard {
       padding: 0 12px;
 
+      flex: 0 0 33.33333%;
+      max-width: 33.33333%;
+      margin: 0;
+    }
+  }
+
+  @media (min-width: 1440px) {
+    .ContentCard {
       flex: 0 0 25%;
       max-width: 25%;
-      margin: 0;
     }
   }
 </style>

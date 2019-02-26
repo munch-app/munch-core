@@ -5,7 +5,7 @@ This is a rewrite of ImageSize with emphasis on
 - Cleaner approach for slotting of content into the image
 -->
 <template>
-  <div class="ImageSizes relative">
+  <div class="relative">
     <img v-if="url" :src="url" :alt="alt" :style="style.image"/>
     <div class="ImageSlot absolute-0">
       <slot></slot>

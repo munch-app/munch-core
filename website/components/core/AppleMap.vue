@@ -78,8 +78,11 @@
       onMapReadyQueue.splice(0)
     },
     methods: {
-      centerAnnotations() {
-        this.$map.showItems(this.$map.annotations, {
+      centerAnnotations(annotations) {
+        if (!annotations) {
+          annotations = this.$map.annotations
+        }
+        this.$map.showItems(annotations, {
           animate: true,
           padding: new mapkit.Padding(64, 64, 64, 64)
         })
@@ -90,6 +93,12 @@
         } else {
           onMapReadyQueue.push(func)
         }
+      },
+      getAnnotations(filter) {
+        if (filter) {
+          return this.$map.annotations.filter(annotation => filter(annotation.data))
+        }
+        return this.$map.annotations
       }
     }
   }

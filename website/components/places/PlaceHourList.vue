@@ -31,10 +31,6 @@
   export default {
     name: "PlaceHourList",
     props: {
-      placeId: {
-        type: String,
-        required: true,
-      },
       hours: {
         type: Array,
         required: true,
