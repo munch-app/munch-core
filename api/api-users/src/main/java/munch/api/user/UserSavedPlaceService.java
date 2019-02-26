@@ -52,13 +52,16 @@ public final class UserSavedPlaceService extends ApiService {
         NextNodeList<UserSavedPlace> nnList = savedPlaceClient.list(userId, next, size);
         Map<String, Place> placeMap = placeClient.get(nnList.stream().map(UserSavedPlace::getPlaceId));
 
-        List<Map> places = nnList.stream().map(usp -> Map.of(
-                "userId", usp.getUserId(),
-                "placeId", usp.getPlaceId(),
-                "name", usp.getName(),
-                "createdMillis", usp.getCreatedMillis(),
-                "place", placeMap.get(usp.getPlaceId())
-        )).collect(Collectors.toList());
+        List<Map> places = nnList.stream()
+                // TODO: Change to auto cleanup
+                .filter(usp -> placeMap.get(usp.getPlaceId()) != null)
+                .map(usp -> Map.of(
+                        "userId", usp.getUserId(),
+                        "placeId", usp.getPlaceId(),
+                        "name", usp.getName(),
+                        "createdMillis", usp.getCreatedMillis(),
+                        "place", placeMap.get(usp.getPlaceId())
+                )).collect(Collectors.toList());
 
         return new NextNodeList<>(places, nnList.getNext());
     }
