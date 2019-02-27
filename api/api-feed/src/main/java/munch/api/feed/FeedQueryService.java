@@ -64,9 +64,11 @@ public final class FeedQueryService extends ApiService {
     }
 
     private void validateItems(NextNodeList<FeedItem> items, Map<String, Place> places) {
+        // TODO need to change this when article is released into the feed
+
         items.removeIf(item -> {
-            for (String placeId : places.keySet()) {
-                Place place = places.get(placeId);
+            for (FeedItem.Place p : item.getPlaces()) {
+                Place place = places.get(p.getPlaceId());
                 if (place == null) return true;
                 if (place.getStatus().getType() != Place.Status.Type.open) return true;
             }
