@@ -16,9 +16,11 @@ import munch.restful.server.JsonResult;
 import munch.user.client.AwardCollectionClient;
 import munch.user.client.UserRatedPlaceClient;
 import munch.user.client.UserSavedPlaceClient;
+import org.apache.commons.lang3.EnumUtils;
+import org.apache.commons.lang3.StringUtils;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by: Fuxing
@@ -49,6 +51,31 @@ public final class PlaceService extends ApiService {
         this.ratedPlaceClient = ratedPlaceClient;
     }
 
+    enum Linked {
+        awards,
+        articles,
+        images,
+        user,
+        ;
+
+        static Set<Linked> DEFAULT = Set.of(
+                awards, articles, images, user
+        );
+
+        static Set<Linked> map(JsonCall call) {
+            String linked = call.queryString("linked", null);
+            if (linked == null) return DEFAULT;
+
+            if (StringUtils.isBlank(linked)) return Set.of();
+
+            return Arrays.stream(linked.split(","))
+                    .filter(StringUtils::isNotBlank)
+                    .map(t -> EnumUtils.getEnum(Linked.class, t))
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toSet());
+        }
+    }
+
     /**
      * Endpoint: /v/places/:placeId
      */
@@ -72,14 +99,27 @@ public final class PlaceService extends ApiService {
         Place place = placeClient.get(placeId);
         if (place == null) return JsonResult.notFound();
 
+        Set<Linked> linked = Linked.map(call);
+        Map<String, Object> map = new HashMap<>();
+        map.put("place", place);
 
-        return JsonResult.ok(Map.of(
-                "place", place,
-                "awards", awardCollectionClient.list(placeId, null, 10),
-                "articles", articleLinkClient.list(placeId, null, 10),
-                "images", placeImageClient.list(placeId, null, 10),
-                "user", getUser(call, placeId)
-        ));
+        if (linked.contains(Linked.awards)) {
+            map.put("awards", awardCollectionClient.list(placeId, null, 10));
+        }
+
+        if (linked.contains(Linked.articles)) {
+            map.put("articles", articleLinkClient.list(placeId, null, 10));
+        }
+
+        if (linked.contains(Linked.images)) {
+            map.put("images", placeImageClient.list(placeId, null, 10));
+        }
+
+        if (linked.contains(Linked.user)) {
+            map.put("user", getUser(call, placeId));
+        }
+
+        return JsonResult.ok(map);
     }
 
     private Map<String, Object> getUser(JsonCall call, String placeId) {
@@ -112,4 +152,5 @@ public final class PlaceService extends ApiService {
 
         return articleLinkClient.list(placeId, nextSort, size);
     }
+
 }
