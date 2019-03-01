@@ -14,17 +14,11 @@
           <h2 v-else>Suggest a new edit</h2>
         </div>
 
-        <div class="Navigation hr-bot flex">
-          <div class="Tab border border-4-top weight-600 hover-pointer" v-for="tab in tabs" :key="tab.component"
-               :class="{'bg-s400 white': selected === tab.component}" @click="selected = tab.component">
-            {{tab.name}}
-          </div>
-        </div>
-
         <div class="Content">
-          <keep-alive>
-            <component :payload="payload" :is="selected"/>
-          </keep-alive>
+          <place-suggest-detail :payload="payload"></place-suggest-detail>
+          <place-suggest-opening-hours :payload="payload"></place-suggest-opening-hours>
+          <place-suggest-image :payload="payload"></place-suggest-image>
+          <place-suggest-article :payload="payload"></place-suggest-article>
         </div>
 
         <div class="Action">
@@ -58,6 +52,7 @@
   import PlaceSuggestImage from "../../components/places/suggest/PlaceSuggestImage";
   import PlaceSuggestMenu from "../../components/places/suggest/PlaceSuggestMenu";
   import PlaceSuggestChanges from "../../components/places/suggest/PlaceSuggestChanges";
+  import PlaceSuggestOpeningHours from "../../components/places/suggest/PlaceSuggestOpeningHours";
   import DialogLoading from "../../components/layouts/DialogLoading";
 
   const newPayload = (data) => {
@@ -89,7 +84,7 @@
           type: place.status.type
         },
         // Implement in the future
-        hours: [],
+        hours: place.hours,
         tags: [],
         menu: {}
       },
@@ -103,6 +98,7 @@
 
   export default {
     components: {
+      PlaceSuggestOpeningHours,
       DialogLoading,
       PlaceSuggestChanges,
       PlaceSuggestMenu, PlaceSuggestImage, PlaceSuggestArticle, PlaceSuggestDetail, ImageSizes

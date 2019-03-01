@@ -1,18 +1,22 @@
 <template>
   <div>
     <div class="input-group">
-      <input-text label="Name" v-model="payload.place.name" required/>
-      <input-text label="Address" v-model="payload.place.location.address" required/>
-
-      <!--<div class="input-text">-->
-      <!--<label>Tags</label>-->
-      <!--<input>-->
-      <!--</div>-->
-      <!---->
+      <h2>Status</h2>
+      <div class="flex StatusList">
+        <div class="weight-600 border-3 hover-pointer" v-for="status in statusList" :key="status.type"
+             @click="payload.place.status.type = status.type"
+             :class="{ 'bg-success white': payload.place.status.type === status.type && status.type === 'open',
+                       'bg-error white': payload.place.status.type === status.type && status.type === 'closed',
+                       'bg-whisper100 b-a85': payload.place.status.type !== status.type}">
+          {{status.name}}
+        </div>
+      </div>
     </div>
 
     <div class="input-group">
       <h2>Details</h2>
+      <input-text label="Name" v-model="payload.place.name" required/>
+      <input-text label="Address" v-model="payload.place.location.address" required/>
       <!-- Price Details Required -->
       <input-text label="Price Per Pax" v-model="payload.place.price.perPax" type="number"/>
       <input-text label="Phone" v-model="payload.place.phone"/>
@@ -25,19 +29,6 @@
 
     <div class="input-group" v-if="false">
       <h2>Hours</h2>
-    </div>
-
-    <div class="input-group">
-      <h2>Status</h2>
-      <div class="flex StatusList">
-        <div class="weight-600 border-3 hover-pointer" v-for="status in statusList" :key="status.type"
-             @click="payload.place.status.type = status.type"
-             :class="{ 'bg-success white': payload.place.status.type === status.type && status.type === 'open',
-                       'bg-error white': payload.place.status.type === status.type && status.type === 'closed',
-                       'bg-whisper100 b-a85': payload.place.status.type !== status.type}">
-          {{status.name}}
-        </div>
-      </div>
     </div>
   </div>
 </template>

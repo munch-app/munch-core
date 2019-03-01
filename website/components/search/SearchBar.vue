@@ -4,7 +4,7 @@
     <div class="SearchTextBar relative w-100">
       <input id="globalSearchBar" ref="input" class="TextBar bg-white absolute wh-100" type="text"
              @focus="onFocus" @keyup.up="onKeyUp" @keyup.down="onKeyDown" @keyup.enter="onKeyEnter"
-             placeholder="Search e.g. Italian in Orchard" v-model="text">
+             placeholder="Search e.g. Italian in Orchard" autocomplete="off" v-model="text">
 
       <div class="Clear absolute hover-pointer none" :class="{block: text.length}" @click="onClear">
         <simple-svg fill="black" :filepath="require('~/assets/icon/close.svg')"/>

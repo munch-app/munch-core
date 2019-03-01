@@ -1,11 +1,10 @@
 <template>
   <div>
-    <p>Own an Instagram account, want it published on munch? <a class="text-underline s700 weight-600"
-                                                                href="https://partner.munch.app"
-                                                                target="_blank">partner.munch.app</a></p>
-
     <div class="Existing" v-if="images.length > 0">
       <h2>Images</h2>
+      <p>Own an Instagram account, want it published on munch? <a class="text-underline s700 weight-600"
+                                                                  href="https://partner.munch.app"
+                                                                  target="_blank">partner.munch.app</a></p>
 
       <div class="List flex-wrap">
         <div class="Image hover-pointer" v-for="image in images" :key="image.imageId" @click="onDialog(image)">
