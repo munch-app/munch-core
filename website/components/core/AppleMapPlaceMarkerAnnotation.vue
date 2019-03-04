@@ -90,33 +90,33 @@
     display: none;
   }
 
-  @media (max-width: 991.98px) {
-    .Regular {
-      display: none;
-    }
-    .Small {
-      display: block;
-    }
+  /*@media (max-width: 991.98px) {*/
+    /*.Regular {*/
+      /*display: none;*/
+    /*}*/
+    /*.Small {*/
+      /*display: block;*/
+    /*}*/
 
-    .AnnotationDialog {
-      border-radius: 4px;
+    /*.AnnotationDialog {*/
+      /*border-radius: 4px;*/
 
-      width: 136px;
-      bottom: 22px;
+      /*width: 136px;*/
+      /*bottom: 22px;*/
 
-      padding: 5px 4px 5px 8px;
-    }
+      /*padding: 5px 4px 5px 8px;*/
+    /*}*/
 
-    .AnnotationMarker {
-      width: 136px;
-    }
+    /*.AnnotationMarker {*/
+      /*width: 136px;*/
+    /*}*/
 
-    .Name {
-      font-size: 13px;
-    }
+    /*.Name {*/
+      /*font-size: 13px;*/
+    /*}*/
 
-    .Location {
-      font-size: 11px;
-    }
-  }
+    /*.Location {*/
+      /*font-size: 11px;*/
+    /*}*/
+  /*}*/
 </style>

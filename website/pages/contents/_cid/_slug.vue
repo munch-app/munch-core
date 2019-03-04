@@ -211,6 +211,10 @@
       height: 144px;
     }
 
+    @media (max-width: 576px) {
+      display: none;
+    }
+
     @media (min-width: 992px) {
       flex: 0 0 33%;
       height: calc((100vh - 80px) * 0.7);

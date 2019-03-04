@@ -22,7 +22,7 @@ allprojects {
     ext.userVersion = '3.2.1'
     ext.notificationVersion = '1.5'
 
-    ext.dataVersion = '4.10-SNAPSHOT'
+    ext.dataVersion = '5.0-SNAPSHOT'
 
     ext.tasteVersion = '1.0-SNAPSHOT'
     ext.suggestVersion = '1.0-SNAPSHOT'

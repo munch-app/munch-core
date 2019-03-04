@@ -13,6 +13,7 @@ import munch.gallery.PlaceImageClient;
 import munch.restful.core.NextNodeList;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonResult;
+import munch.taste.PlaceRatingClient;
 import munch.user.client.AwardCollectionClient;
 import munch.user.client.UserRatedPlaceClient;
 import munch.user.client.UserSavedPlaceClient;
@@ -41,14 +42,17 @@ public final class PlaceService extends ApiService {
     private final UserSavedPlaceClient savedPlaceClient;
     private final UserRatedPlaceClient ratedPlaceClient;
 
+    private final PlaceRatingClient placeRatingClient;
+
     @Inject
-    public PlaceService(PlaceClient placeClient, ArticleLinkClient articleLinkClient, AwardCollectionClient awardCollectionClient, PlaceImageClient placeImageClient, UserSavedPlaceClient savedPlaceClient, UserRatedPlaceClient ratedPlaceClient) {
+    public PlaceService(PlaceClient placeClient, ArticleLinkClient articleLinkClient, AwardCollectionClient awardCollectionClient, PlaceImageClient placeImageClient, UserSavedPlaceClient savedPlaceClient, UserRatedPlaceClient ratedPlaceClient, PlaceRatingClient placeRatingClient) {
         this.placeClient = placeClient;
         this.articleLinkClient = articleLinkClient;
         this.awardCollectionClient = awardCollectionClient;
         this.placeImageClient = placeImageClient;
         this.savedPlaceClient = savedPlaceClient;
         this.ratedPlaceClient = ratedPlaceClient;
+        this.placeRatingClient = placeRatingClient;
     }
 
     enum Linked {
@@ -56,10 +60,11 @@ public final class PlaceService extends ApiService {
         articles,
         images,
         user,
+        rating,
         ;
 
         static Set<Linked> DEFAULT = Set.of(
-                awards, articles, images, user
+                awards, articles, images, user, rating
         );
 
         static Set<Linked> map(JsonCall call) {
@@ -119,6 +124,10 @@ public final class PlaceService extends ApiService {
             map.put("user", getUser(call, placeId));
         }
 
+        if (linked.contains(Linked.rating)) {
+            map.put("rating", placeRatingClient.get(placeId));
+        }
+
         return JsonResult.ok(map);
     }
 
@@ -152,5 +161,4 @@ public final class PlaceService extends ApiService {
 
         return articleLinkClient.list(placeId, nextSort, size);
     }
-
 }
