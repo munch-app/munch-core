@@ -37,8 +37,6 @@
         with.
       </p>
     </div>
-
-
     <no-ssr>
       <dialog-loading v-if="submitting"/>
     </no-ssr>
@@ -50,7 +48,6 @@
   import PlaceSuggestDetail from "../../components/places/suggest/PlaceSuggestDetail";
   import PlaceSuggestArticle from "../../components/places/suggest/PlaceSuggestArticle";
   import PlaceSuggestImage from "../../components/places/suggest/PlaceSuggestImage";
-  import PlaceSuggestMenu from "../../components/places/suggest/PlaceSuggestMenu";
   import PlaceSuggestChanges from "../../components/places/suggest/PlaceSuggestChanges";
   import PlaceSuggestOpeningHours from "../../components/places/suggest/PlaceSuggestOpeningHours";
   import DialogLoading from "../../components/layouts/DialogLoading";
@@ -83,10 +80,9 @@
         status: {
           type: place.status.type
         },
-        // Implement in the future
+        tags: place.tags,
         hours: place.hours,
-        tags: [],
-        menu: {}
+        menu: place.menu
       },
       origin: place,
       removes: {
@@ -100,8 +96,7 @@
     components: {
       PlaceSuggestOpeningHours,
       DialogLoading,
-      PlaceSuggestChanges,
-      PlaceSuggestMenu, PlaceSuggestImage, PlaceSuggestArticle, PlaceSuggestDetail, ImageSizes
+      PlaceSuggestChanges, PlaceSuggestImage, PlaceSuggestArticle, PlaceSuggestDetail, ImageSizes
     },
     head() {
       const meta = []

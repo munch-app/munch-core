@@ -13,6 +13,7 @@
     "precommit": "yarn run lint"
   },
   "dependencies": {
+    "@johmun/vue-tags-input": "^2.0.1",
     "@nuxtjs/axios": "^5.3.1",
     "@nuxtjs/google-tag-manager": "^2.1.0",
     "@nuxtjs/sitemap": "^0.1.1",

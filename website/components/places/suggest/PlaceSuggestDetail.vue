@@ -17,12 +17,14 @@
       <h2>Details</h2>
       <input-text label="Name" v-model="payload.place.name" required/>
       <input-text label="Address" v-model="payload.place.location.address" required/>
+      <place-suggest-tags v-model="tags" label="Tags"></place-suggest-tags>
       <!-- Price Details Required -->
       <input-text label="Price Per Pax" v-model="payload.place.price.perPax" type="number"/>
       <input-text label="Phone" v-model="payload.place.phone"/>
       <input-text label="Website" v-model="payload.place.website"/>
+      <input-text label="Menu URL" v-model="payload.place.menu"/>
       <div class="input-text">
-        <label>Description</label>
+        <label @click="verify">Description</label>
         <textarea rows="4" v-model="payload.place.description"></textarea>
       </div>
     </div>
@@ -35,10 +37,11 @@
 
 <script>
   import InputText from "../../core/InputText";
+  import PlaceSuggestTags from "../../places/suggest/PlaceSuggestTags"
 
   export default {
     name: "PlaceSuggestDetail",
-    components: {InputText},
+    components: {InputText, PlaceSuggestTags},
     props: {
       payload: {
         type: Object,
@@ -56,7 +59,15 @@
             name: 'Permanently Closed',
             type: 'closed'
           }
-        ]
+        ],
+        tags: this.payload.place.tags.map(tag => {
+          return {text: tag.name}
+        })
+      }
+    },
+    methods: {
+      verify() {
+        console.log(this.tags.toString())
       }
     }
   }
