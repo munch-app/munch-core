@@ -3,7 +3,9 @@ package munch.api.search.cards;
 import munch.user.data.CreatorContent;
 import munch.user.data.CreatorSeries;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by: Fuxing
@@ -15,10 +17,12 @@ public final class SearchSeriesListCard implements SearchCard {
 
     private final CreatorSeries series;
     private final List<CreatorContent> contents;
+    private final Map<String, Object> options;
 
     public SearchSeriesListCard(CreatorSeries series, List<CreatorContent> contents) {
         this.series = series;
         this.contents = contents;
+        this.options = new HashMap<>();
     }
 
     public CreatorSeries getSeries() {
@@ -27,6 +31,10 @@ public final class SearchSeriesListCard implements SearchCard {
 
     public List<CreatorContent> getContents() {
         return contents;
+    }
+
+    public Map<String, Object> getOptions() {
+        return options;
     }
 
     @Override

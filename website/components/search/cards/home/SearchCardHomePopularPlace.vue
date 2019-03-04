@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-24">
+  <div class="mt-24" v-if="false">
     <div class="flex-between flex-justify-center">
       <div>
         <h2>Popular Places in Singapore</h2>

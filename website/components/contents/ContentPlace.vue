@@ -1,6 +1,6 @@
 <template>
   <div class="ContentPlace mt-32 mb-24 relative">
-    <nuxt-link :to="`/places/${place.placeId}`" v-if="selectedImage">
+    <nuxt-link :to="`/places/${placeId}`" v-if="selectedImage">
       <div class="aspect r-5-3 border-4 overflow-hidden">
         <image-sizes :sizes="selectedImage.sizes" :alt="place.name" :height="1000" :width="1000">
 
@@ -25,10 +25,11 @@
     </div>
 
     <div v-if="place" class="ContentInfo mt-24 relative">
-      <nuxt-link :to="`/places/${place.placeId}`">
+      <nuxt-link :to="`/places/${placeId}`">
         <h2 class="m-0">{{place.name}}</h2>
       </nuxt-link>
-      <nuxt-link :to="`/places/${place.placeId}`">
+      <place-status class="mt-16" :place="place"/>
+      <nuxt-link :to="`/places/${placeId}`">
         <div class="subtext mtb-4"><b>{{location.neighbourhood}}</b> <b>·</b> {{location.address}}</div>
       </nuxt-link>
 
@@ -43,22 +44,24 @@
       </div>
     </div>
 
-    <div v-else class="p-16-24 bg-peach100 border-4">
+    <div v-else class="p-24 bg-peach100 border-5">
       <h2>{{placeName}}</h2>
-      <div class="regular">{{placeName}} has permanently closed or removed from Munch.</div>
+      <div class="large m-0">This place has permanently closed or removed from Munch.</div>
+      <h6 class="m-0">Know this place? <a :href="`/places/suggest?placeId=${placeId}`" target="_blank">Suggest an edit.</a></h6>
     </div>
   </div>
 </template>
 
 <script>
   import _ from 'lodash'
-  import ImageSizes from "../../components/core/ImageSizes";
-  import PlaceTagList from "../../components/places/PlaceTagList";
-  import PlaceHourList from "../../components/places/PlaceHourList";
+  import ImageSizes from "../core/ImageSizes";
+  import PlaceTagList from "../places/PlaceTagList";
+  import PlaceHourList from "../places/PlaceHourList";
+  import PlaceStatus from "../places/PlaceStatus";
 
   export default {
     name: "ContentPlace",
-    components: {PlaceHourList, PlaceTagList, ImageSizes},
+    components: {PlaceStatus, PlaceHourList, PlaceTagList, ImageSizes},
     props: {
       placeName: {
         type: String,
@@ -103,7 +106,7 @@
 
         if (image.instagram && image.instagram.username) return image.instagram.username
         if (image.domain && image.domain.name) return image.domain.name
-      }
+      },
     },
     data() {
       if (this.place) {

@@ -164,7 +164,7 @@
 
 <style scoped lang="less">
   .FilterBar {
-    top: 56px;
+    top: 72px/*Header72px*/;
     height: 48px;
   }
 

@@ -12,10 +12,11 @@
       </div>
 
 
-      <div class="ContentListParent mtb-24">
+      <div class="ContentListParent mtb-24" :class="expandType">
         <div class="ContentList flex relative" ref="scrollable">
           <search-series-content-card class="flex-no-shrink ContentCard" v-for="content in card.contents"
                                       :content="content" :key="content.contentId"
+                                      :options="card.options"
                                       ref="contentCard"/>
           <div>
             <div class="gutter"/>
@@ -48,6 +49,15 @@
         hasNext: true,
         hasPrev: false,
         cardWidth: 300,
+      }
+    },
+    computed: {
+      expandType() {
+        const expand = this.card.options && this.card.options.expand
+        if (expand === 'height') {
+          return 'ExpandHeight'
+        }
+        return 'ExpandWidth'
       }
     },
     mounted() {
@@ -83,6 +93,7 @@
 
     margin-left: -24px;
     margin-right: -24px;
+    margin-bottom: -24px;
     width: calc(100% + 48px);
     height: 100%;
   }
@@ -106,6 +117,10 @@
     margin-right: -8px;
   }
 
+  .ExpandHeight .ContentCard {
+    width: calc(75vw - 24px);
+  }
+
   .ArrowButton {
     visibility: hidden;
   }
@@ -113,6 +128,10 @@
   @media (min-width: 480px) {
     .ContentCard {
       width: calc((100vw - 16px) / 2);
+    }
+
+    .ExpandHeight .ContentCard {
+      width: calc((100vw - 16px) / 2.5);
     }
   }
 
@@ -123,6 +142,10 @@
 
     .ContentCard {
       width: calc((100vw - 8px) / 3);
+    }
+
+    .ExpandHeight .ContentCard {
+      width: calc((100vw - 8px) / 3.5);
     }
 
     .ArrowButton {
@@ -148,12 +171,22 @@
       max-width: 33.33333%;
       margin: 0;
     }
+
+    .ExpandHeight .ContentCard {
+      flex: 0 0 25%;
+      max-width: 25%;
+    }
   }
 
   @media (min-width: 1440px) {
     .ContentCard {
       flex: 0 0 25%;
       max-width: 25%;
+    }
+
+    .ExpandHeight .ContentCard {
+      flex: 0 0 16.66666%;
+      max-width: 16.66666%;
     }
   }
 </style>

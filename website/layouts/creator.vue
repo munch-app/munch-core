@@ -13,7 +13,7 @@
       </div>
     </nav>
 
-    <div style="height: 56px"/>
+    <div class="Header"/>
     <header-menu class="container-1200"/>
 
     <layout-default/>
@@ -52,7 +52,7 @@
 
   .Header {
     top: 0;
-    height: 56px;
+    height: 72px /*Header72px*/;
   }
 
   .CreatorName {

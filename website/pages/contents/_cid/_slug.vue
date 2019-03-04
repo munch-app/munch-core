@@ -1,7 +1,8 @@
 <template>
-  <div class="container-1200 mt-48 mb-64 relative">
+  <div class="pb-64 bg-steam">
+    <content-banner :content="content" :url="url"/>
 
-    <div class="Content flex-justify-between">
+    <div class="Content flex-justify-between relative container-1200 mt-64">
       <div class="ItemList">
         <div v-for="item in items">
           <content-text-body v-if="item.type === 'title'" :item="item"/>
@@ -19,7 +20,8 @@
 
       <div class="MapView border-4 overflow-hidden elevation-1 flex-column">
         <apple-map ref="map" class="flex-grow w-100" :options="map.options">
-          <apple-map-place-marker-annotation v-for="place in places" :key="place.placeId" :place="place"/>
+          <apple-map-place-marker-annotation v-for="place in places" v-if=" place && place.placeId" :key="place.placeId"
+                                             :place="place"/>
         </apple-map>
         <div v-if="map.place" class="PlaceMapInfo p-16 flex-between">
           <div class="text-capitalize text-ellipsis-1l">
@@ -43,13 +45,14 @@
 
 <script>
   import base64 from 'uuid-base64'
-  import ContentTextBody from "../ContentTextBody";
-  import ContentPlace from "../ContentPlace";
+  import ContentTextBody from "../../../components/contents/ContentTextBody";
+  import ContentPlace from "../../../components/contents/ContentPlace";
   import AppleMap from "../../../components/core/AppleMap";
   import ImageSizes from "../../../components/core/ImageSizes";
-  import ContentLine from "../ContentLine";
-  import ContentImage from "../ContentImage";
+  import ContentLine from "../../../components/contents/ContentLine";
+  import ContentImage from "../../../components/contents/ContentImage";
   import AppleMapPlaceMarkerAnnotation from "../../../components/core/AppleMapPlaceMarkerAnnotation";
+  import ContentBanner from "../../../components/contents/ContentBanner";
 
   function appendLoad({items, places, next}) {
     if (next) {
@@ -88,6 +91,7 @@
 
   export default {
     components: {
+      ContentBanner,
       AppleMapPlaceMarkerAnnotation,
       ContentImage,
       ContentLine,
@@ -97,15 +101,14 @@
       ContentTextBody
     },
     head() {
-      const {cid, slug, content: {title, body, image}} = this
-      const url = `https://www.munch.app/contents/${cid}/${slug}`
+      const {url, content: {title, body, image}} = this
 
       return this.$head({
         robots: {follow: true, index: true},
         graph: {
           type: 'article',
           url: url,
-          image: image && ImageSizes.$$findUrl(image.sizes, 300, 300),
+          image: image && ImageSizes.$$findUrl(image.sizes, 480, 480),
           title: `${title} · Munch`,
           description: body,
         },
@@ -129,6 +132,7 @@
     asyncData({store, $api, params: {cid, slug}}) {
       // cid is not using the default base64, see more: https://www.npmjs.com/package/d64
       const contentId = base64.decode(cid)
+      const url = `https://www.munch.app/contents/${cid}/${slug}`
 
       return Promise.all([
         $api.get(`/contents/${contentId}`).then(({data}) => ({content: data})),
@@ -137,7 +141,7 @@
         })
       ]).then(values => {
         return {
-          cid, slug,
+          cid, slug, url,
           ...values[0],
           ...values[1],
         }
@@ -159,6 +163,7 @@
           }
         })
           .filter(({height}) => height !== 0)
+          .filter(({place}) => place)
           .sort((a, b) => b.height - a.height)
           .map(({place}) => place)
       },
@@ -220,7 +225,7 @@
       height: calc((100vh - 80px) * 0.7);
 
       position: sticky;
-      top: 80px;
+      top: calc(24px + 72px /*Header72px*/);
       margin-left: 128px;
     }
   }

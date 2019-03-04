@@ -5,7 +5,7 @@
 </template>
 
 <script>
-  import ImageSizes from "../../components/core/ImageSizes";
+  import ImageSizes from "../core/ImageSizes";
 
   export default {
     name: "ContentImage",

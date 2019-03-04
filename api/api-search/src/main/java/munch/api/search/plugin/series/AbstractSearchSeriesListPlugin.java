@@ -5,9 +5,11 @@ import com.google.common.cache.CacheBuilder;
 import munch.api.search.cards.SearchSeriesListCard;
 import munch.api.search.plugin.SearchCardPlugin;
 import munch.user.client.CreatorContentClient;
+import munch.user.client.CreatorProfileClient;
 import munch.user.client.CreatorSeriesClient;
 import munch.user.client.CreatorSeriesContentClient;
 import munch.user.data.CreatorContent;
+import munch.user.data.CreatorProfile;
 import munch.user.data.CreatorSeries;
 import munch.user.data.CreatorSeriesContent;
 import org.apache.commons.lang3.tuple.Pair;
@@ -40,13 +42,15 @@ public abstract class AbstractSearchSeriesListPlugin implements SearchCardPlugin
 
     private CreatorSeriesClient seriesClient;
     private CreatorContentClient contentClient;
+    private CreatorProfileClient profileClient;
     private CreatorSeriesContentClient seriesContentClient;
 
     @Inject
-    public void inject(CreatorSeriesClient seriesClient, CreatorSeriesContentClient seriesContentClient, CreatorContentClient contentClient) {
+    public void inject(CreatorSeriesClient seriesClient, CreatorSeriesContentClient seriesContentClient, CreatorProfileClient profileClient, CreatorContentClient contentClient) {
         this.seriesClient = seriesClient;
-        this.seriesContentClient = seriesContentClient;
         this.contentClient = contentClient;
+        this.profileClient = profileClient;
+        this.seriesContentClient = seriesContentClient;
     }
 
     @Nullable
@@ -64,6 +68,7 @@ public abstract class AbstractSearchSeriesListPlugin implements SearchCardPlugin
 
         if (contents.isEmpty()) return null;
 
+        series.setProfile(profileClient.get(series.getCreatorId()));
         return new SearchSeriesListCard(series, contents);
     }
 

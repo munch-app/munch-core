@@ -45,16 +45,26 @@
       </div>
     </div>
 
-    <div class="mtb-64">
-      <h2 class="b-a60">Mobile Preview</h2>
-      <div class="mt-24 MobileContentPreview">
-        <image-sizes v-if="content.image" :sizes="content.image.sizes"/>
-        <h5 class="mt-8 s700">{{content.subtitle}}</h5>
-        <h2 class="mt-8">{{content.title}}</h2>
-        <p class="mt-24">{{content.body}}</p>
+    <div class="mtb-64 flex">
+      <div class="MobileContentPreview flex-no-shrink">
+        <h2 class="b-a60">Mobile Content Preview</h2>
 
-        <div class="regular text-center mt-32 p-16">More Content …</div>
-        <div class="regular text-center p-16">More Content …</div>
+        <image-sizes v-if="content.image" :sizes="content.image.sizes">
+          <div class="p-12">
+            <simple-svg class="wh-24px" fill="white" :filepath="require('~/assets/icon/Navigation_Back.svg')"/>
+          </div>
+        </image-sizes>
+        <h5 class="mt-8 s700">{{content.subtitle}}</h5>
+        <h2 class="mt-16 weight-700">{{content.title}}</h2>
+        <p class="mt-16">{{content.body}}</p>
+
+        <div class="regular bg-steam border-3 text-center mt-32 p-16">More Content …</div>
+        <div class="regular bg-steam border-3 text-center p-16">More Content …</div>
+      </div>
+
+      <div class="DesktopContentPreview flex-shrink">
+        <h2 class="b-a60">Desktop Content Preview</h2>
+        <content-banner :content="content" url="https://www.munch.app"/>
       </div>
     </div>
 
@@ -112,9 +122,10 @@
   import TextAuto from "../../../../components/core/TextAuto";
   import SearchSeriesContentCard from "../../../../components/search/cards/content/SearchSeriesContentCard";
   import ImageSizes from "../../../../components/core/ImageSizes";
+  import ContentBanner from "../../../../components/contents/ContentBanner";
 
   export default {
-    components: {ImageSizes, SearchSeriesContentCard, TextAuto, ContentNavHeader},
+    components: {ContentBanner, ImageSizes, SearchSeriesContentCard, TextAuto, ContentNavHeader},
     layout: 'creator',
     head() {
       const title = this.content && this.content.title || 'Content'
@@ -258,6 +269,10 @@
 
   .MobileContentPreview {
     max-width: 320px;
+  }
+
+  .DesktopContentPreview {
+    padding-left: 64px;
   }
 
   .SelectImageList {

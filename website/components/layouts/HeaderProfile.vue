@@ -29,7 +29,6 @@
   .ProfileImage {
     height: 40px;
     width: 40px;
-    margin-top: 4px;
 
     > * {
       border-radius: 50%;

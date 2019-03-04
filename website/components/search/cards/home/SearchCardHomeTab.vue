@@ -139,7 +139,7 @@
 <!--suppress CssUnknownTarget -->
 <style scoped lang="less">
   .HomeTab {
-    margin-top: -86px;
+    margin-top: calc(-30px - 76px /*Header72px*/);
     background: no-repeat center/cover;
 
     * > {

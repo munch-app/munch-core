@@ -3,8 +3,6 @@ package munch.api.search.plugin.home;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import munch.api.search.SearchQuery;
-import munch.api.search.cards.SearchHomeAwardCollectionCard;
 import munch.api.search.plugin.SearchCardPlugin;
 import munch.data.client.PlaceClient;
 import munch.data.place.Place;
@@ -18,7 +16,6 @@ import javax.inject.Singleton;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 /**
  * Created by: Fuxing
@@ -51,15 +48,16 @@ public final class SearchHomeAwardCollectionPlugin implements SearchCardPlugin {
     @Nullable
     @Override
     public List<Position> load(Request request) {
-        if (!request.isFirstPage()) return null;
-        if (!request.getRequest().isFeature(SearchQuery.Feature.Home)) return null;
-
-        List<UserPlaceCollection> collections = load().stream()
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toList());
-
-        return of(-1, new SearchHomeAwardCollectionCard(collections));
+        return null;
+//        if (!request.isFirstPage()) return null;
+//        if (!request.getRequest().isFeature(SearchQuery.Feature.Home)) return null;
+//
+//        List<UserPlaceCollection> collections = load().stream()
+//                .filter(Optional::isPresent)
+//                .map(Optional::get)
+//                .collect(Collectors.toList());
+//
+//        return of(-1, new SearchHomeAwardCollectionCard(collections));
     }
 
     private List<Optional<UserPlaceCollection>> load() {

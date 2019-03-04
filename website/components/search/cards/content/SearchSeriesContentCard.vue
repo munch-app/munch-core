@@ -1,6 +1,6 @@
 <template>
   <nuxt-link :to="`/contents/${cid}/${slug}`">
-    <div class="aspect r-5-3 border-3 overflow-hidden">
+    <div class="aspect border-3 overflow-hidden" :class="imageAspectRatio">
       <image-sizes v-if="imageSizes" :sizes="imageSizes" :alt="content.subtitle"/>
       <div v-else class="bg-s500 flex-end wh-100"/>
       <div class="absolute-0 flex-center p-24 ImageOverlay">
@@ -39,6 +39,12 @@
         const image = this.content && this.content.image
         return null
       },
+      imageAspectRatio() {
+        if (this.options && this.options.expand === 'height') {
+          return 'r-10-12 ExpandHeight'
+        }
+        return 'r-5-3 ExpandWidth'
+      },
       /**
        * cid is not using the default base64, https://www.npmjs.com/package/d64
        */
@@ -66,5 +72,16 @@
 
   p {
     font-size: 14px;
+  }
+
+  .ExpandHeight {
+    .ImageOverlay {
+      align-items: flex-end;
+    }
+
+    h2 {
+      font-size: 18px;
+      line-height: 1.3;
+    }
   }
 </style>

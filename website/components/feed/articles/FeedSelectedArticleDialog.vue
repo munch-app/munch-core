@@ -83,8 +83,8 @@
     -webkit-overflow-scrolling: touch;
 
     @media (max-width: 575.98px) {
-      margin-top: 56px;
-      height: calc(100vh - 56px);
+      margin-top: 72px;
+      height: calc(100vh - 72px);
       width: 100vw;
     }
     @media (min-width: 576px) {

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="false">
     <h2 class="mt-24">Your Recent Places</h2>
     <p class="b-a75">Don't worry, we won't tell anybody.</p>
     <horizontal-scroll-view class="CardList PlaceList container-remove-gutter mt-24" :items="card.places" :map-key="a => a.placeId"

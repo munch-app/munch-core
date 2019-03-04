@@ -90,10 +90,9 @@ public final class SuggestDelegator {
         boolNode.set("must", withFunctionScoreMust(latLng, must));
 
         // filter: [{"term": {"dataType": "Place"}}]
-        boolNode.putArray("filter")
-                .addObject()
-                .putObject("term")
-                .put("dataType", "Place");
+        ArrayNode filter = boolNode.putArray("filter");
+        filter.add(ElasticUtils.filterTerm("dataType", "Place"));
+        filter.add(ElasticUtils.filterTerms("status.type", Set.of("open", "closed")));
 
         return elasticClient.searchHitsHits(root);
     }
