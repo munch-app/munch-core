@@ -11,6 +11,7 @@ import munch.user.data.UserPlaceCollection;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -44,6 +45,8 @@ public final class SearchHomePopularPlacePlugin implements SearchCardPlugin {
         if (collection == null) return null;
 
         List<UserPlaceCollection.Item> items = collectionClient.listItems(collection.getCollectionId(), null, 20);
+        Collections.shuffle(items);
+
         Map<String, Place> placeMap = placeClient.get(items.stream().map(UserPlaceCollection.Item::getPlaceId));
         List<Place> places = items.stream().map(item -> placeMap.get(item.getPlaceId()))
                 .filter(Objects::nonNull)

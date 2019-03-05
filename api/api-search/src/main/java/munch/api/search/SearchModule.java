@@ -41,7 +41,7 @@ public final class SearchModule extends ApiServiceModule {
         loaderBinder.addBinding().to(SearchHomeNearbyPlugin.class);
         loaderBinder.addBinding().to(SearchHomeRecentPlacePlugin.class);
         loaderBinder.addBinding().to(SearchHomePopularPlacePlugin.class);
-        loaderBinder.addBinding().to(SearchHomeAwardCollectionPlugin.class);
+//        loaderBinder.addBinding().to(SearchHomeAwardCollectionPlugin.class);
         loaderBinder.addBinding().to(SearchHomeSeriesPlugin.class);
 
         loaderBinder.addBinding().to(SearchLocationBannerPlugin.class);
