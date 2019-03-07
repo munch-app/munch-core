@@ -17,20 +17,15 @@
       <h2>Details</h2>
       <input-text label="Name" v-model="payload.place.name" required/>
       <input-text label="Address" v-model="payload.place.location.address" required/>
-      <place-suggest-tags v-model="tags" label="Tags"></place-suggest-tags>
-      <!-- Price Details Required -->
       <input-text label="Price Per Pax" v-model="payload.place.price.perPax" type="number"/>
       <input-text label="Phone" v-model="payload.place.phone"/>
       <input-text label="Website" v-model="payload.place.website"/>
+      <place-suggest-tags v-model="tags" label="Tags"></place-suggest-tags>
       <input-text label="Menu URL" v-model="payload.place.menu"/>
       <div class="input-text">
         <label @click="verify">Description</label>
         <textarea rows="4" v-model="payload.place.description"></textarea>
       </div>
-    </div>
-
-    <div class="input-group" v-if="false">
-      <h2>Hours</h2>
     </div>
   </div>
 </template>

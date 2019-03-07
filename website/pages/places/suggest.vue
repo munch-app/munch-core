@@ -16,14 +16,13 @@
 
         <div class="Content">
           <place-suggest-detail :payload="payload"></place-suggest-detail>
-          <place-suggest-opening-hours :payload="payload"></place-suggest-opening-hours>
-          <place-suggest-image :payload="payload"></place-suggest-image>
-          <place-suggest-article :payload="payload"></place-suggest-article>
+          <!--<place-suggest-opening-hours :payload="payload"></place-suggest-opening-hours>-->
+          <place-suggest-image v-if="payload.images.length > 0" :payload="payload"></place-suggest-image>
+          <place-suggest-article v-if="payload.articles.length > 0" :payload="payload"></place-suggest-article>
         </div>
 
         <div class="Action">
           <place-suggest-changes :payload="payload"/>
-
           <div class="flex-justify-end">
             <button class="primary" @click="onSubmit">Submit</button>
           </div>
@@ -82,7 +81,7 @@
         },
         tags: place.tags,
         hours: place.hours,
-        menu: place.menu
+        menu: place.menu && place.menu.url || '',
       },
       origin: place,
       removes: {
@@ -112,6 +111,7 @@
       const placeId = route.query.placeId
       if (placeId) {
         return $axios.$get(`/api/places/${placeId}`).then(({data}) => {
+          console.log(data)
           return {payload: newPayload(data)}
         })
       } else {
