@@ -4,60 +4,61 @@
       <h2>Status</h2>
       <div class="flex StatusList">
         <h5 class="mr-8">Current Status:</h5>
-        <div class="weight-600 border-3" v-for="status in statusList" :key="status.type"
-             v-if="status.type && status.type === payload.place.status.type"
-             :class="{ 'bg-success white': payload.place.status.type === status.type && status.type === 'open',
+        <div :class="{ 'bg-success white': payload.place.status.type === status.type && status.type === 'open',
                        'bg-error white': payload.place.status.type === status.type && (status.type === 'closed' || status.type === 'duplicated' || status.type === 'notFoodPlace'),
-                       'bg-whisper100 b-a85': payload.place.status.type !== status.type}">
+                       'bg-whisper100 b-a85': payload.place.status.type !== status.type}" :key="status.type" class="weight-600 border-3"
+             v-for="status in statusList"
+             v-if="status.type && status.type === payload.place.status.type">
           {{status.name}}<span
           v-if="status.type === 'duplicated'">: {{payload.place.status.placeNames.join(', ')}}</span>
         </div>
       </div>
       <div class="mt-8">
-        <button class="primary-outline" @click="showStatus">Change Status</button>
+        <button @click="showStatus" class="primary-outline">Change Status</button>
       </div>
 
       <no-ssr>
-        <portal to="dialog-styled" v-if="show.status" class="Dialog">
+        <portal class="Dialog" to="dialog-styled" v-if="show.status">
           <h3>Status</h3>
-          <div class="flex-between hover-pointer" @click="onStatusChange('open')">
+          <div @click="onStatusChange('open')" class="flex-between hover-pointer">
             <div class="text">Open</div>
             <div class="checkbox"/>
           </div>
 
-          <div class="flex-between hover-pointer" @click="onStatusChange('closed')">
+          <div @click="onStatusChange('closed')" class="flex-between hover-pointer">
             <div class="text">Permanently Closed</div>
             <div class="checkbox"/>
           </div>
 
-          <div class="flex-between hover-pointer" @click="onStatusDuplicate()">
+          <div @click="onStatusDuplicate()" class="flex-between hover-pointer">
             <div class="text">Duplicate</div>
             <div class="checkbox"/>
           </div>
 
-          <div class="flex-between hover-pointer" @click="onStatusChange('notFoodPlace')">
+          <div @click="onStatusChange('notFoodPlace')" class="flex-between hover-pointer">
             <div class="text">Not Food Place</div>
             <div class="checkbox"/>
           </div>
 
           <div class="right">
-            <button class="primary-outline" @click="onDialogCancel">Cancel</button>
+            <button @click="onDialogCancel" class="primary-outline">Cancel</button>
           </div>
         </portal>
       </no-ssr>
 
       <no-ssr>
-        <portal to="dialog-styled" v-if="show.duplicate" class="Dialog">
+        <portal class="Dialog" to="dialog-styled" v-if="show.duplicate">
           <h3>Duplicated with</h3>
-          <suggest-search-bar :status="payload.place.status" :dialog="show" style="margin-bottom: 20px;"></suggest-search-bar>
+          <suggest-search-bar :dialog="show" :status="payload.place.status"
+                              style="margin-bottom: 20px;"></suggest-search-bar>
           <div style="display: flex;" v-for="(name, index) in payload.place.status.placeNames">
             <div class="mt-4 wh-100">
               {{index+1}}. {{name}}
             </div>
           </div>
           <div class="right" style="margin-top: 60px">
-            <button class="primary-outline" @click="onDuplicateDialogBack">Back</button>
-            <button class="primary" @click="onDuplicateDialogDone">Done</button>
+            <button @click="onDuplicateDialogBack" class="primary-outline">Back</button>
+            <button @click="onDuplicateDialogDone" class="primary">Done</button>
           </div>
         </portal>
       </no-ssr>
@@ -65,12 +66,12 @@
 
     <div class="input-group">
       <h2>Details</h2>
-      <input-text label="Name" v-model="payload.place.name" required/>
-      <input-text label="Address" v-model="payload.place.location.address" required/>
-      <input-text label="Price Per Pax" v-model="payload.place.price.perPax" type="number"/>
+      <input-text label="Name" required v-model="payload.place.name"/>
+      <input-text label="Address" required v-model="payload.place.location.address"/>
+      <input-text label="Price Per Pax" type="number" v-model="payload.place.price.perPax"/>
       <input-text label="Phone" v-model="payload.place.phone"/>
       <input-text label="Website" v-model="payload.place.website"/>
-      <place-suggest-tags v-model="payload.place.tags" label="Tags"></place-suggest-tags>
+      <place-suggest-tags label="Tags" v-model="payload.place.tags"></place-suggest-tags>
       <input-text label="Menu URL" v-model="payload.place.menu.url"/>
       <div class="input-text">
         <label>Description</label>
@@ -122,11 +123,6 @@
       }
     },
     methods: {
-      verify() {
-        console.log(this.payload.place.tags.map(tag => {
-          return tag.text
-        }))
-      },
       showStatus() {
         this.show.status = true
       },

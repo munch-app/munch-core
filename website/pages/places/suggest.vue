@@ -17,14 +17,14 @@
         <div class="Content">
           <place-suggest-detail :payload="payload"></place-suggest-detail>
           <!--<place-suggest-opening-hours :payload="payload"></place-suggest-opening-hours>-->
-          <place-suggest-image v-if="payload.images.length > 0" :payload="payload"></place-suggest-image>
-          <place-suggest-article v-if="payload.articles.length > 0" :payload="payload"></place-suggest-article>
+          <place-suggest-image :payload="payload" v-if="payload.images.length > 0"></place-suggest-image>
+          <place-suggest-article :payload="payload" v-if="payload.articles.length > 0"></place-suggest-article>
         </div>
 
         <div class="Action">
           <place-suggest-changes :payload="payload"/>
           <div class="flex-justify-end">
-            <button class="primary" @click="onSubmit">Submit</button>
+            <button @click="onSubmit" class="primary">Submit</button>
           </div>
         </div>
       </div>
@@ -79,7 +79,7 @@
         status: {
           type: place.status.type,
           placeIds: null,
-          placeNames: [],
+          placeNames: null,
         },
         tags: place.tags,
         hours: place.hours,
@@ -198,6 +198,7 @@
         if (this.payload.place.status.type.trim() !== (this.originalPlace.status.type.trim() || '')) {
           if (this.payload.place.status.type !== 'duplicated') {
             this.payload.place.status.placeIds = null
+            this.payload.place.status.placeNames = null
           }
 
           updatedData.push({

@@ -1,30 +1,30 @@
 <template>
-  <div v-on-clickaway="onBlur" class="SearchBar border-3 cubic-bezier no-select"
-       :class="{'Extended': isExtended}">
+  <div :class="{'Extended': isExtended}" class="SearchBar border-3 cubic-bezier no-select"
+       v-on-clickaway="onBlur">
     <div class="SearchTextBar relative">
-      <input id="suggestSearchBar" ref="input" class="TextBar bg-white absolute wh-100" type="text"
-             @focus="onFocus" @keyup.up="onKeyUp" @keyup.down="onKeyDown" @keyup.enter="onKeyEnter"
-             placeholder="Search..." v-model="text" autocomplete="off">
+      <input @focus="onFocus" @keyup.down="onKeyDown" @keyup.enter="onKeyEnter" @keyup.up="onKeyUp"
+             autocomplete="off" class="TextBar bg-white absolute wh-100" id="suggestSearchBar" placeholder="Search..."
+             ref="input" type="text" v-model="text">
 
-      <div class="Clear absolute hover-pointer none" :class="{block: text.length}" @click="onClear">
-        <simple-svg fill="black" :filepath="require('~/assets/icon/close.svg')"/>
+      <div :class="{block: text.length}" @click="onClear" class="Clear absolute hover-pointer none">
+        <simple-svg :filepath="require('~/assets/icon/close.svg')" fill="black"/>
       </div>
     </div>
 
     <div class="SearchSuggest bg-white absolute" v-if="isExtended">
       <div class="Results">
         <div class="Items" v-if="items">
-          <div class="Item hover-pointer" v-for="(item, index) in items" :key="item.key"
-               @click="onItem(item)"
-               :class="{'Position': index === position}">
+          <div :class="{'Position': index === position}" :key="item.key" @click="onItem(item)"
+               class="Item hover-pointer"
+               v-for="(item, index) in items">
 
             <search-bar-place-item
-              v-if="item.type === 'place'"
-              :place="item.object"/>
+              :place="item.object"
+              v-if="item.type === 'place'"/>
 
             <search-bar-default-item
-              v-else-if="item.type === 'default'"
-              :name="item.object"/>
+              :name="item.object"
+              v-else-if="item.type === 'default'"/>
           </div>
         </div>
 
@@ -41,9 +41,9 @@
         </div>
 
         <!--<div v-else>-->
-          <!--<div class="p-16 text">-->
-            <!--Enter at least 2 characters to start searching!-->
-          <!--</div>-->
+        <!--<div class="p-16 text">-->
+        <!--Enter at least 2 characters to start searching!-->
+        <!--</div>-->
         <!--</div>-->
       </div>
     </div>
