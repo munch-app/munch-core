@@ -1,42 +1,40 @@
 <template>
   <div>
-    <h2 class="mt-24">Images</h2>
-    <section class="ImageSection border-3 mt-16 relative">
-      <div class="wh-100 flex-center">
-        <div class="Padded p-24 flex-column flex-align-center">
-          <h5 class="white mt-8 mb-32">Want to edit {{payload.place.name}} images?</h5>
-          <button class="primary-outline" @click="showImages">Edit Images</button>
-        </div>
-      </div>
-    </section>
+    <h2 class="mt-48">Images</h2>
+    <div class="border-3 mt-16 relative">
+      <button class="primary-outline" @click="showImages">Edit Images</button>
+    </div>
 
-    <portal to="dialog-full" v-if="show.images">
-      <div class="Existing bg-white elevation-1 p-16-24 overflow-y-auto" v-if="images.length > 0"
-           v-on-clickaway="onClose">
-        <h2>Images</h2>
-        <p>Own an Instagram account, want it published on munch? <a class="text-underline s700 weight-600"
-                                                                    href="https://partner.munch.app"
-                                                                    target="_blank">partner.munch.app</a></p>
+    <no-ssr>
+      <portal to="dialog-full" v-if="show.images">
+        <div class="Existing bg-white elevation-1 p-16-24 overflow-y-auto" v-if="images.length > 0"
+             v-on-clickaway="onClose">
+          <h2>Images</h2>
+          <p>Own an Instagram account, want it published on munch? <a class="text-underline s700 weight-600"
+                                                                      href="https://partner.munch.app"
+                                                                      target="_blank">partner.munch.app</a></p>
 
-        <div class="List flex-wrap">
-          <div class="Image hover-pointer" v-for="image in images" :key="image.imageId" @click="onDialog(image)">
-            <div class="aspect r-1-1">
-              <image-sizes class="overflow-hidden border-3" :sizes="image.sizes" width="1" height="1">
-                <div class="OverlayA20 relative hover-bg-a60 wh-100 flex-center">
-                  <simple-svg class="wh-32px" fill="white" :filepath="require('~/assets/icon/place/suggest/flag.svg')"/>
-                </div>
-              </image-sizes>
+          <div class="List flex-wrap">
+            <div class="Image hover-pointer" v-for="image in images" :key="image.imageId" @click="onDialog(image)">
+              <div class="aspect r-1-1">
+                <image-sizes class="overflow-hidden border-3" :sizes="image.sizes" width="1" height="1">
+                  <div class="OverlayA20 relative hover-bg-a60 wh-100 flex-center">
+                    <simple-svg class="wh-32px" fill="white"
+                                :filepath="require('~/assets/icon/place/suggest/flag.svg')"/>
+                  </div>
+                </image-sizes>
+              </div>
             </div>
           </div>
-        </div>
 
-        <no-ssr class="flex-center" style="padding: 24px 0 48px 0">
-          <beat-loader color="#084E69" v-if="next.sort" size="14px"
-                       v-observe-visibility="{callback: (v) => v && onMore(),throttle:300}"
-          />
-        </no-ssr>
-      </div>
-    </portal>
+          <no-ssr class="flex-center" style="padding: 24px 0 48px 0">
+            <beat-loader color="#084E69" v-if="next.sort" size="14px"
+                         v-observe-visibility="{callback: (v) => v && onMore(),throttle:300}"
+            />
+          </no-ssr>
+        </div>
+      </portal>
+    </no-ssr>
     <no-ssr>
       <portal to="dialog-styled" v-if="dialog" class="Dialog">
         <h3>Flag Image</h3>
@@ -195,19 +193,6 @@
       padding-top: 8px;
       padding-bottom: 8px;
       margin-bottom: 0;
-    }
-  }
-
-  .ImageSection {
-    background: no-repeat center/cover;
-
-    /*TODO(Joel): Change images*/
-    @media (max-width: 992px) {
-      background-image: url('~assets/img/search/home_feed.0.5.jpg');
-    }
-
-    @media (min-width: 992px) {
-      background-image: url('~assets/img/search/home_feed.jpg');
     }
   }
 </style>

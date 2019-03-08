@@ -2,7 +2,7 @@
   <div class="input-text">
     <label>{{label}}</label>
     <no-ssr>
-      <vue-tags-input placeholder="Add Tag" v-model="tag" :tags="value" @tags-changed="newTags => onChange(newTags)"/>
+      <vue-tags-input placeholder="Add Tag" :tags="value" v-model="tag" @tags-changed="newTags => onChange(newTags)"/>
     </no-ssr>
   </div>
 </template>
@@ -30,6 +30,7 @@
       },
       value: {
         type: [Array],
+        required: true
       },
     },
     methods: {

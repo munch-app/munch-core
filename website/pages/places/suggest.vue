@@ -50,18 +50,18 @@
   import PlaceSuggestChanges from "../../components/places/suggest/PlaceSuggestChanges";
   import PlaceSuggestOpeningHours from "../../components/places/suggest/PlaceSuggestOpeningHours";
   import DialogLoading from "../../components/layouts/DialogLoading";
+  import _ from "lodash";
 
   const newPayload = (data) => {
     const {place, images, articles} = data || {
       images: [], articles: [],
-      place: {location: {}, price: {}, status: {type: 'open'}},
+      place: {location: {}, price: {}, status: {type: 'open'}, menu: {}},
     }
 
     return {
       // images and articles are helper payload
       images,
       articles,
-
       // Editable Place Data
       place: {
         placeId: place.placeId, // Validity of PlaceId will determine if new edit or old edit
@@ -77,13 +77,16 @@
           perPax: place.price && place.price.perPax || 0
         },
         status: {
-          type: place.status.type
+          type: place.status.type,
+          placeIds: [],
+          placeNames: [],
         },
         tags: place.tags,
         hours: place.hours,
-        menu: place.menu && place.menu.url || '',
+        menu: {
+          url: place.menu && place.menu.url || '',
+        }
       },
-      origin: place,
       removes: {
         images: {}, // imageId: {flag: ''}
         articles: {}, // articleId: {flag: ''}
@@ -111,8 +114,12 @@
       const placeId = route.query.placeId
       if (placeId) {
         return $axios.$get(`/api/places/${placeId}`).then(({data}) => {
-          console.log(data)
-          return {payload: newPayload(data)}
+
+          data.place.tags = data.place.tags.map(tag => {
+            return {text: tag.name}
+          })
+
+          return {originalPlace: {...data.place}, payload: newPayload(data)}
         })
       } else {
         return {payload: newPayload()}
@@ -137,18 +144,83 @@
         this.submitting = true
 
         const payload = {
-          place: this.payload.place,
-          removes: this.payload.removes,
+          place: this.verifyFields(),
+          // removes: this.payload.removes,
         }
-        return this.$axios.$post('/api/users/suggests/places', payload)
-          .then(({data}) => {
-            this.submitting = false
-            this.submitted = true
-          })
-          .catch(error => {
-            this.submitting = false
-            this.$store.dispatch('addError', error)
-          })
+        // return this.$axios.$post('/api/users/suggests/places', payload)
+        //   .then(({data}) => {
+        //     this.submitting = false
+        //     this.submitted = true
+        //   })
+        //   .catch(error => {
+        //     this.submitting = false
+        //     this.$store.dispatch('addError', error)
+        //   })
+      },
+      verifyFields() {
+        const updatedData = []
+
+        if (this.payload.place.name.trim() !== this.originalPlace.name) {
+          updatedData.push(this.getChangeJSON(this.payload.place.name.trim(), "Replace", "Name"))
+        }
+
+        if ((this.payload.place.location && this.payload.place.location.address) && this.payload.place.location.address.trim() !== (this.originalPlace.location && this.originalPlace.location.address || '')) {
+          updatedData.push(this.getChangeJSON(this.payload.place.location.address.trim(), "Replace", "LocationAddress"))
+        }
+
+        if ((this.payload.place.price && this.payload.place.price.perPax) && this.payload.place.price.perPax.trim() !== (this.originalPlace.price && this.originalPlace.price.perPax || 0)) {
+          updatedData.push(this.getChangeJSON(this.payload.place.price.perPax.trim(), "Replace", "PricePerPax"))
+        }
+
+        if (this.payload.place.phone.trim() !== this.originalPlace.phone) {
+          updatedData.push(this.getChangeJSON(this.payload.place.phone.trim(), "Replace", "Phone"))
+        }
+
+        const tagsAppend = _.differenceBy(this.payload.place.tags, this.originalPlace.tags, 'text')
+        const tagsRemoval = _.differenceBy(this.originalPlace.tags, this.payload.place.tags, 'text')
+
+        tagsAppend.forEach((tag) => {
+          updatedData.push(this.getChangeJSON(tag.text.trim(), "Append", "Tag"))
+        });
+
+        tagsRemoval.forEach((tag) => {
+          updatedData.push(this.getChangeJSON(tag.text.trim(), "Remove", "Tag"))
+        });
+
+        if (this.payload.place.menu.url.trim() !== (this.originalPlace.menu && this.originalPlace.menu.url || '')) {
+          updatedData.push(this.getChangeJSON(this.payload.place.menu.url.trim(), "Replace", "MenuUrl"))
+        }
+
+        if (this.payload.place.description.trim() !== (this.originalPlace.description || '')) {
+          updatedData.push(this.getChangeJSON(this.payload.place.description.trim(), "Replace", "Description"))
+        }
+
+        if (this.payload.place.status.type.trim() !== (this.originalPlace.status.type.trim() || '')) {
+          updatedData.push({statusType: this.payload.place.status.type, placeIds: this.payload.place.status.placeIds, operation: "Replace", type: "Status"})
+        }
+
+        console.log(JSON.stringify(updatedData))
+
+        // for (const key in this.payload.removes.articles) {
+        //   if (this.payload.removes.articles.hasOwnProperty(key)) {
+        //     const article = this.payload.removes.articles[key]
+        //     updatedData.push(this.getChangeJSON({articleId: article.articleId, url: article.url}, "Remove", "Article"))
+        //   }
+        // }
+        //
+        // this.payload.removes.articles.forEach((article) => {
+        //   console.log(article)
+        //   updatedData.push(this.getChangeJSON({articleId: article.articleId}, "Remove", "Tag"))
+        // });
+
+        return updatedData
+      },
+      getChangeJSON(value, operation, type) {
+        return {
+          value: value,
+          operation: operation,
+          type: type
+        }
       }
     }
   }
