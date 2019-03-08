@@ -78,7 +78,7 @@
         },
         status: {
           type: place.status.type,
-          placeIds: [],
+          placeIds: null,
           placeNames: [],
         },
         tags: place.tags,
@@ -196,7 +196,16 @@
         }
 
         if (this.payload.place.status.type.trim() !== (this.originalPlace.status.type.trim() || '')) {
-          updatedData.push({statusType: this.payload.place.status.type, placeIds: this.payload.place.status.placeIds, operation: "Replace", type: "Status"})
+          if (this.payload.place.status.type !== 'duplicated') {
+            this.payload.place.status.placeIds = null
+          }
+
+          updatedData.push({
+            statusType: this.payload.place.status.type,
+            placeIds: (this.payload.place.status.placeIds || null),
+            operation: "Replace",
+            type: "Status"
+          })
         }
 
         console.log(JSON.stringify(updatedData))

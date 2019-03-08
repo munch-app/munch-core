@@ -9,7 +9,8 @@
              :class="{ 'bg-success white': payload.place.status.type === status.type && status.type === 'open',
                        'bg-error white': payload.place.status.type === status.type && (status.type === 'closed' || status.type === 'duplicated' || status.type === 'notFoodPlace'),
                        'bg-whisper100 b-a85': payload.place.status.type !== status.type}">
-          {{status.name}}<span v-if="status.type === 'duplicated'">: {{payload.place.status.placeName}}</span>
+          {{status.name}}<span
+          v-if="status.type === 'duplicated'">: {{payload.place.status.placeNames.join(', ')}}</span>
         </div>
       </div>
       <div class="mt-8">
@@ -40,7 +41,7 @@
           </div>
 
           <div class="right">
-            <button class="elevated" @click="onDialogCancel">Cancel</button>
+            <button class="primary-outline" @click="onDialogCancel">Cancel</button>
           </div>
         </portal>
       </no-ssr>
@@ -48,9 +49,15 @@
       <no-ssr>
         <portal to="dialog-styled" v-if="show.duplicate" class="Dialog">
           <h3>Duplicated with</h3>
-          <suggest-search-bar :status="payload.place.status" :dialog="show"></suggest-search-bar>
-          <div class="right" style="margin-top: 80px">
-            <button class="elevated" @click="onDuplicateDialogBack">Back</button>
+          <suggest-search-bar :status="payload.place.status" :dialog="show" style="margin-bottom: 20px;"></suggest-search-bar>
+          <div style="display: flex;" v-for="(name, index) in payload.place.status.placeNames">
+            <div class="mt-4 wh-100">
+              {{index+1}}. {{name}}
+            </div>
+          </div>
+          <div class="right" style="margin-top: 60px">
+            <button class="primary-outline" @click="onDuplicateDialogBack">Back</button>
+            <button class="primary" @click="onDuplicateDialogDone">Done</button>
           </div>
         </portal>
       </no-ssr>
@@ -66,7 +73,7 @@
       <place-suggest-tags v-model="payload.place.tags" label="Tags"></place-suggest-tags>
       <input-text label="Menu URL" v-model="payload.place.menu.url"/>
       <div class="input-text">
-        <label @click="verify">Description</label>
+        <label>Description</label>
         <textarea rows="4" v-model="payload.place.description"></textarea>
       </div>
     </div>
@@ -121,20 +128,30 @@
         }))
       },
       showStatus() {
-        this.payload.place.status.placeId = []
         this.show.status = true
       },
       onDialogCancel() {
         this.show.status = false
       },
       onDuplicateDialogBack() {
+        this.payload.place.status.placeIds = null
+        this.payload.place.status.placeNames = null
         this.show.duplicate = false
+      },
+      onDuplicateDialogDone() {
+        this.payload.place.status.type = 'duplicated'
+        this.show.duplicate = false
+        this.show.status = false
       },
       onStatusChange(status) {
         this.show.status = false
         this.payload.place.status.type = status
       },
       onStatusDuplicate() {
+        if (!this.payload.place.status.placeIds) {
+          this.payload.place.status.placeIds = []
+          this.payload.place.status.placeNames = []
+        }
         this.show.duplicate = true
       }
     }

@@ -40,11 +40,11 @@
           </div>
         </div>
 
-        <div v-else>
-          <div class="p-16 text">
-            Enter at least 2 characters to start searching!
-          </div>
-        </div>
+        <!--<div v-else>-->
+          <!--<div class="p-16 text">-->
+            <!--Enter at least 2 characters to start searching!-->
+          <!--</div>-->
+        <!--</div>-->
       </div>
     </div>
   </div>
@@ -52,6 +52,7 @@
 
 <script>
   import Vue from 'vue'
+  import _ from 'lodash'
   import {debounceTime, distinctUntilChanged, filter, map, pluck, switchMap, tap} from 'rxjs/operators'
   import SearchBarPlaceItem from "../search/items/SearchBarPlaceItem";
   import SearchBarDefaultItem from "../search/items/SearchBarDefaultItem";
@@ -121,11 +122,16 @@
       onItem({type, object}) {
         switch (type) {
           case 'place':
-            Vue.set(this.dialog, "duplicate", false)
-            Vue.set(this.dialog, "status", false)
-            Vue.set(this.status, "placeId", object.placeId)
-            Vue.set(this.status, "placeName", object.name)
-            Vue.set(this.status, "type", 'duplicated')
+            this.text = ""
+            this.searching = false
+
+            let placeIdsTemp = this.status.placeIds
+            placeIdsTemp.push(object.placeId)
+            Vue.set(this.status, "placeIds", _.uniq(placeIdsTemp))
+
+            let placeNamesTemp = this.status.placeNames
+            placeNamesTemp.push(object.name)
+            Vue.set(this.status, "placeNames", _.uniq(placeNamesTemp))
         }
       },
       onFocus() {
