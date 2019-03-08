@@ -169,7 +169,10 @@
         }
 
         if ((this.payload.place.price && this.payload.place.price.perPax) && this.payload.place.price.perPax.trim() !== (this.originalPlace.price && this.originalPlace.price.perPax || 0)) {
-          updatedData.push(this.getChangeJSON(this.payload.place.price.perPax.trim(), "Replace", "PricePerPax"))
+          let convertedPrice = _.toNumber(this.payload.place.price.perPax.trim())
+          if (convertedPrice && !_.isNaN(convertedPrice) && convertedPrice > 0) {
+            updatedData.push(this.getChangeJSON(convertedPrice, "Replace", "PricePerPax"))
+          }
         }
 
         if (this.payload.place.phone.trim() !== this.originalPlace.phone) {
