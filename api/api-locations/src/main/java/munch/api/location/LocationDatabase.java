@@ -1,8 +1,8 @@
 package munch.api.location;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import munch.data.ElasticObject;
 import munch.data.client.ElasticClient;
+import munch.data.elastic.ElasticObject;
 import munch.data.elastic.ElasticUtils;
 import munch.data.location.Area;
 import munch.data.location.Landmark;
@@ -64,7 +64,7 @@ public final class LocationDatabase {
         bool.set("filter", JsonUtils.createArrayNode()
                 .add(ElasticUtils.filterTerm("dataType", "Area"))
                 .add(ElasticUtils.filterTerms("type", Set.of("Region", "Cluster")))
-                .add(ElasticUtils.filterIntersectsPoint("location.polygon", latLng))
+                .add(ElasticUtils.filterIntersectsPoint("location.geometry", latLng))
         );
         root.putObject("query").set("bool", bool);
 
@@ -79,18 +79,13 @@ public final class LocationDatabase {
         ObjectNode root = JsonUtils.createObjectNode();
         root.put("from", 0);
         root.put("size", 10);
-        ObjectNode queryNode = root.putObject("query");
-        ObjectNode boolNode = queryNode.putObject("bool");
+        root.set("query", JsonUtils.createObjectNode(queryNode -> {
+            ObjectNode boolNode = queryNode.putObject("bool");
 
-        // must: {?}
-        boolNode.set("must", ElasticUtils.multiMatch(text, "name", "names"));
-
-        boolNode.putArray("filter")
-                .addObject()
-                .putObject("terms")
-                .putArray("dataType")
-                .add("Area")
-                .add("Landmark");
+            boolNode.set("must", ElasticUtils.multiMatch(text, "name", "names"));
+            boolNode.putArray("filter")
+                    .add(ElasticUtils.filterTerms("dataType", Set.of("Area", "Landmark")));
+        }));
 
         List<ElasticObject> objects = elasticClient.searchHitsHits(root);
         List<NamedLocation> list = new ArrayList<>();

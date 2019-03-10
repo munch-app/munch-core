@@ -7,12 +7,12 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Polygon;
 import edit.utils.LatLngUtils;
 import munch.api.search.SearchQuery;
+import munch.data.elastic.ElasticUtils;
 import munch.restful.core.JsonUtils;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -70,7 +70,7 @@ public final class ElasticSpatialUtils {
     }
 
     public static JsonNode filterBoundingBox(double lat, double lng, double latOffsetMeter, double lngOffsetMeter) {
-        String[] boundingBox = ElasticSpatialUtils.getBoundingBox(lat, lng, latOffsetMeter / 1000D, lngOffsetMeter / 1000D);
+        String[] boundingBox = ElasticUtils.Spatial.getBoundingBox(lat, lng, latOffsetMeter / 1000D, lngOffsetMeter / 1000D);
 
         ObjectNode filter = JsonUtils.createObjectNode();
         filter.putObject("geo_bounding_box")
@@ -107,44 +107,5 @@ public final class ElasticSpatialUtils {
                             Double.parseDouble(split[0])
                     );
                 }).toArray(Coordinate[]::new));
-    }
-
-
-    public static String[] getBoundingBox(double lat, double lng, double latOffsetKm, double lngOffsetKm) {
-        final double latOffset = ElasticSpatialUtils.toRad(latOffsetKm);
-        final double lngOffset = ElasticSpatialUtils.toRad(lngOffsetKm);
-        return new String[]{
-                (lat + latOffset) + "," + (lng - lngOffset), // Top Lat, Lng
-                (lat - latOffset) + "," + (lng + lngOffset), // Bot Lat, Lng
-        };
-    }
-
-    public static <T> double[] getCentroid(List<T> list, Function<T, String> mapper) {
-        List<String> points = list.stream()
-                .map(mapper)
-                .collect(Collectors.toList());
-        return getCentroid(points);
-    }
-
-    /**
-     * @return centroid of points
-     */
-    public static double[] getCentroid(List<String> points) {
-        double centroidLat = 0, centroidLng = 0;
-
-        for (String point : points) {
-            LatLngUtils.LatLng latLng = LatLngUtils.parse(point);
-            centroidLat += latLng.getLat();
-            centroidLng += latLng.getLng();
-        }
-
-        return new double[]{
-                centroidLat / points.size(),
-                centroidLng / points.size()
-        };
-    }
-
-    public static double toRad(double radiusInKm) {
-        return (1 / 110.54) * radiusInKm;
     }
 }

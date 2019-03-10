@@ -1,8 +1,8 @@
 package munch.api.search;
 
 import munch.api.ApiRequest;
-import munch.api.search.elastic.ElasticSpatialUtils;
 import munch.api.search.filter.FilterAreaDatabase;
+import munch.data.elastic.ElasticUtils;
 import munch.data.location.Area;
 import munch.restful.core.JsonUtils;
 import munch.restful.server.JsonCall;
@@ -154,7 +154,7 @@ public final class SearchRequest {
     }
 
     public String getPointsCentroid() {
-        double[] centroid = ElasticSpatialUtils.getCentroid(getPoints(), SearchQuery.Filter.Location.Point::getLatLng);
+        double[] centroid = ElasticUtils.Spatial.getCentroid(getPoints(), SearchQuery.Filter.Location.Point::getLatLng);
         return centroid[0] + "," + centroid[1];
     }
 

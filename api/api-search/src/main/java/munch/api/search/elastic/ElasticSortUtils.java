@@ -3,16 +3,15 @@ package munch.api.search.elastic;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import munch.api.search.SearchRequest;
 import munch.api.search.SearchQuery;
+import munch.api.search.SearchRequest;
+import munch.data.elastic.ElasticUtils;
 import munch.restful.core.JsonUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Singleton;
-import java.util.Objects;
 
 /**
  * Created by: Fuxing
@@ -33,28 +32,28 @@ public final class ElasticSortUtils {
         ArrayNode sortArray = mapper.createArrayNode();
 
         if (request.isBetween()) {
-            sortArray.add(sortDistance(request.getPointsCentroid()));
+            sortArray.add(ElasticUtils.Sort.sortDistance(request.getPointsCentroid()));
             return sortArray;
         }
 
         switch (getSortType(request.getSearchQuery())) {
             case SearchQuery.Sort.TYPE_PRICE_LOWEST:
-                sortArray.add(sortField("price.perPax", "asc"));
+                sortArray.add(ElasticUtils.Sort.sortField("price.perPax", "asc"));
                 break;
             case SearchQuery.Sort.TYPE_PRICE_HIGHEST:
-                sortArray.add(sortField("price.perPax", "desc"));
+                sortArray.add(ElasticUtils.Sort.sortField("price.perPax", "desc"));
                 break;
             case SearchQuery.Sort.TYPE_DISTANCE_NEAREST:
                 if (StringUtils.isNotBlank(request.getLatLng())) {
                     logger.warn("Sort by distance by latLng not provided in query.latLng");
-                    sortArray.add(sortDistance(request.getLatLng()));
+                    sortArray.add(ElasticUtils.Sort.sortDistance(request.getLatLng()));
                 }
                 break;
 
             default:
             case SearchQuery.Sort.TYPE_MUNCH_RANK:
-                sortArray.add(sortField("taste.group", "desc"));
-                sortArray.add(sortField("taste.importance", "desc"));
+                sortArray.add(ElasticUtils.Sort.sortField("taste.group", "desc"));
+                sortArray.add(ElasticUtils.Sort.sortField("taste.importance", "desc"));
                 break;
         }
 
@@ -66,37 +65,5 @@ public final class ElasticSortUtils {
      */
     public static String getSortType(SearchQuery query) {
         return query.getSort() == null ? "" : StringUtils.trimToEmpty(query.getSort().getType());
-    }
-
-    /**
-     * https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-sort.html
-     *
-     * @param latLng center
-     * @return { "location.latLng" : "lat,lng", "order" : "asc", "unit" : "m", "mode" : "min", "distance_type" : "plane" }
-     */
-    public static JsonNode sortDistance(String latLng) {
-        Objects.requireNonNull(latLng);
-
-        ObjectNode geoDistance = mapper.createObjectNode()
-                .put("location.latLng", latLng)
-                .put("order", "asc")
-                .put("unit", "m")
-                .put("mode", "min")
-                .put("distance_type", "plane");
-
-        ObjectNode sort = mapper.createObjectNode();
-        sort.set("_geo_distance", geoDistance);
-        return sort;
-    }
-
-    /**
-     * @param field field
-     * @param by    direction
-     * @return { "field": "by" }
-     */
-    public static JsonNode sortField(String field, String by) {
-        ObjectNode sort = mapper.createObjectNode();
-        sort.put(field, by);
-        return sort;
     }
 }

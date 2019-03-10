@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Singleton;
-import edit.utils.LatLngUtils;
 import munch.api.search.SearchQuery;
 import munch.api.search.SearchRequest;
 import munch.data.elastic.ElasticUtils;
@@ -252,21 +251,6 @@ public final class ElasticQueryUtils {
         filter.putObject("geo_distance")
                 .put("distance", metres + "m")
                 .put("location.latLng", latLng);
-        return filter;
-    }
-
-    public static JsonNode filterIntersects(String latLng) {
-        ObjectNode filter = mapper.createObjectNode();
-        ObjectNode polygon = filter.putObject("geo_shape")
-                .putObject("location.polygon");
-
-        LatLngUtils.LatLng point = LatLngUtils.parse(latLng);
-        polygon.putObject("shape")
-                .put("type", "point")
-                .putArray("coordinates")
-                .add(point.getLng())
-                .add(point.getLat());
-        polygon.put("relation", "intersects");
         return filter;
     }
 

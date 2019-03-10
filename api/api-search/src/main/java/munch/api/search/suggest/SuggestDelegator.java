@@ -1,7 +1,5 @@
 package munch.api.search.suggest;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import munch.api.search.SearchRequest;
 import munch.api.search.assumption.AssumptionEngine;
@@ -9,18 +7,18 @@ import munch.api.search.assumption.data.AssumptionQuery;
 import munch.api.search.assumption.data.AssumptionQueryResult;
 import munch.api.search.elastic.ElasticQueryUtils;
 import munch.api.search.elastic.ElasticSortUtils;
-import munch.api.search.elastic.ElasticSuggestUtils;
 import munch.data.client.ElasticClient;
-import munch.data.elastic.ElasticUtils;
+import munch.data.elastic.ElasticObject;
+import munch.data.elastic.SuggestObject;
+import munch.data.location.Country;
 import munch.data.place.Place;
 import munch.restful.core.JsonUtils;
-import org.apache.commons.lang3.StringUtils;
 
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by: Fuxing
@@ -40,8 +38,11 @@ public final class SuggestDelegator {
     }
 
     public Map<String, Object> delegate(String text, SearchRequest request) {
-        List<String> names = suggestNames(text, request);
-        List<Place> places = suggestPlaces(text, request);
+        // In future updates, return the current results as it is
+        List<ElasticObject> objects = elasticClient.suggest(Country.SGP, text, request.getLatLng(), 40);
+        List<String> names = extractNames(objects);
+        List<Place> places = extractPlaces(objects);
+
         List<AssumptionQueryResult> assumptions = suggestAssumption(text, names, request);
         return Map.of(
                 "suggests", names,
@@ -50,51 +51,24 @@ public final class SuggestDelegator {
         );
     }
 
-    /**
-     * A list of suggest text
-     */
-    private List<String> suggestNames(String text, SearchRequest request) {
-        JsonNode results = elasticClient.search(ElasticSuggestUtils.make(text, request.getLatLng(), 6))
-                .path("suggest")
-                .path("suggestions")
-                .path(0)
-                .path("options");
-        if (results.isMissingNode()) return List.of();
-
-        Set<String> texts = new HashSet<>();
-        for (JsonNode result : results) {
-            String name = result.path("_source").path("name").asText();
-            if (StringUtils.isBlank(name)) continue;
-            if (text.equalsIgnoreCase(name)) continue;
-            texts.add(name);
+    private static List<String> extractNames(List<ElasticObject> objects) {
+        List<String> names = new ArrayList<>();
+        for (ElasticObject object : objects) {
+            if (object instanceof SuggestObject) {
+                names.add(((SuggestObject) object).getName());
+            }
         }
-
-        return texts.stream()
-                .sorted(Comparator.comparingInt(String::length))
-                .collect(Collectors.toList());
+        return names;
     }
 
-    /**
-     * A list of suggest places searched with the text
-     */
-    private List<Place> suggestPlaces(String text, SearchRequest request) {
-        ObjectNode root = JsonUtils.createObjectNode();
-        root.put("from", 0);
-        root.put("size", 40);
-        ObjectNode queryNode = root.putObject("query");
-        ObjectNode boolNode = queryNode.putObject("bool");
-
-        // must: {?}
-        JsonNode must = ElasticUtils.multiMatch(text, "names");
-        String latLng = request.getLatLng();
-        boolNode.set("must", withFunctionScoreMust(latLng, must));
-
-        // filter: [{"term": {"dataType": "Place"}}]
-        ArrayNode filter = boolNode.putArray("filter");
-        filter.add(ElasticUtils.filterTerm("dataType", "Place"));
-        filter.add(ElasticUtils.filterTerms("status.type", Set.of("open", "closed")));
-
-        return elasticClient.searchHitsHits(root);
+    private static List<Place> extractPlaces(List<ElasticObject> objects) {
+        List<Place> places = new ArrayList<>();
+        for (ElasticObject object : objects) {
+            if (object instanceof Place) {
+                places.add((Place) object);
+            }
+        }
+        return places;
     }
 
     private List<AssumptionQueryResult> suggestAssumption(String text, List<String> names, SearchRequest originalRequest) {
@@ -116,7 +90,7 @@ public final class SuggestDelegator {
     private AssumptionQueryResult query(SearchRequest originalRequest, AssumptionQuery assumptionQuery) {
         SearchRequest request = originalRequest.cloneWith(assumptionQuery.getSearchQuery());
 
-        List<Place> places = suggestPlaces(0, 20, request);
+        List<Place> places = suggestPlaces(0, 4, request);
         if (places.isEmpty()) return null;
 
         AssumptionQueryResult result = new AssumptionQueryResult();
@@ -139,27 +113,5 @@ public final class SuggestDelegator {
         root.set("query", ElasticQueryUtils.make(request));
         root.set("sort", ElasticSortUtils.make(request));
         return elasticClient.searchHitsHits(root);
-    }
-
-    private static JsonNode withFunctionScoreMust(@Nullable String latLng, JsonNode must) {
-        ObjectNode root = JsonUtils.createObjectNode();
-        ObjectNode function = root.putObject("function_score");
-        function.put("score_mode", "multiply");
-        function.set("query", must);
-        ArrayNode functions = function.putArray("functions");
-        functions.addObject()
-                .putObject("gauss")
-                .putObject("taste.importance")
-                .put("scale", "1000")
-                .put("origin", "2000");
-
-        if (latLng != null) {
-            functions.addObject()
-                    .putObject("gauss")
-                    .putObject("location.latLng")
-                    .put("scale", "3km")
-                    .put("origin", latLng);
-        }
-        return root;
     }
 }
