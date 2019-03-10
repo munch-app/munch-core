@@ -44,12 +44,19 @@ public final class SearchHomePopularPlacePlugin implements SearchCardPlugin {
         UserPlaceCollection collection = collectionClient.get("cee9a5b7-00f1-4c18-98f5-3adac82ef9a2");
         if (collection == null) return null;
 
-        List<UserPlaceCollection.Item> items = collectionClient.listItems(collection.getCollectionId(), null, 20);
+        List<UserPlaceCollection.Item> items = collectionClient.listItems(collection.getCollectionId(), null, 50);
         Collections.shuffle(items);
 
-        Map<String, Place> placeMap = placeClient.get(items.stream().map(UserPlaceCollection.Item::getPlaceId));
+        List<String> placeIds = items.stream()
+                .limit(20)
+                .map(UserPlaceCollection.Item::getPlaceId)
+                .collect(Collectors.toList());
+
+        Map<String, Place> placeMap = placeClient.get(placeIds);
         List<Place> places = items.stream().map(item -> placeMap.get(item.getPlaceId()))
                 .filter(Objects::nonNull)
+                .filter(place -> place.getStatus().getType() == Place.Status.Type.open)
+                .filter(place -> !place.getImages().isEmpty())
                 .collect(Collectors.toList());
 
         SearchHomePopularPlaceCard card = new SearchHomePopularPlaceCard(collection, places);

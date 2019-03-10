@@ -49,7 +49,9 @@ public final class SearchCollectionItemPlugin implements SearchCardPlugin {
 
         if (places == null) return null;
 
-        List<SearchPlaceCard> cards = places.stream().map(SearchPlaceCard::new)
+        List<SearchPlaceCard> cards = places.stream()
+                .filter(place -> place.getStatus().getType() == Place.Status.Type.open)
+                .map(SearchPlaceCard::new)
                 .collect(Collectors.toList());
 
         return of(0, cards);

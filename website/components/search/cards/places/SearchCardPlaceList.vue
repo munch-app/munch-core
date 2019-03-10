@@ -1,7 +1,7 @@
 <template>
   <div>
-    <h2 class="mt-24">{{card.series.title}}</h2>
-    <p class="b-a75 text-ellipsis-2l">{{card.series.subtitle}}</p>
+    <h2 class="mt-24" v-if="card.title">{{card.title}}</h2>
+    <p class="b-a75 text-ellipsis-2l" v-if="card.subtitle">{{card.subtitle}}</p>
 
     <div class="relative" ref="container">
       <div class="ArrowButton flex-align-center absolute wh-100">
@@ -12,15 +12,10 @@
       </div>
 
 
-      <div class="ContentListParent mtb-24" :class="expandType">
+      <div class="ContentListParent mtb-24">
         <div class="ContentList flex relative" ref="scrollable">
-          <search-series-content-card class="flex-no-shrink ContentCard" v-for="content in card.contents"
-                                      :content="content" :key="content.contentId"
-                                      :options="card.options"
-                                      ref="contentCard"/>
-          <div>
-            <div class="gutter"/>
-          </div>
+          <place-card class="flex-no-shrink ContentCard" v-for="place in card.places"
+                      :place="place" :key="place.contentId" ref="contentCard"/>
           <div>
             <div class="gutter"/>
           </div>
@@ -32,11 +27,11 @@
 
 <script>
   import ImageSizes from "../../../core/ImageSizes";
-  import SearchSeriesContentCard from "./SearchSeriesContentCard";
+  import PlaceCard from "../../../places/PlaceCard";
 
   export default {
-    name: "SearchCardSeriesList",
-    components: {SearchSeriesContentCard, ImageSizes},
+    name: "SearchCardPlaceList",
+    components: {PlaceCard, ImageSizes},
     props: {
       card: {
         type: Object,
@@ -48,15 +43,6 @@
         hasNext: true,
         hasPrev: false,
         cardWidth: 300,
-      }
-    },
-    computed: {
-      expandType() {
-        const expand = this.card.options && this.card.options.expand
-        if (expand === 'height') {
-          return 'ExpandHeight'
-        }
-        return 'ExpandWidth'
       }
     },
     mounted() {
@@ -116,35 +102,23 @@
     margin-right: -8px;
   }
 
-  .ExpandHeight .ContentCard {
-    width: calc(75vw - 24px);
-  }
-
   .ArrowButton {
     visibility: hidden;
   }
 
-  @media (min-width: 480px) {
+  @media (min-width: 420px) {
     .ContentCard {
       width: calc((100vw - 16px) / 2);
     }
-
-    .ExpandHeight .ContentCard {
-      width: calc((100vw - 16px) / 2.5);
-    }
   }
 
-  @media (min-width: 920px) {
+  @media (min-width: 792px) {
     .ContentList {
       overflow-x: hidden;
     }
 
     .ContentCard {
       width: calc((100vw - 8px) / 3);
-    }
-
-    .ExpandHeight .ContentCard {
-      width: calc((100vw - 8px) / 3.5);
     }
 
     .ArrowButton {
@@ -166,26 +140,16 @@
     .ContentCard {
       padding: 0 12px;
 
-      flex: 0 0 33.33333%;
-      max-width: 33.33333%;
-      margin: 0;
-    }
-
-    .ExpandHeight .ContentCard {
       flex: 0 0 25%;
       max-width: 25%;
+      margin: 0;
     }
   }
 
   @media (min-width: 1440px) {
     .ContentCard {
-      flex: 0 0 25%;
-      max-width: 25%;
-    }
-
-    .ExpandHeight .ContentCard {
-      flex: 0 0 16.66666%;
-      max-width: 16.66666%;
+      flex: 0 0 20%;
+      max-width: 20%;
     }
   }
 </style>
