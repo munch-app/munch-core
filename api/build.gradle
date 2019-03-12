@@ -85,6 +85,12 @@ project('api-contents') {
     }
 }
 
+project('api-vouchers') {
+    dependencies {
+        compile group: 'catalyst', name: 'catalyst-lake-airtable', version: catalystVersion
+    }
+}
+
 dependencies {
     compile group: 'com.amazonaws', name: 'aws-java-sdk-ssm', version: awsVersion
 
@@ -96,6 +102,7 @@ dependencies {
     compile project(':api:api-search')
     compile project(':api:api-feed')
     compile project(':api:api-locations')
+    compile project(':api:api-vouchers')
 }
 
 apply plugin: 'application'

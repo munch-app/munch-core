@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -148,6 +149,7 @@ public final class SearchRequest {
         return searchQuery.getFilter().getLocation().getAreas();
     }
 
+    @NotNull
     public List<SearchQuery.Filter.Location.Point> getPoints() {
         if (searchQuery.getFilter().getLocation().getPoints() == null) return List.of();
         return searchQuery.getFilter().getLocation().getPoints();
