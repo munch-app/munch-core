@@ -88,7 +88,7 @@ public final class Voucher {
             "Each voucher is valid for two medium-sized Brown Sugar Fresh Milk with pearls only.",
             "This voucher is only valid for redemption at Gong Cha’s Singapore Management University outlet only.",
             "This voucher is to be presented to Munch staff for redemption.",
-            "This voucher is valid till 30th March 2019 (inclusive).",
+            "This voucher is valid till 23th March 2019 (inclusive).",
             "This voucher is non-refundable and valid for single transaction only."
     );
 

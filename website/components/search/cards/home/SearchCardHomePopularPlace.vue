@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-24">
+  <div>
     <search-card-place-list :card="computedCard"/>
 
     <div class="mt-48">

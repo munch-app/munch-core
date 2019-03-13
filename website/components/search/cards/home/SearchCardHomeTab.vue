@@ -1,55 +1,31 @@
 <template>
   <div>
-    <section class="HomeTab container-remove-gutter" :class="current.id">
-      <div class="Overlay wh-100">
-        <div class="container">
-          <div v-if="isLoggedIn">
-            <h1>{{salutation}}, {{name}}.</h1>
-          </div>
-          <div v-else>
-            <h1>{{salutation}}, Samantha.</h1>
-            <p class="hover-pointer" @click="onCreateAccount">(Not Samantha? Create an account
-              <span class="text-underline ">here</span>.)
-            </p>
-          </div>
-          <div class="FeatureList TopSpacing flex-row container-remove-gutter">
-            <div>
-              <div class="gutter"/>
-            </div>
-            <div class="mr-24 hover-pointer" v-for="(feature, i) in features" :key="feature.id" @click="index = i">
-              <h4 class="Feature">{{feature.name}}</h4>
-              <div :class="{Selected: feature.id === current.id}"></div>
-            </div>
-            <div>
-              <div class="gutter"/>
-            </div>
-          </div>
+    <div class="mb-24">
+      <div v-if="isLoggedIn">
+        <h2>{{salutation}}, {{name}}. Meeting someone for a meal?</h2>
+      </div>
+      <div v-else>
+        <h2>{{salutation}}, Samantha. Meeting someone for a meal?</h2>
+        <p class="hover-pointer" @click="onCreateAccount">(Not Samantha? Create an account
+          <span class="text-underline ">here</span>.)
+        </p>
+      </div>
 
-          <div class="FeatureLine"/>
-          <h5 class="TopSpacing">{{current.message}}</h5>
+    </div>
 
-          <div class="ActionBar TopSpacing bg-white border-3 w-100 flex-align-center hover-pointer"
-               @click.capture.stop.prevent="onClick()">
-            <simple-svg class="wh-24px mlr-16" fill="black" :filepath="current.icon"/>
-            <h4 class="text-ellipsis-1l">{{current.hint}}</h4>
+    <div>
+      <div class="FeatureCardList flex-wrap relative">
+        <div class="FeatureCard" v-for="feature in features" :key="feature.id">
+          <div class="border-4 overflow-hidden h-100" :class="feature.id" @click="onClick(feature)">
+            <div class="bg-overlay p-24 zero h-100">
+              <h1 class="white">{{feature.name}}</h1>
+              <h5 class="white mt-8">{{feature.message}}</h5>
+              <button class="mt-24 secondary-outline">{{feature.button}}</button>
+            </div>
           </div>
         </div>
       </div>
-    </section>
-
-    <section class="Highlight mt-48 relative">
-      <div class="HighlightItem Feed border-3 hover-pointer" @click="onFeed">
-        <div class="wh-100 flex-center">
-          <div class="Padded p-24 flex-column flex-align-center">
-            <h2 class="white">The sexiest thing you’ll see on the Internet - ever.</h2>
-            <h5 class="white mt-8 mb-32">(Warning! Not Safe For Waist. NSFW)</h5>
-            <button class="secondary-outline">Explore Feed</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <search-filter-area-dialog v-if="isLocation" @cancel="isLocation = false"/>
+    </div>
   </div>
 </template>
 
@@ -75,107 +51,56 @@
         if (totalMinutes >= 720 && totalMinutes < 1020) return 'Good Afternoon'
         else return 'Good Evening'
       },
-      current() {
-        return this.features[this.index]
-      },
     },
     data() {
       return {
-        index: 0,
-        isLocation: false,
         features: [
           {
             name: 'EatBetween',
             id: 'EatBetween',
             message: 'Enter everyone’s location and we’ll find the most ideal spot for a meal together.',
-            hint: 'Try EatBetween',
-            icon: require('~/assets/icon/search/between.svg'),
+            button: 'Try EatBetween',
           },
           {
-            name: 'Search',
-            id: 'Search',
-            message: 'Search anything on Munch and we’ll give you the best recommendations.',
-            hint: 'Search e.g. Italian in Orchard',
-            icon: require('~/assets/icon/search/search.svg'),
-          },
-          {
-            name: 'Neighbourhoods',
-            id: 'Location',
-            message: 'Enter a location and we’ll tell you what’s delicious around.',
-            hint: 'Search Location',
-            icon: require('~/assets/icon/search/search.svg'),
+            name: 'Feed',
+            id: 'Feed',
+            message: 'The sexiest thing you’ll see on the Internet - ever. (Warning! Not Safe For Waist. NSFW)',
+            button: 'Explore Feed',
           },
         ]
       }
     },
     methods: {
-      onClick() {
-        switch (this.current.id) {
+      onClick(feature) {
+        switch (feature.id) {
           case "EatBetween":
             this.$router.push({path: `/search/filter/between`})
             break
 
-          case "Location":
-            this.isLocation = true
-            break
-
-          case "Search":
-            this.$store.dispatch('filter/location', {type: 'Anywhere'})
-            this.$store.dispatch('search/start')
-
-            document.getElementById('globalSearchBar').focus()
+          case "Feed":
+            this.$track.click('search_card_click', 'HomeTab_2018-11-29')
+            this.$router.push({path: '/feed/images'})
             break
         }
       },
       onCreateAccount() {
         this.$store.commit('focus', 'Login')
       },
-      onFeed() {
-        this.$track.click('search_card_click', 'HomeTab_2018-11-29')
-        this.$router.push({path: '/feed/images'})
-      }
     }
   }
 </script>
 
 <!--suppress CssUnknownTarget -->
 <style scoped lang="less">
-  .HomeTab {
-    margin-top: calc(-30px - 76px /*Header72px*/);
+  .EatBetween {
     background: no-repeat center/cover;
 
-    * > {
-      color: white;
-    }
-  }
-
-  .EatBetween {
     @media (max-width: 992px) {
       background-image: url('~assets/img/search/home_eb.0.5.jpg');
     }
 
     @media (min-width: 992px) {
       background-image: url('~assets/img/search/home_eb.jpg');
-    }
-  }
-
-  .Search {
-    @media (max-width: 992px) {
-      background-image: url('~assets/img/search/home_search.0.5.jpg');
-    }
-
-    @media (min-width: 992px) {
-      background-image: url('~assets/img/search/home_search.jpg');
-    }
-  }
-
-  .Location {
-    @media (max-width: 992px) {
-      background-image: url('~assets/img/search/home_location.0.5.jpg');
-    }
-
-    @media (min-width: 992px) {
-      background-image: url('~assets/img/search/home_location.jpg');
     }
   }
 
@@ -190,83 +115,25 @@
       background-image: url('~assets/img/search/home_feed.jpg');
     }
   }
-
-  .Padded {
-    @media (min-width: 768px) {
-      padding: 32px 24px;
-    }
-
-    @media (min-width: 1200px) {
-      padding: 48px 24px;
-    }
-  }
-
-  .TopSpacing {
-    margin-top: 16px;
-
-    @media (min-width: 768px) {
-      margin-top: 24px;
-    }
-  }
-
-  .Overlay {
-    background: rgba(0, 0, 0, 0.5);
-    padding: 80px 0 32px 0;
-
-    @media (min-width: 768px) {
-      padding: 80px;
-    }
-
-    @media (min-width: 992px) {
-      padding: 120px;
-    }
-
-    @media (min-width: 1200px) {
-      padding: 180px;
-    }
-
-    @media (min-width: 1600px) {
-      padding: 180px 320px;
-    }
-  }
-
-  .FeatureList {
-    overflow-x: auto;
-  }
-
-  .Feature {
-    height: 36px;
-  }
-
-  .Selected {
-    height: 2px;
-    background: white;
-  }
-
-  .FeatureLine {
-    height: 1px;
-    background: rgba(255, 255, 255, 0.85);
-  }
-
-  .ActionBar {
-    height: 40px;
-
-    @media (min-width: 768px) {
-      height: 48px;
-    }
-
-    * {
-      color: rgba(0, 0, 0, 0.75);
-    }
-  }
 </style>
 
 <style scoped lang="less">
-  .Highlight {
+  .FeatureCardList {
+    margin: -12px;
 
+    height: 100%;
+    align-items: stretch;
   }
 
-  .HighlightItem {
+  .FeatureCard {
+    padding: 12px;
 
+    flex: 0 0 50%;
+    max-width: 50%;
+
+    @media (max-width: 648px) {
+      flex: 0 0 100%;
+      max-width: 100%;
+    }
   }
 </style>

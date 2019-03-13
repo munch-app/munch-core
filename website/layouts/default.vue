@@ -64,10 +64,6 @@
         return false
       },
       isClear() {
-        if (this.isIndex) {
-          if (this.scrolledHeight) return false
-          return this.query && this.query.feature && this.query.feature === 'Home'
-        }
         return false
       },
       isIndex() {
