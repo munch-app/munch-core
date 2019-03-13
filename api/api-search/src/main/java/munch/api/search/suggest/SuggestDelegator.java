@@ -72,7 +72,7 @@ public final class SuggestDelegator {
     }
 
     /**
-     * TODO(fuxing) needs improvement
+     * TODO(fuxing): needs improvement
      */
     @SuppressWarnings({"Duplicates", "LoopStatementThatDoesntLoop"})
     private List<AssumptionQueryResult> suggestAssumption(String text, List<String> names, SearchRequest originalRequest) {

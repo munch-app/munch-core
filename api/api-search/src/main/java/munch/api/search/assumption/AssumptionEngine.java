@@ -57,8 +57,7 @@ public class AssumptionEngine {
     }
 
     public List<AssumptionQuery> assume(SearchRequest request, String text) {
-        Map<String, Assumption> assumptionMap = manager.get();
-        List<Object> tokenList = tokenize(assumptionMap, text);
+        List<Object> tokenList = tokenize(manager.get(), text);
 
         // Validate
         if (tokenList.isEmpty()) return List.of();
@@ -85,6 +84,24 @@ public class AssumptionEngine {
     }
 
     private List<AssumptionQuery> createList(SearchRequest request, String text, List<Object> tokenList) {
+        // TEMP Solution
+        request.getSearchQuery().getFilter().setHour(null);
+        request.getSearchQuery().getFilter().setPrice(null);
+        request.getSearchQuery().getFilter().getTags().removeIf(tag -> {
+            switch (tag.getType()) {
+                case Food:
+                case Timing:
+                case Cuisine:
+                case Amenities:
+                case Establishment:
+                default:
+                    return true;
+
+                case Requirement:
+                    return false;
+            }
+        });
+
         List<AssumptionToken> assumedTokens = asToken(request.getSearchQuery(), tokenList);
         List<Assumption> assumptions = asAssumptions(tokenList);
         request = createSearchRequest(request, assumptions);
