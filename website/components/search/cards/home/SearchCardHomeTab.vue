@@ -16,7 +16,7 @@
     <div>
       <div class="FeatureCardList flex-wrap relative">
         <div class="FeatureCard" v-for="feature in features" :key="feature.id">
-          <div class="border-4 overflow-hidden h-100" :class="feature.id" @click="onClick(feature)">
+          <div class="border-4 overflow-hidden h-100 hover-pointer" :class="feature.id" @click="onClick(feature)">
             <div class="bg-overlay p-24 zero h-100">
               <h1 class="white">{{feature.name}}</h1>
               <h5 class="white mt-8">{{feature.message}}</h5>
