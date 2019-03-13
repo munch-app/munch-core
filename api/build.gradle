@@ -29,6 +29,8 @@ project('api-places') {
         compile group: 'article-system', name: 'article-system-data-client', version: articleVersion
         compile group: 'munch-taste', name: 'munch-taste-client', version: tasteVersion
 
+        compile group: 'munch-suggest', name: 'munch-suggest-client', version: suggestVersion
+
         compile group: 'file-service', name: 'file-service-client', version: fileVersion
 
         compile group: 'catalyst', name: 'catalyst-link-client', version: catalystVersion
@@ -67,7 +69,6 @@ project('api-locations') {
 
 project('api-users') {
     dependencies {
-        compile group: 'munch-suggest', name: 'munch-suggest-client', version: suggestVersion
         compile group: 'munch-notification', name: 'munch-notification-client', version: notificationVersion
 
         compile group: 'munch-taste', name: 'munch-taste-client', version: tasteVersion
