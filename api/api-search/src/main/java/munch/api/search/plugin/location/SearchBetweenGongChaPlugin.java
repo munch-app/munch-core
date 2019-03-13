@@ -51,8 +51,7 @@ public final class SearchBetweenGongChaPlugin implements SearchCardPlugin {
         if (!request.isFirstPage()) return null;
 
         LocalDateTime dateTime = getDateTime(request);
-        // TODO, Change to real date
-        if (dateTime.isBefore(LocalDateTime.of(2019, Month.MARCH, 11, 10, 0))) {
+        if (dateTime.isBefore(LocalDateTime.of(2019, Month.MARCH, 18, 10, 0))) {
             return null;
         }
         if (dateTime.isAfter(LocalDateTime.of(2019, Month.MARCH, 23, 22, 0))) {
