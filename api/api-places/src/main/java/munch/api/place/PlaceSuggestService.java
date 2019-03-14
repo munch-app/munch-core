@@ -25,6 +25,7 @@ import javax.inject.Singleton;
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletException;
 import javax.servlet.http.Part;
+import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,14 +55,14 @@ public final class PlaceSuggestService extends ApiService {
     public void route() {
         PATH("/places/:placeId", () -> {
             POST("/suggest", "application/json", this::postJson);
-            POST("/suggest", "multipart/form-data", this::postForm);
+            POST("/suggest/multipart", "multipart/form-data", this::postForm);
         });
     }
 
     public JsonResult postJson(JsonCall call, ApiRequest request) {
         SuggestPlaceEdit.Source source = getSource(request);
-        SuggestPlaceEdit place = call.bodyAsObject(SuggestPlaceEdit.class);
-        place.setPlaceId(call.pathString("placeId"));
+        SuggestPlaceEdit place = SuggestPlaceEdit.parse(call.bodyAsJson());
+        place.setPlaceId(getPlaceId(call));
         place.setSource(source);
 
         validate(place);
@@ -75,8 +76,8 @@ public final class PlaceSuggestService extends ApiService {
         SuggestPlaceEdit.Source source = getSource(request);
         call.request().attribute("org.eclipse.jetty.multipartConfig", multipartConfig);
 
-        SuggestPlaceEdit place = JsonUtils.toObject(call.request().queryParams("json"), SuggestPlaceEdit.class);
-        place.setPlaceId(call.pathString("placeId"));
+        SuggestPlaceEdit place = SuggestPlaceEdit.parse(JsonUtils.toTree(call.request().queryParams("json")));
+        place.setPlaceId(getPlaceId(call));
         place.setSource(source);
         validate(place);
 
@@ -141,5 +142,12 @@ public final class PlaceSuggestService extends ApiService {
         place.setSuggestId(null);
         place.setVersion(null);
         place.setStatus(null);
+    }
+
+    @NotNull
+    private static String getPlaceId(JsonCall call) {
+        String placeId = call.pathString("placeId");
+        if (placeId.equals("_")) return null;
+        return placeId;
     }
 }
