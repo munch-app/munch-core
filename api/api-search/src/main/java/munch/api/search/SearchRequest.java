@@ -41,7 +41,7 @@ public final class SearchRequest {
         this.searchQuery = searchQuery;
         this.userId = call.get(ApiRequest.class).optionalUserId().orElse(null);
         this.latLng = call.get(ApiRequest.class).optionalLatLng().orElse(null);
-        this.localDateTime = call.get(ApiRequest.class).optionalLocalTime().orElse(null);
+        this.localDateTime = call.get(ApiRequest.class).optionalLocalDateTime().orElse(null);
     }
 
     /**

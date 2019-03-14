@@ -53,7 +53,7 @@ public final class VoucherService extends ApiService {
     }
 
     public LocalDateTime getDateTime(ApiRequest request) {
-        LocalDateTime dateTime = request.getLocalTime();
+        LocalDateTime dateTime = request.getLocalDateTime();
         if (dateTime != null) return dateTime;
 
         return LocalDateTime.now(ZoneId.of("Asia/Singapore"));
