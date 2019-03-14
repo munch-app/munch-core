@@ -1,9 +1,9 @@
 <template>
   <div class="Default flex-column" :class="{'gutter-24': isSearch && showsMap}" :lang="'en'">
     <nav class="Header fixed w-100 index-top-elevation hr-bot bg-white" :class="{Clear: isClear}">
-      <div class="container flex-align-center">
+      <div class="container h-100 flex-align-center">
         <header-logo class="mr-8" :clear="isClear" :class="{'IsSearching': searching}"/>
-        <div class="Search mlr-8 mtb-8 flex-grow">
+        <div class="mlr-8 mtb-8 flex-grow">
           <search-bar class="SearchBar" @onBlur="onBlur" @onFocus="onFocus"/>
         </div>
         <header-right class="HeaderRight" :clear="isClear"/>
@@ -11,7 +11,7 @@
       </div>
     </nav>
 
-    <div style="height: 56px"/>
+    <div class="Header"/>
     <header-menu class="container"/>
 
     <div style="height: 48px" v-if="isSearch"/>
@@ -30,6 +30,7 @@
 
 <script>
   import HeaderProfile from "../components/layouts/HeaderProfile";
+
   if (process.browser) require('intersection-observer')
   import {mapGetters} from 'vuex'
 
@@ -63,10 +64,6 @@
         return false
       },
       isClear() {
-        if (this.isIndex) {
-          if (this.scrolledHeight) return false
-          return this.query && this.query.feature && this.query.feature === 'Home'
-        }
         return false
       },
       isIndex() {
@@ -102,11 +99,7 @@
 
   .Header {
     top: 0;
-    height: 56px;
-  }
-
-  .Search {
-    height: 36px;
+    height: 72px /*Header72px*/;
   }
 
   .Clear {

@@ -12,6 +12,8 @@ import munch.api.search.plugin.*;
 import munch.api.search.plugin.collection.SearchCollectionHeaderPlugin;
 import munch.api.search.plugin.collection.SearchCollectionItemPlugin;
 import munch.api.search.plugin.home.*;
+import munch.api.search.plugin.location.SearchBetweenGongChaPlugin;
+import munch.api.search.plugin.location.SearchBetweenPlugin;
 import munch.api.search.plugin.location.SearchLocationAreaPlugin;
 import munch.api.search.plugin.location.SearchLocationBannerPlugin;
 import munch.api.search.plugin.series.SearchHomeSeriesPlugin;
@@ -41,7 +43,7 @@ public final class SearchModule extends ApiServiceModule {
         loaderBinder.addBinding().to(SearchHomeNearbyPlugin.class);
         loaderBinder.addBinding().to(SearchHomeRecentPlacePlugin.class);
         loaderBinder.addBinding().to(SearchHomePopularPlacePlugin.class);
-        loaderBinder.addBinding().to(SearchHomeAwardCollectionPlugin.class);
+//        loaderBinder.addBinding().to(SearchHomeAwardCollectionPlugin.class);
         loaderBinder.addBinding().to(SearchHomeSeriesPlugin.class);
 
         loaderBinder.addBinding().to(SearchLocationBannerPlugin.class);
@@ -49,6 +51,9 @@ public final class SearchModule extends ApiServiceModule {
 
         loaderBinder.addBinding().to(SearchCollectionHeaderPlugin.class);
         loaderBinder.addBinding().to(SearchCollectionItemPlugin.class);
+
+        // Gong Cha Campaign
+        loaderBinder.addBinding().to(SearchBetweenGongChaPlugin.class);
 
         addService(SearchService.class);
         addService(SuggestService.class);

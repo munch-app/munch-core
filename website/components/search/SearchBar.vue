@@ -249,9 +249,9 @@
 
 <style scoped lang="less">
   .SearchBar {
-    border: 1px solid rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.06);
 
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07), 0 1px 2px rgba(0, 0, 0, 0.07);
 
     &:hover {
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
@@ -265,11 +265,12 @@
   }
 
   .SearchTextBar {
-    height: 38px;
+    height: 42px;
   }
 
   .TextBar {
     overflow: visible;
+    border-radius: 4px;
 
     border: none transparent;
     font-size: 17px;

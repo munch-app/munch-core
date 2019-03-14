@@ -167,7 +167,7 @@
     margin-bottom: 12px;
 
     min-height: 80px;
-    max-height: calc(80vh - 48px - 56px - 120px - 60px);
+    max-height: calc(80vh - 48px - 72px/*Header72px*/ - 120px - 60px);
     overflow-y: auto;
   }
 

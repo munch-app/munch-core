@@ -15,6 +15,7 @@ import munch.api.core.CoreModule;
 import munch.api.creator.CreatorModule;
 import munch.api.feed.FeedModule;
 import munch.api.location.LocationModule;
+import munch.api.moments.MomentModule;
 import munch.api.place.PlaceModule;
 import munch.api.search.SearchModule;
 import munch.api.user.UserModule;
@@ -45,6 +46,7 @@ public class ApiModule extends AbstractModule {
         install(new CreatorModule());
         install(new ContentModule());
         install(new LocationModule());
+        install(new MomentModule());
     }
 
     /**

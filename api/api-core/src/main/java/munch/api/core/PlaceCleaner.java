@@ -40,9 +40,6 @@ public final class PlaceCleaner extends ObjectCleaner<Place> {
         place.setUpdatedMillis(null);
         place.setCreatedMillis(null);
 
-        // This is deprecated
-        place.setRanking(null);
-
         @NotNull @Valid Location location = place.getLocation();
         List<Landmark> landmarks = location.getLandmarks();
         if (landmarks != null) landmarks.forEach(landmarkCleaner::clean);

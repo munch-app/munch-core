@@ -11,7 +11,7 @@
 
 <script>
   import PlaceCard from "../../places/PlaceCard";
-  import ContentPlace from "../../../pages/contents/ContentPlace";
+  import ContentPlace from "../../contents/ContentPlace";
 
   export default {
     name: "ContentEditorPlace",

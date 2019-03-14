@@ -107,7 +107,7 @@
       top: 104px;
       left: 0;
       right: 0;
-      height: calc(100vh - 72px - 56px - 48px);
+      height: calc(100vh - 72px - 72px/*Header72px*/ - 48px);
 
       padding: 0 24px 24px 24px;
 

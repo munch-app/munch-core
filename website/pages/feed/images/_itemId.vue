@@ -31,6 +31,7 @@
 </template>
 
 <script>
+
   import dateformat from 'dateformat'
   import ImageSizes from "../../../components/core/ImageSizes";
   import PlaceCard from "../../../components/places/PlaceCard";

@@ -22,12 +22,14 @@ service.interceptors.response.use(response => {
 function getHeaders(req) {
   const localTime = req.headers['user-local-time']
   const latLng = req.headers['user-lat-lng']
+  const zoneId = req.headers['user-zone-id']
   const authentication = req.headers['authorization']
   const contentType = req.headers['content-type']
   const headers = {}
 
   if (localTime) headers['User-Local-Time'] = localTime
   if (latLng) headers['User-Lat-Lng'] = latLng
+  if (zoneId) headers['User-Zone-Id'] = zoneId
   if (authentication) headers['Authorization'] = authentication
   if (contentType) headers['Content-Type'] = contentType
   return headers
@@ -48,8 +50,7 @@ function route(req, res, next, options) {
   }).catch(next)
 }
 
-const fileRoutes = ['/api/creators/:creatorId/contents/:contentId/images']
-fileRoutes.forEach(path => {
+['/api/creators/:creatorId/contents/:contentId/images'].forEach(path => {
   router.post(path, upload.single('file'), function (req, res, next) {
     const form = new FormData()
     const file = req.file
@@ -58,6 +59,19 @@ fileRoutes.forEach(path => {
     route(req, res, next, {headers: form.getHeaders(), data: form})
   })
 })
+
+router.post('/api/places/:placeId/suggest', upload.array('images', 8), function (req, res, next) {
+  const form = new FormData()
+  const files = req.files
+
+  form.append('json', req.body.text)
+  files.forEach(file => {
+    form.append('images', file.buffer, file.originalname);
+  });
+
+  route(req, res, next, {headers: form.getHeaders(), data: form})
+})
+
 
 router.use('/api', function (req, res, next) {
   route(req, res, next)

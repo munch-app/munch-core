@@ -8,6 +8,7 @@ import munch.restful.server.JsonCall;
 import munch.restful.server.JsonResult;
 import munch.user.client.CreatorContentClient;
 import munch.user.client.CreatorContentItemClient;
+import munch.user.client.CreatorProfileClient;
 import munch.user.data.CreatorContent;
 import munch.user.data.CreatorContentItem;
 
@@ -27,12 +28,14 @@ import java.util.stream.Stream;
 public final class ContentService extends ApiService {
 
     private final CreatorContentClient contentClient;
+    private final CreatorProfileClient profileClient;
     private final CreatorContentItemClient itemClient;
     private final PlaceCachedClient placeClient;
 
     @Inject
-    public ContentService(CreatorContentClient contentClient, CreatorContentItemClient itemClient, PlaceCachedClient placeClient) {
+    public ContentService(CreatorContentClient contentClient, CreatorProfileClient profileClient, CreatorContentItemClient itemClient, PlaceCachedClient placeClient) {
         this.contentClient = contentClient;
+        this.profileClient = profileClient;
         this.itemClient = itemClient;
         this.placeClient = placeClient;
     }
@@ -50,7 +53,11 @@ public final class ContentService extends ApiService {
 
     public CreatorContent get(JsonCall call) {
         final String contentId = call.pathString("contentId");
-        return contentClient.get(contentId);
+        CreatorContent content = contentClient.get(contentId);
+        if (content == null) return null;
+
+        content.setProfile(profileClient.get(content.getCreatorId()));
+        return content;
     }
 
     public JsonResult listItems(JsonCall call) {

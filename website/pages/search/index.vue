@@ -133,7 +133,7 @@
 
 <style scoped lang="less">
   .Page {
-    min-height: calc(100vh - 48px - 56px);
+    min-height: calc(100vh - 48px - 72px/*Header72px*/);
   }
 
   .SearchResult {
@@ -158,7 +158,7 @@
 
   .Map {
     margin-top: 12px;
-    height: calc(100vh - 48px - 56px - 48px);
+    height: calc(100vh - 48px - 72px/*Header72px*/ - 48px);
     width: 33vw;
   }
 </style>

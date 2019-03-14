@@ -76,7 +76,7 @@ public final class SearchAreaClusterListPlugin implements SearchCardPlugin {
         root.putObject("query").set("bool", boolQuery);
 
         root.set("sort", mapper.createArrayNode()
-                .add(ElasticUtils.sortDistance(latLng))
+                .add(ElasticUtils.Sort.sortDistance(latLng))
         );
 
         return elasticClient.searchHitsHits(root);

@@ -62,7 +62,7 @@ public final class SearchHomeDTJEPlugin implements SearchCardPlugin {
         LocalDateTime localTime = request.getRequest().getLocalTime();
         if (localTime == null) return null;
 
-        return of(-8, load(localTime));
+        return of(-1, load(localTime));
     }
 
     private SearchHomeDTJECard load(LocalDateTime dateTime) {

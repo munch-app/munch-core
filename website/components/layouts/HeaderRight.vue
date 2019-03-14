@@ -1,6 +1,6 @@
 <template>
   <div class="flex-align-center" :class="{Clear: clear}">
-    <button class="primary small ml-16 mr-8" @click="onClickGetTheApp">GET THE APP</button>
+    <button class="primary small ml-16 mr-8" @click="onClickGetTheApp">GET APP</button>
     <a class="ml-16 flex-shrink mr-24 text-ellipsis-1l" href="https://partner.munch.app" target="_blank">
       Join as Partner
     </a>

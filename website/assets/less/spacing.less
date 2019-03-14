@@ -110,6 +110,11 @@
   max-width: 1200px;
   padding-left: 24px;
   padding-right: 24px;
+
+  @media (min-width: 1200px) {
+    padding-right: 80px;
+    padding-left: 80px;
+  }
 }
 
 .container-768:extend(.container) {
@@ -184,9 +189,9 @@
     padding-top: 100%;
   }
 
-  // Width: 100%, Height: 40%
-  &.r-2-5 {
-    padding-left: 40%;
+  // Width: 100%, Height: 130%
+  &.r-10-12 {
+    padding-top: 120%;
   }
 }
 
@@ -320,4 +325,12 @@
 
 .p-24-0 {
   padding: 24px 0;
+}
+
+.pt-64 {
+  padding-top: 64px;
+}
+
+.pb-64 {
+  padding-bottom: 64px;
 }

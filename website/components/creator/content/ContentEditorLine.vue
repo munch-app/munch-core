@@ -3,7 +3,7 @@
 </template>
 
 <script>
-  import ContentLine from "../../../pages/contents/ContentLine";
+  import ContentLine from "../../contents/ContentLine";
   export default {
     name: "CreatorEditorLine",
     components: {ContentLine},

@@ -118,7 +118,7 @@ public final class SearchLocationAreaPlugin implements SearchCardPlugin {
         if (area.getLocation().getPolygon() == null) return List.of();
         filter.add(ElasticQueryUtils.filterPolygon(area.getLocation().getPolygon().getPoints()));
 
-        root.set("sort", ElasticUtils.sortField("taste.importance", "desc"));
+        root.set("sort", ElasticUtils.Sort.sortField("taste.importance", "desc"));
         return elasticClient.searchHitsHits(root);
     }
 }

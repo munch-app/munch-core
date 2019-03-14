@@ -41,13 +41,13 @@
     background-color: white;
 
     position: sticky !important;
-    top: calc(48px + 56px);
+    top: calc(48px + 72px/*Header72px*/);
 
     /*padding-bottom: 18px !important;*/
     /*margin-bottom: -18px !important;*/
 
     @media (max-width: 576px) {
-      top: calc(56px);
+      top: 72px/*Header72px*/;;
       flex: 0 0 calc(100% + 24px) !important;
       max-width: calc(100% + 24px) !important;
 

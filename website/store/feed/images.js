@@ -74,8 +74,9 @@ export const actions = {
     if (state.next && state.next.from) {
       params['next.from'] = state.next.from
     }
-    return this.$api.post(`/feed/query`, {params})
+    return this.$api.post(`/feed/query`, {}, {params})
       .then(({data, places, next}) => {
+        console.log(next)
         commit('append', {items: data, places, next})
       })
   }

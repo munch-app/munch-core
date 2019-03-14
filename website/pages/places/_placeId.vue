@@ -7,9 +7,7 @@
     <section class="Information container flex-justify-between relative">
       <div class="ContentBody flex-grow">
         <section class="Max720 mt-32">
-          <div v-if="place.status.type === 'closed'">
-            <h3 class="error">Permanently Closed</h3>
-          </div>
+          <place-status :place="place"/>
 
           <h1>{{place.name}}</h1>
           <div class="regular">
@@ -73,9 +71,11 @@
   import PlaceImageBanner from "../../components/places/PlaceImageBanner";
   import PlaceFloatingPanel from "../../components/places/PlaceFloatingPanel";
   import PlaceArticleWall from "../../components/places/PlaceArticleWall";
+  import PlaceStatus from "../../components/places/PlaceStatus";
 
   export default {
     components: {
+      PlaceStatus,
       PlaceArticleWall,
       PlaceFloatingPanel,
       PlaceImageBanner,
@@ -195,7 +195,7 @@
 
     @media (min-width: 992px) {
       position: sticky;
-      top: 80px;
+      top: calc(24px + 72px /*Header72px*/);
     }
   }
 

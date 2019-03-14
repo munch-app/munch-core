@@ -6,7 +6,7 @@
       </div>
       <div class="MunchApp">
         <h4 class="s500">Munch App</h4>
-        <a href="https://itunes.apple.com/sg/app/munch-food-discovery/id1255436754" target="_blank">Munch iOS App</a>
+        <a href="https://itunes.apple.com/sg/app/munch-food-discovery/id1255436754" target="_blank">Munch iOS</a>
         <a href="https://play.google.com/store/apps/details?id=app.munch.munchapp" target="_blank">Munch Android</a>
       </div>
 

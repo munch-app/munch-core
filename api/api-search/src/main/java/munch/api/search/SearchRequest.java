@@ -1,8 +1,8 @@
 package munch.api.search;
 
 import munch.api.ApiRequest;
-import munch.api.search.elastic.ElasticSpatialUtils;
 import munch.api.search.filter.FilterAreaDatabase;
+import munch.data.elastic.ElasticUtils;
 import munch.data.location.Area;
 import munch.restful.core.JsonUtils;
 import munch.restful.server.JsonCall;
@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +41,7 @@ public final class SearchRequest {
         this.searchQuery = searchQuery;
         this.userId = call.get(ApiRequest.class).optionalUserId().orElse(null);
         this.latLng = call.get(ApiRequest.class).optionalLatLng().orElse(null);
-        this.localDateTime = call.get(ApiRequest.class).optionalLocalTime().orElse(null);
+        this.localDateTime = call.get(ApiRequest.class).optionalLocalDateTime().orElse(null);
     }
 
     /**
@@ -148,13 +149,14 @@ public final class SearchRequest {
         return searchQuery.getFilter().getLocation().getAreas();
     }
 
+    @NotNull
     public List<SearchQuery.Filter.Location.Point> getPoints() {
         if (searchQuery.getFilter().getLocation().getPoints() == null) return List.of();
         return searchQuery.getFilter().getLocation().getPoints();
     }
 
     public String getPointsCentroid() {
-        double[] centroid = ElasticSpatialUtils.getCentroid(getPoints(), SearchQuery.Filter.Location.Point::getLatLng);
+        double[] centroid = ElasticUtils.Spatial.getCentroid(getPoints(), SearchQuery.Filter.Location.Point::getLatLng);
         return centroid[0] + "," + centroid[1];
     }
 

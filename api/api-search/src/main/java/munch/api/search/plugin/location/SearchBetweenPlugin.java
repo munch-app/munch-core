@@ -1,8 +1,9 @@
-package munch.api.search.plugin;
+package munch.api.search.plugin.location;
 
 import munch.api.search.cards.SearchBetweenHeaderCard;
 import munch.api.search.cards.SearchBetweenReferralCard;
 import munch.api.search.cards.SearchHeaderCard;
+import munch.api.search.plugin.SearchCardPlugin;
 
 import javax.inject.Singleton;
 import java.util.List;
@@ -20,6 +21,7 @@ public final class SearchBetweenPlugin implements SearchCardPlugin {
     @Override
     public List<Position> load(Request request) {
         if (!request.getRequest().isBetween()) return null;
+        if (!request.isFirstPage()) return null;
 
         List<SearchHeaderCard> headers = request.getCards().stream()
                 .filter(searchCard -> searchCard instanceof SearchHeaderCard)

@@ -1,7 +1,8 @@
 <template>
   <div class="w-100 flex-align-stretch border-3 overflow-hidden">
     <section class="flex-center">
-      <nuxt-link :to="`/places/${place.placeId}`" class="lh-0" @click.native.capture="$track.view(`RIP`, 'Feed - Instagram')">
+      <nuxt-link :to="`/places/${place.placeId}`" class="lh-0"
+                 @click.native.capture="$track.view(`RIP`, 'Feed - Instagram')">
         <image-sizes class="InstagramImage" :sizes="item.image.sizes"
                      width="800" height="1000" object-fit="contain"
                      max-height="calc(100vh - 96px)">
@@ -23,6 +24,18 @@
 
       <feed-image-action class="mt-24" :place="place"/>
 
+      <div class="mt-24 bg-steam" v-if="isStaging">
+        <h6>Caption (Pre-formatted)</h6>
+        <pre class="text small">{{item.instagram.caption}}</pre>
+
+        <a class="" :href="imageUrl" target="_blank">
+          <button class="mtb-8 primary">Open Image</button>
+        </a>
+
+        <pre class="text">Username: {{item.instagram.username}}</pre>
+      </div>
+
+
       <div class="mt-32">
         <h2 class="mb-24">Place Mentioned</h2>
 
@@ -35,6 +48,8 @@
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
+
   import dateformat from 'dateformat'
   import PlaceCard from "../../places/PlaceCard";
   import ImageSizes from "../../core/ImageSizes";
@@ -50,6 +65,10 @@
       },
     },
     computed: {
+      ...mapGetters(['isStaging']),
+      imageUrl() {
+        return ImageSizes.$$findUrl(this.item.image.sizes, 10000, 10000);
+      },
       place() {
         const placeId = this.item.places[0] && this.item.places[0].placeId
         if (placeId) {
