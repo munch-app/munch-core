@@ -25,6 +25,7 @@ import javax.inject.Singleton;
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletException;
 import javax.servlet.http.Part;
+import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -61,7 +62,7 @@ public final class PlaceSuggestService extends ApiService {
     public JsonResult postJson(JsonCall call, ApiRequest request) {
         SuggestPlaceEdit.Source source = getSource(request);
         SuggestPlaceEdit place = call.bodyAsObject(SuggestPlaceEdit.class);
-        place.setPlaceId(call.pathString("placeId"));
+        place.setPlaceId(getPlaceId(call));
         place.setSource(source);
 
         validate(place);
@@ -76,7 +77,7 @@ public final class PlaceSuggestService extends ApiService {
         call.request().attribute("org.eclipse.jetty.multipartConfig", multipartConfig);
 
         SuggestPlaceEdit place = JsonUtils.toObject(call.request().queryParams("json"), SuggestPlaceEdit.class);
-        place.setPlaceId(call.pathString("placeId"));
+        place.setPlaceId(getPlaceId(call));
         place.setSource(source);
         validate(place);
 
@@ -141,5 +142,12 @@ public final class PlaceSuggestService extends ApiService {
         place.setSuggestId(null);
         place.setVersion(null);
         place.setStatus(null);
+    }
+
+    @NotNull
+    private static String getPlaceId(JsonCall call) {
+        String placeId = call.pathString("placeId");
+        if (placeId.equals("_")) return null;
+        return placeId;
     }
 }
