@@ -61,7 +61,7 @@ public final class PlaceSuggestService extends ApiService {
 
     public JsonResult postJson(JsonCall call, ApiRequest request) {
         SuggestPlaceEdit.Source source = getSource(request);
-        SuggestPlaceEdit place = call.bodyAsObject(SuggestPlaceEdit.class);
+        SuggestPlaceEdit place = SuggestPlaceEdit.parse(call.bodyAsJson());
         place.setPlaceId(getPlaceId(call));
         place.setSource(source);
 
@@ -76,7 +76,7 @@ public final class PlaceSuggestService extends ApiService {
         SuggestPlaceEdit.Source source = getSource(request);
         call.request().attribute("org.eclipse.jetty.multipartConfig", multipartConfig);
 
-        SuggestPlaceEdit place = JsonUtils.toObject(call.request().queryParams("json"), SuggestPlaceEdit.class);
+        SuggestPlaceEdit place = SuggestPlaceEdit.parse(JsonUtils.toTree(call.request().queryParams("json")));
         place.setPlaceId(getPlaceId(call));
         place.setSource(source);
         validate(place);
