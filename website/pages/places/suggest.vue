@@ -16,7 +16,6 @@
 
         <div class="Content">
           <place-suggest-detail :payload="payload"></place-suggest-detail>
-          <!--<place-suggest-opening-hours :payload="payload"></place-suggest-opening-hours>-->
           <place-suggest-image :payload="payload" v-if="payload.images.length > 0"></place-suggest-image>
           <place-suggest-article :payload="payload" v-if="payload.articles.length > 0"></place-suggest-article>
         </div>
@@ -48,7 +47,6 @@
   import PlaceSuggestArticle from "../../components/places/suggest/PlaceSuggestArticle";
   import PlaceSuggestImage from "../../components/places/suggest/PlaceSuggestImage";
   import PlaceSuggestChanges from "../../components/places/suggest/PlaceSuggestChanges";
-  import PlaceSuggestOpeningHours from "../../components/places/suggest/PlaceSuggestOpeningHours";
   import DialogLoading from "../../components/layouts/DialogLoading";
   import _ from "lodash";
 
@@ -96,7 +94,6 @@
 
   export default {
     components: {
-      PlaceSuggestOpeningHours,
       DialogLoading,
       PlaceSuggestChanges, PlaceSuggestImage, PlaceSuggestArticle, PlaceSuggestDetail, ImageSizes
     },
@@ -143,12 +140,12 @@
         if (window) window.scrollTo(0, 0)
         this.submitting = true
 
-        const payload = {
-          place: this.verifyFields(),
-          // removes: this.payload.removes,
-        }
-        // return this.$axios.$post('/api/users/suggests/places', payload)
+        const form = new FormData()
+        form.append('json', JSON.stringify(this.verifyFields()))
+
+        // return this.$api.post(`/places/${this.$route.query.placeId}/suggest/multipart`, form)
         //   .then(({data}) => {
+        //     console.log(data)
         //     this.submitting = false
         //     this.submitted = true
         //   })
@@ -168,8 +165,8 @@
           updatedData.push(this.getChangeJSON(this.payload.place.location.address.trim(), "Replace", "LocationAddress"))
         }
 
-        if ((this.payload.place.price && this.payload.place.price.perPax) && this.payload.place.price.perPax.trim() !== (this.originalPlace.price && this.originalPlace.price.perPax || 0)) {
-          let convertedPrice = _.toNumber(this.payload.place.price.perPax.trim())
+        if ((this.payload.place.price && this.payload.place.price.perPax) && this.payload.place.price.perPax !== (this.originalPlace.price && this.originalPlace.price.perPax || 0)) {
+          let convertedPrice = _.toNumber(this.payload.place.price.perPax)
           if (convertedPrice && !_.isNaN(convertedPrice) && convertedPrice > 0) {
             updatedData.push(this.getChangeJSON(convertedPrice, "Replace", "PricePerPax"))
           }
@@ -212,19 +209,32 @@
           })
         }
 
-        console.log(JSON.stringify(updatedData))
+        for (const key in this.payload.removes.articles) {
+          if (this.payload.removes.articles.hasOwnProperty(key)) {
+            const article = this.payload.removes.articles[key]
+            console.log(article)
+            updatedData.push({
+              articleId: article.article.articleId,
+              url: article.article.url,
+              flagAs: article.flag,
+              operation: "Remove", type: "Article"
+            })
+          }
+        }
 
-        // for (const key in this.payload.removes.articles) {
-        //   if (this.payload.removes.articles.hasOwnProperty(key)) {
-        //     const article = this.payload.removes.articles[key]
-        //     updatedData.push(this.getChangeJSON({articleId: article.articleId, url: article.url}, "Remove", "Article"))
-        //   }
-        // }
-        //
-        // this.payload.removes.articles.forEach((article) => {
-        //   console.log(article)
-        //   updatedData.push(this.getChangeJSON({articleId: article.articleId}, "Remove", "Tag"))
-        // });
+        for (const key in this.payload.removes.images) {
+          if (this.payload.removes.images.hasOwnProperty(key)) {
+            const image = this.payload.removes.images[key]
+            updatedData.push({
+              imageId: image.image.imageId,
+              url: image.image.url,
+              flagAs: image.flag,
+              operation: "Remove", type: "Image"
+            })
+          }
+        }
+
+        console.log(JSON.stringify(updatedData))
 
         return updatedData
       },
