@@ -60,11 +60,11 @@ function route(req, res, next, options) {
   })
 })
 
-router.post('/api/places/:placeId/suggest', upload.array('images', 8), function (req, res, next) {
+router.post('/api/places/:placeId/suggest/multipart', upload.array('images', 8), function (req, res, next) {
   const form = new FormData()
   const files = req.files
 
-  form.append('json', req.body.text)
+  form.append('json', req.body.json)
   files.forEach(file => {
     form.append('images', file.buffer, file.originalname);
   });

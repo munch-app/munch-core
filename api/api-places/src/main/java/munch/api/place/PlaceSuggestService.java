@@ -55,7 +55,7 @@ public final class PlaceSuggestService extends ApiService {
     public void route() {
         PATH("/places/:placeId", () -> {
             POST("/suggest", "application/json", this::postJson);
-            POST("/suggest", "multipart/form-data", this::postForm);
+            POST("/suggest/multipart", "multipart/form-data", this::postForm);
         });
     }
 
