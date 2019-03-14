@@ -23,7 +23,7 @@
         <div class="Action">
           <place-suggest-changes :payload="payload"/>
           <div class="flex-justify-end">
-            <button @click="onSubmit" class="primary">Submit</button>
+            <button @click="onSubmit" class="primary mt-24">Submit</button>
           </div>
         </div>
       </div>
@@ -85,6 +85,9 @@
           url: place.menu && place.menu.url || '',
         }
       },
+      uploads: {
+        images: {}
+      },
       removes: {
         images: {}, // imageId: {flag: ''}
         articles: {}, // articleId: {flag: ''}
@@ -143,16 +146,25 @@
         const form = new FormData()
         form.append('json', JSON.stringify(this.verifyFields()))
 
-        // return this.$api.post(`/places/${this.$route.query.placeId}/suggest/multipart`, form)
-        //   .then(({data}) => {
-        //     console.log(data)
-        //     this.submitting = false
-        //     this.submitted = true
-        //   })
-        //   .catch(error => {
-        //     this.submitting = false
-        //     this.$store.dispatch('addError', error)
-        //   })
+        for (const key in this.payload.uploads.images) {
+          if (this.payload.uploads.images.hasOwnProperty(key)) {
+            const image = this.payload.uploads.images[key]
+            form.append('images', image, image.name)
+          }
+        }
+
+        console.log(form)
+
+        return this.$api.post(`/places/${this.$route.query.placeId}/suggest/multipart`, form)
+          .then(({data}) => {
+            console.log(data)
+            this.submitting = false
+            this.submitted = true
+          })
+          .catch(error => {
+            this.submitting = false
+            this.$store.dispatch('addError', error)
+          })
       },
       verifyFields() {
         const updatedData = []
@@ -235,7 +247,6 @@
         }
 
         console.log(JSON.stringify(updatedData))
-
         return updatedData
       },
       getChangeJSON(value, operation, type) {

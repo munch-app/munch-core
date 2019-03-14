@@ -71,6 +71,7 @@
       <input-text label="Price Per Pax" type="number" v-model="payload.place.price.perPax"/>
       <input-text label="Phone" v-model="payload.place.phone"/>
       <input-text label="Website" v-model="payload.place.website"/>
+      <place-suggest-opening-hours :payload="payload"></place-suggest-opening-hours>
       <place-suggest-tags label="Tags" v-model="payload.place.tags"></place-suggest-tags>
       <input-text label="Menu URL" v-model="payload.place.menu.url"/>
       <div class="input-text">
@@ -85,10 +86,11 @@
   import InputText from "../../core/InputText";
   import PlaceSuggestTags from "../../places/suggest/PlaceSuggestTags"
   import SuggestSearchBar from "../../suggest/SuggestSearchBar"
+  import PlaceSuggestOpeningHours from "../../../components/places/suggest/PlaceSuggestOpeningHours";
 
   export default {
     name: "PlaceSuggestDetail",
-    components: {InputText, PlaceSuggestTags, SuggestSearchBar},
+    components: {InputText, PlaceSuggestTags, SuggestSearchBar, PlaceSuggestOpeningHours},
     props: {
       payload: {
         type: Object,

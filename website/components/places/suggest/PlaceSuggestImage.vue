@@ -3,6 +3,7 @@
     <h2 class="mt-48">Images</h2>
     <div class="border-3 mt-16 relative">
       <button class="primary-outline" @click="showImages">Edit Images</button>
+      <button class="primary-outline" @click="showUploadImage">Upload Image</button>
     </div>
 
     <no-ssr>
@@ -36,6 +37,22 @@
       </portal>
     </no-ssr>
     <no-ssr>
+      <portal to="dialog-full" v-if="show.uploadImages">
+        <div class="Existing bg-white elevation-1 p-16-24 overflow-y-auto" v-if="images.length > 0">
+          <h2>Upload Image</h2>
+          <p>Upload images of <b>{{payload.place.name}}</b>. <span class="subtext">Maximum of 4 images</span></p>
+          <div class="mt-16">
+            <dropzone id="imageDropzone" ref="imageDropzone" :options="dropzoneOptions"></dropzone>
+            <div class="flex-justify-end">
+              <button class="primary-outline mt-16 mr-8" @click="onCloseImageUpload">Cancel</button>
+              <button class="primary mt-16" @click="onImageUpload">Upload</button>
+            </div>
+          </div>
+        </div>
+      </portal>
+    </no-ssr>
+
+    <no-ssr>
       <portal to="dialog-styled" v-if="dialog" class="Dialog">
         <h3>Flag Image</h3>
         <div class="flex-between hover-pointer" @click="onFlag(dialog, 'NotRelated')">
@@ -62,14 +79,15 @@
 </template>
 
 <script>
-  import ImageSizes from "../../core/ImageSizes";
   import Vue from 'vue'
-
   import _ from 'lodash'
+  import ImageSizes from "../../core/ImageSizes";
+  import Dropzone from 'nuxt-dropzone'
+  import 'nuxt-dropzone/dropzone.css'
 
   export default {
     name: "PlaceSuggestImage",
-    components: {ImageSizes},
+    components: {ImageSizes, Dropzone},
     props: {
       payload: {
         type: Object,
@@ -95,7 +113,16 @@
         images, next,
         selected: false,
         show: {
-          images: false
+          images: false,
+          uploadImages: false
+        },
+        dropzoneOptions: {
+          url: "http://httpbin.org/anything",
+          addRemoveLinks: true,
+          acceptedFiles: "image/jpeg,image/png",
+          maxFilesize: 10,
+          maxFiles: 4,
+          autoProcessQueue: false,
         }
       }
     },
@@ -145,6 +172,27 @@
       showImages() {
         this.show.images = true
       },
+      showUploadImage() {
+        this.show.uploadImages = true
+      },
+      onImageUpload() {
+        this.show.uploadImages = false
+        let dropzoneInstance = this.$refs.imageDropzone
+        const files = dropzoneInstance.getAcceptedFiles()
+        let overMax = false
+
+        files.forEach((file) => {
+          if (Object.keys(this.payload.uploads.images).length + 1 < 5) {
+            Vue.set(this.payload.uploads.images, file.upload.uuid, file)
+          } else {
+            overMax = true
+          }
+        });
+
+        if (overMax) {
+          this.$store.dispatch('addMessage', {title: "Maximum Upload Reached", message: "There are more than 4 images selected for upload. Some images have been omitted."})
+        }
+      },
       onDialogCancel() {
         this.dialog = null
         this.selected = true
@@ -154,12 +202,20 @@
           this.show.images = false
         }
         this.selected = false
-      }
+      },
+      onCloseImageUpload() {
+        this.show.uploadImages = false
+      },
     }
   }
 </script>
 
 <style scoped lang="less">
+
+  .vue-dropzone {
+    line-height: 1;
+  }
+
   .Existing {
     .List {
       margin: 8px -8px;
@@ -194,5 +250,39 @@
       padding-bottom: 8px;
       margin-bottom: 0;
     }
+  }
+
+  .FileUpload {
+    width: 400px;
+    height: 400px;
+  }
+
+  .file-uploads {
+    overflow: hidden;
+    position: relative;
+    text-align: center;
+    display: inline-block;
+  }
+
+  .file-uploads.file-uploads-html4 input[type="file"] {
+    opacity: 0;
+    font-size: 20em;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+
+  .file-uploads.file-uploads-html5 input[type="file"] {
+    overflow: hidden;
+    position: fixed;
+    width: 1px;
+    height: 1px;
+    z-index: -1;
+    opacity: 0;
   }
 </style>
