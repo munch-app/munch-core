@@ -1,6 +1,6 @@
 <template>
   <div class="Page container-768">
-    <div v-if="payload.place.placeId">
+    <div>
       <div v-if="submitted">
         <h1 class="mt-8">Thank you for your contribution.</h1>
         <p class="mt-24">Own this restaurant? Do you want us to optimise your page?
@@ -10,12 +10,12 @@
       </div>
       <div class="zero" v-else>
         <div class="Header">
-          <h2 v-if="payload.place.placeId">Suggest Edits: <span class="s700">{{payload.place.name}}</span></h2>
-          <h2 v-else>Suggest a new edit</h2>
+          <h2>Create a new place</h2>
         </div>
 
         <div class="Content">
           <place-suggest-detail :payload="payload"></place-suggest-detail>
+          <!--<place-suggest-opening-hours :payload="payload"></place-suggest-opening-hours>-->
           <place-suggest-image :payload="payload" v-if="payload.images.length > 0"></place-suggest-image>
           <place-suggest-article :payload="payload" v-if="payload.articles.length > 0"></place-suggest-article>
         </div>
@@ -23,17 +23,11 @@
         <div class="Action">
           <place-suggest-changes :payload="payload"/>
           <div class="flex-justify-end">
-            <button @click="onSubmit" class="primary mt-24">Submit</button>
+            <button v-if="isSubmittable" @click="onSubmit" class="primary">Submit</button>
+            <button v-else class="primary disabled">Submit</button>
           </div>
         </div>
       </div>
-    </div>
-    <div v-else>
-      <h1 class="mt-8">Sorry, you can only suggest an edit for an existing place.</h1>
-      <p class="mt-24">
-        Drop us an email at <span class="weight-600">restaurant@munch.space</span> if there’s anything we can help
-        with.
-      </p>
     </div>
     <no-ssr>
       <dialog-loading v-if="submitting"/>
@@ -47,6 +41,7 @@
   import PlaceSuggestArticle from "../../components/places/suggest/PlaceSuggestArticle";
   import PlaceSuggestImage from "../../components/places/suggest/PlaceSuggestImage";
   import PlaceSuggestChanges from "../../components/places/suggest/PlaceSuggestChanges";
+  import PlaceSuggestOpeningHours from "../../components/places/suggest/PlaceSuggestOpeningHours";
   import DialogLoading from "../../components/layouts/DialogLoading";
   import _ from "lodash";
 
@@ -79,14 +74,11 @@
           placeIds: null,
           placeNames: null,
         },
-        tags: place.tags,
+        tags: place.tags || [],
         hours: place.hours,
         menu: {
           url: place.menu && place.menu.url || '',
         }
-      },
-      uploads: {
-        images: {}
       },
       removes: {
         images: {}, // imageId: {flag: ''}
@@ -97,6 +89,7 @@
 
   export default {
     components: {
+      PlaceSuggestOpeningHours,
       DialogLoading,
       PlaceSuggestChanges, PlaceSuggestImage, PlaceSuggestArticle, PlaceSuggestDetail, ImageSizes
     },
@@ -108,25 +101,16 @@
         name: 'description',
         content: 'Suggest an place edit on Munch. Drop us an email at restaurant@munch.space if there’s anything we can help with.'
       })
-      return {title: 'Suggest Place · Munch - Social Dining App', meta,}
+      return {title: 'Suggest Place · Munch Singapore', meta,}
     },
-    asyncData({$axios, params, route}) {
-      const placeId = route.query.placeId
-      if (placeId) {
-        return $axios.$get(`/api/places/${placeId}`).then(({data}) => {
-
-          data.place.tags = data.place.tags.map(tag => {
-            return {text: tag.name}
-          })
-
-          return {originalPlace: {...data.place}, payload: newPayload(data)}
-        })
-      } else {
-        return {payload: newPayload()}
+    computed: {
+      isSubmittable() {
+        return (this.payload.place.name.trim().length > 2 && this.payload.place.location.address.trim().length > 0)
       }
     },
     data() {
       return {
+        payload: newPayload(),
         selected: 'PlaceSuggestDetail',
         tabs: [
           {name: 'Detail', component: 'PlaceSuggestDetail'},
@@ -143,71 +127,55 @@
         if (window) window.scrollTo(0, 0)
         this.submitting = true
 
-        const form = new FormData()
-        form.append('json', JSON.stringify(this.verifyFields()))
-
-        for (const key in this.payload.uploads.images) {
-          if (this.payload.uploads.images.hasOwnProperty(key)) {
-            const image = this.payload.uploads.images[key]
-            form.append('images', image, image.name)
-          }
+        const payload = {
+          place: this.verifyFields(),
+          // removes: this.payload.removes,
         }
-
-        console.log(form)
-
-        return this.$api.post(`/places/${this.$route.query.placeId}/suggest/multipart`, form)
-          .then(({data}) => {
-            console.log(data)
-            this.submitting = false
-            this.submitted = true
-          })
-          .catch(error => {
-            this.submitting = false
-            this.$store.dispatch('addError', error)
-          })
+        // return this.$axios.$post('/api/users/suggests/places', payload)
+        //   .then(({data}) => {
+        //     this.submitting = false
+        //     this.submitted = true
+        //   })
+        //   .catch(error => {
+        //     this.submitting = false
+        //     this.$store.dispatch('addError', error)
+        //   })
       },
       verifyFields() {
         const updatedData = []
 
-        if (this.payload.place.name.trim() !== this.originalPlace.name) {
+        if (this.payload.place.name.trim().length > 2) {
           updatedData.push(this.getChangeJSON(this.payload.place.name.trim(), "Replace", "Name"))
         }
 
-        if ((this.payload.place.location && this.payload.place.location.address) && this.payload.place.location.address.trim() !== (this.originalPlace.location && this.originalPlace.location.address || '')) {
+        if ((this.payload.place.location && this.payload.place.location.address) && this.payload.place.location.address.trim().length > 0) {
           updatedData.push(this.getChangeJSON(this.payload.place.location.address.trim(), "Replace", "LocationAddress"))
         }
 
-        if ((this.payload.place.price && this.payload.place.price.perPax) && this.payload.place.price.perPax !== (this.originalPlace.price && this.originalPlace.price.perPax || 0)) {
-          let convertedPrice = _.toNumber(this.payload.place.price.perPax)
+        if ((this.payload.place.price && this.payload.place.price.perPax) && this.payload.place.price.perPax.trim()) {
+          let convertedPrice = _.toNumber(this.payload.place.price.perPax.trim())
           if (convertedPrice && !_.isNaN(convertedPrice) && convertedPrice > 0) {
             updatedData.push(this.getChangeJSON(convertedPrice, "Replace", "PricePerPax"))
           }
         }
 
-        if (this.payload.place.phone.trim() !== this.originalPlace.phone) {
+        if (this.payload.place.phone.trim()) {
           updatedData.push(this.getChangeJSON(this.payload.place.phone.trim(), "Replace", "Phone"))
         }
 
-        const tagsAppend = _.differenceBy(this.payload.place.tags, this.originalPlace.tags, 'text')
-        const tagsRemoval = _.differenceBy(this.originalPlace.tags, this.payload.place.tags, 'text')
-
-        tagsAppend.forEach((tag) => {
+        this.payload.place.tags.forEach((tag) => {
           updatedData.push(this.getChangeJSON(tag.text.trim(), "Append", "Tag"))
         });
 
-        tagsRemoval.forEach((tag) => {
-          updatedData.push(this.getChangeJSON(tag.text.trim(), "Remove", "Tag"))
-        });
-
-        if (this.payload.place.menu.url.trim() !== (this.originalPlace.menu && this.originalPlace.menu.url || '')) {
+        if (this.payload.place.menu.url.trim()) {
           updatedData.push(this.getChangeJSON(this.payload.place.menu.url.trim(), "Replace", "MenuUrl"))
         }
 
-        if (this.payload.place.description.trim() !== (this.originalPlace.description || '')) {
+        if (this.payload.place.description.trim()) {
           updatedData.push(this.getChangeJSON(this.payload.place.description.trim(), "Replace", "Description"))
         }
 
-        if (this.payload.place.status.type.trim() !== (this.originalPlace.status.type.trim() || '')) {
+        if (this.payload.place.status.type.trim()) {
           if (this.payload.place.status.type !== 'duplicated') {
             this.payload.place.status.placeIds = null
             this.payload.place.status.placeNames = null
@@ -221,32 +189,20 @@
           })
         }
 
-        for (const key in this.payload.removes.articles) {
-          if (this.payload.removes.articles.hasOwnProperty(key)) {
-            const article = this.payload.removes.articles[key]
-            console.log(article)
-            updatedData.push({
-              articleId: article.article.articleId,
-              url: article.article.url,
-              flagAs: article.flag,
-              operation: "Remove", type: "Article"
-            })
-          }
-        }
-
-        for (const key in this.payload.removes.images) {
-          if (this.payload.removes.images.hasOwnProperty(key)) {
-            const image = this.payload.removes.images[key]
-            updatedData.push({
-              imageId: image.image.imageId,
-              url: image.image.url,
-              flagAs: image.flag,
-              operation: "Remove", type: "Image"
-            })
-          }
-        }
-
         console.log(JSON.stringify(updatedData))
+
+        // for (const key in this.payload.removes.articles) {
+        //   if (this.payload.removes.articles.hasOwnProperty(key)) {
+        //     const article = this.payload.removes.articles[key]
+        //     updatedData.push(this.getChangeJSON({articleId: article.articleId, url: article.url}, "Remove", "Article"))
+        //   }
+        // }
+        //
+        // this.payload.removes.articles.forEach((article) => {
+        //   console.log(article)
+        //   updatedData.push(this.getChangeJSON({articleId: article.articleId}, "Remove", "Tag"))
+        // });
+
         return updatedData
       },
       getChangeJSON(value, operation, type) {

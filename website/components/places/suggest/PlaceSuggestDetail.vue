@@ -1,42 +1,82 @@
 <template>
   <div>
     <div class="input-group">
-      <input-text label="Name" v-model="payload.place.name" required/>
-      <input-text label="Address" v-model="payload.place.location.address" required/>
+      <h2>Status</h2>
+      <div class="flex StatusList">
+        <h5 class="mr-8">Current Status:</h5>
+        <div :class="{ 'bg-success white': payload.place.status.type === status.type && status.type === 'open',
+                       'bg-error white': payload.place.status.type === status.type && (status.type === 'closed' || status.type === 'duplicated' || status.type === 'notFoodPlace'),
+                       'bg-whisper100 b-a85': payload.place.status.type !== status.type}" :key="status.type" class="weight-600 border-3"
+             v-for="status in statusList"
+             v-if="status.type && status.type === payload.place.status.type">
+          {{status.name}}<span
+          v-if="status.type === 'duplicated'">: {{payload.place.status.placeNames.join(', ')}}</span>
+        </div>
+      </div>
+      <div class="mt-8">
+        <button @click="showStatus" class="primary-outline">Change Status</button>
+      </div>
 
-      <!--<div class="input-text">-->
-      <!--<label>Tags</label>-->
-      <!--<input>-->
-      <!--</div>-->
-      <!---->
+      <no-ssr>
+        <portal class="Dialog" to="dialog-styled" v-if="show.status">
+          <h3>Status</h3>
+          <div @click="onStatusChange('open')" class="flex-between hover-pointer">
+            <div class="text">Open</div>
+            <div class="checkbox"/>
+          </div>
+
+          <div @click="onStatusChange('closed')" class="flex-between hover-pointer">
+            <div class="text">Permanently Closed</div>
+            <div class="checkbox"/>
+          </div>
+
+          <div @click="onStatusDuplicate()" class="flex-between hover-pointer">
+            <div class="text">Duplicate</div>
+            <div class="checkbox"/>
+          </div>
+
+          <div @click="onStatusChange('notFoodPlace')" class="flex-between hover-pointer">
+            <div class="text">Not Food Place</div>
+            <div class="checkbox"/>
+          </div>
+
+          <div class="right">
+            <button @click="onDialogCancel" class="primary-outline">Cancel</button>
+          </div>
+        </portal>
+      </no-ssr>
+
+      <no-ssr>
+        <portal class="Dialog" to="dialog-styled" v-if="show.duplicate">
+          <h3>Duplicated with</h3>
+          <suggest-search-bar :dialog="show" :status="payload.place.status"
+                              style="margin-bottom: 20px;"></suggest-search-bar>
+          <div style="display: flex;" v-for="(name, index) in payload.place.status.placeNames">
+            <div class="mt-4 wh-100">
+              {{index+1}}. {{name}}
+            </div>
+          </div>
+          <div class="right" style="margin-top: 60px">
+            <button @click="onDuplicateDialogBack" class="primary-outline">Back</button>
+            <button @click="onDuplicateDialogDone" class="primary">Done</button>
+          </div>
+        </portal>
+      </no-ssr>
     </div>
 
     <div class="input-group">
       <h2>Details</h2>
-      <!-- Price Details Required -->
-      <input-text label="Price Per Pax" v-model="payload.place.price.perPax" type="number"/>
+      <input-text label="Name" required v-model="payload.place.name"/>
+      <input-text label="Address" required v-model="payload.place.location.address"/>
+      <input-text label="Price Per Pax" type="number" v-model="payload.place.price.perPax"/>
       <input-text label="Phone" v-model="payload.place.phone"/>
       <input-text label="Website" v-model="payload.place.website"/>
+      <place-suggest-opening-hours :payload="payload"></place-suggest-opening-hours>
+      <place-suggest-tags label="Tags" v-model="payload.place.tags"></place-suggest-tags>
+      <input-text label="Menu URL" v-model="payload.place.menu.url"/>
       <div class="input-text">
         <label>Description</label>
         <textarea rows="4" v-model="payload.place.description"></textarea>
-      </div>
-    </div>
-
-    <div class="input-group" v-if="false">
-      <h2>Hours</h2>
-    </div>
-
-    <div class="input-group">
-      <h2>Status</h2>
-      <div class="flex StatusList">
-        <div class="weight-600 border-3 hover-pointer" v-for="status in statusList" :key="status.type"
-             @click="payload.place.status.type = status.type"
-             :class="{ 'bg-success white': payload.place.status.type === status.type && status.type === 'open',
-                       'bg-error white': payload.place.status.type === status.type && status.type === 'closed',
-                       'bg-whisper100 b-a85': payload.place.status.type !== status.type}">
-          {{status.name}}
-        </div>
       </div>
     </div>
   </div>
@@ -44,10 +84,13 @@
 
 <script>
   import InputText from "../../core/InputText";
+  import PlaceSuggestTags from "../../places/suggest/PlaceSuggestTags"
+  import SuggestSearchBar from "../../suggest/SuggestSearchBar"
+  import PlaceSuggestOpeningHours from "../../../components/places/suggest/PlaceSuggestOpeningHours";
 
   export default {
     name: "PlaceSuggestDetail",
-    components: {InputText},
+    components: {InputText, PlaceSuggestTags, SuggestSearchBar, PlaceSuggestOpeningHours},
     props: {
       payload: {
         type: Object,
@@ -64,8 +107,50 @@
           {
             name: 'Permanently Closed',
             type: 'closed'
+          },
+          {
+            name: 'Duplicate',
+            type: 'duplicated'
+          },
+          {
+            name: 'Not Food Place',
+            type: 'notFoodPlace'
           }
-        ]
+        ],
+        statusDialog: null,
+        show: {
+          status: false,
+          duplicate: false
+        }
+      }
+    },
+    methods: {
+      showStatus() {
+        this.show.status = true
+      },
+      onDialogCancel() {
+        this.show.status = false
+      },
+      onDuplicateDialogBack() {
+        this.payload.place.status.placeIds = null
+        this.payload.place.status.placeNames = null
+        this.show.duplicate = false
+      },
+      onDuplicateDialogDone() {
+        this.payload.place.status.type = 'duplicated'
+        this.show.duplicate = false
+        this.show.status = false
+      },
+      onStatusChange(status) {
+        this.show.status = false
+        this.payload.place.status.type = status
+      },
+      onStatusDuplicate() {
+        if (!this.payload.place.status.placeIds) {
+          this.payload.place.status.placeIds = []
+          this.payload.place.status.placeNames = []
+        }
+        this.show.duplicate = true
       }
     }
   }
@@ -74,11 +159,19 @@
 <style scoped lang="less">
   .StatusList {
     > div {
-      line-height: 26px;
-      font-size: 15px;
+      line-height: 8px;
+      font-size: 13px;
 
-      padding: 8px 20px;
-      margin-right: 20px;
+      padding: 8px 8px;
+    }
+  }
+
+  .Dialog {
+    > div {
+      padding-top: 8px;
+      padding-bottom: 8px;
+      margin-bottom: 0;
+      margin-left: 0;
     }
   }
 </style>

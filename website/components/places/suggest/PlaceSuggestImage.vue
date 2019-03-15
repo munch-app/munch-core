@@ -1,30 +1,56 @@
 <template>
   <div>
-    <p>Own an Instagram account, want it published on munch? <a class="text-underline s700 weight-600"
-                                                                href="https://partner.munch.app"
-                                                                target="_blank">partner.munch.app</a></p>
+    <h2 class="mt-48">Images</h2>
+    <div class="border-3 mt-16 relative">
+      <button class="primary-outline" @click="showImages">Edit Images</button>
+      <button class="primary-outline" @click="showUploadImage">Upload Image</button>
+    </div>
 
-    <div class="Existing" v-if="images.length > 0">
-      <h2>Images</h2>
+    <no-ssr>
+      <portal to="dialog-full" v-if="show.images">
+        <div class="Existing bg-white elevation-1 p-16-24 overflow-y-auto" v-if="images.length > 0"
+             v-on-clickaway="onClose">
+          <h2>Images</h2>
+          <p>Own an Instagram account, want it published on munch? <a class="text-underline s700 weight-600"
+                                                                      href="https://partner.munch.app"
+                                                                      target="_blank">partner.munch.app</a></p>
 
-      <div class="List flex-wrap">
-        <div class="Image hover-pointer" v-for="image in images" :key="image.imageId" @click="onDialog(image)">
-          <div class="aspect r-1-1">
-            <image-sizes class="overflow-hidden border-3" :sizes="image.sizes" width="1" height="1">
-              <div class="OverlayA20 relative hover-bg-a60 wh-100 flex-center">
-                <simple-svg class="wh-32px" fill="white" :filepath="require('~/assets/icon/place/suggest/flag.svg')"/>
+          <div class="List flex-wrap">
+            <div class="Image hover-pointer" v-for="image in images" :key="image.imageId" @click="onDialog(image)">
+              <div class="aspect r-1-1">
+                <image-sizes class="overflow-hidden border-3" :sizes="image.sizes" width="1" height="1">
+                  <div class="OverlayA20 relative hover-bg-a60 wh-100 flex-center">
+                    <simple-svg class="wh-32px" fill="white"
+                                :filepath="require('~/assets/icon/place/suggest/flag.svg')"/>
+                  </div>
+                </image-sizes>
               </div>
-            </image-sizes>
+            </div>
+          </div>
+
+          <no-ssr class="flex-center" style="padding: 24px 0 48px 0">
+            <beat-loader color="#084E69" v-if="next.sort" size="14px"
+                         v-observe-visibility="{callback: (v) => v && onMore(),throttle:300}"
+            />
+          </no-ssr>
+        </div>
+      </portal>
+    </no-ssr>
+    <no-ssr>
+      <portal to="dialog-full" v-if="show.uploadImages">
+        <div class="Existing bg-white elevation-1 p-16-24 overflow-y-auto" v-if="images.length > 0">
+          <h2>Upload Image</h2>
+          <p>Upload images of <b>{{payload.place.name}}</b>. <span class="subtext">Maximum of 4 images</span></p>
+          <div class="mt-16">
+            <dropzone id="imageDropzone" ref="imageDropzone" :options="dropzoneOptions"></dropzone>
+            <div class="flex-justify-end">
+              <button class="primary-outline mt-16 mr-8" @click="onCloseImageUpload">Cancel</button>
+              <button class="primary mt-16" @click="onImageUpload">Upload</button>
+            </div>
           </div>
         </div>
-      </div>
-
-      <no-ssr class="flex-center" style="padding: 24px 0 48px 0">
-        <beat-loader color="#084E69" v-if="next.sort" size="14px"
-                     v-observe-visibility="{callback: (v) => v && onMore(),throttle:300}"
-        />
-      </no-ssr>
-    </div>
+      </portal>
+    </no-ssr>
 
     <no-ssr>
       <portal to="dialog-styled" v-if="dialog" class="Dialog">
@@ -45,7 +71,7 @@
         </div>
 
         <div class="right">
-          <button class="elevated" @click="dialog = null">Cancel</button>
+          <button class="elevated" @click="onDialogCancel">Cancel</button>
         </div>
       </portal>
     </no-ssr>
@@ -53,14 +79,15 @@
 </template>
 
 <script>
-  import ImageSizes from "../../core/ImageSizes";
   import Vue from 'vue'
-
   import _ from 'lodash'
+  import ImageSizes from "../../core/ImageSizes";
+  import Dropzone from 'nuxt-dropzone'
+  import 'nuxt-dropzone/dropzone.css'
 
   export default {
     name: "PlaceSuggestImage",
-    components: {ImageSizes},
+    components: {ImageSizes, Dropzone},
     props: {
       payload: {
         type: Object,
@@ -73,7 +100,8 @@
         return {
           dialog: null,
           loading: false,
-          images: [], next: {}
+          selected: false,
+          images: [], next: {},
         }
       }
       const last = images[images.length - 1]
@@ -82,7 +110,20 @@
       return {
         dialog: null,
         loading: false,
-        images, next
+        images, next,
+        selected: false,
+        show: {
+          images: false,
+          uploadImages: false
+        },
+        dropzoneOptions: {
+          url: "http://httpbin.org/anything",
+          addRemoveLinks: true,
+          acceptedFiles: "image/jpeg,image/png",
+          maxFilesize: 10,
+          maxFiles: 4,
+          autoProcessQueue: false,
+        }
       }
     },
     mounted() {
@@ -123,20 +164,69 @@
       },
       onFlag(image, flag) {
         this.dialog = null
+        this.selected = true
 
         this.$store.dispatch('addMessage', {title: `Flagged as ${flag}`})
         Vue.set(this.payload.removes.images, image.imageId, {flag, image})
-      }
+      },
+      showImages() {
+        this.show.images = true
+      },
+      showUploadImage() {
+        this.show.uploadImages = true
+      },
+      onImageUpload() {
+        this.show.uploadImages = false
+        let dropzoneInstance = this.$refs.imageDropzone
+        const files = dropzoneInstance.getAcceptedFiles()
+        let overMax = false
+
+        files.forEach((file) => {
+          if (Object.keys(this.payload.uploads.images).length + 1 < 5) {
+            Vue.set(this.payload.uploads.images, file.upload.uuid, file)
+          } else {
+            overMax = true
+          }
+        });
+
+        if (overMax) {
+          this.$store.dispatch('addMessage', {title: "Maximum Upload Reached", message: "There are more than 4 images selected for upload. Some images have been omitted."})
+        }
+      },
+      onDialogCancel() {
+        this.dialog = null
+        this.selected = true
+      },
+      onClose() {
+        if (this.dialog == null && !this.selected) {
+          this.show.images = false
+        }
+        this.selected = false
+      },
+      onCloseImageUpload() {
+        this.show.uploadImages = false
+      },
     }
   }
 </script>
 
 <style scoped lang="less">
-  .Existing {
-    margin-top: 32px;
 
+  .vue-dropzone {
+    line-height: 1;
+  }
+
+  .Existing {
     .List {
       margin: 8px -8px;
+    }
+
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10vh;
+    max-height: 100% - 20vh;
+    @media (min-width: 768px) {
+      width: 600px;
     }
   }
 
@@ -160,5 +250,39 @@
       padding-bottom: 8px;
       margin-bottom: 0;
     }
+  }
+
+  .FileUpload {
+    width: 400px;
+    height: 400px;
+  }
+
+  .file-uploads {
+    overflow: hidden;
+    position: relative;
+    text-align: center;
+    display: inline-block;
+  }
+
+  .file-uploads.file-uploads-html4 input[type="file"] {
+    opacity: 0;
+    font-size: 20em;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+
+  .file-uploads.file-uploads-html5 input[type="file"] {
+    overflow: hidden;
+    position: fixed;
+    width: 1px;
+    height: 1px;
+    z-index: -1;
+    opacity: 0;
   }
 </style>
