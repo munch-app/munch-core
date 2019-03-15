@@ -29,13 +29,13 @@ public final class ApiServer extends RestfulServer {
     private static final Logger logger = LoggerFactory.getLogger(ApiServer.class);
 
     private final HealthService healthService;
-    protected final TokenAuthenticator<?> authenticator;
+    private final ApiAuthenticator apiAuthenticator;
 
     @Inject
-    public ApiServer(Set<RestfulService> routers, HealthService healthService, TokenAuthenticator authenticator) {
+    public ApiServer(Set<RestfulService> routers, HealthService healthService, ApiAuthenticator apiAuthenticator) {
         super(routers);
         this.healthService = healthService;
-        this.authenticator = authenticator;
+        this.apiAuthenticator = apiAuthenticator;
         setDebug(false);
     }
 
@@ -57,7 +57,9 @@ public final class ApiServer extends RestfulServer {
      */
     public void before(Request request, Response response) {
         // See JsonCall.get & JsonCall.put to understand how it works
-        request.attribute(ApiRequest.class.getName(), new ApiRequest(request, authenticator));
+
+        ApiRequest apiRequest = apiAuthenticator.authenticate(request);
+        request.attribute(ApiRequest.class.getName(), apiRequest);
     }
 
     /**

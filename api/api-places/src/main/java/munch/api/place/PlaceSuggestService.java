@@ -6,29 +6,27 @@ import munch.file.Image;
 import munch.file.ImageClient;
 import munch.file.ImageMeta;
 import munch.restful.core.JsonUtils;
-import munch.restful.core.KeyUtils;
-import munch.restful.core.exception.ConflictException;
-import munch.restful.core.exception.ValidationException;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonResult;
 import munch.suggest.SuggestClient;
 import munch.suggest.SuggestPlaceEdit;
 import munch.suggest.change.ChangeField;
 import munch.suggest.change.ChangeFieldImage;
-import munch.user.client.UserProfileClient;
 import munch.user.data.UserProfile;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletException;
 import javax.servlet.http.Part;
-import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * Created by: Fuxing
@@ -40,14 +38,12 @@ import java.io.InputStream;
 public final class PlaceSuggestService extends ApiService {
     private final MultipartConfigElement multipartConfig = new MultipartConfigElement("/temp");
 
-    private final SuggestClient suggestClient;
-    private final UserProfileClient profileClient;
+    private final SuggestClient.UserClient suggestClient;
     private final ImageClient imageClient;
 
     @Inject
-    public PlaceSuggestService(SuggestClient suggestClient, UserProfileClient profileClient, ImageClient imageClient) {
-        this.suggestClient = suggestClient;
-        this.profileClient = profileClient;
+    public PlaceSuggestService(SuggestClient suggestClient, ImageClient imageClient) {
+        this.suggestClient = suggestClient.newUserClient("munch-core");
         this.imageClient = imageClient;
     }
 
@@ -55,64 +51,72 @@ public final class PlaceSuggestService extends ApiService {
     public void route() {
         PATH("/places/:placeId", () -> {
             POST("/suggest", "application/json", this::postJson);
+            POST("/suggest/image", "multipart/form-data", this::postImage);
             POST("/suggest/multipart", "multipart/form-data", this::postForm);
         });
     }
 
     public JsonResult postJson(JsonCall call, ApiRequest request) {
-        SuggestPlaceEdit.Source source = getSource(request);
         SuggestPlaceEdit place = SuggestPlaceEdit.parse(call.bodyAsJson());
-        place.setPlaceId(getPlaceId(call));
-        place.setSource(source);
+        String placeId = getPlaceId(call);
 
-        validate(place);
+        UserProfile profile = request.getUserProfile();
+        suggestClient.suggest(profile.getUserId(), profile.getName(), profile.getEmail(),
+                placeId, place.getFields()
+        );
+        return JsonResult.ok();
+    }
 
-        // TODO Send Request
-        // suggestClient.post(place);
+    public JsonResult postImage(JsonCall call, ApiRequest request) throws IOException, ServletException {
+        call.request().attribute("org.eclipse.jetty.multipartConfig", multipartConfig);
+
+        SuggestPlaceEdit place = new SuggestPlaceEdit();
+        String placeId = getPlaceId(call);
+
+        ChangeFieldImage.FlagAs flagAs = EnumUtils.getEnum(ChangeFieldImage.FlagAs.class, call.request().queryParams("flagAs"));
+        Part part = call.request().raw().getPart("image");
+
+        ChangeFieldImage image = new ChangeFieldImage();
+        image.setOperation(ChangeField.Operation.Append);
+        image.setFlagAs(flagAs);
+        image.setImage(download(part, request));
+        place.setFields(List.of(image));
+
+        UserProfile profile = request.getUserProfile();
+        suggestClient.suggest(profile.getUserId(), profile.getName(), profile.getEmail(),
+                placeId, place.getFields()
+        );
         return JsonResult.ok();
     }
 
     public JsonResult postForm(JsonCall call, ApiRequest request) throws IOException, ServletException {
-        SuggestPlaceEdit.Source source = getSource(request);
         call.request().attribute("org.eclipse.jetty.multipartConfig", multipartConfig);
 
         SuggestPlaceEdit place = SuggestPlaceEdit.parse(JsonUtils.toTree(call.request().queryParams("json")));
-        place.setPlaceId(getPlaceId(call));
-        place.setSource(source);
-        validate(place);
+        String placeId = getPlaceId(call);
 
         for (Part part : call.request().raw().getParts()) {
             if (!part.getName().equals("images")) continue;
+
             ChangeFieldImage image = new ChangeFieldImage();
             image.setOperation(ChangeField.Operation.Append);
-            image.setFlagAs(ChangeFieldImage.FlagAs.QualityGood);
-            image.setImage(download(part, source));
+            image.setFlagAs(ChangeFieldImage.FlagAs.TypeFood);
+            image.setImage(download(part, request));
             place.getFields().add(image);
         }
 
-        // TODO Send Request
-        // suggestClient.post(place);
+        UserProfile profile = request.getUserProfile();
+        suggestClient.suggest(profile.getUserId(), profile.getName(), profile.getEmail(),
+                placeId, place.getFields()
+        );
         return JsonResult.ok();
     }
 
-    private SuggestPlaceEdit.Source getSource(ApiRequest request) {
-        final String userId = request.getUserId();
-        UserProfile profile = profileClient.get(userId);
-        if (profile == null) throw new ConflictException("Profile not found. (please report this error.)");
-
-        SuggestPlaceEdit.Source source = new SuggestPlaceEdit.Source();
-        source.setSystem("munch-core");
-        source.setUserId(userId);
-        source.setEmail(profile.getEmail());
-        source.setName(profile.getName());
-        return source;
-    }
-
     @SuppressWarnings("Duplicates")
-    private ImageMeta download(Part part, SuggestPlaceEdit.Source source) throws IOException {
+    private ImageMeta download(Part part, ApiRequest request) throws IOException {
         Image.Profile profile = new Image.Profile();
-        profile.setId(source.getUserId());
-        profile.setName(source.getName());
+        profile.setId(request.getUserId());
+        profile.setName(request.getUserProfile().getName());
         profile.setType("munch-user");
 
         File file = null;
@@ -129,22 +133,7 @@ public final class PlaceSuggestService extends ApiService {
         }
     }
 
-    /**
-     * @param place attempt to validate suggest place
-     */
-    private static void validate(SuggestPlaceEdit place) {
-        place.setSuggestId(KeyUtils.randomUUID());
-        place.setVersion(SuggestPlaceEdit.CURRENT_VERSION);
-        place.setStatus(SuggestPlaceEdit.Status.Pending);
-
-        ValidationException.validate(place);
-
-        place.setSuggestId(null);
-        place.setVersion(null);
-        place.setStatus(null);
-    }
-
-    @NotNull
+    @Nullable
     private static String getPlaceId(JsonCall call) {
         String placeId = call.pathString("placeId");
         if (placeId.equals("_")) return null;

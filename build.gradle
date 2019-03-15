@@ -15,7 +15,7 @@ allprojects {
 
     ext.catalystVersion = '3.2'
 
-    ext.restfulVersion = '3.0.2'
+    ext.restfulVersion = '3.0.3'
     ext.fileVersion = '1.2.17'
     ext.locationVersion = '1.1.3'
 

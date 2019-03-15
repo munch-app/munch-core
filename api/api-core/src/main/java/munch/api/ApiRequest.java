@@ -1,12 +1,9 @@
 package munch.api;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.exceptions.JWTDecodeException;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import munch.restful.core.exception.AuthenticationException;
-import munch.restful.core.exception.CodeException;
+import munch.restful.core.exception.ConflictException;
 import munch.restful.server.jwt.AuthenticatedToken;
-import munch.restful.server.jwt.TokenAuthenticator;
+import munch.user.data.UserProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.Request;
@@ -16,6 +13,7 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 /**
  * Created by: Fuxing
@@ -32,22 +30,23 @@ public final class ApiRequest {
     public static final String HEADER_USER_LOCAL_TIME = "User-Local-Time";
 
     private String userId;
-    private DecodedJWT jwt;
-    private AuthenticatedToken token;
+    private UserProfile userProfile;
+    private Supplier<UserProfile> profileSupplier;
 
     private String latLng;
     private ZoneId zoneId;
     private LocalDateTime localDateTime;
 
-    ApiRequest(Request request, TokenAuthenticator authenticator) {
-        this.jwt = getJWT(request);
-        if (this.jwt != null) {
-            this.token = authenticator.authenticate(jwt);
-            this.userId = this.token.getSubject();
+    ApiRequest(Request request, @Nullable AuthenticatedToken token, Supplier<UserProfile> profileSupplier) {
+        this.profileSupplier = profileSupplier;
+
+        if (token != null) {
+            this.userId = token.getSubject();
         }
 
         latLng = request.headers(HEADER_USER_LAT_LNG);
         zoneId = parseZoneId(request.headers(HEADER_USER_ZONE_ID));
+
         if (zoneId != null) {
             localDateTime = LocalDateTime.now(zoneId);
         } else {
@@ -60,15 +59,7 @@ public final class ApiRequest {
      * @return whether user is authenticated
      */
     public boolean isAuthenticated() {
-        return token != null;
-    }
-
-    /**
-     * @return decoded JWT
-     */
-    @Nullable
-    public DecodedJWT getJWT() {
-        return jwt;
+        return userId != null;
     }
 
     /**
@@ -78,6 +69,23 @@ public final class ApiRequest {
     public String getUserId() {
         if (userId == null) throw new AuthenticationException(403, "Forbidden");
         return userId;
+    }
+
+    /**
+     * @return UserProfile
+     * @throws ConflictException if profile not found, but userId exists
+     */
+    @NotNull
+    public UserProfile getUserProfile() throws ConflictException {
+        if (userId == null) throw new AuthenticationException(403, "Forbidden");
+        if (userProfile == null) {
+            userProfile = profileSupplier.get();
+
+            if (userProfile == null) {
+                throw new ConflictException("Profile not found. (please report this error.)");
+            }
+        }
+        return userProfile;
     }
 
     /**
@@ -104,12 +112,20 @@ public final class ApiRequest {
         return localDateTime;
     }
 
-
     /**
      * @return Optional String UserId if exist
      */
     public Optional<String> optionalUserId() {
         return Optional.ofNullable(userId);
+    }
+
+    /**
+     * @return Optional UserProfile, if UserId exist
+     * @throws ConflictException if profile not found, but userId exists
+     */
+    public Optional<UserProfile> optionalUserProfile() throws ConflictException {
+        if (userId == null) return Optional.empty();
+        return Optional.of(getUserProfile());
     }
 
     /**
@@ -132,34 +148,6 @@ public final class ApiRequest {
      */
     public Optional<LocalDateTime> optionalLocalDateTime() {
         return Optional.ofNullable(localDateTime);
-    }
-
-    @Nullable
-    private static DecodedJWT getJWT(Request request) {
-        String token = getJWTToken(request);
-        if (token == null) return null;
-
-        try {
-            return JWT.decode(token);
-        } catch (JWTDecodeException exception) {
-            // Invalid token
-            throw new CodeException(403);
-        }
-    }
-
-    @Nullable
-    private static String getJWTToken(Request request) {
-        final String value = request.headers("Authorization");
-        if (value == null || !value.toLowerCase().startsWith("bearer")) {
-            return null;
-        }
-
-        String[] parts = value.split(" ");
-        if (parts.length < 2) {
-            return null;
-        }
-
-        return parts[1].trim();
     }
 
     @Nullable
