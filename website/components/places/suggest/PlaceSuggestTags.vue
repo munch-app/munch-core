@@ -42,6 +42,9 @@
 </script>
 
 <style lang="less">
+  @Whisper100: #F0F0F8;
+  @Close: #EC152C;
+
   .vue-tags-input {
     background: white;
     max-width: 100% !important;
@@ -56,13 +59,16 @@
     .ti-input {
       .ti-tags {
         .ti-tag.ti-valid.ti-deletion-mark {
-          background-color: #AC2D0E;
+          background-color: @Close;
           color: white;
         }
 
         .ti-tag.ti-valid {
-          background-color: #F05F3B;
-          color: white;
+          background-color: @Whisper100;
+          color: black;
+          font-size: 16px;
+          padding-left: 9px;
+          border-radius: 3px;
         }
       }
     }

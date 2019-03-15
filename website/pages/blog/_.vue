@@ -18,6 +18,8 @@
 </template>
 
 <script>
+  // TODO(fuxing): Remove this when it's not required anymore, Keeping it now for SEO purpose
+
   import base64 from 'uuid-base64'
 
   export default {

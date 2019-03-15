@@ -109,8 +109,13 @@ Max-width of 400px if > 576vw
 
   .W768 {
     min-width: 768px;
+    max-width: 100vw;
     max-height: 80vh;
     overflow-y: auto;
+
+    @media (max-width: 768px) {
+      min-width: calc(100vw - 48px);
+    }
   }
 
   .Blank,
@@ -167,14 +172,7 @@ Max-width of 400px if > 576vw
 <style lang="less">
   .Dialog.Styled {
     > div {
-      margin-left: -8px;
-      margin-right: -8px;
       margin-bottom: 8px;
-
-      > * {
-        margin-left: 8px;
-        margin-right: 8px;
-      }
     }
 
     > div:last-child {

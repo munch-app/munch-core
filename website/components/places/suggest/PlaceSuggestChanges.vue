@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="Changes" v-if="hasRemoveChanges">
-      <h2>Suggest Removal</h2>
+      <h2>Flagged Content</h2>
       <div class="List">
         <div v-for="(value, key) in payload.removes.images" :key="key" class="flex-align-center hover-pointer"
              @click="onRemove('images', key)">

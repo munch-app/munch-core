@@ -10,7 +10,10 @@
       </div>
       <div class="zero" v-else>
         <div class="Header">
-          <h2 v-if="payload.place.placeId">Suggest Edits: <span class="s700">{{payload.place.name}}</span></h2>
+          <div v-if="payload.place.placeId">
+            <h5>Suggest Edits:</h5>
+            <h1>{{payload.place.name}}</h1>
+          </div>
           <h2 v-else>Suggest a new edit</h2>
         </div>
 
@@ -97,18 +100,15 @@
 
   export default {
     components: {
-      DialogLoading,
-      PlaceSuggestChanges, PlaceSuggestImage, PlaceSuggestArticle, PlaceSuggestDetail, ImageSizes
+      DialogLoading, PlaceSuggestChanges, PlaceSuggestImage, PlaceSuggestArticle, PlaceSuggestDetail, ImageSizes
     },
     head() {
-      const meta = []
-      meta.push({name: 'robots', content: `follow,index`})
-      meta.push({
-        hid: 'description',
-        name: 'description',
-        content: 'Suggest an place edit on Munch. Drop us an email at restaurant@munch.space if there’s anything we can help with.'
+      return this.$head({
+        robots: {follow: false, index: true},
+        graph: {
+          title: `Suggest an edit · Munch - Social Dining App`,
+        },
       })
-      return {title: 'Suggest Place · Munch - Social Dining App', meta,}
     },
     asyncData({$axios, params, route}) {
       const placeId = route.query.placeId
@@ -127,13 +127,6 @@
     },
     data() {
       return {
-        selected: 'PlaceSuggestDetail',
-        tabs: [
-          {name: 'Detail', component: 'PlaceSuggestDetail'},
-          // {name: 'Menu', component: 'PlaceSuggestMenu'},
-          {name: 'Image', component: 'PlaceSuggestImage'},
-          {name: 'Article', component: 'PlaceSuggestArticle'},
-        ],
         submitting: false,
         submitted: false
       }
@@ -269,20 +262,6 @@
   .Header {
     h4 {
       margin-top: 8px;
-    }
-  }
-
-  .Navigation {
-    margin-top: 24px;
-    overflow-x: scroll;
-
-    .Tab {
-      font-size: 15px;
-      line-height: 20px;
-      padding: 8px 16px;
-      margin-right: 16px;
-
-      border-style: solid solid none solid;
     }
   }
 

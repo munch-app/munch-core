@@ -1,15 +1,14 @@
 <template>
   <div>
     <h2 class="mt-48">Images</h2>
-    <div class="border-3 mt-16 relative">
-      <button class="primary-outline" @click="showImages">Edit Images</button>
-      <button class="primary-outline" @click="showUploadImage">Upload Image</button>
+    <div class="mt-16">
+      <button class="small secondary-outline" @click="showImages" v-if="images.length > 0">Edit Images</button>
+      <button class="small primary-outline ml-16" @click="showUploadImage">Upload Image</button>
     </div>
 
     <no-ssr>
       <portal to="dialog-full" v-if="show.images">
-        <div class="Existing bg-white elevation-1 p-16-24 overflow-y-auto" v-if="images.length > 0"
-             v-on-clickaway="onClose">
+        <div class="Existing bg-white elevation-1 p-16-24 overflow-y-auto" v-on-clickaway="onClose">
           <h2>Images</h2>
           <p>Own an Instagram account, want it published on munch? <a class="text-underline s700 weight-600"
                                                                       href="https://partner.munch.app"
@@ -36,18 +35,19 @@
         </div>
       </portal>
     </no-ssr>
+
     <no-ssr>
-      <portal to="dialog-full" v-if="show.uploadImages">
-        <div class="Existing bg-white elevation-1 p-16-24 overflow-y-auto" v-if="images.length > 0">
-          <h2>Upload Image</h2>
-          <p>Upload images of <b>{{payload.place.name}}</b>. <span class="subtext">Maximum of 4 images</span></p>
-          <div class="mt-16">
-            <dropzone id="imageDropzone" ref="imageDropzone" :options="dropzoneOptions"></dropzone>
-            <div class="flex-justify-end">
-              <button class="primary-outline mt-16 mr-8" @click="onCloseImageUpload">Cancel</button>
-              <button class="primary mt-16" @click="onImageUpload">Upload</button>
-            </div>
-          </div>
+      <portal to="dialog-w768" v-if="show.uploadImages">
+        <h2>Upload Images</h2>
+        <p class="small mt-4">Upload images of <b>{{payload.place.name}}</b>. <span class="">Maximum of 4 images</span></p>
+
+        <div class="mtb-16">
+          <dropzone id="imageDropzone" ref="imageDropzone" :options="dropzoneOptions"></dropzone>
+        </div>
+
+        <div class="flex-justify-end mt-16">
+          <button class="" @click="onCloseImageUpload">Cancel</button>
+          <button class="primary ml-24" @click="onImageUpload">Upload</button>
         </div>
       </portal>
     </no-ssr>
@@ -55,18 +55,28 @@
     <no-ssr>
       <portal to="dialog-styled" v-if="dialog" class="Dialog">
         <h3>Flag Image</h3>
-        <div class="flex-between hover-pointer" @click="onFlag(dialog, 'NotRelated')">
+        <div class="flex-between hover-pointer" @click="onFlag(dialog, 'NotRelatedContent')">
           <div class="text">Not related image</div>
           <div class="checkbox"/>
         </div>
 
-        <div class="flex-between hover-pointer" @click="onFlag(dialog, 'NotPlace')">
+        <div class="flex-between hover-pointer" @click="onFlag(dialog, 'NotRelatedPlace')">
           <div class="text">Does not belong to place</div>
           <div class="checkbox"/>
         </div>
 
-        <div class="flex-between hover-pointer" @click="onFlag(dialog, 'Explicit')">
+        <div class="flex-between hover-pointer" @click="onFlag(dialog, 'ExplicitContent')">
           <div class="text">Explicit content</div>
+          <div class="checkbox"/>
+        </div>
+
+        <div class="flex-between hover-pointer" @click="onFlag(dialog, 'TypeFoodGood')">
+          <div class="text">Good food image</div>
+          <div class="checkbox"/>
+        </div>
+
+        <div class="flex-between hover-pointer" @click="onFlag(dialog, 'TypeFoodBad')">
+          <div class="text">Bad food image</div>
           <div class="checkbox"/>
         </div>
 

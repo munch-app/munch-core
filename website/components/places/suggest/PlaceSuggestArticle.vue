@@ -1,8 +1,8 @@
 <template>
   <div>
     <h2 class="mt-48">Articles</h2>
-    <div class="border-3 mt-16 relative">
-      <button class="primary-outline" @click="showArticles">Edit Articles</button>
+    <div class="mt-16">
+      <button class="small secondary-outline" @click="showArticles">Edit Articles</button>
     </div>
 
     <no-ssr>
@@ -44,18 +44,23 @@
     <no-ssr>
       <portal to="dialog-styled" v-if="dialog" class="Dialog">
         <h3>Flag Article</h3>
-        <div class="flex-between hover-pointer" @click="onFlag(dialog, 'NotRelated')">
-          <div class="text">Not related article</div>
+        <div class="flex-between hover-pointer" @click="onFlag(dialog, 'NotRelatedContent')">
+          <div class="text">Not related content</div>
           <div class="checkbox"/>
         </div>
 
-        <div class="flex-between hover-pointer" @click="onFlag(dialog, 'NotPlace')">
+        <div class="flex-between hover-pointer" @click="onFlag(dialog, 'NotRelatedPlace')">
           <div class="text">Does not belong to place</div>
           <div class="checkbox"/>
         </div>
 
-        <div class="flex-between hover-pointer" @click="onFlag(dialog, 'Explicit')">
+        <div class="flex-between hover-pointer" @click="onFlag(dialog, 'ExplicitContent')">
           <div class="text">Explicit content</div>
+          <div class="checkbox"/>
+        </div>
+
+        <div class="flex-between hover-pointer" @click="onFlag(dialog, 'UnavailableContent')">
+          <div class="text">Unavailable content</div>
           <div class="checkbox"/>
         </div>
 
