@@ -64,7 +64,7 @@
           {
             name: 'Feed',
             id: 'Feed',
-            message: 'The sexiest thing you’ll see on the Internet - ever. (Warning! Not Safe For Waist. NSFW)',
+            message: 'Need help deciding what to eat? Click here.',
             button: 'Explore Feed',
           },
         ]
