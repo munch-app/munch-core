@@ -89,7 +89,7 @@
       return this.$head({
         robots: {follow: true, index: taste.group >= 2},
         graph: {
-          title: `${name} · Munch Singapore`,
+          title: `${name} · Munch - Social Dining App`,
           description: description,
           type: 'place',
           image: images && images[0] && ImageSizes.$$findUrl(images[0].sizes, 300, 300),

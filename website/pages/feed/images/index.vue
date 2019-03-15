@@ -53,7 +53,7 @@
       return this.$head({
         robots: {follow: true, index: true},
         graph: {
-          title: `Feed · Munch Singapore`,
+          title: `Feed · Munch - Social Dining App`,
           description: 'The Feed features the best, most delicious places in Singapore. The Feed is a food guide like you’ve never seen or tasted. A must-see must-eat guide that will always leave your stomach rumbling and mouth dripping.',
           url: `https://www.munch.app/feed/images`,
         },

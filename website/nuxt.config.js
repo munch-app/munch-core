@@ -1,24 +1,24 @@
 module.exports = {
   head: {
-    title: 'Discover Delicious · Munch Singapore',
+    title: 'Munch - Social Dining App',
     meta: [
       {charset: 'utf-8'},
       {name: 'viewport', content: 'width=device-width, initial-scale=1'},
       {
         hid: 'description', name: 'description',
-        content: 'Munch helps users discover the perfect place to eat whether it’s the hottest new bar in town or a tasty hawker meal in the heartlands. Read the latest food articles and view mouth-watering images. With Munch always be able to discover delicious!'
+        content: 'Munch is a social dining solution that makes your life easier when it comes to dining with friends & loved ones. Munch is packed with features to help you plan for and find places. Use Munch to find the perfect spot with friends, get inspired for your next meal or simply receive daily suggestions on what to chow down on.'
       },
       {
         hid: 'og:title', name: 'og:title',
-        content: 'Discover Delicious · Munch Singapore'
+        content: 'Munch - Social Dining App'
       },
       {
         hid: 'og:description', name: 'og:description',
-        content: 'Munch helps users discover the perfect place to eat whether it’s the hottest new bar in town or a tasty hawker meal in the heartlands. Read the latest food articles and view mouth-watering images. With Munch always be able to discover delicious!'
+        content: 'Munch is a social dining solution that makes your life easier when it comes to dining with friends & loved ones. Munch is packed with features to help you plan for and find places. Use Munch to find the perfect spot with friends, get inspired for your next meal or simply receive daily suggestions on what to chow down on.'
       },
       {hid: 'apple-itunes-app', name: 'apple-itunes-app', content: 'app-id=1255436754'},
       {hid: 'og:type', name: 'og:type', content: 'article'},
-      {name: 'og:site_name', content: 'Munch Singapore'},
+      {name: 'og:site_name', content: 'Munch - Social Dining App'},
       {name: 'og:locale', content: 'en_uk'},
       {name: 'msapplication-TileColor', content: '#da532c'},
       {name: 'theme-color', content: '#ffffff'},

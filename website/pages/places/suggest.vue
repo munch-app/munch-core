@@ -115,7 +115,7 @@
         name: 'description',
         content: 'Suggest an place edit on Munch. Drop us an email at restaurant@munch.space if there’s anything we can help with.'
       })
-      return {title: 'Suggest Place · Munch Singapore', meta,}
+      return {title: 'Suggest Place · Munch - Social Dining App', meta,}
     },
     asyncData({$axios, params, route}) {
       const placeId = route.query.placeId
