@@ -25,7 +25,7 @@
       return this.$head({
         robots: {follow: true, index: true},
         graph: {
-          title: `HUAT Lucky CNY Food Are You? · Munch Singapore`,
+          title: `HUAT Lucky CNY Food Are You? · Munch - Social Dining App`,
           description: 'Find out your Lucky Food Fortune Today!',
           url: `https://www.munch.app/blog/SvQk9G7XIia83vXAeHGyqk`,
           image: 'https://s3-ap-southeast-1.amazonaws.com/munch-static/huat-lucky-cny-food-are-you.jpg'

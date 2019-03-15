@@ -7,7 +7,7 @@
       return this.$head({
         robots: {follow: true, index: true},
         graph: {
-          title: this.title || 'Search · Munch Singapore',
+          title: this.title || 'Search · Munch - Social Dining App',
           description: this.description,
           url: `https://www.munch.app/search/${this.slug}`,
         },

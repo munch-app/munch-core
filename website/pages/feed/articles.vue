@@ -34,7 +34,7 @@
       const meta = [
         {name: 'robots', content: `follow,noindex`}
       ]
-      return {title: `Article Feed · Munch Singapore`, meta}
+      return {title: `Article Feed · Munch - Social Dining App`, meta}
     },
     data() {
       return {
