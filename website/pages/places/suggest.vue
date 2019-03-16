@@ -145,19 +145,17 @@
             form.append('images', image, image.name)
           }
         }
-
-        console.log(form)
-
-        return this.$api.post(`/places/${this.$route.query.placeId}/suggest/multipart`, form)
-          .then(({data}) => {
-            console.log(data)
-            this.submitting = false
-            this.submitted = true
-          })
-          .catch(error => {
-            this.submitting = false
-            this.$store.dispatch('addError', error)
-          })
+        //
+        // return this.$api.post(`/places/${this.$route.query.placeId}/suggest/multipart`, form)
+        //   .then(({data}) => {
+        //     console.log(data)
+        //     this.submitting = false
+        //     this.submitted = true
+        //   })
+        //   .catch(error => {
+        //     this.submitting = false
+        //     this.$store.dispatch('addError', error)
+        //   })
       },
       verifyFields() {
         const updatedData = []
@@ -238,6 +236,12 @@
             })
           }
         }
+
+        updatedData.push({
+          hours: this.payload.place.hours,
+          operation: "Replace",
+          type: "HourList"
+        })
 
         console.log(JSON.stringify(updatedData))
         return updatedData
