@@ -84,10 +84,10 @@
       GoogleEmbedMap, PlaceMenu, ImageSizes, PlaceTagList
     },
     head() {
-      const {placeId, name, description, images, taste} = this.place
+      const {placeId, name, description, images} = this.place
 
       return this.$head({
-        robots: {follow: true, index: taste.group >= 2},
+        robots: {follow: true, index: true},
         graph: {
           title: `${name} · Munch - Social Dining App`,
           description: description,

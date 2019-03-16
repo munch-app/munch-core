@@ -118,6 +118,7 @@ public final class CreatorContentDraftService extends AbstractCreatorService {
 
         CreatorContentDraft draft = draftClient.getLatest(creatorId, contentId);
         CreatorContent content = call.get(CreatorContent.class);
+
         if (draft == null) return JsonResult.notFound();
 
         // Future: Linked Type Validation
@@ -166,6 +167,8 @@ public final class CreatorContentDraftService extends AbstractCreatorService {
         patch.put("body", body.path("body").asText());
         patch.put("subtitle", body.path("subtitle").asText());
         patch.put("status", "published");
+        patch.put("sortId", KeyUtils.randomMillisUUID());
+
         patch.put("platform", CreatorContentItemResolver.getPlatform(items));
 
         Image image = itemResolver.resolveImage(body.path("image").path("imageId").asText());
