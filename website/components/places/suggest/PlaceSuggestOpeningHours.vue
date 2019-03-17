@@ -155,12 +155,18 @@
 
         let openInt = ((parseInt(open.h) + ((open.a === 'am') ? 0 : 12)) * 60) + parseInt(open.mm)
         let closeInt = ((parseInt(close.h) + ((close.a === 'am') ? 0 : 12)) * 60) + parseInt(close.mm)
+        const dataInt = (parseInt(data.H) * 60) + parseInt(data.m)
+
+        if (openInt === dataInt || closeInt === dataInt) {
+          //Prevents update loop
+          return
+        }
 
         if (type === 'open') {
-          openInt = (parseInt(data.H) * 60) + parseInt(data.m)
+          openInt = dataInt
           this.hourGroup.hours[index].openObj = {h: String(data.h), mm: String(data.mm), a: data.a}
         } else {
-          closeInt = (parseInt(data.H) * 60) + parseInt(data.m)
+          closeInt = dataInt
           this.hourGroup.hours[index].closeObj = {h: String(data.h), mm: String(data.mm), a: data.a}
         }
 
