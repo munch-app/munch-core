@@ -245,6 +245,8 @@
           })
         }
 
+        console.log(JSON.stringify(updatedData))
+
         return updatedData
       },
       getChangeJSON(value, operation, type) {

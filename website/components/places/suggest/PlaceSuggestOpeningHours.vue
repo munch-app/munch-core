@@ -31,11 +31,11 @@
               <div v-for="(hour, index) in hourGroup.hours">
                 <div v-if="dayName === hour.day.text">
                   <div class="flex-align-center mb-8">
-                    <input-time :value="hour.openObj"
+                    <input-time :value="parseTimeForInput(hour.open)"
                                 @change="onTimeValueChange($event.data, index, 'open')"
                                 format="h:mm a" class="mr-24"></input-time>
                     &mdash;
-                    <input-time :value="hour.closeObj"
+                    <input-time :value="parseTimeForInput(hour.close)"
                                 @change="onTimeValueChange($event.data, index, 'close')"
                                 format="h:mm a" class="ml-24"></input-time>
                     <button class="ml-16 secondary-outline small" @click="removeHour(index)">Remove</button>
@@ -82,8 +82,6 @@
       hourGroup.hours.forEach(hour => {
         hour.openObj = this.parseTimeForInput(hour.open)
         hour.closeObj = this.parseTimeForInput(hour.close)
-        hour.openFieldObj = this.parseTimeForInput(hour.open)
-        hour.closeFieldObj = this.parseTimeForInput(hour.close)
         hour.error = ""
       })
 
@@ -135,10 +133,8 @@
           day: {text: dayName},
           open: '9:00 am',
           close: '10:00 pm',
-          openObj: {h: 9, mm: '00', a: "am"},
-          closeObj: {h: 10, mm: '00', a: "pm"},
-          openFieldObj: {h: 9, mm: '00', a: "am"},
-          closeFieldObj: {h: 10, mm: '00', a: "pm"},
+          openObj: {h: '9', mm: '00', a: "am"},
+          closeObj: {h: '10', mm: '00', a: "pm"},
           error: ""
         })
       },
@@ -148,26 +144,24 @@
           day: {text: dayName},
           open: '12:00 am',
           close: '11:59 pm',
-          openObj: {h: 12, mm: '00', a: "am"},
-          closeObj: {h: 11, mm: '59', a: "pm"},
-          openFieldObj: {h: 12, mm: '00', a: "am"},
-          closeFieldObj: {h: 11, mm: '59', a: "pm"},
+          openObj: {h: '12', mm: '00', a: "am"},
+          closeObj: {h: '11', mm: '59', a: "pm"},
           error: ""
         })
       },
       onTimeValueChange(data, index, type) {
-        const open = this.hourGroup.hours[index].openFieldObj
-        const close = this.hourGroup.hours[index].closeFieldObj
+        const open = this.hourGroup.hours[index].openObj
+        const close = this.hourGroup.hours[index].closeObj
 
-        let openInt = ((open.h + ((open.a === 'am') ? 0 : 12)) * 60) + parseInt(open.mm)
-        let closeInt = ((close.h + ((close.a === 'am') ? 0 : 12)) * 60) + parseInt(close.mm)
+        let openInt = ((parseInt(open.h) + ((open.a === 'am') ? 0 : 12)) * 60) + parseInt(open.mm)
+        let closeInt = ((parseInt(close.h) + ((close.a === 'am') ? 0 : 12)) * 60) + parseInt(close.mm)
 
         if (type === 'open') {
           openInt = (parseInt(data.H) * 60) + parseInt(data.m)
-          this.hourGroup.hours[index].openFieldObj = {h: data.h, mm: data.mm, a: data.a}
+          this.hourGroup.hours[index].openObj = {h: String(data.h), mm: String(data.mm), a: data.a}
         } else {
           closeInt = (parseInt(data.H) * 60) + parseInt(data.m)
-          this.hourGroup.hours[index].closeFieldObj = {h: data.h, mm: data.mm, a: data.a}
+          this.hourGroup.hours[index].closeObj = {h: String(data.h), mm: String(data.mm), a: data.a}
         }
 
         if (openInt > closeInt) {
@@ -186,8 +180,8 @@
         let newHours = []
         for (const hour of this.hourGroup.hours) {
           newHours.push({
-            open: this.getTimeIn24Hours(hour.openFieldObj),
-            close: this.getTimeIn24Hours(hour.closeFieldObj),
+            open: this.getTimeIn24Hours(hour.openObj),
+            close: this.getTimeIn24Hours(hour.closeObj),
             day: hour.day.text.toLowerCase().slice(0, 3)
           })
         }
@@ -196,8 +190,6 @@
         this.hourGroup.hours.forEach(hour => {
           hour.openObj = this.parseTimeForInput(hour.open)
           hour.closeObj = this.parseTimeForInput(hour.close)
-          hour.openFieldObj = this.parseTimeForInput(hour.open)
-          hour.closeFieldObj = this.parseTimeForInput(hour.close)
           hour.error = ""
         })
 
@@ -212,10 +204,11 @@
         const hour = parseInt(hm[0])
         const min = parseInt(hm[1])
         const minS = min < 10 ? '0' + min : min
+
         if (hour < 13) {
-          return {h: hour, mm: minS, a: "am"}
+          return {h: String(hour), mm: String(minS), a: "am"}
         } else {
-          return {h: hour % 12, mm: minS, a: "pm"}
+          return {h: String(hour % 12), mm: String(minS), a: "pm"}
         }
       },
       getTimeIn24Hours(time) {
