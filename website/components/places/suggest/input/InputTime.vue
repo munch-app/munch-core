@@ -1,20 +1,20 @@
 <template>
 <span class="time-picker">
-  <input class="display-time" v-model="displayTime" @click.stop="toggleDropdown" type="text" readonly/>
-  <div class="time-picker-overlay" v-if="showDropdown" @click.stop="toggleDropdown"></div>
+  <input @click.stop="toggleDropdown" class="display-time" readonly type="text" v-model="displayTime"/>
+  <div @click.stop="toggleDropdown" class="time-picker-overlay" v-if="showDropdown"></div>
   <div class="dropdown" v-show="showDropdown">
     <div class="select-list">
       <ul class="hours">
         <li class="hint" v-text="hourType"></li>
-        <li v-for="hr in hours" v-text="hr" :class="{active: hour === hr}" @click.stop="select('hour', hr)"></li>
+        <li :class="{active: hour === hr}" @click.stop="select('hour', hr)" v-for="hr in hours" v-text="hr"></li>
       </ul>
       <ul class="minutes">
         <li class="hint" v-text="minuteType"></li>
-        <li v-for="m in minutes" v-text="m" :class="{active: minute === m}" @click.stop="select('minute', m)"></li>
+        <li :class="{active: minute === m}" @click.stop="select('minute', m)" v-for="m in minutes" v-text="m"></li>
       </ul>
       <ul class="apms" v-if="apmType">
         <li class="hint" v-text="apmType"></li>
-        <li v-for="a in apms" v-text="a" :class="{active: apm === a}" @click.stop="select('apm', a)"></li>
+        <li :class="{active: apm === a}" @click.stop="select('apm', a)" v-for="a in apms" v-text="a"></li>
       </ul>
     </div>
   </div>
