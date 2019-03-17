@@ -19,26 +19,26 @@
           <div v-for="(dayName) in daysOfWeek">
             <div class="hover-pointer mb-16 flex-justify-between">
               <div class="flex-align-center">
-                <div @click="showHours($event.srcElement, dayName)" class="checkbox mr-16"
-                     v-bind:class="{selected: show.days[dayName]}"></div>
+                <div class="checkbox mr-16" v-bind:class="{selected: show.days[dayName]}"
+                     @click="showHours($event.srcElement, dayName)"></div>
                 <div class="text TimeRange-Text" v-html="dayName"></div>
               </div>
-              <div class="text TimeRange-Text" v-html='hourGroup.dayHours[dayName]' v-if="!show.days[dayName]"></div>
-              <div class="text TimeRange-Text Strikethrough" v-html='hourGroup.dayHours[dayName]'
-                   v-if="show.days[dayName]"></div>
+              <div class="text TimeRange-Text" v-if="!show.days[dayName]" v-html='hourGroup.dayHours[dayName]'></div>
+              <div class="text TimeRange-Text Strikethrough" v-if="show.days[dayName]"
+                   v-html='hourGroup.dayHours[dayName]'></div>
             </div>
             <div class="mb-48" v-if="show.days[dayName]">
               <div v-for="(hour, index) in hourGroup.hours">
                 <div v-if="dayName === hour.day.text">
                   <div class="flex-align-center mb-8">
-                    <input-time :value="parseTimeForInput(hour.open)"
+                    <input-time :value="hour.openObj"
                                 @change="onTimeValueChange($event.data, index, 'open')"
-                                class="mr-24" format="h:mm a"></input-time>
+                                format="h:mm a" class="mr-24"></input-time>
                     &mdash;
-                    <input-time :value="parseTimeForInput(hour.close)"
+                    <input-time :value="hour.closeObj"
                                 @change="onTimeValueChange($event.data, index, 'close')"
-                                class="ml-24" format="h:mm a"></input-time>
-                    <button @click="removeHour(index)" class="ml-16 secondary-outline small">Remove</button>
+                                format="h:mm a" class="ml-24"></input-time>
+                    <button class="ml-16 secondary-outline small" @click="removeHour(index)">Remove</button>
                   </div>
                   <div class="flex-align-center input-text">
                     <label v-if="hour.error" v-text="hour.error"></label>
@@ -46,15 +46,15 @@
                 </div>
               </div>
               <div class="flex-align-center">
-                <button @click="addHours(dayName)" class="secondary-outline small mr-16">Add</button>
-                <button @click="set24Hours(dayName)" class="secondary-outline small">Open 24 Hrs</button>
+                <button class="secondary-outline small mr-16" @click="addHours(dayName)">Add</button>
+                <button class="secondary-outline small" @click="set24Hours(dayName)">Open 24 Hrs</button>
               </div>
             </div>
           </div>
         </div>
         <div class="flex-justify-end mt-24">
-          <button @click="onCancel" class="mr-8">Cancel</button>
-          <button @click="onDone" class="primary" v-if="noErrors">Done</button>
+          <button class="mr-8" @click="onCancel">Cancel</button>
+          <button class="primary" v-if="noErrors" @click="onDone">Done</button>
           <button class="primary disabled" v-else>Done</button>
         </div>
       </div>
@@ -194,9 +194,7 @@
         }
 
         let newHours = []
-        this.hourGroup.hours = _.sortBy(this.hourGroup.hours, [function (hour) {
-          return days[hour.day.text];
-        }]);
+        this.hourGroup.hours = _.sortBy(this.hourGroup.hours, [function(hour) { return days[hour.day.text]; }]);
         for (const hour of this.hourGroup.hours) {
           newHours.push({
             open: this.getTimeIn24Hours(hour.openObj),
