@@ -8,7 +8,7 @@
         </p>
       </div>
       <div>
-        <button @click="redirect" class="primary-outline mt-16 small">Edit Hours</button>
+        <button @click="redirect" class="secondary-outline mt-16 small">Edit Hours</button>
       </div>
     </div>
 
@@ -53,6 +53,7 @@
           </div>
         </div>
         <div class="flex-justify-end mt-24">
+          <button class="mr-8" @click="onCancel">Cancel</button>
           <button class="primary" v-if="noErrors" @click="onDone">Done</button>
           <button class="primary disabled" v-else>Done</button>
         </div>
@@ -201,6 +202,9 @@
         })
 
         this.$emit('input', newHours)
+        this.show.more = false
+      },
+      onCancel() {
         this.show.more = false
       },
       parseTimeForInput(time) {

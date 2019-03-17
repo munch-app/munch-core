@@ -237,13 +237,14 @@
           }
         }
 
-        updatedData.push({
-          hours: this.payload.place.hours,
-          operation: "Replace",
-          type: "HourList"
-        })
+        if (!_(this.originalPlace.hours).xorWith(this.payload.place.hours, _.isEqual).isEmpty()) {
+          updatedData.push({
+            hours: this.payload.place.hours,
+            operation: "Replace",
+            type: "HourList"
+          })
+        }
 
-        console.log(JSON.stringify(updatedData))
         return updatedData
       },
       getChangeJSON(value, operation, type) {
@@ -252,7 +253,7 @@
           operation: operation,
           type: type
         }
-      }
+      },
     }
   }
 </script>
