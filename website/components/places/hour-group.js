@@ -143,6 +143,7 @@ export class HourGroup {
     hours.sort(function (a, b) {
       return a.open - b.open
     })
+
     for (const i in hours) {
       if (hours.hasOwnProperty(i)) {
         const hour = this.hours[i]

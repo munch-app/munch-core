@@ -39,7 +39,8 @@
     <no-ssr>
       <portal to="dialog-w768" v-if="show.uploadImages">
         <h2>Upload Images</h2>
-        <p class="small mt-4">Upload images of <b>{{payload.place.name}}</b>. <span class="">Maximum of 4 images</span></p>
+        <p class="small mt-4">Upload images of <b>{{payload.place.name}}</b>. <span class="">Maximum of 4 images</span>
+        </p>
 
         <div class="mtb-16">
           <dropzone id="imageDropzone" ref="imageDropzone" :options="dropzoneOptions"></dropzone>
@@ -200,7 +201,10 @@
         });
 
         if (overMax) {
-          this.$store.dispatch('addMessage', {title: "Maximum Upload Reached", message: "There are more than 4 images selected for upload. Some images have been omitted."})
+          this.$store.dispatch('addMessage', {
+            title: "Maximum Upload Reached",
+            message: "There are more than 4 images selected for upload. Some images have been omitted."
+          })
         }
       },
       onDialogCancel() {

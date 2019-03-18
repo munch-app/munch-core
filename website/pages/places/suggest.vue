@@ -135,9 +135,8 @@
       onSubmit() {
         if (window) window.scrollTo(0, 0)
         this.submitting = true
-
         const form = new FormData()
-        form.append('json', JSON.stringify(this.verifyFields()))
+        form.append('json', JSON.stringify({"changes": this.verifyFields()}))
 
         for (const key in this.payload.uploads.images) {
           if (this.payload.uploads.images.hasOwnProperty(key)) {
@@ -149,7 +148,7 @@
         console.log(form)
 
         return this.$api.post(`/places/${this.$route.query.placeId}/suggest/multipart`, form)
-          .then(({data}) => {
+          .then((data) => {
             console.log(data)
             this.submitting = false
             this.submitted = true
@@ -217,7 +216,6 @@
         for (const key in this.payload.removes.articles) {
           if (this.payload.removes.articles.hasOwnProperty(key)) {
             const article = this.payload.removes.articles[key]
-            console.log(article)
             updatedData.push({
               articleId: article.article.articleId,
               url: article.article.url,
@@ -231,15 +229,25 @@
           if (this.payload.removes.images.hasOwnProperty(key)) {
             const image = this.payload.removes.images[key]
             updatedData.push({
-              imageId: image.image.imageId,
-              url: image.image.url,
+              image: {
+                imageId: image.image.imageId,
+                url: image.image.url,
+                sizes: image.image.sizes
+              },
               flagAs: image.flag,
               operation: "Remove", type: "Image"
             })
           }
         }
 
-        console.log(JSON.stringify(updatedData))
+        if (!_(this.originalPlace.hours).xorWith(this.payload.place.hours, _.isEqual).isEmpty()) {
+          updatedData.push({
+            hours: this.payload.place.hours,
+            operation: "Replace",
+            type: "HourList"
+          })
+        }
+
         return updatedData
       },
       getChangeJSON(value, operation, type) {
@@ -248,7 +256,7 @@
           operation: operation,
           type: type
         }
-      }
+      },
     }
   }
 </script>
