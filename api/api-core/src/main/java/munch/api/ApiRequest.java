@@ -4,8 +4,6 @@ import munch.restful.core.exception.AuthenticationException;
 import munch.restful.core.exception.ConflictException;
 import munch.restful.server.jwt.AuthenticatedToken;
 import munch.user.data.UserProfile;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import spark.Request;
 
 import javax.annotation.Nullable;
@@ -22,12 +20,8 @@ import java.util.function.Supplier;
  * Project: munch-core
  */
 public final class ApiRequest {
-    private static final Logger logger = LoggerFactory.getLogger(ApiRequest.class);
     public static final String HEADER_USER_LAT_LNG = "User-Lat-Lng";
     public static final String HEADER_USER_ZONE_ID = "User-Zone-Id";
-
-    @Deprecated
-    public static final String HEADER_USER_LOCAL_TIME = "User-Local-Time";
 
     private String userId;
     private UserProfile userProfile;
@@ -49,9 +43,6 @@ public final class ApiRequest {
 
         if (zoneId != null) {
             localDateTime = LocalDateTime.now(zoneId);
-        } else {
-            String timeString = request.headers(HEADER_USER_LOCAL_TIME);
-            if (timeString != null) localDateTime = LocalDateTime.parse(timeString);
         }
     }
 
@@ -152,7 +143,8 @@ public final class ApiRequest {
 
     @Nullable
     private static ZoneId parseZoneId(String zoneId) {
-        if (zoneId == null) return null;
+        // TODO(fuxing): Removed default ZoneId when implemented, for now defaults to Singapore
+        if (zoneId == null) return ZoneId.of("Asia/Singapore");
 
         try {
             return ZoneId.of(zoneId);
