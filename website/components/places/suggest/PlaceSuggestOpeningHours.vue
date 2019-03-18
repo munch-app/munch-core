@@ -2,9 +2,14 @@
   <div>
     <div class="input-text">
       <label>Hours</label>
-      <div>
+      <div v-if="hourGroup.hours.length > 0">
         <p style="font-size: 14px" v-for="(range, day) in hourGroup.dayHours">
           <b>{{day}}</b>{{": " + range}}
+        </p>
+      </div>
+      <div v-else>
+        <p style="font-size: 14px">
+          Missing Opening Hours
         </p>
       </div>
       <div>
@@ -82,6 +87,8 @@
       hourGroup.hours.forEach(hour => {
         hour.openObj = this.parseTimeForInput(hour.open)
         hour.closeObj = this.parseTimeForInput(hour.close)
+        hour.openFieldObj = this.parseTimeForInput(hour.open)
+        hour.closeFieldObj = this.parseTimeForInput(hour.close)
         hour.error = ""
       })
 
@@ -135,6 +142,8 @@
           close: '10:00 pm',
           openObj: {h: '9', mm: '00', a: "am"},
           closeObj: {h: '10', mm: '00', a: "pm"},
+          openFieldObj: {h: '9', mm: '00', a: "am"},
+          closeFieldObj: {h: '10', mm: '00', a: "pm"},
           error: ""
         })
       },
@@ -146,28 +155,27 @@
           close: '11:59 pm',
           openObj: {h: '12', mm: '00', a: "am"},
           closeObj: {h: '11', mm: '59', a: "pm"},
+          openFieldObj: {h: '12', mm: '00', a: "am"},
+          closeFieldObj: {h: '11', mm: '59', a: "pm"},
           error: ""
         })
       },
       onTimeValueChange(data, index, type) {
-        const open = this.hourGroup.hours[index].openObj
-        const close = this.hourGroup.hours[index].closeObj
+        const open = this.hourGroup.hours[index].openFieldObj
+        const close = this.hourGroup.hours[index].closeFieldObj
 
         let openInt = ((parseInt(open.h) + ((open.a === 'am') ? 0 : 12)) * 60) + parseInt(open.mm)
         let closeInt = ((parseInt(close.h) + ((close.a === 'am') ? 0 : 12)) * 60) + parseInt(close.mm)
         const dataInt = (parseInt(data.H) * 60) + parseInt(data.m)
 
-        if (openInt === dataInt || closeInt === dataInt) {
-          //Prevents update loop
-          return
-        }
+        console.log(dataInt)
 
         if (type === 'open') {
           openInt = dataInt
-          this.hourGroup.hours[index].openObj = {h: String(data.h), mm: String(data.mm), a: data.a}
+          this.hourGroup.hours[index].openFieldObj = {h: String(data.h), mm: String(data.mm), a: data.a}
         } else {
           closeInt = dataInt
-          this.hourGroup.hours[index].closeObj = {h: String(data.h), mm: String(data.mm), a: data.a}
+          this.hourGroup.hours[index].closeFieldObj = {h: String(data.h), mm: String(data.mm), a: data.a}
         }
 
         if (openInt > closeInt) {
@@ -197,8 +205,8 @@
         this.hourGroup.hours = _.sortBy(this.hourGroup.hours, [function(hour) { return days[hour.day.text]; }]);
         for (const hour of this.hourGroup.hours) {
           newHours.push({
-            open: this.getTimeIn24Hours(hour.openObj),
-            close: this.getTimeIn24Hours(hour.closeObj),
+            open: this.getTimeIn24Hours(hour.openFieldObj),
+            close: this.getTimeIn24Hours(hour.closeFieldObj),
             day: hour.day.text.toLowerCase().slice(0, 3)
           })
         }
@@ -207,6 +215,8 @@
         this.hourGroup.hours.forEach(hour => {
           hour.openObj = this.parseTimeForInput(hour.open)
           hour.closeObj = this.parseTimeForInput(hour.close)
+          hour.openFieldObj = this.parseTimeForInput(hour.open)
+          hour.closeFieldObj = this.parseTimeForInput(hour.close)
           hour.error = ""
         })
 
