@@ -10,12 +10,14 @@ import munch.restful.server.JsonCall;
 import munch.restful.server.JsonResult;
 import munch.suggest.SuggestClient;
 import munch.suggest.SuggestPlaceEdit;
-import munch.suggest.change.ChangeField;
-import munch.suggest.change.ChangeFieldImage;
+import munch.suggest.change.Change;
+import munch.suggest.change.ChangeImage;
 import munch.user.data.UserProfile;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -36,8 +38,9 @@ import java.util.List;
  */
 @Singleton
 public final class PlaceSuggestService extends ApiService {
-    private final MultipartConfigElement multipartConfig = new MultipartConfigElement("/temp");
+    private static final Logger logger = LoggerFactory.getLogger(PlaceSuggestService.class);
 
+    private final MultipartConfigElement multipartConfig = new MultipartConfigElement("/temp");
     private final SuggestClient.UserClient suggestClient;
     private final ImageClient imageClient;
 
@@ -62,7 +65,7 @@ public final class PlaceSuggestService extends ApiService {
 
         UserProfile profile = request.getUserProfile();
         suggestClient.suggest(profile.getUserId(), profile.getName(), profile.getEmail(),
-                placeId, place.getFields()
+                placeId, place.getChanges()
         );
         return JsonResult.ok();
     }
@@ -73,18 +76,18 @@ public final class PlaceSuggestService extends ApiService {
         SuggestPlaceEdit place = new SuggestPlaceEdit();
         String placeId = getPlaceId(call);
 
-        ChangeFieldImage.FlagAs flagAs = EnumUtils.getEnum(ChangeFieldImage.FlagAs.class, call.request().queryParams("flagAs"));
+        ChangeImage.FlagAs flagAs = EnumUtils.getEnum(ChangeImage.FlagAs.class, call.request().queryParams("flagAs"));
         Part part = call.request().raw().getPart("image");
 
-        ChangeFieldImage image = new ChangeFieldImage();
-        image.setOperation(ChangeField.Operation.Append);
+        ChangeImage image = new ChangeImage();
+        image.setOperation(Change.Operation.Append);
         image.setFlagAs(flagAs);
         image.setImage(download(part, request));
-        place.setFields(List.of(image));
+        place.setChanges(List.of(image));
 
         UserProfile profile = request.getUserProfile();
         suggestClient.suggest(profile.getUserId(), profile.getName(), profile.getEmail(),
-                placeId, place.getFields()
+                placeId, place.getChanges()
         );
         return JsonResult.ok();
     }
@@ -92,22 +95,22 @@ public final class PlaceSuggestService extends ApiService {
     public JsonResult postForm(JsonCall call, ApiRequest request) throws IOException, ServletException {
         call.request().attribute("org.eclipse.jetty.multipartConfig", multipartConfig);
 
-        SuggestPlaceEdit place = SuggestPlaceEdit.parse(JsonUtils.toTree(call.request().queryParams("json")));
+        SuggestPlaceEdit place = SuggestPlaceEdit.parse(JsonUtils.readTree(call.request().queryParams("json")));
         String placeId = getPlaceId(call);
 
         for (Part part : call.request().raw().getParts()) {
             if (!part.getName().equals("images")) continue;
 
-            ChangeFieldImage image = new ChangeFieldImage();
-            image.setOperation(ChangeField.Operation.Append);
-            image.setFlagAs(ChangeFieldImage.FlagAs.TypeFood);
+            ChangeImage image = new ChangeImage();
+            image.setOperation(Change.Operation.Append);
+            image.setFlagAs(ChangeImage.FlagAs.TypeFood);
             image.setImage(download(part, request));
-            place.getFields().add(image);
+            place.getChanges().add(image);
         }
 
         UserProfile profile = request.getUserProfile();
         suggestClient.suggest(profile.getUserId(), profile.getName(), profile.getEmail(),
-                placeId, place.getFields()
+                placeId, place.getChanges()
         );
         return JsonResult.ok();
     }

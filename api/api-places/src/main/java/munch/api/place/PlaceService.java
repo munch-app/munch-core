@@ -5,7 +5,7 @@ import com.google.inject.Singleton;
 import munch.api.ApiRequest;
 import munch.api.ApiService;
 import munch.article.ArticleLinkClient;
-import munch.article.data.Article;
+import munch.article.data.ArticleSection;
 import munch.data.client.PlaceClient;
 import munch.data.place.Place;
 import munch.gallery.PlaceImage;
@@ -154,7 +154,7 @@ public final class PlaceService extends ApiService {
         return placeImageClient.list(placeId, nextSort, size);
     }
 
-    private NextNodeList<Article> getArticles(JsonCall call) {
+    private NextNodeList<ArticleSection> getArticles(JsonCall call) {
         int size = call.querySize(20, 40);
         String placeId = call.pathString("placeId");
         String nextSort = call.queryString("next.sort", null);

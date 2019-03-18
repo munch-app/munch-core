@@ -62,7 +62,7 @@ public final class PlaceImageClient {
 
                             image.setArticle(pArticle);
                             image.setTitle(article.getTitle());
-                            image.setCaption(article.getContent());
+                            image.setCaption(article.getDescription());
                             image.setCreatedMillis(article.getCreatedMillis());
                             return image;
 
