@@ -138,12 +138,12 @@
       addHours(dayName) {
         this.hourGroup.hours.push({
           day: {text: dayName},
-          open: '9:00 am',
-          close: '10:00 pm',
-          openObj: {h: '9', mm: '00', a: "am"},
-          closeObj: {h: '10', mm: '00', a: "pm"},
-          openFieldObj: {h: '9', mm: '00', a: "am"},
-          closeFieldObj: {h: '10', mm: '00', a: "pm"},
+          open: '11:00 am',
+          close: '9:30 pm',
+          openObj: {h: '11', mm: '00', a: "am"},
+          closeObj: {h: '9', mm: '30', a: "pm"},
+          openFieldObj: {h: '11', mm: '00', a: "am"},
+          closeFieldObj: {h: '9', mm: '30', a: "pm"},
           error: ""
         })
       },
@@ -167,8 +167,6 @@
         let openInt = ((parseInt(open.h) + ((open.a === 'am') ? 0 : 12)) * 60) + parseInt(open.mm)
         let closeInt = ((parseInt(close.h) + ((close.a === 'am') ? 0 : 12)) * 60) + parseInt(close.mm)
         const dataInt = (parseInt(data.H) * 60) + parseInt(data.m)
-
-        console.log(dataInt)
 
         if (type === 'open') {
           openInt = dataInt
