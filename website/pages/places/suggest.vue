@@ -67,6 +67,7 @@
       place: {
         placeId: place.placeId, // Validity of PlaceId will determine if new edit or old edit
         name: place.name || '',
+        alias: [],
         description: place.description || '',
         website: place.website || '',
         phone: place.phone || '',
@@ -145,11 +146,8 @@
           }
         }
 
-        console.log(form)
-
         return this.$api.post(`/places/${this.$route.query.placeId}/suggest/multipart`, form)
           .then((data) => {
-            console.log(data)
             this.submitting = false
             this.submitted = true
           })
@@ -245,6 +243,15 @@
             hours: this.payload.place.hours,
             operation: "Replace",
             type: "HourList"
+          })
+        }
+
+        //Alias
+        for (const alias of this.payload.place.alias) {
+          updatedData.push({
+            value: alias,
+            operation: "Append",
+            type: "Name"
           })
         }
 

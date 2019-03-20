@@ -66,7 +66,14 @@
 
     <section class="mt-48">
       <div class="input-group">
-        <input-text label="Name" required v-model="payload.place.name"/>
+        <div>
+          <input-text label="Name" class="pb-4" required v-model="payload.place.name"/>
+          <div v-if="payload.place.alias.length > 0" v-for="(alias, index) in payload.place.alias">
+            <input-text label='Alias' class="pb-4" required v-model="payload.place.alias[index]"/>
+            <button class="secondary-outline tiny mb-16" style="margin-top: -16px;" @click="onRemoveAlias(index)">Remove</button>
+          </div>
+          <button class="secondary-outline tiny mb-16" style="margin-top: -16px;" @click="onAddAdditionalName">Add Additional Name</button>
+        </div>
         <input-text label="Address" required v-model="payload.place.location.address"/>
         <input-text label="Price Per Pax" type="number" v-model="payload.place.price.perPax"/>
         <input-text label="Phone" v-model="payload.place.phone"/>
@@ -145,6 +152,12 @@
       onStatusChange(status) {
         this.show.status = false
         this.payload.place.status.type = status
+      },
+      onAddAdditionalName() {
+        this.payload.place.alias.push("")
+      },
+      onRemoveAlias(index) {
+        this.payload.place.alias.splice(index, 1)
       },
       onStatusDuplicate() {
         if (!this.payload.place.status.placeIds) {
