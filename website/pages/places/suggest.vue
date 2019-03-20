@@ -146,18 +146,16 @@
           }
         }
 
-        console.log(form)
-
-        // return this.$api.post(`/places/${this.$route.query.placeId}/suggest/multipart`, form)
-        //   .then((data) => {
-        //     console.log(data)
-        //     this.submitting = false
-        //     this.submitted = true
-        //   })
-        //   .catch(error => {
-        //     this.submitting = false
-        //     this.$store.dispatch('addError', error)
-        //   })
+        return this.$api.post(`/places/${this.$route.query.placeId}/suggest/multipart`, form)
+          .then((data) => {
+            console.log(data)
+            this.submitting = false
+            this.submitted = true
+          })
+          .catch(error => {
+            this.submitting = false
+            this.$store.dispatch('addError', error)
+          })
       },
       verifyFields() {
         const updatedData = []
@@ -254,11 +252,9 @@
           updatedData.push({
             value: alias,
             operation: "Append",
-            type:"Name"
+            type: "Name"
           })
         }
-
-        console.log(updatedData)
 
         return updatedData
       },
