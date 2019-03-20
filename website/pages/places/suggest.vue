@@ -148,7 +148,6 @@
 
         return this.$api.post(`/places/${this.$route.query.placeId}/suggest/multipart`, form)
           .then((data) => {
-            console.log(data)
             this.submitting = false
             this.submitted = true
           })
