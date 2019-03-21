@@ -24,7 +24,6 @@
         </div>
 
         <div class="Action">
-          <place-suggest-changes :payload="payload"/>
           <div class="flex-justify-end">
             <button class="primary mt-24" @click="onSubmit"
                     v-if="payload.place.name.trim().length > 0 && payload.place.location.address.trim().length">Submit
