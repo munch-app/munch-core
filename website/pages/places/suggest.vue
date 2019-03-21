@@ -1,6 +1,6 @@
 <template>
   <div class="Page container-768">
-    <div v-if="payload.place.placeId">
+    <div>
       <div v-if="submitted">
         <h1 class="mt-8">Thank you for your contribution.</h1>
         <p class="mt-24">Own this restaurant? Do you want us to optimise your page?
@@ -14,7 +14,7 @@
             <h5>Suggest Edits:</h5>
             <h1>{{payload.place.name}}</h1>
           </div>
-          <h2 v-else>Suggest a new edit</h2>
+          <h2 v-else>Suggest a new place</h2>
         </div>
 
         <div class="Content">
@@ -26,18 +26,21 @@
         <div class="Action">
           <place-suggest-changes :payload="payload"/>
           <div class="flex-justify-end">
-            <button @click="onSubmit" class="primary mt-24">Submit</button>
+            <button class="primary mt-24" @click="onSubmit"
+                    v-if="payload.place.name.trim().length > 0 && payload.place.location.address.trim().length">Submit
+            </button>
+            <button class="primary mt-24 disabled" v-else>Submit</button>
           </div>
         </div>
       </div>
     </div>
-    <div v-else>
-      <h1 class="mt-8">Sorry, you can only suggest an edit for an existing place.</h1>
-      <p class="mt-24">
-        Drop us an email at <span class="weight-600">restaurant@munch.space</span> if there’s anything we can help
-        with.
-      </p>
-    </div>
+    <!--<div v-else>-->
+    <!--<h1 class="mt-8">Sorry, you can only suggest an edit for an existing place.</h1>-->
+    <!--<p class="mt-24">-->
+    <!--Drop us an email at <span class="weight-600">restaurant@munch.space</span> if there’s anything we can help-->
+    <!--with.-->
+    <!--</p>-->
+    <!--</div>-->
     <no-ssr>
       <dialog-loading v-if="submitting"/>
     </no-ssr>
@@ -79,12 +82,12 @@
           perPax: place.price && place.price.perPax || 0
         },
         status: {
-          type: place.status.type,
+          type: place.status.type || '',
           placeIds: null,
           placeNames: null,
         },
-        tags: place.tags,
-        hours: place.hours,
+        tags: place.tags || [],
+        hours: place.hours || [],
         menu: {
           url: place.menu && place.menu.url || '',
         }
@@ -123,7 +126,7 @@
           return {originalPlace: {...data.place}, payload: newPayload(data)}
         })
       } else {
-        return {payload: newPayload()}
+        return {originalPlace: newPayload().place, payload: newPayload()}
       }
     },
     data() {
@@ -146,7 +149,7 @@
           }
         }
 
-        return this.$api.post(`/places/${this.$route.query.placeId}/suggest/multipart`, form)
+        return this.$api.post(`/places/${this.$route.query.placeId || "_"}/suggest/multipart`, form)
           .then((data) => {
             this.submitting = false
             this.submitted = true
