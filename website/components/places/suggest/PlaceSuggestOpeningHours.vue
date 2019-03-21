@@ -38,11 +38,11 @@
                   <div class="flex-align-center mb-8">
                     <input-time :value="hour.openObj"
                                 @change="onTimeValueChange($event.data, index, 'open')"
-                                format="h:mm a" class="mr-24"></input-time>
+                                format="H:mm" class="mr-24"></input-time>
                     &mdash;
                     <input-time :value="hour.closeObj"
                                 @change="onTimeValueChange($event.data, index, 'close')"
-                                format="h:mm a" class="ml-24"></input-time>
+                                format="H:mm" class="ml-24"></input-time>
                     <button class="ml-16 secondary-outline small" @click="removeHour(index)">Remove</button>
                   </div>
                   <div class="flex-align-center input-text">
@@ -138,12 +138,12 @@
       addHours(dayName) {
         this.hourGroup.hours.push({
           day: {text: dayName},
-          open: '11:00 am',
-          close: '9:30 pm',
-          openObj: {h: '11', mm: '00', a: "am"},
-          closeObj: {h: '9', mm: '30', a: "pm"},
-          openFieldObj: {h: '11', mm: '00', a: "am"},
-          closeFieldObj: {h: '9', mm: '30', a: "pm"},
+          open: '11:00',
+          close: '21:30',
+          openObj: {H: '11', mm: '00'},
+          closeObj: {H: '21', mm: '30'},
+          openFieldObj: {H: '11', mm: '00'},
+          closeFieldObj: {H: '21', mm: '30'},
           error: ""
         })
       },
@@ -151,12 +151,12 @@
         _.remove(this.hourGroup.hours, n => n.day.text === dayName)
         this.hourGroup.hours.push({
           day: {text: dayName},
-          open: '12:00 am',
-          close: '11:59 pm',
-          openObj: {h: '12', mm: '00', a: "am"},
-          closeObj: {h: '11', mm: '59', a: "pm"},
-          openFieldObj: {h: '12', mm: '00', a: "am"},
-          closeFieldObj: {h: '11', mm: '59', a: "pm"},
+          open: '00:00',
+          close: '23:59',
+          openObj: {H: '0', mm: '00'},
+          closeObj: {H: '23', mm: '59'},
+          openFieldObj: {H: '0', mm: '00'},
+          closeFieldObj: {H: '23', mm: '59'},
           error: ""
         })
       },
@@ -164,16 +164,16 @@
         const open = this.hourGroup.hours[index].openFieldObj
         const close = this.hourGroup.hours[index].closeFieldObj
 
-        let openInt = ((parseInt(open.h) + ((open.a === 'am') ? 0 : 12)) * 60) + parseInt(open.mm)
-        let closeInt = ((parseInt(close.h) + ((close.a === 'am') ? 0 : 12)) * 60) + parseInt(close.mm)
+        let openInt = (parseInt(open.H) * 60) + parseInt(open.mm)
+        let closeInt = (parseInt(close.H) * 60) + parseInt(close.mm)
         const dataInt = (parseInt(data.H) * 60) + parseInt(data.m)
 
         if (type === 'open') {
           openInt = dataInt
-          this.hourGroup.hours[index].openFieldObj = {h: String(data.h), mm: String(data.mm), a: data.a}
+          this.hourGroup.hours[index].openFieldObj = {H: String(data.H), mm: String(data.mm)}
         } else {
           closeInt = dataInt
-          this.hourGroup.hours[index].closeFieldObj = {h: String(data.h), mm: String(data.mm), a: data.a}
+          this.hourGroup.hours[index].closeFieldObj = {H: String(data.H), mm: String(data.mm)}
         }
 
         if (openInt > closeInt) {
@@ -200,11 +200,13 @@
         }
 
         let newHours = []
-        this.hourGroup.hours = _.sortBy(this.hourGroup.hours, [function(hour) { return days[hour.day.text]; }]);
+        this.hourGroup.hours = _.sortBy(this.hourGroup.hours, [function (hour) {
+          return days[hour.day.text];
+        }]);
         for (const hour of this.hourGroup.hours) {
           newHours.push({
-            open: this.getTimeIn24Hours(hour.openFieldObj),
-            close: this.getTimeIn24Hours(hour.closeFieldObj),
+            open: this.getTimeIn24HoursStr(hour.openFieldObj),
+            close: this.getTimeIn24HoursStr(hour.closeFieldObj),
             day: hour.day.text.toLowerCase().slice(0, 3)
           })
         }
@@ -229,15 +231,10 @@
         const hour = parseInt(hm[0])
         const min = parseInt(hm[1])
         const minS = min < 10 ? '0' + min : min
-
-        if (hour < 13) {
-          return {h: String(hour), mm: String(minS), a: "am"}
-        } else {
-          return {h: String(hour % 12), mm: String(minS), a: "pm"}
-        }
+        return {H: String(hour), mm: String(minS)}
       },
-      getTimeIn24Hours(time) {
-        return `${(parseInt(time.h) + ((time.a === 'am') ? 0 : 12))}:${time.mm}`
+      getTimeIn24HoursStr(time) {
+        return `${time.H}:${time.mm}`
       }
     }
   }

@@ -43,9 +43,9 @@
         apms: [],
         showDropdown: false,
         muteWatch: false,
-        hourType: 'h',
+        hourType: 'H',
         minuteType: 'mm',
-        apmType: 'a',
+        apmType: '',
         hour: '',
         minute: '',
         apm: '',
@@ -55,7 +55,7 @@
 
     computed: {
       displayTime() {
-        let formatString = String((this.format || 'h:mm a'))
+        let formatString = String((this.format || 'H:mm'))
         if (this.hour) {
           formatString = formatString.replace(new RegExp(this.hourType, 'g'), this.hour)
         }
