@@ -247,6 +247,9 @@
         }
 
         //Alias
+        if (this.payload.place.alias.length > 0) {
+          updatedData.push(this.getChangeJSON(this.payload.place.name.trim(), "Replace", "Name"))
+        }
         for (const alias of this.payload.place.alias) {
           updatedData.push({
             value: alias,

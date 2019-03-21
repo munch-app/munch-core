@@ -21,7 +21,7 @@
       <div class="index-1 BetweenDialog bg-white elevation-1 p-16-24 overflow-y-auto">
         <h3>Select days with incorrect hours</h3>
         <div class="mt-24">
-          <div v-for="(dayName) in daysOfWeek">
+          <div v-for="(dayName, index) in daysOfWeek">
             <div class="hover-pointer mb-16 flex-justify-between">
               <div class="flex-align-center">
                 <div class="checkbox mr-16" v-bind:class="{selected: show.days[dayName]}"
@@ -38,11 +38,11 @@
                   <div class="flex-align-center mb-8">
                     <input-time :value="hour.openObj"
                                 @change="onTimeValueChange($event.data, index, 'open')"
-                                format="h:mm a" class="mr-24"></input-time>
+                                format="H:mm" class="mr-24"></input-time>
                     &mdash;
                     <input-time :value="hour.closeObj"
                                 @change="onTimeValueChange($event.data, index, 'close')"
-                                format="h:mm a" class="ml-24"></input-time>
+                                format="H:mm" class="ml-24"></input-time>
                     <button class="ml-16 secondary-outline small" @click="removeHour(index)">Remove</button>
                   </div>
                   <div class="flex-align-center input-text">
@@ -52,7 +52,10 @@
               </div>
               <div class="flex-align-center">
                 <button class="secondary-outline small mr-16" @click="addHours(dayName)">Add</button>
-                <button class="secondary-outline small" @click="set24Hours(dayName)">Open 24 Hrs</button>
+                <button class="secondary-outline small mr-16" @click="set24Hours(dayName)">Open 24 Hrs</button>
+                <button class="secondary-outline small" v-if="index !== 0" @click="setToPreviousDayHours(dayName)">Same
+                  as {{daysOfWeek[index-1]}}
+                </button>
               </div>
             </div>
           </div>
@@ -87,8 +90,6 @@
       hourGroup.hours.forEach(hour => {
         hour.openObj = this.parseTimeForInput(hour.open)
         hour.closeObj = this.parseTimeForInput(hour.close)
-        hour.openFieldObj = this.parseTimeForInput(hour.open)
-        hour.closeFieldObj = this.parseTimeForInput(hour.close)
         hour.error = ""
       })
 
@@ -135,45 +136,80 @@
       removeHour(index) {
         this.hourGroup.hours.splice(index, 1)
       },
+      getDayHours(dayName) {
+        return _.filter(this.hourGroup.hours, function (hour) {
+          return hour.day.text === dayName;
+        })
+      },
+      getPreviousDayHours(dayName) {
+        const days = {
+          Monday: 1,
+          Tuesday: 2,
+          Wednesday: 3,
+          Thursday: 4,
+          Friday: 5,
+          Saturday: 6,
+          Sunday: 7,
+        }
+
+        if (dayName === "Monday") {
+          return []
+        }
+
+        return _.filter(this.hourGroup.hours, function (hour) {
+          return hour.day.text === Object.keys(days).find(key => days[key] === days[dayName] - 1);
+        })
+      },
       addHours(dayName) {
         this.hourGroup.hours.push({
           day: {text: dayName},
-          open: '11:00 am',
-          close: '9:30 pm',
-          openObj: {h: '11', mm: '00', a: "am"},
-          closeObj: {h: '9', mm: '30', a: "pm"},
-          openFieldObj: {h: '11', mm: '00', a: "am"},
-          closeFieldObj: {h: '9', mm: '30', a: "pm"},
+          open: '11:00',
+          close: '21:30',
+          openObj: {H: '11', mm: '00'},
+          closeObj: {H: '21', mm: '30'},
           error: ""
         })
+      },
+      setToPreviousDayHours(dayName) {
+        console.log(dayName)
+        const previousDayHours = this.getPreviousDayHours(dayName)
+        _.remove(this.hourGroup.hours, n => n.day.text === dayName)
+        console.log(previousDayHours)
+        for (let hour of previousDayHours) {
+          let newHour = JSON.parse(JSON.stringify(hour))
+          newHour.day.text = dayName
+          this.hourGroup.hours.push(newHour)
+        }
       },
       set24Hours(dayName) {
         _.remove(this.hourGroup.hours, n => n.day.text === dayName)
         this.hourGroup.hours.push({
           day: {text: dayName},
-          open: '12:00 am',
-          close: '11:59 pm',
-          openObj: {h: '12', mm: '00', a: "am"},
-          closeObj: {h: '11', mm: '59', a: "pm"},
-          openFieldObj: {h: '12', mm: '00', a: "am"},
-          closeFieldObj: {h: '11', mm: '59', a: "pm"},
+          open: '00:00',
+          close: '23:59',
+          openObj: {H: '0', mm: '00'},
+          closeObj: {H: '23', mm: '59'},
           error: ""
         })
       },
       onTimeValueChange(data, index, type) {
-        const open = this.hourGroup.hours[index].openFieldObj
-        const close = this.hourGroup.hours[index].closeFieldObj
+        const open = this.hourGroup.hours[index].openObj
+        const close = this.hourGroup.hours[index].closeObj
 
-        let openInt = ((parseInt(open.h) + ((open.a === 'am') ? 0 : 12)) * 60) + parseInt(open.mm)
-        let closeInt = ((parseInt(close.h) + ((close.a === 'am') ? 0 : 12)) * 60) + parseInt(close.mm)
+        let openInt = (parseInt(open.H) * 60) + parseInt(open.mm)
+        let closeInt = (parseInt(close.H) * 60) + parseInt(close.mm)
         const dataInt = (parseInt(data.H) * 60) + parseInt(data.m)
+
+        if (openInt === dataInt || closeInt === dataInt) {
+          return;
+        }
 
         if (type === 'open') {
           openInt = dataInt
-          this.hourGroup.hours[index].openFieldObj = {h: String(data.h), mm: String(data.mm), a: data.a}
+          this.hourGroup.hours[index].openObj = {H: String(data.H), mm: String(data.mm)}
         } else {
           closeInt = dataInt
-          this.hourGroup.hours[index].closeFieldObj = {h: String(data.h), mm: String(data.mm), a: data.a}
+          this.hourGroup.hours[index].closeObj = {H: String(data.H), mm: String(data.mm)}
         }
 
         if (openInt > closeInt) {
@@ -189,22 +225,14 @@
         }).length === 0
       },
       onDone() {
-        const days = {
-          Monday: 1,
-          Tuesday: 2,
-          Wednesday: 3,
-          Thursday: 4,
-          Friday: 5,
-          Saturday: 6,
-          Sunday: 7,
-        }
-
         let newHours = []
-        this.hourGroup.hours = _.sortBy(this.hourGroup.hours, [function(hour) { return days[hour.day.text]; }]);
+        this.hourGroup.hours = _.sortBy(this.hourGroup.hours, [function (hour) {
+          return days[hour.day.text];
+        }]);
         for (const hour of this.hourGroup.hours) {
           newHours.push({
-            open: this.getTimeIn24Hours(hour.openFieldObj),
-            close: this.getTimeIn24Hours(hour.closeFieldObj),
+            open: this.getTimeIn24HoursStr(hour.openObj),
+            close: this.getTimeIn24HoursStr(hour.closeObj),
             day: hour.day.text.toLowerCase().slice(0, 3)
           })
         }
@@ -213,8 +241,6 @@
         this.hourGroup.hours.forEach(hour => {
           hour.openObj = this.parseTimeForInput(hour.open)
           hour.closeObj = this.parseTimeForInput(hour.close)
-          hour.openFieldObj = this.parseTimeForInput(hour.open)
-          hour.closeFieldObj = this.parseTimeForInput(hour.close)
           hour.error = ""
         })
 
@@ -229,15 +255,10 @@
         const hour = parseInt(hm[0])
         const min = parseInt(hm[1])
         const minS = min < 10 ? '0' + min : min
-
-        if (hour < 13) {
-          return {h: String(hour), mm: String(minS), a: "am"}
-        } else {
-          return {h: String(hour % 12), mm: String(minS), a: "pm"}
-        }
+        return {H: String(hour), mm: String(minS)}
       },
-      getTimeIn24Hours(time) {
-        return `${(parseInt(time.h) + ((time.a === 'am') ? 0 : 12))}:${time.mm}`
+      getTimeIn24HoursStr(time) {
+        return `${time.H}:${time.mm}`
       }
     }
   }
