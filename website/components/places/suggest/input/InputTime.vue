@@ -1,6 +1,6 @@
 <template>
 <span class="time-picker">
-  <input @click.stop="toggleDropdown" class="display-time" readonly type="text" v-model="displayTime"/>
+  <input @click.stop="toggleDropdown" class="display-time" type="text" v-model="displayTime"/>
   <div @click.stop="toggleDropdown" class="time-picker-overlay" v-if="showDropdown"></div>
   <div class="dropdown" v-show="showDropdown">
     <div class="select-list">
@@ -54,18 +54,34 @@
     },
 
     computed: {
-      displayTime() {
-        let formatString = String((this.format || 'H:mm'))
-        if (this.hour) {
-          formatString = formatString.replace(new RegExp(this.hourType, 'g'), this.hour)
+      displayTime: {
+        set: function (val) {
+          if (/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(val)) {
+            const hm = val.split(':')
+            const hour = parseInt(hm[0])
+            const min = parseInt(hm[1])
+            const minS = min < 10 ? '0' + min : min
+
+            this.hour = hour
+            this.minute = minS
+          } else {
+
+          }
+        },
+        get: function () {
+          let formatString = String((this.format || 'H:mm'))
+          if (this.hour) {
+            formatString = formatString.replace(new RegExp(this.hourType, 'g'), this.hour)
+          }
+          if (this.minute) {
+            formatString = formatString.replace(new RegExp(this.minuteType, 'g'), this.minute)
+          }
+          if (this.apm && this.apmType) {
+            formatString = formatString.replace(new RegExp(this.apmType, 'g'), this.apm)
+          }
+          console.log(formatString)
+          return formatString
         }
-        if (this.minute) {
-          formatString = formatString.replace(new RegExp(this.minuteType, 'g'), this.minute)
-        }
-        if (this.apm && this.apmType) {
-          formatString = formatString.replace(new RegExp(this.apmType, 'g'), this.apm)
-        }
-        return formatString
       },
     },
 
