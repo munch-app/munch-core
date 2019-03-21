@@ -161,6 +161,12 @@
         })
       },
       addHours(dayName) {
+        const dayHours = this.getDayHours(dayName)
+        if (dayHours.length === 1 && dayHours[0].open === "00:00" && dayHours[0].close === "23:59") {
+          dayHours[0].error = dayName + " has already been set to 24 Hrs";
+          return
+        }
+
         this.hourGroup.hours.push({
           day: {text: dayName},
           open: '11:00',
@@ -171,10 +177,8 @@
         })
       },
       setToPreviousDayHours(dayName) {
-        console.log(dayName)
         const previousDayHours = this.getPreviousDayHours(dayName)
         _.remove(this.hourGroup.hours, n => n.day.text === dayName)
-        console.log(previousDayHours)
         for (let hour of previousDayHours) {
           let newHour = JSON.parse(JSON.stringify(hour))
           newHour.day.text = dayName

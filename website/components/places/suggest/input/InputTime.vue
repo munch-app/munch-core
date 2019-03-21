@@ -79,7 +79,6 @@
           if (this.apm && this.apmType) {
             formatString = formatString.replace(new RegExp(this.apmType, 'g'), this.apm)
           }
-          console.log(formatString)
           return formatString
         }
       },
