@@ -3,11 +3,6 @@
     <masonry-wall ref="wall" id="PlaceImageWall" :items="items" @append="append"
                   :options="{width: 250, lanes:{2:{padding: 8}},min:2, ssr: {default: 2}}">
       <template slot-scope="{item, index}">
-        <Adsense v-if="item.isAdSense"
-                 data-ad-client="ca-pub-7144155418390858"
-                 data-ad-slot="9604475829">
-        </Adsense>
-
         <div v-else class="ImageItem hover-pointer" @click="onClickImage(index)">
           <image-size class="border-3" :image="{sizes: item.sizes}" grow="height">
             <div class="ImageContainer wh-100 flex-column-justify-between hover-bg-a40 hover-opacity">
@@ -98,8 +93,6 @@
         }
         return this.$axios.$get(`/api/places/${this.placeId}/images`, {params})
           .then(({data, next}) => {
-            // Currently add one ad every 20 images because size = 20
-            // this.items.push({isAdSense: true})
             this.items.push(...data)
             this.loading = false
             this.next.sort = next && next.sort || null
