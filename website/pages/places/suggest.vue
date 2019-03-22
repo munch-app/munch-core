@@ -24,6 +24,7 @@
         </div>
 
         <div class="Action">
+          <place-suggest-changes :payload="payload"></place-suggest-changes>
           <div class="flex-justify-end">
             <button class="primary mt-24" @click="onSubmit"
                     v-if="payload.place.name.trim().length > 0 && payload.place.location.address.trim().length">Submit
@@ -33,13 +34,6 @@
         </div>
       </div>
     </div>
-    <!--<div v-else>-->
-    <!--<h1 class="mt-8">Sorry, you can only suggest an edit for an existing place.</h1>-->
-    <!--<p class="mt-24">-->
-    <!--Drop us an email at <span class="weight-600">restaurant@munch.space</span> if there’s anything we can help-->
-    <!--with.-->
-    <!--</p>-->
-    <!--</div>-->
     <no-ssr>
       <dialog-loading v-if="submitting"/>
     </no-ssr>
