@@ -19,8 +19,8 @@
 
         <div class="Content">
           <place-suggest-detail :payload="payload"></place-suggest-detail>
-          <place-suggest-image :payload="payload" v-if="payload.images.length > 0"></place-suggest-image>
-          <place-suggest-article :payload="payload" v-if="payload.articles.length > 0"></place-suggest-article>
+          <place-suggest-image :payload="payload"></place-suggest-image>
+          <place-suggest-article :payload="payload" v-if="payload.articles.length > 0"/>
         </div>
 
         <div class="Action">

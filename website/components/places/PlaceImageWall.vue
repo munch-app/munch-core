@@ -3,7 +3,7 @@
     <masonry-wall ref="wall" id="PlaceImageWall" :items="items" @append="append"
                   :options="{width: 250, lanes:{2:{padding: 8}},min:2, ssr: {default: 2}}">
       <template slot-scope="{item, index}">
-        <div v-else class="ImageItem hover-pointer" @click="onClickImage(index)">
+        <div class="ImageItem hover-pointer" @click="onClickImage(index)">
           <image-size class="border-3" :image="{sizes: item.sizes}" grow="height">
             <div class="ImageContainer wh-100 flex-column-justify-between hover-bg-a40 hover-opacity">
               <div class="Title text-ellipsis-2l" v-if="item.title || item.caption">

@@ -2,8 +2,8 @@
   <div>
     <h2 class="mt-48">Images</h2>
     <div class="mt-16">
-      <button class="small secondary-outline" @click="showImages" v-if="images.length > 0">Edit Images</button>
-      <button class="small primary-outline ml-16" @click="showUploadImage">Upload Image</button>
+      <button class="small secondary-outline mr-16" @click="showImages" v-if="images.length > 0">Edit Images</button>
+      <button class="small primary-outline" @click="showUploadImage">Upload Image</button>
     </div>
 
     <no-ssr>
@@ -34,9 +34,6 @@
           </no-ssr>
         </div>
       </portal>
-    </no-ssr>
-
-    <no-ssr>
       <portal to="dialog-w768" v-if="show.uploadImages">
         <h2>Upload Images</h2>
         <p class="small mt-4">Upload images of <b>{{payload.place.name}}</b>. <span class="">Maximum of 4 images</span>
@@ -51,9 +48,6 @@
           <button class="primary ml-24" @click="onImageUpload">Upload</button>
         </div>
       </portal>
-    </no-ssr>
-
-    <no-ssr>
       <portal to="dialog-styled" v-if="dialog" class="Dialog">
         <h3>Flag Image</h3>
         <div class="flex-between hover-pointer" @click="onFlag(dialog, 'NotRelatedContent')">
@@ -106,29 +100,20 @@
       }
     },
     data() {
-      const {images} = this.payload
-      if (!images || images.length === 0) {
-        return {
-          dialog: null,
-          loading: false,
-          selected: false,
-          images: [], next: {},
-        }
-      }
-      const last = images[images.length - 1]
-      const next = {sort: last.sort || null}
+      const images = this.payload.images || []
+      const next = {sort: images.length > 0 && images[images.length - 1].sort || null}
 
       return {
+        images,
+        next,
         dialog: null,
         loading: false,
-        images, next,
         selected: false,
         show: {
           images: false,
           uploadImages: false
         },
         dropzoneOptions: {
-          url: "http://httpbin.org/anything",
           addRemoveLinks: true,
           acceptedFiles: "image/jpeg,image/png",
           maxFilesize: 10,
