@@ -256,6 +256,7 @@
 
         return updatedData
       },
+      // TODO(joel): Don't put method that are meant for Vue to access in methods: {}, put it inside <script> body instead
       getChangeJSON(value, operation, type) {
         return {
           value: value,

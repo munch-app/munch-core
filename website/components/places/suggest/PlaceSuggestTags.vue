@@ -30,7 +30,6 @@
       },
       value: {
         type: [Array],
-        required: true
       },
     },
     methods: {

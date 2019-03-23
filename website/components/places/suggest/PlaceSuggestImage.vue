@@ -114,6 +114,7 @@
           uploadImages: false
         },
         dropzoneOptions: {
+          url: "http://httpbin.org/anything",
           addRemoveLinks: true,
           acceptedFiles: "image/jpeg,image/png",
           maxFilesize: 10,

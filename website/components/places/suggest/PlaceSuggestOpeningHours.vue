@@ -82,7 +82,6 @@
     props: {
       value: {
         type: Array,
-        required: true
       }
     },
     data() {

@@ -78,8 +78,8 @@
         <input-text label="Price Per Pax" type="number" v-model="payload.place.price.perPax"/>
         <input-text label="Phone" v-model="payload.place.phone"/>
         <input-text label="Website" v-model="payload.place.website"/>
-        <place-suggest-tags label="Tags" v-model="payload.place.tags"></place-suggest-tags>
-        <place-suggest-opening-hours v-model="payload.place.hours"></place-suggest-opening-hours>
+        <place-suggest-tags label="Tags" v-model="payload.place.tags"/>
+        <place-suggest-opening-hours v-model="payload.place.hours"/>
         <input-text label="Menu URL" v-model="payload.place.menu.url"/>
         <div class="input-text">
           <label>Description</label>
