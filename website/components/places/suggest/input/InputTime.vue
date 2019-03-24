@@ -21,6 +21,9 @@
 </span>
 </template>
 <script>
+
+  import _ from 'lodash'
+
   const CONFIG = {
     HOUR_TOKENS: ['HH', 'H', 'hh', 'h'],
     MINUTE_TOKENS: ['mm', 'm'],
@@ -55,8 +58,16 @@
 
     computed: {
       displayTime: {
-        set: function (val) {
-          if (/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(val)) {
+        set: _.debounce(function (val) {
+          if (/^([01]?[0-9]|2[0-3])[0-5][0-9]$/.test(val)) {
+            val.substring(0, 4);
+            const hour = parseInt(val.substring(0, val.length - 2))
+            const min = parseInt(val.slice(-2))
+            const minS = min < 10 ? '0' + min : min
+
+            this.hour = hour
+            this.minute = minS
+          } else if (/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(val)) {
             const hm = val.split(':')
             const hour = parseInt(hm[0])
             const min = parseInt(hm[1])
@@ -64,10 +75,8 @@
 
             this.hour = hour
             this.minute = minS
-          } else {
-
           }
-        },
+        }, 300),
         get: function () {
           let formatString = String((this.format || 'H:mm'))
           if (this.hour) {

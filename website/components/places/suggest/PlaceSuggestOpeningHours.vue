@@ -215,9 +215,7 @@
           this.hourGroup.hours[index].closeObj = {H: String(data.H), mm: String(data.mm)}
         }
 
-        if (openInt > closeInt) {
-          this.hourGroup.hours[index].error = "Opening time cannot be later than closing time"
-        } else if (openInt === closeInt) {
+        if (openInt === closeInt) {
           this.hourGroup.hours[index].error = "Opening time and closing time cannot be the same"
         } else {
           this.hourGroup.hours[index].error = ""
