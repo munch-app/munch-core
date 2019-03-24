@@ -59,22 +59,27 @@
     computed: {
       displayTime: {
         set: _.debounce(function (val) {
-          if (/^([01]?[0-9]|2[0-3])[0-5][0-9]$/.test(val)) {
-            val.substring(0, 4);
-            const hour = parseInt(val.substring(0, val.length - 2))
-            const min = parseInt(val.slice(-2))
+          if (val.length >= 3) {
+            let hour = this.hour
+            let min = this.minute
+            if (/^([01]?[0-9]|2[0-4])[0-5][0-9]$/.test(val)) {
+              val.substring(0, 4)
+              hour = parseInt(val.substring(0, val.length - 2))
+              min = parseInt(val.slice(-2))
+            } else if (/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(val)) {
+              const hm = val.split(':')
+              hour = parseInt(hm[0])
+              min = parseInt(hm[1])
+            }
             const minS = min < 10 ? '0' + min : min
-
             this.hour = hour
             this.minute = minS
-          } else if (/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(val)) {
-            const hm = val.split(':')
-            const hour = parseInt(hm[0])
-            const min = parseInt(hm[1])
-            const minS = min < 10 ? '0' + min : min
-
-            this.hour = hour
-            this.minute = minS
+            if (hour === 24) {
+              this.minute = '00'
+              this.renderList('minute', 60)
+            } else {
+              this.renderList('minute')
+            }
           }
         }, 300),
         get: function () {
@@ -119,7 +124,6 @@
             return ''
         }
       },
-
       checkAcceptingType(validValues, formatString, fallbackValue) {
         if (!validValues || !formatString || !formatString.length) {
           return ''
@@ -156,7 +160,7 @@
       },
 
       renderHoursList() {
-        let hoursCount = (this.hourType === 'h' || this.hourType === 'hh') ? 12 : 24
+        let hoursCount = (this.hourType === 'h' || this.hourType === 'hh') ? 12 : 25
 
         if (this.apm === "pm") {
           hoursCount = 11
@@ -305,6 +309,13 @@
         } else {
           fullValues.m = ''
           fullValues.mm = ''
+        }
+
+        if (this.hour === '24') {
+          this.minute = '00'
+          this.renderList('minute', 60)
+        } else {
+          this.renderList('minute')
         }
 
         this.fullValues = fullValues

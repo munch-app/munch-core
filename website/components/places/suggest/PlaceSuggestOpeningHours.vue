@@ -230,6 +230,7 @@
         this.hourGroup.hours = _.sortBy(this.hourGroup.hours, [function (hour) {
           return days[hour.day.text];
         }]);
+
         for (const hour of this.hourGroup.hours) {
           newHours.push({
             open: this.getTimeIn24HoursStr(hour.openObj),
@@ -259,6 +260,12 @@
         return {H: String(hour), mm: String(minS)}
       },
       getTimeIn24HoursStr(time) {
+
+        if (time.H === '24') {
+          time.H = '23'
+          time.mm = '59'
+        }
+
         return `${time.H}:${time.mm}`
       }
     }
