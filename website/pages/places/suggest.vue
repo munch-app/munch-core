@@ -170,7 +170,7 @@
           }
         }
 
-        if (this.payload.place.phone.trim() !== this.originalPlace.phone) {
+        if (this.payload.place.phone.trim() !== (this.originalPlace.phone || '')) {
           updatedData.push(this.getChangeJSON(this.payload.place.phone.trim(), "Replace", "Phone"))
         }
 
