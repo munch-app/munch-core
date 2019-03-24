@@ -18,8 +18,8 @@
         </div>
 
         <div class="Content">
-          <place-suggest-detail :payload="payload"></place-suggest-detail>
-          <place-suggest-image :payload="payload"></place-suggest-image>
+          <place-suggest-detail :payload="payload"/>
+          <place-suggest-image :payload="payload"/>
           <place-suggest-article :payload="payload" v-if="payload.articles.length > 0"/>
         </div>
 
@@ -170,9 +170,28 @@
           }
         }
 
-        if (this.payload.place.phone.trim() !== (this.originalPlace.phone || '')) {
-          updatedData.push(this.getChangeJSON(this.payload.place.phone.trim(), "Replace", "Phone"))
+        // Phone Change
+        const phone = this.payload.place.phone.trim()
+        const originPhone = this.originalPlace.phone
+        if (phone === '') { // Phone: '', Origin: null
+          if (originPhone != null) {
+            updatedData.push(this.getChangeJSON(phone, "Remove", "Phone"))
+          }
+        } else if (phone !== originPhone) {
+          updatedData.push(this.getChangeJSON(phone, "Replace", "Phone"))
         }
+
+        // Website Change
+        const website = this.payload.place.website.trim()
+        const originWebsite = this.originalPlace.website
+        if (website === '') {
+          if (originWebsite != null) {
+            updatedData.push(this.getChangeJSON(website, "Remove", "Website"))
+          }
+        } else if (website !== originWebsite) {
+          updatedData.push(this.getChangeJSON(website, "Replace", "Website"))
+        }
+
 
         const tagsAppend = _.differenceBy(this.payload.place.tags, this.originalPlace.tags, 'text')
         const tagsRemoval = _.differenceBy(this.originalPlace.tags, this.payload.place.tags, 'text')
@@ -256,7 +275,6 @@
 
         return updatedData
       },
-      // TODO(joel): Don't put method that are meant for Vue to access in methods: {}, put it inside <script> body instead
       getChangeJSON(value, operation, type) {
         return {
           value: value,

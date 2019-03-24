@@ -23,11 +23,11 @@
         <div class="mt-24">
           <div v-for="(dayName, index) in daysOfWeek">
             <div class="hover-pointer mb-16 flex-justify-between">
-              <div class="flex-align-center">
-                <div class="checkbox mr-16" v-bind:class="{selected: show.days[dayName]}"
-                     @click="showHours($event.srcElement, dayName)"></div>
-                <div class="text TimeRange-Text" v-html="dayName"></div>
+              <div class="flex-align-center zero" @click="showHours($event.srcElement, dayName)">
+                <div class="checkbox mr-16" v-bind:class="{selected: show.days[dayName]}"></div>
+                <div class="text TimeRange-Text lh-1">{{dayName}}</div>
               </div>
+
               <div class="text TimeRange-Text" v-if="!show.days[dayName]" v-html='hourGroup.dayHours[dayName]'></div>
               <div class="text TimeRange-Text Strikethrough" v-if="show.days[dayName]"
                    v-html='hourGroup.dayHours[dayName]'></div>
