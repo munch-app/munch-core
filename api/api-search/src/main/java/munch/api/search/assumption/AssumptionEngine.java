@@ -115,7 +115,6 @@ public class AssumptionEngine {
         }
 
         List<AssumptionQuery> list = new ArrayList<>();
-        createNearby(text, assumedTokens, request).ifPresent(list::add);
         list.add(createAnywhere(text, assumedTokens, request));
         return list;
     }
