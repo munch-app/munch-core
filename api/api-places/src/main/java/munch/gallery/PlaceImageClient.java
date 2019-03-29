@@ -88,11 +88,13 @@ public final class PlaceImageClient {
                             pArticle = new PlaceImage.Article();
                             pArticle.setUrl("https://www.whyq.sg");
                             pArticle.setDomainId("whyq.sg");
+                            pArticle.setArticleId("~");
 
                             Article.Domain domain = new Article.Domain();
                             domain.setName("WhyQ");
                             domain.setUrl("https://www.whyq.sg");
                             pArticle.setDomain(domain);
+
                             image.setArticle(pArticle);
                             image.setTitle(null);
                             image.setCaption(null);
