@@ -1,8 +1,8 @@
 package munch.article;
 
 import catalyst.link.PlaceLinkClient;
-import munch.article.data.Article;
 import munch.article.data.ArticleClient;
+import munch.article.data.ArticleSection;
 import munch.restful.core.NextNodeList;
 import org.apache.commons.lang3.StringUtils;
 
@@ -28,13 +28,13 @@ public final class ArticleLinkClient extends munch.article.link.ArticleLinkClien
     }
 
     @Override
-    public NextNodeList<Article> list(String placeId, @Nullable String nextSort, int size) {
-        NextNodeList<Article> list = super.list(placeId, nextSort, size);
+    public NextNodeList<ArticleSection> list(String placeId, @Nullable String nextSort, int size) {
+        NextNodeList<ArticleSection> list = super.list(placeId, nextSort, size);
         sanitize(list);
         return list;
     }
 
-    private static void sanitize(List<Article> articles) {
+    private static void sanitize(List<ArticleSection> articles) {
         Set<String> uniquePairs = new HashSet<>();
         Set<String> uniqueUrls = new HashSet<>();
 

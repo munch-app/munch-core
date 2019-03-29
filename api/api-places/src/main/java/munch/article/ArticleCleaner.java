@@ -22,7 +22,6 @@ public final class ArticleCleaner extends ObjectCleaner<Article> {
     protected void clean(Article data) {
         data.setCount(null);
         data.setUpdatedMillis(null);
-        data.setContent(null);
         data.setTags(null);
 
         @Valid Image image = data.getThumbnail();
