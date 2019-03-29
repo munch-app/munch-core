@@ -7,9 +7,14 @@
 
     <no-ssr>
       <portal to="dialog-full" v-if="show.articles">
-        <div class="Existing bg-white elevation-1 p-16-24 overflow-y-auto" v-if="payload.articles.length > 0"
+        <div class="Existing bg-white elevation-1 p-24 overflow-y-auto" v-if="payload.articles.length > 0"
              v-on-clickaway="onClose">
-          <h2>Articles</h2>
+          <div class="flex-between">
+            <h2>Articles</h2>
+            <div @click="onClose">
+              Close
+            </div>
+          </div>
           <div class="List">
             <div class="Article flex hover-bg-a10 border-3 hover-pointer" v-for="article in payload.articles"
                  :key="article.articleId"

@@ -1,15 +1,21 @@
 <template>
   <div>
     <h2 class="mt-48">Images</h2>
-    <div class="mt-16">
-      <button class="small secondary-outline mr-16" @click="showImages" v-if="images.length > 0">Edit Images</button>
-      <button class="small primary-outline" @click="showUploadImage">Upload Image</button>
+    <div class="">
+      <button class="small secondary-outline mt-16 mr-16" @click="showImages" v-if="images.length > 0">Edit Images
+      </button>
+      <button class="small primary-outline mt-16" @click="showUploadImage">Upload Image</button>
     </div>
 
     <no-ssr>
       <portal to="dialog-full" v-if="show.images">
-        <div class="Existing bg-white elevation-1 p-16-24 overflow-y-auto" v-on-clickaway="onClose">
-          <h2>Images</h2>
+        <div class="Existing bg-white elevation-1 p-24 overflow-y-auto" v-on-clickaway="onClose">
+          <div class="flex-between">
+            <h2>Images</h2>
+            <div @click="onClose">
+              Close
+            </div>
+          </div>
           <p>Own an Instagram account, want it published on munch? <a class="text-underline s700 weight-600"
                                                                       href="https://partner.munch.app"
                                                                       target="_blank">partner.munch.app</a></p>
