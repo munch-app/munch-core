@@ -36,7 +36,7 @@
   export default {
     components: {AppleMapPlaceAnnotation, AppleMap, CardDelegator},
     head() {
-      return {title: 'Search · Munch - Social Dining App'}
+      return {title: 'Search · Munch - Food Discovery App'}
     },
     asyncData({store, route}) {
       if (!store.state.search.query && route.query.qid) {

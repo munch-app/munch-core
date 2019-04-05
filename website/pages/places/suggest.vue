@@ -103,7 +103,7 @@
       return this.$head({
         robots: {follow: false, index: true},
         graph: {
-          title: `Suggest an edit · Munch - Social Dining App`,
+          title: `Suggest an edit · Munch - Food Discovery App`,
         },
       })
     },

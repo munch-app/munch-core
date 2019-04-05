@@ -1,6 +1,6 @@
 module.exports = {
   head: {
-    title: 'Munch - Social Dining App',
+    title: 'Munch - Food Discovery App',
     meta: [
       {charset: 'utf-8'},
       {name: 'viewport', content: 'width=device-width, initial-scale=1'},
@@ -10,7 +10,7 @@ module.exports = {
       },
       {
         hid: 'og:title', name: 'og:title',
-        content: 'Munch - Social Dining App'
+        content: 'Munch - Food Discovery App'
       },
       {
         hid: 'og:description', name: 'og:description',
@@ -18,7 +18,7 @@ module.exports = {
       },
       {hid: 'apple-itunes-app', name: 'apple-itunes-app', content: 'app-id=1255436754'},
       {hid: 'og:type', name: 'og:type', content: 'article'},
-      {name: 'og:site_name', content: 'Munch - Social Dining App'},
+      {name: 'og:site_name', content: 'Munch - Food Discovery App'},
       {name: 'og:locale', content: 'en_uk'},
       {name: 'msapplication-TileColor', content: '#da532c'},
       {name: 'theme-color', content: '#ffffff'},

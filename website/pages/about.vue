@@ -45,7 +45,7 @@
 <script>
   export default {
     head() {
-      return {title: 'About · Munch - Social Dining App'}
+      return {title: 'About · Munch - Food Discovery App'}
     },
     asyncData({$prismic}) {
       return $prismic.single('about').then(({data}) => {
