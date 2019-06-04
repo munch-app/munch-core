@@ -28,8 +28,8 @@ public final class SearchHomeSeriesPlugin extends AbstractSearchSeriesListPlugin
             positions.add(ofPosition(101, card));
         });
 
-        // Pet Friendly
-        load("7f39d9f9-8ddc-4fe5-bba6-6acb56b07e5f", 10).ifPresent(card -> {
+        // Behind the Camera
+        load("289443fa-650b-4d07-b44c-d978a9b4d6b7", 10).ifPresent(card -> {
             card.getOptions().put("expand", "width");
             positions.add(ofPosition(102, card));
         });
