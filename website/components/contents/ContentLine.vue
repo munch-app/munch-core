@@ -1,5 +1,5 @@
 <template>
-  <div class="flex-center">
+  <div class="flex-center mb-24">
     <div class="flex">
       <div v-for="i in [1,2,3,4]" :key="i"/>
     </div>

@@ -138,7 +138,13 @@
     }
   }
 
+  .Panel {
+    padding-right: 80px;
+    background: white;
+  }
+
   .Menu {
     margin-right: 12px;
+    background: white;
   }
 </style>

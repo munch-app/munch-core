@@ -30,7 +30,7 @@ module.exports = {
       {rel: 'manifest', href: '/meta/site.1.webmanifest'},
       {rel: 'mask-icon', href: '/meta/safari-pinned-tab.1.svg', color: '#f05f3b'},
 
-      {rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700|Roboto'},
+      {rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Roboto:300,300i,400,400i,500,500i,700,700i&display=swap'},
     ],
     script: [
       {src: 'https://cdn.apple-mapkit.com/mk/5.x.x/mapkit.js'},

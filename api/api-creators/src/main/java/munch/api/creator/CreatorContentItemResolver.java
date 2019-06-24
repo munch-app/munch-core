@@ -126,6 +126,7 @@ public final class CreatorContentItemResolver {
                     ObjectNode placeNode = JsonUtils.createObjectNode();
                     placeNode.put("placeId", attrs.path("placeId").asText());
                     placeNode.put("placeName", attrs.path("placeName").asText());
+                    placeNode.set("options", attrs.path("options"));
                     items.add(newItem(items.size(), Type.place, placeNode));
                     break;
 
@@ -171,7 +172,7 @@ public final class CreatorContentItemResolver {
     private static CreatorContentItem newTextItem(int index, Type type, CreatorContentDraft.Node node) {
         List<CreatorContentDraft.TextContent> content = Objects.requireNonNull(node.getContent());
         ObjectNode objectNode = JsonUtils.createObjectNode();
-        objectNode.set("content", JsonUtils.toTree(content));
+        objectNode.set("content", JsonUtils.valueToTree(content));
         return newItem(index, type, objectNode);
     }
 

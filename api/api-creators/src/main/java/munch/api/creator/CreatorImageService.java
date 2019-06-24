@@ -3,10 +3,8 @@ package munch.api.creator;
 import munch.file.Image;
 import munch.file.ImageClient;
 import munch.file.ImageMeta;
-import munch.restful.core.exception.ForbiddenException;
 import munch.restful.server.JsonCall;
 import munch.user.client.CreatorProfileClient;
-import munch.user.data.CreatorProfile;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -40,18 +38,15 @@ public final class CreatorImageService extends AbstractCreatorService {
 
     @Override
     public void route() {
-        AUTHENTICATED("/creators/:creatorId/contents/:contentId/images", () -> {
+        AUTHENTICATED("/creators/:creatorId/contents/*/images", () -> {
             POST("", this::post);
         });
     }
 
     public ImageMeta post(JsonCall call) throws IOException, ServletException {
-        CreatorProfile creatorProfile = profileClient.get(call.pathString("creatorId"));
-        if (creatorProfile == null) throw new ForbiddenException("Creator Forbidden");
-
         Image.Profile profile = new Image.Profile();
-        profile.setId(creatorProfile.getCreatorId());
-        profile.setName(creatorProfile.getName());
+        profile.setId("Temporary");
+        profile.setName("Temporary");
         profile.setType("munch-user-creator");
 
 

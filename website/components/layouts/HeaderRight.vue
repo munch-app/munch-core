@@ -128,11 +128,12 @@
         }, 1000);
       }
 
-      if (Cookies.get('GetAppDialog') === 'seen') return
-      setTimeout(() => {
-        this.openGetApp()
-        this.$track.view('GetAppDialog', 'GB13: Popup GetAppDialog')
-      }, 45000)
+      // Disabled, After Ign, Focusing on Web
+      // if (Cookies.get('GetAppDialog') === 'seen') return
+      // setTimeout(() => {
+      //   this.openGetApp()
+      //   this.$track.view('GetAppDialog', 'GB13: Popup GetAppDialog')
+      // }, 45000)
     }
   }
 </script>

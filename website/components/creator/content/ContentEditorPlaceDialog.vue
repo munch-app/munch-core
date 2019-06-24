@@ -1,19 +1,20 @@
 <template>
   <div>
-    <portal to="dialog-w400">
-      <div class="PlaceSearch" v-on-clickaway="onClose">
-        <div class="bg-whisper050 mb-24">
-          <input ref="input" class="TextBar bg-white wh-100 large" type="text" placeholder="Search Place Name"
-                 v-model="query">
-        </div>
+    <portal to="dialog-blank">
+      <div class="SearchDialog bg-white" v-on-clickaway="onClose">
+        <input ref="input" class="large p-16-24 hr-bot" type="text"
+               placeholder="Search restaurant"
+               v-model="query">
 
-        <div class="PlaceList">
+        <div class="PlaceList p-16-24">
           <div v-for="place in places" :key="place.placeId" @click="onPlace(place)"
-               class="PlaceItem flex hover-pointer flex-align-center">
+               class="PlaceItem hover-pointer flex-align-center">
 
-            <image-sizes v-if="place.images.length > 0" :sizes="place.images[0].sizes"
-                         width="100" object-fit="cover" class="wh-48px flex-no-shrink"/>
-            <div v-else class="bg-whisper200 p-8 wh-48px small">No Image</div>
+            <div class="flex-no-shrink overflow-hidden border-3">
+              <image-sizes v-if="place.images.length > 0" :sizes="place.images[0].sizes"
+                           width="100" object-fit="cover" class="wh-64px"/>
+              <div v-else class="bg-whisper100 p-12 text-center b-a75 flex-center tiny wh-64px">No Image Available</div>
+            </div>
 
             <div class="ml-16">
               <h5 class="m-0">{{place.name}}</h5>
@@ -72,16 +73,24 @@
 </script>
 
 <style scoped lang="less">
+  .SearchDialog {
+    height: 50vh;
+    min-width: 576px;
+  }
+
+  input {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0, .1);
+  }
+
   .PlaceList {
     overflow: auto;
-    max-height: 320px;
-
-    margin-top: -8px;
-    margin-bottom: -8px;
+    height: calc(100% - 32px - 28px); // 32px - 28px
   }
 
   .PlaceItem {
-    padding-top: 8px;
-    padding-bottom: 8px;
+    padding-top: 6px;
+    padding-bottom: 6px;
   }
 </style>

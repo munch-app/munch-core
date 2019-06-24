@@ -1,5 +1,5 @@
 a, p, ul, li, .text {
-  font-family: 'Open Sans', 'Roboto', sans-serif;
+  font-family: 'Roboto', 'Open Sans', sans-serif;
   line-height: 1.5;
   font-weight: 400;
 }
@@ -11,7 +11,7 @@ a, p, ul, li, .text {
 .heading:extend(.text) {
   font-weight: 600;
   line-height: 1.3;
-  color: rgba(0, 0, 0, 0.75);
+  color: rgba(0, 0, 0, 0.7);
 
   margin-top: 0;
   margin-bottom: 8px;
@@ -60,11 +60,15 @@ p:extend(.text), .regular:extend(.text) {
   color: rgba(0, 0, 0, 0.85);
 }
 
-.small:extend(.text) {
+small:extend(.text), .small:extend(.text) {
   font-size: 12px;
 }
 
 .small-bold:extend(.small, .weight-600) {
+}
+
+.tiny:extend(.text) {
+  font-size: 10px;
 }
 
 .weight-300 {

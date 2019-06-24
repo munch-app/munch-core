@@ -2,7 +2,6 @@ package munch.api.contents;
 
 import munch.api.ApiService;
 import munch.data.client.PlaceCachedClient;
-import munch.data.place.Place;
 import munch.restful.core.NextNodeList;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonResult;
@@ -14,7 +13,6 @@ import munch.user.data.CreatorContentItem;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -70,9 +68,9 @@ public final class ContentService extends ApiService {
                 .filter(item -> item.getType() == CreatorContentItem.Type.place)
                 .map(item -> Objects.requireNonNull(item.getBody()).path("placeId").asText());
 
-        Map<String, Place> places = placeClient.get(placeIds);
+
 
         return JsonResult.ok(items)
-                .put("places", places);
+                .put("places", placeClient.get(placeIds));
     }
 }

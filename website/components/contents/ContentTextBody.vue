@@ -1,14 +1,17 @@
 <template>
-  <div :class="className">
-    <span v-for="span in item.body.content">
-      {{span.text}}
-    </span>
-  </div>
+  <p :class="className">
+    <content-text-span v-for="span in item.body.content" :marks="span.marks" :text="span.text" :type="span.type"/>
+  </p>
+
+  <!--  Improved: Use the correct h1, h2, p -->
 </template>
 
 <script>
+  import ContentTextSpan from "./ContentTextSpan";
+
   export default {
     name: "ContentTextBody",
+    components: {ContentTextSpan},
     props: {
       item: {
         type: Object,
@@ -28,6 +31,20 @@
           default:
             return 'large Body'
         }
+      }
+    },
+    methods: {
+      getClasses(span) {
+        if (span.marks) {
+          _.map()
+          _.join(span.marks, '')
+        }
+      },
+      hasLink(span) {
+        for (const mark in span.marks) {
+          mark.type === 'link'
+        }
+        return false
       }
     }
   }

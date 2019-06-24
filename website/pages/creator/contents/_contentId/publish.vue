@@ -36,7 +36,7 @@
       </div>
     </div>
 
-    <div class="mtb-64">
+    <div class="mtb-64" v-if="false">
       <h2 class="b-a60">Content in Series Preview</h2>
       <div class="mt-24 ContentInSeries flex">
         <div v-for="option in [{}, {}, {}]" class="flex-grow">
@@ -45,7 +45,7 @@
       </div>
     </div>
 
-    <div class="mtb-64 flex">
+    <div class="mtb-64 flex" v-if="false">
       <div class="MobileContentPreview flex-no-shrink">
         <h2 class="b-a60">Mobile Content Preview</h2>
 
@@ -68,7 +68,7 @@
       </div>
     </div>
 
-    <content-nav-header @delete="deleteContent" publish/>
+    <content-nav-header @delete="deleteContent" publish :content-id="contentId"/>
 
     <div class="absolute" v-show="false">
       <input ref="fileInput" type="file" accept="image/x-png,image/gif,image/jpeg" @change="onFileChanged">

@@ -1,5 +1,4 @@
 <!--
-3 Dialog portal are supported for now
 dialog:
 Where you have to style everything yourself.
 

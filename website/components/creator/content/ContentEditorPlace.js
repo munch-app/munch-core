@@ -15,12 +15,20 @@ export default class Place extends Node {
         placeName: {
           default: null,
         },
+        options: {
+          default: null,
+          // image, style
+        }
       },
       group: 'block',
-      draggable: true,
+      inline: false,
 
-      parseDOM: [{tag: 'unknown',}],
-      toDOM: node => ['unknown', node.attrs],
+      draggable: true,
+      content: 'block*',
+      selectable: true,
+
+      parseDOM: [{tag: 'unknown-m-place',}],
+      toDOM: node => ['unknown-m-place', node.attrs],
     }
   }
 

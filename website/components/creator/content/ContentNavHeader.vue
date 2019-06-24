@@ -10,6 +10,11 @@
            @click="more = false" v-on-clickaway="() => {if(more) more = false}">
         <div class="border-3 bg-white w-100 elevation-2 text index-top-elevation border lh-1">
           <div v-if="!publish" @click="onSave">Save content</div>
+          <div>
+            <a :href="`/contents/${cid}`" target="_blank">
+              Preview content
+            </a>
+          </div>
           <div @click="deleting = true">Delete content</div>
         </div>
       </div>
@@ -30,6 +35,8 @@
 </template>
 
 <script>
+  import base64 from 'uuid-base64'
+
   export default {
     name: "ContentNavHeader",
     data() {
@@ -42,6 +49,14 @@
       publish: {
         type: Boolean,
         default: false
+      },
+      contentId: {
+        type: String
+      }
+    },
+    computed: {
+      cid() {
+        return base64.encode(this.contentId)
       }
     },
     methods: {

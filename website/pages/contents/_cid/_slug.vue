@@ -1,8 +1,6 @@
 <template>
   <div class="pb-64 bg-steam">
-    <content-banner :content="content" :url="url"/>
-
-    <div class="Content flex-justify-between relative container-1200 mt-64">
+    <div class="Content flex-justify-between relative container-1200 mt-48">
       <div class="ItemList">
         <div v-for="item in items">
           <content-text-body v-if="item.type === 'title'" :item="item"/>
@@ -14,6 +12,7 @@
           <content-line v-else-if="item.type === 'line'"/>
 
           <content-place v-else-if="item.type ==='place'" :place="places[item.body.placeId]"
+                         :options="item.body.options || {}"
                          :place-name="item.body.placeName" :place-id="item.body.placeId" ref="places"/>
         </div>
       </div>
@@ -53,6 +52,7 @@
   import ContentImage from "../../../components/contents/ContentImage";
   import AppleMapPlaceMarkerAnnotation from "../../../components/core/AppleMapPlaceMarkerAnnotation";
   import ContentBanner from "../../../components/contents/ContentBanner";
+  import SocialShare from "../../../components/core/SocialShare";
 
   function appendLoad({items, places, next}) {
     if (next) {
@@ -91,6 +91,7 @@
 
   export default {
     components: {
+      SocialShare,
       ContentBanner,
       AppleMapPlaceMarkerAnnotation,
       ContentImage,

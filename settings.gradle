@@ -16,6 +16,11 @@ include 'api:api-locations'
 include 'api:api-vouchers'
 
 /**
+ * Munch App Post-Ignatius Database Engine
+ */
+include 'database'
+
+/**
  * Munch App Website
  */
 include 'website'
