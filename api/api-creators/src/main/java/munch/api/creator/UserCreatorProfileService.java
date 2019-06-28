@@ -42,7 +42,8 @@ public final class UserCreatorProfileService extends ApiService {
         final String userId = request.getUserId();
 
         NextNodeList<CreatorUser> creatorUsers = userCreatorClient.list(userId, null, call.querySize(5, 10));
-        return creatorUsers.map(creatorUser -> creatorProfileClient.get(creatorUser.getCreatorId()));
+        return creatorUsers
+                .map(creatorUser -> creatorProfileClient.get(creatorUser.getCreatorId()));
     }
 
     public CreatorProfile post(JsonCall call, ApiRequest request) {

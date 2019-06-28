@@ -35,10 +35,6 @@
       imageSizes() {
         return this.content && this.content.image && this.content.image.sizes
       },
-      imageCredit() {
-        const image = this.content && this.content.image
-        return null
-      },
       imageAspectRatio() {
         if (this.options && this.options.expand === 'height') {
           return 'r-10-12 ExpandHeight'
