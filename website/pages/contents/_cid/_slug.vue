@@ -10,6 +10,10 @@
 
           <content-image v-else-if="item.type === 'image'" :item="item"/>
           <content-line v-else-if="item.type === 'line'"/>
+          <content-avatar v-else-if="item.type === 'avatar'"
+                          :images="item.body.images"
+                          :line1="item.body.line1"
+                          :line2="item.body.line2"/>
 
           <content-place v-else-if="item.type ==='place'" :place="places[item.body.placeId]"
                          :options="item.body.options || {}"
@@ -53,6 +57,7 @@
   import AppleMapPlaceMarkerAnnotation from "../../../components/core/AppleMapPlaceMarkerAnnotation";
   import ContentBanner from "../../../components/contents/ContentBanner";
   import SocialShare from "../../../components/core/SocialShare";
+  import ContentAvatar from "../../../components/contents/ContentAvatar";
 
   function appendLoad({items, places, next}) {
     if (next) {
@@ -91,6 +96,7 @@
 
   export default {
     components: {
+      ContentAvatar,
       SocialShare,
       ContentBanner,
       AppleMapPlaceMarkerAnnotation,

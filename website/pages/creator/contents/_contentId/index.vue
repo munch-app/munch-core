@@ -23,6 +23,7 @@
   import Line from '../../../../components/creator/content/ContentEditorLine'
   import Image from '../../../../components/creator/content/ContentEditorImage'
   import Place from '../../../../components/creator/content/ContentEditorPlace'
+  import Avatar from '../../../../components/creator/content/ContentEditorAvatar'
   import ContentNavHeader from "../../../../components/creator/content/ContentNavHeader";
 
   export default {
@@ -86,6 +87,7 @@
           new Line(),
           new Image(),
           new Place(),
+          new Avatar(),
         ],
         content: this.draft,
         onUpdate: ({getJSON}) => {

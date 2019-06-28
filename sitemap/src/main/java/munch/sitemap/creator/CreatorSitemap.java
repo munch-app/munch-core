@@ -14,10 +14,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.net.MalformedURLException;
 import java.nio.ByteBuffer;
-import java.util.Base64;
-import java.util.Iterator;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -70,7 +67,7 @@ public final class CreatorSitemap implements SitemapProvider {
 
         return Iterators.transform(iterator, content -> {
             Objects.requireNonNull(content);
-            return build(buildPath(content), 1.0, ChangeFreq.WEEKLY);
+            return build(buildPath(content), new Date(content.getUpdatedMillis()), 1.0, ChangeFreq.WEEKLY);
         });
     }
 

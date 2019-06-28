@@ -1,4 +1,5 @@
 <template>
+  <!--  TODO: Remove because deprecated -->
   <div class="bg-white elevation-light zero">
     <div class="ContentBanner container-1200 flex-justify-between">
       <div>

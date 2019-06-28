@@ -130,6 +130,11 @@ public final class CreatorContentItemResolver {
                     items.add(newItem(items.size(), Type.place, placeNode));
                     break;
 
+                case "avatar":
+                    Objects.requireNonNull(attrs);
+                    items.add(newItem(items.size(), Type.avatar, attrs));
+                    break;
+
                 case "line":
                     items.add(newItem(items.size(), Type.line, null));
                     break;

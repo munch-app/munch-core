@@ -15,6 +15,9 @@
         <div class="ButtonFloating" @click="onClickType(commands, 'place')">
           <simple-svg fill="black" :filepath="require('~/assets/icon/creator/place.svg')"/>
         </div>
+        <div class="ButtonFloating" @click="onClickType(commands, 'avatar')">
+          <simple-svg fill="black" :filepath="require('~/assets/icon/icons8-name.svg')"/>
+        </div>
         <div v-if="contentId" class="ButtonFloating" @click="onClickType(commands, 'image')">
           <simple-svg fill="black" :filepath="require('~/assets/icon/creator/image.svg')"/>
         </div>
