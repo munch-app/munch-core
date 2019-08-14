@@ -1,6 +1,6 @@
 package munch.api.user;
 
-import munch.api.ApiRequest;
+import app.munch.api.ApiRequest;
 import munch.api.ApiService;
 import munch.api.user.collection.DefaultUserPlaceCollection;
 import munch.data.client.PlaceClient;
@@ -54,7 +54,7 @@ public final class UserPlaceCollectionService extends ApiService {
      * @return List of UserPlaceCollection owned by current user
      */
     public JsonResult list(JsonCall call) {
-        String userId = call.get(ApiRequest.class).getUserId();
+        String userId = call.get(ApiRequest.class).getAccountId();
         Long sort = call.queryObject("next.sort", null, Long.class);
         int size = call.querySize(10, 20);
 
@@ -82,7 +82,7 @@ public final class UserPlaceCollectionService extends ApiService {
      */
     public UserPlaceCollection get(JsonCall call) {
         String collectionId = call.pathString("collectionId");
-        String userId = call.get(ApiRequest.class).optionalUserId().orElse(null);
+        String userId = call.get(ApiRequest.class).accountId().orElse(null);
 
         UserPlaceCollection collection = collectionClient.get(collectionId);
         if (collection == null) return null;
@@ -94,7 +94,7 @@ public final class UserPlaceCollectionService extends ApiService {
     }
 
     public UserPlaceCollection post(JsonCall call) {
-        String userId = call.get(ApiRequest.class).getUserId();
+        String userId = call.get(ApiRequest.class).getAccountId();
 
         UserPlaceCollection collection = call.bodyAsObject(UserPlaceCollection.class);
         collection.setCreatedBy(UserPlaceCollection.CreatedBy.User);
@@ -103,7 +103,7 @@ public final class UserPlaceCollectionService extends ApiService {
     }
 
     public UserPlaceCollection patch(JsonCall call) {
-        String userId = call.get(ApiRequest.class).getUserId();
+        String userId = call.get(ApiRequest.class).getAccountId();
         String collectionId = call.pathString("collectionId");
 
         validateAccess(collectionClient.get(collectionId), userId);
@@ -114,7 +114,7 @@ public final class UserPlaceCollectionService extends ApiService {
     }
 
     public UserPlaceCollection delete(JsonCall call) {
-        String userId = call.get(ApiRequest.class).getUserId();
+        String userId = call.get(ApiRequest.class).getAccountId();
         String collectionId = call.pathString("collectionId");
 
         validateAccess(collectionClient.get(collectionId), userId);

@@ -1,6 +1,6 @@
 package munch.api.creator;
 
-import munch.api.ApiRequest;
+import app.munch.api.ApiRequest;
 import munch.api.ApiService;
 import munch.restful.core.NextNodeList;
 import munch.restful.server.JsonCall;
@@ -39,7 +39,7 @@ public final class UserCreatorProfileService extends ApiService {
     }
 
     public NextNodeList<CreatorProfile> list(JsonCall call, ApiRequest request) {
-        final String userId = request.getUserId();
+        final String userId = request.getAccountId();
 
         NextNodeList<CreatorUser> creatorUsers = userCreatorClient.list(userId, null, call.querySize(5, 10));
         return creatorUsers
@@ -47,7 +47,7 @@ public final class UserCreatorProfileService extends ApiService {
     }
 
     public CreatorProfile post(JsonCall call, ApiRequest request) {
-        final String userId = request.getUserId();
+        final String userId = request.getAccountId();
 
         CreatorProfile profile = call.bodyAsObject(CreatorProfile.class);
         return userCreatorClient.post(userId, profile);

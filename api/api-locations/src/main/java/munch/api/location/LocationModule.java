@@ -1,6 +1,6 @@
 package munch.api.location;
 
-import munch.api.ApiServiceModule;
+import app.munch.api.ApiServiceModule;
 
 /**
  * Created by: Fuxing
@@ -11,6 +11,6 @@ import munch.api.ApiServiceModule;
 public final class LocationModule extends ApiServiceModule {
     @Override
     protected void configure() {
-        addService(LocationService.class);
+        addDeprecatedService(LocationService.class);
     }
 }

@@ -1,7 +1,7 @@
 package munch.api.feed;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import munch.api.ApiRequest;
+import app.munch.api.ApiRequest;
 import munch.api.ApiService;
 import munch.data.client.PlaceCachedClient;
 import munch.feed.FeedItemClient;
@@ -58,8 +58,8 @@ public final class FeedItemService extends ApiService {
     }
 
     private List<UserSavedPlace> getSavedPlaces(ApiRequest request, Set<String> placeIds) {
-        if (!request.optionalUserId().isPresent()) return List.of();
-        String userId = request.optionalUserId().get();
+        if (!request.accountId().isPresent()) return List.of();
+        String userId = request.accountId().get();
 
         List<UserSavedPlace> savedPlaces = new ArrayList<>();
         placeIds.forEach(placeId -> {

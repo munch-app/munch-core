@@ -1,0 +1,548 @@
+{
+  "version": "2019-02-11",
+  "type": "doc",
+  "content": [
+    {
+      "type": "avatar",
+      "attrs": {
+        "images": [
+          {
+            "imageId": "amkWN-a1QhCDveKk_XyKvw",
+            "profile": {
+              "type": "munch-user-creator",
+              "id": "Temporary",
+              "name": "Temporary"
+            },
+            "sizes": [
+              {
+                "width": 160,
+                "height": 160,
+                "url": "https://s3.dualstack.ap-southeast-1.amazonaws.com/mimg-s/amkWN-a1QhCDveKk_XyKvw_160x160.jpg"
+              },
+              {
+                "width": 320,
+                "height": 320,
+                "url": "https://s3.dualstack.ap-southeast-1.amazonaws.com/mimg-s/amkWN-a1QhCDveKk_XyKvw_320x320.jpg"
+              },
+              {
+                "width": 640,
+                "height": 640,
+                "url": "https://s3.dualstack.ap-southeast-1.amazonaws.com/mimg-s/amkWN-a1QhCDveKk_XyKvw_640x640.jpg"
+              },
+              {
+                "width": 1080,
+                "height": 1080,
+                "url": "https://s3.dualstack.ap-southeast-1.amazonaws.com/mimg-s/amkWN-a1QhCDveKk_XyKvw_1080x1080.jpg"
+              }
+            ],
+            "meta": {
+              "contentType": "image/jpeg",
+              "width": 1921,
+              "height": 1921,
+              "bytes": 1103057,
+              "createdMillis": 1561687154486
+            }
+          }
+        ],
+        "line1": "Written by",
+        "line2": "Fuxing"
+      }
+    },
+    {
+      "type": "heading",
+      "attrs": {
+        "level": 1
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "Improved Authoring Experience"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "marks": [
+            {
+              "type": "bold"
+            }
+          ],
+          "type": "text",
+          "text": "Auto appending of new last paragraph. "
+        },
+        {
+          "type": "text",
+          "text": "After 4 seconds of inactivity, the editor will auto append a new paragraph to indicative to the user that they can add more content below. This behaviour is implemented because in a blank canvas it's confusing whether the last line is a paragraph or blank space. (UX/Tech Problem)"
+        }
+      ]
+    },
+    {
+      "type": "avatar",
+      "attrs": {
+        "images": null,
+        "line1": null,
+        "line2": null
+      }
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "marks": [
+            {
+              "type": "bold"
+            }
+          ],
+          "type": "text",
+          "text": "Hard-break"
+        },
+        {
+          "type": "text",
+          "text": ", fixed an issue with hard break."
+        },
+        {
+          "type": "hard_break"
+        },
+        {
+          "type": "text",
+          "text": "(this is a hard-break line)"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "marks": [
+            {
+              "type": "bold"
+            }
+          ],
+          "type": "text",
+          "text": "Bold, "
+        },
+        {
+          "marks": [
+            {
+              "type": "italic"
+            }
+          ],
+          "type": "text",
+          "text": "Italic"
+        },
+        {
+          "marks": [
+            {
+              "type": "bold"
+            }
+          ],
+          "type": "text",
+          "text": ", "
+        },
+        {
+          "marks": [
+            {
+              "type": "underline"
+            }
+          ],
+          "type": "text",
+          "text": "Underline"
+        },
+        {
+          "type": "text",
+          "text": ", "
+        },
+        {
+          "marks": [
+            {
+              "type": "link",
+              "attrs": {
+                "href": "https://www.munch.app"
+              }
+            }
+          ],
+          "type": "text",
+          "text": "Linking out"
+        },
+        {
+          "type": "text",
+          "text": ", 4 more inline editing options."
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "marks": [
+            {
+              "type": "bold"
+            }
+          ],
+          "type": "text",
+          "text": "Bigger place search dialog"
+        },
+        {
+          "type": "text",
+          "text": " for adding of places in the content. Temporary improvements, more to come later."
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "marks": [
+            {
+              "type": "bold"
+            }
+          ],
+          "type": "text",
+          "text": "Custom image"
+        },
+        {
+          "type": "text",
+          "text": ", ability to add custom image to Place block in editor."
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "marks": [
+            {
+              "type": "bold"
+            }
+          ],
+          "type": "text",
+          "text": "Changed entire site font"
+        },
+        {
+          "type": "text",
+          "text": ", the previous font doesn't have a good bold glyphs variety. Changed to "
+        },
+        {
+          "marks": [
+            {
+              "type": "bold"
+            }
+          ],
+          "type": "text",
+          "text": "Roboto"
+        },
+        {
+          "type": "text",
+          "text": "."
+        }
+      ]
+    },
+    {
+      "type": "line"
+    },
+    {
+      "type": "heading",
+      "attrs": {
+        "level": 2
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "2 Design Style"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "marks": [
+            {
+              "type": "bold"
+            }
+          ],
+          "type": "text",
+          "text": "Option 1: "
+        },
+        {
+          "type": "text",
+          "text": "Rectangle Card"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "Generally the ideal of this rectangle card is to invite clicking. It's also good to separate non editable component into a block so that it doesn't seems like it's natural text."
+        }
+      ]
+    },
+    {
+      "type": "place",
+      "attrs": {
+        "placeId": "b72574d1-5506-482a-bf87-a63bbebc935a",
+        "placeName": "Chinese And Local Food",
+        "options": null
+      }
+    },
+    {
+      "type": "place",
+      "attrs": {
+        "placeId": "32a560c2-ee50-4b37-b0b6-8b1e450b9f35",
+        "placeName": "Din Tai Feng @ Raffles City",
+        "options": null
+      }
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "marks": [
+            {
+              "type": "bold"
+            }
+          ],
+          "type": "text",
+          "text": "Option 2:"
+        },
+        {
+          "type": "text",
+          "text": " Large Banner, (old design)"
+        }
+      ]
+    },
+    {
+      "type": "place",
+      "attrs": {
+        "placeId": "3ee025be-89c9-45aa-9461-aa9e1220f571",
+        "placeName": "Chinese Food (S4) @ Quad Cafe",
+        "options": {
+          "style": 2
+        }
+      }
+    },
+    {
+      "type": "place",
+      "attrs": {
+        "placeId": "32a560c2-ee50-4b37-b0b6-8b1e450b9f35",
+        "placeName": "Din Tai Feng @ Raffles City",
+        "options": {
+          "style": 2
+        }
+      }
+    },
+    {
+      "type": "paragraph"
+    },
+    {
+      "type": "heading",
+      "attrs": {
+        "level": 2
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "Custom Image"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "Below is an example with custom image selected from the list."
+        }
+      ]
+    },
+    {
+      "type": "place",
+      "attrs": {
+        "placeId": "81972e5f-ab58-416e-972e-9c797b37f56d",
+        "placeName": "Alter Ego",
+        "options": {
+          "image": {
+            "imageId": "ps_ig_1576066645678655547_3970085221",
+            "sort": "f-05e69ec0-5c03-cfe4-b2b9-66d68eb9ec67",
+            "sizes": [
+              {
+                "width": 150,
+                "height": 150,
+                "url": "https://s3.dualstack.ap-southeast-1.amazonaws.com/mimg-ps/ps_ig_1576066645678655547_3970085221_150x150.jpg"
+              },
+              {
+                "width": 320,
+                "height": 320,
+                "url": "https://s3.dualstack.ap-southeast-1.amazonaws.com/mimg-ps/ps_ig_1576066645678655547_3970085221_320x320.jpg"
+              },
+              {
+                "width": 640,
+                "height": 640,
+                "url": "https://s3.dualstack.ap-southeast-1.amazonaws.com/mimg-ps/ps_ig_1576066645678655547_3970085221_640x640.jpg"
+              }
+            ],
+            "caption": "Stuffed full with braised beef short rib, and a special blend of 3 cheeses to achieve maximum #cheeseporn goodness, there’s no denying that our crowd favourite Shortrib Grilled Cheese ain’t for the fainthearted. Photo by @mightyfoodie.",
+            "instagram": {
+              "accountId": "3970085221",
+              "link": "https://www.instagram.com/p/BXfUEOOBIg7/",
+              "mediaId": "1576066645678655547_3970085221",
+              "username": "alteregosg"
+            },
+            "createdMillis": 1502101806000
+          }
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "Below is an example with custom image uploaded."
+        }
+      ]
+    },
+    {
+      "type": "place",
+      "attrs": {
+        "placeId": "81972e5f-ab58-416e-972e-9c797b37f56d",
+        "placeName": "Alter Ego",
+        "options": {
+          "image": {
+            "imageId": "2F7szVyURfSXzipUjSlY0A",
+            "profile": {
+              "type": "munch-user-creator",
+              "id": "Temporary",
+              "name": "Temporary"
+            },
+            "sizes": [
+              {
+                "width": 160,
+                "height": 160,
+                "url": "https://s3.dualstack.ap-southeast-1.amazonaws.com/mimg-s/2F7szVyURfSXzipUjSlY0A_160x160.jpg"
+              },
+              {
+                "width": 320,
+                "height": 320,
+                "url": "https://s3.dualstack.ap-southeast-1.amazonaws.com/mimg-s/2F7szVyURfSXzipUjSlY0A_320x320.jpg"
+              },
+              {
+                "width": 640,
+                "height": 640,
+                "url": "https://s3.dualstack.ap-southeast-1.amazonaws.com/mimg-s/2F7szVyURfSXzipUjSlY0A_640x640.jpg"
+              },
+              {
+                "width": 1080,
+                "height": 1080,
+                "url": "https://s3.dualstack.ap-southeast-1.amazonaws.com/mimg-s/2F7szVyURfSXzipUjSlY0A_1080x1080.jpg"
+              }
+            ],
+            "meta": {
+              "contentType": "image/jpeg",
+              "width": 2403,
+              "height": 2403,
+              "bytes": 1444952,
+              "createdMillis": 1561356835307
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "paragraph"
+    },
+    {
+      "type": "heading",
+      "attrs": {
+        "level": 2
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "Finally, things to note about the changes."
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "1. Backend is done for speed."
+        },
+        {
+          "type": "hard_break"
+        },
+        {
+          "type": "text",
+          "text": "2. More time is spent on the front to improve user experience."
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "attrs": {
+        "level": 2
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "Avatar Component"
+        }
+      ]
+    },
+    {
+      "type": "avatar",
+      "attrs": {
+        "images": [
+          {
+            "imageId": "is4BujvvSxGnu33CJPK7VA",
+            "profile": {
+              "type": "munch-user-creator",
+              "id": "Temporary",
+              "name": "Temporary"
+            },
+            "sizes": [
+              {
+                "width": 160,
+                "height": 239,
+                "url": "https://s3.dualstack.ap-southeast-1.amazonaws.com/mimg-s/is4BujvvSxGnu33CJPK7VA_160x239.jpg"
+              },
+              {
+                "width": 320,
+                "height": 479,
+                "url": "https://s3.dualstack.ap-southeast-1.amazonaws.com/mimg-s/is4BujvvSxGnu33CJPK7VA_320x479.jpg"
+              },
+              {
+                "width": 640,
+                "height": 959,
+                "url": "https://s3.dualstack.ap-southeast-1.amazonaws.com/mimg-s/is4BujvvSxGnu33CJPK7VA_640x959.jpg"
+              },
+              {
+                "width": 1080,
+                "height": 1619,
+                "url": "https://s3.dualstack.ap-southeast-1.amazonaws.com/mimg-s/is4BujvvSxGnu33CJPK7VA_1080x1619.jpg"
+              }
+            ],
+            "meta": {
+              "contentType": "image/jpeg",
+              "width": 3109,
+              "height": 4663,
+              "bytes": 2228598,
+              "createdMillis": 1561686185267
+            }
+          }
+        ],
+        "line1": "Featuring",
+        "line2": "Fuxing"
+      }
+    },
+    {
+      "type": "paragraph"
+    }
+  ]
+}

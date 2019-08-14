@@ -1,6 +1,6 @@
 package munch.api.user;
 
-import munch.api.ApiRequest;
+import app.munch.api.ApiRequest;
 import munch.api.ApiService;
 import munch.api.user.collection.ItemAlreadyExistInPlaceCollection;
 import munch.data.client.PlaceClient;
@@ -62,7 +62,7 @@ public final class UserPlaceCollectionItemService extends ApiService {
     }
 
     public Item get(JsonCall call) {
-        call.get(ApiRequest.class).getUserId();
+        call.get(ApiRequest.class).getAccountId();
         String collectionId = call.pathString("collectionId");
         String placeId = call.pathString("placeId");
 
@@ -77,7 +77,7 @@ public final class UserPlaceCollectionItemService extends ApiService {
     }
 
     public Item put(JsonCall call) throws ItemAlreadyExistInPlaceCollection {
-        String userId = call.get(ApiRequest.class).getUserId();
+        String userId = call.get(ApiRequest.class).getAccountId();
         String collectionId = call.pathString("collectionId");
         String placeId = call.pathString("placeId");
 
@@ -92,7 +92,7 @@ public final class UserPlaceCollectionItemService extends ApiService {
     }
 
     public UserPlaceCollection.Item delete(JsonCall call) {
-        String userId = call.get(ApiRequest.class).getUserId();
+        String userId = call.get(ApiRequest.class).getAccountId();
         String collectionId = call.pathString("collectionId");
         String placeId = call.pathString("placeId");
 

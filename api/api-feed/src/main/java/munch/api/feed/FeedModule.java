@@ -1,6 +1,6 @@
 package munch.api.feed;
 
-import munch.api.ApiServiceModule;
+import app.munch.api.ApiServiceModule;
 
 /**
  * Created by: Fuxing
@@ -11,7 +11,7 @@ import munch.api.ApiServiceModule;
 public final class FeedModule extends ApiServiceModule {
     @Override
     protected void configure() {
-        addService(FeedItemService.class);
-        addService(FeedQueryService.class);
+        addDeprecatedService(FeedItemService.class);
+        addDeprecatedService(FeedQueryService.class);
     }
 }

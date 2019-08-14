@@ -44,7 +44,6 @@ public final class PlaceImageClient {
 
         List<PlaceImage> placeImages = images.stream()
                 .map(pim -> {
-                    // TODO(fuxing): Temporary need to change to new structure called credited image
                     PlaceImage image = new PlaceImage();
                     image.setImageId(pim.getImageId());
                     image.setSort(pim.getSort());
@@ -84,7 +83,6 @@ public final class PlaceImageClient {
                             return image;
 
                         case "whyq.sg":
-                            // TODO(fuxing): Temporary method, need to change to read from profile
                             pArticle = new PlaceImage.Article();
                             pArticle.setUrl("https://www.whyq.sg");
                             pArticle.setDomainId("whyq.sg");

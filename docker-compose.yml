@@ -1,0 +1,23 @@
+version: '2'
+
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=postgres_user
+      - POSTGRES_PASSWORD=postgres_passw00d
+    ports:
+      - "30431:5432"
+
+  api:
+    image: 197547471367.dkr.ecr.ap-southeast-1.amazonaws.com/munch-core/api:0.23.0
+    environment:
+      - MUNCH_DATABASE_URL=jdbc:postgresql://postgres:5432/postgres
+      - MUNCH_DATABASE_USERNAME=postgres_user
+      - MUNCH_DATABASE_PASSWORD=postgres_passw00d
+      - MUNCH_DATABASE_AUTO_CREATE=true
+
+      - HTTP_PORT=80
+    env_file: .env
+    ports:
+      - "8888:80"

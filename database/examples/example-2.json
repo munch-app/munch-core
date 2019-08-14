@@ -1,0 +1,163 @@
+{
+  "version": "2019-02-11",
+  "type": "doc",
+  "content": [
+    {
+      "type": "heading",
+      "attrs": {
+        "level": 1
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "Amazon DynamoDB"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "Amazon DynamoDB is a fully managed non-relational database service that provides fast and predictable performance with seamless scalability."
+        }
+      ]
+    },
+    {
+      "type": "image",
+      "attrs": {
+        "image": {
+          "imageId": "C2x7WCJpT5eF682dkM8EgQ",
+          "profile": {
+            "type": "munch-user-creator",
+            "id": "00000000-0000-0000-0000-000000000001",
+            "name": "Munch Singapore"
+          },
+          "sizes": [
+            {
+              "width": 320,
+              "height": 160,
+              "url": "https://s3.dualstack.ap-southeast-1.amazonaws.com/mimg-s/C2x7WCJpT5eF682dkM8EgQ_320x160.jpg"
+            },
+            {
+              "width": 359,
+              "height": 180,
+              "url": "https://s3.dualstack.ap-southeast-1.amazonaws.com/mimg-s/C2x7WCJpT5eF682dkM8EgQ_359x180.jpg"
+            }
+          ],
+          "meta": {
+            "contentType": "image/jpeg",
+            "width": 359,
+            "height": 180,
+            "bytes": 47974,
+            "createdMillis": 1549827711718
+          }
+        },
+        "caption": null
+      }
+    },
+    {
+      "type": "line"
+    },
+    {
+      "type": "heading",
+      "attrs": {
+        "level": 2
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "Announcing Amazon DynamoDB On-Demand"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "Amazon DynamoDB on-demand is a flexible new capacity mode for DynamoDB capable of serving thousands of requests per second without capacity planning. DynamoDB on-demand offers simple pay-per-request pricing for read and write requests so that you only pay for what you use, making it easy to balance costs and performance."
+        }
+      ]
+    },
+    {
+      "type": "line"
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "When you choose on-demand capacity mode, DynamoDB instantly accommodates your workloads as they ramp up or down to any previously reached traffic level. If a workload’s traffic level hits a new peak, DynamoDB adapts rapidly to accommodate the workload. Tables using on-demand capacity mode deliver the same single-digit millisecond latency, SLA commitment, and security that DynamoDB already offers. You can use on-demand capacity mode for both new and existing tables, and you can continue using the existing DynamoDB APIs without changing code. You do not have to manage any capacity settings for servers, storage, or throughput."
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "For a list of regions where DynamoDB on-demand is available, see Amazon DynamoDB Pricing. See the DynamoDB Developer Guide to learn more."
+        }
+      ]
+    },
+    {
+      "type": "image",
+      "attrs": {
+        "image": {
+          "imageId": "r02hAOxnQS-w68ZQKYeYXA",
+          "profile": {
+            "type": "munch-user-creator",
+            "id": "00000000-0000-0000-0000-000000000001",
+            "name": "Munch Singapore"
+          },
+          "sizes": [
+            {
+              "width": 328,
+              "height": 160,
+              "url": "https://s3.dualstack.ap-southeast-1.amazonaws.com/mimg-s/r02hAOxnQS-w68ZQKYeYXA_328x160.jpg"
+            },
+            {
+              "width": 360,
+              "height": 176,
+              "url": "https://s3.dualstack.ap-southeast-1.amazonaws.com/mimg-s/r02hAOxnQS-w68ZQKYeYXA_360x176.jpg"
+            }
+          ],
+          "meta": {
+            "contentType": "image/jpeg",
+            "width": 360,
+            "height": 176,
+            "bytes": 43524,
+            "createdMillis": 1549864156722
+          }
+        },
+        "caption": null
+      }
+    },
+    {
+      "type": "heading",
+      "attrs": {
+        "level": 2
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "Places with AmazonDynamoDB"
+        }
+      ]
+    },
+    {
+      "type": "place",
+      "attrs": {
+        "placeId": "7d177018-4bb8-412d-aa3f-58bca0e1d166",
+        "placeName": "Din Tai Fung"
+      }
+    },
+    {
+      "type": "paragraph"
+    },
+    {
+      "type": "paragraph"
+    }
+  ]
+}

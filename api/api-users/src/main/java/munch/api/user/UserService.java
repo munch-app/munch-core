@@ -1,6 +1,6 @@
 package munch.api.user;
 
-import munch.api.ApiRequest;
+import app.munch.api.ApiRequest;
 import munch.api.ApiService;
 import munch.restful.core.exception.AuthenticationException;
 import munch.restful.server.JsonCall;
@@ -38,12 +38,12 @@ public final class UserService extends ApiService {
     }
 
     public UserProfile getProfile(JsonCall call) {
-        String userId = call.get(ApiRequest.class).getUserId();
+        String userId = call.get(ApiRequest.class).getAccountId();
         return profileClient.get(userId);
     }
 
     public UserSetting getSetting(JsonCall call) throws AuthenticationException {
-        String userId = call.get(ApiRequest.class).getUserId();
+        String userId = call.get(ApiRequest.class).getAccountId();
         UserSetting setting = settingClient.get(userId);
         if (setting != null) return setting;
         return new UserSetting();

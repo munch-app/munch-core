@@ -6,6 +6,7 @@ package munch.api;
  * Time: 7:17 PM
  * Project: munch-core
  */
+@Deprecated
 public abstract class ObjectCleaner<T> {
 
     /**

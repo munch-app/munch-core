@@ -8,7 +8,7 @@ function error_exit {
 [[ "$(dirname "$0")" == "." ]] || error_exit "You can only run this from root project directory"
 
 function login {
-    `aws ecr get-login --no-include-email`
+    `aws ecr get-login --no-include-email --profile munch`
 }
 
 function build {

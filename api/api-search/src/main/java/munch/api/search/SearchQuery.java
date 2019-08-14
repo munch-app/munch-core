@@ -318,13 +318,13 @@ public final class SearchQuery {
 
                 /**
                  * Default: if user location is turned on
-                 * Require: Header['User-Lat-Lng']
+                 * Require: Header['Local-Lat-Lng']
                  */
                 Nearby,
 
                 /**
                  * Default: if user didn't select any location, assumed anywhere based on geo ip will be used
-                 * Require: Ip Address or Header['User-Lat-Lng']
+                 * Require: Ip Address or Header['Local-Lat-Lng']
                  * Note: if any of the above failed to find required data, Anywhere will be assumed
                  */
                 Anywhere

@@ -1,15 +1,17 @@
 project('api-core') {
     dependencies {
-        // Frameworks & Tools
-        compile group: 'com.google.inject', name: 'guice', version: guiceVersion
+        compile project(':database')
 
-        // Munch Restful
+        compile group: 'dev.fuxing', name: 'transport-service', version: transportVersion
+
+        // Munch Restful (Deprecating)
+        compile group: 'munch.restful', name: 'restful-core', version: restfulVersion
         compile group: 'munch.restful', name: 'restful-client', version: restfulVersion
         compile group: 'munch.restful', name: 'restful-server', version: restfulVersion
         compile group: 'munch.restful', name: 'restful-server-jwt', version: restfulVersion
         compile group: 'munch.restful', name: 'restful-server-firebase', version: restfulVersion
 
-        // Core Clients
+        // Core Clients (Deprecating)
         compile group: 'munch-data', name: 'munch-data-data-client', version: dataVersion
         compile group: 'munch-user', name: 'munch-user-data-client', version: userVersion
     }
@@ -43,9 +45,9 @@ project('api-search') {
     dependencies {
         compile group: 'catalyst', name: 'catalyst-edit-core-utils', version: catalystVersion
         compile group: 'catalyst', name: 'catalyst-edit-location-utils', version: catalystVersion
-        
+
         compile group: 'catalyst', name: 'catalyst-lake-airtable', version: catalystVersion
-        compile group: 'com.amazonaws', name: 'aws-java-sdk-ssm', version: awsVersion
+        compile group: 'com.amazonaws', name: 'aws-java-sdk-ssm', version: awsVersion1
 
         compile group: 'location-service', name: 'location-service-client', version: locationVersion
         compile group: 'munch-taste', name: 'munch-taste-client', version: tasteVersion
@@ -55,7 +57,7 @@ project('api-search') {
 project('api-feed') {
     dependencies {
         compile project(':api:api-users')
-        
+
         compile group: 'munch-feed', name: 'munch-feed-client', version: feedVersion
     }
 }
@@ -81,57 +83,58 @@ project('api-creators') {
     }
 }
 
-project('api-contents') {
+project('api-data') {
+    dependencies {
+        compile group: 'software.amazon.awssdk', name: 's3', version: awsVersion2
+        compile group: 'org.apache.tika', name: 'tika-core', version: '1.13'
+    }
+}
+
+project('api-admin') {
     dependencies {
     }
 }
 
-project('api-vouchers') {
+project('api-account') {
     dependencies {
-        compile group: 'catalyst', name: 'catalyst-lake-airtable', version: catalystVersion
+        compile group: 'munch-notification', name: 'munch-notification-client', version: notificationVersion
+    }
+}
+
+project('api-place') {
+    dependencies {
     }
 }
 
 dependencies {
-    compile group: 'com.amazonaws', name: 'aws-java-sdk-ssm', version: awsVersion
+    compile group: 'com.amazonaws', name: 'aws-java-sdk-ssm', version: awsVersion1
 
     compile project(':api:api-core')
+    compile project(':api:api-data')
+
+    compile project(':api:api-admin')
+    compile project(':api:api-account')
+    compile project(':api:api-place')
+
+    compile project(':api:api-search')
+    compile project(':api:api-feed')
+    compile project(':api:api-locations')
+
+    // Deprecating
     compile project(':api:api-creators')
     compile project(':api:api-contents')
     compile project(':api:api-users')
     compile project(':api:api-places')
-    compile project(':api:api-search')
-    compile project(':api:api-feed')
-    compile project(':api:api-locations')
-    compile project(':api:api-vouchers')
 }
 
-apply plugin: 'application'
-apply plugin: 'com.bmuschko.docker-java-application'
+apply from: (project.rootDir.toString() + '/docker.gradle')
+mainClassName = 'app.munch.api.ApiModule'
 
-ext.dockerTag = dockerRegistryUrl + rootProject.name + '/' + project.name + ':'
-
-mainClassName = 'munch.api.ApiModule'
-
-docker {
-    javaApplication {
-        baseImage = 'openjdk:9-jdk-slim'
-        maintainer = 'Fuxing'
-        ports = [8000]
-        tag = dockerTag + version
-    }
-}
-
-task buildImage {
-    dependsOn 'clean'
-    dependsOn 'dockerBuildImage'
-    tasks.findByName('dockerBuildImage').mustRunAfter 'clean'
-}
 
 task publishApi {
     dependsOn 'buildImage'
 
     doLast {
-        exec { commandLine "docker", "push", dockerTag + version }
+        exec { commandLine "docker", "push", dockerTag }
     }
 }

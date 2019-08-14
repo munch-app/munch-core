@@ -3,7 +3,7 @@ package munch.api.feed;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import munch.api.ApiRequest;
+import app.munch.api.ApiRequest;
 import munch.data.elastic.ElasticUtils;
 import munch.feed.FeedElasticClient;
 import munch.feed.FeedElasticUtils;

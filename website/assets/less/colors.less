@@ -1,3 +1,98 @@
+// RGB Variant
+@RGB: #07F; // Primary, Blue
+@RBG: #0F7;
+@GRB: #70F;
+
+@GBR: #7F0;
+@BRG: #F07;
+@BGR: #F70;
+
+// V22 Color Palette, BBW
+@Blue: #07F;
+@Black: #000;
+@White: #FFF;
+
+// UI Color Palette
+@Steam: #F5F5F5;
+
+.black {
+  color: @Black;
+}
+
+.bg-black {
+  background: @Black;
+}
+
+.white {
+  color: @White;
+
+  * > {
+    color: @White;
+  }
+}
+
+.bg-white {
+  background: @White;
+}
+
+.blue, .blue-hover:hover {
+  color: @Blue;
+}
+
+.bg-blue {
+  background: @Blue;
+}
+
+.steam {
+  color: @Steam;
+}
+
+.bg-steam {
+  background: @Steam;
+}
+
+.bg-green {
+  background: @RBG;
+}
+
+.bg-purple {
+  background: @GRB;
+}
+
+.bg-pink {
+  background: @BRG;
+}
+
+.bg-orange {
+  background: @BGR;
+}
+
+.b-a60 {
+  color: rgba(0, 0, 0, 0.60);
+}
+
+.b-a75 {
+  color: rgba(0, 0, 0, 0.75);
+}
+
+.b-a80 {
+  color: rgba(0, 0, 0, 0.80);
+}
+
+.b-a85 {
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.bg-b85 {
+  background: #272727;
+}
+
+.bg-overlay {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+
+// Deprecate below
 // Flamingo
 @Primary050: #FACFC4;
 @Primary100: #F7AF9D;
@@ -228,46 +323,6 @@
   background: @Close;
 }
 
-.white {
-  color: white;
-}
-
-.bg-white {
-  background: white;
-}
-
-.bg-steam {
-  background: rgb(252, 252, 252);
-}
-
-.black {
-  color: black;
-}
-
-.b-a60 {
-  color: rgba(0, 0, 0, 0.60);
-}
-
-.b-a75 {
-  color: rgba(0, 0, 0, 0.75);
-}
-
-.b-a80 {
-  color: rgba(0, 0, 0, 0.80);
-}
-
-.b-a85 {
-  color: rgba(0, 0, 0, 0.85);
-}
-
-.bg-black {
-  background: black;
-}
-
-.bg-b85 {
-  background: #272727;
-}
-
 // Peach, Saltpan & Whisper Colors
 .peach100 {
   color: @Peach100;
@@ -323,8 +378,4 @@
 
 .bg-whisper200 {
   background: @Whisper200;
-}
-
-.bg-overlay {
-  background: rgba(0, 0, 0, 0.4);
 }

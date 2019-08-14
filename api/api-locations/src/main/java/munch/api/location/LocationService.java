@@ -1,7 +1,7 @@
 package munch.api.location;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import munch.api.ApiRequest;
+import app.munch.api.ApiRequest;
 import munch.api.ApiService;
 import munch.restful.server.JsonCall;
 

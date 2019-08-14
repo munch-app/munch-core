@@ -1,0 +1,62 @@
+fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+
+  legend {
+    display: block;
+    padding: 32px 0 16px;
+    margin: 0;
+
+    font-size: 21px;
+    font-weight: 600;
+  }
+
+  .form-group {
+    margin-bottom: 24px;
+
+    > label {
+      display: block;
+      padding: 0;
+      margin: 0 0 8px;
+
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    input[type=text], input[type=number], textarea {
+      width: 100%;
+      display: block;
+
+      padding: 4px 10px;
+
+      font-size: 16px;
+      line-height: 1.5;
+
+      border-radius: 2px;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+
+    &.required {
+      input:placeholder-shown {
+        border-color: red;
+      }
+    }
+  }
+
+  .field-radios {
+    .radio-list {
+      display: flex;
+
+      label {
+        text-align: center;
+
+        input {
+          margin-right: 8px;
+        }
+
+        padding-right: 16px;
+      }
+    }
+  }
+}

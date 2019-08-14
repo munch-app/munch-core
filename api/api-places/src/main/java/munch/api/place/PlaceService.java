@@ -2,7 +2,7 @@ package munch.api.place;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import munch.api.ApiRequest;
+import app.munch.api.ApiRequest;
 import munch.api.ApiService;
 import munch.article.ArticleLinkClient;
 import munch.article.data.ArticleSection;
@@ -133,9 +133,9 @@ public final class PlaceService extends ApiService {
 
     private Map<String, Object> getUser(JsonCall call, String placeId) {
         ApiRequest request = call.get(ApiRequest.class);
-        if (!request.optionalUserId().isPresent()) return Map.of();
+        if (!request.accountId().isPresent()) return Map.of();
 
-        String userId = request.optionalUserId().get();
+        String userId = request.accountId().get();
 
         Map<String, Object> user = new HashMap<>();
         user.put("savedPlace", savedPlaceClient.get(userId, placeId));

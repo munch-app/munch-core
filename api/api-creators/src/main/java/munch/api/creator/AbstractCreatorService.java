@@ -1,6 +1,6 @@
 package munch.api.creator;
 
-import munch.api.ApiRequest;
+import app.munch.api.ApiRequest;
 import munch.api.ApiService;
 import munch.restful.core.exception.ForbiddenException;
 import munch.restful.server.JsonCall;
@@ -75,7 +75,7 @@ public abstract class AbstractCreatorService extends ApiService {
         if (call.get(CreatorUser.class) != null) return;
 
         final ApiRequest request = call.get(ApiRequest.class);
-        final String userId = request.getUserId();
+        final String userId = request.getAccountId();
 
         CreatorUser user = creatorUserClient.get(creatorId, userId);
         if (user == null) throw new ForbiddenException("Creator Forbidden");

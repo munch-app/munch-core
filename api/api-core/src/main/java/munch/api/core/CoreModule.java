@@ -1,6 +1,6 @@
 package munch.api.core;
 
-import munch.api.ApiServiceModule;
+import app.munch.api.ApiServiceModule;
 
 /**
  * Created by: Fuxing
@@ -8,11 +8,10 @@ import munch.api.ApiServiceModule;
  * Time: 12:10 AM
  * Project: munch-core
  */
+@Deprecated
 public final class CoreModule extends ApiServiceModule {
     @Override
     protected void configure() {
-        addHealth(DefaultHealthCheck.class);
-
         addCleaner(AreaCleaner.class);
         addCleaner(TagCleaner.class);
         addCleaner(LandmarkCleaner.class);

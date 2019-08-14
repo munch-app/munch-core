@@ -1,5 +1,6 @@
 package munch.api;
 
+import app.munch.api.ApiRequest;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonTransformer;
 import munch.restful.server.RequestService;
@@ -12,6 +13,7 @@ import javax.inject.Inject;
  * Time: 5:04 PM
  * Project: munch-core
  */
+@Deprecated
 public abstract class ApiService implements RequestService<ApiRequest> {
 
     private CleanerTransformer transformer;

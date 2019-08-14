@@ -18,6 +18,7 @@ import java.util.List;
  * Project: munch-core
  */
 @Singleton
+@Deprecated
 public final class PlaceCleaner extends ObjectCleaner<Place> {
 
     private final LandmarkCleaner landmarkCleaner;

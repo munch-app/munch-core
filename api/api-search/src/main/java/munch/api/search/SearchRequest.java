@@ -1,6 +1,6 @@
 package munch.api.search;
 
-import munch.api.ApiRequest;
+import app.munch.api.ApiRequest;
 import munch.api.search.filter.FilterAreaDatabase;
 import munch.data.elastic.ElasticUtils;
 import munch.data.location.Area;
@@ -39,9 +39,9 @@ public final class SearchRequest {
     private SearchRequest(JsonCall call, SearchQuery searchQuery) {
         this.call = call;
         this.searchQuery = searchQuery;
-        this.userId = call.get(ApiRequest.class).optionalUserId().orElse(null);
-        this.latLng = call.get(ApiRequest.class).optionalLatLng().orElse(null);
-        this.localDateTime = call.get(ApiRequest.class).optionalLocalDateTime().orElse(null);
+        this.userId = call.get(ApiRequest.class).accountId().orElse(null);
+        this.latLng = call.get(ApiRequest.class).latLng().orElse(null);
+        this.localDateTime = call.get(ApiRequest.class).localDateTime().orElse(null);
     }
 
     /**

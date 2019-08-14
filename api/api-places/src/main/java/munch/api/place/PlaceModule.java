@@ -1,6 +1,6 @@
 package munch.api.place;
 
-import munch.api.ApiServiceModule;
+import app.munch.api.ApiServiceModule;
 import munch.article.ArticleCleaner;
 import munch.instagram.InstagramCleaner;
 
@@ -16,7 +16,7 @@ public final class PlaceModule extends ApiServiceModule {
         addCleaner(InstagramCleaner.class);
         addCleaner(ArticleCleaner.class);
 
-        addService(PlaceService.class);
-        addService(PlaceSuggestService.class);
+        addDeprecatedService(PlaceService.class);
+        addDeprecatedService(PlaceSuggestService.class);
     }
 }

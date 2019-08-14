@@ -1,35 +1,37 @@
 rootProject.name = 'munch-core'
 
 /**
- * Munch Public API
- * Split into their various top level modules
- */
-include 'api'
-include 'api:api-core'
-include 'api:api-feed'
-include 'api:api-search'
-include 'api:api-places'
-include 'api:api-users'
-include 'api:api-creators'
-include 'api:api-contents'
-include 'api:api-locations'
-include 'api:api-vouchers'
-
-/**
  * Munch App Post-Ignatius Database Engine
  */
 include 'database'
 
 /**
+ * Munch Public API
+ * Split into their various top level modules
+ */
+include 'api'
+include 'api:api-core'
+include 'api:api-data'
+include 'api:api-admin'
+
+include 'api:api-account'
+include 'api:api-place'
+
+// Improvements & Deprecation
+include 'api:api-locations'
+include 'api:api-feed'
+include 'api:api-search'
+
+// Deprecating
+include 'api:api-creators'
+include 'api:api-contents'
+include 'api:api-places'
+include 'api:api-users'
+
+/**
  * Munch App Website
  */
 include 'website'
-
-/**
- * Munch Search Permutation Engine
- * build for SEO, directly and only used by sitemap
- */
-include 'permutation'
 
 /**
  * Munch App Website Sitemap

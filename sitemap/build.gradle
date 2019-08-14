@@ -1,34 +1,20 @@
 dependencies {
+    compile group: 'dev.fuxing', name: 'transport-core', version: transportVersion
     compile group: 'com.google.inject', name: 'guice', version: guiceVersion
+
+    compile group: 'munch.restful', name: 'restful-core', version: restfulVersion
+
     compile group: 'com.github.dfabulich', name: 'sitemapgen4j', version: '1.1.1'
-    
+
     compile group: 'catalyst', name: 'catalyst-utils', version: catalystVersion
     compile group: 'com.munch', name: 'munch-block-aws', version: '1.0.11'
 
-    compile project(':permutation')
+    compile project(':api:api-core')
+    compile project(':api:api-search')
 }
 
-apply plugin: 'application'
-apply plugin: 'com.bmuschko.docker-java-application'
-
-ext.dockerTag = dockerRegistryUrl + rootProject.name + '/' + project.name + ':latest'
-
-mainClassName = 'munch.sitemap.SitemapModule'
-
-docker {
-    javaApplication {
-        baseImage = 'fuxingloh/java:9-slim-curl'
-        maintainer = 'Fuxing'
-        ports = [8000, 7755]
-        tag = dockerTag
-    }
-}
-
-task buildImage {
-    dependsOn 'clean'
-    dependsOn 'dockerBuildImage'
-    tasks.findByName('dockerBuildImage').mustRunAfter 'clean'
-}
+apply from: (project.rootDir.toString() + '/docker.gradle')
+mainClassName = 'app.munch.sitemap.SitemapModule'
 
 task publishSitemap {
     dependsOn 'buildImage'

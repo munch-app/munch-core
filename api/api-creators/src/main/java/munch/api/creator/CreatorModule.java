@@ -1,6 +1,6 @@
 package munch.api.creator;
 
-import munch.api.ApiServiceModule;
+import app.munch.api.ApiServiceModule;
 
 /**
  * Created by: Fuxing
@@ -11,14 +11,14 @@ import munch.api.ApiServiceModule;
 public final class CreatorModule extends ApiServiceModule {
     @Override
     protected void configure() {
-        addService(UserCreatorProfileService.class);
+        addDeprecatedService(UserCreatorProfileService.class);
 
         // CreatorId based Service
-        addService(CreatorContentService.class);
-        addService(CreatorContentDraftService.class);
-        addService(CreatorSeriesService.class);
-        addService(CreatorUserService.class);
+        addDeprecatedService(CreatorContentService.class);
+        addDeprecatedService(CreatorContentDraftService.class);
+        addDeprecatedService(CreatorSeriesService.class);
+        addDeprecatedService(CreatorUserService.class);
 
-        addService(CreatorImageService.class);
+        addDeprecatedService(CreatorImageService.class);
     }
 }

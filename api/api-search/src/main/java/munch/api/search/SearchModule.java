@@ -6,13 +6,12 @@ import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagement
 import com.amazonaws.services.simplesystemsmanagement.model.GetParameterRequest;
 import com.amazonaws.services.simplesystemsmanagement.model.GetParameterResult;
 import com.google.inject.multibindings.Multibinder;
-import munch.api.ApiServiceModule;
+import app.munch.api.ApiServiceModule;
 import munch.api.search.cards.SearchPlaceCard;
 import munch.api.search.plugin.*;
 import munch.api.search.plugin.collection.SearchCollectionHeaderPlugin;
 import munch.api.search.plugin.collection.SearchCollectionItemPlugin;
 import munch.api.search.plugin.home.*;
-import munch.api.search.plugin.location.SearchBetweenGongChaPlugin;
 import munch.api.search.plugin.location.SearchBetweenPlugin;
 import munch.api.search.plugin.location.SearchLocationAreaPlugin;
 import munch.api.search.plugin.location.SearchLocationBannerPlugin;
@@ -52,12 +51,9 @@ public final class SearchModule extends ApiServiceModule {
         loaderBinder.addBinding().to(SearchCollectionHeaderPlugin.class);
         loaderBinder.addBinding().to(SearchCollectionItemPlugin.class);
 
-        // Gong Cha Campaign
-        loaderBinder.addBinding().to(SearchBetweenGongChaPlugin.class);
-
-        addService(SearchService.class);
-        addService(SuggestService.class);
-        addService(SearchFilterService.class);
+        addDeprecatedService(SearchService.class);
+        addDeprecatedService(SuggestService.class);
+        addDeprecatedService(SearchFilterService.class);
 
         addCleaner(SearchPlaceCard.Cleaner.class);
 

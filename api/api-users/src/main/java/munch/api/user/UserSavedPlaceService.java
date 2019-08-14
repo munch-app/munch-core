@@ -1,6 +1,6 @@
 package munch.api.user;
 
-import munch.api.ApiRequest;
+import app.munch.api.ApiRequest;
 import munch.api.ApiService;
 import munch.data.client.PlaceCachedClient;
 import munch.data.place.Place;
@@ -45,7 +45,7 @@ public final class UserSavedPlaceService extends ApiService {
     }
 
     public NextNodeList list(JsonCall call) {
-        String userId = call.get(ApiRequest.class).getUserId();
+        String userId = call.get(ApiRequest.class).getAccountId();
         Long next = call.queryObject("next.createdMillis", null, Long.class);
         int size = call.querySize(20, 40);
 
@@ -66,7 +66,7 @@ public final class UserSavedPlaceService extends ApiService {
     }
 
     public JsonResult put(JsonCall call) {
-        String userId = call.get(ApiRequest.class).getUserId();
+        String userId = call.get(ApiRequest.class).getAccountId();
         String placeId = call.pathString("placeId");
 
         Place place = placeClient.get(placeId);
@@ -82,7 +82,7 @@ public final class UserSavedPlaceService extends ApiService {
 
     @Nullable
     public UserSavedPlace delete(JsonCall call) {
-        String userId = call.get(ApiRequest.class).getUserId();
+        String userId = call.get(ApiRequest.class).getAccountId();
         String placeId = call.pathString("placeId");
         return savedPlaceClient.delete(userId, placeId);
     }

@@ -9,6 +9,7 @@ import munch.data.location.Area;
  * Time: 12:10 AM
  * Project: munch-core
  */
+@Deprecated
 public final class AreaCleaner extends ObjectCleaner<Area> {
     @Override
     protected Class<Area> getClazz() {

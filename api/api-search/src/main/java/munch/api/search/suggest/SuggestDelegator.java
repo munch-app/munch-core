@@ -71,9 +71,6 @@ public final class SuggestDelegator {
         return places;
     }
 
-    /**
-     * TODO(fuxing): needs improvement
-     */
     @SuppressWarnings({"Duplicates", "LoopStatementThatDoesntLoop"})
     private List<AssumptionQueryResult> suggestAssumption(String text, List<String> names, SearchRequest originalRequest) {
         for (AssumptionQuery assumptionQuery : assumptionEngine.assume(originalRequest, text)) {

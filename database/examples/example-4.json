@@ -1,0 +1,67 @@
+{
+  "version": "2019-02-11",
+  "type": "doc",
+  "content": [
+    {
+      "type": "heading",
+      "attrs": {
+        "level": 1
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "T.Dining Best Restaurants 2017"
+        }
+      ]
+    },
+    {
+      "type": "place",
+      "attrs": {
+        "placeId": "b58013bb-de1a-4d4b-80cd-0b1e6f9f1466",
+        "placeName": "Corner House"
+      }
+    },
+    {
+      "type": "place",
+      "attrs": {
+        "placeId": "43eef826-bfd9-45eb-bca7-c35efff03e81",
+        "placeName": "Odette"
+      }
+    },
+    {
+      "type": "place",
+      "attrs": {
+        "placeId": "eaea5c65-2b08-4cd2-8daf-167049423b86",
+        "placeName": "Osteria Mozza"
+      }
+    },
+    {
+      "type": "place",
+      "attrs": {
+        "placeId": "7c43b8cf-87dd-4bce-94f8-ff1ab36cb74d",
+        "placeName": "Rang Mahal"
+      }
+    },
+    {
+      "type": "place",
+      "attrs": {
+        "placeId": "978ea40e-e03d-45be-9e18-64e1fb3f442a",
+        "placeName": "Lighthouse"
+      }
+    },
+    {
+      "type": "place",
+      "attrs": {
+        "placeId": "e29cb2d0-b08c-4042-958d-b8c25a135812",
+        "placeName": "Tong Le Private Dining"
+      }
+    },
+    {
+      "type": "place",
+      "attrs": {
+        "placeId": "71768281-f5da-4ec3-acc3-c939108d981e",
+        "placeName": "Whitegrass"
+      }
+    }
+  ]
+}

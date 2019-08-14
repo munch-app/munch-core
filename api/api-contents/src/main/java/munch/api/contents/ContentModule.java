@@ -1,6 +1,6 @@
 package munch.api.contents;
 
-import munch.api.ApiServiceModule;
+import app.munch.api.ApiServiceModule;
 
 /**
  * Created by: Fuxing
@@ -8,10 +8,11 @@ import munch.api.ApiServiceModule;
  * Time: 19:17
  * Project: munch-core
  */
+@Deprecated
 public final class ContentModule extends ApiServiceModule {
 
     @Override
     protected void configure() {
-        addService(ContentService.class);
+        addDeprecatedService(ContentService.class);
     }
 }

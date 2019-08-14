@@ -1,6 +1,6 @@
 package munch.api.user;
 
-import munch.api.ApiRequest;
+import app.munch.api.ApiRequest;
 import munch.api.ApiService;
 import munch.restful.server.JsonCall;
 import munch.taste.PlaceRatingClient;
@@ -36,7 +36,7 @@ public final class UserRatedPlaceService extends ApiService {
     }
 
     public UserRatedPlace put(JsonCall call, ApiRequest request) {
-        final String userId = request.getUserId();
+        final String userId = request.getAccountId();
         final String placeId = call.pathString("placeId");
 
         UserRatedPlace ratedPlace = call.bodyAsObject(UserRatedPlace.class);

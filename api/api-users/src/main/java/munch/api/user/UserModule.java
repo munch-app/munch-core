@@ -1,6 +1,6 @@
 package munch.api.user;
 
-import munch.api.ApiServiceModule;
+import app.munch.api.ApiServiceModule;
 
 /**
  * Created by: Fuxing
@@ -11,16 +11,16 @@ import munch.api.ApiServiceModule;
 public final class UserModule extends ApiServiceModule {
     @Override
     protected void configure() {
-        addService(UserAuthenticationService.class);
-        addService(UserService.class);
+        addDeprecatedService(UserAuthenticationService.class);
+        addDeprecatedService(UserService.class);
 
-        addService(UserPlaceCollectionService.class);
-        addService(UserPlaceCollectionItemService.class);
+        addDeprecatedService(UserPlaceCollectionService.class);
+        addDeprecatedService(UserPlaceCollectionItemService.class);
 
-        addService(UserSearchPreferenceService.class);
-        addService(UserSavedPlaceService.class);
-        addService(UserRecentPlaceService.class);
-        addService(UserLocationService.class);
-        addService(UserRatedPlaceService.class);
+        addDeprecatedService(UserSearchPreferenceService.class);
+        addDeprecatedService(UserSavedPlaceService.class);
+        addDeprecatedService(UserRecentPlaceService.class);
+        addDeprecatedService(UserLocationService.class);
+        addDeprecatedService(UserRatedPlaceService.class);
     }
 }

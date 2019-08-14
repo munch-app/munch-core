@@ -1,5 +1,6 @@
 package munch.api.contents;
 
+import api.munch.migration.ContentMigration;
 import munch.api.ApiService;
 import munch.data.client.PlaceCachedClient;
 import munch.restful.core.NextNodeList;
@@ -23,6 +24,7 @@ import java.util.stream.Stream;
  * Project: munch-core
  */
 @Singleton
+@Deprecated
 public final class ContentService extends ApiService {
 
     private final CreatorContentClient contentClient;
@@ -30,16 +32,23 @@ public final class ContentService extends ApiService {
     private final CreatorContentItemClient itemClient;
     private final PlaceCachedClient placeClient;
 
+    private final ContentMigration migration;
+
     @Inject
-    public ContentService(CreatorContentClient contentClient, CreatorProfileClient profileClient, CreatorContentItemClient itemClient, PlaceCachedClient placeClient) {
+    public ContentService(CreatorContentClient contentClient, CreatorProfileClient profileClient, CreatorContentItemClient itemClient, PlaceCachedClient placeClient, ContentMigration migration) {
         this.contentClient = contentClient;
         this.profileClient = profileClient;
         this.itemClient = itemClient;
         this.placeClient = placeClient;
+        this.migration = migration;
     }
 
     @Override
     public void route() {
+        GET("/contents-migration", (call, request) -> {
+            return migration.download();
+        });
+
         PATH("/contents/:contentId", () -> {
             GET("", this::get);
 
@@ -67,7 +76,6 @@ public final class ContentService extends ApiService {
         Stream<String> placeIds = items.stream()
                 .filter(item -> item.getType() == CreatorContentItem.Type.place)
                 .map(item -> Objects.requireNonNull(item.getBody()).path("placeId").asText());
-
 
 
         return JsonResult.ok(items)

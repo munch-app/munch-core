@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import munch.api.AbstractServiceTest;
-import munch.api.ApiRequest;
+import app.munch.api.ApiRequest;
 import munch.api.TestCase;
 import munch.api.search.cards.SearchHeaderCard;
 import munch.api.search.cards.SearchNoLocationCard;
@@ -48,8 +48,7 @@ class SearchServiceTest extends AbstractServiceTest {
                             request.queryString("from", 0);
                             request.queryString("size", 10);
                             request.body(new SearchQuery());
-                            request.header(ApiRequest.HEADER_USER_LAT_LNG, "1.290270, 103.851959");
-                            request.header(ApiRequest.HEADER_USER_LOCAL_TIME, "2011-12-03T10:15:30");
+                            request.header(ApiRequest.HEADER_LOCAL_LAT_LNG, "1.290270, 103.851959");
 
                         })
                         .response(response -> {
@@ -69,7 +68,6 @@ class SearchServiceTest extends AbstractServiceTest {
                             request.queryString("from", 0);
                             request.queryString("size", 20);
                             request.body(new SearchQuery());
-                            request.header(ApiRequest.HEADER_USER_LOCAL_TIME, "2011-12-03T10:15:30");
                         })
                         .response(response -> {
                             ArrayNode cards = (ArrayNode) response.getDataNode();
@@ -95,7 +93,6 @@ class SearchServiceTest extends AbstractServiceTest {
                             areaQuery.getFilter().setLocation(new SearchQuery.Filter.Location());
                             areaQuery.getFilter().getLocation().setAreas(List.of(SearchQueryTestUtils.SMALL_AREA));
                             request.body(areaQuery);
-                            request.header(ApiRequest.HEADER_USER_LOCAL_TIME, "2011-12-03T10:15:30");
                         })
                         .response(response -> {
                             ArrayNode cards = (ArrayNode) response.getDataNode();
@@ -114,8 +111,7 @@ class SearchServiceTest extends AbstractServiceTest {
                             body.set("searchQuery", JsonUtils.toTree(new SearchQuery()));
                             request.body(body);
 
-                            request.header(ApiRequest.HEADER_USER_LAT_LNG, "1.290270, 103.851959");
-                            request.header(ApiRequest.HEADER_USER_LOCAL_TIME, "2011-12-03T10:15:30");
+                            request.header(ApiRequest.HEADER_LOCAL_LAT_LNG, "1.290270, 103.851959");
 
                         })
                         .response(response -> {
@@ -133,7 +129,6 @@ class SearchServiceTest extends AbstractServiceTest {
                             body.set("searchQuery", JsonUtils.toTree(new SearchQuery()));
                             request.body(body);
 
-                            request.header(ApiRequest.HEADER_USER_LOCAL_TIME, "2011-12-03T10:15:30");
                         })
                         .response(response -> {
                             JsonNode dataNode = response.getDataNode();
@@ -155,8 +150,7 @@ class SearchServiceTest extends AbstractServiceTest {
                             body.set("searchQuery", JsonUtils.toTree(areaQuery));
                             request.body(body);
 
-                            request.header(ApiRequest.HEADER_USER_LAT_LNG, "1.290270, 103.851959");
-                            request.header(ApiRequest.HEADER_USER_LOCAL_TIME, "2011-12-03T10:15:30");
+                            request.header(ApiRequest.HEADER_LOCAL_LAT_LNG, "1.290270, 103.851959");
                         })
                         .response(response -> {
                             JsonNode dataNode = response.getDataNode();

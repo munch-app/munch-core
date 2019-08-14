@@ -9,22 +9,27 @@ function getLocalTime() {
 export default function (context, inject) {
   const {$axios, store, req} = context
 
-  $axios.onResponse(({data}) => {
-    const meta = data && data.meta
-    if (meta && meta.code === 404) {
-      throw({statusCode: 404, message: 'Not Found'})
-    } else if (meta && meta.code >= 300) {
-      throw({statusCode: meta.code, message: meta.error.message, meta})
+  // This is old code, below version is copied from vyro
+  // $axios.onResponse(({data}) => {
+  //   const meta = data && data.meta
+  //   if (meta && meta.code === 404) {
+  //     throw({statusCode: 404, message: 'Not Found'})
+  //   } else if (meta && meta.code >= 300) {
+  //     throw({statusCode: meta.code, message: meta.error.message, meta})
+  //   }
+  // })
+
+  $axios.onResponse((response) => {
+    if(response.data && response.data.error) {
+      const error = response.data.error
+      throw({statusCode: error.code, message: error.message, response})
     }
   })
 
   if (process.client) {
     $axios.onRequest(config => {
-      // User Data from state
-      config.headers['User-Local-Time'] = getLocalTime()
-
       const latLng = store.state.filter.user.latLng || Cookies.get('UserLatLng')
-      if (latLng) config.headers['User-Lat-Lng'] = latLng
+      if (latLng) config.headers['Local-Lat-Lng'] = latLng
 
       // Get user Id token
       return authenticator.getIdToken().then(({token}) => {
@@ -44,7 +49,7 @@ export default function (context, inject) {
       if (token) config.headers['Authorization'] = `Bearer ${token}`
 
       const latLng = req.cookies.UserLatLng
-      if (latLng) config.headers['User-Lat-Lng'] = latLng
+      if (latLng) config.headers['Local-Lat-Lng'] = latLng
       return config
     });
   }

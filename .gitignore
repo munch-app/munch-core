@@ -44,3 +44,5 @@ classes/
 */var/
 
 node_modules/
+
+.env

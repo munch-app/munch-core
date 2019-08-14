@@ -1,6 +1,6 @@
 package munch.api.user;
 
-import munch.api.ApiRequest;
+import app.munch.api.ApiRequest;
 import munch.api.ApiService;
 import munch.restful.core.NextNodeList;
 import munch.restful.server.JsonCall;
@@ -37,7 +37,7 @@ public final class UserLocationService extends ApiService {
     }
 
     public NextNodeList<UserLocation> list(JsonCall call, ApiRequest request) {
-        final String userId = request.getUserId();
+        final String userId = request.getAccountId();
         final int size = call.querySize(30, 50);
         final UserLocationIndex index = UserLocationIndex.sortId;
 
@@ -46,14 +46,14 @@ public final class UserLocationService extends ApiService {
     }
 
     public UserLocation post(JsonCall call, ApiRequest request) {
-        final String userId = request.getUserId();
+        final String userId = request.getAccountId();
         UserLocation location = call.bodyAsObject(UserLocation.class);
         location.setUserId(userId);
         return locationClient.post(location);
     }
 
     public UserLocation delete(JsonCall call, ApiRequest request) {
-        final String userId = request.getUserId();
+        final String userId = request.getAccountId();
         final String sortId = call.pathString("sortId");
 
         return locationClient.delete(userId, sortId);

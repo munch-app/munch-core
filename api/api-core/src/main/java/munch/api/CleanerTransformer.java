@@ -22,6 +22,7 @@ import java.util.Set;
  * Project: munch-core
  */
 @Singleton
+@Deprecated
 public final class CleanerTransformer extends JsonTransformer {
 
     private final ObjectMapper objectMapper;

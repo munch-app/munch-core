@@ -1,6 +1,6 @@
 package munch.api.user;
 
-import munch.api.ApiRequest;
+import app.munch.api.ApiRequest;
 import munch.api.ApiService;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonResult;
@@ -35,12 +35,12 @@ public final class UserSearchPreferenceService extends ApiService {
     }
 
     public UserSearchPreference get(JsonCall call) {
-        String userId = call.get(ApiRequest.class).getUserId();
+        String userId = call.get(ApiRequest.class).getAccountId();
         return client.get(userId);
     }
 
     public JsonResult put(JsonCall call) {
-        String userId = call.get(ApiRequest.class).getUserId();
+        String userId = call.get(ApiRequest.class).getAccountId();
         UserSearchPreference preference = call.bodyAsObject(UserSearchPreference.class);
 
         client.put(userId, preference);

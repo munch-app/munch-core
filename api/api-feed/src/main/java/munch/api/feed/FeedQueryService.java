@@ -1,6 +1,6 @@
 package munch.api.feed;
 
-import munch.api.ApiRequest;
+import app.munch.api.ApiRequest;
 import munch.api.ApiService;
 import munch.data.client.PlaceCachedClient;
 import munch.data.place.Place;
@@ -64,8 +64,6 @@ public final class FeedQueryService extends ApiService {
     }
 
     private void validateItems(NextNodeList<FeedItem> items, Map<String, Place> places) {
-        // TODO need to change this when article is released into the feed
-
         items.removeIf(item -> {
             for (FeedItem.Place p : item.getPlaces()) {
                 Place place = places.get(p.getPlaceId());

@@ -1,0 +1,26 @@
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'com.bmuschko.docker-java-application'
+
+ext.dockerTag = "197547471367.dkr.ecr.ap-southeast-1.amazonaws.com/${rootProject.name}/${project.name}:${dockerVersion}"
+
+docker {
+    javaApplication {
+        baseImage = 'amazoncorretto:11'
+        maintainer = 'fuxing@munch.app'
+        ports = [8000, 7755]
+        tag = dockerTag
+    }
+}
+
+task buildImage(type: GradleBuild) {
+    tasks = ['clean', 'dockerBuildImage']
+}
+
+task publishDocker {
+    dependsOn 'buildImage'
+
+    doLast {
+        exec { commandLine "docker", "push", dockerTag }
+    }
+}

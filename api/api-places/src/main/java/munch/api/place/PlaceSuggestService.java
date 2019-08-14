@@ -1,6 +1,6 @@
 package munch.api.place;
 
-import munch.api.ApiRequest;
+import app.munch.api.ApiRequest;
 import munch.api.ApiService;
 import munch.file.Image;
 import munch.file.ImageClient;
@@ -12,6 +12,7 @@ import munch.suggest.SuggestClient;
 import munch.suggest.SuggestPlaceEdit;
 import munch.suggest.change.Change;
 import munch.suggest.change.ChangeImage;
+import munch.user.client.UserProfileClient;
 import munch.user.data.UserProfile;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.EnumUtils;
@@ -29,6 +30,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by: Fuxing
@@ -44,10 +46,13 @@ public final class PlaceSuggestService extends ApiService {
     private final SuggestClient.UserClient suggestClient;
     private final ImageClient imageClient;
 
+    private final UserProfileClient userProfileClient;
+
     @Inject
-    public PlaceSuggestService(SuggestClient suggestClient, ImageClient imageClient) {
+    public PlaceSuggestService(SuggestClient suggestClient, ImageClient imageClient, UserProfileClient userProfileClient) {
         this.suggestClient = suggestClient.newUserClient("munch-core");
         this.imageClient = imageClient;
+        this.userProfileClient = userProfileClient;
     }
 
     @Override
@@ -63,7 +68,9 @@ public final class PlaceSuggestService extends ApiService {
         SuggestPlaceEdit place = SuggestPlaceEdit.parse(call.bodyAsJson());
         String placeId = getPlaceId(call);
 
-        UserProfile profile = request.getUserProfile();
+
+        UserProfile profile = userProfileClient.get(request.getAccountId());
+        Objects.requireNonNull(profile);
         suggestClient.suggest(profile.getUserId(), profile.getName(), profile.getEmail(),
                 placeId, place.getChanges()
         );
@@ -85,7 +92,8 @@ public final class PlaceSuggestService extends ApiService {
         image.setImage(download(part, request));
         place.setChanges(List.of(image));
 
-        UserProfile profile = request.getUserProfile();
+        UserProfile profile = userProfileClient.get(request.getAccountId());
+        Objects.requireNonNull(profile);
         suggestClient.suggest(profile.getUserId(), profile.getName(), profile.getEmail(),
                 placeId, place.getChanges()
         );
@@ -108,7 +116,8 @@ public final class PlaceSuggestService extends ApiService {
             place.getChanges().add(image);
         }
 
-        UserProfile profile = request.getUserProfile();
+        UserProfile profile = userProfileClient.get(request.getAccountId());
+        Objects.requireNonNull(profile);
         suggestClient.suggest(profile.getUserId(), profile.getName(), profile.getEmail(),
                 placeId, place.getChanges()
         );
@@ -117,9 +126,12 @@ public final class PlaceSuggestService extends ApiService {
 
     @SuppressWarnings("Duplicates")
     private ImageMeta download(Part part, ApiRequest request) throws IOException {
+        UserProfile userProfile = userProfileClient.get(request.getAccountId());
+        Objects.requireNonNull(userProfile);
+
         Image.Profile profile = new Image.Profile();
-        profile.setId(request.getUserId());
-        profile.setName(request.getUserProfile().getName());
+        profile.setId(request.getAccountId());
+        profile.setName(userProfile.getName());
         profile.setType("munch-user");
 
         File file = null;

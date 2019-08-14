@@ -2,7 +2,7 @@
 const {Router} = require('express')
 const router = Router()
 
-// TODO:  Memory Storage needs to be optimise for massive deployment
+// TODO(fuxing): Memory Storage needs to be optimise for massive deployment
 const multer = require('multer')
 const upload = multer({storage: multer.memoryStorage()})
 const FormData = require('form-data')
@@ -20,16 +20,14 @@ service.interceptors.response.use(response => {
 })
 
 function getHeaders(req) {
-  const localTime = req.headers['user-local-time']
-  const latLng = req.headers['user-lat-lng']
-  const zoneId = req.headers['user-zone-id']
+  const latLng = req.headers['local-lat-lng']
+  const zoneId = req.headers['local-zone-id']
   const authentication = req.headers['authorization']
   const contentType = req.headers['content-type']
   const headers = {}
 
-  if (localTime) headers['User-Local-Time'] = localTime
-  if (latLng) headers['User-Lat-Lng'] = latLng
-  if (zoneId) headers['User-Zone-Id'] = zoneId
+  if (latLng) headers['Local-Lat-Lng'] = latLng
+  if (zoneId) headers['Local-Zone-Id'] = zoneId
   if (authentication) headers['Authorization'] = authentication
   if (contentType) headers['Content-Type'] = contentType
   return headers

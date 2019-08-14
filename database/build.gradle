@@ -1,0 +1,9 @@
+dependencies {
+    compile group: 'com.google.inject', name: 'guice', version: guiceVersion
+
+    compile group: 'dev.fuxing', name: 'transport-core', version: transportVersion
+    compile group: 'dev.fuxing', name: 'transport-elastic', version: transportVersion
+
+    compile group: 'dev.fuxing', name: 'transport-jpa', version: transportVersion
+    compile group: 'dev.fuxing', name: 'transport-jpa-postgres', version: transportVersion
+}

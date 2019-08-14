@@ -1,6 +1,6 @@
 package munch.api.user;
 
-import munch.api.ApiRequest;
+import app.munch.api.ApiRequest;
 import munch.api.ApiService;
 import munch.data.client.PlaceCachedClient;
 import munch.data.place.Place;
@@ -38,7 +38,7 @@ public final class UserRecentPlaceService extends ApiService {
     }
 
     public JsonResult put(JsonCall call) {
-        String userId = call.get(ApiRequest.class).getUserId();
+        String userId = call.get(ApiRequest.class).getAccountId();
         String placeId = call.pathString("placeId");
 
         Place place = placeClient.get(placeId);
