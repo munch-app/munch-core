@@ -19,7 +19,7 @@
     </horizontal-scroll-view>
 
     <div class="none mobile-b mt-24">
-      <button class="secondary-outline w-100" @click="onMore">
+      <button class="blue-outline w-100" @click="onMore">
         <span class="text-ellipsis-1l">Show all places in {{area.name}}</span>
       </button>
     </div>

@@ -23,7 +23,7 @@
         </div>
 
         <div class="flex-center mtb-32" v-if="next">
-          <button class="secondary-outline" @click="onLoadMore">Load More</button>
+          <button class="blue-outline" @click="onLoadMore">Load More</button>
         </div>
       </div>
     </div>

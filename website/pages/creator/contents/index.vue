@@ -5,7 +5,7 @@
         <h1>Your content</h1>
         <h6><span class="s500">{{creatorName}}</span></h6>
       </div>
-      <button class="secondary-outline small" @click="onNewContent">New Content</button>
+      <button class="blue-outline small" @click="onNewContent">New Content</button>
     </div>
 
     <div class="hr-bot mt-32 ArticleTabs flex-wrap no-select">
@@ -36,7 +36,7 @@
     </div>
 
     <div class="flex-center mtb-32" v-if="next">
-      <button class="secondary-outline" @click="onLoadMore">Load More</button>
+      <button class="blue-outline" @click="onLoadMore">Load More</button>
     </div>
   </div>
 </template>

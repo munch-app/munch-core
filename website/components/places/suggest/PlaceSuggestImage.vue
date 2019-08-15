@@ -2,9 +2,9 @@
   <div>
     <h2 class="mt-48">Images</h2>
     <div class="">
-      <button class="small secondary-outline mt-16 mr-16" @click="showImages" v-if="images.length > 0">Edit Images
+      <button class="small blue-outline mt-16 mr-16" @click="showImages" v-if="images.length > 0">Edit Images
       </button>
-      <button class="small primary-outline mt-16" @click="showUploadImage">Upload Image</button>
+      <button class="small blue-outline mt-16" @click="showUploadImage">Upload Image</button>
     </div>
 
     <no-ssr>

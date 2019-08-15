@@ -13,7 +13,7 @@
         </p>
       </div>
       <div>
-        <button @click="redirect" class="secondary-outline mt-16 small">Edit Hours</button>
+        <button @click="redirect" class="blue-outline mt-16 small">Edit Hours</button>
       </div>
     </div>
 
@@ -43,7 +43,7 @@
                     <input-time :value="hour.closeObj"
                                 @change="onTimeValueChange($event.data, index, 'close')"
                                 format="H:mm" class="ml-24"></input-time>
-                    <button class="ml-16 secondary-outline small" @click="removeHour(index)">Remove</button>
+                    <button class="ml-16 blue-outline small" @click="removeHour(index)">Remove</button>
                   </div>
                   <div class="flex-align-center input-text">
                     <label v-if="hour.error" v-text="hour.error"></label>
@@ -51,9 +51,9 @@
                 </div>
               </div>
               <div class="flex-align-center">
-                <button class="secondary-outline small mr-16" @click="addHours(dayName)">Add</button>
-                <button class="secondary-outline small mr-16" @click="set24Hours(dayName)">Open 24 Hrs</button>
-                <button class="secondary-outline small" v-if="index !== 0" @click="setToPreviousDayHours(dayName)">Same
+                <button class="blue-outline small mr-16" @click="addHours(dayName)">Add</button>
+                <button class="blue-outline small mr-16" @click="set24Hours(dayName)">Open 24 Hrs</button>
+                <button class="blue-outline small" v-if="index !== 0" @click="setToPreviousDayHours(dayName)">Same
                   as {{daysOfWeek[index-1]}}
                 </button>
               </div>

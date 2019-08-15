@@ -14,7 +14,7 @@
         </div>
       </div>
       <div class="mt-8">
-        <button @click="showStatus" class="tiny primary-outline">Change Status</button>
+        <button @click="showStatus" class="tiny blue-outline">Change Status</button>
       </div>
 
       <no-ssr>
@@ -41,7 +41,7 @@
           </div>
 
           <div class="right">
-            <button @click="onDialogCancel" class="secondary-outline">Cancel</button>
+            <button @click="onDialogCancel" class="blue-outline">Cancel</button>
           </div>
         </portal>
       </no-ssr>
@@ -57,7 +57,7 @@
             </div>
           </div>
           <div class="right" style="margin-top: 60px">
-            <button @click="onDuplicateDialogBack" class="primary-outline">Back</button>
+            <button @click="onDuplicateDialogBack" class="blue-outline">Back</button>
             <button @click="onDuplicateDialogDone" class="primary">Done</button>
           </div>
         </portal>
@@ -70,9 +70,9 @@
           <input-text label="Name" class="pb-4" required v-model="payload.place.name"/>
           <div v-if="payload.place.alias.length > 0" v-for="(alias, index) in payload.place.alias">
             <input-text label='Alias' class="pb-4" required v-model="payload.place.alias[index]"/>
-            <button class="secondary-outline tiny mb-16" style="margin-top: -16px;" @click="onRemoveAlias(index)">Remove</button>
+            <button class="blue-outline tiny mb-16" style="margin-top: -16px;" @click="onRemoveAlias(index)">Remove</button>
           </div>
-          <button class="secondary-outline tiny mb-16" style="margin-top: -16px;" @click="onAddAdditionalName">Add Additional Name</button>
+          <button class="blue-outline tiny mb-16" style="margin-top: -16px;" @click="onAddAdditionalName">Add Additional Name</button>
         </div>
         <input-text label="Address" required v-model="payload.place.location.address"/>
         <input-text label="Price Per Pax" type="number" v-model="payload.place.price.perPax"/>

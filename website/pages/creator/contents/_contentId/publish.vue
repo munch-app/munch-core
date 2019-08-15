@@ -31,7 +31,7 @@
         <div class="mt-48">
           <h3>Publish as Linked Place</h3>
           <p class="small">Linked place will show up on RIP.</p>
-          <button class="secondary-outline" @click="onPublish('award')">Publish as Award</button>
+          <button class="blue-outline" @click="onPublish('award')">Publish as Award</button>
         </div>
       </div>
     </div>
@@ -77,7 +77,7 @@
     <portal to="dialog-w768" v-if="show.image">
       <div v-on-clickaway="onAwayImage" class="zero">
         <div>
-          <button @click="onUploadImage" class="secondary-outline m-0">
+          <button @click="onUploadImage" class="blue-outline m-0">
             Upload Image
           </button>
         </div>
@@ -105,7 +105,7 @@
           </div>
         </div>
         <div v-else>
-          <button class="secondary-outline small" @click="loadPlaceImages">
+          <button class="blue-outline small" @click="loadPlaceImages">
             Load Place Images
           </button>
         </div>

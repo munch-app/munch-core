@@ -5,7 +5,7 @@
         <h1>Your series</h1>
         <h6><span class="s500">{{creatorName}}</span></h6>
       </div>
-      <button class="secondary-outline small" @click="onNewSeries">Create Series</button>
+      <button class="blue-outline small" @click="onNewSeries">Create Series</button>
     </div>
 
     <div class="hr-bot mt-32 SeriesTabs flex-wrap no-select">
@@ -37,7 +37,7 @@
     </div>
 
     <div class="flex-center mtb-32" v-if="next">
-      <button class="secondary-outline" @click="onLoadMore">Load More</button>
+      <button class="blue-outline" @click="onLoadMore">Load More</button>
     </div>
   </div>
 </template>

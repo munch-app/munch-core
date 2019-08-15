@@ -1,7 +1,7 @@
 <template>
   <portal to="creator-header-right">
     <div class="flex-align-center mr-8 relative">
-      <button @click="onPublish" class="secondary-outline tiny mr-8" v-if="!publish">Ready to publish?</button>
+      <button @click="onPublish" class="blue-outline tiny mr-8" v-if="!publish">Ready to publish?</button>
       <button @click="more = !more" class="small">
         <simple-svg class="wh-20px" fill="black" :filepath="require('~/assets/icon/more.svg')"/>
       </button>

@@ -16,15 +16,15 @@
       </div>
 
       <div class="mt-8">
-        <nuxt-link class="Title text-ellipsis-1l large weight-600 b-a80" :to="`/places/${place.placeId}`">
+        <nuxt-link class="Title text-ellipsis-1l large weight-600 b-a80 text-decoration-none" :to="`/places/${place.placeId}`" >
           {{place.name}}
         </nuxt-link>
 
-        <nuxt-link :to="`/places/${place.placeId}`">
+        <nuxt-link :to="`/places/${place.placeId}`" class="text-decoration-none">
           <div class="Tags flex-wrap mt-8">
             <div class="Tag border-3 mr-8 mb-8" v-for="tag in tags" :key="tag.tagId" :class="{
                  'bg-peach100 weight-600 b-a80': tag.type === 'price',
-                 'bg-whisper100 weight-400': tag.type !== 'price'}"
+                 'bg-whisper100 weight-400 black': tag.type !== 'price'}"
             >
               {{tag.name}}
             </div>
@@ -73,16 +73,16 @@
       const group = new HourGroup(this.place.hours.map((h) => new Hour(h.day, h.open, h.close)))
       switch (group.isOpen()) {
         case 'open':
-          this.timing = {class: 'time-open', text: 'Open Now'}
+          this.timing = {class: 'success', text: 'Open Now'}
           break
         case 'closed':
-          this.timing = {class: 'time-close', text: 'Closed Now'}
+          this.timing = {class: 'error', text: 'Closed Now'}
           break
         case 'opening':
-          this.timing = {class: 'time-open', text: 'Opening Soon'}
+          this.timing = {class: 'success', text: 'Opening Soon'}
           break
         case 'closing':
-          this.timing = {class: 'time-close', text: 'Closing Soon'}
+          this.timing = {class: 'error', text: 'Closing Soon'}
           break
       }
     },

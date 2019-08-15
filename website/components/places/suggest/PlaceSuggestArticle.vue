@@ -2,7 +2,7 @@
   <div>
     <h2 class="mt-48">Articles</h2>
     <div class="mt-16">
-      <button class="small secondary-outline" @click="showArticles">Edit Articles</button>
+      <button class="small blue-outline" @click="showArticles">Edit Articles</button>
     </div>
 
     <no-ssr>

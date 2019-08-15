@@ -44,7 +44,7 @@
         </horizontal-scroll-view>
 
         <div class="mt-16 flex">
-          <button class="secondary-outline mr-16" @click.capture="onSearch">
+          <button class="blue-outline mr-16" @click.capture="onSearch">
             + Location
           </button>
           <button class="flex-grow" @click="onApply" v-if="applyText"

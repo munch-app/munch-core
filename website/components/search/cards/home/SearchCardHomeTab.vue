@@ -20,7 +20,7 @@
             <div class="bg-overlay p-24 zero h-100">
               <h1 class="white">{{feature.name}}</h1>
               <h5 class="white mt-8">{{feature.message}}</h5>
-              <button class="mt-24 secondary-outline">{{feature.button}}</button>
+              <button class="mt-24 blue-outline">{{feature.button}}</button>
             </div>
           </div>
         </div>

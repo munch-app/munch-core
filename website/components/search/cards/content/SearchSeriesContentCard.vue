@@ -1,5 +1,5 @@
 <template>
-  <nuxt-link :to="`/contents/${cid}/${slug}`">
+  <nuxt-link :to="`/contents/${cid}/${slug}`" class="text-decoration-none">
     <div class="aspect border-3 overflow-hidden" :class="imageAspectRatio">
       <image-sizes v-if="imageSizes" :sizes="imageSizes" :alt="content.subtitle"/>
       <div v-else class="bg-s500 flex-end wh-100"/>

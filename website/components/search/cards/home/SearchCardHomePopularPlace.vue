@@ -4,11 +4,11 @@
 
     <div class="mt-48">
       <div class="none mobile-b">
-        <button class="secondary-outline w-100" @click="onMore">Show all popular places</button>
+        <button class="blue-outline w-100" @click="onMore">Show all popular places</button>
       </div>
 
       <div class="none tablet-b desktop-b">
-        <button class="secondary-outline" @click="onMore">Show all popular places</button>
+        <button class="blue-outline" @click="onMore">Show all popular places</button>
       </div>
     </div>
   </div>

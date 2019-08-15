@@ -4,7 +4,7 @@
       <span class="subtext">
         {{Day.today().text.substring(0, 3).toUpperCase()}}:
       </span>
-      <span :class="{'time-open': todayOpen, 'time-close': !todayOpen}">
+      <span :class="{'success': todayOpen, 'error': !todayOpen}">
         {{timeRange}}
       </span>
     </div>
@@ -14,7 +14,7 @@
         <div class="DayList flex-column" v-on-clickaway="onCancel">
           <div class="text" v-for="day in days" :key="day.text">
             <div class="weight-600">{{day.text}}:</div>
-            <div :class="{'time-open': isDayOpen(day), 'time-close': day.isToday() && !isDayOpen(day)}">
+            <div :class="{'success': isDayOpen(day), 'error': day.isToday() && !isDayOpen(day)}">
               {{group.getHour(day)}}
             </div>
           </div>
