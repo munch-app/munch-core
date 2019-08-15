@@ -1,9 +1,8 @@
 <template>
   <div class="flex-no-shrink hover-pointer" v-if="isLoggedIn" @click="$store.commit('toggleFocus', 'HeaderMenu')">
     <div class="ProfileImage">
-      <img class="wh-100" v-if="!failed && profileImageUrl" :src="profileImageUrl" @error="failed = true">
-      <div v-else class="bg-s500 wh-100 flex-center">
-        <h3 class="m-0 lh-1 white text-capitalize">{{displayName && displayName[0]}}</h3>
+      <div class="bg-blue wh-100 flex-center">
+        <span class="h5 text-center text-capitalize white">{{name && name[0]}}</span>
       </div>
     </div>
   </div>
@@ -15,7 +14,7 @@
   export default {
     name: "HeaderProfile",
     computed: {
-      ...mapGetters('user', ['profileImageUrl', 'profile', 'isLoggedIn', 'displayName']),
+      ...mapGetters('account', ['isLoggedIn', 'name']),
     },
     data() {
       return {
@@ -27,8 +26,8 @@
 
 <style scoped lang="less">
   .ProfileImage {
-    height: 40px;
-    width: 40px;
+    height: 36px;
+    width: 36px;
 
     > * {
       border-radius: 50%;

@@ -1,7 +1,7 @@
 <template>
   <div class="Default flex-column" :class="{'gutter-24': isSearch && showsMap}" :lang="'en'">
     <nav class="Header fixed w-100 index-top-elevation hr-bot bg-white" :class="{Clear: isClear}">
-      <div class="container h-100 flex-align-center">
+      <div class="container-1400 h-100 flex-align-center">
         <header-logo class="mr-8" :clear="isClear" :class="{'IsSearching': searching}"/>
         <div class="mlr-8 mtb-8 flex-grow">
           <search-bar class="SearchBar" @onBlur="onBlur" @onFocus="onFocus"/>
@@ -12,7 +12,7 @@
     </nav>
 
     <div class="Header"/>
-    <header-menu class="container"/>
+    <header-menu class="container-1400"/>
 
     <div style="height: 48px" v-if="isSearch"/>
     <!-- Search Bar Filter -->

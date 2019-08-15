@@ -2,7 +2,7 @@
   "name": "website",
   "version": "0.23.0",
   "description": "Munch App Website",
-  "author": "Fuxing Loh <fuxing@munch.space>",
+  "author": "Fuxing Loh <fuxing@munch.app>",
   "private": true,
   "scripts": {
     "dev": "nuxt",

@@ -1,24 +1,26 @@
 <template>
   <nav class="zero hr-top index-6 bg-white">
     <div class="NavFooter flex container">
-      <div class="Brand flex">
-        <img style="height: 40px" src="~/assets/img/MunchLogoTitled.svg">
+      <div class="Brand">
+        <a href="/" class="m-0">
+          <img style="height: 30px" src="~/assets/img/LOGO_NAME_TRIM.svg">
+        </a>
       </div>
-      <div class="MunchApp">
-        <h4 class="s500">Munch App</h4>
-        <a href="https://itunes.apple.com/sg/app/munch-food-discovery/id1255436754" target="_blank">Munch iOS</a>
-        <a href="https://play.google.com/store/apps/details?id=app.munch.munchapp" target="_blank">Munch Android</a>
+      <div class="">
+        <h4 class="">Munch App</h4>
+        <a href="https://itunes.apple.com/sg/app/munch-food-discovery/id1255436754" target="_blank">iOS App</a>
+        <a href="https://play.google.com/store/apps/details?id=app.munch.munchapp" target="_blank">Android App</a>
       </div>
 
-      <div class="Company">
-        <h4 class="s500">Company</h4>
+      <div class="">
+        <h4 class="">Company</h4>
         <nuxt-link to="/support">Support</nuxt-link>
         <nuxt-link to="/support/privacy">Privacy Policy</nuxt-link>
         <nuxt-link to="/support/terms">Terms of Use</nuxt-link>
       </div>
 
-      <div class="Product">
-        <h4 class="s500">Product</h4>
+      <div class="">
+        <h4 class="">Product</h4>
         <nuxt-link to="/about">About</nuxt-link>
         <nuxt-link to="/press">Press</nuxt-link>
         <a href="https://partner.munch.app" target="_blank">Content Partners</a>
@@ -44,19 +46,18 @@
   }
 
   a {
-    font-size: 15px;
-    font-weight: 600;
     color: rgba(0, 0, 0, 0.75);
+    text-decoration: none;
 
     padding: 4px 0;
     display: block;
 
-    &:hover {
-      cursor: pointer;
-    }
-
     &:first-of-type {
       margin-top: 8px;
+    }
+
+    &:hover {
+      text-decoration: underline;
     }
   }
 

@@ -1,46 +1,13 @@
 <template>
   <div class="flex-align-center" :class="{Clear: clear}">
-    <button class="primary small ml-16 mr-8" @click="onClickGetTheApp">GET APP</button>
-    <a class="ml-16 flex-shrink mr-24 text-ellipsis-1l" href="https://partner.munch.app" target="_blank">
-      Join as Partner
-    </a>
-
-    <a @click.prevent.stop="onClickLogin" class="flex-no-shrink" v-if="!isLoggedIn">Login</a>
-
-    <portal to="dialog-blank" v-if="getApp === 'GetAppDialog'">
-      <div class="flex-row bg-white border-4 overflow-hidden" id="dialog-portal-scroll"
-           v-on-clickaway="closeGetApp">
-        <div class="flex-shrink bg-p100 ImageBanner">
-          <img src="~/assets/img/account/download-feed-ios.jpg">
-        </div>
-        <div class="ContentRight flex-basis-content">
-          <img style="height: 40px" src="~/assets/img/MunchLogoTitled.svg">
-          <h1 class="s500 mt-24 mb-16">The sexiest thing you’ll see on the internet - ever.</h1>
-          <h5 class="">Download Munch on the App Store.</h5>
-
-          <div class="flex-row mt-24 hover-pointer">
-            <img @click="onClickIOS" class="mr-16" src="~/assets/img/AppleAppStore.svg">
-            <img @click="onClickAndroid" src="~/assets/img/GooglePlayStore.svg">
-          </div>
-        </div>
-      </div>
-    </portal>
-
-    <portal to="notification" v-if="getApp === 'GetAppNotification'">
-      <div class="flex-column bg-whisper050 hr-top p-16-24">
-        <div class="flex-row">
-          <img style="height: 40px" src="~/assets/img/MunchLogo.svg">
-          <div class="ml-24">
-            <h3>Drooling already?</h3>
-            <p class="mb-16">Wait till you see the app.</p>
-          </div>
-        </div>
-        <div class="flex-end">
-          <button class="small mr-16" @click="closeGetApp">NO THANKS</button>
-          <button class="primary small" @click="onClickStore">GET THE APP</button>
-        </div>
-      </div>
-    </portal>
+    <div v-if="!isLoggedIn" class="flex-no-shrink">
+      <button @click.prevent.stop="onClickLogin" class="small">
+        Sign In
+      </button>
+      <button @click.prevent.stop="onClickLogin" class="small blue-outline">
+        Get Started
+      </button>
+    </div>
   </div>
 </template>
 
@@ -52,7 +19,7 @@
     name: "HeaderRight",
     computed: {
       ...mapGetters(['isFocused']),
-      ...mapGetters('user', ['isLoggedIn', 'displayName', 'profile']),
+      ...mapGetters('account', ['isLoggedIn', 'name']),
     },
     props: {
       clear: {

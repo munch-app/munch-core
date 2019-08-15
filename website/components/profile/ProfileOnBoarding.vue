@@ -2,10 +2,11 @@
   <portal to="dialog-w400" class="zero">
     <div class="relative">
       <div class="BrandLogo absolute flex-center">
-        <img src="~/assets/img/MunchLogoOnboarding.svg" style="width: 66%">
+        <img src="~/assets/img/LOGO_NAME.svg" style="width: 66%">
       </div>
 
-      <div class="CloseButton p-16 flex-end weight-600 absolute white w-100 hover-pointer" @click="$store.commit('unfocus', 'Login')">
+      <div class="CloseButton p-16 flex-end weight-600 absolute white w-100 hover-pointer"
+           @click="$store.commit('unfocus', 'Login')">
         CLOSE
       </div>
 
@@ -35,15 +36,15 @@
 </template>
 
 <script>
-  export default {
-    name: "ProfileOnBoarding",
-    methods: {
-      onSignInFacebook() {
-        this.$store.dispatch('user/signInFacebook')
-        this.$store.commit('unfocus', 'Login')
-      }
+    export default {
+        name: "ProfileOnBoarding",
+        methods: {
+            onSignInFacebook() {
+                this.$store.dispatch('account/signInFacebook')
+                this.$store.commit('unfocus', 'Login')
+            }
+        }
     }
-  }
 </script>
 
 <style scoped lang="less">

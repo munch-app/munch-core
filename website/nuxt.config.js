@@ -24,13 +24,16 @@ module.exports = {
       {name: 'theme-color', content: '#ffffff'},
     ],
     link: [
-      {rel: 'apple-touch-icon', sizes: '180x180', href: '/meta/apple-touch-icon.1.png'},
-      {rel: 'icon', type: 'image/png', sizes: '32x32', href: '/meta/favicon-32x32.1.png'},
-      {rel: 'icon', type: 'image/png', sizes: '16x16', href: '/meta/favicon-16x16.1.png'},
-      {rel: 'manifest', href: '/meta/site.1.webmanifest'},
-      {rel: 'mask-icon', href: '/meta/safari-pinned-tab.1.svg', color: '#f05f3b'},
+      {rel: 'apple-touch-icon', sizes: '180x180', href: '/meta/apple-touch-icon.2.png'},
+      {rel: 'icon', type: 'image/png', sizes: '32x32', href: '/meta/favicon-32x32.2.png'},
+      {rel: 'icon', type: 'image/png', sizes: '16x16', href: '/meta/favicon-16x16.2.png'},
+      {rel: 'manifest', href: '/meta/site.2.webmanifest'},
+      {rel: 'mask-icon', href: '/meta/safari-pinned-tab.2.svg', color: '#f05f3b'},
 
-      {rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Roboto:300,300i,400,400i,500,500i,700,700i&display=swap'},
+      {
+        rel: 'stylesheet',
+        href: 'https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i&display=swap'
+      },
     ],
     script: [
       {src: 'https://cdn.apple-mapkit.com/mk/5.x.x/mapkit.js'},

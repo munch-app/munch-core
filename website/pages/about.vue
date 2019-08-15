@@ -9,10 +9,8 @@
       </div>
     </section>
 
-    <section class="Vision bg-s050">
+    <section class="Vision">
       <div class="content container-1200">
-        <div class="content-image">
-        </div>
         <div class="content-text prismic-content">
           <div v-html="section2.heading"/>
           <div v-html="section2.paragraph"/>
@@ -22,7 +20,6 @@
 
     <section class="Mission">
       <div class="content container-1200">
-        <div class="content-image"/>
         <div class="content-text prismic-content">
           <div v-html="section3.heading"/>
           <div v-html="section3.paragraph"/>
@@ -30,9 +27,8 @@
       </div>
     </section>
 
-    <section class="Contact bg-p050">
+    <section class="Contact">
       <div class="content container-1200">
-        <div class="content-image"/>
         <div class="content-text prismic-content">
           <div v-html="section4.heading"/>
           <div v-html="section4.paragraph"/>
@@ -78,8 +74,6 @@
 
 <style scoped lang="less">
   section {
-    padding-top: 64px;
-    padding-bottom: 64px;
   }
 
   div.content {
@@ -107,31 +101,6 @@
 
       img {
         width: 100%;
-      }
-    }
-  }
-
-  .Mission div.content {
-    flex-direction: row-reverse;
-
-    @media (max-width: 767.98px) {
-      flex-direction: column;
-    }
-
-    .content-image {
-      justify-content: flex-start;
-    }
-  }
-
-  .Munch {
-    background-size: cover;
-
-    .Brand {
-      display: flex;
-
-      img {
-        padding-left: 32px;
-        padding-right: 32px;
       }
     }
   }

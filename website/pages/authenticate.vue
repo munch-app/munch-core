@@ -21,7 +21,7 @@
           // If token is provided try login with the provided token
           const token = this.$route.query.token
           if (token) {
-            return this.$store.dispatch('user/signInCustomToken', token)
+            return this.$store.dispatch('account/signInCustomToken', token)
               .then(() => {
                 this.$router.replace({path: redirect})
               })

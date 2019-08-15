@@ -1,5 +1,5 @@
 <template>
-  <div class="container mt-24 mb-64">
+  <div class="container-1400 mt-24 mb-64">
     <h1 v-if="error.statusCode === 404">{{error.message || 'Page Not Found'}}</h1>
     <h1 v-else>{{error.message}}</h1>
 

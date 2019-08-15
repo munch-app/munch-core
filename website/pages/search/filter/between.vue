@@ -17,7 +17,7 @@
                :class="{Searching: searching}">
             <div class="flex-align-center">
               <a href="/" class="flex-center">
-                <img class="ImageLogo mr-8" src="~/assets/img/MunchLogo.svg">
+                <img class="ImageLogo mr-8" src="~/assets/img/LOGO_TRIM.svg">
               </a>
               <h3>EatBetween</h3>
             </div>

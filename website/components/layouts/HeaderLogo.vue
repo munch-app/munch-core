@@ -2,8 +2,8 @@
   <div class="HeaderLogo relative">
     <div class="MobileCaret absolute wh-100" @click="$store.commit('toggleFocus', 'HeaderMenu')"/>
     <a href="/" class="flex-align-center h-100 hover-pointer">
-      <img v-if="clear" class="ImageLogo" src="~/assets/img/MunchLogoWhite.svg">
-      <img v-else class="ImageLogo" src="~/assets/img/MunchLogo.svg">
+      <img v-if="clear" class="ImageLogo" src="~/assets/img/LOGO_TRIM.svg">
+      <img v-else class="ImageLogo" src="~/assets/img/LOGO_TRIM.svg">
       <simple-svg class="Indicator" :fill="clear ? '#fff': '#000'" :filepath="require('~/assets/icon/caret-down.svg')"/>
     </a>
   </div>
@@ -23,8 +23,8 @@
 
 <style scoped lang="less">
   .ImageLogo {
-    height: 36px;
-    width: 36px;
+    height: 28px;
+    width: 28px;
   }
 
   .Indicator {
