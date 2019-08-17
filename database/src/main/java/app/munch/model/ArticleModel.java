@@ -32,6 +32,7 @@ import java.util.Set;
 @MappedSuperclass
 @TypeDef(name = "Tags", typeClass = ArticleModel.TagsType.class)
 @TypeDef(name = "Content", typeClass = ArticleModel.ContentType.class)
+@TypeDef(name = "Options", typeClass = ArticleModel.OptionsType.class)
 public abstract class ArticleModel {
 
     @NotBlank(groups = ArticlePublishedGroup.class)
@@ -54,6 +55,11 @@ public abstract class ArticleModel {
     @NotNull
     @Type(type = "Content")
     private List<@NotNull Node> content;
+
+    @Valid
+    @NotNull
+    @Type(type = "Options")
+    private Options options;
 
     public Image getImage() {
         return image;
@@ -95,6 +101,13 @@ public abstract class ArticleModel {
         this.content = content;
     }
 
+    public Options getOptions() {
+        return options;
+    }
+
+    public void setOptions(Options options) {
+        this.options = options;
+    }
 
     public static class TagsType extends PojoSetUserType<Tag> {
         public TagsType() {
@@ -105,6 +118,35 @@ public abstract class ArticleModel {
     public static class ContentType extends PojoListUserType<Node> {
         public ContentType() {
             super(Node.class);
+        }
+    }
+
+    public static class OptionsType extends PojoListUserType<Options> {
+        public OptionsType() {
+            super(Options.class);
+        }
+    }
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static final class Options {
+        private Boolean map;
+        private Boolean ads;
+
+        public Boolean getMap() {
+            return map;
+        }
+
+        public void setMap(Boolean map) {
+            this.map = map;
+        }
+
+        public Boolean getAds() {
+            return ads;
+        }
+
+        public void setAds(Boolean ads) {
+            this.ads = ads;
         }
     }
 

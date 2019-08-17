@@ -13,7 +13,7 @@
 </template>
 
 <script>
-  import _ from 'lodash'
+
 
   const newLanes = (count) => {
     const lanes = []

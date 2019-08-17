@@ -52,10 +52,10 @@ public final class PublicationService extends DataService {
         return provider.reduce(true, entityManager -> {
             return EntityStream.of(() -> {
                 if (position != null && cursorId != null) {
-                    return entityManager.createQuery("SELECT article,position,id FROM PublicationArticle " +
-                            "WHERE publication.id = :id " +
-                            "AND (position < :position OR (position = :position AND id < :cursorId)) " +
-                            "ORDER BY position DESC, id DESC ", Object[].class)
+                    return entityManager.createQuery("SELECT pa.article,pa.position,pa.id FROM PublicationArticle pa " +
+                            "WHERE pa.publication.id = :id " +
+                            "AND (pa.position < :position OR (pa.position = :position AND pa.id < :cursorId)) " +
+                            "ORDER BY pa.position DESC, pa.id DESC ", Object[].class)
                             .setParameter("id", id)
                             .setParameter("position", position)
                             .setParameter("cursorId", cursorId)
@@ -63,9 +63,9 @@ public final class PublicationService extends DataService {
                             .getResultList();
                 }
 
-                return entityManager.createQuery("SELECT article,position,id FROM PublicationArticle " +
-                        "WHERE publication.id = :id " +
-                        "ORDER BY position DESC, id DESC", Object[].class)
+                return entityManager.createQuery("SELECT pa.article,pa.position,pa.id FROM PublicationArticle pa " +
+                        "WHERE pa.publication.id = :id " +
+                        "ORDER BY pa.position DESC, pa.id DESC ", Object[].class)
                         .setParameter("id", id)
                         .setMaxResults(size)
                         .getResultList();

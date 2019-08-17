@@ -91,7 +91,7 @@
 
 <script>
   import Vue from 'vue'
-  import _ from 'lodash'
+
   import ImageSizes from "../../core/ImageSizes";
   import Dropzone from 'nuxt-dropzone'
   import 'nuxt-dropzone/dropzone.css'
@@ -154,7 +154,7 @@
           .then(({data, next}) => {
             this.images.push(...data)
             this.loading = false
-            this.next.sort = next && next.sort || null
+            this.next.sort = next?.sort || null
           })
       },
       onDialog(image) {

@@ -18,11 +18,11 @@
     <!-- Search Bar Filter -->
     <search-bar-filter v-if="isSearch"/>
 
-    <layout-default/>
+    <global-default/>
 
     <!-- Elevation overlay for content -->
     <div @click="() => {}" :class="{'elevation-overlay index-content-overlay': isElevated}"></div>
-    <nuxt class="flex-grow" :class="{'elevation-blur': isElevated}"/>
+    <nuxt class="Page flex-grow" :class="{'elevation-blur': isElevated}"/>
 
     <nav-footer/>
   </div>
@@ -34,7 +34,7 @@
   if (process.browser) require('intersection-observer')
   import {mapGetters} from 'vuex'
 
-  import LayoutDefault from "../components/layouts/LayoutDefault";
+  import GlobalDefault from "../components/global/GlobalDefault";
   import HeaderLogo from "../components/layouts/HeaderLogo";
   import HeaderMenu from "../components/layouts/HeaderMenu";
   import SearchBar from "../components/search/SearchBar";
@@ -44,8 +44,7 @@
 
   export default {
     components: {
-      HeaderProfile,
-      LayoutDefault, NavFooter, HeaderRight, SearchBarFilter, SearchBar, HeaderMenu, HeaderLogo
+      HeaderProfile, GlobalDefault, NavFooter, HeaderRight, SearchBarFilter, SearchBar, HeaderMenu, HeaderLogo
     },
     data() {
       return {searching: false, scrolledHeight: false}
@@ -57,7 +56,7 @@
         return this.$route.name
       },
       isSearch() {
-        if (this.route && this.route.startsWith('search')) {
+        if (this.route?.startsWith('search')) {
           if (this.route.startsWith('search-filter')) return false
           return true
         }
@@ -93,8 +92,8 @@
 </script>
 
 <style scoped lang="less">
-  .Default {
-    min-height: 100vh;
+  .Page {
+    min-height: calc(100vh - 72px);
   }
 
   .Header {

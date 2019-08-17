@@ -52,7 +52,7 @@
 
 <script>
   import Vue from 'vue'
-  import _ from 'lodash'
+
   import {debounceTime, distinctUntilChanged, filter, map, pluck, switchMap, tap} from 'rxjs/operators'
   import SearchBarPlaceItem from "../search/items/SearchBarPlaceItem";
   import SearchBarDefaultItem from "../search/items/SearchBarDefaultItem";

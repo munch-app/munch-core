@@ -2,30 +2,36 @@ import authenticator from '~/services/authenticator'
 import * as Cookies from 'js-cookie'
 
 export const state = () => ({
-  account: null,
+  id: null,
+  email: null,
+  profile: null,
 })
 
 export const getters = {
-  account: (state) => state.account || {},
-  accountId: (state) => state.account && state.account.id,
-  name: (state) => state.account && state.account.name,
-  profile: (state) => state.account && state.account.profile,
-  username: (state) => state.account && state.account.profile && state.account.profile.username,
-  isLoggedIn: (state) => state.account && !!state.account.id,
+  id: (state) => state.id,
+  name: (state) => state.profile?.name,
+  profile: (state) => state.profile,
+  username: (state) => state.profile?.username,
+  isLoggedIn: (state) => !!state.id,
 }
 
 export const mutations = {
   setAccount(state, account) {
-    state.account = account
+    Cookies.set('MunchAccount', account)
+
+    state.id = account.id
+    state.email = account.email
+    state.profile = account.profile
 
     // Setup $track userId if available
     if (account.id && this.$track) {
       this.$track.setUserId(account.id)
     }
   },
-
   clear(state) {
-    state.account = null
+    state.id = null
+    state.email = null
+    state.profile = null
 
     Cookies.remove('MunchAccount')
 
@@ -38,7 +44,6 @@ export const mutations = {
 function authenticate(commit) {
   return this.$api.post('/accounts/tokens/authenticate')
     .then(({data: account}) => {
-      Cookies.set('MunchAccount', account)
       commit('setAccount', account)
     })
 }
@@ -62,7 +67,7 @@ export const actions = {
       })
   },
 
-  logout({commit}) {
+  signOut({commit}) {
     authenticator.signOut()
 
     this.commit('account/clear')

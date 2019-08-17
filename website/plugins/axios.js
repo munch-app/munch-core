@@ -1,13 +1,9 @@
-import dateformat from 'dateformat'
 import * as Cookies from 'js-cookie'
 import authenticator from '~/services/authenticator'
-
-function getLocalTime() {
-  return dateformat(new Date(), "yyyy-mm-dd'T'HH:MM:ss")
-}
+import FormData from "form-data";
 
 export default function (context, inject) {
-  const {$axios, store, req} = context
+  const {$axios, store, req, error, redirect} = context
 
   // This is old code, below version is copied from vyro
   // $axios.onResponse(({data}) => {
@@ -20,10 +16,21 @@ export default function (context, inject) {
   // })
 
   $axios.onResponse((response) => {
-    if(response.data && response.data.error) {
+    if (response.data && response.data.error) {
       const error = response.data.error
       throw({statusCode: error.code, message: error.message, response})
     }
+  })
+
+  $axios.onError((err) => {
+    // TODO(fuxing): definitely need a better way to handle this, maybe can attempt at context.$api
+    const status = err.response.status
+    if (status === 404) {
+      redirect('/404')
+    }
+    // } else if (status) {
+    //   // error(err)
+    // }
   })
 
   if (process.client) {
@@ -60,6 +67,14 @@ export default function (context, inject) {
     post: (path, data, config) => $axios.$post('/api' + path, data, config),
     patch: (path, data, config) => $axios.$patch('/api' + path, data, config),
     delete: (path, data, config) => $axios.$delete('/api' + path, data, config),
+
+    postImage: (file, source) => {
+      const form = new FormData()
+      form.append('file', file, file.name)
+      form.append("source", source)
+      console.log(process.env.apiUrl)
+      return $axios.$post(process.env.apiUrl + '/me/images', form)
+    },
   }
   inject('api', context.$api)
 }

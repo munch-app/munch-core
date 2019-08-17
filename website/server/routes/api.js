@@ -2,7 +2,6 @@
 const {Router} = require('express')
 const router = Router()
 
-// TODO(fuxing): Memory Storage needs to be optimise for massive deployment
 const multer = require('multer')
 const upload = multer({storage: multer.memoryStorage()})
 const FormData = require('form-data')
@@ -10,14 +9,6 @@ const FormData = require('form-data')
 const service = require('axios').create({
   baseURL: process.env.API_MUNCH_APP
 });
-
-service.interceptors.response.use(response => {
-  return response
-}, error => {
-  console.log(error)
-  // Error response should be handled by ~/plugins/axios.js
-  return error.response
-})
 
 function getHeaders(req) {
   const latLng = req.headers['local-lat-lng']
@@ -43,9 +34,18 @@ function route(req, res, next, options) {
     method: req.method,
     headers: {...getHeaders(req), ...optionalHeaders},
     data: optionalData || req.body
-  }).then(({data}) => {
+  }).then(({data, status}) => {
+    res.status(status);
     res.json(data)
-  }).catch(next)
+  }).catch(reason => {
+    if (reason.response) {
+      const {status, data} = reason.response
+      res.status(status);
+      res.json(data)
+    } else {
+      next(reason)
+    }
+  })
 }
 
 ['/api/creators/:creatorId/contents/:contentId/images'].forEach(path => {

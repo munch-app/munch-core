@@ -40,7 +40,7 @@
 </template>
 
 <script>
-  import _ from 'lodash'
+
   import {pluck, filter, debounceTime, partition, distinctUntilChanged, switchMap, map} from 'rxjs/operators'
 
   export default {

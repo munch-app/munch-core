@@ -1,6 +1,9 @@
-module.exports = {
+import webpack from 'webpack'
+require('dotenv').config()
+
+export default {
   head: {
-    title: 'Munch - Food Discovery App',
+    title: 'Munch - Food Discovery',
     meta: [
       {charset: 'utf-8'},
       {name: 'viewport', content: 'width=device-width, initial-scale=1'},
@@ -10,7 +13,7 @@ module.exports = {
       },
       {
         hid: 'og:title', name: 'og:title',
-        content: 'Munch - Food Discovery App'
+        content: 'Munch - Food Discovery'
       },
       {
         hid: 'og:description', name: 'og:description',
@@ -18,7 +21,7 @@ module.exports = {
       },
       {hid: 'apple-itunes-app', name: 'apple-itunes-app', content: 'app-id=1255436754'},
       {hid: 'og:type', name: 'og:type', content: 'article'},
-      {name: 'og:site_name', content: 'Munch - Food Discovery App'},
+      {name: 'og:site_name', content: 'Munch - Food Discovery'},
       {name: 'og:locale', content: 'en_uk'},
       {name: 'msapplication-TileColor', content: '#da532c'},
       {name: 'theme-color', content: '#ffffff'},
@@ -56,6 +59,7 @@ module.exports = {
   },
   env: {
     origin: process.env.ORIGIN || 'http://localhost:3000',
+    apiUrl: process.env.API_MUNCH_APP,
   },
   build: {
     extend(config, {isDev}) {
@@ -71,7 +75,15 @@ module.exports = {
       if (isDev) {
         config.devtool = 'eval-source-map'
       }
-    }
+    },
+    plugins: [
+      new webpack.ProvidePlugin({
+        '_': 'lodash'
+      }),
+    ],
+    babel: {
+      plugins: ["@babel/plugin-proposal-optional-chaining"]
+    },
   },
   plugins: [
     // Plugins by Munch Team
@@ -83,7 +95,6 @@ module.exports = {
     // Core Plugin
     '~/plugins/axios',
     '~/plugins/vue-rx',
-    '~/plugins/portal-vue',
     '~/plugins/prismic-vue',
 
     // Required Plugin
@@ -107,6 +118,7 @@ module.exports = {
   modules: [
     '@nuxtjs/axios',
     '@nuxtjs/sitemap',
+    'portal-vue/nuxt',
     'nuxt-device-detect',
 
     ['@nuxtjs/google-tag-manager', {

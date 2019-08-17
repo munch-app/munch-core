@@ -74,7 +74,7 @@
   import InputText from "../../core/InputText";
   import InputTime from "./input/InputTime";
   import {Day, days, Hour, HourGroup} from '../hour-group'
-  import _ from 'lodash'
+
 
   export default {
     name: "PlaceSuggestOpeningHours",

@@ -2,21 +2,23 @@
   <div class="HeaderMenu flex-justify-end index-top-elevation no-select" v-if="isFocused('HeaderMenu')">
     <ul class="NavLink fixed bg-white w-100 elevation-3 text index-top-elevation border">
 
-      <div v-if="profile" class="text-decoration-none">
+      <div v-if="isLoggedIn" class="text-decoration-none">
         <nuxt-link :to="`/@${username}`">
-          <span class="s500">Image</span>
-          <span class="s500">{{profile.name}}</span>
-          <span class="s500">@{{profile.username}}</span>
+          <div class="flex-row flex-align-center">
+            <div class="flex-no-shrink wh-40px border-circle bg-blue">
+            </div>
+
+            <div class="ml-8 flex-shrink text-ellipsis-1l">
+              <div class="black">{{profile.name}}</div>
+              <div class="blue small">@{{profile.username}}</div>
+            </div>
+          </div>
         </nuxt-link>
 
-        <nuxt-link class="black" :to="`/me/articles/_`">New article</nuxt-link>
-        <nuxt-link class="black" :to="`/me/articles`">Articles</nuxt-link>
         <hr class="mtb-8">
-      </div>
 
-      <div v-else class="text-decoration-none">
-        <!-- todo popup -->
-        <a class="blue">Become a partner</a>
+        <nuxt-link class="black" :to="`/me/articles/_`">New article</nuxt-link>
+        <nuxt-link class="black" :to="`/me/articles`">My articles</nuxt-link>
         <hr class="mtb-8">
       </div>
 
@@ -24,7 +26,7 @@
         <nuxt-link class="Mobile black" to="/">Home</nuxt-link>
         <nuxt-link class="black" :to="`/@${username}`" v-if="profile">Profile</nuxt-link>
         <nuxt-link class="black" to="/support" v-if="isLoggedIn">Help</nuxt-link>
-        <nuxt-link class="black" to="/logout" v-if="isLoggedIn">Sign out</nuxt-link>
+        <nuxt-link class="black" to="/me/signout" v-if="isLoggedIn">Sign out</nuxt-link>
       </div>
     </ul>
     <div v-on-clickaway="onClickAway"></div>
@@ -64,7 +66,7 @@
 
   @media (min-width: 768px) {
     .NavLink {
-      width: 200px;
+      width: 240px;
       border-radius: 4px;
       margin-top: -8px;
     }

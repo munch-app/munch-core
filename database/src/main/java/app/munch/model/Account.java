@@ -6,7 +6,6 @@ import dev.fuxing.err.ValidationException;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.groups.Default;
 import java.sql.Timestamp;
@@ -34,10 +33,6 @@ public final class Account {
     @Email
     @Column(length = 320, updatable = false, nullable = false)
     private String email;
-
-    @NotBlank
-    @Column(length = 100, updatable = true, nullable = true, unique = false)
-    private String name;
 
     @OneToOne(cascade = {CascadeType.PERSIST}, fetch = FetchType.LAZY, optional = true, orphanRemoval = false)
     private Profile profile;
@@ -75,14 +70,6 @@ public final class Account {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     /**

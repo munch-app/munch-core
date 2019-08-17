@@ -28,8 +28,8 @@
 
 <style scoped lang="less">
   .NameChar {
-    font-size: 18px;
-    font-weight: 600;
+    font-size: 19px;
+    font-weight: 500;
     line-height: 36px;
   }
 

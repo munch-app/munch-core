@@ -1,6 +1,7 @@
 package app.munch.api;
 
 import app.munch.model.Account;
+import app.munch.model.Profile;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;
 import dev.fuxing.jpa.HibernateUtils;
@@ -64,10 +65,13 @@ public final class AccountService implements TransportService {
                 account = new Account();
                 account.setId(accountId);
                 account.setEmail(firebaseToken.getEmail());
-                account.setName(firebaseToken.getName());
+
+                Profile profile = new Profile();
+                profile.setName(firebaseToken.getName());
+                account.setProfile(profile);
 
                 try {
-                    munchMailingListClient.post(account.getEmail(), account.getName());
+                    munchMailingListClient.post(account.getEmail(), profile.getName());
                 } catch (StructuredException e) {
                     logger.warn("MallingList Error accountId: {}, email: {}", account.getId(), account.getEmail(), e);
                 }

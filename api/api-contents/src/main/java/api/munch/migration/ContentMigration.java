@@ -65,7 +65,7 @@ public class ContentMigration {
                         content.getImage().getSizes().stream().max((o1, o2) -> o1.getHeight())
                                 .ifPresent(size -> {
                                     Image image = new Image();
-                                    image.setSizes(Map.of(size.getWidth() + "x" + size.getHeight(), size.getUrl()));
+//                                    image.setSizes(Map.of(size.getWidth() + "x" + size.getHeight(), size.getUrl()));
                                     image.setSource(ImageSource.ARTICLE);
                                     revision.setImage(image);
                                 });
@@ -182,7 +182,7 @@ public class ContentMigration {
         return image1.getSizes().stream().max((o1, o2) -> o1.getHeight())
                 .map(size -> {
                     Image image = new Image();
-                    image.setSizes(Map.of(size.getWidth() + "x" + size.getHeight(), size.getUrl()));
+//                    image.setSizes(Map.of(size.getWidth() + "x" + size.getHeight(), size.getUrl()));
                     image.setSource(ImageSource.ARTICLE);
                     return image;
                 })

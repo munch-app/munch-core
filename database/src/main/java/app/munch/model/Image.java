@@ -3,9 +3,11 @@ package app.munch.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import dev.fuxing.err.ValidationException;
+import dev.fuxing.jpa.HibernateUtils;
 import dev.fuxing.utils.JsonUtils;
 import dev.fuxing.utils.KeyUtils;
 import dev.fuxing.validator.ValidEnum;
@@ -19,7 +21,6 @@ import javax.validation.groups.Default;
 import java.sql.Timestamp;
 import java.util.Base64;
 import java.util.Date;
-import java.util.Map;
 
 /**
  * Image is a container for the real resource in aws s3. <br>
@@ -45,11 +46,11 @@ public final class Image {
     @Pattern(regexp = "^\\.(jpg|png|gif|webp)$")
     private String ext;
 
+    @JsonIgnore
     @NotNull
     @OneToOne(fetch = FetchType.LAZY, cascade = {})
     private Profile profile;
 
-    @JsonIgnore
     @Column(length = 32, updatable = false, nullable = false, unique = false)
     private String bucket;
 
@@ -66,12 +67,6 @@ public final class Image {
     @ValidEnum
     @Enumerated(EnumType.STRING)
     private ImageSource source;
-
-    /**
-     * Not persisted, but exist because it is auto generated on the fly.
-     */
-    @Transient
-    private Map<String, String> sizes;
 
     @NotNull
     @Column(updatable = false, nullable = false, unique = false)
@@ -91,7 +86,6 @@ public final class Image {
 
     public void setId(String id) {
         this.id = id;
-        fillSizes();
     }
 
     public String getExt() {
@@ -100,7 +94,6 @@ public final class Image {
 
     public void setExt(String ext) {
         this.ext = ext;
-        fillSizes();
     }
 
     public String getBucket() {
@@ -109,7 +102,6 @@ public final class Image {
 
     public void setBucket(String bucket) {
         this.bucket = bucket;
-        fillSizes();
     }
 
     public Integer getWidth() {
@@ -136,38 +128,12 @@ public final class Image {
         this.source = source;
     }
 
-    /**
-     * Key: Dimension (Width x Height) e.g. '400x514' <br>
-     * Value: Signed URL (cached by CDN) <br>
-     *
-     * @return multiple signed images of different sizes.
-     */
-    public Map<String, String> getSizes() {
-        return sizes;
-    }
-
-    public void setSizes(Map<String, String> sizes) {
-        this.sizes = sizes;
-    }
-
     public Date getCreatedAt() {
         return createdAt;
     }
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
-    }
-
-    private void fillSizes() {
-        if (StringUtils.isAnyBlank(getExt(), getId(), getBucket())) return;
-
-        String key = getId() + getExt();
-        String api = "https://cdn.munch.app";
-        setSizes(Map.of(
-                "320x320", SharpUtils.create(api, getBucket(), key, 320, 320),
-                "640x640", SharpUtils.create(api, getBucket(), key, 640, 640),
-                "1080x1080", SharpUtils.create(api, getBucket(), key, 1080, 1080)
-        ));
     }
 
     @PrePersist
@@ -183,29 +149,76 @@ public final class Image {
     }
 
     /**
+     * Sizes: URL that are generated for specific size
+     *
+     * @return JsonNode for public with sizes url generated
+     */
+    @JsonValue
+    public JsonNode toJson() {
+        ObjectNode node = JsonUtils.createObjectNode();
+        node.put("id", getId());
+        node.put("width", getWidth());
+        node.put("height", getHeight());
+        node.put("source", getSource().toString());
+
+        if (StringUtils.isNoneBlank(getExt(), getId(), getBucket())) {
+            node.putObject("sizes")
+                    .put("320x320", CdnUtils.create(getBucket(), getId(), getExt(), 320, 320))
+                    .put("640x640", CdnUtils.create(getBucket(), getId(), getExt(), 640, 640))
+                    .put("1080x1080", CdnUtils.create(getBucket(), getId(), getExt(), 1080, 1080));
+        }
+        return node;
+    }
+
+    /**
+     * @return JsonNode for internal use with more details of the image
+     */
+    public JsonNode toJsonInternal() {
+        ObjectNode node = JsonUtils.createObjectNode();
+        node.put("id", getId());
+        node.put("ext", getExt());
+        node.put("bucket", getBucket());
+        node.put("width", getWidth());
+        node.put("height", getHeight());
+        node.put("source", getSource().toString());
+
+        HibernateUtils.initialize(this);
+        HibernateUtils.initialize(getProfile());
+
+        Profile profile = getProfile();
+        if (profile != null) {
+            node.putObject("profile")
+                    .put("id", profile.getId())
+                    .put("username", profile.getUsername());
+        }
+        return node;
+    }
+
+    /**
      * Develop signed url in the future with expiry for security reason.
      */
-    private static class SharpUtils {
+    private static class CdnUtils {
+        private static final String API_URL = "https://cdn.munch.app/";
         private static final Base64.Encoder ENCODER = Base64.getEncoder();
 
-        static String create(String api, String bucket, String key, int width, int height) {
+        static String create(String bucket, String id, String ext, int width, int height) {
             ObjectNode edits = JsonUtils.createObjectNode();
             edits.putObject("resize")
                     .put("width", width)
                     .put("height", height)
                     .put("fit", "outside");
 
-            return create(api, bucket, key, edits);
+            return create(bucket, id, ext, edits);
         }
 
-        static String create(String api, String bucket, String key, JsonNode edits) {
+        static String create(String bucket, String id, String ext, JsonNode edits) {
             ObjectNode request = JsonUtils.createObjectNode(nodes -> {
                 nodes.put("bucket", bucket);
-                nodes.put("key", key);
+                nodes.put("key", id + ext);
                 nodes.set("edits", edits);
             });
             String json = JsonUtils.toString(request);
-            return api + "/" + ENCODER.encodeToString(json.getBytes());
+            return API_URL + ENCODER.encodeToString(json.getBytes());
         }
     }
 }

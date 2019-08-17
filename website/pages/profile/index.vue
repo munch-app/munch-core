@@ -20,8 +20,8 @@
 
 <script>
   import {mapGetters} from 'vuex'
-  import ProfileSavedPlaceSection from "../../components/profile/ProfileSavedPlaceSection";
-  import ProfileSearchPreferenceSection from "../../components/profile/ProfileSearchPreferenceSection";
+  import ProfileSavedPlaceSection from "../../components/account/ProfileSavedPlaceSection";
+  import ProfileSearchPreferenceSection from "../../components/account/ProfileSearchPreferenceSection";
 
   export default {
     components: {ProfileSearchPreferenceSection, ProfileSavedPlaceSection},

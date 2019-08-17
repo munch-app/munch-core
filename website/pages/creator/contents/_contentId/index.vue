@@ -39,7 +39,7 @@
         return this.content && this.content.creatorId || this.$store.getters['creator/creatorId']
       },
       contentId() {
-        return this.content && this.content.contentId
+        return this.content?.contentId
       }
     },
     data() {

@@ -16,7 +16,7 @@
     <div class="Header"/>
     <header-menu class="container-1200"/>
 
-    <layout-default/>
+    <global-default/>
 
     <!-- Elevation overlay for content -->
     <div @click="() => {}" :class="{'elevation-overlay index-content-overlay': isElevated}"></div>
@@ -28,14 +28,14 @@
   if (process.browser) require('intersection-observer')
   import {mapGetters} from 'vuex'
 
-  import LayoutDefault from "../components/layouts/LayoutDefault";
+  import GlobalDefault from "../components/global/GlobalDefault";
   import HeaderLogo from "../components/layouts/HeaderLogo";
   import HeaderMenu from "../components/layouts/HeaderMenu";
   import HeaderProfile from "../components/layouts/HeaderProfile";
 
   export default {
     components: {
-      LayoutDefault, HeaderProfile, HeaderMenu, HeaderLogo
+      GlobalDefault, HeaderProfile, HeaderMenu, HeaderLogo
     },
     computed: {
       ...mapGetters(['isElevated', 'isFocused']),

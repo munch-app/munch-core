@@ -22,7 +22,7 @@
 </template>
 <script>
 
-  import _ from 'lodash'
+
 
   const CONFIG = {
     HOUR_TOKENS: ['HH', 'H', 'hh', 'h'],

@@ -14,8 +14,6 @@ This is a rewrite of ImageSize with emphasis on
 </template>
 
 <script>
-  import _ from 'lodash'
-
   const findUrl = (sizes, minWidth, minHeight) => {
     // Better Validate This Method
     const selected = {width: 0, height: 0, url: null}

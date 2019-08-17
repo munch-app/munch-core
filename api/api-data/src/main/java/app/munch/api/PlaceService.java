@@ -76,8 +76,8 @@ public final class PlaceService extends DataService {
         PlaceRevision revision = ctx.bodyAsObject(PlaceRevision.class);
 
         return provider.reduce(entityManager -> {
-            Profile profile = entityManager.createQuery("SELECT profile FROM Account " +
-                    "WHERE id = :accountId", Profile.class)
+            Profile profile = entityManager.createQuery("SELECT a.profile FROM Account a " +
+                    "WHERE a.id = :accountId", Profile.class)
                     .setParameter("accountId", accountId)
                     .getSingleResult();
 

@@ -5,9 +5,9 @@ import app.munch.model.Image;
 import app.munch.model.Profile;
 import app.munch.username.UsernameValidator;
 import com.fasterxml.jackson.databind.JsonNode;
-import dev.fuxing.err.ConflictException;
 import dev.fuxing.err.UnauthorizedException;
 import dev.fuxing.jpa.EntityPatch;
+import dev.fuxing.jpa.HibernateUtils;
 import dev.fuxing.jpa.TransactionProvider;
 import dev.fuxing.transport.service.TransportContext;
 
@@ -36,7 +36,6 @@ public final class MeService extends DataService {
             GET("", this::get);
             PATCH("", this::patch);
 
-            POST("/profile", this::post);
             POST("/profile/username/attempt", this::usernameAttempt);
         });
     }
@@ -55,12 +54,25 @@ public final class MeService extends DataService {
         @NotNull String id = request.getAccountId();
         JsonNode body = ctx.bodyAsJson();
 
+        JsonNode usernameNode = body.path("profile").path("username");
+
         return provider.reduce(entityManager -> {
             Account account = entityManager.find(Account.class, id);
-            return EntityPatch.with(entityManager, account, body)
+
+            if (usernameNode.isValueNode()) {
+                String username = usernameNode.asText();
+                if (!account.getProfile().getUsername().equals(username)) {
+                    if (!usernameValidator.isValid(entityManager, username)) {
+                        throw new UnauthorizedException("Username not available.");
+                    }
+                }
+            }
+
+            account = EntityPatch.with(entityManager, account, body)
                     .lock()
                     .patch("email", Account::setEmail)
                     .patch("profile", Account::getProfile, patcher -> {
+                        patcher.patch("username", Profile::setUsername);
                         patcher.patch("name", Profile::setName);
                         patcher.patch("bio", Profile::setBio);
                         patcher.patch("image", (EntityPatch.NodeConsumer<Profile>) (profile, json) -> {
@@ -73,6 +85,8 @@ public final class MeService extends DataService {
                         });
                     })
                     .persist();
+            HibernateUtils.initialize(account.getProfile());
+            return account;
         });
     }
 
@@ -85,38 +99,5 @@ public final class MeService extends DataService {
                     "valid", usernameValidator.isValid(entityManager, username)
             );
         });
-    }
-
-    public Profile post(TransportContext ctx) {
-        ApiRequest request = ctx.get(ApiRequest.class);
-        @NotNull String id = request.getAccountId();
-        JsonNode body = ctx.bodyAsJson();
-        String username = body.path("username").asText();
-
-        return provider.reduce(entityManager -> {
-            if (!usernameValidator.isValid(entityManager, username)) {
-                throw new UnauthorizedException("Username not available.");
-            }
-
-            Account account = entityManager.find(Account.class, id);
-            if (account.getProfile() != null) {
-                throw new ConflictException("Profile already exist.");
-            }
-
-            Profile profile = new Profile();
-            profile.setUsername(body.path("username").asText());
-            profile.setName(body.path("name").asText());
-            profile.setBio(body.path("bio").asText());
-
-            String imageId = body.path("image").path("id").asText(null);
-            if (imageId != null) {
-                profile.setImage(entityManager.find(Image.class, imageId));
-            }
-
-            account.setProfile(profile);
-            entityManager.persist(account);
-            return profile;
-        });
-
     }
 }

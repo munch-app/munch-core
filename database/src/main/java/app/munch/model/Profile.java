@@ -35,9 +35,12 @@ public final class Profile {
     @Column(length = 26, updatable = false, nullable = false, unique = true)
     private String id;
 
+    /**
+     * In the future, username renaming must be limited and username can only be used after 1 month of inactivity.
+     */
     @NotNull
-    @Pattern(regexp = "[a-z0-9]{3,32}")
-    @Column(updatable = false, nullable = false, unique = true)
+    @Pattern(regexp = "[a-z0-9]{3,64}")
+    @Column(length = 255, updatable = true, nullable = false, unique = true)
     private String username;
 
     @NotBlank
@@ -47,7 +50,7 @@ public final class Profile {
     @Column(length = 250, updatable = true, nullable = true, unique = false)
     private String bio;
 
-    @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = true)
+    @ManyToOne(cascade = {}, fetch = FetchType.EAGER, optional = true)
     private Image image;
 
     @NotNull
@@ -120,6 +123,10 @@ public final class Profile {
         long millis = System.currentTimeMillis();
         setId(KeyUtils.nextULID(millis));
         setCreatedAt(new Timestamp(millis));
+
+        if (getUsername() == null) {
+            setUsername(getId());
+        }
 
         preUpdate();
     }

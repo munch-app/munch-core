@@ -28,7 +28,7 @@
 </template>
 
 <script>
-  import _ from "lodash"
+
   import {mapGetters} from 'vuex'
   import SearchBarFilterList from "./SearchBarFilterList";
 
@@ -111,8 +111,8 @@
           },
           {
             type: 'Timing',
-            name: query.filter.hour && query.filter.hour.name || timing.length === 1 ? timing[0].name : 'Timings',
-            applied: query.filter.hour && query.filter.hour.name || timing.length > 0
+            name: query.filter.hour?.name || timing.length === 1 ? timing[0].name : 'Timings',
+            applied: query.filter.hour?.name || timing.length > 0
           },
           {
             type: 'Combined',

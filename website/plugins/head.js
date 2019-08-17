@@ -44,12 +44,24 @@ function metaGraph(graph) {
     meta.push({hid: 'description', name: 'description', content: description})
     meta.push({hid: 'og:description', name: 'og:description', content: description})
   }
-  if (image) {
-    meta.push({hid: 'og:image', name: 'og:image', content: image})
-  }
   if (url) {
     meta.push({hid: 'og:url', name: 'og:url', content: url})
   }
+  /**
+   * Url or app.munch.model.Image
+   */
+  if (image) {
+    if (typeof image === "string") {
+      meta.push({hid: 'og:image', name: 'og:image', content: image})
+    } else if (image.sizes && image.sizes['640x640']) {
+      meta.push({hid: 'og:image', name: 'og:image', content: image.sizes['640x640']})
+    }
+  }
+
+  /**
+   * Known types:
+   * article, place, profile
+   */
   if (type) {
     meta.push({hid: 'og:type', name: 'og:type', content: type})
   }
@@ -60,7 +72,7 @@ function metaGraph(graph) {
  * Populate the root head node
  */
 function root({graph}) {
-  if (graph && graph.title) {
+  if (graph?.title) {
     return {
       title: graph.title
     }

@@ -47,7 +47,6 @@
   import PlaceSuggestImage from "../../components/places/suggest/PlaceSuggestImage";
   import PlaceSuggestChanges from "../../components/places/suggest/PlaceSuggestChanges";
   import DialogLoading from "../../components/layouts/DialogLoading";
-  import _ from "lodash";
 
   const newPayload = (data) => {
     const {place, images, articles} = data || {
@@ -82,7 +81,7 @@
         tags: place.tags || [],
         hours: place.hours || [],
         menu: {
-          url: place.menu && place.menu.url || '',
+          url: place?.menu.url || '',
         }
       },
       uploads: {
@@ -103,7 +102,7 @@
       return this.$head({
         robots: {follow: false, index: true},
         graph: {
-          title: `Suggest an edit · Munch - Food Discovery App`,
+          title: `Suggest an edit · Munch - Food Discovery`,
         },
       })
     },
@@ -253,7 +252,7 @@
           }
         }
 
-        if (!_(this.originalPlace.hours).xorWith(this.payload.place.hours, _.isEqual).isEmpty()) {
+        if (!_.xorWith(this.originalPlace.hours, this.payload.place.hours, _.isEqual).isEmpty()) {
           updatedData.push({
             hours: this.payload.place.hours,
             operation: "Replace",

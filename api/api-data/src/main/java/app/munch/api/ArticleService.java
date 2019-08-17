@@ -62,8 +62,8 @@ public final class ArticleService extends DataService {
     private static void validate(EntityManager entityManager, Article article, TransportContext ctx) {
         @NotNull String accountId = ctx.get(ApiRequest.class).getAccountId();
 
-        String profileId = entityManager.createQuery("SELECT profile.id FROM Account " +
-                "WHERE id = :id", String.class)
+        String profileId = entityManager.createQuery("SELECT a.profile.id FROM Account a " +
+                "WHERE a.id = :id", String.class)
                 .setParameter("id", accountId)
                 .getSingleResult();
 
@@ -78,8 +78,8 @@ public final class ArticleService extends DataService {
         int size = ctx.querySize(20, 50);
 
         return articleEntityManager.list(entityManager -> {
-            return entityManager.createQuery("SELECT profile FROM Account " +
-                    "WHERE id = :id", Profile.class)
+            return entityManager.createQuery("SELECT a.profile FROM Account a " +
+                    "WHERE a.id = :id", Profile.class)
                     .setParameter("id", accountId)
                     .getSingleResult();
         }, size, cursor);
@@ -90,8 +90,8 @@ public final class ArticleService extends DataService {
         JsonNode body = ctx.bodyAsJson();
 
         return articleEntityManager.post(entityManager -> {
-            return entityManager.createQuery("SELECT profile FROM Account " +
-                    "WHERE id = :id", Profile.class)
+            return entityManager.createQuery("SELECT a.profile FROM Account a " +
+                    "WHERE a.id = :id", Profile.class)
                     .setParameter("id", accountId)
                     .getSingleResult();
         }, body);

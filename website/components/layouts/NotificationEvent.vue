@@ -22,7 +22,7 @@
 </template>
 
 <script>
-  // Replace this with callback and merge into NotificationList.vue
+  // Replace this with callback and merge into GlobalNotification.vue
 
   export default {
     name: "NotificationEvent",

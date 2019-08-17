@@ -28,7 +28,7 @@ Max-width of 400px if > 576vw
 
 <script>
   import {mapGetters} from 'vuex'
-  import ProfileOnBoarding from "../profile/ProfileOnBoarding";
+  import ProfileOnBoarding from "../account/ProfileOnBoarding";
   import {disableBodyScroll, clearAllBodyScrollLocks} from 'body-scroll-lock';
 
   export default {

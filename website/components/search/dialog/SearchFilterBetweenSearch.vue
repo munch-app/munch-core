@@ -95,7 +95,7 @@
   import {pluck, filter, debounceTime, distinctUntilChanged, switchMap, map, tap} from 'rxjs/operators'
   import {mapGetters} from "vuex";
   import Vue from 'vue';
-  import _ from 'lodash';
+
 
   export default {
     name: "SearchFilterBetweenSearch",

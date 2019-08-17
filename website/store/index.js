@@ -1,4 +1,4 @@
-import _ from "lodash";
+
 import uuidv4 from "uuid/v4";
 
 const MUNCH_TEAM = /oNOfWjsL49giM0|sGtVZuFJwYhf5O|7onsywnak2SaVt|GoNd1yY0uVcA8p|CM8wAOSdenMD8d|41qibhP0VjR3qQ/g
@@ -52,8 +52,10 @@ export const getters = {
    */
   isMunchTeam: (state) => {
     // state.user
-    const userId = state.user.profile && state.user.profile.userId
-    if (userId) return MUNCH_TEAM.test(userId.slice(0, 14))
+    const accountId = state.account?.id
+    if (accountId) {
+      return MUNCH_TEAM.test(accountId.slice(0, 14))
+    }
   }
 }
 
@@ -129,13 +131,16 @@ export const mutations = {
 
 const TYPE_MAPPING = {
   'munch.api.user.ItemAlreadyExistInPlaceCollection': {
+    type: 'error',
+    timeout: 10000,
     title: 'Already Exist',
     message: 'Place is already inside the collection.'
   }
 }
 
 const parseError = (error) => {
-  if (error && error.meta && error.meta.error) {
+  // Deprecated, remove when ready
+  if (error?.meta?.error) {
     const metaError = error.meta.error
 
     const mapped = TYPE_MAPPING[metaError.type]
@@ -148,8 +153,19 @@ const parseError = (error) => {
     }
   }
 
-  if (error && error.statusCode === 404) {
-    return {title: 'Error', message: 'Object Not Found'}
+  if (error?.response?.data?.error) {
+    const {type, message} = error.response.data.error
+
+    // Attempt to map to know types
+    const mapped = TYPE_MAPPING[type]
+    if (mapped) return mapped
+
+    const parts = type.split(/[/.]/)
+    return {title: parts[parts.length - 1], message: message}
+  }
+
+  if (error?.statusCode === 404) {
+    return {title: 'Not Found', message: 'Requested object cannot be found.'}
   }
 
   return {title: 'Unknown Error', message: error}
@@ -173,32 +189,29 @@ export const actions = {
    */
   addError({commit, state}, error) {
     console.error(error)
-    if (state.notifications.length > 30) {
-      console.log('Too many concurrent notification. Not added')
-      return
-    }
-
-    const id = uuidv4()
-    commit('addNotification', {type: 'error', id, ...parseError(error)})
-    setTimeout(() => commit('removeNotification', {id}), 15000)
+    return this.dispatch('addMessage', {type: 'error', timeout: 12000, ...parseError(error)})
   },
 
   /**
    *
    * @param commit
    * @param state
-   * @param type of message, allows overriding
-   * @param title of message
-   * @param message itself
+   * @param object = {type, title, message} or String
    */
-  addMessage({commit, state}, {type, title, message}) {
+  addMessage({commit, state}, object) {
     if (state.notifications.length > 30) {
       console.log('Too many concurrent notification. Not added')
       return
     }
 
+    if (typeof object === 'string') {
+      object = {type: 'message', message: object, timeout: 5000}
+    }
+
+    const {type, title, message, timeout} = object
     const id = uuidv4()
+
     commit('addNotification', {type: type || 'message', message, title, id})
-    setTimeout(() => commit('removeNotification', {id}), 6000)
+    setTimeout(() => commit('removeNotification', {id}), timeout || 5000)
   }
 }

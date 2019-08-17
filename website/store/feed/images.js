@@ -1,5 +1,5 @@
 const MAX_ITEMS = 500
-import _ from 'lodash'
+
 
 export const state = () => ({
   items: [],

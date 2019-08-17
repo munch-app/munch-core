@@ -2,7 +2,10 @@ package app.munch.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import org.apache.commons.lang3.StringUtils;
 
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -13,7 +16,26 @@ import java.util.stream.Stream;
  * Time: 18:37
  */
 public enum ImageSource {
+
+    /**
+     * Image uploaded when user is editing an article.
+     */
     ARTICLE("ARTICLE"),
+
+    /**
+     * Image uploaded directly to the library.
+     */
+    LIBRARY("LIBRARY"),
+
+    /**
+     * Image uploaded when user is changing profile pic.
+     */
+    PROFILE("PROFILE"),
+
+    /**
+     * Image syndicated from instagram.
+     */
+    INSTAGRAM("INSTAGRAM"),
 
     UNKNOWN_TO_SDK_VERSION(null);
 
@@ -27,6 +49,16 @@ public enum ImageSource {
     @JsonValue
     public String toString() {
         return String.valueOf(value);
+    }
+
+    public static Set<ImageSource> fromArray(String value) {
+        if (StringUtils.isBlank(value)) {
+            return Set.of();
+        }
+        return Arrays.stream(value.split(", *"))
+                .map(ImageSource::fromValue)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
     }
 
     /**

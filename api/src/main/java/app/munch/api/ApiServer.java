@@ -28,6 +28,9 @@ import java.util.Set;
 @Singleton
 public final class ApiServer extends TransportServer {
     private static final Logger logger = LoggerFactory.getLogger(ApiServer.class);
+    private static final Set<String> ORIGINS = Set.of(
+            "http://localhost:3000", "https://munch.app", "https://www.munch.app", "https://staging.munch.app"
+    );
 
     private final ApiAuthenticator authenticator;
     private final ApiHealthService healthService;
@@ -55,6 +58,7 @@ public final class ApiServer extends TransportServer {
         // Added /* because beginning of path has version number
         PATH("/*", () -> {
             BEFORE("/*", this::defaultBefore);
+            AFTER_AFTER("/*", this::defaultAfterAfter);
             BEFORE("/admin/*", this::adminBefore);
             super.setupRouters();
 
@@ -75,6 +79,14 @@ public final class ApiServer extends TransportServer {
     public void defaultBefore(TransportContext ctx) throws AuthenticationException {
         ApiRequest request = authenticator.authenticate(ctx);
         ctx.put(request);
+    }
+
+    private void defaultAfterAfter(TransportContext ctx) {
+        String origin = ctx.getHeader("Origin");
+        if (origin != null && ORIGINS.contains(origin)) {
+            ctx.response().header("Access-Control-Allow-Headers", "Origin,Authorization,Local-Lat-Lng,Local-Zone-Id");
+            ctx.response().header("Access-Control-Allow-Origin", origin);
+        }
     }
 
     /**

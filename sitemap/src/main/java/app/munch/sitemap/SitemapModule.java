@@ -24,7 +24,6 @@ public final class SitemapModule extends AbstractModule {
         binder.addBinding().to(ProfileSitemap.class);
         binder.addBinding().to(ArticleSitemap.class);
 
-        // TODO(fuxing): refactoring required
         binder.addBinding().to(SGPSearchSitemap.class);
         binder.addBinding().to(PlaceSitemap.class);
 
