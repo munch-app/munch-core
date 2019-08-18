@@ -3,8 +3,14 @@
     <div class="container-768 pt-48 pb-64">
       <article-content :article="article"/>
 
-      <div class="pb-128">
-
+      <div class="mt-64">
+        <div class="Tags flex-wrap">
+          <div v-for="tag in article.tags" :key="tag.id" class="p-6">
+            <div class="bg-steam p-6-12 border-3 b-a75">
+              {{tag.name}}
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="flex hr-top mt-24 pt-32">
@@ -66,5 +72,9 @@
 <style scoped lang="less">
   .MoreFromAuthorList {
     margin: -12px;
+  }
+
+  .Tags {
+    margin: -6px;
   }
 </style>

@@ -22,6 +22,7 @@ public final class DataModule extends ApiServiceModule {
         addService(ArticleService.class);
         addService(PublicationService.class);
 
+        addService(TagService.class);
         addService(PlaceService.class);
     }
 }

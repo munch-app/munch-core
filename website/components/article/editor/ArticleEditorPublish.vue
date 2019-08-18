@@ -33,7 +33,11 @@
       <div class="p-24">
         <div>
           <div class="ptb-8">
-            <small>Tags</small>
+            <h4>
+              <span class="small"><b>Tags</b>: You can add up to 8 tags.</span>
+            </h4>
+
+            <article-editor-tag-input class="mt-8" :tags="value.tags" @on-add="onTagAdd" @on-remove="onTagRemove"/>
           </div>
           <div class="flex-align-center hover-pointer mt-16" @click="onInputMap">
             <div class="checkbox" :class="{selected: value.options.map}"/>
@@ -55,19 +59,31 @@
   import TextAuto from "../../utils/TextAuto";
   import CdnImg from "../../utils/image/CdnImg";
   import ImageUploadDialog from "../../utils/image/ImageUploadDialog";
+  import ArticleEditorTagInput from "./ArticleEditorTagInput";
 
   export default {
     name: "ArticleEditorPublish",
-    components: {ImageUploadDialog, CdnImg, TextAuto},
+    components: {ArticleEditorTagInput, ImageUploadDialog, CdnImg, TextAuto},
     props: {
       value: Object
     },
     data() {
       return {
-        state: {imageDialog: false}
+        state: {imageDialog: false},
       }
     },
     methods: {
+      onTagAdd(tag) {
+        let tags = [...this.value.tags, tag]
+        tags = _.uniqBy(tags, function (e) {
+          return e.id;
+        });
+        this.$emit('input', {...this.value, tags})
+      },
+      onTagRemove(tag) {
+        const tags = this.value.tags.filter(t => t.id !== tag.id)
+        this.$emit('input', {...this.value, tags})
+      },
       onInputTitle(title) {
         this.$emit('input', {...this.value, title: title.substring(0, 100)})
       },
@@ -88,8 +104,7 @@
         this.$emit('on-save')
         this.$emit('on-cancel')
       },
-
-    }
+    },
   }
 </script>
 

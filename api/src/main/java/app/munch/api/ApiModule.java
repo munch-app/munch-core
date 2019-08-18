@@ -1,5 +1,6 @@
 package app.munch.api;
 
+import app.munch.api.v22v23.MigrationModule;
 import app.munch.database.DatabaseModule;
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagement;
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagementClientBuilder;
@@ -47,6 +48,8 @@ public class ApiModule extends AbstractModule {
         install(new DataModule());
         install(new AdminModule());
         install(new AccountModule());
+
+        install(new MigrationModule());
 
         install(new UserModule());
         install(new PlaceModule());
