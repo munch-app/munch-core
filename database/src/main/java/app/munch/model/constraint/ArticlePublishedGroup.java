@@ -7,5 +7,5 @@ package app.munch.model.constraint;
  * Date: 2019-07-15
  * Time: 22:00
  */
-public enum ArticlePublishedGroup {
+public interface ArticlePublishedGroup {
 }

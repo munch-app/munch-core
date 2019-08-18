@@ -129,22 +129,23 @@ public final class ProfileAdminService extends AdminService {
 
     public TransportList profileArticleList(TransportContext ctx) {
         final int size = ctx.querySize(20, 50);
+        final ArticleStatus status = ctx.queryEnum("status", ArticleStatus.class);
+
         String profileId = ctx.pathString("profileId");
         TransportCursor cursor = ctx.queryCursor();
 
-        return articleEntityManager.list(entityManager -> {
+        return articleEntityManager.list(status, entityManager -> {
             return entityManager.find(Profile.class, profileId);
         }, size, cursor);
-
     }
 
     public Article profileArticlePost(TransportContext ctx) {
         String profileId = ctx.pathString("profileId");
-        JsonNode body = ctx.bodyAsJson();
+        ArticleRevision revision = ctx.bodyAsObject(ArticleRevision.class);
 
-        return articleEntityManager.post(entityManager -> {
+        return articleEntityManager.post(revision, entityManager -> {
             return entityManager.find(Profile.class, profileId);
-        }, body);
+        });
     }
 
     public Article profileArticleGet(TransportContext ctx) {

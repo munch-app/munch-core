@@ -31,15 +31,6 @@ public final class Article extends ArticleModel {
     @Column(length = 13, updatable = false, nullable = false, unique = true)
     private String id;
 
-    @NotNull
-    @Pattern(regexp = "[0-9a-z-]{0,200}")
-    @Column(length = 200, updatable = true, nullable = false, unique = false)
-    private String slug;
-
-    @NotNull
-    @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = true)
-    private Profile profile;
-
     @ValidEnum
     private ArticleStatus status;
 
@@ -58,22 +49,6 @@ public final class Article extends ArticleModel {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getSlug() {
-        return slug;
-    }
-
-    public void setSlug(String slug) {
-        this.slug = slug;
-    }
-
-    public Profile getProfile() {
-        return profile;
-    }
-
-    public void setProfile(Profile profile) {
-        this.profile = profile;
     }
 
     public ArticleStatus getStatus() {
@@ -102,8 +77,12 @@ public final class Article extends ArticleModel {
 
     @PrePersist
     void prePersist() {
-        setId(KeyUtils.nextL12() + "1");
-        setCreatedAt(new Timestamp(System.currentTimeMillis()));
+        if (getId() == null) {
+            setId(KeyUtils.nextL12() + "1");
+        }
+        if (getCreatedAt() == null) {
+            setCreatedAt(new Timestamp(System.currentTimeMillis()));
+        }
 
         preUpdate();
     }

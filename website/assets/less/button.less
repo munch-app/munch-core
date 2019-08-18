@@ -18,6 +18,16 @@ button {
     color: white !important;
   }
 
+  &.pink {
+    background: @Pink !important;
+    color: white !important;
+  }
+
+  &.danger {
+    background: @Error !important;
+    color: white !important;
+  }
+
   &.outline {
     padding-top: 7px !important;
     padding-bottom: 7px !important;
@@ -26,6 +36,11 @@ button {
   &.blue-outline:extend(button.outline) {
     color: @Blue !important;
     border: 1px solid @Blue !important;
+  }
+
+  &.pink-outline:extend(button.outline) {
+    color: @Pink !important;
+    border: 1px solid @Pink !important;
   }
 
   &.border:extend(button.outline) {

@@ -1,6 +1,6 @@
 <template>
-  <portal to="ImageUploadDialog">
-    <div class="flex-row wh-100">
+  <div class="fixed position-0 bg-overlay flex-center">
+    <div class="Dialog dialog-large flex-row wh-100">
       <div class="flex-column hr-right">
         <div class="flex-align-center flex-column p-16 hover-pointer" @click="tab = 'Upload'">
           <simple-svg class="wh-32px" fill="#444" :filepath="require('~/assets/icon/icons8-camera.svg')"/>
@@ -45,33 +45,28 @@
         </div>
       </div>
     </div>
-  </portal>
+  </div>
 </template>
-
-<!--
-    <image-upload ref="imageUpload" @on-image="onProfilePic"/>
--->
 
 <script>
   export default {
-    name: "ImageUpload",
+    name: "ImageUploadDialog",
     data() {
       return {
         tab: 'Upload'
       }
     },
     methods: {
-      init() {
-        this.$store.commit('global/setDialog', 'ImageUploadDialog')
-      },
       onImage(image) {
-        this.$store.commit('global/clearDialog')
-        this.$emit('on-image',image)
+        this.$emit('on-image', image)
       }
     }
   }
 </script>
 
 <style scoped lang="less">
-
+  .Dialog {
+    padding: 0;
+    height: 480px;
+  }
 </style>

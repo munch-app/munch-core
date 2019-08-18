@@ -1,7 +1,7 @@
 package app.munch.api;
 
+import dev.fuxing.err.ForbiddenException;
 import dev.fuxing.transport.service.TransportContext;
-import munch.restful.core.exception.AuthenticationException;
 import munch.restful.server.jwt.AuthenticatedToken;
 
 import javax.annotation.Nullable;
@@ -54,7 +54,7 @@ public final class ApiRequest {
      */
     @NotNull
     public String getAccountId() {
-        if (accountId == null) throw new AuthenticationException(403, "Forbidden");
+        if (accountId == null) throw new ForbiddenException();
         return accountId;
     }
 

@@ -7,7 +7,8 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import dev.fuxing.postgres.PojoListUserType;
 import dev.fuxing.postgres.PojoSetUserType;
-import dev.fuxing.validator.ValidEnum;
+import dev.fuxing.postgres.PojoUserType;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
@@ -18,7 +19,9 @@ import javax.persistence.MappedSuperclass;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Reasons why there is ArticleModel because Article contains multiple revision and a live version of the Article.
@@ -35,6 +38,11 @@ import java.util.Set;
 @TypeDef(name = "Options", typeClass = ArticleModel.OptionsType.class)
 public abstract class ArticleModel {
 
+    @NotNull
+    @Pattern(regexp = "[0-9a-z-]{0,200}")
+    @Column(length = 200, updatable = true, nullable = false, unique = false)
+    private String slug;
+
     @NotBlank(groups = ArticlePublishedGroup.class)
     @Column(length = 100, updatable = true, nullable = true, unique = false)
     private String title;
@@ -45,6 +53,10 @@ public abstract class ArticleModel {
 
     @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = true)
     private Image image;
+
+    @NotNull
+    @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = true)
+    private Profile profile;
 
     @Valid
     @NotNull(groups = ArticlePublishedGroup.class)
@@ -61,12 +73,28 @@ public abstract class ArticleModel {
     @Type(type = "Options")
     private Options options;
 
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
+
     public Image getImage() {
         return image;
     }
 
     public void setImage(Image image) {
         this.image = image;
+    }
+
+    public Profile getProfile() {
+        return profile;
+    }
+
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
 
     public Set<Tag> getTags() {
@@ -121,7 +149,7 @@ public abstract class ArticleModel {
         }
     }
 
-    public static class OptionsType extends PojoListUserType<Options> {
+    public static class OptionsType extends PojoUserType<Options> {
         public OptionsType() {
             super(Options.class);
         }
@@ -163,7 +191,6 @@ public abstract class ArticleModel {
     })
 
     public interface Node {
-        @ValidEnum
         String getType();
     }
 
@@ -190,7 +217,6 @@ public abstract class ArticleModel {
         }
 
         @Valid
-        @NotNull
         public List<TextContent> getContent() {
             return content;
         }
@@ -522,6 +548,32 @@ public abstract class ArticleModel {
             public void setHref(String href) {
                 this.href = href;
             }
+        }
+    }
+
+    public static final class NodeUtils {
+        public static Optional<String> findFirstHeading(List<ArticleModel.Node> content) {
+            return content.stream()
+                    .filter(node -> node instanceof HeadingNode)
+                    .map(node -> (HeadingNode) node)
+                    .filter(node -> node.getContent() != null)
+                    .map(node -> node.getContent().stream()
+                            .map(TextContent::getText)
+                            .collect(Collectors.joining()))
+                    .filter(StringUtils::isNotBlank)
+                    .findFirst();
+        }
+
+        public static Optional<String> findFirstParagraph(List<ArticleModel.Node> content) {
+            return content.stream()
+                    .filter(node -> node instanceof ParagraphNode)
+                    .map(node -> (ParagraphNode) node)
+                    .filter(node -> node.getContent() != null)
+                    .map(node -> node.getContent().stream()
+                            .map(TextContent::getText)
+                            .collect(Collectors.joining()))
+                    .filter(StringUtils::isNotBlank)
+                    .findFirst();
         }
     }
 }

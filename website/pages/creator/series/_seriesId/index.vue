@@ -28,7 +28,7 @@
 
 <script>
   import {mapGetters} from "vuex"
-  import TextAuto from "../../../../components/core/TextAuto";
+  import TextAuto from "../../../../components/utils/TextAuto";
   import SeriesNavHeader from "../../../../components/creator/series/SeriesNavHeader";
   import SeriesSelectorContent from "../../../../components/creator/series/SeriesSelectorContent";
   import ContentInSeries from "../../../../components/creator/series/ContentInSeries";

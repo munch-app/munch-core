@@ -3,9 +3,9 @@ package app.munch.api;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import dev.fuxing.err.StatusException;
+import dev.fuxing.err.UnauthorizedException;
 import dev.fuxing.transport.service.TransportContext;
-import munch.restful.core.exception.AuthenticationException;
-import munch.restful.core.exception.CodeException;
 import munch.restful.server.jwt.AuthenticatedToken;
 import munch.restful.server.jwt.TokenAuthenticator;
 import spark.Request;
@@ -34,7 +34,7 @@ public final class ApiAuthenticator {
         this.authenticator = authenticator;
     }
 
-    public ApiRequest authenticate(TransportContext ctx) throws AuthenticationException {
+    public ApiRequest authenticate(TransportContext ctx) throws UnauthorizedException {
         DecodedJWT jwt = getJWT(ctx.request());
         if (jwt == null) {
             return ApiRequest.of(ctx, null);
@@ -53,7 +53,7 @@ public final class ApiAuthenticator {
             return JWT.decode(token);
         } catch (JWTDecodeException exception) {
             // Invalid token
-            throw new CodeException(403);
+            throw new StatusException(403);
         }
     }
 

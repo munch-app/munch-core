@@ -36,7 +36,7 @@ public final class ArticleEntityManager {
         this.provider = provider;
     }
 
-    public TransportList list(Function<EntityManager, Profile> profileSupplier, int size, TransportCursor cursor) {
+    public TransportList list(ArticleStatus status, Function<EntityManager, Profile> profileSupplier, int size, TransportCursor cursor) {
         String cursorId = cursor.get("id");
         Long cursorUpdatedAt = cursor.getLong("updatedAt");
         return provider.reduce(true, entityManager -> {
@@ -46,10 +46,11 @@ public final class ArticleEntityManager {
             return EntityStream.of(() -> {
                 if (cursorId != null && cursorUpdatedAt != null) {
                     return entityManager.createQuery("FROM Article " +
-                            "WHERE profile.id = :profileId " +
+                            "WHERE profile.id = :profileId AND status = :status " +
                             "AND (updatedAt < :cursorUpdatedAt OR (updatedAt = :cursorUpdatedAt AND id < :cursorId)) " +
                             "ORDER BY updatedAt DESC, id DESC", Article.class)
                             .setParameter("profileId", profile.getId())
+                            .setParameter("status", status)
                             .setParameter("cursorUpdatedAt", new Date(cursorUpdatedAt))
                             .setParameter("cursorId", cursorId)
                             .setMaxResults(size)
@@ -57,9 +58,10 @@ public final class ArticleEntityManager {
                 }
 
                 return entityManager.createQuery("FROM Article " +
-                        "WHERE profile.id = :profileId " +
+                        "WHERE profile.id = :profileId AND status = :status " +
                         "ORDER BY updatedAt DESC, id DESC", Article.class)
                         .setParameter("profileId", profile.getId())
+                        .setParameter("status", status)
                         .setMaxResults(size)
                         .getResultList();
             }).cursor(size, (article, builder) -> {
@@ -69,7 +71,7 @@ public final class ArticleEntityManager {
         });
     }
 
-    public Article post(Function<EntityManager, Profile> profileSupplier, JsonNode body) {
+    public Article post(ArticleRevision revision, Function<EntityManager, Profile> profileSupplier) {
         return provider.reduce(entityManager -> {
             Profile profile = profileSupplier.apply(entityManager);
             if (profile == null) throw new ForbiddenException();
@@ -77,14 +79,9 @@ public final class ArticleEntityManager {
             Article article = new Article();
             article.setStatus(ArticleStatus.DRAFT);
             article.setProfile(profile);
-            article.setTitle(body.path("title").asText());
-            article.setContent(List.of());
 
-            ArticleRevision revision = new ArticleRevision();
             revision.setArticle(article);
-            revision.setTitle(body.path("title").asText());
-            revision.setContent(List.of());
-
+            revision.setPublished(false);
             entityManager.persist(revision);
             return article;
         });
@@ -105,17 +102,7 @@ public final class ArticleEntityManager {
                 revision.setImage(entityManager.find(Image.class, revision.getImage().getId()));
             }
 
-            if (article.getStatus() == ArticleStatus.DRAFT || revision.getPublished()) {
-                article.setTitle(revision.getTitle());
-                article.setDescription(revision.getDescription());
-
-                article.setImage(revision.getImage());
-                article.setTags(revision.getTags());
-                article.setContent(revision.getContent());
-            }
-
             if (revision.getPublished()) {
-                article.setStatus(ArticleStatus.PUBLISHED);
                 addArticlePlace(entityManager, article, ArticleStatus.PUBLISHED);
             }
 

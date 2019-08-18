@@ -5,7 +5,9 @@
       <div v-if="isLoggedIn" class="text-decoration-none">
         <nuxt-link :to="`/@${username}`">
           <div class="flex-row flex-align-center">
-            <div class="flex-no-shrink wh-40px border-circle bg-blue">
+            <div class="flex-no-shrink wh-40px border-circle overflow-hidden">
+              <cdn-img v-if="profile.image" :image="profile.image" type="320x320"/>
+              <div v-else class="w-100 bg-blue"/>
             </div>
 
             <div class="ml-8 flex-shrink text-ellipsis-1l">
@@ -17,8 +19,8 @@
 
         <hr class="mtb-8">
 
-        <nuxt-link class="black" :to="`/me/articles/_`">New article</nuxt-link>
-        <nuxt-link class="black" :to="`/me/articles`">My articles</nuxt-link>
+        <nuxt-link class="black" :to="`/me/articles/new`">New article</nuxt-link>
+        <nuxt-link class="black" :to="`/me/articles`">Articles</nuxt-link>
         <hr class="mtb-8">
       </div>
 
@@ -35,9 +37,11 @@
 
 <script>
   import {mapGetters} from "vuex";
+  import CdnImg from "../utils/image/CdnImg";
 
   export default {
     name: "HeaderMenu",
+    components: {CdnImg},
     computed: {
       ...mapGetters(['isFocused']),
       ...mapGetters('account', ['isLoggedIn', 'name', 'profile', 'username']),

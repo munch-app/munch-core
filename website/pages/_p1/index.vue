@@ -1,5 +1,6 @@
 <template>
   <profile-page v-if="type ==='Profile'" :profile="profile"/>
+
   <div class="container pt-24 pb-64" v-else>
     <h1>Page Not Found</h1>
 
@@ -10,8 +11,7 @@
 </template>
 
 <script>
-
-  import ProfilePage from "../../components/pages/ProfilePage";
+  import ProfilePage from "../../components/profile/ProfilePage";
 
   export default {
     components: {ProfilePage},
@@ -58,9 +58,15 @@
     asyncData({$api, params: {p1}, query}) {
       // Profile
       if (/^@[a-z0-9]{3,32}$/.test(_.toLower(p1))) {
-        return $api.get(`/profiles/${p1.replace('@', '')}`)
-          .then(({data}) => {
-            return {type: 'Profile', profile: data}
+        const username = p1.replace('@', '')
+        return $api.get(`/profiles/${username}`)
+          .then(({data: profile}) => {
+            return $api.get(`/profiles/${username}/articles`, {params: {size: 10}})
+              .then(({data: articles, cursor}) => {
+                profile.articles = articles
+                profile.articles.cursor = cursor
+                return {type: 'Profile', profile}
+              })
           })
       }
 

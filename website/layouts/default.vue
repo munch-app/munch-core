@@ -4,7 +4,9 @@
       <div class="container-1400 h-100 flex-align-center">
         <header-logo class="mr-8" :clear="isClear" :class="{'IsSearching': searching}"/>
         <div class="mlr-8 mtb-8 flex-grow">
-          <search-bar class="SearchBar" @onBlur="onBlur" @onFocus="onFocus"/>
+          <portal-target name="HeaderMiddle">
+            <search-bar class="SearchBar" @onBlur="onBlur" @onFocus="onFocus"/>
+          </portal-target>
         </div>
         <header-right class="HeaderRight" :clear="isClear"/>
         <header-profile/>
@@ -14,8 +16,8 @@
     <div class="Header"/>
     <header-menu class="container-1400"/>
 
-    <div style="height: 48px" v-if="isSearch"/>
     <!-- Search Bar Filter -->
+    <div style="height: 48px" v-if="isSearch"/>
     <search-bar-filter v-if="isSearch"/>
 
     <global-default/>

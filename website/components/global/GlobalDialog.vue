@@ -13,7 +13,6 @@
       </div>
 
       <loading-dialog class="global-dialog" v-if="dialog === 'LoadingDialog'"/>
-      <image-upload-dialog class="global-dialog" v-if="dialog === 'ImageUploadDialog'"/>
     </div>
   </div>
 </template>
@@ -22,10 +21,9 @@
   import {mapGetters} from 'vuex'
 
   import LoadingDialog from "../dialog/LoadingDialog";
-  import ImageUploadDialog from "../dialog/ImageUploadDialog";
 
   export default {
-    components: {ImageUploadDialog, LoadingDialog},
+    components: {LoadingDialog},
     computed: {
       ...mapGetters('global', ['dialog', 'anyDialog']),
     },

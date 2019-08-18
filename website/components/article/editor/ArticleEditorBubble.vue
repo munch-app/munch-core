@@ -1,14 +1,13 @@
 <template>
-    <div>
 
-    </div>
 </template>
 
 <script>
   export default {
+    name: "ArticleEditorBubble"
   }
 </script>
 
-<style scoped lang="less">
+<style scoped>
 
 </style>

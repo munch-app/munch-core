@@ -36,9 +36,9 @@
 </template>
 
 <script>
-  import TextAuto from "../../components/core/TextAuto";
-  import ImageUpload from "../../components/image/ImageUpload";
-  import CdnImg from "../../components/image/CdnImg";
+  import TextAuto from "../../components/utils/TextAuto";
+  import ImageUpload from "../../components/utils/image/ImageUploadDialog";
+  import CdnImg from "../../components/utils/image/CdnImg";
 
   export default {
     components: {CdnImg, ImageUpload, TextAuto},
@@ -58,6 +58,7 @@
             bio: profile.bio,
           }
         }).then(({data: account}) => {
+          this.account = account
           this.$store.commit('account/setAccount', account)
           this.$store.dispatch('addMessage', {title: 'Updated profile'})
         }).catch(err => {
@@ -82,6 +83,7 @@
         this.$api.patch('/me', {
           profile: {image}
         }).then(({data: account}) => {
+          this.account = account
           this.$store.commit('account/setAccount', account)
           this.$store.dispatch('addMessage', {title: 'Updated profile picture'})
         }).catch(err => {

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.fuxing.err.ValidationException;
 import dev.fuxing.utils.KeyUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -13,6 +14,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.groups.Default;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.Optional;
 
 /**
  * Created by: Fuxing
@@ -28,6 +30,11 @@ public final class ArticleRevision extends ArticleModel {
     @JsonIgnore
     @ManyToOne(cascade = {CascadeType.PERSIST}, fetch = FetchType.LAZY, optional = false)
     private Article article;
+
+    @NotNull
+    @Pattern(regexp = "^[0123456789abcdefghjkmnpqrstvwxyz]{12}1$")
+    @Column(length = 13, updatable = false, nullable = false, unique = false)
+    private String id;
 
     @NotNull
     @Pattern(regexp = KeyUtils.ULID_REGEX)
@@ -47,6 +54,14 @@ public final class ArticleRevision extends ArticleModel {
     @NotNull
     @Column(updatable = false, nullable = false)
     private Date createdAt;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getVersion() {
         return version;
@@ -90,20 +105,67 @@ public final class ArticleRevision extends ArticleModel {
 
     @PrePersist
     void prePersist() {
+        // Initialising some required Article data
+        if (article.getId() == null) {
+            article.setId(KeyUtils.nextL12() + "1");
+        }
+        if (article.getCreatedAt() == null) {
+            article.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+        }
+
         long millis = System.currentTimeMillis();
         setRevision(KeyUtils.nextULID(millis));
         setCreatedAt(new Timestamp(millis));
         setVersion("2019-08-01");
 
-        preUpdate();
-    }
+        if (getPublished()) {
+            article.setStatus(ArticleStatus.PUBLISHED);
+            preUpdatePublished();
+        } else if (article.getStatus() == ArticleStatus.DRAFT) {
+            preUpdateDrafting();
+        }
 
-    @PreUpdate
-    void preUpdate() {
+        setId(article.getId());
+        setProfile(article.getProfile());
+        setSlug(KeyUtils.generateSlug(article.getTitle()));
+
         if (getPublished()) {
             ValidationException.validate(this, Default.class, ArticlePublishedGroup.class);
         } else {
             ValidationException.validate(this, Default.class);
         }
+    }
+
+    /**
+     * If revision is marked as published, all values will be moved to article
+     */
+    private void preUpdatePublished() {
+        article.setTitle(getTitle());
+        article.setDescription(getDescription());
+
+        article.setImage(getImage());
+        article.setTags(getTags());
+        article.setContent(getContent());
+        article.setOptions(getOptions());
+    }
+
+    private void preUpdateDrafting() {
+        String title = Optional.ofNullable(getTitle())
+                .filter(StringUtils::isNotBlank)
+                .or(() -> NodeUtils.findFirstHeading(getContent()))
+                .orElse("Untitled Article");
+        article.setTitle(title);
+
+        Optional.ofNullable(getDescription())
+                .filter(StringUtils::isNotBlank)
+                .or(() -> NodeUtils.findFirstParagraph(getContent()))
+                .ifPresent(s -> {
+                    article.setDescription(s);
+                });
+
+        article.setImage(getImage());
+        article.setTags(getTags());
+        article.setContent(getContent());
+        article.setOptions(getOptions());
     }
 }

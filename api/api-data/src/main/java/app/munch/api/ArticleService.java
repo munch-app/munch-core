@@ -3,6 +3,7 @@ package app.munch.api;
 import app.munch.manager.ArticleEntityManager;
 import app.munch.model.Article;
 import app.munch.model.ArticleRevision;
+import app.munch.model.ArticleStatus;
 import app.munch.model.Profile;
 import com.fasterxml.jackson.databind.JsonNode;
 import dev.fuxing.err.ForbiddenException;
@@ -74,10 +75,12 @@ public final class ArticleService extends DataService {
 
     public TransportList meArticleList(TransportContext ctx) {
         String accountId = ctx.get(ApiRequest.class).getAccountId();
+        final ArticleStatus status = ctx.queryEnum("status", ArticleStatus.class);
+
         TransportCursor cursor = ctx.queryCursor();
         int size = ctx.querySize(20, 50);
 
-        return articleEntityManager.list(entityManager -> {
+        return articleEntityManager.list(status, entityManager -> {
             return entityManager.createQuery("SELECT a.profile FROM Account a " +
                     "WHERE a.id = :id", Profile.class)
                     .setParameter("id", accountId)
@@ -87,14 +90,14 @@ public final class ArticleService extends DataService {
 
     public Article meArticlePost(TransportContext ctx) {
         String accountId = ctx.get(ApiRequest.class).getAccountId();
-        JsonNode body = ctx.bodyAsJson();
+        ArticleRevision revision = ctx.bodyAsObject(ArticleRevision.class);
 
-        return articleEntityManager.post(entityManager -> {
+        return articleEntityManager.post(revision, entityManager -> {
             return entityManager.createQuery("SELECT a.profile FROM Account a " +
                     "WHERE a.id = :id", Profile.class)
                     .setParameter("id", accountId)
                     .getSingleResult();
-        }, body);
+        });
     }
 
     public Article meArticleGet(TransportContext ctx) {
@@ -134,7 +137,11 @@ public final class ArticleService extends DataService {
 
     public Article articleGet(TransportContext ctx) {
         String id = ctx.pathString("id");
-        return articleEntityManager.get(id, null);
+        return articleEntityManager.get(id, (entityManager, article) -> {
+            if (article.getStatus() != ArticleStatus.PUBLISHED) {
+                throw new ForbiddenException();
+            }
+        });
     }
 
     public ArticleRevision articleRevisionGet(TransportContext ctx) {

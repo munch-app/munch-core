@@ -31,7 +31,7 @@
       </div>
     </div>
 
-    <div class="mt-48">
+    <div class="mt-48 pb-256">
       <div class="hr-bot">
         <div class="mr-16 mb-8 header hover-pointer">
           Articles
@@ -39,33 +39,62 @@
       </div>
 
       <div class="mt-24">
-        <div class="flex-center p-24">
-          <p>This profile hasn't written any article yet.</p>
+        <div v-if="articles.length > 0">
+          <div v-for="article in articles" :key="article.id" class="ptb-12">
+            <article-card-large :article="article"/>
+          </div>
+
+          <div class="flex-center ptb-32" v-if="next">
+            <button class="blue-outline" @click="onArticleLoadMore">Load more</button>
+          </div>
+        </div>
+
+        <div v-else>
+          <div class="ptb-48 flex-center">
+            <p>This profile hasn't written any article yet.</p>
+          </div>
         </div>
       </div>
-    </div>
-
-    <div class="mt-48">
-
     </div>
   </div>
 </template>
 
 <script>
-  import CdnImg from "../image/CdnImg";
+  import CdnImg from "../utils/image/CdnImg";
+  import ArticleCardLarge from "../article/ArticleCardLarge";
 
   export default {
     name: "MeProfilePage",
-    components: {CdnImg},
+    components: {ArticleCardLarge, CdnImg},
     computed: {
       isMe() {
         return this.$store.state.account.profile.id === this.profile.id
+      },
+      next() {
+        return this.profile.articles.cursor?.next
       }
     },
     props: {
       profile: {
         type: Object,
         required: true
+      },
+    },
+    data() {
+      return {
+        articles: this.profile.articles,
+      }
+    },
+    methods: {
+      onArticleLoadMore() {
+        this.$api.get(`/profiles/${this.profile.username}/articles`, {params: {size: 10, cursor: this.next}})
+          .then(({data: articles, cursor}) => {
+            this.articles.push(...articles)
+            this.profile.articles.cursor = cursor
+          })
+          .catch(error => {
+            this.$store.dispatch('addError', error)
+          })
       }
     }
   }

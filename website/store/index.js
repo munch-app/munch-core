@@ -1,4 +1,3 @@
-
 import uuidv4 from "uuid/v4";
 
 const MUNCH_TEAM = /oNOfWjsL49giM0|sGtVZuFJwYhf5O|7onsywnak2SaVt|GoNd1yY0uVcA8p|CM8wAOSdenMD8d|41qibhP0VjR3qQ/g
@@ -153,8 +152,9 @@ const parseError = (error) => {
     }
   }
 
-  if (error?.response?.data?.error) {
-    const {type, message} = error.response.data.error
+  const exception = error?.error?.response?.data?.error || error?.response?.data?.error
+  if (exception) {
+    const {type, message} = exception
 
     // Attempt to map to know types
     const mapped = TYPE_MAPPING[type]
@@ -189,7 +189,10 @@ export const actions = {
    */
   addError({commit, state}, error) {
     console.error(error)
-    return this.dispatch('addMessage', {type: 'error', timeout: 12000, ...parseError(error)})
+
+    const type = error?.type || 'error'
+    const timeout = error?.timeout || 12000
+    return this.dispatch('addMessage', {type, timeout, ...parseError(error)})
   },
 
   /**

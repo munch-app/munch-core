@@ -1,13 +1,7 @@
-<template>
-  <div>
-    <h1>List of all articles owned by current user.</h1>
-  </div>
-</template>
-
 <script>
-  export default {}
+  export default {
+    asyncData({redirect}) {
+      return redirect('/me/articles/drafts')
+    }
+  }
 </script>
-
-<style scoped lang="less">
-
-</style>

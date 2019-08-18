@@ -119,7 +119,7 @@
   import Vue from 'vue'
   import {mapGetters} from "vuex"
   import ContentNavHeader from "../../../../components/creator/content/ContentNavHeader";
-  import TextAuto from "../../../../components/core/TextAuto";
+  import TextAuto from "../../../../components/utils/TextAuto";
   import SearchSeriesContentCard from "../../../../components/search/cards/content/SearchSeriesContentCard";
   import ImageSizes from "../../../../components/core/ImageSizes";
   import ContentBanner from "../../../../components/contents/ContentBanner";
