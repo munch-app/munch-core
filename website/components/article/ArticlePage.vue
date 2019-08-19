@@ -63,7 +63,7 @@
     },
     computed: {
       moreFromAuthorArticles() {
-        return this.more?.author?.articles
+        return this.more?.author?.articles || 0
       }
     }
   }

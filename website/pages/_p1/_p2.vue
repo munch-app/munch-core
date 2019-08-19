@@ -23,7 +23,7 @@
           return this.$head({
             robots: {follow: true, index: true},
             graph: {
-              title: `${title} - ${name} · Munch`,
+              title: `${title || 'Untitled Article'} - ${name} · Munch`,
               description: description,
               type: 'article',
               image: image,
@@ -49,7 +49,7 @@
       if (revision) {
         return $api.get(`/articles/${id}/revisions/${revision}`)
           .then(({data: article}) => {
-            return {article, type: 'Article'}
+            return {article, type: 'Article', more: null}
           })
       }
 

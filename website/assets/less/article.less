@@ -18,5 +18,35 @@
     &:first-child {
       margin-top: 0;
     }
+
+    * {
+      text-decoration: inherit;
+      font-style: inherit;
+      font-weight: inherit;
+      color: inherit;
+
+      cursor: inherit;
+      pointer-events: none;
+    }
+  }
+
+  hr {
+    border: none;
+    display: flex;
+    justify-content: center;
+
+
+    &:after {
+      content: "· · · ·";
+      line-height: 1;
+      font-size: 48px;
+      letter-spacing: 8px;
+    }
+  }
+
+  hr {
+    &.Focused {
+      background: rgba(0, 0, 0, 0.05);
+    }
   }
 }

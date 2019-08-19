@@ -7,6 +7,7 @@
       <p v-else-if="node.type === 'paragraph'" :key="index">
         <text-content v-for="(content, index) in node.content" v-bind="content" :key="index"/>
       </p>
+      <hr v-else-if="node.type === 'line'" :key="index">
       <div v-else :key="index">
         <pre>Unmapped Type</pre>
       </div>

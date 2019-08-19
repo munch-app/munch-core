@@ -1,22 +1,29 @@
 <template>
-  <div class="relative pb-64">
+  <div class="pb-64">
+    <div class="relative">
+      <article-editor-bubble :editor="editor"/>
+      <article-editor-floating :editor="editor"/>
+    </div>
     <editor-content class="Editor article-content" :editor="editor" :class="hints"/>
 
-
-    <!--    <code>-->
-    <!--      <pre>{{revision}}</pre>-->
-    <!--    </code>-->
+    <code>
+      <pre>{{revision}}</pre>
+    </code>
   </div>
 </template>
 
 <script>
   import {Editor, EditorContent} from 'tiptap'
 
-  import {HardBreak, Heading, History, Italic, Bold, Underline, Link} from 'tiptap-extensions'
+  import {HardBreak, History, Italic, Bold, Underline, Link, Focus} from 'tiptap-extensions'
+  import ArticleEditorBubble from "./editor/ArticleEditorBubble";
+  import ArticleEditorFloating from "./editor/ArticleEditorFloating";
+  import Heading from './node/ArticleHeadingNode'
+  import Line from './node/ArticleLineNode'
 
   export default {
     name: "ArticleEditor",
-    components: {EditorContent},
+    components: {ArticleEditorFloating, ArticleEditorBubble, EditorContent},
     props: {
       value: {
         type: Object,
@@ -62,13 +69,14 @@
       this.editor = new Editor({
         extensions: [
           new History(),
-          new Heading({levels: [1, 2]}),
+          new Focus({className: 'Focused', nested: false,}),
           new HardBreak(),
           new Bold(),
           new Italic(),
           new Link(),
           new Underline(),
-          // new Line(),
+          new Heading(),
+          new Line(),
           // new Image(),
           // new Place(),
           // new Avatar(),
