@@ -1,8 +1,14 @@
 <template>
   <nuxt-link :to="`/@${article.profile.username}/${article.slug}-${article.id}`"
              class="p-24 border border-4 elevation-1 block text-decoration-none bg-white">
+    <div v-if="article.image" class="mb-24">
+      <div class="aspect r-10-3 border-3 overflow-hidden">
+        <cdn-img :image="article.image"/>
+      </div>
+
+    </div>
+
     <h2 class="text-ellipsis-2l">{{article.title}}</h2>
-    <!--  Cdn Image  -->
 
     <div class="pt-8">
       <p class="large b-a50 text-ellipsis-3l">{{article.description}}</p>

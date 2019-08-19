@@ -60,6 +60,7 @@ public abstract class ArticleModel {
 
     @Valid
     @NotNull(groups = ArticlePublishedGroup.class)
+    @Size(max = 8)
     @Type(type = "Tags")
     private Set<@NotNull Tag> tags;
 

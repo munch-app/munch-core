@@ -56,10 +56,22 @@ public final class ImageEntityManager {
 
             return EntityStream.of(() -> {
                 if (createdAt != null && cursorId != null) {
+                    if (sources.isEmpty()) {
+                        return entityManager.createQuery("FROM Image " +
+                                "WHERE profile.id = :profileId " +
+                                "AND (createdAt < :createdAt OR (createdAt = :createdAt AND id < :cursorId)) " +
+                                "ORDER BY createdAt DESC, id DESC ", Image.class)
+                                .setParameter("profileId", account.getProfile().getId())
+                                .setParameter("createdAt", new Date(createdAt))
+                                .setParameter("cursorId", cursorId)
+                                .setMaxResults(size)
+                                .getResultList();
+                    }
+
                     return entityManager.createQuery("FROM Image " +
-                            "WHERE profile.id = :profileId AND (:sources IS EMPTY OR source IN ELEMENTS(:sources))" +
+                            "WHERE profile.id = :profileId AND source IN (:sources) " +
                             "AND (createdAt < :createdAt OR (createdAt = :createdAt AND id < :cursorId)) " +
-                            "ORDER BY createdAt DESC, id desc ", Image.class)
+                            "ORDER BY createdAt DESC, id DESC ", Image.class)
                             .setParameter("profileId", account.getProfile().getId())
                             .setParameter("sources", sources)
                             .setParameter("createdAt", new Date(createdAt))
@@ -68,9 +80,18 @@ public final class ImageEntityManager {
                             .getResultList();
                 }
 
+                if (sources.isEmpty()) {
+                    return entityManager.createQuery("FROM Image " +
+                            "WHERE profile.id = :profileId " +
+                            "ORDER BY createdAt DESC, id DESC ", Image.class)
+                            .setParameter("profileId", account.getProfile().getId())
+                            .setMaxResults(size)
+                            .getResultList();
+                }
+
                 return entityManager.createQuery("FROM Image " +
-                        "WHERE profile.id = :profileId AND (:sources IS EMPTY OR source IN ELEMENTS(:sources))" +
-                        "ORDER BY createdAt DESC, id desc  ", Image.class)
+                        "WHERE profile.id = :profileId AND source IN (:sources) " +
+                        "ORDER BY createdAt DESC, id DESC ", Image.class)
                         .setParameter("profileId", account.getProfile().getId())
                         .setParameter("sources", sources)
                         .setMaxResults(size)

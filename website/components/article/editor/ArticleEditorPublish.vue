@@ -41,7 +41,7 @@
           </div>
           <div class="flex-align-center hover-pointer mt-16" @click="onInputMap">
             <div class="checkbox" :class="{selected: value.options.map}"/>
-            <small class="ml-16">Enable an embedded map to highlight places in the article?</small>
+            <small class="ml-16">Display an embedded map to highlight places in the article?</small>
           </div>
         </div>
         <div class="mt-24">
@@ -51,7 +51,7 @@
       </div>
     </div>
 
-    <image-upload-dialog v-if="state.imageDialog" @on-image="onInputImage"/>
+    <image-upload-dialog v-if="state.imageDialog" @on-image="onInputImage" @on-close="state.imageDialog = false"/>
   </div>
 </template>
 
@@ -91,6 +91,7 @@
         this.$emit('input', {...this.value, description: description.substring(0, 250)})
       },
       onInputImage(image) {
+        this.state.imageDialog = false
         this.$emit('input', {...this.value, image})
         this.$emit('on-save')
       },

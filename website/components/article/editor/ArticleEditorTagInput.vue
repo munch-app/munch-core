@@ -71,7 +71,6 @@
 
   .TagInput {
     min-height: 56px;
-    margin: -4px;
 
     input {
       outline: none;

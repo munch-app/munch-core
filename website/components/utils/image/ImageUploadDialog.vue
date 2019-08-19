@@ -1,72 +1,154 @@
 <template>
   <div class="fixed position-0 bg-overlay flex-center">
-    <div class="Dialog dialog-large flex-row wh-100">
-      <div class="flex-column hr-right">
-        <div class="flex-align-center flex-column p-16 hover-pointer" @click="tab = 'Upload'">
-          <simple-svg class="wh-32px" fill="#444" :filepath="require('~/assets/icon/icons8-camera.svg')"/>
-          <h6>UPLOAD</h6>
-        </div>
-        <div class="flex-align-center flex-column p-16 hr-top hover-pointer" @click="tab = 'Library'">
-          <simple-svg class="wh-32px" fill="#444" :filepath="require('~/assets/icon/icons8-gallery.svg')"/>
-          <h6>LIBRARY</h6>
-        </div>
-        <div class="flex-align-center flex-column p-16 hr-top hover-pointer" @click="tab = 'Library'">
-          <simple-svg class="wh-32px" fill="#444" :filepath="require('~/assets/icon/icons8-gallery.svg')"/>
-          <h6>INSTAGRAM</h6>
+    <div>
+      <div class="flex-justify-end">
+        <div class="CloseButton absolute hover-pointer" @click="onClose">
+          <simple-svg class="wh-24px" fill="black" :filepath="require('~/assets/icon/icons8-multiply.svg')"/>
         </div>
       </div>
 
-      <div class="p-24 wh-100">
-        <div v-if="tab === 'Upload'">
-          <div>
-            <h3>Upload Image</h3>
-            <div></div>
-          </div>
-          <div>
+      <div class="Dialog dialog-xlarge flex-row wh-100" v-on-clickaway="onClose">
+        <div class="flex-grow">
+          <h2>Media library</h2>
 
-          </div>
-        </div>
-        <div v-else-if="tab === 'Library'" class="flex-column wh-100">
-          <h3>Photo Library</h3>
-          <div class="mt-8">
-            <button class="tiny blue-outline">All</button>
-            <button class="tiny border ml-8">Article</button>
-            <button class="tiny border ml-8">Uploaded</button>
-          </div>
+          <div class="mtb-24">
+            <div class="MediaList flex-wrap flex-1-2-3-4 overflow-y-auto" >
+              <div class="p-12" v-for="image in images" :key="image.id" @click="onImage(image)">
+                <div class="aspect r-1-1">
+                  <cdn-img class="border-3 overflow-hidden" type="320x320" :image="image">
+                    <div class="hover-bg-a40 hover-pointer">
 
-          <div class="flex-grow">
-            <div class="wh-100 flex-center">
-              <p>No image found.</p>
+                    </div>
+                  </cdn-img>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex-center ptb-48" v-if="next">
+              <button class="blue-outline" @click="onLoadMore">Load More</button>
+            </div>
+
+            <div class="flex-center ptb-48" v-if="!images || images.length === 0">
+              <p>You don't have any image available.</p>
             </div>
           </div>
         </div>
-        <div>
-
+        <div class="ml-32 MediaSource">
+          <button @click="onUploadImage" class="w-100 blue-outline small">Upload Image</button>
+          <div class="flex-column mt-24">
+            <div class="hr-bot pb-8">
+              <h5>Media source</h5>
+            </div>
+            <div class="mt-8">
+              <div class="ptb-6" v-for="source in sources" :key="source.type">
+                <div class="lh-1 small p-12 border-3 hover-pointer" @click="onSource(source)"
+                     :class="{'bg-steam black': !source.selected, 'bg-blue white': source.selected}">
+                  {{source.name}}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+    </div>
+
+    <div class="absolute" v-show="false">
+      <input ref="fileInput" type="file" accept="image/x-png,image/gif,image/jpeg"
+             @change="(e) => onFileChanged(e)">
     </div>
   </div>
 </template>
 
 <script>
+  import CdnImg from "./CdnImg";
+
   export default {
     name: "ImageUploadDialog",
+    components: {CdnImg},
     data() {
       return {
-        tab: 'Upload'
+        sources: [
+          {name: 'Uploaded', type: 'LIBRARY', selected: false},
+          {name: 'From Article', type: 'ARTICLE', selected: false},
+          {name: 'From Instagram', type: 'INSTAGRAM', selected: false}
+        ],
+        images: [],
+        cursor: {}
       }
     },
+    computed: {
+      next() {
+        return this.cursor?.next
+      },
+      selectSources() {
+        return this.sources.filter(s => s.selected)
+          .map(s => s.type)
+          .join(",")
+      }
+    },
+    mounted() {
+      this.reload()
+    },
     methods: {
+      reload() {
+        this.images.splice(0)
+
+        this.$api.get('/me/images', {params: {sources: this.selectSources, size: 20}})
+          .then(({data: images, cursor}) => {
+            this.images.splice(0)
+            this.images.push(...images)
+            this.cursor = cursor
+          })
+      },
+      onLoadMore() {
+        this.$api.get('/me/images', {params: {sources: this.selectSources, size: 20, cursor: this.next}})
+          .then(({data: images, cursor}) => {
+            this.images.push(...images)
+            this.cursor = cursor
+          })
+      },
+      onClose() {
+        this.$emit('on-close')
+      },
+      onSource(source) {
+        source.selected = !source.selected
+        this.reload()
+      },
       onImage(image) {
         this.$emit('on-image', image)
-      }
+      },
+      onUploadImage() {
+        this.$refs.fileInput.click()
+      },
+      onFileChanged(event) {
+        const file = event.target.files[0]
+
+        return this.$api.postImage(file, "LIBRARY")
+          .then(({data: image}) => {
+            this.images.splice(0, 0, image)
+          })
+          .catch((err) => {
+            this.$store.dispatch('addError', err)
+          })
+      },
     }
   }
 </script>
 
 <style scoped lang="less">
   .Dialog {
-    padding: 0;
-    height: 480px;
+    height: 600px;
+  }
+
+  .CloseButton {
+    margin-top: -48px;
+  }
+
+  .MediaList {
+    margin: -12px;
+  }
+
+  .MediaSource {
+    min-width: 160px;
   }
 </style>
