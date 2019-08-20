@@ -17,7 +17,6 @@ import munch.api.core.CoreModule;
 import munch.api.creator.CreatorModule;
 import munch.api.feed.FeedModule;
 import munch.api.location.LocationModule;
-import munch.api.place.PlaceModule;
 import munch.api.search.SearchModule;
 import munch.api.user.UserModule;
 import munch.restful.server.firebase.FirebaseAuthenticationModule;

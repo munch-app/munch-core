@@ -1,31 +1,51 @@
 <template>
   <editor-floating-menu :editor="editor">
-    <div slot-scope="{commands,isActive,menu}" class="MenuFloating absolute index-top-elevation flex-align-center"
+    <div class="Floating absolute index-top-elevation flex-align-center"
+         slot-scope="{commands,isActive,menu}"
          v-on-clickaway="onClose"
          :class="{Active:menu.isActive || state}" :style="`top: ${menu.top}px`">
 
-      <div class="Menu">
-        <div class="ButtonFloating" @click="state = 'reveal'">
-          <simple-svg v-if="state === 'reveal'" fill="#000" :filepath="require('~/assets/icon/icons8-multiply.svg')"/>
-          <simple-svg v-else fill="black" :filepath="require('~/assets/icon/icons8-plus-math.svg')"/>
+      <div class="LeftButton">
+        <div class="Button" @click="onLeftBtn">
+          <div v-if="state === 'reveal'">
+            <simple-svg fill="#000" :filepath="require('~/assets/icon/icons8-multiply.svg')"/>
+          </div>
+          <div v-else>
+            <simple-svg fill="#000" :filepath="require('~/assets/icon/icons8-plus-math.svg')"/>
+          </div>
         </div>
       </div>
 
-      <div class="Panel flex" v-if="state === 'reveal'">
-        <div class="ButtonFloating bg-white" @click="onClickType(commands, 'line')">
-          <simple-svg fill="black" :filepath="require('~/assets/icon/icons8-dashed-line.svg')"/>
+      <div class="Panel bg-white flex" v-if="state === 'reveal'">
+        <div class="Button" @click="onType(commands, 'line')">
+          <simple-svg fill="#000" :filepath="require('~/assets/icon/icons8-dashed-line.svg')"/>
+        </div>
+
+        <div class="Button" @click="onType(commands, 'image')">
+          <simple-svg fill="#000" :filepath="require('~/assets/icon/icons8-camera.svg')"/>
+        </div>
+
+        <div class="Button" @click="onType(commands, 'place')">
+          <simple-svg fill="#000" :filepath="require('~/assets/icon/icons8-map-pin.svg')"/>
+        </div>
+
+        <div class="Button" @click="onType(commands, 'avatar')">
+          <simple-svg fill="#000" :filepath="require('~/assets/icon/icons8-person.svg')"/>
         </div>
       </div>
+
+      <image-upload-dialog v-if="state === 'image'" @on-image="(image) => onImage(commands, image)" @on-close="onClose"/>
     </div>
   </editor-floating-menu>
 </template>
 
 <script>
   import {EditorFloatingMenu} from 'tiptap'
+  import ImageUploadDialog from "../../utils/image/ImageUploadDialog";
 
   export default {
     name: "ArticleEditorFloating",
-    components: {EditorFloatingMenu},
+    components: {ImageUploadDialog, EditorFloatingMenu},
     props: {
       editor: Object,
     },
@@ -35,21 +55,44 @@
       }
     },
     methods: {
+      onLeftBtn() {
+        if (this.state === 'reveal') {
+          this.state = null
+        } else {
+          this.state = 'reveal'
+        }
+      },
       onClose() {
-        this.menu = false
+        this.state = null
       },
-      onClickType(commands, type) {
-        this.menu = false
-        return commands[type]()
+      onType(commands, type) {
+        switch (type) {
+          case 'place':
+          case 'image':
+            this.state = type
+            break
+
+          case 'avatar':
+          case 'line':
+            commands[type]()
+            this.state = null
+            break
+        }
       },
+      onImage(commands, image) {
+        this.state = null
+        commands['image']({image: image, caption: null})
+      }
     }
   }
 </script>
 
 <style scoped lang="less">
-  .MenuFloating {
+  .Floating {
     border-radius: 4px;
     padding: 0 8px;
+
+    margin-top: -5px;
     margin-left: -64px;
 
     visibility: hidden;
@@ -62,26 +105,27 @@
     }
   }
 
-  .ButtonFloating {
-    height: 32px;
-    width: 32px;
-    border-radius: 16px;
+  .Button {
+    height: 34px;
+    width: 34px;
+    border-radius: 50%;
 
-    padding: 4px;
-    margin-right: 10px;
+    padding: 6px;
+    margin-right: 12px;
 
     border: 2px solid rgba(0, 0, 0, 0.7);
+    background: white;
 
     &:hover {
       cursor: pointer;
     }
   }
 
-  .Panel {
-    padding-right: 80px;
+  .LeftButton {
+    margin-right: 10px;
   }
 
-  .Menu {
-    margin-right: 12px;
+  .Panel {
+    padding-right: 80px;
   }
 </style>

@@ -1,5 +1,7 @@
 package app.munch.model;
 
+import app.munch.model.constraint.ArticlePublishedGroup;
+import app.munch.model.constraint.PlaceDefaultGroup;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.fuxing.postgres.PojoUserType;
@@ -11,9 +13,8 @@ import org.hibernate.validator.constraints.URL;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
+import java.math.BigDecimal;
 import java.util.Set;
 
 /**
@@ -35,17 +36,21 @@ import java.util.Set;
 public abstract class PlaceModel {
     // Add Brand, Menu
 
-    @NotBlank
+    @NotBlank(groups = {PlaceDefaultGroup.class, ArticlePublishedGroup.class})
+    @Size(max = 100)
     @Column(length = 100, updatable = true, nullable = true, unique = false)
     private String name;
 
+    @Size(max = 100)
     @Column(length = 100, updatable = true, nullable = true, unique = false)
     private String phone;
 
-    @URL
+    @URL(groups = {PlaceDefaultGroup.class, ArticlePublishedGroup.class})
+    @Size(max = 1000)
     @Column(length = 1000, updatable = true, nullable = true, unique = false)
     private String website;
 
+    @Size(max = 250)
     @Column(length = 250, updatable = true, nullable = true, unique = false)
     private String description;
 
@@ -65,16 +70,25 @@ public abstract class PlaceModel {
 
     @Valid
     @NotNull
+    @Size(max = 4)
     @Type(type = "Synonyms")
     private Set<@NotNull @Length(min = 0, max = 100) String> synonyms;
 
+    /**
+     * Regardless of Groups, validation is default because data is retrieved from external source
+     */
     @Valid
     @NotNull
+    @Size(max = 12)
     @Type(type = "Tags")
     private Set<@NotNull Tag> tags;
 
+    /**
+     * Regardless of Groups, validation is default because data is retrieved from external source
+     */
     @Valid
     @NotNull
+    @Size(max = 24)
     @Type(type = "Hours")
     private Set<@NotNull Hour> hours;
 
@@ -166,10 +180,10 @@ public abstract class PlaceModel {
 
         private String postcode;
 
-        @NotNull
+        @NotNull(groups = {PlaceDefaultGroup.class, ArticlePublishedGroup.class})
         private String address;
 
-        @NotNull
+        @NotNull(groups = {PlaceDefaultGroup.class, ArticlePublishedGroup.class})
         @Pattern(regexp = "^[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?),\\s*[-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)$")
         private String latLng;
 
@@ -209,13 +223,15 @@ public abstract class PlaceModel {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Price {
-        private Double perPax;
 
-        public Double getPerPax() {
+        @Min(0)
+        private BigDecimal perPax;
+
+        public BigDecimal getPerPax() {
             return perPax;
         }
 
-        public void setPerPax(Double perPax) {
+        public void setPerPax(BigDecimal perPax) {
             this.perPax = perPax;
         }
     }

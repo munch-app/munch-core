@@ -42,11 +42,30 @@
       font-size: 48px;
       letter-spacing: 8px;
     }
-  }
 
-  hr {
     &.Focused {
       background: rgba(0, 0, 0, 0.05);
     }
+  }
+
+  figure {
+    font-size: 0;
+    line-height: 0;
+    display: block;
+
+    margin: 32px 0 32px 0;
+    padding: 0;
+
+    img {
+      border-radius: 3px;
+    }
+
+    &.Focused {
+      opacity: 0.66;
+    }
+  }
+
+  .Avatar {
+    margin-bottom: 32px;
   }
 }

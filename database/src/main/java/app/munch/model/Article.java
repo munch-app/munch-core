@@ -1,5 +1,7 @@
 package app.munch.model;
 
+import app.munch.model.constraint.ArticleDeletedGroup;
+import app.munch.model.constraint.ArticleDraftGroup;
 import app.munch.model.constraint.ArticlePublishedGroup;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -92,10 +94,22 @@ public final class Article extends ArticleModel {
         setSlug(KeyUtils.generateSlug(getTitle()));
         setUpdatedAt(new Timestamp(System.currentTimeMillis()));
 
-        if (getStatus() == ArticleStatus.PUBLISHED) {
-            ValidationException.validate(this, Default.class, ArticlePublishedGroup.class);
-        } else {
-            ValidationException.validate(this, Default.class);
+        switch (getStatus()) {
+            case PUBLISHED:
+                ValidationException.validate(this, Default.class, ArticlePublishedGroup.class);
+                return;
+
+            case DRAFT:
+                ValidationException.validate(this, Default.class, ArticleDraftGroup.class);
+                return;
+
+            case DELETED:
+                ValidationException.validate(this, Default.class, ArticleDeletedGroup.class);
+                return;
+
+            case UNKNOWN_TO_SDK_VERSION:
+            default:
+
         }
     }
 }

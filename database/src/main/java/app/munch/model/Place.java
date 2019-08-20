@@ -1,5 +1,6 @@
 package app.munch.model;
 
+import app.munch.model.constraint.PlaceDefaultGroup;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.fuxing.err.ValidationException;
@@ -53,6 +54,8 @@ public final class Place extends PlaceModel {
     @NotNull
     @Column(updatable = false, nullable = false)
     private Date createdAt;
+
+    // TODO(fuxing): Provided By Profile Mapping
 
     public String getId() {
         return id;
@@ -122,6 +125,6 @@ public final class Place extends PlaceModel {
                 .map(StringUtils::trim)
                 .collect(Collectors.toSet()));
 
-        ValidationException.validate(this, Default.class);
+        ValidationException.validate(this, Default.class, PlaceDefaultGroup.class);
     }
 }

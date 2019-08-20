@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.inject.Singleton;
 import javax.persistence.EntityManager;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -28,7 +29,7 @@ public final class PlaceBridge {
 
         if (deprecatedPlace.getPrice() != null) {
             Place.Price price = new PlaceModel.Price();
-            price.setPerPax(deprecatedPlace.getPrice().getPerPax());
+            price.setPerPax(new BigDecimal(deprecatedPlace.getPrice().getPerPax()));
             place.setPrice(price);
         }
 

@@ -33,6 +33,7 @@
           const {name, username, bio, image} = this.profile
           return this.$head({
             robots: {follow: true, index: true},
+            canonical: `https://www.munch.app/@${username}`,
             graph: {
               title: `${name} · Munch`,
               description: bio,

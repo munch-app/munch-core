@@ -23,6 +23,9 @@
     </div>
     <div class="mt-24">
       <text-auto class="regular" v-model="account.profile.bio" placeholder="Add bio..."/>
+      <div v-if="account.profile.bio" class="tiny mb-4"
+           :class="{error: account.profile.bio.length > 250}"
+      >{{(account.profile.bio || "").length}}/250</div>
     </div>
     <div class="mt-24">
       <button class="border" @click="$router.replace(`/@${$store.state.account.profile.username}`)">Cancel</button>
@@ -51,18 +54,10 @@
     methods: {
       save() {
         const profile = this.account.profile
-        this.$api.patch('/me', {
-          profile: {
-            username: profile.username,
-            name: profile.name,
-            bio: profile.bio,
-          }
-        }).then(({data: account}) => {
-          this.account = account
-          this.$store.commit('account/setAccount', account)
-          this.$store.dispatch('addMessage', {title: 'Updated profile'})
-        }).catch(err => {
-          this.$store.dispatch('addError', err)
+        this.onPatch({
+          username: profile.username?.substring(0, 64),
+          name: profile.name?.substring(0, 100),
+          bio: profile.bio?.substring(0, 250),
         })
       },
       onProfilePicStart() {
@@ -73,24 +68,21 @@
 
         return this.$api.postImage(file, "PROFILE")
           .then(({data: image}) => {
-            return this.onProfilePic(image)
+            return this.onPatch({image})
           })
           .catch((err) => {
             this.$store.dispatch('addError', err)
           })
       },
-      onProfilePic(image) {
-        this.$api.patch('/me', {
-          profile: {image}
-        }).then(({data: account}) => {
-          this.account = account
+      onPatch(profile) {
+        this.$api.patch('/me', {profile}).then(({data: account}) => {
+          this.account = JSON.parse(JSON.stringify(account))
           this.$store.commit('account/setAccount', account)
           this.$store.dispatch('addMessage', {title: 'Updated profile picture'})
         }).catch(err => {
           this.$store.dispatch('addError', err)
         })
       },
-
     }
   }
 </script>

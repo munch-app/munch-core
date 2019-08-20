@@ -23,6 +23,11 @@ public enum ImageSource {
     ARTICLE("ARTICLE"),
 
     /**
+     * Image uploaded to places directly or when user is editing a place node in their written article.
+     */
+    PLACE("PLACE"),
+
+    /**
      * Image uploaded directly to the library.
      */
     LIBRARY("LIBRARY"),

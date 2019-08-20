@@ -19,7 +19,9 @@
   import ArticleEditorBubble from "./editor/ArticleEditorBubble";
   import ArticleEditorFloating from "./editor/ArticleEditorFloating";
   import Heading from './node/ArticleHeadingNode'
+  import Image from './node/ArticleImageNode'
   import Line from './node/ArticleLineNode'
+  import Avatar from './node/ArticleAvatarNode'
 
   export default {
     name: "ArticleEditor",
@@ -77,9 +79,9 @@
           new Underline(),
           new Heading(),
           new Line(),
-          // new Image(),
+          new Image(),
+          new Avatar(),
           // new Place(),
-          // new Avatar(),
         ],
         content: {type: 'doc', content: this.revision.content},
         onUpdate: ({getJSON}) => {

@@ -53,5 +53,4 @@ export default class Heading extends Node {
       () => ({ level }),
     ))
   }
-
 }

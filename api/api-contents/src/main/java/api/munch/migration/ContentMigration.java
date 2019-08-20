@@ -134,11 +134,11 @@ public class ContentMigration {
                                 place.setDeprecatedId(body.path("placeId").asText());
                                 place.setImage(mapImage(body.path("options").path("image")));
 
-                                placeAttrs.setPlace(place);
-
-                                placeAttrs.setOptions(new ArticleModel.PlaceNode.Attrs.Options());
-                                placeAttrs.getOptions().setAutoPublish(false);
-                                placeAttrs.getOptions().setAutoUpdate(true);
+//                                placeAttrs.setPlace(place);
+//
+//                                placeAttrs.setOptions(new ArticleModel.PlaceNode.Attrs.Options());
+//                                placeAttrs.getOptions().setAutoPublish(false);
+//                                placeAttrs.getOptions().setAutoUpdate(true);
 
                                 nodes.add(placeNode);
                                 break;
@@ -151,9 +151,9 @@ public class ContentMigration {
                                 avatarNode.setAttrs(avatarAttrs);
                                 Objects.requireNonNull(body);
 
-                                avatarAttrs.setImage(mapImage(body.path("image")));
-                                avatarAttrs.setLine1(body.path("line1").asText());
-                                avatarAttrs.setLine2(body.path("line2").asText());
+//                                avatarAttrs.setImage(mapImage(body.path("image")));
+//                                avatarAttrs.setLine1(body.path("line1").asText());
+//                                avatarAttrs.setLine2(body.path("line2").asText());
 
                                 nodes.add(avatarNode);
                                 break;

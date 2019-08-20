@@ -21,6 +21,7 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Created by: Fuxing
@@ -97,10 +98,7 @@ public final class ArticleEntityManager {
             }
 
             revision.setArticle(article);
-
-            if (revision.getImage() != null) {
-                revision.setImage(entityManager.find(Image.class, revision.getImage().getId()));
-            }
+            findEntities(entityManager, revision);
 
             if (revision.getPublished()) {
                 addArticlePlace(entityManager, article, ArticleStatus.PUBLISHED);
@@ -189,16 +187,18 @@ public final class ArticleEntityManager {
             long millis = System.currentTimeMillis();
             AtomicLong position = new AtomicLong(millis);
 
+            // TODO(fuxing): Respect ArticleModel.Options
+            // TODO(fuxing): This needs to be changed in Partner 2
             article.getContent().stream()
                     .filter(node -> node.getType().equals("place"))
                     .map(n -> (ArticleModel.PlaceNode) n)
                     .forEach(node -> {
-                        Place place = node.getAttrs().getPlace();
+                        ArticlePlace place = node.getAttrs().getPlace();
                         Objects.requireNonNull(place);
-                        Objects.requireNonNull(place.getId());
+                        String placeId = Objects.requireNonNull(place.getPlace().getId());
 
                         places.stream()
-                                .filter(articlePlace -> articlePlace.getPlace().getId().equals(place.getId()))
+                                .filter(articlePlace -> articlePlace.getPlace().getId().equals(placeId))
                                 .findFirst()
                                 .ifPresentOrElse(articlePlace -> {
                                     // Update
@@ -208,7 +208,7 @@ public final class ArticleEntityManager {
                                 }, () -> {
                                     // Create
                                     ArticlePlace articlePlace = new ArticlePlace();
-                                    articlePlace.setPlace(entityManager.find(Place.class, place.getId()));
+                                    articlePlace.setPlace(entityManager.find(Place.class, placeId));
                                     articlePlace.setArticle(article);
 
                                     articlePlace.setPosition(position.getAndDecrement());
@@ -222,5 +222,41 @@ public final class ArticleEntityManager {
                     .filter(articlePlace -> articlePlace.getUpdatedAt().getTime() != millis)
                     .forEach(entityManager::remove);
         }
+    }
+
+    private void findEntities(EntityManager entityManager, ArticleModel model) {
+        if (model.getContent() == null) return;
+
+        if (model.getImage() != null && model.getImage().getId() != null) {
+            model.setImage(entityManager.find(Image.class, model.getImage().getId()));
+        }
+
+
+        model.getContent().stream().takeWhile(Objects::nonNull).forEach(node -> {
+            if (node instanceof ArticleModel.ImageNode) {
+                ArticleModel.ImageNode.Attrs attrs = ((ArticleModel.ImageNode) node).getAttrs();
+                if (attrs == null) return;
+                if (attrs.getImage() == null) return;
+                if (attrs.getImage().getId() == null) return;
+
+                attrs.setImage(entityManager.find(Image.class, attrs.getImage().getId()));
+            } else if (node instanceof ArticleModel.AvatarNode) {
+                ArticleModel.AvatarNode.Attrs attrs = ((ArticleModel.AvatarNode) node).getAttrs();
+                if (attrs == null) return;
+                if (attrs.getImages() == null) return;
+                if (attrs.getImages().isEmpty()) return;
+
+                List<Image> images = attrs.getImages()
+                        .stream()
+                        .map(image -> entityManager.find(Image.class, image.getId()))
+                        .collect(Collectors.toList());
+                attrs.setImages(images);
+            } else if (node instanceof ArticleModel.PlaceNode) {
+                ArticleModel.PlaceNode.Attrs attrs = ((ArticleModel.PlaceNode) node).getAttrs();
+                if (attrs == null) return;
+
+                // TODO(fuxing): Resolve Place??
+            }
+        });
     }
 }

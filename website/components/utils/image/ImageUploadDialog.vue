@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed position-0 bg-overlay flex-center">
+  <div class="fixed position-0 bg-overlay flex-center index-dialog">
     <div>
       <div class="flex-justify-end">
         <div class="CloseButton absolute hover-pointer" @click="onClose">
@@ -17,7 +17,6 @@
                 <div class="aspect r-1-1">
                   <cdn-img class="border-3 overflow-hidden" type="320x320" :image="image">
                     <div class="hover-bg-a40 hover-pointer">
-
                     </div>
                   </cdn-img>
                 </div>
@@ -49,12 +48,13 @@
             </div>
           </div>
         </div>
-      </div>
-    </div>
 
-    <div class="absolute" v-show="false">
-      <input ref="fileInput" type="file" accept="image/x-png,image/gif,image/jpeg"
-             @change="(e) => onFileChanged(e)">
+        <div class="absolute" v-show="false">
+          <!-- Must be placed inside v-on-clickaway="onClose" -->
+          <input ref="fileInput" type="file" accept="image/x-png,image/gif,image/jpeg"
+                 @change="(e) => onFileChanged(e)">
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -65,10 +65,17 @@
   export default {
     name: "ImageUploadDialog",
     components: {CdnImg},
+    props: {
+      source: {
+        type: String,
+        default: 'LIBRARY'
+      }
+    },
     data() {
       return {
         sources: [
           {name: 'Uploaded', type: 'LIBRARY', selected: false},
+          {name: 'From Profile', type: 'PROFILE', selected: false},
           {name: 'From Article', type: 'ARTICLE', selected: false},
           {name: 'From Instagram', type: 'INSTAGRAM', selected: false}
         ],
@@ -123,7 +130,7 @@
       onFileChanged(event) {
         const file = event.target.files[0]
 
-        return this.$api.postImage(file, "LIBRARY")
+        return this.$api.postImage(file, this.source)
           .then(({data: image}) => {
             this.images.splice(0, 0, image)
           })

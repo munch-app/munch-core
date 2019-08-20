@@ -1,5 +1,6 @@
 package app.munch.model;
 
+import app.munch.model.constraint.ImageDefaultGroup;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -36,21 +37,23 @@ import java.util.Date;
 @Table(name = "Image")
 public final class Image {
 
-    @NotNull
+    @NotNull // Required for sizes generation
     @Pattern(regexp = KeyUtils.ULID_REGEX)
     @Id
     @Column(length = 26, updatable = false, nullable = false, unique = true)
     private String id;
 
-    @NotNull
+    @NotNull // Required for sizes generation
     @Pattern(regexp = "^\\.(jpg|png|gif|webp)$")
     private String ext;
 
     @JsonIgnore
-    @NotNull
+    @NotNull(groups = {ImageDefaultGroup.class})
     @OneToOne(fetch = FetchType.LAZY, cascade = {})
     private Profile profile;
 
+    @NotNull // Required for sizes generation
+    @Pattern(regexp = "^mh0$")
     @Column(length = 32, updatable = false, nullable = false, unique = false)
     private String bucket;
 
@@ -68,7 +71,7 @@ public final class Image {
     @Enumerated(EnumType.STRING)
     private ImageSource source;
 
-    @NotNull
+    @NotNull(groups = {ImageDefaultGroup.class})
     @Column(updatable = false, nullable = false, unique = false)
     private Date createdAt;
 
@@ -155,11 +158,7 @@ public final class Image {
      */
     @JsonValue
     public JsonNode toJson() {
-        ObjectNode node = JsonUtils.createObjectNode();
-        node.put("id", getId());
-        node.put("width", getWidth());
-        node.put("height", getHeight());
-        node.put("source", getSource().toString());
+        ObjectNode node = toJsonBasic();
 
         if (StringUtils.isNoneBlank(getExt(), getId(), getBucket())) {
             node.putObject("sizes")
@@ -174,13 +173,7 @@ public final class Image {
      * @return JsonNode for internal use with more details of the image
      */
     public JsonNode toJsonInternal() {
-        ObjectNode node = JsonUtils.createObjectNode();
-        node.put("id", getId());
-        node.put("ext", getExt());
-        node.put("bucket", getBucket());
-        node.put("width", getWidth());
-        node.put("height", getHeight());
-        node.put("source", getSource().toString());
+        ObjectNode node = toJsonBasic();
 
         HibernateUtils.initialize(this);
         HibernateUtils.initialize(getProfile());
@@ -191,6 +184,17 @@ public final class Image {
                     .put("id", profile.getId())
                     .put("username", profile.getUsername());
         }
+        return node;
+    }
+
+    private ObjectNode toJsonBasic() {
+        ObjectNode node = JsonUtils.createObjectNode();
+        node.put("id", getId());
+        node.put("ext", getExt());
+        node.put("bucket", getBucket());
+        node.put("width", getWidth());
+        node.put("height", getHeight());
+        node.put("source", getSource().toString());
         return node;
     }
 

@@ -1,5 +1,6 @@
 package app.munch.model;
 
+import app.munch.model.constraint.ArticlePublishedGroup;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.fuxing.err.ValidationException;
@@ -21,32 +22,32 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "ArticlePlace")
-public final class ArticlePlace {
+public final class ArticlePlace extends PlaceModel {
 
-    @NotNull
+    @NotNull(groups = {ArticlePublishedGroup.class})
     @Pattern(regexp = KeyUtils.ULID_REGEX)
     @Id
     @Column(length = 26, updatable = false, nullable = false, unique = true)
     private String id;
 
-    @NotNull
-    @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = false)
-    private Article article;
-
-    @NotNull
-    @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = false)
-    private Place place;
-
-    @NotNull
+    @NotNull(groups = {ArticlePublishedGroup.class})
     @Column(updatable = true, nullable = false, unique = false)
     private Long position;
 
-    @NotNull
+    @NotNull(groups = {ArticlePublishedGroup.class})
+    @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = false)
+    private Article article;
+
+    @NotNull(groups = {ArticlePublishedGroup.class})
+    @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = false)
+    private Place place;
+
+    @NotNull(groups = {ArticlePublishedGroup.class})
     @Version
     @Column(updatable = true, nullable = false, unique = false)
     private Date updatedAt;
 
-    @NotNull
+    @NotNull(groups = {ArticlePublishedGroup.class})
     @Column(updatable = false, nullable = false, unique = false)
     private Date createdAt;
 
@@ -113,6 +114,7 @@ public final class ArticlePlace {
 
     @PreUpdate
     void preUpdate() {
-        ValidationException.validate(this, Default.class);
+        // Default & ArticlePublishedGroup
+        ValidationException.validate(this, Default.class, ArticlePublishedGroup.class);
     }
 }

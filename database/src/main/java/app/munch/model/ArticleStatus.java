@@ -13,10 +13,20 @@ import java.util.stream.Stream;
  * Time: 04:13
  */
 public enum ArticleStatus {
+
+    /**
+     * @see app.munch.model.constraint.ArticleDraftGroup
+     */
     DRAFT("DRAFT"),
 
+    /**
+     * @see app.munch.model.constraint.ArticleDeletedGroup
+     */
     DELETED("DELETED"),
 
+    /**
+     * @see app.munch.model.constraint.ArticlePublishedGroup
+     */
     PUBLISHED("PUBLISHED"),
 
     UNKNOWN_TO_SDK_VERSION(null);

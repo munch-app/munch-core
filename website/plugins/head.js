@@ -79,10 +79,21 @@ function root({graph}) {
   }
 }
 
+function links({canonical}) {
+  const links = []
+  if (canonical) {
+    links.push({rel: 'canonical', href: canonical})
+  }
+  return links
+}
+
 export default (context, inject) => {
-  inject('head', ({graph, robots, breadcrumbs, meta}) => {
+  inject('head', ({graph, robots, breadcrumbs, meta, canonical}) => {
     return {
       ...root({graph}),
+
+      // Links
+      link: [links({canonical})],
 
       // Metas from Graph & Robot
       meta: [

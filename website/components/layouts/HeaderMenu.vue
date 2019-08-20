@@ -5,12 +5,11 @@
       <div v-if="isLoggedIn" class="text-decoration-none">
         <nuxt-link :to="`/@${username}`">
           <div class="flex-row flex-align-center">
-            <div class="flex-no-shrink wh-40px border-circle overflow-hidden">
-              <cdn-img v-if="profile.image" :image="profile.image" type="320x320"/>
-              <div v-else class="w-100 bg-blue"/>
+            <div v-if="profile.image" class="flex-no-shrink wh-40px border-circle overflow-hidden mr-8">
+              <cdn-img :image="profile.image" type="320x320"/>
             </div>
 
-            <div class="ml-8 flex-shrink text-ellipsis-1l">
+            <div class="flex-shrink text-ellipsis-1l">
               <div class="black">{{profile.name}}</div>
               <div class="blue small">@{{profile.username}}</div>
             </div>

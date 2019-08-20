@@ -22,6 +22,7 @@
           const {profile: {name, username}, image, title, description, slug, id} = this.article
           return this.$head({
             robots: {follow: true, index: true},
+            canonical: `https://www.munch.app/@${username}/${id}`,
             graph: {
               title: `${title || 'Untitled Article'} - ${name} · Munch`,
               description: description,

@@ -59,7 +59,7 @@ public abstract class ArticleModel {
     private Profile profile;
 
     @Valid
-    @NotNull(groups = ArticlePublishedGroup.class)
+    @NotNull
     @Size(max = 8)
     @Type(type = "Tags")
     private Set<@NotNull Tag> tags;
@@ -162,6 +162,12 @@ public abstract class ArticleModel {
         private Boolean map;
         private Boolean ads;
 
+        private Boolean placePublishing;
+        private Boolean placeSyndication;
+
+        /**
+         * @return whether to show an embedded map if available.
+         */
         public Boolean getMap() {
             return map;
         }
@@ -170,12 +176,41 @@ public abstract class ArticleModel {
             this.map = map;
         }
 
+        /**
+         * @return whether to show ads if available.
+         */
         public Boolean getAds() {
             return ads;
         }
 
         public void setAds(Boolean ads) {
             this.ads = ads;
+        }
+
+        /**
+         * IF true, for places with Place.id -> it will publish changes to the current Place entity.
+         * IF false, for places with Place.id -> it will not publish changes but it will still link out to the place page.
+         * For places without Place.id, it will create a new entry regardless of this boolean flag.
+         *
+         * @return whether to publish place information into a new revision.
+         */
+        public Boolean getPlacePublishing() {
+            return placePublishing;
+        }
+
+        public void setPlacePublishing(Boolean placePublishing) {
+            this.placePublishing = placePublishing;
+        }
+
+        /**
+         * @return whether places in this article gets it's information updated automatically.
+         */
+        public Boolean getPlaceSyndication() {
+            return placeSyndication;
+        }
+
+        public void setPlaceSyndication(Boolean placeSyndication) {
+            this.placeSyndication = placeSyndication;
         }
     }
 
@@ -190,7 +225,6 @@ public abstract class ArticleModel {
             @JsonSubTypes.Type(value = LineNode.class, name = "line"),
             @JsonSubTypes.Type(value = ImageNode.class, name = "image"),
     })
-
     public interface Node {
         String getType();
     }
@@ -304,7 +338,10 @@ public abstract class ArticleModel {
             @Valid
             private Image image;
 
+            @Size(max = 500)
             private String caption;
+
+            // TODO(fuxing): similar to medium.com add image style?
 
             public Image getImage() {
                 return image;
@@ -349,62 +386,16 @@ public abstract class ArticleModel {
         @JsonIgnoreProperties(ignoreUnknown = true)
         public static final class Attrs {
 
-            @NotNull
-            private Place place;
-
             @Valid
-            private Options options;
+            @NotNull
+            private ArticlePlace place;
 
-            public Place getPlace() {
+            public ArticlePlace getPlace() {
                 return place;
             }
 
-            public void setPlace(Place place) {
+            public void setPlace(ArticlePlace place) {
                 this.place = place;
-            }
-
-            public Options getOptions() {
-                return options;
-            }
-
-            public void setOptions(Options options) {
-                this.options = options;
-            }
-
-            /**
-             * Options used to contains image and name.
-             * However now that Place is an detached entity.
-             * It will just use the detached entity data.
-             */
-            @JsonInclude(JsonInclude.Include.NON_NULL)
-            @JsonIgnoreProperties(ignoreUnknown = true)
-            public static final class Options {
-
-                private Boolean autoPublish;
-
-                private Boolean autoUpdate;
-
-                /**
-                 * @return auto publish, whether PlaceNode data get automatically published to PlaceRevision
-                 */
-                public Boolean getAutoPublish() {
-                    return autoPublish;
-                }
-
-                public void setAutoPublish(Boolean autoPublish) {
-                    this.autoPublish = autoPublish;
-                }
-
-                /**
-                 * @return auto update, whether PlaceNode data get automatically updated from new PlaceRevision changes
-                 */
-                public Boolean getAutoUpdate() {
-                    return autoUpdate;
-                }
-
-                public void setAutoUpdate(Boolean autoUpdate) {
-                    this.autoUpdate = autoUpdate;
-                }
             }
         }
     }
@@ -435,18 +426,23 @@ public abstract class ArticleModel {
         public static final class Attrs {
 
             @Valid
-            private Image image;
+            @NotNull
+            private List<Image> images;
 
+            @NotBlank(groups = {ArticlePublishedGroup.class})
+            @Size(max = 100)
             private String line1;
 
+            @NotBlank(groups = {ArticlePublishedGroup.class})
+            @Size(max = 100)
             private String line2;
 
-            public Image getImage() {
-                return image;
+            public List<Image> getImages() {
+                return images;
             }
 
-            public void setImage(Image image) {
-                this.image = image;
+            public void setImages(List<Image> images) {
+                this.images = images;
             }
 
             public String getLine1() {

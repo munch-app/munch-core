@@ -9,6 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import javax.validation.groups.Default;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -44,9 +45,11 @@ public final class Profile {
     private String username;
 
     @NotBlank
+    @Size(max = 100)
     @Column(length = 100, updatable = true, nullable = true, unique = false)
     private String name;
 
+    @Size(max = 250)
     @Column(length = 250, updatable = true, nullable = true, unique = false)
     private String bio;
 

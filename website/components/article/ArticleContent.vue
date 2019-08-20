@@ -8,24 +8,28 @@
         <text-content v-for="(content, index) in node.content" v-bind="content" :key="index"/>
       </p>
       <hr v-else-if="node.type === 'line'" :key="index">
+      <article-image-node v-else-if="node.type ==='image'" :key="index" :node="node"/>
+      <article-avatar-node v-else-if="node.type ==='avatar'" :key="index" :node="node"/>
       <div v-else :key="index">
         <pre>Unmapped Type</pre>
       </div>
     </template>
 
-<!--    <code>-->
-<!--      <pre>{{article.content}}</pre>-->
-<!--    </code>-->
+    <!--    <code>-->
+    <!--      <pre>{{article.content}}</pre>-->
+    <!--    </code>-->
   </div>
 </template>
 
 <script>
   import TextContent from "./node/TextContent";
   import ProfileNode from "./node/ProfileNode";
+  import ArticleImageNode from "./node/ArticleImage.vue";
+  import ArticleAvatarNode from "./node/ArticleAvatar.vue";
 
   export default {
     name: "ArticleContent",
-    components: {ProfileNode, TextContent},
+    components: {ArticleAvatarNode, ArticleImageNode, ProfileNode, TextContent},
     props: {
       article: {
         type: Object,
@@ -35,9 +39,14 @@
     computed: {
       content() {
         const content = [...this.article.content]
-        if(content[0] && content[0].type === 'heading') {
+
+        // First is Heading or Image, Therefore place Profile at Line 1
+        if (content[0] && (content[0].type === 'heading' || content[0].type === 'image')) {
           content.splice(1, 0, {type: 'profile'})
+        } else {
+          content.splice(0, 0, {type: 'profile'})
         }
+
         return content
       }
     },
