@@ -50,7 +50,7 @@
   import base64 from 'uuid-base64'
   import ContentTextBody from "../../../components/contents/ContentTextBody";
   import ContentPlace from "../../../components/contents/ContentPlace";
-  import AppleMap from "../../../components/core/AppleMap";
+  import AppleMap from "../../../components/utils/map/AppleMap";
   import ImageSizes from "../../../components/core/ImageSizes";
   import ContentLine from "../../../components/contents/ContentLine";
   import ContentImage from "../../../components/contents/ContentImage";

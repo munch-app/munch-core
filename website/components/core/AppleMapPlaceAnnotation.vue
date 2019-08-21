@@ -26,7 +26,7 @@
 </template>
 
 <script>
-  import AppleMap from './AppleMap'
+  import AppleMap from '../utils/map/AppleMap'
   import ImageSize from "./ImageSize";
   import PlaceCard from "../places/PlaceCard";
 

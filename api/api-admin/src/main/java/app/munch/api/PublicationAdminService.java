@@ -77,9 +77,7 @@ public final class PublicationAdminService extends AdminService {
         Publication publication = ctx.bodyAsObject(Publication.class);
 
         return provider.reduce(entityManager -> {
-            if (publication.getImage() != null) {
-                publication.setImage(entityManager.find(Image.class, publication.getImage().getId()));
-            }
+            Image.EntityUtils.map(entityManager, publication.getImage(), publication::setImage);
 
             entityManager.persist(publication);
             return publication;
@@ -118,31 +116,31 @@ public final class PublicationAdminService extends AdminService {
         int size = ctx.querySize(20, 20);
 
         TransportCursor cursor = ctx.queryCursor();
-        String cursorId = cursor.get("id");
+        String uid = cursor.get("uid");
         Long position = cursor.getLong("position");
 
         return provider.reduce(true, entityManager -> {
             return EntityStream.of(() -> {
-                if (position != null && cursorId != null) {
+                if (position != null && uid != null) {
                     return entityManager.createQuery("FROM PublicationArticle " +
                             "WHERE publication.id = :id " +
-                            "AND (position < :position OR (position = :position AND id < :cursorId)) " +
-                            "ORDER BY position DESC, id DESC ", PublicationArticle.class)
+                            "AND (position < :position OR (position = :position AND uid < :uid)) " +
+                            "ORDER BY position DESC, uid DESC ", PublicationArticle.class)
                             .setParameter("id", publicationId)
                             .setParameter("position", position)
-                            .setParameter("cursorId", cursorId)
+                            .setParameter("uid", uid)
                             .setMaxResults(size)
                             .getResultList();
                 }
 
                 return entityManager.createQuery("FROM PublicationArticle " +
                         "WHERE publication.id = :id " +
-                        "ORDER BY position DESC, id DESC", PublicationArticle.class)
+                        "ORDER BY position DESC, uid DESC", PublicationArticle.class)
                         .setParameter("id", publicationId)
                         .setMaxResults(size)
                         .getResultList();
             }).cursor(size, (pa, builder) -> {
-                builder.put("id", pa.getId());
+                builder.put("uid", pa.getUid());
                 builder.put("position", pa.getPosition());
             }).asTransportList();
         });
@@ -167,7 +165,6 @@ public final class PublicationAdminService extends AdminService {
         String publicationId = ctx.pathString("id");
         String articleId = ctx.pathString("articleId");
         JsonNode body = ctx.bodyAsJson();
-
 
         return provider.reduce(entityManager -> {
             PublicationArticle article = entityManager.createQuery("FROM PublicationArticle " +

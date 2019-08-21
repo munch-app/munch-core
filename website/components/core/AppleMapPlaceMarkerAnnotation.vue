@@ -23,7 +23,7 @@
 </template>
 
 <script>
-  import AppleMap from './AppleMap'
+  import AppleMap from '../utils/map/AppleMap'
 
   export default {
     name: "AppleMapPlaceMarkerAnnotation",

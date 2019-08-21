@@ -100,7 +100,7 @@
         if (this.revision.id) {
           request = this.$api.post(`/me/articles/${this.revision.id}/revisions`, this.revision)
             .then(({data: revision}) => {
-              this.revision.revision = revision.revision
+              this.revision.uid = revision.uid
             })
         } else {
           request = this.$api.post(`/me/articles`, this.revision)
@@ -129,7 +129,7 @@
               this.$store.commit('global/clearDialog');
               this.$router.push({
                 path: `/@${this.username}/${this.revision.id}`,
-                query: {revision: this.revision.revision}
+                query: {uid: this.revision.uid}
               })
             }, 1000);
           })

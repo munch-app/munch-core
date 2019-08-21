@@ -12,7 +12,7 @@
           <h2>Media library</h2>
 
           <div class="mtb-24">
-            <div class="MediaList flex-wrap flex-1-2-3-4 overflow-y-auto" >
+            <div class="MediaList flex-wrap overflow-y-auto" >
               <div class="p-12" v-for="image in images" :key="image.id" @click="onImage(image)">
                 <div class="aspect r-1-1">
                   <cdn-img class="border-3 overflow-hidden" type="320x320" :image="image">
@@ -153,6 +153,18 @@
 
   .MediaList {
     margin: -12px;
+
+    > div {
+      flex: 0 0 100%;
+      max-width: 100%;
+    }
+
+    > div {
+      @media (min-width: 1000px) {
+        flex: 0 0 25%;
+        max-width: 25%;
+      }
+    }
   }
 
   .MediaSource {

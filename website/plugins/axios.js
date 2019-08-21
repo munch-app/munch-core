@@ -26,7 +26,7 @@ export default function (context, inject) {
     // TODO(fuxing): definitely need a better way to handle this, maybe can attempt at context.$api
     const status = err.response.status
     if (status === 404) {
-      redirect('/404')
+
     }
     // } else if (status) {
     //   // error(err)

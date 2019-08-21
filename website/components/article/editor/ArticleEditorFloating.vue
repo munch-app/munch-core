@@ -34,6 +34,7 @@
         </div>
       </div>
 
+      <article-place-dialog v-if="state === 'place'" @on-place="(place) => onPlace(commands, place)" @on-close="onClose"/>
       <image-upload-dialog v-if="state === 'image'" @on-image="(image) => onImage(commands, image)" @on-close="onClose"/>
     </div>
   </editor-floating-menu>
@@ -42,10 +43,11 @@
 <script>
   import {EditorFloatingMenu} from 'tiptap'
   import ImageUploadDialog from "../../utils/image/ImageUploadDialog";
+  import ArticlePlaceDialog from "../node/ArticlePlaceDialog";
 
   export default {
     name: "ArticleEditorFloating",
-    components: {ImageUploadDialog, EditorFloatingMenu},
+    components: {ArticlePlaceDialog, ImageUploadDialog, EditorFloatingMenu},
     props: {
       editor: Object,
     },
@@ -81,7 +83,11 @@
       },
       onImage(commands, image) {
         this.state = null
-        commands['image']({image: image, caption: null})
+        commands['image']({image, caption: null})
+      },
+      onPlace(commands, place) {
+        this.state = null
+        commands['place']({place})
       }
     }
   }

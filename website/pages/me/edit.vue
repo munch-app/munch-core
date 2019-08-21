@@ -25,7 +25,8 @@
       <text-auto class="regular" v-model="account.profile.bio" placeholder="Add bio..."/>
       <div v-if="account.profile.bio" class="tiny mb-4"
            :class="{error: account.profile.bio.length > 250}"
-      >{{(account.profile.bio || "").length}}/250</div>
+      >{{(account.profile.bio || "").length}}/250
+      </div>
     </div>
     <div class="mt-24">
       <button class="border" @click="$router.replace(`/@${$store.state.account.profile.username}`)">Cancel</button>
@@ -54,7 +55,7 @@
     methods: {
       save() {
         const profile = this.account.profile
-        this.onPatch({
+        this.onPatchProfile({
           username: profile.username?.substring(0, 64),
           name: profile.name?.substring(0, 100),
           bio: profile.bio?.substring(0, 250),
@@ -68,18 +69,21 @@
 
         return this.$api.postImage(file, "PROFILE")
           .then(({data: image}) => {
-            return this.onPatch({image})
+            return this.onPatchProfile({image})
           })
           .catch((err) => {
             this.$store.dispatch('addError', err)
           })
       },
-      onPatch(profile) {
-        this.$api.patch('/me', {profile}).then(({data: account}) => {
-          this.account = JSON.parse(JSON.stringify(account))
-          this.$store.commit('account/setAccount', account)
-          this.$store.dispatch('addMessage', {title: 'Updated profile picture'})
-        }).catch(err => {
+      onPatchProfile(profile) {
+        this.$api.patch('/me', {profile})
+          .then(({data: account}) => {
+            console.log(account)
+
+            this.account = JSON.parse(JSON.stringify(account))
+            this.$store.commit('account/setAccount', account)
+            this.$store.dispatch('addMessage', {title: 'Updated Profile'})
+          }).catch(err => {
           this.$store.dispatch('addError', err)
         })
       },

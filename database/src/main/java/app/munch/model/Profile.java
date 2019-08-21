@@ -30,11 +30,16 @@ public final class Profile {
      */
     public static final String ADMIN_ID = "00000000000000000000000000";
 
+    /**
+     * Backward compatible support, user different id for each major deprecation so that it's easier to delete.
+     */
+    public static final String COMPAT_ID = "v22t0v23000000000000000000";
+
     @NotNull
     @Pattern(regexp = KeyUtils.ULID_REGEX)
     @Id
     @Column(length = 26, updatable = false, nullable = false, unique = true)
-    private String id;
+    private String uid;
 
     /**
      * In the future, username renaming must be limited and username can only be used after 1 month of inactivity.
@@ -65,12 +70,12 @@ public final class Profile {
     @Column(updatable = false, nullable = false, unique = false)
     private Date createdAt;
 
-    public String getId() {
-        return id;
+    public String getUid() {
+        return uid;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setUid(String id) {
+        this.uid = id;
     }
 
     public String getUsername() {
@@ -124,11 +129,13 @@ public final class Profile {
     @PrePersist
     void prePersist() {
         long millis = System.currentTimeMillis();
-        setId(KeyUtils.nextULID(millis));
+        if (getUid() == null) {
+            setUid(KeyUtils.nextULID(millis));
+        }
         setCreatedAt(new Timestamp(millis));
 
         if (getUsername() == null) {
-            setUsername(getId());
+            setUsername(getUid());
         }
 
         preUpdate();

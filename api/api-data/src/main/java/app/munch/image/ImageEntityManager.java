@@ -20,11 +20,13 @@ import software.amazon.awssdk.services.s3.S3Client;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.persistence.EntityManager;
 import javax.servlet.http.Part;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Date;
 import java.util.Set;
 
@@ -33,6 +35,7 @@ import java.util.Set;
  * Date: 16/8/19
  * Time: 10:07 pm
  */
+@SuppressWarnings("DuplicatedCode")
 @Singleton
 public final class ImageEntityManager {
     private static final String BUCKET = "mh0";
@@ -48,57 +51,57 @@ public final class ImageEntityManager {
 
     public TransportList list(String accountId, Set<ImageSource> sources, int size, TransportCursor cursor) {
         final Long createdAt = cursor.getLong("createdAt");
-        final String cursorId = cursor.get("id");
+        final String uid = cursor.get("uid");
 
         return provider.reduce(true, entityManager -> {
             Account account = entityManager.find(Account.class, accountId);
             if (account == null) throw new UnauthorizedException();
 
             return EntityStream.of(() -> {
-                if (createdAt != null && cursorId != null) {
+                if (createdAt != null && uid != null) {
                     if (sources.isEmpty()) {
                         return entityManager.createQuery("FROM Image " +
-                                "WHERE profile.id = :profileId " +
-                                "AND (createdAt < :createdAt OR (createdAt = :createdAt AND id < :cursorId)) " +
-                                "ORDER BY createdAt DESC, id DESC ", Image.class)
-                                .setParameter("profileId", account.getProfile().getId())
+                                "WHERE profile.uid = :profileId " +
+                                "AND (createdAt < :createdAt OR (createdAt = :createdAt AND uid < :uid)) " +
+                                "ORDER BY createdAt DESC, uid DESC ", Image.class)
+                                .setParameter("profileId", account.getProfile().getUid())
                                 .setParameter("createdAt", new Date(createdAt))
-                                .setParameter("cursorId", cursorId)
+                                .setParameter("uid", uid)
                                 .setMaxResults(size)
                                 .getResultList();
                     }
 
                     return entityManager.createQuery("FROM Image " +
-                            "WHERE profile.id = :profileId AND source IN (:sources) " +
-                            "AND (createdAt < :createdAt OR (createdAt = :createdAt AND id < :cursorId)) " +
-                            "ORDER BY createdAt DESC, id DESC ", Image.class)
-                            .setParameter("profileId", account.getProfile().getId())
+                            "WHERE profile.uid = :profileId AND source IN (:sources) " +
+                            "AND (createdAt < :createdAt OR (createdAt = :createdAt AND uid < :uid)) " +
+                            "ORDER BY createdAt DESC, uid DESC ", Image.class)
+                            .setParameter("profileId", account.getProfile().getUid())
                             .setParameter("sources", sources)
                             .setParameter("createdAt", new Date(createdAt))
-                            .setParameter("cursorId", cursorId)
+                            .setParameter("uid", uid)
                             .setMaxResults(size)
                             .getResultList();
                 }
 
                 if (sources.isEmpty()) {
                     return entityManager.createQuery("FROM Image " +
-                            "WHERE profile.id = :profileId " +
-                            "ORDER BY createdAt DESC, id DESC ", Image.class)
-                            .setParameter("profileId", account.getProfile().getId())
+                            "WHERE profile.uid = :profileId " +
+                            "ORDER BY createdAt DESC, uid DESC ", Image.class)
+                            .setParameter("profileId", account.getProfile().getUid())
                             .setMaxResults(size)
                             .getResultList();
                 }
 
                 return entityManager.createQuery("FROM Image " +
-                        "WHERE profile.id = :profileId AND source IN (:sources) " +
-                        "ORDER BY createdAt DESC, id DESC ", Image.class)
-                        .setParameter("profileId", account.getProfile().getId())
+                        "WHERE profile.uid = :profileId AND source IN (:sources) " +
+                        "ORDER BY createdAt DESC, uid DESC ", Image.class)
+                        .setParameter("profileId", account.getProfile().getUid())
                         .setParameter("sources", sources)
                         .setMaxResults(size)
                         .getResultList();
             }).cursor(size, (image, builder) -> {
                 builder.put("createdAt", image.getCreatedAt().getTime());
-                builder.put("id", image.getId());
+                builder.put("uid", image.getUid());
             }).asTransportList();
         });
     }
@@ -129,7 +132,7 @@ public final class ImageEntityManager {
 
             Image image = new Image();
             image.setBucket(BUCKET);
-            image.setId(KeyUtils.nextULID());
+            image.setUid(KeyUtils.nextULID());
             image.setExt(ImageUtils.getExtension(contentType));
 
             image.setSource(source);
@@ -147,7 +150,7 @@ public final class ImageEntityManager {
 
             s3Client.putObject(builder -> {
                 builder.bucket(BUCKET);
-                builder.key(image.getId() + image.getExt());
+                builder.key(image.getUid() + image.getExt());
                 builder.contentType(contentType);
             }, RequestBody.fromFile(file));
             return image;
@@ -158,6 +161,75 @@ public final class ImageEntityManager {
                 part.delete();
             } catch (Exception ignored) {
             }
+        }
+    }
+
+    @Deprecated
+    public Image post(EntityManager entityManager, ImageSource source, Profile profile, String url) throws IOException {
+        File file = File.createTempFile(RandomStringUtils.randomAlphanumeric(30),
+                "." + FilenameUtils.getExtension(url));
+
+        try {
+            FileUtils.copyURLToFile(new URL(url), file);
+
+            String contentType = ImageUtils.getRealContentType(file);
+            Dimension dimension = ImageUtils.getImageDimension(file, contentType);
+
+            Image image = new Image();
+            image.setBucket(BUCKET);
+            image.setUid(KeyUtils.nextULID());
+            image.setExt(ImageUtils.getExtension(contentType));
+
+            image.setSource(source);
+            image.setWidth((int) dimension.getWidth());
+            image.setHeight((int) dimension.getHeight());
+
+
+            image.setProfile(profile);
+            entityManager.persist(image);
+
+            s3Client.putObject(builder -> {
+                builder.bucket(BUCKET);
+                builder.key(image.getUid() + image.getExt());
+                builder.contentType(contentType);
+            }, RequestBody.fromFile(file));
+            return image;
+        } finally {
+            FileUtils.deleteQuietly(file);
+        }
+    }
+
+    @Deprecated
+    public Image postDeprecated(EntityManager entityManager, String url) throws IOException {
+        File file = File.createTempFile(RandomStringUtils.randomAlphanumeric(30),
+                "." + FilenameUtils.getExtension(url));
+
+        try {
+            FileUtils.copyURLToFile(new URL(url), file);
+
+            String contentType = ImageUtils.getRealContentType(file);
+            Dimension dimension = ImageUtils.getImageDimension(file, contentType);
+
+            Image image = new Image();
+            image.setBucket(BUCKET);
+            image.setUid(KeyUtils.nextULID());
+            image.setExt(ImageUtils.getExtension(contentType));
+
+            image.setSource(ImageSource.LIBRARY);
+            image.setWidth((int) dimension.getWidth());
+            image.setHeight((int) dimension.getHeight());
+
+            image.setProfile(entityManager.find(Profile.class, Profile.COMPAT_ID));
+            entityManager.persist(image);
+
+            s3Client.putObject(builder -> {
+                builder.bucket(BUCKET);
+                builder.key(image.getUid() + image.getExt());
+                builder.contentType(contentType);
+            }, RequestBody.fromFile(file));
+            return image;
+        } finally {
+            FileUtils.deleteQuietly(file);
         }
     }
 }

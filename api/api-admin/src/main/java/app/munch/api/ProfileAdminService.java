@@ -49,7 +49,7 @@ public final class ProfileAdminService extends AdminService {
 
                         PATH("/revisions", () -> {
                             POST("", this::profileArticleRevisionPost);
-                            GET("/:revision", this::profileArticleRevisionGet);
+                            GET("/:uid", this::profileArticleRevisionGet);
                         });
                     });
                 });
@@ -60,25 +60,25 @@ public final class ProfileAdminService extends AdminService {
     public TransportList profileList(TransportContext ctx) {
         int size = ctx.querySize(20, 50);
         @NotNull TransportCursor cursor = ctx.queryCursor();
-        String cursorId = cursor.get("id");
+        String uid = cursor.get("uid");
 
         return provider.reduce(true, entityManager -> {
             return EntityStream.of(() -> {
-                if (cursorId != null) {
+                if (uid != null) {
                     return entityManager.createQuery("FROM Profile " +
-                            "WHERE id < :cursorId " +
-                            "ORDER BY id DESC", Profile.class)
-                            .setParameter("cursorId", cursorId)
+                            "WHERE uid < :uid " +
+                            "ORDER BY uid DESC", Profile.class)
+                            .setParameter("uid", uid)
                             .setMaxResults(size)
                             .getResultList();
                 }
 
                 return entityManager.createQuery("FROM Profile " +
-                        "ORDER BY id DESC", Profile.class)
+                        "ORDER BY uid DESC", Profile.class)
                         .setMaxResults(size)
                         .getResultList();
             }).cursor(size, (article, builder) -> {
-                builder.put("id", article.getId());
+                builder.put("id", article.getUid());
             }).asTransportList();
         });
     }
@@ -87,9 +87,7 @@ public final class ProfileAdminService extends AdminService {
         Profile profile = ctx.bodyAsObject(Profile.class);
 
         return provider.reduce(entityManager -> {
-            if (profile.getImage() != null) {
-                profile.setImage(entityManager.find(Image.class, profile.getImage().getId()));
-            }
+            Image.EntityUtils.map(entityManager, profile.getImage(), profile::setImage);
 
             entityManager.persist(profile);
             return profile;
@@ -169,8 +167,8 @@ public final class ProfileAdminService extends AdminService {
 
     public ArticleRevision profileArticleRevisionGet(TransportContext ctx) {
         String articleId = ctx.pathString("articleId");
-        String revision = ctx.pathString("revision");
+        String uid = ctx.pathString("uid");
 
-        return articleEntityManager.getRevision(articleId, revision, null);
+        return articleEntityManager.getRevision(articleId, uid, null);
     }
 }

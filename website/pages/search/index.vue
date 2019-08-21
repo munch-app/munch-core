@@ -30,7 +30,7 @@
   import {mapGetters} from 'vuex'
 
   import CardDelegator from "../../components/search/cards/CardDelegator";
-  import AppleMap from "../../components/core/AppleMap";
+  import AppleMap from "../../components/utils/map/AppleMap";
   import AppleMapPlaceAnnotation from "../../components/core/AppleMapPlaceAnnotation";
 
   export default {

@@ -12,6 +12,7 @@ import munch.data.client.PlaceClient;
 
 import javax.inject.Inject;
 import java.sql.Timestamp;
+import java.util.Optional;
 
 /**
  * Created by: Fuxing
@@ -34,9 +35,8 @@ public final class PlaceService extends DataService {
     @Override
     public void route() {
         PATH("/places/:placeId", () -> {
-            PATH("/v22-v23", () -> {
-                GET("", this::v22v23Get);
-            });
+            GET("/v22-v23", this::v22v23Get);
+            GET("/v23", this::v23Get);
 
             PATH("/revisions", () -> {
 //                POST("", this::revisionPost);
@@ -46,27 +46,41 @@ public final class PlaceService extends DataService {
 
     public Place v22v23Get(TransportContext ctx) {
         // placeId is v22 type: UUID
-        String deprecatedId = ctx.pathString("placeId");
-        munch.data.place.Place deprecatedPlace = placeClient.get(deprecatedId);
+        String cid = ctx.pathString("placeId");
+        munch.data.place.Place deprecatedPlace = placeClient.get(cid);
         if (deprecatedPlace == null) {
             throw new NotFoundException();
         }
 
         return provider.reduce(entityManager -> {
-            Place place = entityManager.createQuery("FROM Place " +
-                    "WHERE deprecatedId = :deprecatedId", Place.class)
-                    .getSingleResult();
-
-            if (place == null) {
-                place = new Place();
-                place.setDeprecatedId(deprecatedId);
-                place.setCreatedAt(new Timestamp(deprecatedPlace.getCreatedMillis()));
-            }
+            Place place = Optional.of(entityManager.createQuery("FROM Place " +
+                    "WHERE cid = :cid", Place.class)
+                    .setParameter("cid", cid)
+                    .getResultList())
+                    .filter(places -> !places.isEmpty())
+                    .map(places -> places.get(0))
+                    .orElseGet(() -> {
+                        Place newPlace = new Place();
+                        newPlace.setCid(cid);
+                        newPlace.setCreatedAt(new Timestamp(deprecatedPlace.getCreatedMillis()));
+                        return newPlace;
+                    });
 
             // Whenever queried it's automatically updated
             placeBridge.bridge(entityManager, place, deprecatedPlace);
             entityManager.persist(place);
             return place;
+        });
+    }
+
+    /**
+     * For URL Redirecting
+     */
+    public Place v23Get(TransportContext ctx) {
+        String id = ctx.pathString("placeId");
+
+        return provider.reduce(entityManager -> {
+            return entityManager.find(Place.class, id);
         });
     }
 

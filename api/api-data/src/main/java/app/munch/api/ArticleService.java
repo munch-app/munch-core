@@ -46,14 +46,14 @@ public final class ArticleService extends DataService {
 
                 PATH("/revisions", () -> {
                     POST("", this::meArticleRevisionPost);
-                    GET("/:revision", this::meArticleRevisionGet);
+                    GET("/:uid", this::meArticleRevisionGet);
                 });
             });
         });
 
         PATH("/articles/:id", () -> {
             GET("", this::articleGet);
-            GET("/revisions/:revision", this::articleRevisionGet);
+            GET("/revisions/:uid", this::articleRevisionGet);
         });
     }
 
@@ -63,12 +63,12 @@ public final class ArticleService extends DataService {
     private static void validate(EntityManager entityManager, Article article, TransportContext ctx) {
         @NotNull String accountId = ctx.get(ApiRequest.class).getAccountId();
 
-        String profileId = entityManager.createQuery("SELECT a.profile.id FROM Account a " +
+        String profileId = entityManager.createQuery("SELECT a.profile.uid FROM Account a " +
                 "WHERE a.id = :id", String.class)
                 .setParameter("id", accountId)
                 .getSingleResult();
 
-        if (!article.getProfile().getId().equals(profileId)) {
+        if (!article.getProfile().getUid().equals(profileId)) {
             throw new UnauthorizedException();
         }
     }
@@ -128,9 +128,9 @@ public final class ArticleService extends DataService {
 
     public ArticleRevision meArticleRevisionGet(TransportContext ctx) {
         String id = ctx.pathString("id");
-        String revision = ctx.pathString("revision");
+        String uid = ctx.pathString("uid");
 
-        return articleEntityManager.getRevision(id, revision, (entityManager, articleRevision) -> {
+        return articleEntityManager.getRevision(id, uid, (entityManager, articleRevision) -> {
             validate(entityManager, articleRevision.getArticle(), ctx);
         });
     }
@@ -146,10 +146,10 @@ public final class ArticleService extends DataService {
 
     public ArticleRevision articleRevisionGet(TransportContext ctx) {
         String id = ctx.pathString("id");
-        String revision = ctx.pathString("revision");
-        if (revision.equals("latest")) {
+        String uid = ctx.pathString("uid");
+        if (uid.equals("latest")) {
             throw new ForbiddenException("latest not allowed");
         }
-        return articleEntityManager.getRevision(id, revision, null);
+        return articleEntityManager.getRevision(id, uid, null);
     }
 }

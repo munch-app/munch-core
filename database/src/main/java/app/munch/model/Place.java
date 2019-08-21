@@ -35,8 +35,11 @@ public final class Place extends PlaceModel {
     @Column(length = 13, updatable = false, nullable = false, unique = true)
     private String id;
 
+    /**
+     * Catalyst id, for referencing and deprecating support.
+     */
     @Column(length = 100, updatable = false, nullable = true, unique = true)
-    private String deprecatedId;
+    private String cid;
 
     @NotNull
     @Pattern(regexp = "[0-9a-z-]{0,200}")
@@ -65,12 +68,12 @@ public final class Place extends PlaceModel {
         this.id = id;
     }
 
-    public String getDeprecatedId() {
-        return deprecatedId;
+    public String getCid() {
+        return cid;
     }
 
-    public void setDeprecatedId(String deprecatedId) {
-        this.deprecatedId = deprecatedId;
+    public void setCid(String cid) {
+        this.cid = cid;
     }
 
     public String getSlug() {

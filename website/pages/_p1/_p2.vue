@@ -43,12 +43,12 @@
           })
       }
     },
-    asyncData({$api, params: {p2}, query: {revision}}) {
+    asyncData({$api, params: {p2}, query: {uid}}) {
       const [, id] =
         /^(?:[0-9a-z-]{0,1000}-)?([0123456789abcdefghjkmnpqrstvwxyz]{13})$/.exec(p2)
 
-      if (revision) {
-        return $api.get(`/articles/${id}/revisions/${revision}`)
+      if (uid) {
+        return $api.get(`/articles/${id}/revisions/${uid}`)
           .then(({data: article}) => {
             return {article, type: 'Article', more: null}
           })

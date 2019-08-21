@@ -1,12 +1,16 @@
 package app.munch.v22v23;
 
+import app.munch.image.ImageEntityManager;
 import app.munch.model.*;
 import munch.data.location.Location;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.persistence.EntityManager;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -21,11 +25,18 @@ import java.util.stream.Collectors;
 @Singleton
 public final class PlaceBridge {
 
+    private final ImageEntityManager imageEntityManager;
+
+    @Inject
+    public PlaceBridge(ImageEntityManager imageEntityManager) {
+        this.imageEntityManager = imageEntityManager;
+    }
+
     public void bridge(EntityManager entityManager, Place place, munch.data.place.Place deprecatedPlace) {
         place.setName(StringUtils.substring(deprecatedPlace.getName(), 0, 100));
         place.setPhone(deprecatedPlace.getPhone());
         place.setWebsite(deprecatedPlace.getWebsite());
-        place.setDescription(deprecatedPlace.getDescription());
+        place.setDescription(StringUtils.substring(deprecatedPlace.getDescription(), 0, 250));
 
         if (deprecatedPlace.getPrice() != null) {
             Place.Price price = new PlaceModel.Price();
@@ -66,6 +77,7 @@ public final class PlaceBridge {
         Set<String> names = deprecatedPlace.getNames().stream()
                 .map(s -> StringUtils.substring(s, 0, 100))
                 .filter(Objects::nonNull)
+                .limit(4)
                 .collect(Collectors.toSet());
         place.setSynonyms(names);
 
@@ -91,8 +103,11 @@ public final class PlaceBridge {
 
                     entityManager.persist(tag);
                     return tag;
-                }).collect(Collectors.toSet());
+                }).limit(12).collect(Collectors.toSet());
         place.setTags(tags);
+
+
+        place.setImage(mapImage(entityManager, deprecatedPlace.getImages()));
     }
 
     private Hour mapHour(munch.data.Hour deprecatedHour) {
@@ -130,6 +145,26 @@ public final class PlaceBridge {
                 tag.setType(TagType.AMENITIES);
                 tag.setName(deprecatedTag.getName());
                 return tag;
+        }
+    }
+
+    private Image mapImage(EntityManager entityManager, List<munch.file.Image> images) {
+        if (images.isEmpty()) return null;
+
+        munch.file.Image fileImage = images.get(0);
+
+        List<munch.file.Image.Size> sizes = fileImage.getSizes();
+
+        String url = sizes.stream().max(Comparator.comparing(munch.file.Image.Size::getHeight))
+                .map(munch.file.Image.Size::getUrl)
+                .orElse(null);
+
+        if (url == null) return null;
+
+        try {
+            return imageEntityManager.postDeprecated(entityManager, url);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }

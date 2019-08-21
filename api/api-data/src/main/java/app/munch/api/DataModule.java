@@ -24,5 +24,7 @@ public final class DataModule extends ApiServiceModule {
 
         addService(TagService.class);
         addService(PlaceService.class);
+
+        addService(UrlRedirectionService.class);
     }
 }

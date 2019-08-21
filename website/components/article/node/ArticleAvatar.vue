@@ -1,6 +1,6 @@
 <template>
   <div class="Avatar bg-steam border-3 flex-align-center p-12">
-    <div class="Images flex-no-shrink">
+    <div class="flex-no-shrink">
       <div class="wh-64px border-circle overflow-hidden bg-white" @click="state = 'image'">
         <cdn-img v-if="image" :image="image">
           <div v-if="editing" class="p-12" :class="{'hover-bg-a40 hover-pointer': editing}">
@@ -29,16 +29,12 @@
 </template>
 
 <script>
-  import ContentPlace from "../../contents/ContentPlace";
-  import ImageSizes from "../../core/ImageSizes";
-  import ContentAvatar from "../../contents/ContentAvatar";
-  import InputText from "../../core/InputText";
   import CdnImg from "../../utils/image/CdnImg";
   import ImageUploadDialog from "../../utils/image/ImageUploadDialog";
 
   export default {
     name: "ArticleAvatar",
-    components: {ImageUploadDialog, CdnImg, InputText, ContentAvatar, ImageSizes, ContentPlace},
+    components: {ImageUploadDialog, CdnImg},
     props: ['node', 'updateAttrs', 'editable'],
     computed: {
       editing() {
@@ -93,18 +89,10 @@
 </script>
 
 <style scoped lang="less">
-  .Avatar {
-  }
-
   input {
     outline: none;
     border: none;
     background: none;
-
     padding: 0;
-
-    /*width: 150px;*/
-    /*padding: 0 12px 0 12px;*/
-    /*height: 32px;*/
   }
 </style>

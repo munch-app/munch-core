@@ -4,6 +4,7 @@ import app.munch.model.constraint.ArticlePublishedGroup;
 import app.munch.model.constraint.PlaceDefaultGroup;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import dev.fuxing.postgres.PojoSetUserType;
 import dev.fuxing.postgres.PojoUserType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -254,19 +255,19 @@ public abstract class PlaceModel {
         }
     }
 
-    public static final class SynonymsType extends PojoUserType<String> {
+    public static final class SynonymsType extends PojoSetUserType<String> {
         public SynonymsType() {
             super(String.class);
         }
     }
 
-    public static final class HoursType extends PojoUserType<Hour> {
+    public static final class HoursType extends PojoSetUserType<Hour> {
         public HoursType() {
             super(Hour.class);
         }
     }
 
-    public static final class TagsType extends PojoUserType<Tag> {
+    public static final class TagsType extends PojoSetUserType<Tag> {
         public TagsType() {
             super(Tag.class);
         }

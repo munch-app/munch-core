@@ -8,7 +8,7 @@
 </template>
 
 <script>
-  import AppleMapPlaceAnnotation from "./AppleMapPlaceAnnotation";
+  import AppleMapPlaceAnnotation from "../../core/AppleMapPlaceAnnotation";
 
   function Coordinate(latLng) {
     const ll = latLng.split(",")

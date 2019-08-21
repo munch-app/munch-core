@@ -61,7 +61,7 @@
 <script>
   import {mapGetters} from "vuex"
 
-  import AppleMap from "../../core/AppleMap";
+  import AppleMap from "../../utils/map/AppleMap";
   import HorizontalScrollView from "../../core/HorizontalScrollView";
   import SearchFilterBetweenSearch from "./SearchFilterBetweenSearch";
   import AppleMapMarkerAnnotation from "../../core/AppleMapMarkerAnnotation";

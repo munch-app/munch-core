@@ -27,10 +27,15 @@ import java.util.stream.Collectors;
 public final class PlaceRevision extends PlaceModel {
 
     @NotNull
+    @Pattern(regexp = "^[0123456789abcdefghjkmnpqrstvwxyz]{12}0$")
+    @Column(length = 13, updatable = false, nullable = false, unique = false)
+    private String id;
+
+    @NotNull
     @Pattern(regexp = KeyUtils.ULID_REGEX)
     @Id
     @Column(length = 26, updatable = false, nullable = false, unique = true)
-    private String id;
+    private String uid;
 
     @NotNull
     @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = false)
@@ -50,6 +55,14 @@ public final class PlaceRevision extends PlaceModel {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public Place getPlace() {
@@ -81,8 +94,13 @@ public final class PlaceRevision extends PlaceModel {
 
     @PrePersist
     void prePersist() {
-        setId(KeyUtils.nextULID());
-        setCreatedAt(new Timestamp(System.currentTimeMillis()));
+        long time = System.currentTimeMillis();
+        setUid(KeyUtils.nextULID(time));
+        setCreatedAt(new Timestamp(time));
+
+        if (getPlace() != null) {
+            setId(getPlace().getId());
+        }
 
         preUpdate();
     }

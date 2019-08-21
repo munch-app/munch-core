@@ -131,7 +131,7 @@ public class ContentMigration {
                                 placeNode.setAttrs(placeAttrs);
 
                                 Place place = new Place();
-                                place.setDeprecatedId(body.path("placeId").asText());
+                                place.setCid(body.path("placeId").asText());
                                 place.setImage(mapImage(body.path("options").path("image")));
 
 //                                placeAttrs.setPlace(place);

@@ -14,6 +14,7 @@ import dev.fuxing.utils.KeyUtils;
 import dev.fuxing.validator.ValidEnum;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.annotation.Nullable;
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -22,6 +23,8 @@ import javax.validation.groups.Default;
 import java.sql.Timestamp;
 import java.util.Base64;
 import java.util.Date;
+import java.util.function.Consumer;
+import java.util.regex.Matcher;
 
 /**
  * Image is a container for the real resource in aws s3. <br>
@@ -36,38 +39,64 @@ import java.util.Date;
 @Entity
 @Table(name = "Image")
 public final class Image {
+    // ImageDefaultGroup.class only for Database and internal use
+    // Default.class is of all cases including Database and internal use
 
-    @NotNull // Required for sizes generation
+    private static final java.util.regex.Pattern LOC_PATTERN = java.util.regex.Pattern.compile(
+            "^[a-z0-9]{3,}-([0123456789abcdefghjkmnpqrstvwxyz]{26})\\.[a-z0-9]{1,}"
+    );
+
+    /**
+     * Universal id of Image without extension.
+     * S3 Stores it as such:
+     * bucket: uid+ext
+     */
+    @NotNull(groups = {ImageDefaultGroup.class})
     @Pattern(regexp = KeyUtils.ULID_REGEX)
     @Id
     @Column(length = 26, updatable = false, nullable = false, unique = true)
-    private String id;
+    private String uid;
 
-    @NotNull // Required for sizes generation
+    @NotNull(groups = {ImageDefaultGroup.class})
     @Pattern(regexp = "^\\.(jpg|png|gif|webp)$")
     private String ext;
+
+    @NotNull(groups = {ImageDefaultGroup.class})
+    @Pattern(regexp = "^mh0$")
+    @Column(length = 32, updatable = false, nullable = false, unique = false)
+    private String bucket;
+
+    /**
+     * URL safe unique variable of Image
+     * ${bucket}-${uid}${ext}
+     */
+    @NotNull
+    @Pattern(regexp = "^mh0-[0123456789abcdefghjkmnpqrstvwxyz]{26}\\.(jpg|png|gif|webp)$")
+    @Column(length = 100, updatable = false, nullable = false, unique = true)
+    private String loc;
 
     @JsonIgnore
     @NotNull(groups = {ImageDefaultGroup.class})
     @OneToOne(fetch = FetchType.LAZY, cascade = {})
     private Profile profile;
 
-    @NotNull // Required for sizes generation
-    @Pattern(regexp = "^mh0$")
-    @Column(length = 32, updatable = false, nullable = false, unique = false)
-    private String bucket;
-
-    @Min(1)
+    /**
+     * Required so that UI component can know the size of the image before rendering
+     */
     @NotNull
+    @Min(1)
     @Column(updatable = false, nullable = false, unique = false)
     private Integer width;
 
-    @Min(1)
+    /**
+     * Required so that UI component can know the size of the image before rendering
+     */
     @NotNull
+    @Min(1)
     @Column(updatable = false, nullable = false, unique = false)
     private Integer height;
 
-    @ValidEnum
+    @ValidEnum(groups = {ImageDefaultGroup.class})
     @Enumerated(EnumType.STRING)
     private ImageSource source;
 
@@ -75,20 +104,12 @@ public final class Image {
     @Column(updatable = false, nullable = false, unique = false)
     private Date createdAt;
 
-    public Profile getProfile() {
-        return profile;
+    public String getUid() {
+        return uid;
     }
 
-    public void setProfile(Profile profile) {
-        this.profile = profile;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public String getExt() {
@@ -105,6 +126,22 @@ public final class Image {
 
     public void setBucket(String bucket) {
         this.bucket = bucket;
+    }
+
+    public String getLoc() {
+        return loc;
+    }
+
+    public void setLoc(String loc) {
+        this.loc = loc;
+    }
+
+    public Profile getProfile() {
+        return profile;
+    }
+
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
 
     public Integer getWidth() {
@@ -143,12 +180,16 @@ public final class Image {
     void prePersist() {
         setCreatedAt(new Timestamp(System.currentTimeMillis()));
 
+        if (StringUtils.isNoneBlank(getExt(), getUid(), getBucket())) {
+            setLoc(getBucket() + "-" + getUid() + getExt());
+        }
+
         preUpdate();
     }
 
     @PreUpdate
     void preUpdate() {
-        ValidationException.validate(this, Default.class);
+        ValidationException.validate(this, Default.class, ImageDefaultGroup.class);
     }
 
     /**
@@ -160,11 +201,12 @@ public final class Image {
     public JsonNode toJson() {
         ObjectNode node = toJsonBasic();
 
-        if (StringUtils.isNoneBlank(getExt(), getId(), getBucket())) {
+        if (StringUtils.isNotBlank(getLoc())) {
+            String[] bucketKey = CdnUtils.breakLoc(getLoc());
             node.putObject("sizes")
-                    .put("320x320", CdnUtils.create(getBucket(), getId(), getExt(), 320, 320))
-                    .put("640x640", CdnUtils.create(getBucket(), getId(), getExt(), 640, 640))
-                    .put("1080x1080", CdnUtils.create(getBucket(), getId(), getExt(), 1080, 1080));
+                    .put("320x320", CdnUtils.create(bucketKey[0], bucketKey[1], 320, 320))
+                    .put("640x640", CdnUtils.create(bucketKey[0], bucketKey[1], 640, 640))
+                    .put("1080x1080", CdnUtils.create(bucketKey[0], bucketKey[1], 1080, 1080));
         }
         return node;
     }
@@ -174,6 +216,11 @@ public final class Image {
      */
     public JsonNode toJsonInternal() {
         ObjectNode node = toJsonBasic();
+        node.put("bucket", getBucket());
+        node.put("uid", getUid());
+        node.put("ext", getExt());
+        node.put("source", getSource().toString());
+
 
         HibernateUtils.initialize(this);
         HibernateUtils.initialize(getProfile());
@@ -181,7 +228,7 @@ public final class Image {
         Profile profile = getProfile();
         if (profile != null) {
             node.putObject("profile")
-                    .put("id", profile.getId())
+                    .put("id", profile.getUid())
                     .put("username", profile.getUsername());
         }
         return node;
@@ -189,12 +236,9 @@ public final class Image {
 
     private ObjectNode toJsonBasic() {
         ObjectNode node = JsonUtils.createObjectNode();
-        node.put("id", getId());
-        node.put("ext", getExt());
-        node.put("bucket", getBucket());
+        node.put("loc", getLoc());
         node.put("width", getWidth());
         node.put("height", getHeight());
-        node.put("source", getSource().toString());
         return node;
     }
 
@@ -205,24 +249,68 @@ public final class Image {
         private static final String API_URL = "https://cdn.munch.app/";
         private static final Base64.Encoder ENCODER = Base64.getEncoder();
 
-        static String create(String bucket, String id, String ext, int width, int height) {
+        static String[] breakLoc(String loc) {
+            return loc.split("-");
+        }
+
+        @Nullable
+        static String locToUid(String loc) {
+            if (loc == null) return null;
+
+            Matcher matcher = LOC_PATTERN.matcher(loc);
+            if (matcher.matches()) {
+                return matcher.group(1);
+            }
+            return null;
+        }
+
+        static String create(String bucket, String key, int width, int height) {
             ObjectNode edits = JsonUtils.createObjectNode();
             edits.putObject("resize")
                     .put("width", width)
                     .put("height", height)
                     .put("fit", "outside");
 
-            return create(bucket, id, ext, edits);
+            return create(bucket, key, edits);
         }
 
-        static String create(String bucket, String id, String ext, JsonNode edits) {
+        static String create(String bucket, String key, JsonNode edits) {
             ObjectNode request = JsonUtils.createObjectNode(nodes -> {
                 nodes.put("bucket", bucket);
-                nodes.put("key", id + ext);
+                nodes.put("key", key);
                 nodes.set("edits", edits);
             });
             String json = JsonUtils.toString(request);
             return API_URL + ENCODER.encodeToString(json.getBytes());
+        }
+    }
+
+    public static final class EntityUtils {
+
+        public static void map(EntityManager entityManager, Image image, Consumer<Image> setter) {
+            if (image != null) {
+                map(entityManager, image.getUid(), image.getLoc(), setter);
+            }
+        }
+
+        public static void map(EntityManager entityManager, JsonNode node, Consumer<Image> setter) {
+            if (node.isNull()) {
+                setter.accept(null);
+            }else {
+                map(entityManager, node.path("uid").asText(null), node.path("loc").asText(null), setter);
+            }
+        }
+
+        public static void map(EntityManager entityManager, String uid, String loc, Consumer<Image> setter) {
+            if (uid != null) {
+                setter.accept(entityManager.find(Image.class, uid));
+            } else if (loc != null) {
+                uid = CdnUtils.locToUid(loc);
+
+                if (uid != null) {
+                    setter.accept(entityManager.find(Image.class, uid));
+                }
+            }
         }
     }
 }

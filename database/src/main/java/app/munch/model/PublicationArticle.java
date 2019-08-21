@@ -27,7 +27,7 @@ public final class PublicationArticle {
     @Pattern(regexp = KeyUtils.ULID_REGEX)
     @Id
     @Column(length = 26, updatable = false, nullable = false, unique = true)
-    private String id;
+    private String uid;
 
     @NotNull
     @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = false)
@@ -45,12 +45,12 @@ public final class PublicationArticle {
     @Column(updatable = false, nullable = false, unique = false)
     private Date createdAt;
 
-    public String getId() {
-        return id;
+    public String getUid() {
+        return uid;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setUid(String id) {
+        this.uid = id;
     }
 
     public Publication getPublication() {
@@ -90,11 +90,9 @@ public final class PublicationArticle {
 
     @PrePersist
     void prePersist() {
-        if (getArticle() != null) {
-            setId(getArticle().getId());
-        }
-
         long millis = System.currentTimeMillis();
+
+        setUid(KeyUtils.nextULID(millis));
         setCreatedAt(new Timestamp(millis));
 
         if (getPosition() == null) {

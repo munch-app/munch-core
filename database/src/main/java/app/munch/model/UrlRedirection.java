@@ -14,15 +14,14 @@ import java.util.Date;
 
 /**
  * Created by: Fuxing
- * Date: 2019-07-31
- * Time: 15:27
+ * Date: 20/8/19
+ * Time: 11:32 pm
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
-@Table(name = "PlaceImage")
-public final class PlaceImage {
-    // Implement: importance
+@Table(name = "UrlRedirection")
+public final class UrlRedirection {
 
     @NotNull
     @Pattern(regexp = KeyUtils.ULID_REGEX)
@@ -30,14 +29,18 @@ public final class PlaceImage {
     @Column(length = 26, updatable = false, nullable = false, unique = true)
     private String uid;
 
-    @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = true)
-    private Place place;
+    @NotNull
+    @Pattern(regexp = "^/.{1,999}$")
+    @Column(length = 1000, updatable = false, nullable = false, unique = true)
+    private String pathFrom;
 
-    @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = true)
-    private Profile profile;
+    @NotNull
+    @Pattern(regexp = "^/.{1,999}$")
+    @Column(length = 1000, updatable = true, nullable = false, unique = false)
+    private String pathTo;
 
-    @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = true)
-    private Image image;
+    @Column(length = 1000, updatable = true, nullable = true, unique = false)
+    private String description;
 
     @NotNull
     @Version
@@ -56,28 +59,28 @@ public final class PlaceImage {
         this.uid = id;
     }
 
-    public Place getPlace() {
-        return place;
+    public String getPathFrom() {
+        return pathFrom;
     }
 
-    public void setPlace(Place place) {
-        this.place = place;
+    public void setPathFrom(String from) {
+        this.pathFrom = from;
     }
 
-    public Profile getProfile() {
-        return profile;
+    public String getPathTo() {
+        return pathTo;
     }
 
-    public void setProfile(Profile profile) {
-        this.profile = profile;
+    public void setPathTo(String to) {
+        this.pathTo = to;
     }
 
-    public Image getImage() {
-        return image;
+    public String getDescription() {
+        return description;
     }
 
-    public void setImage(Image image) {
-        this.image = image;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Date getUpdatedAt() {
@@ -98,9 +101,8 @@ public final class PlaceImage {
 
     @PrePersist
     void prePersist() {
-        long millis = System.currentTimeMillis();
-        setUid(KeyUtils.nextULID(millis));
-        setCreatedAt(new Timestamp(millis));
+        setUid(KeyUtils.nextULID());
+        setCreatedAt(new Timestamp(System.currentTimeMillis()));
 
         preUpdate();
     }
@@ -108,7 +110,6 @@ public final class PlaceImage {
     @PreUpdate
     void preUpdate() {
         setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-
         ValidationException.validate(this, Default.class);
     }
 }

@@ -27,6 +27,11 @@ import java.util.Optional;
 @Table(name = "ArticleRevision")
 public final class ArticleRevision extends ArticleModel {
 
+    @NotNull
+    @Pattern(regexp = "[0-9]{4}-[0-9]{2}-[0-9]{2}")
+    @Column(length = 10, updatable = true, nullable = false, unique = false)
+    private String version;
+
     @JsonIgnore
     @ManyToOne(cascade = {CascadeType.PERSIST}, fetch = FetchType.LAZY, optional = false)
     private Article article;
@@ -40,12 +45,7 @@ public final class ArticleRevision extends ArticleModel {
     @Pattern(regexp = KeyUtils.ULID_REGEX)
     @Id
     @Column(length = 26, updatable = false, nullable = false, unique = true)
-    private String revision;
-
-    @NotNull
-    @Pattern(regexp = "[0-9]{4}-[0-9]{2}-[0-9]{2}")
-    @Column(length = 10, updatable = true, nullable = false, unique = false)
-    private String version;
+    private String uid;
 
     @NotNull
     @Column(updatable = true, nullable = false, unique = false)
@@ -71,12 +71,12 @@ public final class ArticleRevision extends ArticleModel {
         this.version = version;
     }
 
-    public String getRevision() {
-        return revision;
+    public String getUid() {
+        return uid;
     }
 
-    public void setRevision(String revision) {
-        this.revision = revision;
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public Boolean getPublished() {
@@ -114,11 +114,11 @@ public final class ArticleRevision extends ArticleModel {
         }
 
         long millis = System.currentTimeMillis();
-        setRevision(KeyUtils.nextULID(millis));
+        setUid(KeyUtils.nextULID(millis));
         setCreatedAt(new Timestamp(millis));
         setVersion("2019-08-01");
 
-        if (getPublished()) {
+        if (getPublished() != null && getPublished()) {
             article.setStatus(ArticleStatus.PUBLISHED);
             preUpdatePublished();
         } else if (article.getStatus() == ArticleStatus.DRAFT) {
@@ -129,7 +129,7 @@ public final class ArticleRevision extends ArticleModel {
         setProfile(article.getProfile());
         setSlug(KeyUtils.generateSlug(article.getTitle()));
 
-        if (getPublished()) {
+        if (getPublished() != null && getPublished()) {
             ValidationException.validate(this, Default.class, ArticlePublishedGroup.class);
         } else {
             ValidationException.validate(this, Default.class);

@@ -44,15 +44,18 @@
 </template>
 
 <script>
+  import {mapGetters} from "vuex";
+
   import dateformat from 'dateformat'
 
   export default {
     head() {
-      return this.$head({
-        graph: {
-          title: `Your articles`,
-        },
-      })
+      return {
+        title: `Published - Articles · ${this.name}`
+      }
+    },
+    computed: {
+      ...mapGetters('account', ['name']),
     },
     asyncData({$api}) {
       return $api.get('/me/articles', {params: {status: 'PUBLISHED', size: 20}})

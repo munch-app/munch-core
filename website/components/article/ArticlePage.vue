@@ -1,7 +1,10 @@
 <template>
   <div>
-    <div class="container-768 pt-48 pb-64">
-      <article-content :article="article"/>
+    <div class="container pt-48 pb-64">
+      <div class="flex">
+        <article-content :article="article" ref="ArticleContent"/>
+        <article-context-map class="Map" :article="article" :get-contexts="getContexts"/>
+      </div>
 
       <div class="mt-64">
         <div class="Tags flex-wrap">
@@ -50,10 +53,11 @@
   import ArticleContent from "./ArticleContent";
   import CdnImg from "../utils/image/CdnImg";
   import ArticleCardMedium from "./ArticleCardMedium";
+  import ArticleContextMap from "./ArticleContextMap";
 
   export default {
     name: "ArticlePage",
-    components: {ArticleCardMedium, CdnImg, ArticleContent},
+    components: {ArticleContextMap, ArticleCardMedium, CdnImg, ArticleContent},
     props: {
       article: {
         type: Object,
@@ -65,7 +69,12 @@
       moreFromAuthorArticles() {
         return this.more?.author?.articles || 0
       }
-    }
+    },
+    methods: {
+      getContexts() {
+        return this.$refs['ArticleContent'].getContexts()
+      }
+    },
   }
 </script>
 
@@ -76,5 +85,25 @@
 
   .Tags {
     margin: -6px;
+  }
+
+  .container {
+    @media (max-width: 1199.98px) {
+      max-width: 768px;
+    }
+  }
+
+  .Map {
+    width: 100%;
+    height: 320px;
+    margin-left: 24px;
+
+    @media (max-width: 1199.98px) {
+      display: none;
+    }
+
+    @media (min-width: 1300px) {
+      margin-left: 48px;
+    }
   }
 </style>

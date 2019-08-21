@@ -42,8 +42,8 @@ public final class ImageService extends DataService {
             POST("", this::post);
             OPTIONS("", this::options);
 
-            GET("/:id", this::get);
-            DELETE("/:id", this::delete);
+            GET("/:uid", this::get);
+//            DELETE("/:uid", this::delete);
         });
     }
 
@@ -68,18 +68,18 @@ public final class ImageService extends DataService {
     }
 
     public Image get(TransportContext ctx) {
-        final String id = ctx.pathString("id");
+        final String uid = ctx.pathString("uid");
 
         return provider.reduce(true, entityManager -> {
-            return entityManager.find(Image.class, id);
+            return entityManager.find(Image.class, uid);
         });
     }
 
     public Image delete(TransportContext ctx) {
-        final String id = ctx.pathString("id");
+        final String uid = ctx.pathString("uid");
 
         return provider.reduce(entityManager -> {
-            Image image = entityManager.find(Image.class, id);
+            Image image = entityManager.find(Image.class, uid);
             if (image == null) throw new NotFoundException();
 
             try {

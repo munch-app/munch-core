@@ -1,5 +1,6 @@
 package app.munch.model;
 
+import app.munch.model.constraint.ArticlePlaceDefaultGroup;
 import app.munch.model.constraint.ArticlePublishedGroup;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -7,6 +8,7 @@ import dev.fuxing.err.ValidationException;
 import dev.fuxing.utils.KeyUtils;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.groups.Default;
@@ -24,32 +26,49 @@ import java.util.Date;
 @Table(name = "ArticlePlace")
 public final class ArticlePlace extends PlaceModel {
 
-    @NotNull(groups = {ArticlePublishedGroup.class})
-    @Pattern(regexp = KeyUtils.ULID_REGEX)
-    @Id
-    @Column(length = 26, updatable = false, nullable = false, unique = true)
-    private String id;
-
-    @NotNull(groups = {ArticlePublishedGroup.class})
-    @Column(updatable = true, nullable = false, unique = false)
-    private Long position;
-
-    @NotNull(groups = {ArticlePublishedGroup.class})
+    @NotNull(groups = {ArticlePlaceDefaultGroup.class})
     @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = false)
     private Article article;
 
-    @NotNull(groups = {ArticlePublishedGroup.class})
+    @NotNull(groups = {ArticlePlaceDefaultGroup.class})
     @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = false)
     private Place place;
 
-    @NotNull(groups = {ArticlePublishedGroup.class})
+    @NotNull(groups = {ArticlePlaceDefaultGroup.class})
+    @Column(updatable = true, nullable = false, unique = false)
+    private Long position;
+
+    @NotNull(groups = {ArticlePlaceDefaultGroup.class})
+    @Pattern(regexp = KeyUtils.ULID_REGEX)
+    @Id
+    @Column(length = 26, updatable = false, nullable = false, unique = true)
+    private String uid;
+
+    @NotNull(groups = {ArticlePublishedGroup.class, ArticlePlaceDefaultGroup.class})
+    @Pattern(regexp = "^[0123456789abcdefghjkmnpqrstvwxyz]{12}0$")
+    @Column(length = 13, updatable = true, nullable = true, unique = false)
+    private String id;
+
+    @Valid
+    @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = true)
+    private Image image;
+
+    @NotNull(groups = {ArticlePlaceDefaultGroup.class})
     @Version
     @Column(updatable = true, nullable = false, unique = false)
     private Date updatedAt;
 
-    @NotNull(groups = {ArticlePublishedGroup.class})
+    @NotNull(groups = {ArticlePlaceDefaultGroup.class})
     @Column(updatable = false, nullable = false, unique = false)
     private Date createdAt;
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
 
     public String getId() {
         return id;
@@ -73,6 +92,14 @@ public final class ArticlePlace extends PlaceModel {
 
     public void setPlace(Place place) {
         this.place = place;
+    }
+
+    public Image getImage() {
+        return image;
+    }
+
+    public void setImage(Image image) {
+        this.image = image;
     }
 
     public Long getPosition() {
@@ -102,7 +129,7 @@ public final class ArticlePlace extends PlaceModel {
     @PrePersist
     void prePersist() {
         long millis = System.currentTimeMillis();
-        setId(KeyUtils.nextULID(millis));
+        setUid(KeyUtils.nextULID(millis));
         setCreatedAt(new Timestamp(millis));
 
         if (getPosition() == null) {

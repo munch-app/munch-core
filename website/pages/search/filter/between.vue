@@ -75,7 +75,7 @@
   import AppleMapMarkerAnnotation from "../../../components/core/AppleMapMarkerAnnotation";
   import HorizontalScrollView from "../../../components/core/HorizontalScrollView";
   import SearchFilterBetweenSearch from "../../../components/search/dialog/SearchFilterBetweenSearch";
-  import AppleMap from "../../../components/core/AppleMap";
+  import AppleMap from "../../../components/utils/map/AppleMap";
 
   function getCentroid(points) {
     if (points.length < 2) return null

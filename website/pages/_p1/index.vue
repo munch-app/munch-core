@@ -20,7 +20,7 @@
       if (/^@[a-z0-9]{3,32}$/.test(_.toLower(p1))) {
         return true
       }
-      // L13 Id pages
+      // L13-Id pages
       if (/^(?:[0-9a-z-]{0,1000}-)?[0123456789abcdefghjkmnpqrstvwxyz]{13}$/.test(p1)) {
         return true
       }

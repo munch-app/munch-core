@@ -6,9 +6,9 @@
     </div>
     <editor-content class="Editor article-content" :editor="editor" :class="hints"/>
 
-    <code>
-      <pre>{{revision}}</pre>
-    </code>
+<!--    <code>-->
+<!--      <pre>{{revision}}</pre>-->
+<!--    </code>-->
   </div>
 </template>
 
@@ -22,6 +22,7 @@
   import Image from './node/ArticleImageNode'
   import Line from './node/ArticleLineNode'
   import Avatar from './node/ArticleAvatarNode'
+  import Place from './node/ArticlePlaceNode'
 
   export default {
     name: "ArticleEditor",
@@ -81,7 +82,7 @@
           new Line(),
           new Image(),
           new Avatar(),
-          // new Place(),
+          new Place(),
         ],
         content: {type: 'doc', content: this.revision.content},
         onUpdate: ({getJSON}) => {
@@ -118,6 +119,7 @@
         if (this.lastEditedTime == null) return
         if (this.lastSavedTime === this.lastEditedTime) return
 
+        this.save()
         return 'You have unsaved changes!'
       },
       onActiveWatcher() {

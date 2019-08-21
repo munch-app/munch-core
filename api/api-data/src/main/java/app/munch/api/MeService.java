@@ -76,12 +76,7 @@ public final class MeService extends DataService {
                         patcher.patch("name", Profile::setName);
                         patcher.patch("bio", Profile::setBio);
                         patcher.patch("image", (EntityPatch.NodeConsumer<Profile>) (profile, json) -> {
-                            String imageId = json.path("id").asText(null);
-                            if (imageId != null) {
-                                profile.setImage(entityManager.find(Image.class, imageId));
-                            } else {
-                                profile.setImage(null);
-                            }
+                            Image.EntityUtils.map(entityManager, json, profile::setImage);
                         });
                     })
                     .persist();

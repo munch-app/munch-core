@@ -9,6 +9,7 @@ import dev.fuxing.jpa.EntityStream;
 import dev.fuxing.jpa.TransactionProvider;
 import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
+import dev.fuxing.utils.JsonUtils;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -21,7 +22,6 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * Created by: Fuxing
@@ -47,10 +47,10 @@ public final class ArticleEntityManager {
             return EntityStream.of(() -> {
                 if (cursorId != null && cursorUpdatedAt != null) {
                     return entityManager.createQuery("FROM Article " +
-                            "WHERE profile.id = :profileId AND status = :status " +
+                            "WHERE profile.uid = :profileId AND status = :status " +
                             "AND (updatedAt < :cursorUpdatedAt OR (updatedAt = :cursorUpdatedAt AND id < :cursorId)) " +
                             "ORDER BY updatedAt DESC, id DESC", Article.class)
-                            .setParameter("profileId", profile.getId())
+                            .setParameter("profileId", profile.getUid())
                             .setParameter("status", status)
                             .setParameter("cursorUpdatedAt", new Date(cursorUpdatedAt))
                             .setParameter("cursorId", cursorId)
@@ -59,9 +59,9 @@ public final class ArticleEntityManager {
                 }
 
                 return entityManager.createQuery("FROM Article " +
-                        "WHERE profile.id = :profileId AND status = :status " +
+                        "WHERE profile.uid = :profileId AND status = :status " +
                         "ORDER BY updatedAt DESC, id DESC", Article.class)
-                        .setParameter("profileId", profile.getId())
+                        .setParameter("profileId", profile.getUid())
                         .setParameter("status", status)
                         .setMaxResults(size)
                         .getResultList();
@@ -140,22 +140,22 @@ public final class ArticleEntityManager {
         });
     }
 
-    public ArticleRevision getRevision(String id, String revision, @Nullable BiConsumer<EntityManager, ArticleRevision> consumer) {
+    public ArticleRevision getRevision(String id, String uid, @Nullable BiConsumer<EntityManager, ArticleRevision> consumer) {
         return provider.reduce(true, entityManager -> {
             ArticleRevision articleRevision;
 
-            if (revision.equals("latest")) {
+            if (uid.equals("latest")) {
                 articleRevision = entityManager.createQuery("FROM ArticleRevision " +
                         "WHERE article.id = :id " +
-                        "ORDER BY revision DESC ", ArticleRevision.class)
+                        "ORDER BY uid DESC ", ArticleRevision.class)
                         .setParameter("id", id)
                         .setMaxResults(1)
                         .getSingleResult();
             } else {
                 articleRevision = entityManager.createQuery("FROM ArticleRevision " +
-                        "WHERE article.id = :id AND revision = :revision", ArticleRevision.class)
+                        "WHERE article.id = :id AND uid = :uid", ArticleRevision.class)
                         .setParameter("id", id)
-                        .setParameter("revision", revision)
+                        .setParameter("uid", uid)
                         .getSingleResult();
             }
 
@@ -189,13 +189,14 @@ public final class ArticleEntityManager {
 
             // TODO(fuxing): Respect ArticleModel.Options
             // TODO(fuxing): This needs to be changed in Partner 2
+            // TODO(fuxing): allow duplication of place to store, b.c. people can add multiple place in article.
             article.getContent().stream()
                     .filter(node -> node.getType().equals("place"))
                     .map(n -> (ArticleModel.PlaceNode) n)
                     .forEach(node -> {
                         ArticlePlace place = node.getAttrs().getPlace();
                         Objects.requireNonNull(place);
-                        String placeId = Objects.requireNonNull(place.getPlace().getId());
+                        String placeId = Objects.requireNonNull(place.getId());
 
                         places.stream()
                                 .filter(articlePlace -> articlePlace.getPlace().getId().equals(placeId))
@@ -207,7 +208,7 @@ public final class ArticleEntityManager {
                                     entityManager.persist(articlePlace);
                                 }, () -> {
                                     // Create
-                                    ArticlePlace articlePlace = new ArticlePlace();
+                                    ArticlePlace articlePlace = JsonUtils.deepCopy(place, ArticlePlace.class);
                                     articlePlace.setPlace(entityManager.find(Place.class, placeId));
                                     articlePlace.setArticle(article);
 
@@ -227,36 +228,6 @@ public final class ArticleEntityManager {
     private void findEntities(EntityManager entityManager, ArticleModel model) {
         if (model.getContent() == null) return;
 
-        if (model.getImage() != null && model.getImage().getId() != null) {
-            model.setImage(entityManager.find(Image.class, model.getImage().getId()));
-        }
-
-
-        model.getContent().stream().takeWhile(Objects::nonNull).forEach(node -> {
-            if (node instanceof ArticleModel.ImageNode) {
-                ArticleModel.ImageNode.Attrs attrs = ((ArticleModel.ImageNode) node).getAttrs();
-                if (attrs == null) return;
-                if (attrs.getImage() == null) return;
-                if (attrs.getImage().getId() == null) return;
-
-                attrs.setImage(entityManager.find(Image.class, attrs.getImage().getId()));
-            } else if (node instanceof ArticleModel.AvatarNode) {
-                ArticleModel.AvatarNode.Attrs attrs = ((ArticleModel.AvatarNode) node).getAttrs();
-                if (attrs == null) return;
-                if (attrs.getImages() == null) return;
-                if (attrs.getImages().isEmpty()) return;
-
-                List<Image> images = attrs.getImages()
-                        .stream()
-                        .map(image -> entityManager.find(Image.class, image.getId()))
-                        .collect(Collectors.toList());
-                attrs.setImages(images);
-            } else if (node instanceof ArticleModel.PlaceNode) {
-                ArticleModel.PlaceNode.Attrs attrs = ((ArticleModel.PlaceNode) node).getAttrs();
-                if (attrs == null) return;
-
-                // TODO(fuxing): Resolve Place??
-            }
-        });
+        Image.EntityUtils.map(entityManager, model.getImage(), model::setImage);
     }
 }

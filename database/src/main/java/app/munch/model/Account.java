@@ -24,6 +24,9 @@ import java.util.Date;
 @Table(name = "Account")
 public final class Account {
 
+    /**
+     * This is the only id not following the design guideline as it is taken from external source.
+     */
     @NotNull
     @Id
     @Column(length = 255, updatable = false, nullable = false)

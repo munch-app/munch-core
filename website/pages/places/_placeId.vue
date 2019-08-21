@@ -88,6 +88,7 @@
 
       return this.$head({
         robots: {follow: true, index: true},
+        canonical: `https://www.munch.app/places/${placeId}`,
         graph: {
           title: `${name} · Munch - Food Discovery`,
           description: description,
@@ -112,7 +113,19 @@
         showAddToCollection: false
       }
     },
-    asyncData({$api, $axios, params: {placeId}, error}) {
+    asyncData: function ({$api, params: {placeId}, error}) {
+      if (placeId && placeId.length === 13) {
+        return $api.get(`/places/${placeId}/v23`)
+          .then(({data: place}) => {
+            // redirect({path: `/places/${place.cid}`})
+            console.log(place.cid)
+            return $api.get(`/places/${place.cid}`)
+              .then(({data}) => {
+                return {data}
+              })
+          })
+      }
+
       return $api.get(`/places/${placeId}`)
         .then(({data}) => {
           return {data}

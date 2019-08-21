@@ -8,11 +8,10 @@
         <text-content v-for="(content, index) in node.content" v-bind="content" :key="index"/>
       </p>
       <hr v-else-if="node.type === 'line'" :key="index">
-      <article-image-node v-else-if="node.type ==='image'" :key="index" :node="node"/>
-      <article-avatar-node v-else-if="node.type ==='avatar'" :key="index" :node="node"/>
-      <div v-else :key="index">
-        <pre>Unmapped Type</pre>
-      </div>
+      <article-image v-else-if="node.type ==='image'" :key="index" :node="node"/>
+      <article-avatar v-else-if="node.type ==='avatar'" :key="index" :node="node"/>
+      <article-place ref="context" v-else-if="node.type ==='place'" :key="index" :node="node"/>
+      <div v-else :key="index"/>
     </template>
 
     <!--    <code>-->
@@ -24,12 +23,13 @@
 <script>
   import TextContent from "./node/TextContent";
   import ProfileNode from "./node/ProfileNode";
-  import ArticleImageNode from "./node/ArticleImage.vue";
-  import ArticleAvatarNode from "./node/ArticleAvatar.vue";
+  import ArticleImage from "./node/ArticleImage.vue";
+  import ArticleAvatar from "./node/ArticleAvatar.vue";
+  import ArticlePlace from "./node/ArticlePlace.vue";
 
   export default {
     name: "ArticleContent",
-    components: {ArticleAvatarNode, ArticleImageNode, ProfileNode, TextContent},
+    components: {ArticlePlace, ArticleAvatar, ArticleImage, ProfileNode, TextContent},
     props: {
       article: {
         type: Object,
@@ -53,11 +53,10 @@
     methods: {
       toString(node) {
         return (node.content || []).map(n => n.text).join("")
+      },
+      getContexts() {
+        return this.$refs['context']
       }
     }
   }
 </script>
-
-<style scoped lang="less">
-
-</style>
