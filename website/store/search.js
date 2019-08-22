@@ -44,11 +44,6 @@ export const mutations = {
 
   start(state, {query, type}) {
     // User Search Preference Injection
-    this.getters['user/searchPreference'].requirements.forEach(tag => {
-      if (_.some(query.filter.tags, t => t.tagId === tag.tagId)) return
-      query.filter.tags.push(tag)
-    })
-
     state.type = type
     state.query = query
     state.qid = null
@@ -97,7 +92,7 @@ export const actions = {
 
     start.call(this, {query, type: 'search'})
 
-    return this.$axios.$post(`/api/search?page=${state.page}`, state.query)
+    return this.$api.post(`/search?page=${state.page}`, state.query)
       .then(({data, qid}) => {
         return commit('append', {cards: data, qid})
       })
@@ -114,7 +109,7 @@ export const actions = {
     if (typeof window !== 'undefined') window.scrollTo(0, 0)
 
     start.call(this, {query, type: 'search'})
-    return this.$axios.$post(`/api/search?page=${state.page}`, state.query)
+    return this.$api.post(`/search?page=${state.page}`, state.query)
       .then(({data, qid}) => {
         commit('append', {cards: data, qid})
         this.$router.push({path: '/search', query: {qid}})
@@ -123,19 +118,19 @@ export const actions = {
 
   startNamed({commit, state}, query) {
     start.call(this, {query, type: 'named'})
-    return this.$axios.$post(`/api/search?page=${state.page}`, state.query)
+    return this.$api.post(`/search?page=${state.page}`, state.query)
       .then(({data, qid}) => {
         commit('append', {cards: data, qid})
       })
   },
 
   startQID({commit, state}, qid) {
-    return this.$axios.$get(`/api/search/qid/${qid}`)
+    return this.$api.get(`/search/qid/${qid}`)
       .then(({data}) => {
         if (!data) return Promise.reject(new Error('Not Found'))
 
         start.call(this, {query: data, type: 'qid'})
-        return this.$axios.$post(`/api/search?page=${state.page}`, data)
+        return this.$api.post(`/search?page=${state.page}`, data)
           .then(({data}) => {
             commit('append', {cards: data, qid})
           })
@@ -148,7 +143,7 @@ export const actions = {
   append({commit, state}) {
     if (state.loading) return
 
-    return this.$axios.$post(`/api/search?page=${state.page}`, state.query)
+    return this.$api.post(`/search?page=${state.page}`, state.query)
       .then(({data}) => {
         commit('append', {cards: data})
       })

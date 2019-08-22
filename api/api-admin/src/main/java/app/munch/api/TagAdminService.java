@@ -41,7 +41,7 @@ public final class TagAdminService extends AdminService {
     }
 
     public TransportList list(TransportContext ctx) {
-        int size = ctx.querySize(20, 100);
+        int size = ctx.querySize(100, 100);
 
         @NotNull TransportCursor cursor = ctx.queryCursor();
         String cursorId = cursor.get("id");

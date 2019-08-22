@@ -17,7 +17,7 @@
       alt: String,
       image: {
         type: Object,
-        required: true
+        default: undefined
       },
       /**
        * 320x320

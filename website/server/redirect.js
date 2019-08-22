@@ -1,7 +1,6 @@
+// Google's John Mueller said 1 year
 const redirects = {
-  '/feed': '/feed/images',
-  '/support/terms-of-use': '/support/terms',
-  '/support/privacy-policy': '/support/privacy',
+  // E.g. '/from': '/to'
 }
 
 module.exports = function (req, res, next) {

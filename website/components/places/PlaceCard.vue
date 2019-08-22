@@ -87,7 +87,6 @@
       }
     },
     computed: {
-      ...mapGetters('user', ['isLoggedIn']),
       location() {
         return this.place.location.neighbourhood || this.place.location.street
       },

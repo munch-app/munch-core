@@ -150,7 +150,7 @@
           'next.sort': this.next.sort
         }
 
-        return this.$axios.$get(`/api/places/${this.payload.place.placeId}/images`, {params})
+        return this.$api.get(`/places/${this.payload.place.placeId}/images`, {params})
           .then(({data, next}) => {
             this.images.push(...data)
             this.loading = false

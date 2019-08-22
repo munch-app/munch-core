@@ -39,7 +39,7 @@ export const actions = {
       'latLng': '1.3521,103.8198',
       'size': 20
     }
-    return this.$axios.$get(`/api/feed/articles`, {params})
+    return this.$api.get(`/feed/articles`, {params})
       .then(({data, next}) => {
         commit('append', {items: data.items, places: data.places, next})
       })
@@ -58,7 +58,7 @@ export const actions = {
     if (state.next && state.next.sort) {
       params['next.sort'] = state.next.sort
     }
-    return this.$axios.$get(`/api/feed/articles`, {params})
+    return this.$api.get(`/feed/articles`, {params})
       .then(({data, next}) => {
         commit('append', {items: data.items, places: data.places, next})
       })

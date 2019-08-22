@@ -33,7 +33,7 @@ public final class Profile {
     /**
      * Backward compatible support, user different id for each major deprecation so that it's easier to delete.
      */
-    public static final String COMPAT_ID = "v22t0v23000000000000000000";
+    public static final String COMPAT_ID = "000000000000000000v22t0v23";
 
     @NotNull
     @Pattern(regexp = KeyUtils.ULID_REGEX)

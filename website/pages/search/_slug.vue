@@ -23,8 +23,8 @@
         ]
       })
     },
-    asyncData({store, $axios, params: {slug}, error}) {
-      return $axios.$get(`/api/search/named/${slug}`)
+    asyncData({store, $api, params: {slug}, error}) {
+      return $api.get(`/search/named/${slug}`)
         .then(({data: {title, description, areas, tags}}) => {
           const searchQuery = {
             filter: {

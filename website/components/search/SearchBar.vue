@@ -207,7 +207,7 @@
         this.$emit('onFocus')
 
         if (this.suggestions === null && this.text && this.text.length > 0) {
-          this.$axios.$post('/api/suggest', {"text": text, "searchQuery": {}}, {progress: false})
+          this.$api.post('/suggest', {"text": text, "searchQuery": {}}, {progress: false})
             .then(suggestions => {
               this.suggestions = suggestions
             })
@@ -237,7 +237,7 @@
 
       const suggestions = observable.pipe(
         switchMap((text) => {
-          return this.$axios.$post('/api/suggest', {"text": text, "searchQuery": {}}, {progress: false})
+          return this.$api.post('/suggest', {"text": text, "searchQuery": {}}, {progress: false})
         }),
         map(({data}) => data)
       )

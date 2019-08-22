@@ -48,16 +48,9 @@ function route(req, res, next, options) {
   })
 }
 
-['/api/creators/:creatorId/contents/:contentId/images'].forEach(path => {
-  router.post(path, upload.single('file'), function (req, res, next) {
-    const form = new FormData()
-    const file = req.file
-    form.append('file', file.buffer, file.originalname);
-
-    route(req, res, next, {headers: form.getHeaders(), data: form})
-  })
-})
-
+/**
+ * @deprecated soon
+ */
 router.post('/api/places/:placeId/suggest/multipart', upload.array('images', 8), function (req, res, next) {
   const form = new FormData()
   const files = req.files

@@ -33,9 +33,9 @@ import java.util.stream.Collectors;
  * Time: 17:01
  */
 @MappedSuperclass
-@TypeDef(name = "Tags", typeClass = ArticleModel.TagsType.class)
-@TypeDef(name = "Content", typeClass = ArticleModel.ContentType.class)
-@TypeDef(name = "Options", typeClass = ArticleModel.OptionsType.class)
+@TypeDef(name = "ArticleModel.TagsType", typeClass = ArticleModel.TagsType.class)
+@TypeDef(name = "ArticleModel.ContentType", typeClass = ArticleModel.ContentType.class)
+@TypeDef(name = "ArticleModel.OptionsType", typeClass = ArticleModel.OptionsType.class)
 public abstract class ArticleModel {
 
     @NotNull
@@ -61,17 +61,17 @@ public abstract class ArticleModel {
     @Valid
     @NotNull
     @Size(max = 8)
-    @Type(type = "Tags")
+    @Type(type = "ArticleModel.TagsType")
     private Set<@NotNull Tag> tags;
 
     @Valid
     @NotNull
-    @Type(type = "Content")
+    @Type(type = "ArticleModel.ContentType")
     private List<@NotNull Node> content;
 
     @Valid
     @NotNull
-    @Type(type = "Options")
+    @Type(type = "ArticleModel.OptionsType")
     private Options options;
 
     public String getSlug() {
@@ -214,6 +214,11 @@ public abstract class ArticleModel {
         }
     }
 
+    /**
+     * Created by: Fuxing
+     * Date: 21/8/19
+     * Time: 8:24 pm
+     */
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonIgnoreProperties(ignoreUnknown = true)
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type", visible = true)
@@ -549,7 +554,7 @@ public abstract class ArticleModel {
     }
 
     public static final class NodeUtils {
-        public static Optional<String> findFirstHeading(List<ArticleModel.Node> content) {
+        public static Optional<String> findFirstHeading(List<Node> content) {
             return content.stream()
                     .filter(node -> node instanceof HeadingNode)
                     .map(node -> (HeadingNode) node)
@@ -561,7 +566,7 @@ public abstract class ArticleModel {
                     .findFirst();
         }
 
-        public static Optional<String> findFirstParagraph(List<ArticleModel.Node> content) {
+        public static Optional<String> findFirstParagraph(List<Node> content) {
             return content.stream()
                     .filter(node -> node instanceof ParagraphNode)
                     .map(node -> (ParagraphNode) node)

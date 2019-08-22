@@ -139,7 +139,7 @@
         this.$emit('onFocus')
 
         if (this.suggestions === null && this.text && this.text.length > 0) {
-          this.$axios.$post('/api/suggest', {"text": this.text, "searchQuery": {}}, {progress: false})
+          this.$api.post('/suggest', {"text": this.text, "searchQuery": {}}, {progress: false})
             .then(data => {
               this.suggestions = data.places
             })
@@ -170,7 +170,7 @@
 
       const suggestions = observable.pipe(
         switchMap((text) => {
-          let promise = this.$axios.$post('/api/suggest', {"text": text, "searchQuery": {}}, {progress: false})
+          let promise = this.$api.post('/suggest', {"text": text, "searchQuery": {}}, {progress: false})
           promise.then(() => {
             this.searching = false
           })

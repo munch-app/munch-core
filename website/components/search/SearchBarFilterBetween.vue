@@ -152,7 +152,7 @@
           debounceTime(200),
           distinctUntilChanged(),
           switchMap((text) => {
-            return this.$axios.$post('/api/search/filter/between/search', {text}, {progress: false})
+            return this.$api.post('/search/filter/between/search', {text}, {progress: false})
           }),
           map(({data}) => data)
         )

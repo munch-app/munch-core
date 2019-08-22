@@ -1,5 +1,9 @@
 User-Agent: *
 Disallow: /_health/
-Disallow: /profile
-Disallow: /authenticate
-Disallow: /creator
+Disallow: /_nuxt/
+
+Disallow: /me
+Disallow: /system
+
+Disallow: /@admin
+Disallow: /@compat

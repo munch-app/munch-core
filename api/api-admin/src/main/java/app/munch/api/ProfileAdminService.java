@@ -58,7 +58,7 @@ public final class ProfileAdminService extends AdminService {
     }
 
     public TransportList profileList(TransportContext ctx) {
-        int size = ctx.querySize(20, 50);
+        int size = ctx.querySize(100, 100);
         @NotNull TransportCursor cursor = ctx.queryCursor();
         String uid = cursor.get("uid");
 
@@ -78,7 +78,7 @@ public final class ProfileAdminService extends AdminService {
                         .setMaxResults(size)
                         .getResultList();
             }).cursor(size, (article, builder) -> {
-                builder.put("id", article.getUid());
+                builder.put("uid", article.getUid());
             }).asTransportList();
         });
     }
@@ -111,22 +111,18 @@ public final class ProfileAdminService extends AdminService {
 
             return EntityPatch.with(entityManager, profile, body)
                     .lock()
+                    .patch("username", Profile::setUsername)
                     .patch("name", Profile::setName)
                     .patch("bio", Profile::setBio)
                     .patch("image", (EntityPatch.NodeConsumer<Profile>) (entity, json) -> {
-                        String imageId = json.path("id").asText(null);
-                        if (imageId != null) {
-                            entity.setImage(entityManager.find(Image.class, imageId));
-                        } else {
-                            entity.setImage(null);
-                        }
+                        Image.EntityUtils.map(entityManager, json, profile::setImage);
                     })
                     .persist();
         });
     }
 
     public TransportList profileArticleList(TransportContext ctx) {
-        final int size = ctx.querySize(20, 50);
+        final int size = ctx.querySize(100, 100);
         final ArticleStatus status = ctx.queryEnum("status", ArticleStatus.class);
 
         String profileId = ctx.pathString("profileId");

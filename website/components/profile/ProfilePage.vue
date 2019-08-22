@@ -68,7 +68,8 @@
     components: {ArticleCardLarge, CdnImg},
     computed: {
       isMe() {
-        return this.$store.state.account.profile.id === this.profile.id
+        const uid = this.$store.state.account.profile.uid
+        return uid && uid === this.profile.uid
       },
       next() {
         return this.profile.articles.cursor?.next

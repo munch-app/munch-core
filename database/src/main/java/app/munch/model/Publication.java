@@ -31,7 +31,7 @@ import java.util.Set;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "Publication")
-@TypeDef(name = "Tags", typeClass = Publication.TagsType.class)
+@TypeDef(name = "Publication.TagsType", typeClass = Publication.TagsType.class)
 public final class Publication {
 
     @NotNull
@@ -56,7 +56,7 @@ public final class Publication {
 
     @Valid
     @NotNull
-    @Type(type = "Tags")
+    @Type(type = "Publication.TagsType")
     private Set<@NotNull Tag> tags;
 
     @NotNull

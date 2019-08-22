@@ -2,6 +2,7 @@ package app.munch.api;
 
 import app.munch.model.*;
 import com.fasterxml.jackson.databind.JsonNode;
+import dev.fuxing.err.ConflictException;
 import dev.fuxing.jpa.EntityPatch;
 import dev.fuxing.jpa.EntityStream;
 import dev.fuxing.jpa.TransactionProvider;
@@ -12,6 +13,7 @@ import dev.fuxing.utils.JsonUtils;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.List;
 
 /**
  * Created by: Fuxing
@@ -33,13 +35,14 @@ public final class PublicationAdminService extends AdminService {
             POST("", this::post);
 
             PATH("/:id", () -> {
+                GET("", this::get);
                 PATCH("", this::patch);
 
                 PATH("/articles", () -> {
                     GET("", this::articleList);
-                    POST("", this::articlePost);
 
                     PATH("/:articleId", () -> {
+                        PUT("", this::articlePut);
                         PATCH("", this::articlePatch);
                         DELETE("", this::articleDelete);
                     });
@@ -49,7 +52,7 @@ public final class PublicationAdminService extends AdminService {
     }
 
     public TransportList list(TransportContext ctx) {
-        int size = ctx.querySize(20, 20);
+        int size = ctx.querySize(100, 100);
 
         TransportCursor cursor = ctx.queryCursor();
         String cursorId = cursor.get("id");
@@ -71,6 +74,14 @@ public final class PublicationAdminService extends AdminService {
         }).cursor(size, (pa, builder) -> {
             builder.put("id", pa.getId());
         }).asTransportList());
+    }
+
+    public Publication get(TransportContext ctx) {
+        String id = ctx.pathString("id");
+
+        return provider.reduce(true, entityManager -> {
+            return entityManager.find(Publication.class, id);
+        });
     }
 
     public Publication post(TransportContext ctx) {
@@ -96,12 +107,7 @@ public final class PublicationAdminService extends AdminService {
                     .patch("description", Publication::setDescription)
                     .patch("body", Publication::setBody)
                     .patch("image", (EntityPatch.NodeConsumer<Publication>) (pub, json) -> {
-                        String imageId = json.path("id").asText(null);
-                        if (imageId != null) {
-                            pub.setImage(entityManager.find(Image.class, imageId));
-                        } else {
-                            pub.setImage(null);
-                        }
+                        Image.EntityUtils.map(entityManager, json, pub::setImage);
                     })
                     .patch("tags", (EntityPatch.NodeConsumer<Publication>) (pub, json) -> {
                         pub.setTags(JsonUtils.toSet(json, Tag.class));
@@ -113,7 +119,7 @@ public final class PublicationAdminService extends AdminService {
 
     public TransportList articleList(TransportContext ctx) {
         String publicationId = ctx.pathString("id");
-        int size = ctx.querySize(20, 20);
+        int size = ctx.querySize(100, 100);
 
         TransportCursor cursor = ctx.queryCursor();
         String uid = cursor.get("uid");
@@ -146,16 +152,24 @@ public final class PublicationAdminService extends AdminService {
         });
     }
 
-    public PublicationArticle articlePost(TransportContext ctx) {
+    public PublicationArticle articlePut(TransportContext ctx) {
         String publicationId = ctx.pathString("id");
+        String articleId = ctx.pathString("articleId");
+
         PublicationArticle article = ctx.bodyAsObject(PublicationArticle.class);
-
         return provider.reduce(entityManager -> {
-            article.setPublication(entityManager.find(Publication.class, publicationId));
+            List<PublicationArticle> list = entityManager.createQuery("FROM PublicationArticle " +
+                    "WHERE publication.id = :publicationId AND article.id = :articleId", PublicationArticle.class)
+                    .setParameter("publicationId", publicationId)
+                    .setParameter("articleId", articleId)
+                    .getResultList();
 
-            if (article.getArticle() != null) {
-                article.setArticle(entityManager.find(Article.class, article.getArticle().getId()));
+            if (!list.isEmpty()) {
+                throw new ConflictException("Article already inside publication.");
             }
+
+            article.setPublication(entityManager.find(Publication.class, publicationId));
+            article.setArticle(entityManager.find(Article.class, article.getArticle().getId()));
             entityManager.persist(article);
             return article;
         });

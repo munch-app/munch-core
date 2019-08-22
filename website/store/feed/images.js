@@ -31,13 +31,6 @@ export const mutations = {
       state.places[placeId] = places[placeId]
     })
     state.next.from = next && next.from || null
-
-    if (state.items.length > 25
-      && !state.items[25].injected
-      && !this.getters['user/isLoggedIn']) {
-      state.items.splice(25, 0, {injected: true, type: 'activation:login'})
-    }
-
     state.loading = false
   },
 

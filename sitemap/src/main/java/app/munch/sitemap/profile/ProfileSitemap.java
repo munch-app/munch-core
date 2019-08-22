@@ -12,6 +12,7 @@ import javax.inject.Singleton;
 import java.net.MalformedURLException;
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Created by: Fuxing
@@ -20,7 +21,10 @@ import java.util.Objects;
  */
 @Singleton
 public final class ProfileSitemap implements SitemapProvider {
-
+    private final Set<String> BLACKLIST = Set.of(
+            Profile.ADMIN_ID,
+            Profile.COMPAT_ID
+    );
     private final TransactionProvider provider;
 
     @Inject
@@ -36,13 +40,19 @@ public final class ProfileSitemap implements SitemapProvider {
     @Override
     public Iterator<WebSitemapUrl> provide() throws MalformedURLException {
         return provider.reduce(entityManager -> {
-            return Iterators.transform(entityManager.createQuery("FROM Profile", Profile.class)
+            Iterator<WebSitemapUrl> iterator = Iterators.transform(entityManager.createQuery("FROM Profile", Profile.class)
                     .getResultList()
                     .iterator(), profile -> {
                 Objects.requireNonNull(profile);
 
+                if (BLACKLIST.contains(profile.getUsername())) {
+                    return null;
+                }
+
                 return build("https://www.munch.app/@" + profile.getUsername(), profile.getUpdatedAt(), 1.0, ChangeFreq.DAILY);
             });
+
+            return Iterators.filter(iterator, Objects::nonNull);
         });
     }
 }

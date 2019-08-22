@@ -122,7 +122,7 @@
 
       const places = observable.pipe(
         switchMap((text) => {
-          return this.$axios.$post('/api/suggest', {"text": text, "searchQuery": {}}, {progress: false})
+          return this.$api.post('/suggest', {"text": text, "searchQuery": {}}, {progress: false})
         }),
         map(({data: {places}}) => places),
         tap(() => {

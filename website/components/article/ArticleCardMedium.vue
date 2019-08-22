@@ -16,7 +16,7 @@
     <div class="flex mt-8 flex-align-center">
       <div class="flex-no-shrink wh-32px border-circle overflow-hidden">
         <cdn-img v-if="article.profile.image" :image="article.profile.image" type="320x320"/>
-        <div v-else class="w-100 bg-blue"/>
+        <div v-else class="wh-100 bg-blue"/>
       </div>
 
       <div class="ml-8 flex-shrink text-ellipsis-1l">

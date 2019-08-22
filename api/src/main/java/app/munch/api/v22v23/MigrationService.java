@@ -77,13 +77,14 @@ public final class MigrationService implements TransportService {
             Profile admin = new Profile();
             admin.setUid(Profile.ADMIN_ID);
             admin.setName("Admin");
-            admin.setUsername("madmin");
+            admin.setUsername("admin");
             entityManager.persist(admin);
 
             Profile compat = new Profile();
             compat.setUid(Profile.COMPAT_ID);
-            compat.setUsername("mcompat");
-            compat.setName("Compact");
+            compat.setUsername("compat");
+            compat.setName("Compatibility");
+            compat.setBio("Munch internal compatibility profile. (Deleting)");
             entityManager.persist(compat);
         });
         return TransportResult.ok();

@@ -298,7 +298,7 @@ export const mutations = {
 }
 
 function post(commit, state) {
-  return this.$axios.$post('/api/search/filter', state.query, {progress: false})
+  return this.$api.post('/api/search/filter', state.query, {progress: false})
     .then(({data}) => {
       commit('result', data)
 
@@ -317,11 +317,6 @@ export const actions = {
     commit('loading', true)
     if (query) commit('replace', query)
 
-    // User Search Preference Injection
-    this.getters['user/searchPreference'].requirements.forEach(tag => {
-      commit('putTag', tag)
-    })
-
     return post.call(this, commit, state)
   },
 
@@ -334,11 +329,6 @@ export const actions = {
   reset({commit, state}) {
     commit('loading', true)
     commit('reset')
-
-    // User Search Preference Injection
-    this.getters['user/searchPreference'].requirements.forEach(tag => {
-      commit('putTag', tag)
-    })
 
     return post.call(this, commit, state)
   },

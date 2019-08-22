@@ -27,7 +27,7 @@
               <button class="blue-outline" @click="onLoadMore">Load More</button>
             </div>
 
-            <div class="flex-center ptb-48" v-if="!images || images.length === 0">
+            <div class="flex-center ptb-48" v-if="loaded && images.length === 0">
               <p>You don't have any image available.</p>
             </div>
           </div>
@@ -80,7 +80,8 @@
           {name: 'From Instagram', type: 'INSTAGRAM', selected: false}
         ],
         images: [],
-        cursor: {}
+        cursor: {},
+        loaded: false,
       }
     },
     computed: {
@@ -99,12 +100,14 @@
     methods: {
       reload() {
         this.images.splice(0)
+        this.loaded = false
 
         this.$api.get('/me/images', {params: {sources: this.selectSources, size: 20}})
           .then(({data: images, cursor}) => {
             this.images.splice(0)
             this.images.push(...images)
             this.cursor = cursor
+            this.loaded = true
           })
       },
       onLoadMore() {

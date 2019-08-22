@@ -127,7 +127,6 @@ export default {
       // For use by other Tag Subscriber only, GA & GTAG is done natively
       pageTracking: true
     }],
-    'nuxt-google-optimize',
   ],
   axios: {},
   sitemap: {
@@ -135,13 +134,7 @@ export default {
     hostname: 'https://www.munch.app',
     cacheTime: 1000 * 60 * 15,
     exclude: [
-      "/profile",
-      "/authenticate",
-      "/logout",
-      "/creator",
-      "/creator/contents",
-      "/creator/profiles",
-      "/creator/series",
+      "/me",
       "/feed/articles",
     ],
     routes: [

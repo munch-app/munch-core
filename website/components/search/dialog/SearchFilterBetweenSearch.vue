@@ -121,15 +121,8 @@
         ]
       }
     },
-    computed: {
-      ...mapGetters('user', ['isLoggedIn']),
-    },
     mounted() {
       document.addEventListener('keyup', this.onKeyUp)
-
-      if (this.isLoggedIn) {
-        this.refresh()
-      }
     },
     beforeDestroy() {
       document.removeEventListener('keyup', this.onKeyUp)
@@ -190,14 +183,6 @@
       onLocation(location, {type, input}) {
         this.onCancel()
 
-        if (type && input && this.isLoggedIn) {
-          this.$api.post('/users/locations', {type, input, name: location.name, latLng: location.latLng})
-            .then(() => {
-              this.refresh()
-            })
-            .catch((err) => this.$store.dispatch('addError', err))
-        }
-
         this.$store.commit('filter/updateBetweenLocation', {point: location})
         this.$store.dispatch('filter/location', {type: 'Between'})
       },
@@ -205,30 +190,6 @@
         this.saved.splice(0)
         this.recent.splice(0)
         this.loading = true
-
-        if (!this.isLoggedIn) {
-          return
-        }
-        this.$api.get('/users/locations', {params: {size: 40}})
-          .then(({data}) => {
-            if (data) {
-              data = _.uniqBy(data, 'latLng');
-
-              this.loading = false
-              data.forEach((location) => {
-                if (location.type === 'home') {
-                  this.saved.push(location)
-                } else if (location.type === 'work') {
-                  this.saved.push(location)
-                } else if (location.type === 'saved') {
-                  this.saved.push(location)
-                } else if (location.type === 'recent') {
-                  this.recent.push(location)
-                }
-              })
-            }
-          })
-          .catch((err) => this.$store.dispatch('addError', err))
       },
       onDelete(location) {
         this.$api.delete(`/users/locations/${location.sortId}`)

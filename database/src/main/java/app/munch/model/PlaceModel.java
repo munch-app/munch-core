@@ -28,12 +28,12 @@ import java.util.Set;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @MappedSuperclass
-@TypeDef(name = "Price", typeClass = PlaceModel.PriceType.class)
-@TypeDef(name = "Status", typeClass = PlaceModel.StatusType.class)
-@TypeDef(name = "Location", typeClass = PlaceModel.LocationType.class)
-@TypeDef(name = "Synonyms", typeClass = PlaceModel.SynonymsType.class)
-@TypeDef(name = "Hours", typeClass = PlaceModel.HoursType.class)
-@TypeDef(name = "Tags", typeClass = PlaceModel.TagsType.class)
+@TypeDef(name = "PlaceModel.PriceType", typeClass = PlaceModel.PriceType.class)
+@TypeDef(name = "PlaceModel.StatusType", typeClass = PlaceModel.StatusType.class)
+@TypeDef(name = "PlaceModel.LocationType", typeClass = PlaceModel.LocationType.class)
+@TypeDef(name = "PlaceModel.SynonymsType", typeClass = PlaceModel.SynonymsType.class)
+@TypeDef(name = "PlaceModel.HoursType", typeClass = PlaceModel.HoursType.class)
+@TypeDef(name = "PlaceModel.TagsType", typeClass = PlaceModel.TagsType.class)
 public abstract class PlaceModel {
     // Add Brand, Menu
 
@@ -56,23 +56,23 @@ public abstract class PlaceModel {
     private String description;
 
     @Valid
-    @Type(type = "Price")
+    @Type(type = "PlaceModel.PriceType")
     private Price price;
 
     @Valid
     @NotNull
-    @Type(type = "Location")
+    @Type(type = "PlaceModel.LocationType")
     private Location location;
 
     @Valid
     @NotNull
-    @Type(type = "Status")
+    @Type(type = "PlaceModel.StatusType")
     private Status status;
 
     @Valid
     @NotNull
     @Size(max = 4)
-    @Type(type = "Synonyms")
+    @Type(type = "PlaceModel.SynonymsType")
     private Set<@NotNull @Length(min = 0, max = 100) String> synonyms;
 
     /**
@@ -81,7 +81,7 @@ public abstract class PlaceModel {
     @Valid
     @NotNull
     @Size(max = 12)
-    @Type(type = "Tags")
+    @Type(type = "PlaceModel.TagsType")
     private Set<@NotNull Tag> tags;
 
     /**
@@ -90,7 +90,7 @@ public abstract class PlaceModel {
     @Valid
     @NotNull
     @Size(max = 24)
-    @Type(type = "Hours")
+    @Type(type = "PlaceModel.HoursType")
     private Set<@NotNull Hour> hours;
 
     public String getName() {

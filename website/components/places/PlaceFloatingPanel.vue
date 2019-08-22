@@ -30,20 +30,12 @@
       <div @click="onMore" class="p-8 mr-8">
         <simple-svg class="wh-24px" fill="black" :filepath="require('~/assets/icon/place/more.svg')"/>
       </div>
-      <div @click="onAdd" class="p-8">
-        <simple-svg v-if="user.savedPlace" class="wh-24px" fill="black"
-                    :filepath="require('~/assets/icon/place/heart-filled.svg')"/>
-        <simple-svg v-else class="wh-24px" fill="black" :filepath="require('~/assets/icon/place/heart.svg')"/>
-      </div>
     </div>
 
     <div>
       <portal to="dialog-action-sheet" v-if="show.more">
         <div @click="onSuggest">
           Suggest Edits
-        </div>
-        <div @click="onAdd">
-          Add Place
         </div>
         <div @click="onShare">
           Share
@@ -82,7 +74,7 @@
       }
     },
     computed: {
-      ...mapGetters('user', ['isLoggedIn']),
+      ...mapGetters('account', ['isLoggedIn']),
     },
     methods: {
       onMore() {
@@ -93,21 +85,6 @@
           window.open(`/places/suggest?placeId=${this.place.placeId}`, '_blank');
         } else {
           this.show.more = false
-          this.$store.commit('focus', 'Login')
-        }
-      },
-      onAdd() {
-        this.show.more = false
-
-        if (this.isLoggedIn) {
-          if (this.user.savedPlace) {
-            this.user.savedPlace = null
-            this.$store.dispatch('user/places/deletePlace', {place: this.place})
-          } else {
-            this.user.savedPlace = {}
-            this.$store.dispatch('user/places/putPlace', {place: this.place})
-          }
-        } else {
           this.$store.commit('focus', 'Login')
         }
       },

@@ -1,17 +1,17 @@
 <template>
   <div>
-    <div class="mb-24">
-      <div v-if="isLoggedIn">
-        <h2>{{salutation}}, {{name}}. Meeting someone for a meal?</h2>
-      </div>
-      <div v-else>
-        <h2>{{salutation}}, Samantha. Meeting someone for a meal?</h2>
-        <p class="hover-pointer" @click="onCreateAccount">(Not Samantha? Create an account
-          <span class="text-underline ">here</span>.)
-        </p>
-      </div>
+<!--    <div class="mb-24">-->
+<!--      <div v-if="isLoggedIn">-->
+<!--        <h2>{{salutation}}, {{name}}. Meeting someone for a meal?</h2>-->
+<!--      </div>-->
+<!--      <div v-else>-->
+<!--        <h2>{{salutation}}, Samantha. Meeting someone for a meal?</h2>-->
+<!--        <p class="hover-pointer" @click="onCreateAccount">(Not Samantha? Create an account-->
+<!--          <span class="text-underline ">here</span>.)-->
+<!--        </p>-->
+<!--      </div>-->
 
-    </div>
+<!--    </div>-->
 
     <div>
       <div class="FeatureCardList flex-wrap relative">
@@ -40,7 +40,6 @@
     name: "SearchCardHomeTab",
     components: {SearchFilterAreaDialog, SearchFilterBetweenDialog, SearchBarFilterBetween, HorizontalScrollView},
     computed: {
-      ...mapGetters('user', ['isLoggedIn', 'displayName']),
       name() {
         return this.displayName || 'Samantha'
       },

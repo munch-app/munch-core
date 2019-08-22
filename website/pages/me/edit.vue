@@ -17,7 +17,7 @@
         </div>
         <div class="flex-align-center">
           <span class="b-a60">https://www.munch.app/@</span>
-          <input class="Name h6 flex-grow" v-model="account.profile.username" placeholder="username"/>
+          <input class="Name h6 flex-grow" v-model="account.profile.username" @keyup="onUsernameChange" placeholder="username"/>
         </div>
       </div>
     </div>
@@ -41,11 +41,10 @@
 
 <script>
   import TextAuto from "../../components/utils/TextAuto";
-  import ImageUpload from "../../components/utils/image/ImageUploadDialog";
   import CdnImg from "../../components/utils/image/CdnImg";
 
   export default {
-    components: {CdnImg, ImageUpload, TextAuto},
+    components: {CdnImg, TextAuto},
     asyncData({$api}) {
       return $api.get('/me')
         .then(({data: account}) => {
@@ -53,6 +52,10 @@
         })
     },
     methods: {
+      onUsernameChange() {
+        const profile = this.account.profile
+        profile.username = profile.username?.toLowerCase().replace(/[^0-9a-z]/, '').substring(0, 64)
+      },
       save() {
         const profile = this.account.profile
         this.onPatchProfile({
@@ -78,8 +81,6 @@
       onPatchProfile(profile) {
         this.$api.patch('/me', {profile})
           .then(({data: account}) => {
-            console.log(account)
-
             this.account = JSON.parse(JSON.stringify(account))
             this.$store.commit('account/setAccount', account)
             this.$store.dispatch('addMessage', {title: 'Updated Profile'})

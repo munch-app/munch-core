@@ -114,7 +114,7 @@
           params['next.sort'] = this.next.sort
         }
 
-        return this.$axios.$get(`/api/places/${this.payload.place.placeId}/articles`, {params})
+        return this.$api.get(`/places/${this.payload.place.placeId}/articles`, {params})
           .then(({data, next}) => {
             this.articles.push(...data)
             this.loading = false

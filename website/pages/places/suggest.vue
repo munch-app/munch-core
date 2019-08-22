@@ -106,10 +106,10 @@
         },
       })
     },
-    asyncData({$axios, params, route}) {
+    asyncData({$api, route}) {
       const placeId = route.query.placeId
       if (placeId) {
-        return $axios.$get(`/api/places/${placeId}`).then(({data}) => {
+        return $api.get(`/places/${placeId}`).then(({data}) => {
 
           data.place.tags = data.place.tags.map(tag => {
             return {text: tag.name}

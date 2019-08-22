@@ -134,16 +134,7 @@
           else if (err.statusCode) error(err)
         })
     },
-    mounted() {
-      if (!this.isLoggedIn) return
-
-      return this.$api.put(`/users/recent/places/${this.place.placeId}`)
-        .catch(error => {
-          this.$store.dispatch('addError', error)
-        })
-    },
     computed: {
-      ...mapGetters('user', ['isLoggedIn']),
       place() {
         return this.data.place
       },

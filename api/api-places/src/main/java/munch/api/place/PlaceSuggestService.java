@@ -92,6 +92,7 @@ public final class PlaceSuggestService extends ApiService {
         image.setImage(download(part, request));
         place.setChanges(List.of(image));
 
+        // TODO(fuxing): Not compatible with suggest service
         UserProfile profile = userProfileClient.get(request.getAccountId());
         Objects.requireNonNull(profile);
         suggestClient.suggest(profile.getUserId(), profile.getName(), profile.getEmail(),

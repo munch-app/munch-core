@@ -29,6 +29,12 @@
         <nuxt-link class="black" to="/support" v-if="isLoggedIn">Help</nuxt-link>
         <nuxt-link class="black" to="/me/signout" v-if="isLoggedIn">Sign out</nuxt-link>
       </div>
+
+      <div v-if="isMunchTeam" class="text-decoration-none black">
+        <hr class="mtb-8">
+        <nuxt-link class="black" to="/system">Admin System</nuxt-link>
+      </div>
+
     </ul>
     <div v-on-clickaway="onClickAway"></div>
   </div>
@@ -42,7 +48,7 @@
     name: "HeaderMenu",
     components: {CdnImg},
     computed: {
-      ...mapGetters(['isFocused']),
+      ...mapGetters(['isFocused', 'isMunchTeam']),
       ...mapGetters('account', ['isLoggedIn', 'name', 'profile', 'username']),
     },
     methods: {

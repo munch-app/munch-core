@@ -212,6 +212,9 @@ public final class ArticleEntityManager {
                                     articlePlace.setPlace(entityManager.find(Place.class, placeId));
                                     articlePlace.setArticle(article);
 
+                                    // Map image
+                                    Image.EntityUtils.map(entityManager, articlePlace.getImage(), articlePlace::setImage);
+
                                     articlePlace.setPosition(position.getAndDecrement());
                                     articlePlace.setUpdatedAt(new Timestamp(millis));
                                     entityManager.persist(articlePlace);

@@ -24,6 +24,5 @@
         <class>app.munch.model.Tag</class>
 
         <class>app.munch.model.ManagedPage</class>
-        <class>app.munch.model.UrlRedirection</class>
     </persistence-unit>
 </persistence>

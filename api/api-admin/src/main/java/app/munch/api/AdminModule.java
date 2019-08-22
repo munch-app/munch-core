@@ -8,9 +8,11 @@ package app.munch.api;
 public final class AdminModule extends ApiServiceModule {
     @Override
     protected void configure() {
+        addService(TagAdminService.class);
         addService(ProfileAdminService.class);
         addService(ManagedPageAdminService.class);
+
         addService(PublicationAdminService.class);
-        addService(TagAdminService.class);
+        addService(ArticleAdminSystem.class);
     }
 }

@@ -29,7 +29,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "ManagedPage")
-@TypeDef(name = "Content", typeClass = ManagedPage.ContentType.class)
+@TypeDef(name = "ManagedPage.ContentType", typeClass = ManagedPage.ContentType.class)
 public final class ManagedPage {
 
     /**
@@ -50,7 +50,7 @@ public final class ManagedPage {
 
     @Valid
     @NotNull
-    @Type(type = "Content")
+    @Type(type = "ManagedPage.ContentType")
     private List<@NotNull Node> content;
 
     @NotNull
@@ -114,6 +114,11 @@ public final class ManagedPage {
         }
     }
 
+    /**
+     * Created by: Fuxing
+     * Date: 21/8/19
+     * Time: 8:23 pm
+     */
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonIgnoreProperties(ignoreUnknown = true)
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type", visible = true)

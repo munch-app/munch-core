@@ -91,7 +91,7 @@
         if (this.next.sort) {
           params['next.sort'] = this.next.sort
         }
-        return this.$axios.$get(`/api/places/${this.placeId}/images`, {params})
+        return this.$api.get(`/places/${this.placeId}/images`, {params})
           .then(({data, next}) => {
             this.items.push(...data)
             this.loading = false

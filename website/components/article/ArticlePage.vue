@@ -1,9 +1,9 @@
 <template>
   <div>
-    <div class="container pt-48 pb-64">
+    <div class="ArticlePage container pt-48 pb-64" :class="{ShowMap: showMap}">
       <div class="flex">
-        <article-content :article="article" ref="ArticleContent"/>
-        <article-context-map class="Map" :article="article" :get-contexts="getContexts"/>
+        <article-content class="ArticleContent" :article="article" ref="ArticleContent"/>
+        <article-context-map v-if="showMap" class="ArticleMap" :article="article" :get-contexts="getContexts"/>
       </div>
 
       <div class="mt-64">
@@ -19,7 +19,7 @@
       <div class="flex hr-top mt-24 pt-32">
         <div class="flex-no-shrink wh-80px border-circle overflow-hidden">
           <cdn-img v-if="article.profile.image" :image="article.profile.image" type="320x320"/>
-          <div v-else class="w-100 bg-blue"/>
+          <div v-else class="wh-100 bg-blue"/>
         </div>
 
         <div class="ml-24 flex-shrink">
@@ -68,6 +68,9 @@
     computed: {
       moreFromAuthorArticles() {
         return this.more?.author?.articles || 0
+      },
+      showMap() {
+        return this.article.options.map && this.article.content.some(s => s.type === 'place')
       }
     },
     methods: {
@@ -87,13 +90,7 @@
     margin: -6px;
   }
 
-  .container {
-    @media (max-width: 1199.98px) {
-      max-width: 768px;
-    }
-  }
-
-  .Map {
+  .ArticleMap {
     width: 100%;
     height: 320px;
     margin-left: 24px;
@@ -106,4 +103,25 @@
       margin-left: 48px;
     }
   }
+
+  .ArticlePage {
+    &.ShowMap {
+      @media (max-width: 1199.98px) {
+        max-width: 768px;
+      }
+
+      .ArticleContent {
+        @media (min-width: 1200px) {
+          min-width: 768px;
+        }
+      }
+    }
+
+    &:not(.ShowMap) {
+      max-width: 768px;
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+  }
+
 </style>
