@@ -48,6 +48,17 @@
     return 0
   }
 
+  function getElementDistanceFromCenter(el) {
+    const height = (window.innerHeight || document.documentElement.clientHeight)
+    // Window - 72 (Top Bar) = Center - 100 (Offset since below eyes look at the top)
+    const windowCenter = ((height - 72) / 2) - 100
+
+    const rect = el.getBoundingClientRect()
+    const rectCenter = rect.top + (rect.height  / 2)
+
+    return Math.abs(windowCenter - rectCenter);
+  }
+
   export default {
     name: "ArticleContextMap",
     components: {ArticleContextMapAnnotation, AppleMapPlaceMarkerAnnotation, AppleMap},
@@ -96,11 +107,12 @@
         return this.getContexts().map(com => {
           return {
             id: com?.id,
-            height: getElementVisibleHeight(com.$el)
+            height: getElementVisibleHeight(com.$el),
+            fromCenter: getElementDistanceFromCenter(com.$el)
           }
         })
           .filter(({height, id}) => height !== 0 && id)
-          .sort((a, b) => b.height - a.height)
+          .sort((a, b) => a.fromCenter - b.fromCenter)
 
       },
       onScroll() {
@@ -118,12 +130,9 @@
           if (!this.$refs.map) return
           const items = this.getVisibleContextItems()
 
-          console.log(items)
-
           if (items.length > 0) {
             this.map.focused = this.getData(items[0].id)
             this.$refs.map.centerAnnotations(this.$refs.map.getAnnotations((p) => {
-              console.log(p)
               return p.id === items[0].id
             }))
           }

@@ -2,7 +2,7 @@
   <nuxt-link :to="`/@${article.profile.username}/${article.slug}-${article.id}`"
              class="p-16 border border-4 elevation-1 block text-decoration-none bg-white">
     <div v-if="article.image">
-      <div class="aspect r-5-3">
+      <div class="aspect r-5-3 overflow-hidden border-2">
         <cdn-img :image="article.image"/>
       </div>
 

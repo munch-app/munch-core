@@ -10,10 +10,7 @@ import javax.inject.Singleton;
 import javax.persistence.EntityManager;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -59,7 +56,7 @@ public final class PlaceBridge {
 
             case closed:
                 Status.PermanentlyClosedStatus closedStatus = new Status.PermanentlyClosedStatus();
-                closedStatus.setAt(place.getUpdatedAt());
+                closedStatus.setAt(new Date(deprecatedPlace.getUpdatedMillis()));
                 place.setStatus(closedStatus);
                 break;
 
@@ -69,9 +66,8 @@ public final class PlaceBridge {
             case redirected:
             case renovation:
                 Status.DeletedStatus deletedStatus = new Status.DeletedStatus();
-                deletedStatus.setAt(place.getUpdatedAt());
+                deletedStatus.setAt(new Date(deprecatedPlace.getUpdatedMillis()));
                 place.setStatus(deletedStatus);
-
         }
 
         Set<String> names = deprecatedPlace.getNames().stream()
@@ -84,7 +80,11 @@ public final class PlaceBridge {
         Set<Hour> hours = deprecatedPlace.getHours().stream()
                 .map(this::mapHour)
                 .collect(Collectors.toSet());
-        place.setHours(hours);
+        if (hours.size() < 24) {
+            place.setHours(hours);
+        } else {
+            place.setHours(Set.of());
+        }
 
         Set<Tag> tags = deprecatedPlace.getTags()
                 .stream()

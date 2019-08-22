@@ -57,7 +57,7 @@
       return $api.get(`/articles/${id}`)
         .then(({data: article}) => {
           const profile = article.profile
-          return $api.get(`/profiles/${profile.username}/articles`, {params: {size: 8}})
+          return $api.get(`/profiles/${profile.username}/articles`, {params: {size: 3}})
             .then(({data: articles}) => {
               return {
                 type: 'Article', article, more: {
@@ -65,7 +65,6 @@
                 }
               }
             })
-
         })
     }
   }

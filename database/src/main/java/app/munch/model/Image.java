@@ -278,7 +278,9 @@ public final class Image {
             ObjectNode request = JsonUtils.createObjectNode(nodes -> {
                 nodes.put("bucket", bucket);
                 nodes.put("key", key);
-                nodes.set("edits", edits);
+                if (edits != null) {
+                    nodes.set("edits", edits);
+                }
             });
             String json = JsonUtils.toString(request);
             return API_URL + ENCODER.encodeToString(json.getBytes());
@@ -296,7 +298,7 @@ public final class Image {
         public static void map(EntityManager entityManager, JsonNode node, Consumer<Image> setter) {
             if (node.isNull()) {
                 setter.accept(null);
-            }else {
+            } else {
                 map(entityManager, node.path("uid").asText(null), node.path("loc").asText(null), setter);
             }
         }

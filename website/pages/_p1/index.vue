@@ -56,7 +56,7 @@
         case "Publication":
       }
     },
-    asyncData({$api, params: {p1}, query}) {
+    asyncData({$api, params: {p1}, query, redirect}) {
       // Profile
       if (/^@[a-z0-9]{3,32}$/.test(_.toLower(p1))) {
         const username = p1.replace('@', '')
@@ -86,7 +86,7 @@
         case '1':
           return $api.get(`/articles/${id}`)
             .then(({data: {id, slug, profile: {username}}}) => {
-              return this.$router.replace({path: `/@${username}/${slug}-${id}`})
+              return redirect({status: 302, path: `/@${username}/${slug}-${id}`})
             })
 
         // Location

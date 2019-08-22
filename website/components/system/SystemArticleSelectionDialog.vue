@@ -28,8 +28,12 @@
               <button class="blue-outline" @click="onLoadMore">Load More</button>
             </div>
 
+            <div class="flex-center ptb-48" v-if="!loaded">
+              Loading...
+            </div>
+
             <div class="flex-center ptb-48" v-if="loaded && articles.length === 0">
-              <p>You don't have any image available.</p>
+              <p>You don't have any articles available.</p>
             </div>
           </div>
         </div>
@@ -61,10 +65,9 @@
     },
     methods: {
       reload() {
-        this.articles.splice(0)
         this.loaded = false
 
-        this.$api.get('/admin/articles', {params: {status: 'PUBLISHED', size: 50}})
+        this.$api.get('/admin/articles', {params: {status: 'PUBLISHED', size: 25}})
           .then(({data: articles, cursor}) => {
             this.articles.splice(0)
             this.articles.push(...articles)
@@ -73,7 +76,7 @@
           })
       },
       onLoadMore() {
-        this.$api.get('/admin/articles', {params: {status: 'PUBLISHED', size: 50, cursor: this.next}})
+        this.$api.get('/admin/articles', {params: {status: 'PUBLISHED', size: 25, cursor: this.next}})
           .then(({data: articles, cursor}) => {
             this.articles.push(...articles)
             this.cursor = cursor

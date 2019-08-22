@@ -15,6 +15,8 @@ import munch.file.Image;
 import munch.instagram.data.InstagramAccount;
 import munch.instagram.data.InstagramAccountClient;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -32,40 +34,39 @@ import java.util.List;
  */
 @Singleton
 public final class MigrationService implements TransportService {
+    private static final Logger logger = LoggerFactory.getLogger(MigrationService.class);
 
     private final TransactionProvider provider;
     private final TagClient tagClient;
     private final InstagramAccountClient accountClient;
     private final ImageEntityManager imageEntityManager;
 
+    private final CreatorMigration creatorMigration;
+
     @Inject
-    MigrationService(TransactionProvider provider, TagClient tagClient, InstagramAccountClient accountClient, ImageEntityManager imageEntityManager) {
+    MigrationService(TransactionProvider provider, TagClient tagClient, InstagramAccountClient accountClient, ImageEntityManager imageEntityManager, CreatorMigration creatorMigration) {
         this.provider = provider;
         this.tagClient = tagClient;
         this.accountClient = accountClient;
         this.imageEntityManager = imageEntityManager;
+        this.creatorMigration = creatorMigration;
     }
 
     @Override
     public void route() {
         PATH("/v22-v23/migrations", () -> {
-            POST("/tags", this::tags);
-            POST("/partners", this::partners);
+            // Run it in order
             POST("/admin", this::admin);
+            POST("/tags", this::tags);
+//            POST("/partners", this::partners);
+
             POST("/creators", this::creators);
         });
     }
 
     public TransportResult creators(TransportContext ctx) {
-        boolean persist = ctx.queryBool("persist");
-
-        provider.with(entityManager -> {
-
-
-            if (persist) {
-                // TODO(fuxing):
-            }
-        });
+        creatorMigration.profileCreation();
+        creatorMigration.run();
         return TransportResult.ok();
     }
 

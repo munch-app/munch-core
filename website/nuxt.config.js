@@ -1,26 +1,23 @@
 import webpack from 'webpack'
+
 require('dotenv').config()
+
+const title = 'Munch - Food Discovery'
+const description = 'Munch is a social dining solution that makes your life easier when it comes to dining with friends & loved ones. Munch is packed with features to help you plan for and find places. Use Munch to find the perfect spot with friends, get inspired for your next meal or simply receive daily suggestions on what to chow down on.'
+const image = 'https://cdn.munch.app/eyJidWNrZXQiOiJtaDQiLCJrZXkiOiJsb2dvXzMwMC5wbmcifQ=='
 
 export default {
   head: {
-    title: 'Munch - Food Discovery',
+    title: title,
     meta: [
       {charset: 'utf-8'},
       {name: 'viewport', content: 'width=device-width, initial-scale=1'},
-      {
-        hid: 'description', name: 'description',
-        content: 'Munch is a social dining solution that makes your life easier when it comes to dining with friends & loved ones. Munch is packed with features to help you plan for and find places. Use Munch to find the perfect spot with friends, get inspired for your next meal or simply receive daily suggestions on what to chow down on.'
-      },
-      {
-        hid: 'og:title', name: 'og:title',
-        content: 'Munch - Food Discovery'
-      },
-      {
-        hid: 'og:description', name: 'og:description',
-        content: 'Munch is a social dining solution that makes your life easier when it comes to dining with friends & loved ones. Munch is packed with features to help you plan for and find places. Use Munch to find the perfect spot with friends, get inspired for your next meal or simply receive daily suggestions on what to chow down on.'
-      },
-      {hid: 'apple-itunes-app', name: 'apple-itunes-app', content: 'app-id=1255436754'},
+      {hid: 'og:title', name: 'og:title', content: title},
+      {hid: 'description', name: 'description', content: description},
+      {hid: 'og:description', name: 'og:description', content: description},
+      {hid: 'og:image', name: 'og:image', content: image},
       {hid: 'og:type', name: 'og:type', content: 'article'},
+      {hid: 'apple-itunes-app', name: 'apple-itunes-app', content: 'app-id=1255436754'},
       {name: 'og:site_name', content: 'Munch - Food Discovery'},
       {name: 'og:locale', content: 'en_uk'},
       {name: 'msapplication-TileColor', content: '#da532c'},
@@ -32,7 +29,6 @@ export default {
       {rel: 'icon', type: 'image/png', sizes: '16x16', href: '/meta/favicon-16x16.2.png'},
       {rel: 'manifest', href: '/meta/site.2.webmanifest'},
       {rel: 'mask-icon', href: '/meta/safari-pinned-tab.2.svg', color: '#f05f3b'},
-
       {
         rel: 'stylesheet',
         href: 'https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i&display=swap'

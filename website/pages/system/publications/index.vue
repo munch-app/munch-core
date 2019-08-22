@@ -25,10 +25,10 @@
           <td>
             <nuxt-link :to="`/system/publications/${publication.id}`">
               <div class="flex-align-center">
-                <div class="wh-64px border-3 overflow-hidden">
+                <div class="wh-64px border-3 overflow-hidden flex-no-shrink mr-16" v-if="publication.image">
                   <cdn-img :image="publication.image" type="320x320"/>
                 </div>
-                <div class="ml-16">
+                <div>
                   <h5>{{publication.name}}</h5>
                   <p>{{publication.description}}</p>
                 </div>

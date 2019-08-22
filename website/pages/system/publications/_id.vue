@@ -56,7 +56,7 @@
         </div>
 
         <div class="flex-center ptb-32" v-if="next">
-          <button class="blue-outline" @click="loadArticles">Load more</button>
+          <button class="blue-outline" @click="loadNext">Load more</button>
         </div>
       </div>
     </div>
@@ -108,7 +108,7 @@
       }
     },
     mounted() {
-      this.loadArticles()
+      this.reloadArticles()
     },
     methods: {
       onImage(image) {
@@ -117,16 +117,16 @@
       },
       onArticlePut(article) {
         this.state = null
-        return this.$api.post(`/admin/publications/${this.publication.id}/articles/${article.id}`, {})
+        return this.$api.put(`/admin/publications/${this.publication.id}/articles/${article.id}`, {})
           .then(() => {
-            this.loadArticles()
+            this.reloadArticles()
           })
           .catch((err) => this.$store.dispatch('addError', err))
       },
       onArticleDelete(article) {
         return this.$api.delete(`/admin/publications/${this.publication.id}/articles/${article.id}`)
           .then(() => {
-            this.loadArticles()
+            this.reloadArticles()
           })
           .catch((err) => this.$store.dispatch('addError', err))
       },
@@ -148,18 +148,27 @@
             return this.$store.dispatch('addError', error)
           })
       },
-      loadArticles() {
+      reloadArticles() {
+        this.articles.splice(0)
+
+        return this.$api.get(`/admin/publications/${this.publication.id}/articles`, {params: {size: 30}})
+          .then(({data: articles, cursor}) => {
+            this.articles.push(...articles)
+            this.cursor = cursor
+          })
+      },
+      loadNext() {
         return this.$api.get(`/admin/publications/${this.publication.id}/articles`, {
           params: {
             size: 30,
             cursor: this.next
           }
-        }).then(({data: articles, cursor}) => {
-          this.articles.push(...articles)
-          console.log(cursor)
-          this.cursor = cursor
         })
-      },
+          .then(({data: articles, cursor}) => {
+            this.articles.push(...articles)
+            this.cursor = cursor
+          })
+      }
     }
   }
 </script>

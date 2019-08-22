@@ -36,9 +36,8 @@
       <div class="container pt-24 pb-48">
         <h4>More from {{article.profile.name}}</h4>
 
-        <!--  TODO Wrapping -->
-        <div>
-          <div class="pt-24 flex-1-2-3 MoreFromAuthorList">
+        <div class="mt-24">
+          <div class="MoreFromAuthorList flex-row overflow-hidden">
             <div v-for="article in moreFromAuthorArticles" :key="article.id" class="p-12">
               <article-card-medium :article="article"/>
             </div>
@@ -84,6 +83,11 @@
 <style scoped lang="less">
   .MoreFromAuthorList {
     margin: -12px;
+
+    > div {
+      flex: 0 0 33.33333%;
+      max-width: 33.33333%;
+    }
   }
 
   .Tags {
@@ -102,6 +106,9 @@
     @media (min-width: 1300px) {
       margin-left: 48px;
     }
+
+    position: sticky;
+    top: calc(72px + 24px);
   }
 
   .ArticlePage {
@@ -113,6 +120,7 @@
       .ArticleContent {
         @media (min-width: 1200px) {
           min-width: 768px;
+          max-width: 768px;
         }
       }
     }
@@ -123,5 +131,4 @@
       padding-right: 24px;
     }
   }
-
 </style>

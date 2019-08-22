@@ -50,8 +50,7 @@ export const getters = {
    * @returns {boolean} whether currently logged in user is part of the munch team
    */
   isMunchTeam: (state) => {
-    // state.user
-    const accountId = state.account?.id
+    const accountId = state.account.id
     if (accountId) {
       return MUNCH_TEAM.test(accountId.slice(0, 14))
     }

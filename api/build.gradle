@@ -114,6 +114,7 @@ dependencies {
 
     compile project(':api:api-admin')
     compile project(':api:api-account')
+    compile project(':api:api-page')
     compile project(':api:api-place')
 
     compile project(':api:api-search')
@@ -122,7 +123,6 @@ dependencies {
 
     // Deprecating
     compile project(':api:api-creators')
-    compile project(':api:api-contents')
     compile project(':api:api-users')
     compile project(':api:api-places')
 }

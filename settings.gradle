@@ -15,6 +15,7 @@ include 'api:api-data'
 include 'api:api-admin'
 
 include 'api:api-account'
+include 'api:api-page'
 include 'api:api-place'
 
 // Improvements & Deprecation
@@ -24,7 +25,6 @@ include 'api:api-search'
 
 // Deprecating
 include 'api:api-creators'
-include 'api:api-contents'
 include 'api:api-places'
 include 'api:api-users'
 

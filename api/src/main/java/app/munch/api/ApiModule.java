@@ -12,7 +12,6 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import munch.api.contents.ContentModule;
 import munch.api.core.CoreModule;
 import munch.api.creator.CreatorModule;
 import munch.api.feed.FeedModule;
@@ -47,6 +46,8 @@ public class ApiModule extends AbstractModule {
         install(new CoreModule());
         install(new DataModule());
         install(new AdminModule());
+
+        install(new PageModule());
         install(new AccountModule());
 
         install(new MigrationModule());
@@ -56,7 +57,6 @@ public class ApiModule extends AbstractModule {
         install(new SearchModule());
         install(new FeedModule());
         install(new CreatorModule());
-        install(new ContentModule());
         install(new LocationModule());
     }
 

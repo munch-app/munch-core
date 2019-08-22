@@ -169,7 +169,7 @@ public final class PublicationAdminService extends AdminService {
             }
 
             article.setPublication(entityManager.find(Publication.class, publicationId));
-            article.setArticle(entityManager.find(Article.class, article.getArticle().getId()));
+            article.setArticle(entityManager.find(Article.class, articleId));
             entityManager.persist(article);
             return article;
         });

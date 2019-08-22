@@ -25,8 +25,9 @@
           <td>
             <nuxt-link :to="`/system/profiles/${profile.uid}`">
               <div class="flex-align-center">
-                <div class="wh-64px border-3 overflow-hidden">
-                  <cdn-img :image="profile.image" type="320x320"/>
+                <div class="wh-64px border-3 overflow-hidden flex-no-shrink">
+                  <cdn-img v-if="profile.image" :image="profile.image" type="320x320"/>
+                  <div class="wh-100 bg-steam"></div>
                 </div>
                 <div class="ml-16">
                   <h5>{{profile.name}}</h5>
