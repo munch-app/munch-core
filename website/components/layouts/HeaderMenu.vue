@@ -2,6 +2,12 @@
   <div class="HeaderMenu flex-justify-end index-top-elevation no-select" v-if="isFocused('HeaderMenu')">
     <ul class="NavLink fixed bg-white w-100 elevation-3 text index-top-elevation border">
 
+      <div class="text-decoration-none">
+        <nuxt-link class="Mobile black" to="/">Home</nuxt-link>
+        <a v-if="!isLoggedIn" @click.prevent.stop="$store.commit('focus', 'Login')">Sign In</a>
+        <hr v-if="isLoggedIn" class="mtb-8">
+      </div>
+
       <div v-if="isLoggedIn" class="text-decoration-none">
         <nuxt-link :to="`/@${username}`">
           <div class="flex-row flex-align-center">
@@ -23,11 +29,10 @@
         <hr class="mtb-8">
       </div>
 
-      <div class="text-decoration-none black">
-        <nuxt-link class="Mobile black" to="/">Home</nuxt-link>
-        <nuxt-link class="black" :to="`/@${username}`" v-if="profile">Profile</nuxt-link>
-        <nuxt-link class="black" to="/support" v-if="isLoggedIn">Help</nuxt-link>
-        <nuxt-link class="black" to="/me/signout" v-if="isLoggedIn">Sign out</nuxt-link>
+      <div v-if="isLoggedIn" class="text-decoration-none">
+        <nuxt-link class="black" :to="`/@${username}`" >Profile</nuxt-link>
+        <nuxt-link class="black" to="/support">Help</nuxt-link>
+        <nuxt-link class="black" to="/me/signout">Sign out</nuxt-link>
       </div>
 
       <div v-if="isMunchTeam" class="text-decoration-none black">

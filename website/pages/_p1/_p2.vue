@@ -43,29 +43,23 @@
           })
       }
     },
-    asyncData({$api, params: {p2}, query: {uid}}) {
-      const [, id] =
-        /^(?:[0-9a-z-]{0,1000}-)?([0123456789abcdefghjkmnpqrstvwxyz]{13})$/.exec(p2)
+    asyncData({$api, params: {p1, p2}, query: {uid}}) {
+      const username = p1.replace('@', '')
+      const [, id] = /^(?:[0-9a-z-]{0,1000}-)?([0-9a-hjkmnp-tv-z]{13})$/.exec(p2)
 
-      if (uid) {
-        return $api.get(`/articles/${id}/revisions/${uid}`)
-          .then(({data: article}) => {
-            return {article, type: 'Article', more: null}
-          })
-      }
-
-      return $api.get(`/articles/${id}`)
-        .then(({data: article}) => {
-          const profile = article.profile
-          return $api.get(`/profiles/${profile.username}/articles`, {params: {size: 4}})
-            .then(({data: articles}) => {
-              return {
-                type: 'Article', article, more: {
-                  author: {articles: articles.filter(a => a.id !== article.id)}
-                }
-              }
-            })
-        })
+      const url = uid ? `/articles/${id}/revisions/${uid}` : `/articles/${id}`
+      return Promise.all([
+        $api.get(url)
+          .then(({data: article}) => article),
+        $api.get(`/profiles/${username}/articles`, {params: {size: 5}})
+          .then(({data: articles}) => articles)
+      ]).then(([article, articles]) => {
+        return {
+          type: 'Article', article, more: {
+            author: {articles: articles.filter(a => a.id !== article.id)}
+          }
+        }
+      })
     }
   }
 </script>

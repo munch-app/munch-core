@@ -44,6 +44,7 @@
             <article-card-large :article="article"/>
           </div>
 
+          {{profile.articles.cursor}}
           <div class="flex-center ptb-32" v-if="next">
             <button class="blue-outline" @click="onArticleLoadMore">Load more</button>
           </div>
@@ -68,7 +69,7 @@
     components: {ArticleCardLarge, CdnImg},
     computed: {
       isMe() {
-        const uid = this.$store.state.account.profile.uid
+        const uid = this.$store.state.account.profile?.uid
         return uid && uid === this.profile.uid
       },
       next() {
