@@ -82,7 +82,7 @@ export default {
     },
   },
   plugins: [
-    // Plugins by Munch Team
+    // Plugins developed by Munch
     '~/plugins/head',
     '~/plugins/error',
     '~/plugins/router',
@@ -96,6 +96,7 @@ export default {
     // Required Plugin
     '~/plugins/vue-browser-geolocation',
     {src: '~/plugins/vuex-persistedstate', ssr: false},
+    {src: '~/plugins/vue-google-adsense', ssr: false},
 
     // Useful Plugin
     '~/plugins/vue-clickaway',
