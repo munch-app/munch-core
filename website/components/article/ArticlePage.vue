@@ -7,7 +7,7 @@
       </div>
 
       <div class="mt-64">
-        <div class="Tags flex-wrap">
+        <div class="flex-wrap m--6">
           <div v-for="tag in article.tags" :key="tag.id" class="p-6">
             <div class="bg-steam p-6-12 border-3 b-a75">
               {{tag.name}}
@@ -37,9 +37,9 @@
         <h4>More from {{article.profile.name}}</h4>
 
         <div class="mt-24">
-          <div class="MoreFromAuthorList flex-row overflow-hidden">
+          <div class="flex-1-2-3 m--12">
             <div v-for="article in moreFromAuthorArticles" :key="article.id" class="p-12">
-              <article-card-medium :article="article"/>
+              <article-card-medium class="wh-100" :article="article"/>
             </div>
           </div>
         </div>
@@ -66,7 +66,7 @@
     },
     computed: {
       moreFromAuthorArticles() {
-        return this.more?.author?.articles || 0
+        return this.more?.author?.articles?.slice(0, 3) || []
       },
       showMap() {
         return this.article.options.map && this.article.content.some(s => s.type === 'place')
@@ -81,19 +81,6 @@
 </script>
 
 <style scoped lang="less">
-  .MoreFromAuthorList {
-    margin: -12px;
-
-    > div {
-      flex: 0 0 33.33333%;
-      max-width: 33.33333%;
-    }
-  }
-
-  .Tags {
-    margin: -6px;
-  }
-
   .ArticleMap {
     width: 100%;
     height: 320px;

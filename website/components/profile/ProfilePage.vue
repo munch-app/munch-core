@@ -21,13 +21,16 @@
             </nuxt-link>
           </div>
 
-          <div class="mt-8">
+          <div class="mt-8 BioRight">
             <p class="b-a80" v-if="profile.bio">{{profile.bio}}</p>
             <nuxt-link :to="`/me/edit`" v-else-if="isMe" class="mb-8 text-decoration-none b-a60">
               Add bio...
             </nuxt-link>
           </div>
         </div>
+      </div>
+      <div class="BioFullWidth mt-16" v-if="profile.bio">
+        <p class="b-a80">{{profile.bio}}</p>
       </div>
     </div>
 
@@ -44,7 +47,6 @@
             <article-card-large :article="article"/>
           </div>
 
-          {{profile.articles.cursor}}
           <div class="flex-center ptb-32" v-if="next">
             <button class="blue-outline" @click="onArticleLoadMore">Load more</button>
           </div>
@@ -67,36 +69,45 @@
   export default {
     name: "MeProfilePage",
     components: {ArticleCardLarge, CdnImg},
+    props: {
+      profile: {
+        type: Object,
+        required: true
+      },
+      articles: {
+        type: Array,
+        required: true
+      },
+      cursor: {
+        type: Object,
+        required: true
+      }
+    },
     computed: {
       isMe() {
         const uid = this.$store.state.account.profile?.uid
         return uid && uid === this.profile.uid
       },
       next() {
-        return this.profile.articles.cursor?.next
+        return this.cursor?.next
       }
-    },
-    props: {
-      profile: {
-        type: Object,
-        required: true
-      },
     },
     data() {
       return {
-        articles: this.profile.articles,
+        article: {
+          list: this.articles,
+          cursor: this.cursor
+        },
       }
     },
     methods: {
       onArticleLoadMore() {
-        this.$api.get(`/profiles/${this.profile.username}/articles`, {params: {size: 10, cursor: this.next}})
+        this.$api.get(`/profiles/${this.profile.username}/articles`, {params: {size: 15, cursor: this.next}})
           .then(({data: articles, cursor}) => {
-            this.articles.push(...articles)
-            this.profile.articles.cursor = cursor
+            this.article.list.push(...articles)
+            this.article.cursor = cursor
           })
-          .catch(error => {
-            this.$store.dispatch('addError', error)
-          })
+          .catch(error => this.$store.dispatch('addError', error))
       }
     }
   }
@@ -108,10 +119,27 @@
     height: 100px;
     border-radius: 50%;
     overflow: hidden;
+
+    @media (max-width: 575.98px) {
+      width: 64px;
+      height: 64px;
+    }
   }
 
   button {
     margin-top: auto;
     margin-bottom: auto;
+  }
+
+  .BioRight {
+    @media (max-width: 575.98px) {
+      display: none;
+    }
+  }
+
+  .BioFullWidth {
+    @media (min-width: 576px) {
+      display: none;
+    }
   }
 </style>

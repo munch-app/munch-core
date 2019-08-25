@@ -32,7 +32,7 @@ export default function (context, inject) {
         return config
       }).catch(() => {
         // Error, Logout User,
-        store.dispatch('user/logout')
+        store.dispatch('account/signOut')
         return config
       })
     });

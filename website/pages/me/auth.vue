@@ -34,7 +34,7 @@
     methods: {
       onError(error) {
         console.log(error)
-        this.$store.dispatch('user/logout')
+        this.$store.dispatch('account/signOut')
         this.$router.replace({path: '/'})
       }
     }

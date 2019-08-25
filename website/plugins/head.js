@@ -93,7 +93,7 @@ export default (context, inject) => {
       ...root({graph}),
 
       // Links
-      link: [links({canonical})],
+      link: links({canonical}),
 
       // Metas from Graph & Robot
       meta: [

@@ -7,7 +7,7 @@ const upload = multer({storage: multer.memoryStorage()})
 const FormData = require('form-data')
 
 const service = require('axios').create({
-  baseURL: process.env.API_MUNCH_APP
+  baseURL: process.env.API_MUNCH_APP || 'https://api.munch.app/'
 });
 
 function getHeaders(req) {
@@ -35,12 +35,12 @@ function route(req, res, next, options) {
     headers: {...getHeaders(req), ...optionalHeaders},
     data: optionalData || req.body
   }).then(({data, status}) => {
-    res.status(status);
+    res.status(status)
     res.json(data)
   }).catch(reason => {
     if (reason.response) {
       const {status, data} = reason.response
-      res.status(status);
+      res.status(status)
       res.json(data)
     } else {
       next(reason)

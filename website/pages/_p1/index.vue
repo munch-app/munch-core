@@ -1,5 +1,5 @@
 <template>
-  <profile-page v-if="type ==='Profile'" :profile="profile"/>
+  <profile-page v-if="type ==='Profile'" :profile="profile" :articles="articles" :cursor="cursor"/>
 
   <div class="container pt-24 pb-64" v-else>
     <h1>Page Not Found</h1>
@@ -21,7 +21,7 @@
         return true
       }
       // L13-Id pages
-      if (/^(?:[0-9a-z-]{0,1000}-)?[0123456789abcdefghjkmnpqrstvwxyz]{13}$/.test(p1)) {
+      if (/^(?:[0-9a-z-]{0,1000}-)?[0-9a-hjkmnp-tv-z]{13}$/.test(p1)) {
         return true
       }
 
@@ -56,23 +56,22 @@
         case "Publication":
       }
     },
-    asyncData({$api, params: {p1}, query, redirect}) {
+    asyncData({$api, params: {p1}, redirect}) {
       // Profile
       if (/^@[a-z0-9]{3,32}$/.test(_.toLower(p1))) {
         const username = p1.replace('@', '')
-        return $api.get(`/profiles/${username}`)
-          .then(({data: profile}) => {
-            return $api.get(`/profiles/${username}/articles`, {params: {size: 10}})
-              .then(({data: articles, cursor}) => {
-                profile.articles = articles
-                profile.articles.cursor = cursor
-                return {type: 'Profile', profile}
-              })
-          })
+        return Promise.all([
+          $api.get(`/profiles/${username}`)
+            .then(({data: profile}) => ({profile})),
+          $api.get(`/profiles/${username}/articles`, {params: {size: 10}})
+            .then(({data: articles, cursor}) => ({articles, cursor}))
+        ]).then(([{profile}, {articles, cursor}]) => {
+          return {type: 'Profile', articles, profile, cursor}
+        })
       }
 
       const [, id, postfix] =
-        /^(?:[0-9a-z-]{0,1000}-)?([0123456789abcdefghjkmnpqrstvwxyz]{12}([0123456789abcdefghjkmnpqrstvwxyz]))$/.exec(p1)
+        /^(?:[0-9a-z-]{0,1000}-)?([0-9a-hjkmnp-tv-z]{12}([0-9a-hjkmnp-tv-z]))$/.exec(p1)
 
       switch (postfix) {
         // Place

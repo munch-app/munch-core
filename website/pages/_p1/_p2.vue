@@ -11,7 +11,7 @@
       // /@username
       if (/^@[a-z0-9]{3,32}$/.test(_.toLower(p1))) {
         // /@username/L13-ID
-        if (/^(?:[0-9a-z-]{0,1000}-)?[0123456789abcdefghjkmnpqrstvwxyz]{13}$/.test(p2)) {
+        if (/^(?:[0-9a-z-]{0,1000}-)?[0-9a-hjkmnp-tv-z]{13}$/.test(p2)) {
           return true
         }
       }

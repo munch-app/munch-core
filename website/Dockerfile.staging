@@ -12,7 +12,6 @@ RUN yarn --pure-lockfile
 
 ENV NODE_ENV production
 
-ENV API_MUNCH_APP https://api.munch.app/
 COPY . /usr/src/app/
 
 ENV ORIGIN https://staging.munch.app

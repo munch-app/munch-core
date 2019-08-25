@@ -109,8 +109,16 @@
   }
 }
 
-.flex-1-2-3:extend(.flex-1-2) {
+.flex-1-2-3:extend(.flex-wrap) {
   > div {
+    flex: 0 0 100%;
+    max-width: 100%;
+
+    @media (min-width: 576px) {
+      flex: 0 0 50%;
+      max-width: 50%;
+    }
+
     @media (min-width: 768px) {
       flex: 0 0 33.33333%;
       max-width: 33.33333%;
@@ -118,8 +126,21 @@
   }
 }
 
-.flex-1-2-3-4:extend(.flex-1-2-3) {
+.flex-1-2-3-4:extend(.flex-wrap) {
   > div {
+    flex: 0 0 100%;
+    max-width: 100%;
+
+    @media (min-width: 576px) {
+      flex: 0 0 50%;
+      max-width: 50%;
+    }
+
+    @media (min-width: 768px) {
+      flex: 0 0 33.33333%;
+      max-width: 33.33333%;
+    }
+    
     @media (min-width: 992px) {
       flex: 0 0 25%;
       max-width: 25%;

@@ -55,7 +55,7 @@ export default {
   },
   env: {
     origin: process.env.ORIGIN || 'http://localhost:3000',
-    apiUrl: process.env.API_MUNCH_APP,
+    apiUrl: process.env.API_MUNCH_APP || 'https://api.munch.app/',
   },
   build: {
     extend(config, {isDev}) {
