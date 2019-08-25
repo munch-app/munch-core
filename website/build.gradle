@@ -34,7 +34,8 @@ task publishProduction {
       commandLine 'aws', 'ecs', 'update-service',
         '--cluster', 'munch-core',
         '--service', 'Website',
-        '--force-new-deployment'
+        '--force-new-deployment',
+        '--profile', 'munch'
     }
   }
 }
@@ -51,7 +52,8 @@ task publishStaging {
       commandLine 'aws', 'ecs', 'update-service',
         '--cluster', 'munch-core',
         '--service', 'Website_Staging',
-        '--force-new-deployment'
+        '--force-new-deployment',
+        '--profile', 'munch'
     }
   }
 }

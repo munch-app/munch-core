@@ -49,7 +49,7 @@ public final class ProfileSitemap implements SitemapProvider {
                     return null;
                 }
 
-                return build("https://www.munch.app/@" + profile.getUsername(), profile.getUpdatedAt(), 1.0, ChangeFreq.DAILY);
+                return build("/@" + profile.getUsername(), profile.getUpdatedAt(), 1.0, ChangeFreq.DAILY);
             });
 
             return Iterators.filter(iterator, Objects::nonNull);

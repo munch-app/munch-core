@@ -1,5 +1,6 @@
 package app.munch.sitemap;
 
+import app.munch.database.DatabaseModule;
 import app.munch.sitemap.places.PlaceSitemap;
 import app.munch.sitemap.profile.ArticleSitemap;
 import app.munch.sitemap.profile.ProfileSitemap;
@@ -28,6 +29,7 @@ public final class SitemapModule extends AbstractModule {
         binder.addBinding().to(PlaceSitemap.class);
 
         install(new AmazonModule());
+        install(new DatabaseModule());
     }
 
     public static void main(String[] args) {

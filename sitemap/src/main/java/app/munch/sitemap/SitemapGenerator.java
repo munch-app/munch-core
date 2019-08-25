@@ -47,6 +47,9 @@ public final class SitemapGenerator {
      * Generate and upload to AWS S3
      */
     public void uploadGenerated() throws IOException, ContentTypeError {
+        providers.forEach(provider -> {
+            logger.info("Available Provider: {}", provider.name());
+        });
         for (File file : generate()) {
             fileMapper.put("sitemap/" + file.getName(), file, AccessControl.PublicRead);
         }

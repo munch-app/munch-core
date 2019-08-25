@@ -46,7 +46,7 @@ public final class ArticleSitemap implements SitemapProvider {
                 Objects.requireNonNull(article);
                 Profile profile = article.getProfile();
 
-                return build("https://www.munch.app/@" + profile.getUsername() + "/" + article.getSlug() + "-" + article.getId(),
+                return build("/@" + profile.getUsername() + "/" + article.getSlug() + "-" + article.getId(),
                         article.getUpdatedAt(), 1.0, ChangeFreq.WEEKLY);
             });
         });
