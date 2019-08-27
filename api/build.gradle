@@ -77,12 +77,6 @@ project('api-users') {
     }
 }
 
-project('api-creators') {
-    dependencies {
-        compile group: 'file-service', name: 'file-service-client', version: fileVersion
-    }
-}
-
 project('api-data') {
     dependencies {
         compile group: 'software.amazon.awssdk', name: 's3', version: awsVersion2
@@ -122,7 +116,6 @@ dependencies {
     compile project(':api:api-locations')
 
     // Deprecating
-    compile project(':api:api-creators')
     compile project(':api:api-users')
     compile project(':api:api-places')
 }

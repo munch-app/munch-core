@@ -24,7 +24,6 @@ include 'api:api-feed'
 include 'api:api-search'
 
 // Deprecating
-include 'api:api-creators'
 include 'api:api-places'
 include 'api:api-users'
 

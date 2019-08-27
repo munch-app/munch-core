@@ -13,7 +13,6 @@ import com.google.inject.Injector;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import munch.api.core.CoreModule;
-import munch.api.creator.CreatorModule;
 import munch.api.feed.FeedModule;
 import munch.api.location.LocationModule;
 import munch.api.place.PlaceModule;
@@ -56,7 +55,6 @@ public class ApiModule extends AbstractModule {
         install(new PlaceModule());
         install(new SearchModule());
         install(new FeedModule());
-        install(new CreatorModule());
         install(new LocationModule());
     }
 
