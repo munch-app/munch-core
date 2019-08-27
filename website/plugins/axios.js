@@ -61,7 +61,7 @@ export default function (context, inject) {
       form.append('file', file, file.name)
       form.append("source", source)
       console.log(process.env.apiUrl)
-      return $axios.$post(`${process.env.apiUrl}/${apiVersion}/me/images`, form)
+      return $axios.$post(`${process.env.apiUrl}${apiVersion}/me/images`, form)
     },
   }
   inject('api', context.$api)

@@ -3,7 +3,10 @@
     <div class="ArticlePage container pt-48 pb-64" :class="{ShowMap: showMap}">
       <div class="flex">
         <article-content class="ArticleContent" :article="article" ref="ArticleContent"/>
-        <article-context-map v-if="showMap" class="ArticleMap" :article="article" :get-contexts="getContexts"/>
+        <aside>
+          <article-context-map v-if="showMap" :article="article" :get-contexts="getContexts"/>
+          <Adsense data-ad-client="ca-pub-7144155418390858" data-ad-slot="9604475829"/>
+        </aside>
       </div>
 
       <div class="mt-64">
@@ -81,7 +84,7 @@
 </script>
 
 <style scoped lang="less">
-  .ArticleMap {
+  aside {
     width: 100%;
     height: 320px;
     margin-left: 24px;

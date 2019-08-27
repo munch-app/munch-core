@@ -115,7 +115,7 @@
     },
     asyncData: function ({$api, params: {placeId}, error}) {
       if (placeId && placeId.length === 13) {
-        return $api.get(`/places/${placeId}/v23`)
+        return $api.get(`/migrations/places/${placeId}`)
           .then(({data: place}) => {
             // redirect({path: `/places/${place.cid}`})
             console.log(place.cid)

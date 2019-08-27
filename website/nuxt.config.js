@@ -37,6 +37,12 @@ export default {
     script: [
       {src: 'https://cdn.apple-mapkit.com/mk/5.x.x/mapkit.js'},
       {src: 'https://www.googletagmanager.com/gtag/js?id=UA-117480436-1'},
+
+      // AdSense (causes stalling, might need to remove this)
+      {src: 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js', defer: true},
+      ...(process.env.NODE_ENV === 'production' ? [{
+        innerHTML: '(adsbygoogle=window.adsbygoogle || []).push({google_ad_client: "ca-pub-7144155418390858", enable_page_level_ads:true});'
+      }] : [])
     ]
   },
   css: [

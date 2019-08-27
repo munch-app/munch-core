@@ -1,8 +1,10 @@
 package app.munch.api;
 
-import munch.restful.server.JsonCall;
-import munch.restful.server.JsonResult;
-import munch.restful.server.JsonService;
+import dev.fuxing.transport.service.TransportContext;
+import dev.fuxing.transport.service.TransportResult;
+import dev.fuxing.transport.service.TransportService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -15,7 +17,8 @@ import java.util.Set;
  * Project: munch-core
  */
 @Singleton
-public final class ApiHealthService implements JsonService {
+public final class ApiHealthService implements TransportService {
+    private static final Logger logger = LoggerFactory.getLogger(ApiHealthService.class);
 
     private final Set<ApiHealthCheck> healthChecks;
 
@@ -29,10 +32,15 @@ public final class ApiHealthService implements JsonService {
         GET("/health/check", this::check);
     }
 
-    private JsonResult check(JsonCall call) throws Exception {
-        for (ApiHealthCheck healthCheck : healthChecks) {
-            healthCheck.check();
+    private TransportResult check(TransportContext ctx) throws Exception {
+        try {
+            for (ApiHealthCheck healthCheck : healthChecks) {
+                healthCheck.check();
+            }
+        } catch (Exception e) {
+            logger.error("Health Check Error", e);
+            throw e;
         }
-        return JsonResult.ok();
+        return TransportResult.ok();
     }
 }

@@ -1,6 +1,6 @@
 <template>
   <editor-floating-menu :editor="editor">
-    <div class="Floating absolute index-top-elevation flex-align-center"
+    <div class="Floating absolute index-elevation flex-align-center"
          slot-scope="{commands,isActive,menu}"
          v-on-clickaway="onClose"
          :class="{Active:menu.isActive || state}" :style="`top: ${menu.top}px`">

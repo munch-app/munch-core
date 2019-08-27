@@ -58,7 +58,7 @@
     </nuxt-link>
 
     <template v-if="editing">
-      <image-upload-dialog v-if="state === 'image'" @on-image="onImage" @on-close="state = null"/>
+      <image-upload-dialog v-if="state === 'image'" @on-image="onImage" @on-close="state = null" :place="place"/>
     </template>
   </div>
 </template>

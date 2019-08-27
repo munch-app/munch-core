@@ -1,6 +1,5 @@
-package app.munch.v22v23;
+package app.munch.api.migration;
 
-import app.munch.image.ImageEntityManager;
 import app.munch.model.*;
 import munch.data.location.Location;
 import org.apache.commons.lang3.StringUtils;
@@ -22,11 +21,11 @@ import java.util.stream.Collectors;
 @Singleton
 public final class PlaceBridge {
 
-    private final ImageEntityManager imageEntityManager;
+    private final ImageMigrationManager imageMigrationManager;
 
     @Inject
-    public PlaceBridge(ImageEntityManager imageEntityManager) {
-        this.imageEntityManager = imageEntityManager;
+    PlaceBridge(ImageMigrationManager imageMigrationManager) {
+        this.imageMigrationManager = imageMigrationManager;
     }
 
     public void bridge(EntityManager entityManager, Place place, munch.data.place.Place deprecatedPlace) {
@@ -152,7 +151,6 @@ public final class PlaceBridge {
         if (images.isEmpty()) return null;
 
         munch.file.Image fileImage = images.get(0);
-
         List<munch.file.Image.Size> sizes = fileImage.getSizes();
 
         String url = sizes.stream().max(Comparator.comparing(munch.file.Image.Size::getHeight))
@@ -162,7 +160,7 @@ public final class PlaceBridge {
         if (url == null) return null;
 
         try {
-            return imageEntityManager.postDeprecated(entityManager, url);
+            return imageMigrationManager.post(entityManager, url);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

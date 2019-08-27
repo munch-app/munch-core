@@ -1,6 +1,6 @@
 <template>
   <editor-menu-bubble :editor="editor">
-    <div class="Bubble absolute bg-b85 index-top-elevation white weight-600"
+    <div class="Bubble absolute bg-b85 index-elevation white weight-600"
          slot-scope="{commands,isActive,getMarkAttrs,menu}"
          :class="{Active: state || menu.isActive && (isActive.paragraph() || isActive.heading())}"
          :style="`left:${menu.left}px; bottom: ${menu.bottom}px;`">

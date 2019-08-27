@@ -8,13 +8,21 @@
       </div>
 
       <div class="Dialog dialog-xlarge flex-row wh-100" v-on-clickaway="onClose">
-        <div class="flex-grow">
-          <h2>Media library</h2>
+        <div class="hr-right">
+          <div v-for="select in selectors" :key="select.type" @click="onSelect(select.type)"
+               class="p-16-24 hover-pointer hr-bot flex-column-align-center">
+            <simple-svg class="wh-24px" :fill="select.type === selected ? '#07F' : '#000'" :filepath="select.icon"/>
+            <div :class="{'blue': select.type === selected}" class="mt-4 small-bold">{{select.text}}</div>
+          </div>
+        </div>
 
-          <div class="mtb-24">
-            <div class="MediaList flex-wrap overflow-y-auto" >
-              <div class="p-12" v-for="image in images" :key="image.id" @click="onImage(image)">
-                <div class="aspect r-1-1">
+        <div class="flex-grow p-32 flex-column">
+          <h2 class="h2">Media library</h2>
+
+          <div class="overflow-y-auto flex-grow">
+            <div class="MediaList flex-wrap">
+              <div class="MediaItem p-12" v-for="image in images" :key="image.id" @click="onImage(image)">
+                <div class="aspect r-1-1 ">
                   <cdn-img class="border-3 overflow-hidden" type="320x320" :image="image">
                     <div class="hover-bg-a40 hover-pointer">
                     </div>
@@ -24,27 +32,15 @@
             </div>
 
             <div class="flex-center ptb-48" v-if="next">
-              <button class="blue-outline" @click="onLoadMore">Load More</button>
+              <button class="blue-outline" @click="loadRecentMore">Load More</button>
+            </div>
+
+            <div v-if="!loaded" class="flex-center p-24">
+              <beat-loader color="#07F" size="16px"/>
             </div>
 
             <div class="flex-center ptb-48" v-if="loaded && images.length === 0">
               <p>You don't have any image available.</p>
-            </div>
-          </div>
-        </div>
-        <div class="ml-32 MediaSource">
-          <button @click="onUploadImage" class="w-100 blue-outline small">Upload Image</button>
-          <div class="flex-column mt-24">
-            <div class="hr-bot pb-8">
-              <h5>Media source</h5>
-            </div>
-            <div class="mt-8">
-              <div class="ptb-6" v-for="source in sources" :key="source.type">
-                <div class="lh-1 small p-12 border-3 hover-pointer" @click="onSource(source)"
-                     :class="{'bg-steam black': !source.selected, 'bg-blue white': source.selected}">
-                  {{source.name}}
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -69,60 +65,83 @@
       source: {
         type: String,
         default: 'LIBRARY'
+      },
+      place: {
+        type: Object,
+        default: null
       }
     },
     data() {
       return {
-        sources: [
-          {name: 'Uploaded', type: 'LIBRARY', selected: false},
-          {name: 'From Profile', type: 'PROFILE', selected: false},
-          {name: 'From Article', type: 'ARTICLE', selected: false},
-          {name: 'From Instagram', type: 'INSTAGRAM', selected: false}
+        selectors: [
+          {type: 'upload', text: 'UPLOAD', icon: require('~/assets/icon/icons8-camera.svg')},
+          {type: 'recent', text: 'RECENT', icon: require('~/assets/icon/icons8-time-machine.svg')},
+          ...(this.place != null ? [
+            {type: 'place', text: 'PLACE', icon: require('~/assets/icon/icons8-map-pin.svg')}
+          ] : []),
         ],
+        selected: 'recent',
+        loaded: false,
+
         images: [],
         cursor: {},
-        loaded: false,
       }
     },
     computed: {
       next() {
         return this.cursor?.next
       },
-      selectSources() {
-        return this.sources.filter(s => s.selected)
-          .map(s => s.type)
-          .join(",")
-      }
     },
     mounted() {
-      this.reload()
+      this.loadRecent()
     },
     methods: {
-      reload() {
+      onSelect(type) {
+        switch (type) {
+          case 'upload':
+            return this.onUploadImage()
+
+          case 'recent':
+            return this.loadRecent()
+
+          case 'place':
+            return this.loadPlace()
+        }
+      },
+      loadRecent() {
+        this.selected = 'recent'
         this.images.splice(0)
         this.loaded = false
 
-        this.$api.get('/me/images', {params: {sources: this.selectSources, size: 20}})
+        this.$api.get('/me/images', {params: {size: 20}})
           .then(({data: images, cursor}) => {
-            this.images.splice(0)
             this.images.push(...images)
             this.cursor = cursor
             this.loaded = true
           })
       },
-      onLoadMore() {
-        this.$api.get('/me/images', {params: {sources: this.selectSources, size: 20, cursor: this.next}})
+      loadRecentMore() {
+        this.$api.get('/me/images', {params: {size: 20, cursor: this.next}})
           .then(({data: images, cursor}) => {
             this.images.push(...images)
             this.cursor = cursor
           })
       },
+      loadPlace() {
+        this.selected = 'place'
+        this.images.splice(0)
+        this.loaded = false
+
+        this.$api.get(`/migrations/places/${this.place.id}/images`)
+          .then(({data: placeImages}) => {
+            const images = placeImages.map(pi => pi.image)
+            this.images.push(...images)
+            this.cursor = null
+            this.loaded = true
+          })
+      },
       onClose() {
         this.$emit('on-close')
-      },
-      onSource(source) {
-        source.selected = !source.selected
-        this.reload()
       },
       onImage(image) {
         this.$emit('on-image', image)
@@ -148,29 +167,25 @@
 <style scoped lang="less">
   .Dialog {
     height: 600px;
+    padding: 0;
   }
 
   .CloseButton {
     margin-top: -48px;
   }
 
+
   .MediaList {
-    margin: -12px;
-
-    > div {
-      flex: 0 0 100%;
-      max-width: 100%;
-    }
-
-    > div {
-      @media (min-width: 1000px) {
-        flex: 0 0 25%;
-        max-width: 25%;
-      }
-    }
+    margin: 12px -12px;
   }
 
-  .MediaSource {
-    min-width: 160px;
+  .MediaItem {
+    flex: 0 0 100%;
+    max-width: 100%;
+
+    @media (min-width: 1000px) {
+      flex: 0 0 25%;
+      max-width: 25%;
+    }
   }
 </style>

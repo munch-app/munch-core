@@ -1,6 +1,6 @@
 package app.munch.api;
 
-import app.munch.api.v22v23.MigrationModule;
+import app.munch.api.migration.MigrationModule;
 import app.munch.database.DatabaseModule;
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagement;
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagementClientBuilder;

@@ -5,7 +5,6 @@
       <div class="text-decoration-none">
         <nuxt-link class="Mobile black" to="/">Home</nuxt-link>
         <a v-if="!isLoggedIn" @click.prevent.stop="$store.commit('focus', 'Login')">Sign In</a>
-        <hr v-if="isLoggedIn" class="mtb-8">
       </div>
 
       <div v-if="isLoggedIn" class="text-decoration-none">

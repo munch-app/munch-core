@@ -82,7 +82,7 @@
         this.$emit('on-close')
       },
       onPlace(place) {
-        this.$api.get(`/places/${place.placeId}/v22-v23`)
+        this.$api.get(`/migrations/places/${place.placeId}`)
           .then(({data: place}) => {
             this.$emit('on-place', place)
           })

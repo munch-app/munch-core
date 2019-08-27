@@ -20,13 +20,11 @@ import software.amazon.awssdk.services.s3.S3Client;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.persistence.EntityManager;
 import javax.servlet.http.Part;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.Date;
 import java.util.Set;
 
@@ -161,75 +159,6 @@ public final class ImageEntityManager {
                 part.delete();
             } catch (Exception ignored) {
             }
-        }
-    }
-
-    @Deprecated
-    public Image post(EntityManager entityManager, ImageSource source, Profile profile, String url) throws IOException {
-        File file = File.createTempFile(RandomStringUtils.randomAlphanumeric(30),
-                "." + FilenameUtils.getExtension(url));
-
-        try {
-            FileUtils.copyURLToFile(new URL(url), file);
-
-            String contentType = ImageUtils.getRealContentType(file);
-            Dimension dimension = ImageUtils.getImageDimension(file, contentType);
-
-            Image image = new Image();
-            image.setBucket(BUCKET);
-            image.setUid(KeyUtils.nextULID());
-            image.setExt(ImageUtils.getExtension(contentType));
-
-            image.setSource(source);
-            image.setWidth((int) dimension.getWidth());
-            image.setHeight((int) dimension.getHeight());
-
-
-            image.setProfile(profile);
-            entityManager.persist(image);
-
-            s3Client.putObject(builder -> {
-                builder.bucket(BUCKET);
-                builder.key(image.getUid() + image.getExt());
-                builder.contentType(contentType);
-            }, RequestBody.fromFile(file));
-            return image;
-        } finally {
-            FileUtils.deleteQuietly(file);
-        }
-    }
-
-    @Deprecated
-    public Image postDeprecated(EntityManager entityManager, String url) throws IOException {
-        File file = File.createTempFile(RandomStringUtils.randomAlphanumeric(30),
-                "." + FilenameUtils.getExtension(url));
-
-        try {
-            FileUtils.copyURLToFile(new URL(url), file);
-
-            String contentType = ImageUtils.getRealContentType(file);
-            Dimension dimension = ImageUtils.getImageDimension(file, contentType);
-
-            Image image = new Image();
-            image.setBucket(BUCKET);
-            image.setUid(KeyUtils.nextULID());
-            image.setExt(ImageUtils.getExtension(contentType));
-
-            image.setSource(ImageSource.LIBRARY);
-            image.setWidth((int) dimension.getWidth());
-            image.setHeight((int) dimension.getHeight());
-
-            image.setProfile(entityManager.find(Profile.class, Profile.COMPAT_ID));
-            entityManager.persist(image);
-
-            s3Client.putObject(builder -> {
-                builder.bucket(BUCKET);
-                builder.key(image.getUid() + image.getExt());
-                builder.contentType(contentType);
-            }, RequestBody.fromFile(file));
-            return image;
-        } finally {
-            FileUtils.deleteQuietly(file);
         }
     }
 }
