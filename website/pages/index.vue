@@ -1,17 +1,8 @@
-<template>
-  <div class="container pt-48 pb-128">
-    <div v-for="(node, index) in nodes" :key="index">
-      <home-featured v-if="index === 0" :node="node"/>
-      <home-publication v-else :node="node"/>
-    </div>
-  </div>
-</template>
 <script>
-  import HomeFeatured from "../components/home/HomeFeatured";
-  import HomePublication from "../components/home/HomePublication";
+  import search from './search/index'
 
   export default {
-    components: {HomePublication, HomeFeatured},
+    extends: search,
     head() {
       return this.$head({
         robots: {follow: true, index: true},
@@ -20,11 +11,8 @@
         }
       })
     },
-    asyncData({$api}) {
-      return $api.get('/pages/home')
-        .then(({data: nodes}) => {
-          return {nodes}
-        })
+    asyncData({store}) {
+      return store.dispatch('search/feature', {feature: 'Home'})
     },
   }
 </script>

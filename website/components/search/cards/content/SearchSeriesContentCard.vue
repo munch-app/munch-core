@@ -1,5 +1,5 @@
 <template>
-  <nuxt-link :to="`/contents/${cid}/${slug}`" class="text-decoration-none">
+  <a :href="`/contents/${cid}/${slug}`" class="text-decoration-none">
     <div class="aspect border-3 overflow-hidden" :class="imageAspectRatio">
       <image-sizes v-if="imageSizes" :sizes="imageSizes" :alt="content.subtitle"/>
       <div v-else class="bg-s500 flex-end wh-100"/>
@@ -12,7 +12,7 @@
       <h5 class="text-ellipsis-1l s700">{{content.subtitle}}</h5>
       <p class="mt-4 text-ellipsis-3l">{{content.body}}</p>
     </div>
-  </nuxt-link>
+  </a>
 </template>
 
 <script>
