@@ -176,6 +176,7 @@ public abstract class PlaceModel {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Location {
+        // Might need to auto fill country/city
 
         private String unitNumber;
 

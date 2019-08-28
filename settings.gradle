@@ -6,6 +6,11 @@ rootProject.name = 'munch-core'
 include 'database'
 
 /**
+ * Munch App universal worker
+ */
+include 'worker'
+
+/**
  * Munch Public API
  * Split into their various top level modules
  */

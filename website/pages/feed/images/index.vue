@@ -2,8 +2,7 @@
   <div class="zero">
     <div class="container">
       <div class="mtb-24">
-        <h2>Feed</h2>
-        <p class="mtb-8">Never eat ‘Anything’ ever again.</p>
+        <h2>Trending</h2>
       </div>
 
       <masonry-wall ref="masonry" :items="items" @append="onAppend"

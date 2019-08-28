@@ -14,6 +14,7 @@
 
         <class>app.munch.model.Account</class>
         <class>app.munch.model.Profile</class>
+        <class>app.munch.model.ProfileLink</class>
 
         <class>app.munch.model.Image</class>
 
@@ -24,5 +25,8 @@
         <class>app.munch.model.Tag</class>
 
         <class>app.munch.model.ManagedPage</class>
+
+        <class>app.munch.model.Affiliate</class>
+        <class>app.munch.model.PlaceAffiliate</class>
     </persistence-unit>
 </persistence>

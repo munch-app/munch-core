@@ -4,7 +4,7 @@
       <div class="flex">
         <article-content class="ArticleContent" :article="article" ref="ArticleContent"/>
         <aside>
-          <article-context-map v-if="showMap" :article="article" :get-contexts="getContexts"/>
+          <article-context-map class="Map" v-if="showMap" :article="article" :get-contexts="getContexts"/>
           <Adsense data-ad-client="ca-pub-7144155418390858" data-ad-slot="9604475829"/>
         </aside>
       </div>
@@ -117,8 +117,12 @@
 <style scoped lang="less">
   aside {
     width: 100%;
-    height: 320px;
+    height: 100%;
     margin-left: 24px;
+
+    .Map {
+      height: 320px;
+    }
 
     @media (max-width: 1199.98px) {
       display: none;

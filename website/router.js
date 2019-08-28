@@ -7,8 +7,6 @@ export function createRouter(ssrContext, createDefaultRouter, routerOptions) {
   const options = routerOptions ? routerOptions : createDefaultRouter(ssrContext).options
   const routes = options.routes
 
-  console.log(routes)
-
   return new Router({
     ...options,
     routes: routes.map(remap)

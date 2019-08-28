@@ -35,7 +35,7 @@
           <place-location :place-id="place.placeId" :location="place.location"/>
         </section>
 
-        <section class="mb-32 mt-64" v-if="articles">
+        <section class="mb-32 mt-64" v-if="false">
           <h2 class="mb-32">{{place.name}} Articles</h2>
           <place-article-wall :place-id="place.placeId" :preload="articles"/>
         </section>

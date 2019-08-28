@@ -3,6 +3,7 @@ package app.munch.api;
 import app.munch.manager.ArticleEntityManager;
 import app.munch.model.ArticleStatus;
 import app.munch.model.Profile;
+import dev.fuxing.jpa.HibernateUtils;
 import dev.fuxing.jpa.TransactionProvider;
 import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
@@ -42,9 +43,12 @@ public final class ProfileService extends DataService {
         String username = ctx.pathString("username");
 
         return provider.reduce(true, entityManager -> {
-            return entityManager.createQuery("FROM Profile WHERE username = :username", Profile.class)
+            Profile profile = entityManager.createQuery("FROM Profile WHERE username = :username", Profile.class)
                     .setParameter("username", username)
                     .getSingleResult();
+
+            HibernateUtils.initialize(profile.getLinks());
+            return profile;
         });
     }
 

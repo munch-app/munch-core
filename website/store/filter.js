@@ -298,7 +298,7 @@ export const mutations = {
 }
 
 function post(commit, state) {
-  return this.$api.post('/api/search/filter', state.query, {progress: false})
+  return this.$api.post('/search/filter', state.query, {progress: false})
     .then(({data}) => {
       commit('result', data)
 

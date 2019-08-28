@@ -46,11 +46,11 @@ public final class SearchHomeSeriesPlugin extends AbstractSearchSeriesListPlugin
             positions.add(ofPosition(104, card));
         });
 
-        // Top 10s
-        load("675971ec-2003-46fe-aee9-cb15a692df61", 10).ifPresent(card -> {
-            card.getOptions().put("expand", "width");
-            positions.add(ofPosition(105, card));
-        });
+//        // Top 10s
+//        load("675971ec-2003-46fe-aee9-cb15a692df61", 10).ifPresent(card -> {
+//            card.getOptions().put("expand", "width");
+//            positions.add(ofPosition(105, card));
+//        });
 
         // The Usual Suspects
         load("e0d039ae-64ea-4713-a999-3e90aadaaca4", 10).ifPresent(card -> {

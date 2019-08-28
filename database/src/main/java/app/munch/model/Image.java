@@ -77,7 +77,7 @@ public final class Image {
 
     @JsonIgnore
     @NotNull(groups = {ImageDefaultGroup.class})
-    @OneToOne(fetch = FetchType.LAZY, cascade = {})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {})
     private Profile profile;
 
     /**
@@ -194,6 +194,9 @@ public final class Image {
 
     /**
      * Sizes: URL that are generated for specific size
+     * <p>
+     * Technically, @PostLoad can be used to fill sizes. However, I feel that when image is converted into json,
+     * the image are therefore ready for transport to client side, hence it is a better time to generate sizes.
      *
      * @return JsonNode for public with sizes url generated
      */

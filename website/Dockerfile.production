@@ -14,7 +14,8 @@ RUN rm /var/cache/apk/*
 # Create app directory
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
-n
+
+ENV HOST 0.0.0.0
 EXPOSE 3000
 
 COPY package.json yarn.lock /usr/src/app/

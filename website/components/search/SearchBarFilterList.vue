@@ -45,8 +45,8 @@
 
       <div class="BottomBar mt-16 flex-end index-elevation">
         <button class="Cancel" @click="onClear">Clear</button>
-        <button class="Apply secondary" @click="onApply" v-if="applyText"
-                :class="{'bg-s500 white weight-600': isApplicable, 'bg-s050 b-a85 weight-600': !isApplicable}">
+        <button class="Apply" @click="onApply" v-if="applyText"
+                :class="{'pink': isApplicable, 'bg-s050 b-a85 weight-600': !isApplicable}">
           {{applyText}}
         </button>
         <beat-loader v-else class="Apply border-3 bg-s050 flex-center" color="#084E69" size="8px"/>

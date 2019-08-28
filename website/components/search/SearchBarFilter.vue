@@ -4,9 +4,9 @@
       <div class="Buttons h-100 flex-align-center container">
         <div v-for="button in buttons" :key="button.type" class="FilterButton hover-pointer" @click="onButton(button)"
              :class="{
-             'bg-p500 white': button.type === selected,
+             'bg-blue white': button.type === selected,
              'bg-whisper100 b-a75': button.type !== selected && !button.applied,
-             'bg-p050 black': button.type !== selected && button.applied,
+             'bg-pink white': button.type !== selected && button.applied,
              'Combined': button.type === 'Combined',
              'Location': button.type === 'Location',
              }">

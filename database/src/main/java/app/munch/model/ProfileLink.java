@@ -1,9 +1,12 @@
 package app.munch.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.fuxing.err.ValidationException;
 import dev.fuxing.utils.KeyUtils;
+import dev.fuxing.validator.ValidEnum;
+import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -13,28 +16,18 @@ import javax.validation.constraints.Size;
 import javax.validation.groups.Default;
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by: Fuxing
- * Date: 2019-07-14
- * Time: 14:45
+ * Date: 28/8/19
+ * Time: 3:41 PM
+ * Project: munch-core
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
-@Table(name = "Profile")
-public final class Profile {
-
-    /**
-     * Admin Id must be used for internal resources with no public facing entities<br>
-     */
-    public static final String ADMIN_ID = "00000000000000000000000000";
-
-    /**
-     * Backward compatible support, user different id for each major deprecation so that it's easier to delete.
-     */
-    public static final String COMPAT_ID = "000000000000000000v22t0v23";
+@Table(name = "ProfileLink")
+public final class ProfileLink {
 
     @NotNull
     @Pattern(regexp = KeyUtils.ULID_REGEX)
@@ -42,31 +35,29 @@ public final class Profile {
     @Column(length = 26, updatable = false, nullable = false, unique = true)
     private String uid;
 
-    /**
-     * In the future, username renaming must be limited and username can only be used after 1 month of inactivity.
-     */
+    @JsonIgnore
     @NotNull
-    @Pattern(regexp = "[a-z0-9]{3,64}")
-    @Column(length = 255, updatable = true, nullable = false, unique = true)
-    private String username;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {})
+    private Profile profile;
 
     @NotBlank
-    @Size(max = 100)
-    @Column(length = 100, updatable = true, nullable = true, unique = false)
+    @Size(max = 50)
+    @Column(length = 50, updatable = true, nullable = false, unique = false)
     private String name;
 
-    @Size(max = 250)
-    @Column(length = 250, updatable = true, nullable = true, unique = false)
-    private String bio;
+    @URL
+    @Size(max = 1000)
+    @NotBlank
+    @Column(length = 1000, updatable = true, nullable = false, unique = false)
+    private String url;
 
-    @ManyToOne(cascade = {}, fetch = FetchType.EAGER, optional = true)
-    private Image image;
+    @ValidEnum
+    @Enumerated(EnumType.STRING)
+    private ProfileLinkType type;
 
     @NotNull
-    @Size(max = 4)
-    @OneToMany(cascade = {}, fetch = FetchType.LAZY, mappedBy = "profile")
-    @OrderBy("position DESC")
-    private List<ProfileLink> links;
+    @Column(updatable = true, nullable = false, unique = false)
+    private Long position;
 
     @NotNull
     @Version
@@ -81,16 +72,16 @@ public final class Profile {
         return uid;
     }
 
-    public void setUid(String id) {
-        this.uid = id;
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
-    public String getUsername() {
-        return username;
+    public Profile getProfile() {
+        return profile;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
 
     public String getName() {
@@ -101,28 +92,28 @@ public final class Profile {
         this.name = name;
     }
 
-    public String getBio() {
-        return bio;
+    public String getUrl() {
+        return url;
     }
 
-    public void setBio(String bio) {
-        this.bio = bio;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
-    public Image getImage() {
-        return image;
+    public ProfileLinkType getType() {
+        return type;
     }
 
-    public void setImage(Image image) {
-        this.image = image;
+    public void setType(ProfileLinkType type) {
+        this.type = type;
     }
 
-    public List<ProfileLink> getLinks() {
-        return links;
+    public Long getPosition() {
+        return position;
     }
 
-    public void setLinks(List<ProfileLink> links) {
-        this.links = links;
+    public void setPosition(Long position) {
+        this.position = position;
     }
 
     public Date getUpdatedAt() {
@@ -144,13 +135,11 @@ public final class Profile {
     @PrePersist
     void prePersist() {
         long millis = System.currentTimeMillis();
-        if (getUid() == null) {
-            setUid(KeyUtils.nextULID(millis));
-        }
+        setUid(KeyUtils.nextULID(millis));
         setCreatedAt(new Timestamp(millis));
 
-        if (getUsername() == null) {
-            setUsername(getUid());
+        if (getPosition() == null) {
+            setPosition(millis);
         }
 
         preUpdate();

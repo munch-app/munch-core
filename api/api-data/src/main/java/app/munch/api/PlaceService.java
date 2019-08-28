@@ -26,7 +26,7 @@ public final class PlaceService extends DataService {
 
     @Override
     public void route() {
-        PATH("/places/:placeId", () -> {
+        PATH("/places/:id", () -> {
             PATH("/revisions", () -> {
 //                POST("", this::revisionPost);
             });
@@ -34,8 +34,8 @@ public final class PlaceService extends DataService {
     }
 
     public PlaceRevision revisionPost(TransportContext ctx) {
+        String id = ctx.pathString("id");
         String accountId = ctx.get(ApiRequest.class).getAccountId();
-        String placeId = ctx.pathString("placeId");
         PlaceRevision revision = ctx.bodyAsObject(PlaceRevision.class);
 
         return provider.reduce(entityManager -> {
@@ -49,7 +49,7 @@ public final class PlaceService extends DataService {
             }
 
             // TODO(fuxing): whether new entry get automatically created
-            Place place = entityManager.find(Place.class, placeId);
+            Place place = entityManager.find(Place.class, id);
             if (place == null) throw new NotFoundException();
 
             revision.setPlace(place);

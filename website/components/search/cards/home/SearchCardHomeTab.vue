@@ -61,10 +61,10 @@
             button: 'Try EatBetween',
           },
           {
-            name: 'Feed',
+            name: 'Trending',
             id: 'Feed',
             message: 'Need help deciding what to eat? Click here.',
-            button: 'Explore Feed',
+            button: 'Explore Trending',
           },
         ]
       }
@@ -81,9 +81,6 @@
             this.$router.push({path: '/feed/images'})
             break
         }
-      },
-      onCreateAccount() {
-        this.$store.commit('focus', 'Login')
       },
     }
   }

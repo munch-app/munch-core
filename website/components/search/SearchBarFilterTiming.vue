@@ -3,7 +3,7 @@
     <div class="TimingCollection flex">
       <div class="TimingCell hover-pointer" v-for="tag in timings" :key="tag.tagId" @click="toggle(tag)"
            :class="{
-              'bg-p500 white': isSelected(tag),
+              'bg-blue white': isSelected(tag),
               'bg-whisper100 b-a75': !isSelected(tag)}">
         {{tag.name}}
       </div>

@@ -3,6 +3,7 @@ package app.munch.api;
 import app.munch.model.Account;
 import app.munch.model.Image;
 import app.munch.model.Profile;
+import app.munch.model.ProfileLink;
 import app.munch.username.UsernameValidator;
 import com.fasterxml.jackson.databind.JsonNode;
 import dev.fuxing.err.UnauthorizedException;
@@ -13,6 +14,7 @@ import dev.fuxing.transport.service.TransportContext;
 
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -77,6 +79,13 @@ public final class MeService extends DataService {
                         patcher.patch("bio", Profile::setBio);
                         patcher.patch("image", (EntityPatch.NodeConsumer<Profile>) (profile, json) -> {
                             Image.EntityUtils.map(entityManager, json, profile::setImage);
+                        });
+                        patcher.patch("links", (EntityPatch.NodeConsumer<Profile>) (profile, json) -> {
+                            List<ProfileLink> links = profile.getLinks();
+
+                            for (JsonNode linkNode : json) {
+                                // TODO(fuxing): Decide whether to delete
+                            }
                         });
                     })
                     .persist();

@@ -73,7 +73,7 @@
       <div class="SaveAsList zero">
         <div class="hover-pointer mtb-16 flex-align-center border-3" v-for="save in savingType"
              @click="onSelectSave(save.type)"
-             :class="savingSelected && save.type === saving.type ? 'bg-s500 white': 'bg-whisper100'"
+             :class="savingSelected && save.type === saving.type ? 'bg-pink white': 'bg-whisper100'"
         >
           <div class="p-12">
             <simple-svg class="wh-24px" :filepath="save.icon"
