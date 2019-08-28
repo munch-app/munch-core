@@ -118,6 +118,12 @@ export default {
     '~/server/index.js',
     '~/server/redirect.js'
   ],
+  buildModules: [
+    ['@nuxtjs/router', {
+      fileName: 'router.js',
+      keepDefaultRouter: true
+    }]
+  ],
   modules: [
     '@nuxtjs/axios',
     '@nuxtjs/sitemap',

@@ -47,8 +47,13 @@
             <article-card-large :article="article"/>
           </div>
 
-          <div class="flex-center ptb-32" v-if="next">
-            <button class="blue-outline" @click="onArticleLoadMore">Load more</button>
+          <div v-if="next">
+            <div class="flex-center ptb-32" v-if="articleLoading">
+              <beat-loader color="#07F" size="16px"/>
+            </div>
+            <div class="flex-center ptb-32" v-else>
+              <button class="blue-outline" @click="onArticleLoadMore">Load more</button>
+            </div>
           </div>
         </div>
 
@@ -63,24 +68,47 @@
 </template>
 
 <script>
-  import CdnImg from "../utils/image/CdnImg";
-  import ArticleCardLarge from "../article/ArticleCardLarge";
+  import CdnImg from "../../components/utils/image/CdnImg";
+  import ArticleCardLarge from "../../components/article/ArticleCardLarge";
 
   export default {
-    name: "ProfilePage",
     components: {ArticleCardLarge, CdnImg},
-    props: {
-      profile: {
-        type: Object,
-        required: true
-      },
-      articles: {
-        type: Array,
-        required: true
-      },
-      cursor: {
-        type: Object,
-        required: true
+    validate({params: {username}}) {
+      return /^[a-z0-9]{3,32}$/.test(_.toLower(username))
+    },
+    head() {
+      const {name, username, bio, image} = this.profile
+      return this.$head({
+        robots: {follow: true, index: true},
+        canonical: `https://www.munch.app/@${username}`,
+        graph: {
+          title: `${name} · Munch`,
+          description: bio,
+          type: 'profile',
+          image: image,
+          url: `https://www.munch.app/@${username}`,
+        },
+        breadcrumbs: [
+          {
+            name: name,
+            item: `https://www.munch.app/@${username}`
+          },
+        ]
+      })
+    },
+    asyncData({$api, params: {username}}) {
+      return Promise.all([
+        $api.get(`/profiles/${username}`)
+          .then(({data: profile}) => ({profile})),
+        $api.get(`/profiles/${username}/articles`, {params: {size: 10}})
+          .then(({data: articles, cursor}) => ({articles, cursor}))
+      ]).then(([{profile}, {articles, cursor}]) => {
+        return {articles, profile, cursor}
+      })
+    },
+    data() {
+      return {
+        articleLoading: false
       }
     },
     computed: {
@@ -92,20 +120,15 @@
         return this.cursor?.next
       }
     },
-    data() {
-      return {
-        article: {
-          list: this.articles,
-          cursor: this.cursor
-        },
-      }
-    },
     methods: {
       onArticleLoadMore() {
+        this.articleLoading = true
+
         this.$api.get(`/profiles/${this.profile.username}/articles`, {params: {size: 15, cursor: this.next}})
           .then(({data: articles, cursor}) => {
-            this.article.list.push(...articles)
-            this.article.cursor = cursor
+            this.articles.push(...articles)
+            this.cursor = cursor
+            this.articleLoading = false
           })
           .catch(error => this.$store.dispatch('addError', error))
       }

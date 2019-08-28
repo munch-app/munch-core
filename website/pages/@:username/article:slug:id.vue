@@ -52,20 +52,51 @@
 </template>
 
 <script>
-  import ArticleContent from "./ArticleContent";
-  import CdnImg from "../utils/image/CdnImg";
-  import ArticleCardMedium from "./ArticleCardMedium";
-  import ArticleContextMap from "./ArticleContextMap";
+  import ArticleContent from "../../components/article/ArticleContent";
+  import ArticleCardMedium from "../../components/article/ArticleCardMedium";
+  import ArticleContextMap from "../../components/article/ArticleContextMap";
+  import CdnImg from "../../components/utils/image/CdnImg";
 
   export default {
-    name: "ArticlePage",
-    components: {ArticleContextMap, ArticleCardMedium, CdnImg, ArticleContent},
-    props: {
-      article: {
-        type: Object,
-        required: true
-      },
-      more: Object
+    components: {CdnImg, ArticleContextMap, ArticleCardMedium, ArticleContent},
+    head() {
+      const {profile: {name, username}, image, title, description, slug, id} = this.article
+      return this.$head({
+        robots: {follow: true, index: true},
+        canonical: `https://www.munch.app/@${username}/${id}`,
+        graph: {
+          title: `${title || 'Untitled Article'} - ${name} · Munch`,
+          description: description,
+          type: 'article',
+          image: image,
+          url: `https://www.munch.app/@${username}/${slug}-${id}`,
+        },
+        breadcrumbs: [
+          {
+            name: name,
+            item: `https://www.munch.app/@${username}`
+          },
+          {
+            name: title,
+            item: `https://www.munch.app/@${username}/${slug}-${id}`
+          },
+        ]
+      })
+    },
+    asyncData({$api, params: {username, id}, query: {uid}}) {
+      const url = uid ? `/articles/${id}/revisions/${uid}` : `/articles/${id}`
+      return Promise.all([
+        $api.get(url)
+          .then(({data: article}) => article),
+        $api.get(`/profiles/${username}/articles`, {params: {size: 5}})
+          .then(({data: articles}) => articles)
+      ]).then(([article, articles]) => {
+        return {
+          article, more: {
+            author: {articles: articles.filter(a => a.id !== article.id)}
+          }
+        }
+      })
     },
     computed: {
       moreFromAuthorArticles() {
@@ -79,7 +110,7 @@
       getContexts() {
         return this.$refs['ArticleContent'].getContexts()
       }
-    },
+    }
   }
 </script>
 
