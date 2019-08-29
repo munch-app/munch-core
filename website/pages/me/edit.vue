@@ -29,6 +29,9 @@
       </div>
     </div>
     <div class="mt-24">
+      <profile-link-input v-model="account.profile.links"/>
+    </div>
+    <div class="mt-24">
       <button class="border" @click="$router.replace(`/@${$store.state.account.profile.username}`)">Cancel</button>
       <button class="ml-16 blue" @click="save">Save</button>
     </div>
@@ -42,9 +45,10 @@
 <script>
   import TextAuto from "../../components/utils/TextAuto";
   import CdnImg from "../../components/utils/image/CdnImg";
+  import ProfileLinkInput from "../../components/profile/ProfileLinkInput";
 
   export default {
-    components: {CdnImg, TextAuto},
+    components: {ProfileLinkInput, CdnImg, TextAuto},
     asyncData({$api}) {
       return $api.get('/me')
         .then(({data: account}) => {
@@ -62,6 +66,7 @@
           username: profile.username?.substring(0, 64),
           name: profile.name?.substring(0, 100),
           bio: profile.bio?.substring(0, 250),
+          links: profile.links,
         })
       },
       onProfilePicStart() {

@@ -1,3 +1,7 @@
+<!--
+ArticleContent.vue must be structured as such to follow exactly ProseMirror structure
+.article-content > div
+-->
 <template>
   <div class="article-content">
     <div>

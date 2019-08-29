@@ -11,10 +11,10 @@ import dev.fuxing.jpa.EntityPatch;
 import dev.fuxing.jpa.HibernateUtils;
 import dev.fuxing.jpa.TransactionProvider;
 import dev.fuxing.transport.service.TransportContext;
+import dev.fuxing.utils.JsonUtils;
 
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -47,7 +47,9 @@ public final class MeService extends DataService {
         @NotNull String id = request.getAccountId();
 
         return provider.reduce(true, entityManager -> {
-            return entityManager.find(Account.class, id);
+            Account account = entityManager.find(Account.class, id);
+            HibernateUtils.initialize(account.getProfile().getLinks());
+            return account;
         });
     }
 
@@ -80,12 +82,16 @@ public final class MeService extends DataService {
                         patcher.patch("image", (EntityPatch.NodeConsumer<Profile>) (profile, json) -> {
                             Image.EntityUtils.map(entityManager, json, profile::setImage);
                         });
-                        patcher.patch("links", (EntityPatch.NodeConsumer<Profile>) (profile, json) -> {
-                            List<ProfileLink> links = profile.getLinks();
-
-                            for (JsonNode linkNode : json) {
-                                // TODO(fuxing): Decide whether to delete
-                            }
+                        patcher.patch("links", Profile::getLinks, (profileLink, jsonNode) -> {
+                            return profileLink.getUid().equals(jsonNode.path("uid").asText());
+                        }, linkPatcher -> {
+                            linkPatcher.patch("url", ProfileLink::setUrl);
+                            linkPatcher.patch("name", ProfileLink::setName);
+                            linkPatcher.patch("position", ProfileLink::setPosition);
+                        }, (profile, node) -> {
+                            ProfileLink link = JsonUtils.toObject(node, ProfileLink.class);
+                            link.setProfile(profile);
+                            return link;
                         });
                     })
                     .persist();

@@ -3,6 +3,7 @@ package app.munch.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import java.net.URI;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -47,6 +48,26 @@ public enum ProfileLinkType {
         }
         return Stream.of(ProfileLinkType.values()).filter(e -> e.toString().equals(value)).findFirst()
                 .orElse(UNKNOWN_TO_SDK_VERSION);
+    }
+
+    public static ProfileLinkType fromUrl(String url) {
+        if (url == null) return null;
+
+        try {
+            URI uri = URI.create(url);
+            switch (uri.getHost()) {
+                case "instagram.com":
+                case "www.instagram.com":
+                    return INSTAGRAM;
+
+                case "facebook.com":
+                case "www.facebook.com":
+                    return FACEBOOK;
+            }
+        } catch (Exception ignored) {
+        }
+
+        return OTHERS;
     }
 
     public static Set<ProfileLinkType> knownValues() {

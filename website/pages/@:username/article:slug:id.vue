@@ -42,7 +42,7 @@
         <div class="mt-24">
           <div class="flex-1-2-3 m--12">
             <div v-for="article in moreFromAuthorArticles" :key="article.id" class="p-12">
-              <article-card-medium class="wh-100" :article="article"/>
+              <article-card type="mini" :article="article"/>
             </div>
           </div>
         </div>
@@ -53,12 +53,12 @@
 
 <script>
   import ArticleContent from "../../components/article/ArticleContent";
-  import ArticleCardMedium from "../../components/article/ArticleCardMedium";
   import ArticleContextMap from "../../components/article/ArticleContextMap";
   import CdnImg from "../../components/utils/image/CdnImg";
+  import ArticleCard from "../../components/article/ArticleCard";
 
   export default {
-    components: {CdnImg, ArticleContextMap, ArticleCardMedium, ArticleContent},
+    components: {ArticleCard, CdnImg, ArticleContextMap, ArticleContent},
     head() {
       const {profile: {name, username}, image, title, description, slug, id} = this.article
       return this.$head({

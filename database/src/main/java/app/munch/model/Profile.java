@@ -64,7 +64,7 @@ public final class Profile {
 
     @NotNull
     @Size(max = 4)
-    @OneToMany(cascade = {}, fetch = FetchType.LAZY, mappedBy = "profile")
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, mappedBy = "profile", orphanRemoval = true)
     @OrderBy("position DESC")
     private List<ProfileLink> links;
 
@@ -159,6 +159,12 @@ public final class Profile {
     @PreUpdate
     void preUpdate() {
         setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+
+        if (getLinks() != null) {
+            getLinks().forEach(link -> {
+                link.setProfile(this);
+            });
+        }
 
         ValidationException.validate(this, Default.class);
     }

@@ -34,6 +34,26 @@
       </div>
     </div>
 
+    <div class="mt-32" v-if="profile.links.length > 0">
+      <div class="m--6 flex-wrap">
+        <a class="p-6 block text-decoration-none black" v-for="link in profile.links" :key="link.uid"
+           :href="link.url" target="_blank" rel="noreferrer nofollow noopener">
+          <div class="bg-steam border-3 p-4-8 flex-align-center">
+            <div class="p-2">
+              <simple-svg v-if="link.type === 'INSTAGRAM'" class="wh-20px"
+                          :filepath="require('~/assets/icon/icons8-instagram.svg')"/>
+              <simple-svg v-else-if="link.type === 'FACEBOOK'" class="wh-20px"
+                          :filepath="require('~/assets/icon/icons8-facebook.svg')"/>
+              <simple-svg v-else class="wh-20px" :filepath="require('~/assets/icon/icons8-web.svg')"/>
+            </div>
+            <div>
+              <div class="p-2 bold">{{link.name}}</div>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+
     <div class="mt-48 pb-256">
       <div class="hr-bot">
         <div class="mr-16 mb-8 header hover-pointer">
@@ -44,7 +64,7 @@
       <div class="mt-24">
         <div v-if="articles.length > 0">
           <div v-for="article in articles" :key="article.id" class="ptb-12">
-            <article-card-large :article="article"/>
+            <article-card :article="article"/>
           </div>
 
           <div v-if="next">
@@ -69,10 +89,10 @@
 
 <script>
   import CdnImg from "../../components/utils/image/CdnImg";
-  import ArticleCardLarge from "../../components/article/ArticleCardLarge";
+  import ArticleCard from "../../components/article/ArticleCard";
 
   export default {
-    components: {ArticleCardLarge, CdnImg},
+    components: {ArticleCard, CdnImg},
     validate({params: {username}}) {
       return /^[a-z0-9]{3,32}$/.test(_.toLower(username))
     },

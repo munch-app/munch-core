@@ -60,7 +60,8 @@
     head() {
       const {image, name, description, slug, id} = this.place
       return this.$head({
-        robots: {follow: true, index: true},
+        // TODO(fuxing): Right now, don't index
+        robots: {follow: true, index: false},
         canonical: `https://www.munch.app/${slug}-${id}`,
         graph: {
           title: `${name} · Munch`,

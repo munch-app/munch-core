@@ -37,7 +37,7 @@ public final class ProfileLink {
 
     @JsonIgnore
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {}, optional = false)
     private Profile profile;
 
     @NotBlank
@@ -148,6 +148,7 @@ public final class ProfileLink {
     @PreUpdate
     void preUpdate() {
         setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+        setType(ProfileLinkType.fromUrl(getUrl()));
 
         ValidationException.validate(this, Default.class);
     }
