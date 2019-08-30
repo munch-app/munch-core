@@ -347,6 +347,8 @@ public abstract class ArticleModel {
             private String caption;
 
             // TODO(fuxing): similar to medium.com add image style?
+            // - Wide
+            // - Content Width
 
             public Image getImage() {
                 return image;

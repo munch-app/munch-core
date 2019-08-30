@@ -8,7 +8,7 @@
             <search-bar class="SearchBar" @onBlur="onBlur" @onFocus="onFocus"/>
           </portal-target>
         </div>
-        <header-right class="HeaderRight" :clear="isClear"/>
+        <header-right class="HeaderRight"/>
         <header-profile/>
       </div>
     </nav>

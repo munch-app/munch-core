@@ -10,7 +10,6 @@ public final class AdminModule extends ApiServiceModule {
     protected void configure() {
         addService(TagAdminService.class);
         addService(ProfileAdminService.class);
-        addService(ManagedPageAdminService.class);
 
         addService(PublicationAdminService.class);
         addService(ArticleAdminSystem.class);

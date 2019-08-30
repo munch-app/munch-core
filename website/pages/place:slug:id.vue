@@ -60,7 +60,7 @@
     head() {
       const {image, name, description, slug, id} = this.place
       return this.$head({
-        // TODO(fuxing): Right now, don't index
+        // TODO(fuxing): Note: Right now, don't index, wait for completion and proper migration of /places first
         robots: {follow: true, index: false},
         canonical: `https://www.munch.app/${slug}-${id}`,
         graph: {

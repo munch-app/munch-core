@@ -187,9 +187,10 @@ public final class ArticleEntityManager {
             long millis = System.currentTimeMillis();
             AtomicLong position = new AtomicLong(millis);
 
-            // TODO(fuxing): Respect ArticleModel.Options
-            // TODO(fuxing): This needs to be changed in Partner 2
-            // TODO(fuxing): allow duplication of place to store, b.c. people can add multiple place in article.
+            // TODO(fuxing): On Published, do after place revision is completed.
+            // - Respect ArticleModel.Options
+            // - This needs to be changed in Partner 2
+            // - allow duplication of place to store, b.c. people can add multiple place in article.
             article.getContent().stream()
                     .filter(node -> node.getType().equals("place"))
                     .map(n -> (ArticleModel.PlaceNode) n)

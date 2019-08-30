@@ -9,7 +9,6 @@ import dev.fuxing.validator.ValidEnum;
 import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -30,6 +29,9 @@ import java.util.Date;
 @Entity
 @Table(name = "PlaceAffiliate")
 public final class PlaceAffiliate {
+    /*
+        all persistence should be made from Affiliate
+     */
 
     @NotNull
     @Pattern(regexp = KeyUtils.ULID_REGEX)
@@ -37,25 +39,26 @@ public final class PlaceAffiliate {
     @Column(length = 26, updatable = false, nullable = false, unique = true)
     private String uid;
 
-    @ValidEnum
-    @Enumerated(EnumType.STRING)
-    private AffiliateType type;
-
-    @URL
-    @Size(max = 1000)
-    @NotBlank
-    @Column(length = 1000, updatable = true, nullable = false, unique = false)
-    private String url;
+    @JsonIgnore
+    @NotNull
+    @OneToOne(cascade = {}, fetch = FetchType.LAZY, optional = false, orphanRemoval = true)
+    @MapsId
+    private Affiliate affiliate;
 
     @JsonIgnore
     @NotNull
     @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = false)
     private Place place;
 
+    @ValidEnum
+    @Enumerated(EnumType.STRING)
+    private AffiliateType type;
+
+    @URL
     @NotNull
-    @Pattern(regexp = "[0-9]{4}-[0-9]{2}-[0-9]{2}")
-    @Column(length = 10, updatable = true, nullable = false, unique = false)
-    private String version;
+    @Size(max = 2048)
+    @Column(length = 2048, updatable = true, nullable = false, unique = false)
+    private String url;
 
     @NotNull
     @Version
@@ -74,6 +77,22 @@ public final class PlaceAffiliate {
         this.uid = uid;
     }
 
+    public Affiliate getAffiliate() {
+        return affiliate;
+    }
+
+    public void setAffiliate(Affiliate affiliate) {
+        this.affiliate = affiliate;
+    }
+
+    public Place getPlace() {
+        return place;
+    }
+
+    public void setPlace(Place place) {
+        this.place = place;
+    }
+
     public AffiliateType getType() {
         return type;
     }
@@ -88,22 +107,6 @@ public final class PlaceAffiliate {
 
     public void setUrl(String url) {
         this.url = url;
-    }
-
-    public Place getPlace() {
-        return place;
-    }
-
-    public void setPlace(Place place) {
-        this.place = place;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
     }
 
     public Date getUpdatedAt() {
@@ -127,7 +130,6 @@ public final class PlaceAffiliate {
         long millis = System.currentTimeMillis();
         setUid(KeyUtils.nextULID(millis));
         setCreatedAt(new Timestamp(millis));
-        setVersion("2019-09-09");
 
         preUpdate();
     }

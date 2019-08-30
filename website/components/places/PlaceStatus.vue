@@ -27,7 +27,6 @@
       title: 'Deleted from Munch',
       message: 'This place has permanently closed or removed from Munch. Know this place?',
     },
-    // TODO renamed and redirect need to be build
     'renamed': {
       title: 'This place is renamed.',
     },

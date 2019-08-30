@@ -1,7 +1,12 @@
 <template>
   <figure>
-    <cdn-img :image="image" type="1080x1080"/>
-    <figcaption v-if="caption">{{caption}}</figcaption>
+    <cdn-img class="Image" :class="{Editing: editing}" :image="image" type="1080x1080" :alt="caption"/>
+    <template v-if="editing">
+      <input class="mt-4 w-100 small b-a75 text-center" placeholder="image caption" v-model="caption"/>
+    </template>
+    <template v-else>
+      <figcaption class="mt-4 w-100 small b-a75 text-center" v-if="caption">{{caption}}</figcaption>
+    </template>
   </figure>
 </template>
 
@@ -13,6 +18,9 @@
     components: {CdnImg},
     props: ['node', 'updateAttrs', 'editable'],
     computed: {
+      editing() {
+        return !!this.updateAttrs
+      },
       image: {
         get() {
           return this.node.attrs.image
@@ -32,3 +40,18 @@
     }
   }
 </script>
+
+<style scoped lang="less">
+  input, figcaption {
+    outline: none;
+    border: none;
+    background: none;
+    padding: 0;
+  }
+
+  .Image.Editing {
+    &:hover {
+      outline: 3px solid #07F;
+    }
+  }
+</style>

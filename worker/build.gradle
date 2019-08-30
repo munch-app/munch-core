@@ -1,0 +1,14 @@
+dependencies {
+    compile group: 'com.google.inject', name: 'guice', version: guiceVersion
+
+    compile group: 'dev.fuxing', name: 'transport-core', version: transportVersion
+
+    compile group: 'com.amazonaws', name: 'aws-java-sdk-dynamodb', version: awsVersion1
+}
+
+
+subprojects {
+    dependencies {
+        compile project(':worker')
+    }
+}

@@ -9,6 +9,8 @@ include 'database'
  * Munch App universal worker
  */
 include 'worker'
+include 'worker:worker-affiliate-chope'
+include 'worker:worker-instagram'
 
 /**
  * Munch Public API
