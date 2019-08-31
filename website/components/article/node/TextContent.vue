@@ -9,7 +9,7 @@
   <i v-else-if="mark.type === 'italic'">
     <text-content :text="text" :marks="nextMarks"/>
   </i>
-  <a v-else-if="mark.type === 'link'" :href="attrs.href">
+  <a v-else-if="mark.type === 'link'" :href="attrs.href" target="_blank" rel="noreferrer nofollow noopener">
     <text-content :text="text" :marks="nextMarks"/>
   </a>
   <span v-else>{{text}}</span>
