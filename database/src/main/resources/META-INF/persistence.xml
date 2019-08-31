@@ -15,12 +15,14 @@
         <class>app.munch.model.Account</class>
         <class>app.munch.model.Profile</class>
         <class>app.munch.model.ProfileLink</class>
+        <class>app.munch.model.ProfileRestriction</class>
 
         <class>app.munch.model.Image</class>
 
         <class>app.munch.model.Place</class>
         <class>app.munch.model.PlaceImage</class>
         <class>app.munch.model.PlaceRevision</class>
+        <class>app.munch.model.PlaceLocking</class>
 
         <class>app.munch.model.Tag</class>
 

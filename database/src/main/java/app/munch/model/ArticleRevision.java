@@ -37,7 +37,7 @@ public final class ArticleRevision extends ArticleModel {
     private Article article;
 
     @NotNull
-    @Pattern(regexp = "^[0123456789abcdefghjkmnpqrstvwxyz]{12}1$")
+    @Pattern(regexp = "^[0-9a-hjkmnp-tv-z]{12}1$")
     @Column(length = 13, updatable = false, nullable = false, unique = false)
     private String id;
 
@@ -127,7 +127,7 @@ public final class ArticleRevision extends ArticleModel {
 
         setId(article.getId());
         setProfile(article.getProfile());
-        setSlug(KeyUtils.generateSlug(article.getTitle()), 200);
+        setSlug(KeyUtils.generateSlug(article.getTitle(), 200));
 
         if (getPublished() != null && getPublished()) {
             ValidationException.validate(this, Default.class, ArticlePublishedGroup.class);

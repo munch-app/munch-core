@@ -76,7 +76,7 @@ public interface Status {
     final class MovedStatus implements Status {
 
         @NotNull
-        @Pattern(regexp = "^[0123456789abcdefghjkmnpqrstvwxyz]{12}0$")
+        @Pattern(regexp = "^[0-9a-hjkmnp-tv-z]{12}0$")
         private String id;
 
         @NotNull

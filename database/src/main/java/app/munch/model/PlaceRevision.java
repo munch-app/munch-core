@@ -1,6 +1,7 @@
 package app.munch.model;
 
 import app.munch.model.constraint.PlaceDefaultGroup;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.fuxing.err.ValidationException;
@@ -27,7 +28,7 @@ import java.util.stream.Collectors;
 public final class PlaceRevision extends PlaceModel {
 
     @NotNull
-    @Pattern(regexp = "^[0123456789abcdefghjkmnpqrstvwxyz]{12}0$")
+    @Pattern(regexp = "^[0-9a-hjkmnp-tv-z]{12}0$")
     @Column(length = 13, updatable = false, nullable = false, unique = false)
     private String id;
 
@@ -37,6 +38,7 @@ public final class PlaceRevision extends PlaceModel {
     @Column(length = 26, updatable = false, nullable = false, unique = true)
     private String uid;
 
+    @JsonIgnore
     @NotNull
     @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = false)
     private Place place;

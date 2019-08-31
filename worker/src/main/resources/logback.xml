@@ -54,7 +54,7 @@
         <appender-ref ref="ASYNC_STDOUT"/>
     </logger>
 
-    <logger name="app.munch.model.PlaceEdit.Builder" level="TRACE" additivity="false">
+    <logger name="app.munch.model.PlaceStruct.Builder" level="TRACE" additivity="false">
         <appender-ref ref="ASYNC_STDOUT"/>
     </logger>
 

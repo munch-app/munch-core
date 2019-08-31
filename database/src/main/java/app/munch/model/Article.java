@@ -28,7 +28,7 @@ import java.util.Date;
 public final class Article extends ArticleModel {
 
     @NotNull
-    @Pattern(regexp = "^[0123456789abcdefghjkmnpqrstvwxyz]{12}1$")
+    @Pattern(regexp = "^[0-9a-hjkmnp-tv-z]{12}1$")
     @Id
     @Column(length = 13, updatable = false, nullable = false, unique = true)
     private String id;
@@ -91,7 +91,7 @@ public final class Article extends ArticleModel {
 
     @PreUpdate
     void preUpdate() {
-        setSlug(KeyUtils.generateSlug(getTitle()), 200);
+        setSlug(KeyUtils.generateSlug(getTitle(), 200));
         setUpdatedAt(new Timestamp(System.currentTimeMillis()));
 
         switch (getStatus()) {

@@ -33,7 +33,6 @@ import java.util.stream.Collectors;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class PlaceStruct extends PlaceModel {
-    private static final Logger logger = LoggerFactory.getLogger(PlaceStruct.class);
 
     public static final class UserType extends PojoUserType<PlaceStruct> {
         public UserType() {
@@ -74,6 +73,8 @@ public final class PlaceStruct extends PlaceModel {
     }
 
     public static final class Builder {
+        private static final Logger logger = LoggerFactory.getLogger(Builder.class);
+
         private final BuilderFactory factory;
         private final PlaceStruct place;
 
@@ -225,7 +226,8 @@ public final class PlaceStruct extends PlaceModel {
             return this;
         }
 
-        public Builder hours(Triple<String, LocalTime, LocalTime>... hours) {
+        @SafeVarargs
+        public final Builder hours(Triple<String, LocalTime, LocalTime>... hours) {
             Set<Hour> set = Arrays.stream(hours)
                     .map(triple -> {
                         if (triple.getLeft() == null) return null;

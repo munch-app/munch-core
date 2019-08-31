@@ -1,45 +1,53 @@
 package app.munch.model;
 
 import app.munch.model.constraint.TagDefaultGroup;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.fuxing.err.ValidationException;
-import dev.fuxing.utils.KeyUtils;
 import dev.fuxing.validator.ValidEnum;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.groups.Default;
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.Objects;
 
 /**
  * Created by: Fuxing
- * Date: 2019-08-06
- * Time: 18:35
+ * Date: 31/8/19
+ * Time: 4:37 pm
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
-@Table(name = "Tag")
-public final class Tag {
+@Table(name = "PlaceLocking")
+public final class PlaceLocking {
 
     @NotNull
-    @Pattern(regexp = "^[0-9a-hjkmnp-tv-z]{12}4$")
+    @Pattern(regexp = "^[0-9a-hjkmnp-tv-z]{12}0$")
     @Id
-    @Column(length = 13, updatable = false, nullable = false, unique = true)
+    @Column(length = 13, updatable = false, nullable = false, unique = false)
     private String id;
 
+    @JsonIgnore
+    @NotNull
+    @OneToOne(cascade = {}, fetch = FetchType.LAZY, optional = false, orphanRemoval = false)
+    @MapsId
+    private Place place;
+
+    @JsonIgnore
+    @NotNull
+    @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = false)
+    private Profile profile;
+
+    /**
+     * Type of locking that is in place.
+     */
     @ValidEnum
     @Enumerated(EnumType.STRING)
-    private TagType type;
-
-    @NotBlank
-    @Column(length = 100, updatable = true, nullable = true, unique = false)
-    private String name;
+    private PlaceLockingType type;
 
     @NotNull(groups = TagDefaultGroup.class)
     @Version
@@ -58,20 +66,28 @@ public final class Tag {
         this.id = id;
     }
 
-    public TagType getType() {
+    public Place getPlace() {
+        return place;
+    }
+
+    public void setPlace(Place place) {
+        this.place = place;
+    }
+
+    public Profile getProfile() {
+        return profile;
+    }
+
+    public void setProfile(Profile profile) {
+        this.profile = profile;
+    }
+
+    public PlaceLockingType getType() {
         return type;
     }
 
-    public void setType(TagType type) {
+    public void setType(PlaceLockingType type) {
         this.type = type;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public Date getUpdatedAt() {
@@ -90,24 +106,12 @@ public final class Tag {
         this.createdAt = createdAt;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Tag tag = (Tag) o;
-        return Objects.equals(id, tag.id) &&
-                type == tag.type &&
-                Objects.equals(name, tag.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, type, name);
-    }
-
     @PrePersist
     void prePersist() {
-        setId(KeyUtils.nextL12() + "4");
+        if (getPlace() != null) {
+            setId(getPlace().getId());
+        }
+
         setCreatedAt(new Timestamp(System.currentTimeMillis()));
 
         preUpdate();
@@ -116,6 +120,7 @@ public final class Tag {
     @PreUpdate
     void preUpdate() {
         setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-        ValidationException.validate(this, Default.class, TagDefaultGroup.class);
+
+        ValidationException.validate(this, Default.class);
     }
 }

@@ -13,6 +13,8 @@ import java.util.Date;
 
 /**
  * This data is directly mirroring Firebase Authentication for its id.
+ * Important to note that account is for internal operational purpose. This entity should MUST never be transmitted out
+ * of the protected VPC.
  * <p>
  * Created by: Fuxing
  * Date: 2019-07-15

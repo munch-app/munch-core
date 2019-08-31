@@ -35,7 +35,7 @@ import java.util.Set;
 public final class Publication {
 
     @NotNull
-    @Pattern(regexp = "^[0123456789abcdefghjkmnpqrstvwxyz]{12}5$")
+    @Pattern(regexp = "^[0-9a-hjkmnp-tv-z]{12}5$")
     @Id
     @Column(length = 13, updatable = false, nullable = false, unique = true)
     private String id;

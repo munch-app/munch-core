@@ -135,7 +135,7 @@ public final class ManagedPage {
     public static class PublicationArticlesNode implements Node {
 
         @NotNull(groups = {ManagedPagePublishedGroup.class})
-        @Pattern(regexp = "^[0123456789abcdefghjkmnpqrstvwxyz]{12}5$")
+        @Pattern(regexp = "^[0-9a-hjkmnp-tv-z]{12}5$")
         private String publicationId;
 
         @Override
@@ -157,7 +157,7 @@ public final class ManagedPage {
     public static class PublicationFeaturedArticlesNode implements Node {
 
         @NotNull(groups = {ManagedPagePublishedGroup.class})
-        @Pattern(regexp = "^[0123456789abcdefghjkmnpqrstvwxyz]{12}5$")
+        @Pattern(regexp = "^[0-9a-hjkmnp-tv-z]{12}5$")
         private String publicationId;
 
         @Override

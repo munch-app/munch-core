@@ -6,5 +6,5 @@ package app.munch.model.constraint;
  * Time: 12:05 PM
  * Project: munch-core
  */
-public interface AffiliateDeletedGroup {
+public interface AffiliatePlaceNotNullGroup {
 }

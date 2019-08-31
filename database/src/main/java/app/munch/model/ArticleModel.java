@@ -159,6 +159,7 @@ public abstract class ArticleModel {
     public static final class Options {
         private Boolean map;
         private Boolean ads;
+        private Boolean affiliate;
 
         private Boolean placePublishing;
         private Boolean placeSyndication;
@@ -183,6 +184,17 @@ public abstract class ArticleModel {
 
         public void setAds(Boolean ads) {
             this.ads = ads;
+        }
+
+        /**
+         * @return whether to show munch affiliates if available.
+         */
+        public Boolean getAffiliate() {
+            return affiliate;
+        }
+
+        public void setAffiliate(Boolean affiliate) {
+            this.affiliate = affiliate;
         }
 
         /**
@@ -408,7 +420,7 @@ public abstract class ArticleModel {
             public static final class Place extends PlaceModel {
 
                 @NotNull(groups = {ArticlePublishedGroup.class})
-                @Pattern(regexp = "^[0123456789abcdefghjkmnpqrstvwxyz]{12}0$")
+                @Pattern(regexp = "^[0-9a-hjkmnp-tv-z]{12}0$")
                 private String id;
 
                 @NotNull(groups = {ArticlePublishedGroup.class})
