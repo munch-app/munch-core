@@ -16,9 +16,20 @@ import java.util.stream.Stream;
 public enum AffiliateStatus {
 
     /**
+     * Affiliate is pending, waiting for linking to place.
+     */
+    PENDING("PENDING"),
+
+    /**
      * Affiliate is linked to place, meaning it's serving live now
      */
     LINKED("LINKED"),
+
+    /**
+     * Affiliate was once linked but dropped its link due to major changes in information provided.
+     * - Basically, dropped for safety reason.
+     */
+    DROPPED("DROPPED"),
 
     /**
      * Affiliate is deleted from the source.

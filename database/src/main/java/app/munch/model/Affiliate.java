@@ -1,7 +1,9 @@
 package app.munch.model;
 
-import app.munch.model.constraint.AffiliateDeletedGroup;
+import app.munch.model.constraint.AffiliatePlaceNotNullGroup;
+import app.munch.model.constraint.AffiliatePlaceNullGroup;
 import app.munch.model.constraint.AffiliateLinkedGroup;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.fuxing.err.ValidationException;
@@ -48,16 +50,21 @@ public final class Affiliate {
     @Enumerated(EnumType.STRING)
     private AffiliateStatus status;
 
+    @JsonIgnore
+    @NotNull(groups = {AffiliatePlaceNotNullGroup.class})
+    @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = true)
+    private Place place;
+
     @Valid
     @NotNull(groups = {AffiliateLinkedGroup.class})
-    @Null(groups = {AffiliateDeletedGroup.class})
+    @Null(groups = {AffiliatePlaceNullGroup.class})
     @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER, optional = true, orphanRemoval = true, mappedBy = "affiliate")
     private PlaceAffiliate linked;
 
     @Valid
     @NotNull
     @Type(type = "PlaceStruct")
-    private PlaceStruct place;
+    private PlaceStruct placeStruct;
 
     @URL
     @NotNull
@@ -108,6 +115,14 @@ public final class Affiliate {
         this.status = status;
     }
 
+    public Place getPlace() {
+        return place;
+    }
+
+    public void setPlace(Place place) {
+        this.place = place;
+    }
+
     public PlaceAffiliate getLinked() {
         return linked;
     }
@@ -116,12 +131,12 @@ public final class Affiliate {
         this.linked = linked;
     }
 
-    public PlaceStruct getPlace() {
-        return place;
+    public PlaceStruct getPlaceStruct() {
+        return placeStruct;
     }
 
-    public void setPlace(PlaceStruct place) {
-        this.place = place;
+    public void setPlaceStruct(PlaceStruct placeStruct) {
+        this.placeStruct = placeStruct;
     }
 
     public String getUrl() {
@@ -191,9 +206,14 @@ public final class Affiliate {
                     ValidationException.validate(this, Default.class, AffiliateLinkedGroup.class);
                     break;
 
+                case PENDING:
                 case DELETED_MUNCH:
                 case DELETED_SOURCE:
-                    ValidationException.validate(this, Default.class, AffiliateDeletedGroup.class);
+                    ValidationException.validate(this, Default.class, AffiliatePlaceNullGroup.class);
+                    break;
+
+                case DROPPED:
+                    ValidationException.validate(this, Default.class, AffiliatePlaceNotNullGroup.class);
                     break;
             }
         }

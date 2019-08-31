@@ -30,7 +30,7 @@ import java.util.Date;
 @Table(name = "PlaceAffiliate")
 public final class PlaceAffiliate {
     /*
-        all persistence should be made from Affiliate
+     * All persistence should be made from Affiliate
      */
 
     @NotNull
