@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.fuxing.err.ValidationException;
 import dev.fuxing.utils.KeyUtils;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -51,11 +52,11 @@ public final class Profile {
     private String username;
 
     @NotBlank
-    @Size(max = 100)
+    @Length(max = 100)
     @Column(length = 100, updatable = true, nullable = true, unique = false)
     private String name;
 
-    @Size(max = 250)
+    @Length(max = 250)
     @Column(length = 250, updatable = true, nullable = true, unique = false)
     private String bio;
 

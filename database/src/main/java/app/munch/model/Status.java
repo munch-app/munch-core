@@ -5,8 +5,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import dev.fuxing.validator.ValidEnum;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.util.Date;
 
 /**
@@ -41,6 +43,7 @@ public interface Status {
     @JsonIgnoreProperties(ignoreUnknown = true)
     final class DeletedStatus implements Status {
 
+        @Length(max = 255)
         private String reason;
 
         @NotNull
@@ -73,6 +76,7 @@ public interface Status {
     final class MovedStatus implements Status {
 
         @NotNull
+        @Pattern(regexp = "^[0123456789abcdefghjkmnpqrstvwxyz]{12}0$")
         private String id;
 
         @NotNull

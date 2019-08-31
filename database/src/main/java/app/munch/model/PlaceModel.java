@@ -35,23 +35,36 @@ import java.util.Set;
 @TypeDef(name = "PlaceModel.HoursType", typeClass = PlaceModel.HoursType.class)
 @TypeDef(name = "PlaceModel.TagsType", typeClass = PlaceModel.TagsType.class)
 public abstract class PlaceModel {
-    // Add Brand, Menu
+    /*
+     * Validation groups:
+     * Default.class for hard limits and malformed values.
+     * PlaceDefaultGroup.class for data being published and verified by human.
+     *
+     * Ideally human entered data, validate this both groups.
+     * For machine parsed data, validate with Default.class group will do.
+     */
+
+    /*
+     * Improvements:
+     * - Brand, @ManyToOne relationship
+     * - Menu, JsonUserType
+     */
 
     @NotBlank(groups = {PlaceDefaultGroup.class, ArticlePublishedGroup.class})
-    @Size(max = 100)
+    @Length(max = 100)
     @Column(length = 100, updatable = true, nullable = true, unique = false)
     private String name;
 
-    @Size(max = 100)
+    @Length(max = 100)
     @Column(length = 100, updatable = true, nullable = true, unique = false)
     private String phone;
 
     @URL(groups = {PlaceDefaultGroup.class, ArticlePublishedGroup.class})
-    @Size(max = 1000)
+    @Length(max = 1000)
     @Column(length = 1000, updatable = true, nullable = true, unique = false)
     private String website;
 
-    @Size(max = 250)
+    @Length(max = 250)
     @Column(length = 250, updatable = true, nullable = true, unique = false)
     private String description;
 
@@ -60,26 +73,26 @@ public abstract class PlaceModel {
     private Price price;
 
     @Valid
-    @NotNull
+    @NotNull(groups = {PlaceDefaultGroup.class})
     @Type(type = "PlaceModel.LocationType")
     private Location location;
 
     @Valid
-    @NotNull
+    @NotNull(groups = {PlaceDefaultGroup.class})
     @Type(type = "PlaceModel.StatusType")
     private Status status;
 
     @Valid
-    @NotNull
+    @NotNull(groups = {PlaceDefaultGroup.class})
     @Size(max = 4)
     @Type(type = "PlaceModel.SynonymsType")
-    private Set<@NotNull @Length(min = 0, max = 100) String> synonyms;
+    private Set<@NotBlank @Length(max = 100) String> synonyms;
 
     /**
      * Regardless of Groups, validation is default because data is retrieved from external source
      */
     @Valid
-    @NotNull
+    @NotNull(groups = {PlaceDefaultGroup.class})
     @Size(max = 12)
     @Type(type = "PlaceModel.TagsType")
     private Set<@NotNull Tag> tags;
@@ -88,7 +101,7 @@ public abstract class PlaceModel {
      * Regardless of Groups, validation is default because data is retrieved from external source
      */
     @Valid
-    @NotNull
+    @NotNull(groups = {PlaceDefaultGroup.class})
     @Size(max = 24)
     @Type(type = "PlaceModel.HoursType")
     private Set<@NotNull Hour> hours;
@@ -176,15 +189,18 @@ public abstract class PlaceModel {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Location {
-        // Might need to auto fill country/city
 
+        @Length(max = 100)
         private String unitNumber;
 
+        @Length(max = 100)
         private String postcode;
 
+        @Length(max = 255)
         @NotNull(groups = {PlaceDefaultGroup.class, ArticlePublishedGroup.class})
         private String address;
 
+        @Length(max = 255)
         @NotNull(groups = {PlaceDefaultGroup.class, ArticlePublishedGroup.class})
         @Pattern(regexp = "^[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?),\\s*[-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)$")
         private String latLng;

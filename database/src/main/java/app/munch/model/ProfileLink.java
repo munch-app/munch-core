@@ -6,13 +6,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.fuxing.err.ValidationException;
 import dev.fuxing.utils.KeyUtils;
 import dev.fuxing.validator.ValidEnum;
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import javax.validation.groups.Default;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -41,12 +41,12 @@ public final class ProfileLink {
     private Profile profile;
 
     @NotBlank
-    @Size(max = 50)
+    @Length(max = 50)
     @Column(length = 50, updatable = true, nullable = false, unique = false)
     private String name;
 
     @URL
-    @Size(max = 1000)
+    @Length(max = 1000)
     @NotBlank
     @Column(length = 1000, updatable = true, nullable = false, unique = false)
     private String url;

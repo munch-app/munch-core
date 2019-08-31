@@ -54,6 +54,10 @@
         <appender-ref ref="ASYNC_STDOUT"/>
     </logger>
 
+    <logger name="app.munch.model.PlaceStruct" level="TRACE" additivity="false">
+        <appender-ref ref="ASYNC_STDOUT"/>
+    </logger>
+
     <root level="WARN">
         <appender-ref ref="ASYNC_STDOUT"/>
     </root>

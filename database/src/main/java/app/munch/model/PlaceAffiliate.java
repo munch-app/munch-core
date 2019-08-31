@@ -6,12 +6,12 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.fuxing.err.ValidationException;
 import dev.fuxing.utils.KeyUtils;
 import dev.fuxing.validator.ValidEnum;
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import javax.validation.groups.Default;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -56,7 +56,7 @@ public final class PlaceAffiliate {
 
     @URL
     @NotNull
-    @Size(max = 2048)
+    @Length(max = 2048)
     @Column(length = 2048, updatable = true, nullable = false, unique = false)
     private String url;
 

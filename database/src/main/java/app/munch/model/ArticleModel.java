@@ -11,11 +11,9 @@ import dev.fuxing.postgres.PojoUserType;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+import org.hibernate.validator.constraints.Length;
 
-import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.util.List;
@@ -343,7 +341,7 @@ public abstract class ArticleModel {
             @Valid
             private Image image;
 
-            @Size(max = 500)
+            @Length(max = 500)
             private String caption;
 
             // TODO(fuxing): similar to medium.com add image style?
@@ -395,14 +393,54 @@ public abstract class ArticleModel {
 
             @Valid
             @NotNull
-            private ArticlePlace place;
+            private Place place;
 
-            public ArticlePlace getPlace() {
+            public Place getPlace() {
                 return place;
             }
 
-            public void setPlace(ArticlePlace place) {
+            public void setPlace(Place place) {
                 this.place = place;
+            }
+
+            @JsonInclude(JsonInclude.Include.NON_NULL)
+            @JsonIgnoreProperties(ignoreUnknown = true)
+            public static final class Place extends PlaceModel {
+
+                @NotNull(groups = {ArticlePublishedGroup.class})
+                @Pattern(regexp = "^[0123456789abcdefghjkmnpqrstvwxyz]{12}0$")
+                private String id;
+
+                @NotNull(groups = {ArticlePublishedGroup.class})
+                @Pattern(regexp = "[0-9a-z-]{0,200}")
+                private String slug;
+
+                @Valid
+                private Image image;
+
+                public String getId() {
+                    return id;
+                }
+
+                public void setId(String id) {
+                    this.id = id;
+                }
+
+                public String getSlug() {
+                    return slug;
+                }
+
+                public void setSlug(String slug) {
+                    this.slug = slug;
+                }
+
+                public Image getImage() {
+                    return image;
+                }
+
+                public void setImage(Image image) {
+                    this.image = image;
+                }
             }
         }
     }
@@ -437,11 +475,11 @@ public abstract class ArticleModel {
             private List<Image> images;
 
             @NotBlank(groups = {ArticlePublishedGroup.class})
-            @Size(max = 100)
+            @Length(max = 100)
             private String line1;
 
             @NotBlank(groups = {ArticlePublishedGroup.class})
-            @Size(max = 100)
+            @Length(max = 100)
             private String line2;
 
             public List<Image> getImages() {

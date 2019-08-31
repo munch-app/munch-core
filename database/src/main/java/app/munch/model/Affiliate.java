@@ -7,6 +7,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.fuxing.err.ValidationException;
 import dev.fuxing.utils.KeyUtils;
 import dev.fuxing.validator.ValidEnum;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.*;
@@ -14,7 +17,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import javax.validation.groups.Default;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -29,6 +31,7 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "Affiliate")
+@TypeDef(name = "PlaceStruct", typeClass = PlaceStruct.UserType.class)
 public final class Affiliate {
 
     @NotNull
@@ -49,14 +52,16 @@ public final class Affiliate {
     @NotNull(groups = {AffiliateLinkedGroup.class})
     @Null(groups = {AffiliateDeletedGroup.class})
     @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER, optional = true, orphanRemoval = true, mappedBy = "affiliate")
-    private PlaceAffiliate place;
+    private PlaceAffiliate linked;
 
-    // TODO(fuxing): Identifying information
-    // TODO(fuxing): Json Meta
+    @Valid
+    @NotNull
+    @Type(type = "PlaceStruct")
+    private PlaceStruct place;
 
     @URL
     @NotNull
-    @Size(max = 2048)
+    @Length(max = 2048)
     @Column(length = 2048, updatable = true, nullable = true, unique = false)
     private String url;
 
@@ -103,11 +108,19 @@ public final class Affiliate {
         this.status = status;
     }
 
-    public PlaceAffiliate getPlace() {
+    public PlaceAffiliate getLinked() {
+        return linked;
+    }
+
+    public void setLinked(PlaceAffiliate linked) {
+        this.linked = linked;
+    }
+
+    public PlaceStruct getPlace() {
         return place;
     }
 
-    public void setPlace(PlaceAffiliate place) {
+    public void setPlace(PlaceStruct place) {
         this.place = place;
     }
 
@@ -164,11 +177,12 @@ public final class Affiliate {
     void preUpdate() {
         setUpdatedAt(new Timestamp(System.currentTimeMillis()));
 
-        if (getPlace() != null) {
-            getPlace().setUid(getUid());
-            getPlace().setAffiliate(this);
-            getPlace().setType(getType());
-            getPlace().setUrl(getUrl());
+        if (getLinked() != null) {
+            PlaceAffiliate linked = getLinked();
+            linked.setUid(getUid());
+            linked.setAffiliate(this);
+            linked.setType(getType());
+            linked.setUrl(getUrl());
         }
 
         if (getStatus() != null) {

@@ -39,8 +39,18 @@ import java.util.regex.Matcher;
 @Entity
 @Table(name = "Image")
 public final class Image {
-    // ImageDefaultGroup.class only for Database and internal use
-    // Default.class is of all cases including Database and internal use
+    /*
+     * Validation groups:
+     * Default.class is of all cases including Database and internal use
+     * ImageDefaultGroup.class only for Database and internal use
+     */
+
+    /*
+     * Improvements:
+     * A ImageLinked entity to track how images are used. By setting up this entity with foreign key constraint,
+     * you will effectively create cascading properties that forces user to remove this image from linked entity
+     * before it can deleted.
+     */
 
     private static final java.util.regex.Pattern LOC_PATTERN = java.util.regex.Pattern.compile(
             "^[a-z0-9]{3,}-([0123456789abcdefghjkmnpqrstvwxyz]{26})\\.[a-z0-9]{1,}"
