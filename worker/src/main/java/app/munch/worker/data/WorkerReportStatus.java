@@ -1,4 +1,4 @@
-package app.munch.worker.reporting;
+package app.munch.worker.data;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;

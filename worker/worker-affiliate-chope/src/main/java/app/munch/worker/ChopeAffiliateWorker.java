@@ -1,7 +1,7 @@
 package app.munch.worker;
 
 import app.munch.database.DatabaseModule;
-import app.munch.worker.reporting.WorkerReport;
+import app.munch.worker.data.WorkerReport;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import dev.fuxing.jpa.TransactionProvider;
@@ -26,6 +26,16 @@ public final class ChopeAffiliateWorker implements Worker {
     @Override
     public String group() {
         return "chope.co";
+    }
+
+    @Override
+    public String name() {
+        return "Chope Affiliate Program";
+    }
+
+    @Override
+    public String description() {
+        return "Synchronization of chope.co affiliate links into munch eco system.";
     }
 
     @Override

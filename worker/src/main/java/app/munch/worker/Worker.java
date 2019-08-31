@@ -1,6 +1,6 @@
 package app.munch.worker;
 
-import app.munch.worker.reporting.WorkerReport;
+import app.munch.worker.data.WorkerReport;
 
 /**
  * Created by: Fuxing
@@ -10,7 +10,20 @@ import app.munch.worker.reporting.WorkerReport;
  */
 public interface Worker {
 
+    /**
+     * @return identity of this worker, must be unique
+     */
     String group();
+
+    /**
+     * @return name of this worker, human readable.
+     */
+    String name();
+
+    /**
+     * @return description of this worker, human readable.
+     */
+    String description();
 
     void run(WorkerReport report) throws Exception;
 }

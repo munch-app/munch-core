@@ -1,7 +1,7 @@
 package app.munch.worker;
 
-import app.munch.worker.reporting.WorkerReport;
-import app.munch.worker.reporting.WorkerReportManager;
+import app.munch.worker.data.WorkerReport;
+import app.munch.worker.data.WorkerGroupManager;
 import dev.fuxing.health.HealthCheckServer;
 
 import javax.inject.Inject;
@@ -16,11 +16,11 @@ import javax.inject.Singleton;
 @Singleton
 public final class WorkerRunner {
 
-    private final WorkerReportManager reportManager;
+    private final WorkerGroupManager groupManager;
 
     @Inject
-    WorkerRunner(WorkerReportManager reportManager) {
-        this.reportManager = reportManager;
+    WorkerRunner(WorkerGroupManager groupManager) {
+        this.groupManager = groupManager;
     }
 
     /**
@@ -31,14 +31,14 @@ public final class WorkerRunner {
      * @param worker to run
      */
     public void run(Worker worker) {
-        WorkerReport report = reportManager.start(worker.group());
+        WorkerReport report = groupManager.start(worker);
 
         HealthCheckServer.startBlocking(() -> {
             try {
                 worker.run(report);
-                reportManager.complete(report);
+                groupManager.complete(report);
             } catch (Exception e) {
-                reportManager.error(report, e);
+                groupManager.error(report, e);
             }
         });
     }
