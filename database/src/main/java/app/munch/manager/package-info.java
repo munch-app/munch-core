@@ -3,6 +3,8 @@
  * <p>
  * When there are too many rules and it involve data lifecycle, an EntityManager will be created to help facilitate
  * better understand and modularity of the entity.
+ * Manager created here should not accept 'jpa.EntityManager'. The manager itself should procure their own transaction
+ * and close them within it's lifecycle.
  *
  * <p>
  * Created by: Fuxing

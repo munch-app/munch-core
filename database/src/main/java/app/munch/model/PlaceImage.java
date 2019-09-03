@@ -102,6 +102,10 @@ public final class PlaceImage {
         setUid(KeyUtils.nextULID(millis));
         setCreatedAt(new Timestamp(millis));
 
+        if (getProfile() == null && getImage() != null) {
+            setProfile(getImage().getProfile());
+        }
+
         preUpdate();
     }
 

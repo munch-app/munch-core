@@ -10,6 +10,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Created by: Fuxing
@@ -71,5 +72,20 @@ public final class Hour {
     @Override
     public int hashCode() {
         return Objects.hash(day, open, close);
+    }
+
+    /**
+     * Null check is done for the set.
+     * However null check is not done for each individual item in the set.
+     *
+     * @param left  Set of Hour lhs
+     * @param right Set of Hour rhs
+     * @return whether 2 set of Hour is the same
+     */
+    public static boolean equals(Set<Hour> left, Set<Hour> right) {
+        if (left == null && right == null) return true;
+        if (left == null || right == null) return false;
+
+        return left.equals(right);
     }
 }

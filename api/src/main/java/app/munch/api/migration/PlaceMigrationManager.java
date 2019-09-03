@@ -7,7 +7,6 @@ import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import dev.fuxing.jpa.TransactionProvider;
-import munch.data.client.PlaceClient;
 import munch.gallery.PlaceImageClient;
 
 import javax.inject.Inject;
@@ -31,13 +30,11 @@ public final class PlaceMigrationManager {
     private final TransactionProvider provider;
 
     private final ImageMigrationManager imageMigrationManager;
-    private final PlaceClient placeClient;
     private final PlaceImageClient imageClient;
 
     @Inject
-    PlaceMigrationManager(DynamoDB dynamoDB, TransactionProvider provider, PlaceClient placeClient, ImageMigrationManager imageMigrationManager, PlaceImageClient imageClient) {
+    PlaceMigrationManager(DynamoDB dynamoDB, TransactionProvider provider, ImageMigrationManager imageMigrationManager, PlaceImageClient imageClient) {
         this.provider = provider;
-        this.placeClient = placeClient;
         this.imageClient = imageClient;
         this.imageMigrationManager = imageMigrationManager;
 

@@ -7,6 +7,8 @@ import org.apache.commons.lang3.StringUtils;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.persistence.EntityManager;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
@@ -17,7 +19,6 @@ import java.util.stream.Collectors;
  * Date: 14/8/19
  * Time: 2:05 pm
  */
-@Deprecated
 @Singleton
 public final class PlaceBridge {
 
@@ -29,6 +30,10 @@ public final class PlaceBridge {
     }
 
     public void bridge(EntityManager entityManager, Place place, munch.data.place.Place deprecatedPlace) {
+        munch.data.place.Place.@NotNull @Valid Taste taste = deprecatedPlace.getTaste();
+        place.setImportant(taste.getImportance());
+        place.setCreatedBy(entityManager.find(Profile.class, Profile.COMPAT_ID));
+
         place.setName(StringUtils.substring(deprecatedPlace.getName(), 0, 100));
         place.setPhone(deprecatedPlace.getPhone());
         place.setWebsite(deprecatedPlace.getWebsite());

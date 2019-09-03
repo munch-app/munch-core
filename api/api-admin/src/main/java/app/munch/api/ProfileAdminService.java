@@ -1,6 +1,7 @@
 package app.munch.api;
 
 import app.munch.manager.ArticleEntityManager;
+import app.munch.manager.ArticlePlaceEntityManager;
 import app.munch.model.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import dev.fuxing.jpa.EntityPatch;
@@ -9,9 +10,12 @@ import dev.fuxing.jpa.TransactionProvider;
 import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
 import dev.fuxing.transport.service.TransportContext;
+import dev.fuxing.transport.service.TransportResult;
 
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by: Fuxing
@@ -21,11 +25,13 @@ import javax.validation.constraints.NotNull;
 public final class ProfileAdminService extends AdminService {
 
     private final ArticleEntityManager articleEntityManager;
+    private final ArticlePlaceEntityManager articlePlaceEntityManager;
 
     @Inject
-    ProfileAdminService(TransactionProvider provider, ArticleEntityManager articleEntityManager) {
+    ProfileAdminService(TransactionProvider provider, ArticleEntityManager articleEntityManager, ArticlePlaceEntityManager articlePlaceEntityManager) {
         super(provider);
         this.articleEntityManager = articleEntityManager;
+        this.articlePlaceEntityManager = articlePlaceEntityManager;
     }
 
     @Override
@@ -49,6 +55,7 @@ public final class ProfileAdminService extends AdminService {
 
                         PATH("/revisions", () -> {
                             POST("", this::profileArticleRevisionPost);
+                            POST("/publish", this::profileArticleRevisionPublish);
                             GET("/:uid", this::profileArticleRevisionGet);
                         });
                     });
@@ -151,20 +158,40 @@ public final class ProfileAdminService extends AdminService {
         String articleId = ctx.pathString("articleId");
         JsonNode body = ctx.bodyAsJson();
 
-        return articleEntityManager.patch(articleId, body, null);
+        Article article = articleEntityManager.patch(articleId, body, null);
+        if (article.getStatus() == ArticleStatus.DELETED) {
+            articlePlaceEntityManager.deleteAll(articleId);
+        }
+        return article;
     }
 
-    public ArticleRevision profileArticleRevisionPost(TransportContext ctx) {
+    public TransportResult profileArticleRevisionPost(TransportContext ctx) {
         String articleId = ctx.pathString("articleId");
         ArticleRevision revision = ctx.bodyAsObject(ArticleRevision.class);
+        revision.setPublished(false);
 
-        return articleEntityManager.post(articleId, revision, null);
+        articleEntityManager.post(articleId, revision, null);
+        return TransportResult.ok();
+    }
+
+    public TransportResult profileArticleRevisionPublish(TransportContext ctx) {
+        String articleId = ctx.pathString("articleId");
+        ArticleRevision revision = ctx.bodyAsObject(ArticleRevision.class);
+        revision.setPublished(true);
+
+        revision = articleEntityManager.post(articleId, revision, null);
+        List<ArticlePlaceEntityManager.Response> responses = articlePlaceEntityManager.populateAll(Profile.ADMIN_ID, revision);
+
+        return TransportResult.ok(Map.of(
+                "revision", revision,
+                "responses", responses
+        ));
     }
 
     public ArticleRevision profileArticleRevisionGet(TransportContext ctx) {
         String articleId = ctx.pathString("articleId");
         String uid = ctx.pathString("uid");
 
-        return articleEntityManager.getRevision(articleId, uid, null);
+        return articleEntityManager.get(articleId, uid, null);
     }
 }

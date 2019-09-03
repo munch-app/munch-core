@@ -106,11 +106,9 @@ public final class ArticleRevision extends ArticleModel {
     @PrePersist
     void prePersist() {
         // Initialising some required Article data
+        assert article != null;
         if (article.getId() == null) {
             article.setId(KeyUtils.nextL12() + "1");
-        }
-        if (article.getCreatedAt() == null) {
-            article.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         }
 
         long millis = System.currentTimeMillis();

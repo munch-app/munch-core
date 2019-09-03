@@ -162,7 +162,6 @@ public abstract class ArticleModel {
         private Boolean affiliate;
 
         private Boolean placePublishing;
-        private Boolean placeSyndication;
 
         /**
          * @return whether to show an embedded map if available.
@@ -198,9 +197,7 @@ public abstract class ArticleModel {
         }
 
         /**
-         * IF true, for places with Place.id -> it will publish changes to the current Place entity.
-         * IF false, for places with Place.id -> it will not publish changes but it will still link out to the place page.
-         * For places without Place.id, it will create a new entry regardless of this boolean flag.
+         * When publishing is enabled, it will sync both direction
          *
          * @return whether to publish place information into a new revision.
          */
@@ -210,17 +207,6 @@ public abstract class ArticleModel {
 
         public void setPlacePublishing(Boolean placePublishing) {
             this.placePublishing = placePublishing;
-        }
-
-        /**
-         * @return whether places in this article gets it's information updated automatically.
-         */
-        public Boolean getPlaceSyndication() {
-            return placeSyndication;
-        }
-
-        public void setPlaceSyndication(Boolean placeSyndication) {
-            this.placeSyndication = placeSyndication;
         }
     }
 
@@ -419,11 +405,15 @@ public abstract class ArticleModel {
             @JsonIgnoreProperties(ignoreUnknown = true)
             public static final class Place extends PlaceModel {
 
-                @NotNull(groups = {ArticlePublishedGroup.class})
+                /**
+                 * Id & Slug can be Null when Place association is not yet created.
+                 */
                 @Pattern(regexp = "^[0-9a-hjkmnp-tv-z]{12}0$")
                 private String id;
 
-                @NotNull(groups = {ArticlePublishedGroup.class})
+                /**
+                 * @see Place#id
+                 */
                 @Pattern(regexp = "[0-9a-z-]{0,200}")
                 private String slug;
 

@@ -15,9 +15,20 @@ import java.util.stream.Stream;
 public enum ProfileRestrictionType {
 
     /**
-     * Account is prevented from creating place revision, therefore the account cannot make any changes to place data.
+     * Account is prevented from creating any article resources.
      */
-    PLACE_REVISION("PLACE_REVISION"),
+    ARTICLE_WRITE("ARTICLE_WRITE"),
+
+    /**
+     * Account is prevented from creating a new place.
+     */
+    PLACE_WRITE("PLACE_WRITE"),
+
+    /**
+     * Account is prevented from creating place revision,
+     * - cannot make any changes to existing place data.
+     */
+    PLACE_REVISION_WRITE("PLACE_REVISION_WRITE"),
 
     UNKNOWN_TO_SDK_VERSION(null);
 

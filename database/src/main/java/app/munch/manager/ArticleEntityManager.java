@@ -9,17 +9,12 @@ import dev.fuxing.jpa.EntityStream;
 import dev.fuxing.jpa.TransactionProvider;
 import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
-import dev.fuxing.utils.JsonUtils;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.persistence.EntityManager;
-import java.sql.Timestamp;
 import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -98,11 +93,8 @@ public final class ArticleEntityManager {
             }
 
             revision.setArticle(article);
-            findEntities(entityManager, revision);
 
-            if (revision.getPublished()) {
-                addArticlePlace(entityManager, article, ArticleStatus.PUBLISHED);
-            }
+            Image.EntityUtils.map(entityManager, revision.getImage(), revision::setImage);
 
             entityManager.persist(revision);
             return revision;
@@ -120,11 +112,13 @@ public final class ArticleEntityManager {
 
             return EntityPatch.with(entityManager, article, body)
                     .lock()
-                    .patch("status", ArticleStatus.class, Article::setStatus)
-                    .persist(entity -> {
-                        addArticlePlace(entityManager, entity, article.getStatus());
-                        entityManager.persist(entity);
-                    });
+                    .patch("status", ArticleStatus.class, (article1, status) -> {
+                        if (status != ArticleStatus.DELETED) {
+                            throw new ForbiddenException("You can only change status to deleted.");
+                        }
+                        article1.setStatus(ArticleStatus.DELETED);
+                    })
+                    .persist();
         });
     }
 
@@ -140,7 +134,7 @@ public final class ArticleEntityManager {
         });
     }
 
-    public ArticleRevision getRevision(String id, String uid, @Nullable BiConsumer<EntityManager, ArticleRevision> consumer) {
+    public ArticleRevision get(String id, String uid, @Nullable BiConsumer<EntityManager, ArticleRevision> consumer) {
         return provider.reduce(true, entityManager -> {
             ArticleRevision articleRevision;
 
@@ -167,71 +161,5 @@ public final class ArticleEntityManager {
 
             return articleRevision;
         });
-    }
-
-    private void addArticlePlace(EntityManager entityManager, Article article, ArticleStatus status) {
-        if (status == ArticleStatus.DELETED) {
-            entityManager.createQuery("DELETE FROM ArticlePlace " +
-                    "WHERE article.id = :articleId")
-                    .setParameter("articleId", article.getId())
-                    .executeUpdate();
-            return;
-        }
-
-        if (status == ArticleStatus.PUBLISHED) {
-            List<ArticlePlace> places = entityManager.createQuery("FROM ArticlePlace " +
-                    "WHERE article.id = :articleId", ArticlePlace.class)
-                    .setParameter("articleId", article.getId())
-                    .getResultList();
-
-            long millis = System.currentTimeMillis();
-            AtomicLong position = new AtomicLong(millis);
-
-            // TODO(fuxing): On Published, do after place revision is completed.
-            // - Respect ArticleModel.Options
-            // - This needs to be changed in Partner 2
-            // - allow duplication of place to store, b.c. people can add multiple place in article.
-            article.getContent().stream()
-                    .filter(node -> node.getType().equals("place"))
-                    .map(n -> (ArticleModel.PlaceNode) n)
-                    .forEach(node -> {
-                        ArticlePlace place = node.getAttrs().getPlace();
-                        Objects.requireNonNull(place);
-                        String placeId = Objects.requireNonNull(place.getId());
-
-                        places.stream()
-                                .filter(articlePlace -> articlePlace.getPlace().getId().equals(placeId))
-                                .findFirst()
-                                .ifPresentOrElse(articlePlace -> {
-                                    // Update
-                                    articlePlace.setPosition(position.getAndDecrement());
-                                    articlePlace.setUpdatedAt(new Timestamp(millis));
-                                    entityManager.persist(articlePlace);
-                                }, () -> {
-                                    // Create
-                                    ArticlePlace articlePlace = JsonUtils.deepCopy(place, ArticlePlace.class);
-                                    articlePlace.setPlace(entityManager.find(Place.class, placeId));
-                                    articlePlace.setArticle(article);
-
-                                    // Map image
-                                    Image.EntityUtils.map(entityManager, articlePlace.getImage(), articlePlace::setImage);
-
-                                    articlePlace.setPosition(position.getAndDecrement());
-                                    articlePlace.setUpdatedAt(new Timestamp(millis));
-                                    entityManager.persist(articlePlace);
-                                });
-                    });
-
-            // Remove the rest
-            places.stream()
-                    .filter(articlePlace -> articlePlace.getUpdatedAt().getTime() != millis)
-                    .forEach(entityManager::remove);
-        }
-    }
-
-    private void findEntities(EntityManager entityManager, ArticleModel model) {
-        if (model.getContent() == null) return;
-
-        Image.EntityUtils.map(entityManager, model.getImage(), model::setImage);
     }
 }

@@ -6,6 +6,18 @@ rootProject.name = 'munch-core'
 include 'database'
 
 /**
+ * Munch App Post-Ignatius Elastic Engine
+ * Elastic service is separated out from the database engine to reduce
+ * coupling of internal services.
+ *
+ * To prevent database & elastic from data corruption. (Disparity)
+ * - Database will always hold the true copy
+ * - Elastic will always just be mirroring data over.
+ * - A healing worker should also be implemented to fix data corruption.
+ */
+include 'elastic'
+
+/**
  * Munch App universal worker
  */
 include 'worker'

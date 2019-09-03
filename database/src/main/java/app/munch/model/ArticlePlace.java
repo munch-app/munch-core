@@ -21,7 +21,7 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "ArticlePlace")
-public final class ArticlePlace extends PlaceModel {
+public final class ArticlePlace {
 
     @NotNull
     @Pattern(regexp = KeyUtils.ULID_REGEX)
@@ -113,7 +113,7 @@ public final class ArticlePlace extends PlaceModel {
 
     @PreUpdate
     void preUpdate() {
-        // Default & ArticlePublishedGroup
+        setUpdatedAt(new Timestamp(System.currentTimeMillis()));
         ValidationException.validate(this, Default.class);
     }
 }

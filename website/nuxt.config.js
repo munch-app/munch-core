@@ -139,21 +139,19 @@ export default {
   ],
   axios: {},
   sitemap: {
+    gzip: true,
     path: '/sitemap.xml',
     hostname: 'https://www.munch.app',
     cacheTime: 1000 * 60 * 15,
     exclude: [
       "/me",
-      "/feed/articles",
+      "/me/**",
+      "/system",
+      "/system/**",
     ],
     routes: [
       '/support/privacy',
       '/support/terms',
-      {
-        url: '/feed/images',
-        changefreq: 'daily',
-        priority: 1
-      }
     ]
   }
 }

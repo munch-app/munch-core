@@ -14,7 +14,27 @@ import java.util.stream.Stream;
  */
 public enum StatusType {
 
+    /**
+     * Default status, Place is open.
+     */
     OPEN("OPEN"),
+
+    /**
+     * This place will not show up in searches for the public.
+     * Indicates this place has been inactive for awhile.
+     */
+    DORMANT("DORMANT"),
+
+    /**
+     * This place will not show up in public searches.
+     * This place is create but hidden from public searches.
+     * Reasons varies but mostly is because there is no authority to this data.
+     * - No reliable profile that created it
+     * - Hidden data can be upgraded to Open if validated.
+     *
+     * However this place should still show up in non-public search.
+     */
+    HIDDEN("HIDDEN"),
 
     PERMANENTLY_CLOSED("PERMANENTLY_CLOSED"),
 

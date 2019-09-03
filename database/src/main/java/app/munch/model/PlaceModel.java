@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.fuxing.postgres.PojoSetUserType;
 import dev.fuxing.postgres.PojoUserType;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.validator.constraints.Length;
@@ -16,7 +17,8 @@ import javax.persistence.MappedSuperclass;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @see ArticleModel for reasons why it's design like this.
@@ -236,6 +238,16 @@ public abstract class PlaceModel {
         public void setLatLng(String latLng) {
             this.latLng = latLng;
         }
+
+        private static boolean equals(Location left, Location right) {
+            if (left == null && right == null) return true;
+            if (left == null || right == null) return false;
+
+            return Objects.equals(left.unitNumber, right.unitNumber) &&
+                    Objects.equals(left.postcode, right.postcode) &&
+                    Objects.equals(left.address, right.address) &&
+                    Objects.equals(left.latLng, right.latLng);
+        }
     }
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -251,6 +263,12 @@ public abstract class PlaceModel {
 
         public void setPerPax(BigDecimal perPax) {
             this.perPax = perPax;
+        }
+
+        private static boolean equals(Price left, Price right) {
+            if (left == null && right == null) return true;
+            if (left == null || right == null) return false;
+            return Objects.equals(left.perPax, right.perPax);
         }
     }
 
@@ -288,5 +306,49 @@ public abstract class PlaceModel {
         public TagsType() {
             super(Tag.class);
         }
+    }
+
+    /**
+     * ValidationException will not be thrown.
+     * This method will do null check.
+     *
+     * @param left  lhs
+     * @param right rhs
+     * @return whether this 2 model is the same
+     */
+    public static boolean equals(PlaceModel left, PlaceModel right) {
+        if (!StringUtils.equals(left.getName(), right.getName())) return false;
+        if (!StringUtils.equals(left.getPhone(), right.getPhone())) return false;
+        if (!StringUtils.equals(left.getWebsite(), right.getWebsite())) return false;
+        if (!StringUtils.equals(left.getDescription(), right.getDescription())) return false;
+
+        // Deep Object Validation
+        if (!Price.equals(left.getPrice(), right.getPrice())) return false;
+        if (!Location.equals(left.getLocation(), right.getLocation())) return false;
+        if (!Status.equals(left.getStatus(), right.getStatus())) return false;
+
+        // List Object Validation
+        if (!equalsSynonyms(left.getSynonyms(), right.getSynonyms())) return false;
+        if (!Hour.equals(left.getHours(), right.getHours())) return false;
+        if (!Tag.equals(left.getTags(), right.getTags())) return false;
+        return true;
+    }
+
+    private static boolean equalsSynonyms(Set<String> left, Set<String> right) {
+        Set<String> lhs = cleanSynonyms(left);
+        Set<String> rhs = cleanSynonyms(right);
+        return lhs.equals(rhs);
+    }
+
+    protected static Set<String> cleanSynonyms(Set<String> synonyms) {
+        if (synonyms == null) return Set.of();
+
+        return synonyms.stream()
+                .map(StringUtils::lowerCase)
+                .map(StringUtils::trim)
+                .filter(StringUtils::isNotBlank)
+                .sorted(Comparator.comparingInt(String::length))
+                .limit(4)
+                .collect(Collectors.toCollection(HashSet::new));
     }
 }

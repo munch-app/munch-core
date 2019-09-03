@@ -1,10 +1,9 @@
 package app.munch.api;
 
+import app.munch.exception.RestrictionException;
 import app.munch.manager.ArticleEntityManager;
-import app.munch.model.Article;
-import app.munch.model.ArticleRevision;
-import app.munch.model.ArticleStatus;
-import app.munch.model.Profile;
+import app.munch.manager.ArticlePlaceEntityManager;
+import app.munch.model.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import dev.fuxing.err.ForbiddenException;
 import dev.fuxing.err.UnauthorizedException;
@@ -12,11 +11,14 @@ import dev.fuxing.jpa.TransactionProvider;
 import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
 import dev.fuxing.transport.service.TransportContext;
+import dev.fuxing.transport.service.TransportResult;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.persistence.EntityManager;
 import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by: Fuxing
@@ -27,11 +29,13 @@ import javax.validation.constraints.NotNull;
 public final class ArticleService extends DataService {
 
     private final ArticleEntityManager articleEntityManager;
+    private final ArticlePlaceEntityManager articlePlaceEntityManager;
 
     @Inject
-    ArticleService(TransactionProvider provider, ArticleEntityManager articleEntityManager) {
+    ArticleService(TransactionProvider provider, ArticleEntityManager articleEntityManager, ArticlePlaceEntityManager articlePlaceEntityManager) {
         super(provider);
         this.articleEntityManager = articleEntityManager;
+        this.articlePlaceEntityManager = articlePlaceEntityManager;
     }
 
     @Override
@@ -46,6 +50,7 @@ public final class ArticleService extends DataService {
 
                 PATH("/revisions", () -> {
                     POST("", this::meArticleRevisionPost);
+                    POST("/publish", this::meArticleRevisionPublish);
                     GET("/:uid", this::meArticleRevisionGet);
                 });
             });
@@ -93,10 +98,14 @@ public final class ArticleService extends DataService {
         ArticleRevision revision = ctx.bodyAsObject(ArticleRevision.class);
 
         return articleEntityManager.post(revision, entityManager -> {
-            return entityManager.createQuery("SELECT a.profile FROM Account a " +
+            Profile profile = entityManager.createQuery("SELECT a.profile FROM Account a " +
                     "WHERE a.id = :id", Profile.class)
                     .setParameter("id", accountId)
                     .getSingleResult();
+
+            // Checking user has write access
+            RestrictionException.check(entityManager, profile, ProfileRestrictionType.ARTICLE_WRITE);
+            return profile;
         });
     }
 
@@ -109,28 +118,54 @@ public final class ArticleService extends DataService {
     }
 
     public Article meArticlePatch(TransportContext ctx) {
-        String id = ctx.pathString("id");
+        String articleId = ctx.pathString("id");
         JsonNode body = ctx.bodyAsJson();
 
-        return articleEntityManager.patch(id, body, (entityManager, article) -> {
-            validate(entityManager, article, ctx);
+        Article article = articleEntityManager.patch(articleId, body, (entityManager, articleObj) -> {
+            // Checking user has write access
+            RestrictionException.check(entityManager, articleObj.getProfile(), ProfileRestrictionType.ARTICLE_WRITE);
+            validate(entityManager, articleObj, ctx);
         });
+        if (article.getStatus() == ArticleStatus.DELETED) {
+            articlePlaceEntityManager.deleteAll(articleId);
+        }
+        return article;
     }
 
-    public ArticleRevision meArticleRevisionPost(TransportContext ctx) {
+    public TransportResult meArticleRevisionPost(TransportContext ctx) {
         String id = ctx.pathString("id");
         ArticleRevision revision = ctx.bodyAsObject(ArticleRevision.class);
+        revision.setPublished(false);
 
-        return articleEntityManager.post(id, revision, (entityManager, article) -> {
+        articleEntityManager.post(id, revision, (entityManager, article) -> {
             validate(entityManager, article, ctx);
         });
+        return TransportResult.ok();
+    }
+
+    public TransportResult meArticleRevisionPublish(TransportContext ctx) {
+        String id = ctx.pathString("id");
+        ArticleRevision revision = ctx.bodyAsObject(ArticleRevision.class);
+        revision.setPublished(true);
+
+        revision = articleEntityManager.post(id, revision, (entityManager, article) -> {
+            validate(entityManager, article, ctx);
+        });
+
+        String profileUid = revision.getProfile().getUid();
+        List<ArticlePlaceEntityManager.Response> responses = articlePlaceEntityManager.populateAll(profileUid, revision);
+
+        return TransportResult.ok(Map.of(
+                "revision", revision,
+                "responses", responses
+        ));
     }
 
     public ArticleRevision meArticleRevisionGet(TransportContext ctx) {
         String id = ctx.pathString("id");
         String uid = ctx.pathString("uid");
 
-        return articleEntityManager.getRevision(id, uid, (entityManager, articleRevision) -> {
+        return articleEntityManager.get(id, uid, (entityManager, articleRevision) -> {
             validate(entityManager, articleRevision.getArticle(), ctx);
         });
     }
@@ -150,6 +185,6 @@ public final class ArticleService extends DataService {
         if (uid.equals("latest")) {
             throw new ForbiddenException("latest not allowed");
         }
-        return articleEntityManager.getRevision(id, uid, null);
+        return articleEntityManager.get(id, uid, null);
     }
 }

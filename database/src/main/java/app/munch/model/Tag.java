@@ -15,6 +15,8 @@ import javax.validation.groups.Default;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by: Fuxing
@@ -117,5 +119,25 @@ public final class Tag {
     void preUpdate() {
         setUpdatedAt(new Timestamp(System.currentTimeMillis()));
         ValidationException.validate(this, Default.class, TagDefaultGroup.class);
+    }
+
+    /**
+     * Null check is done for the set.
+     * However null check is not done for each individual item in the set.
+     *
+     * @param left  Set of Tag lhs
+     * @param right Set of Tag rhs
+     * @return whether 2 set of Tag is the same
+     */
+    public static boolean equals(Set<Tag> left, Set<Tag> right) {
+        if (left == null && right == null) return true;
+        if (left == null || right == null) return false;
+
+        Set<String> lhs = left.stream().map(Tag::getId)
+                .collect(Collectors.toSet());
+        Set<String> rhs = right.stream().map(Tag::getId)
+                .collect(Collectors.toSet());
+
+        return lhs.equals(rhs);
     }
 }

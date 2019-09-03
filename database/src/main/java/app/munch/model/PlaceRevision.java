@@ -94,15 +94,25 @@ public final class PlaceRevision extends PlaceModel {
         this.createdAt = createdAt;
     }
 
+    // TODO(fuxing): Copy from PlaceRevision to Place
+
     @PrePersist
     void prePersist() {
+        // Initialising some required Place data
+        assert place != null;
+
+        if (place.getId() == null) {
+            place.setId(KeyUtils.nextL12() + "0");
+        }
+
+        setId(place.getId());
+
         long time = System.currentTimeMillis();
         setUid(KeyUtils.nextULID(time));
         setCreatedAt(new Timestamp(time));
 
-        if (getPlace() != null) {
-            setId(getPlace().getId());
-        }
+        // Copy into Place
+        copyToPlace();
 
         preUpdate();
     }
@@ -115,5 +125,20 @@ public final class PlaceRevision extends PlaceModel {
                 .collect(Collectors.toSet()));
 
         ValidationException.validate(this, Default.class, PlaceDefaultGroup.class);
+    }
+
+    void copyToPlace() {
+        place.setName(getName());
+        place.setPhone(getPhone());
+        place.setWebsite(getWebsite());
+        place.setDescription(getDescription());
+
+        place.setPrice(getPrice());
+        place.setLocation(getLocation());
+        place.setStatus(getStatus());
+
+        place.setSynonyms(getSynonyms());
+        place.setTags(getTags());
+        place.setHours(getHours());
     }
 }
