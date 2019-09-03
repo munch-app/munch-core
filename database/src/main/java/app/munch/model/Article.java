@@ -91,7 +91,7 @@ public final class Article extends ArticleModel {
 
     @PreUpdate
     void preUpdate() {
-        setSlug(KeyUtils.generateSlug(getTitle()));
+        setSlug(KeyUtils.generateSlug(getTitle(), 200));
         setUpdatedAt(new Timestamp(System.currentTimeMillis()));
 
         switch (getStatus()) {

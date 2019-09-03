@@ -120,7 +120,7 @@ public final class Place extends PlaceModel {
 
     @PreUpdate
     void preUpdate() {
-        setSlug(KeyUtils.generateSlug(getName()));
+        setSlug(KeyUtils.generateSlug(getName(), 200));
         setUpdatedAt(new Timestamp(System.currentTimeMillis()));
 
         setSynonyms(getSynonyms().stream()

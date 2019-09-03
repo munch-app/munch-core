@@ -127,7 +127,7 @@ public final class ArticleRevision extends ArticleModel {
 
         setId(article.getId());
         setProfile(article.getProfile());
-        setSlug(KeyUtils.generateSlug(article.getTitle()));
+        setSlug(KeyUtils.generateSlug(article.getTitle(), 200));
 
         if (getPublished() != null && getPublished()) {
             ValidationException.validate(this, Default.class, ArticlePublishedGroup.class);

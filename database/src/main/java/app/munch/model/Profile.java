@@ -62,7 +62,6 @@ public final class Profile {
     @ManyToOne(cascade = {}, fetch = FetchType.EAGER, optional = true)
     private Image image;
 
-    @NotNull
     @Size(max = 4)
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, mappedBy = "profile", orphanRemoval = true)
     @OrderBy("position DESC")
