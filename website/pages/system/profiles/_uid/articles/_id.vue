@@ -81,6 +81,8 @@
             options: {
               map: true,
               ads: true,
+              affiliate: true,
+              placePublishing: true,
             },
             published: false
           },
@@ -90,7 +92,8 @@
 
       return $api.get(`/admin/profiles/${uid}/articles/${id}/revisions/latest`)
         .then(({data: revision}) => {
-          return {revision, profile: {uid}}
+          console.log(revision)
+          return {revision, profile: revision.profile}
         })
     },
     methods: {
@@ -130,7 +133,7 @@
             return setTimeout(() => {
               this.$store.commit('global/clearDialog');
               this.$router.push({
-                path: `/@${this.username}/${this.revision.id}`,
+                path: `/@${this.profile.username}/${this.revision.id}`,
                 query: {uid: this.revision.uid}
               })
             }, 1000);
@@ -172,9 +175,8 @@
       },
       onPublish() {
         this.state.publish = false
-        this.revision.published = true
 
-        return this.$api.post(`/admin/profiles/${this.profile.uid}/articles/${this.revision.id}/revisions`, this.revision)
+        return this.$api.post(`/admin/profiles/${this.profile.uid}/articles/${this.revision.id}/revisions/publish`, this.revision)
           .then(({data: revision}) => {
             this.$router.push({path: `/system/profiles/${this.profile.uid}/articles/published`})
           }).catch(error => {

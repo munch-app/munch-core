@@ -1,7 +1,7 @@
 package app.munch.worker;
 
 import app.munch.database.DatabaseModule;
-import app.munch.worker.data.WorkerReport;
+import app.munch.worker.data.WorkerGroup;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import dev.fuxing.jpa.TransactionProvider;
@@ -39,7 +39,7 @@ public final class ChopeAffiliateWorker implements Worker {
     }
 
     @Override
-    public void run(WorkerReport report) throws Exception {
+    public void run(WorkerGroup group) throws Exception {
         // TODO(fuxing): Sync to database
 
     }

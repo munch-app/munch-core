@@ -137,10 +137,10 @@ public final class ArticleService extends DataService {
         ArticleRevision revision = ctx.bodyAsObject(ArticleRevision.class);
         revision.setPublished(false);
 
-        articleEntityManager.post(id, revision, (entityManager, article) -> {
+        revision = articleEntityManager.post(id, revision, (entityManager, article) -> {
             validate(entityManager, article, ctx);
         });
-        return TransportResult.ok();
+        return TransportResult.ok(Map.of("uid", revision.getUid()));
     }
 
     public TransportResult meArticleRevisionPublish(TransportContext ctx) {

@@ -1,6 +1,6 @@
 package app.munch.worker;
 
-import app.munch.worker.data.WorkerReport;
+import app.munch.worker.data.WorkerGroup;
 
 /**
  * Created by: Fuxing
@@ -25,5 +25,5 @@ public interface Worker {
      */
     String description();
 
-    void run(WorkerReport report) throws Exception;
+    void run(WorkerGroup group) throws Exception;
 }

@@ -141,12 +141,11 @@ public final class ArticlePlaceEntityManager {
                     .getResultList();
 
             if (list.isEmpty()) {
-                // Don't already exit, Add PlaceImage to Place
-                image = entityManager.find(Image.class, image.getUid());
+                // Don't already exist, Add PlaceImage to Place
 
                 PlaceImage placeImage = new PlaceImage();
                 placeImage.setPlace(place);
-                placeImage.setImage(image);
+                Image.EntityUtils.map(entityManager, image, placeImage::setImage);
                 entityManager.persist(placeImage);
 
                 // Publish Image will fill Place.Image if it don't already exist

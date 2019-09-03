@@ -170,8 +170,8 @@ public final class ProfileAdminService extends AdminService {
         ArticleRevision revision = ctx.bodyAsObject(ArticleRevision.class);
         revision.setPublished(false);
 
-        articleEntityManager.post(articleId, revision, null);
-        return TransportResult.ok();
+        revision = articleEntityManager.post(articleId, revision, null);
+        return TransportResult.ok(Map.of("uid", revision.getUid()));
     }
 
     public TransportResult profileArticleRevisionPublish(TransportContext ctx) {

@@ -60,6 +60,9 @@ public final class ArticleEntityManager {
                         .setParameter("status", status)
                         .setMaxResults(size)
                         .getResultList();
+            }).peek(article -> {
+                // Remove content to reduce content-length
+                article.setContent(null);
             }).cursor(size, (article, builder) -> {
                 builder.put("id", article.getId());
                 builder.put("updatedAt", article.getUpdatedAt().getTime());

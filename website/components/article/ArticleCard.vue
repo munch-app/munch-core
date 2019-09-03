@@ -1,7 +1,7 @@
 <template>
-  <nuxt-link :to="`/@${article.profile.username}/${article.slug}-${article.id}`" class="block text-decoration-none">
+  <nuxt-link :to="`/@${article.profile.username}/${article.slug}-${article.id}`" class="block text-decoration-none h-100">
 
-    <div v-if="normal" class="border border-4 elevation-1 bg-white overflow-hidden">
+    <div v-if="normal" class="border border-4 elevation-1 bg-white overflow-hidden h-100">
       <div v-if="article.image" class="Image">
         <div class="aspect r-10-3 overflow-hidden">
           <cdn-img :image="article.image"/>
@@ -29,7 +29,7 @@
       </div>
     </div>
 
-    <div v-else class="p-16 border border-4 elevation-1 bg-white">
+    <div v-else class="p-16 border border-4 elevation-1 bg-white h-100">
       <div v-if="article.image">
         <div class="aspect r-5-3 overflow-hidden border-2">
           <cdn-img :image="article.image"/>

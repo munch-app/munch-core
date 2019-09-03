@@ -46,7 +46,7 @@
       </aside>
     </section>
 
-    <section class="mb-64" v-if="images">
+    <section class="mb-64" v-if="false">
       <div class="container">
         <h2 class="mb-32">{{place.name}} Images</h2>
       </div>

@@ -36,6 +36,9 @@
       </div>
     </div>
     <div class="mt-24">
+      <profile-link-input v-model="account.profile.links"/>
+    </div>
+    <div class="mt-24">
       <button class="blue" @click="save">Update Profile</button>
     </div>
 
@@ -67,10 +70,11 @@
 <script>
   import CdnImg from "../../../../components/utils/image/CdnImg";
   import TextAuto from "../../../../components/utils/TextAuto";
+  import ProfileLinkInput from "../../../../components/profile/ProfileLinkInput";
 
   export default {
     layout: 'system',
-    components: {TextAuto, CdnImg},
+    components: {ProfileLinkInput, TextAuto, CdnImg},
     asyncData({$api, params: {uid}}) {
       if (uid === 'new') {
         return {

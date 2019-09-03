@@ -1,6 +1,6 @@
 package app.munch.worker;
 
-import app.munch.worker.data.WorkerReport;
+import app.munch.worker.data.WorkerGroup;
 import app.munch.worker.data.WorkerGroupManager;
 import dev.fuxing.health.HealthCheckServer;
 
@@ -31,14 +31,14 @@ public final class WorkerRunner {
      * @param worker to run
      */
     public void run(Worker worker) {
-        WorkerReport report = groupManager.start(worker);
+        WorkerGroup group = groupManager.start(worker);
 
         HealthCheckServer.startBlocking(() -> {
             try {
-                worker.run(report);
-                groupManager.complete(report);
+                worker.run(group);
+                groupManager.complete(group);
             } catch (Exception e) {
-                groupManager.error(report, e);
+                groupManager.error(group, e);
             }
         });
     }

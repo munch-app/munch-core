@@ -90,7 +90,6 @@
       items() {
         if (!this.text) {
           return [
-            {type: 'default', object: 'Feed'},
             {type: 'default', object: 'Nearby'},
             {type: 'default', object: 'Anywhere'},
             {type: 'default', object: 'EatBetween'},
@@ -189,10 +188,6 @@
           case 'Anywhere':
             this.$store.dispatch('filter/location', {type: 'Anywhere'})
             this.$store.dispatch('search/start')
-            return this.onBlur()
-
-          case 'Feed':
-            this.$router.push({path: '/feed/images'})
             return this.onBlur()
 
           case 'EatBetween':

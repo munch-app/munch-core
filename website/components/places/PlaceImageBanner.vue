@@ -3,8 +3,7 @@
     <div class="container">
       <div class="ImageRow mt-24">
         <div class="ImageList flex mt-24 overflow-hidden border-3">
-          <div class="Image hover-pointer" v-for="(image, index) in list"
-               :key="index" @click="$emit('onClickImage', index)">
+          <div class="Image" v-for="(image, index) in list" :key="index">
             <div class="aspect r-1-1">
               <image-sizes class="overflow-hidden border-3" :sizes="image.sizes" width="1000"/>
             </div>
@@ -17,12 +16,12 @@
 
     <div class="container">
       <div class="relative lh-0">
-        <div class="ShowButton flex-align-center border-3 border hover-pointer elevation-hover-2 bg-white"
-             v-scroll-to="{el: '#PlaceImageWall',offset: -120}">
+        <!--        <div class="ShowButton flex-align-center border-3 border hover-pointer elevation-hover-2 bg-white"-->
+        <!--             v-scroll-to="{el: '#PlaceImageWall',offset: -120}">-->
 
-          <simple-svg class="wh-16px" fill="rgba(0,0,0,.75)" :filepath="require('~/assets/icon/place/grid.svg')"/>
-          <div class="ml-8 text-uppercase small-bold">SHOW IMAGES</div>
-        </div>
+        <!--          <simple-svg class="wh-16px" fill="rgba(0,0,0,.75)" :filepath="require('~/assets/icon/place/grid.svg')"/>-->
+        <!--          <div class="ml-8 text-uppercase small-bold">SHOW IMAGES</div>-->
+        <!--        </div>-->
       </div>
     </div>
   </div>

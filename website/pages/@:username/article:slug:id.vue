@@ -41,7 +41,7 @@
 
         <div class="mt-24">
           <div class="flex-1-2-3 m--12">
-            <div v-for="article in moreFromAuthorArticles" :key="article.id" class="p-12">
+            <div v-for="article in moreFromAuthorArticles" :key="article.id" class="flex-self-stretch p-12">
               <article-card type="mini" :article="article"/>
             </div>
           </div>

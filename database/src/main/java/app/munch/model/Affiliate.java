@@ -50,11 +50,21 @@ public final class Affiliate {
     @Enumerated(EnumType.STRING)
     private AffiliateStatus status;
 
+    /**
+     * Note: why there is Place: place & PlaceAffiliate: linked
+     * <p>
+     * This Place association is for house keeping purpose, and indicates when affiliate is linked even if it's linked historically.
+     */
     @JsonIgnore
-    @NotNull(groups = {AffiliatePlaceNotNullGroup.class})
+    @NotNull(groups = {AffiliatePlaceNotNullGroup.class, AffiliateLinkedGroup.class})
     @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = true)
     private Place place;
 
+    /**
+     * Note: why there is Place: place & PlaceAffiliate: linked
+     * <p>
+     * Linked is for operational purpose, this is used to show user places with affiliates
+     */
     @Valid
     @NotNull(groups = {AffiliateLinkedGroup.class})
     @Null(groups = {AffiliatePlaceNullGroup.class})

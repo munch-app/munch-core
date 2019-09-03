@@ -151,6 +151,7 @@ const parseError = (error) => {
     }
   }
 
+  // When error is created from $api service.
   const exception = error?.error?.response?.data?.error || error?.response?.data?.error
   if (exception) {
     const {type, message} = exception
@@ -163,8 +164,14 @@ const parseError = (error) => {
     return {title: parts[parts.length - 1], message: message}
   }
 
+  // When error contains status code (might be deprecated, need to check.)
   if (error?.statusCode === 404) {
     return {title: 'Not Found', message: 'Requested object cannot be found.'}
+  }
+
+  // When error is placed into {error: ...} object
+  if (error?.error) {
+    return {title: 'Unknown Error', message: error.error}
   }
 
   return {title: 'Unknown Error', message: error}

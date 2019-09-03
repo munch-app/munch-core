@@ -42,11 +42,6 @@
     :card="card"
   />
 
-  <!-- Home Cards -->
-  <search-card-home-tab
-    class="Card Initial FullWidth"
-    v-else-if="isCardId('HomeTab_2018-11-29')"
-  />
   <search-card-home-recent-place
     class="Card Initial FullWidth"
     v-else-if="isCardId('HomeRecentPlace_2018-12-10')"
@@ -102,7 +97,6 @@
   import SearchCardAreaClusterHeader from "./SearchCardAreaClusterHeader";
   import SearchCardSuggestionTag from "./SearchCardSuggestionTag";
   import SearchCardBetweenHeader from "./SearchCardBetweenHeader";
-  import SearchCardHomeTab from "./home/SearchCardHomeTab";
   import SearchCardHomeRecentPlace from "./home/SearchCardHomeRecentPlace";
   import SearchCardHomePopularPlace from "./home/SearchCardHomePopularPlace";
   import SearchCardHomeAwardCollection from "./home/SearchCardHomeAwardCollection";
@@ -135,7 +129,6 @@
       SearchCardHomeAwardCollection,
       SearchCardHomePopularPlace,
       SearchCardHomeRecentPlace,
-      SearchCardHomeTab,
       SearchCardBetweenHeader,
       SearchCardSuggestionTag,
       SearchCardAreaClusterHeader,

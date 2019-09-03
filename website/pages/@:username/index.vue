@@ -34,7 +34,7 @@
       </div>
     </div>
 
-    <div class="mt-32" v-if="profile.links.length > 0">
+    <div class="mt-32" v-if="profile.links && profile.links.length > 0">
       <div class="m--6 flex-wrap">
         <a class="p-6 block text-decoration-none black" v-for="link in profile.links" :key="link.uid"
            :href="link.url" target="_blank" rel="noreferrer nofollow noopener">

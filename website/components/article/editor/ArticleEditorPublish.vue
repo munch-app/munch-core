@@ -41,7 +41,11 @@
           </div>
           <div class="flex-align-center hover-pointer mt-16" @click="onInputMap">
             <div class="checkbox" :class="{selected: value.options.map}"/>
-            <small class="ml-16">Display an embedded map to highlight places in the article?</small>
+            <small class="ml-16">Highlight places on a embedded map?</small>
+          </div>
+          <div class="flex-align-center hover-pointer mt-16" @click="onInputPublishing">
+            <div class="checkbox" :class="{selected: value.options.placePublishing}"/>
+            <small class="ml-16">Keep your places information updated?</small>
           </div>
         </div>
         <div class="mt-24">
@@ -97,6 +101,9 @@
       },
       onInputMap() {
         this.$emit('input', {...this.value, options: {...this.value.options, map: !this.value.options.map}})
+      },
+      onInputPublishing() {
+        this.$emit('input', {...this.value, options: {...this.value.options, placePublishing: !this.value.options.placePublishing}})
       },
       onPublish() {
         this.$emit('on-publish')

@@ -81,6 +81,8 @@
             options: {
               map: true,
               ads: true,
+              affiliate: true,
+              placePublishing: true,
             },
             published: false
           }
@@ -171,9 +173,8 @@
       },
       onPublish() {
         this.state.publish = false
-        this.revision.published = true
 
-        return this.$api.post(`/me/articles/${this.revision.id}/revisions`, this.revision)
+        return this.$api.post(`/me/articles/${this.revision.id}/revisions/publish`, this.revision)
           .then(({data: revision}) => {
             this.$router.push({path: `/me/articles/published`})
           }).catch(error => {

@@ -51,7 +51,7 @@
       return {
         maxSize: 4,
         editing: {
-          links: this.value,
+          links: this.value || [],
           input: '',
         },
         focused: {
