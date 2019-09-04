@@ -21,6 +21,8 @@ include 'elastic'
  * Munch App universal worker
  */
 include 'worker'
+include 'worker:worker-utils'
+
 include 'worker:worker-affiliate-chope'
 include 'worker:worker-instagram'
 include 'worker:worker-place'
