@@ -26,9 +26,8 @@
 
         <class>app.munch.model.Tag</class>
 
-        <class>app.munch.model.ManagedPage</class>
-
         <class>app.munch.model.Affiliate</class>
+        <class>app.munch.model.AffiliateBrand</class>
         <class>app.munch.model.PlaceAffiliate</class>
     </persistence-unit>
 </persistence>

@@ -117,6 +117,7 @@
               console.log(profile)
 
               this.account = {profile: JSON.parse(JSON.stringify(profile))}
+              window.history.replaceState({}, document.title, `/system/profiles/${profile.uid}`)
               this.$store.dispatch('addMessage', {title: 'Admin System', message: 'Created Profile'})
             })
             .catch(err => {

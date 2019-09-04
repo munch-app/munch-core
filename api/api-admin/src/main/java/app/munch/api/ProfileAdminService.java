@@ -6,6 +6,7 @@ import app.munch.model.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import dev.fuxing.jpa.EntityPatch;
 import dev.fuxing.jpa.EntityStream;
+import dev.fuxing.jpa.HibernateUtils;
 import dev.fuxing.jpa.TransactionProvider;
 import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
@@ -105,7 +106,9 @@ public final class ProfileAdminService extends AdminService {
         String profileId = ctx.pathString("profileId");
 
         return provider.reduce(entityManager -> {
-            return entityManager.find(Profile.class, profileId);
+            Profile profile = entityManager.find(Profile.class, profileId);
+            HibernateUtils.initialize(profile.getLinks());
+            return profile;
         });
     }
 

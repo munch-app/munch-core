@@ -6,23 +6,23 @@
           <img style="height: 30px" src="~/assets/img/LOGO_NAME_TRIM.svg">
         </a>
       </div>
-      <div class="">
-        <h4 class="">Munch App</h4>
+      <div>
+        <h4>Munch App</h4>
         <a href="https://itunes.apple.com/sg/app/munch-food-discovery/id1255436754" target="_blank">iOS</a>
         <a href="https://play.google.com/store/apps/details?id=app.munch.munchapp" target="_blank">Android</a>
       </div>
 
-      <div class="">
-        <h4 class="">Company</h4>
-        <nuxt-link to="/support">Support</nuxt-link>
-        <nuxt-link to="/support/privacy">Privacy Policy</nuxt-link>
-        <nuxt-link to="/support/terms">Terms of Use</nuxt-link>
+      <div>
+        <h4>Company</h4>
+        <nuxt-link to="/support" no-prefetch>Support</nuxt-link>
+        <nuxt-link to="/support/privacy" no-prefetch>Privacy Policy</nuxt-link>
+        <nuxt-link to="/support/terms" no-prefetch>Terms of Use</nuxt-link>
       </div>
 
-      <div class="">
-        <h4 class="">Product</h4>
-        <nuxt-link to="/about">About</nuxt-link>
-        <nuxt-link to="/press">Press</nuxt-link>
+      <div>
+        <h4>Product</h4>
+        <nuxt-link to="/about" no-prefetch>About</nuxt-link>
+        <nuxt-link to="/press" no-prefetch>Press</nuxt-link>
         <a href="https://partner.munch.app" target="_blank">Partners</a>
       </div>
     </div>

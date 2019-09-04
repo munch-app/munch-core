@@ -14,7 +14,7 @@ import java.util.stream.Stream;
  * Project: munch-core
  */
 public enum AffiliateType {
-    CHOPE_BOOK("CHOPE_BOOK"),
+    RESERVATION("RESERVATION"),
 
     UNKNOWN_TO_SDK_VERSION(null);
 

@@ -50,6 +50,10 @@ public final class PlaceAffiliate {
     @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = false)
     private Place place;
 
+    @NotNull
+    @ManyToOne(cascade = {}, fetch = FetchType.EAGER, optional = false)
+    private AffiliateBrand brand;
+
     @ValidEnum
     @Enumerated(EnumType.STRING)
     private AffiliateType type;
@@ -75,6 +79,14 @@ public final class PlaceAffiliate {
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    public AffiliateBrand getBrand() {
+        return brand;
+    }
+
+    public void setBrand(AffiliateBrand brand) {
+        this.brand = brand;
     }
 
     public Affiliate getAffiliate() {

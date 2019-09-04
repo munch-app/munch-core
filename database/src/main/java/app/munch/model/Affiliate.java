@@ -42,6 +42,10 @@ public final class Affiliate {
     @Column(length = 26, updatable = false, nullable = false, unique = true)
     private String uid;
 
+    @NotNull
+    @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = false)
+    private AffiliateBrand brand;
+
     @ValidEnum
     @Enumerated(EnumType.STRING)
     private AffiliateType type;
@@ -76,6 +80,10 @@ public final class Affiliate {
     @Type(type = "PlaceStruct")
     private PlaceStruct placeStruct;
 
+    @NotNull(groups = {AffiliatePlaceNotNullGroup.class, AffiliateLinkedGroup.class})
+    @ManyToOne(cascade = {}, fetch = FetchType.EAGER, optional = true)
+    private Profile editedBy;
+
     @URL
     @NotNull
     @Length(max = 2048)
@@ -107,6 +115,14 @@ public final class Affiliate {
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    public AffiliateBrand getBrand() {
+        return brand;
+    }
+
+    public void setBrand(AffiliateBrand brand) {
+        this.brand = brand;
     }
 
     public AffiliateType getType() {
@@ -147,6 +163,14 @@ public final class Affiliate {
 
     public void setPlaceStruct(PlaceStruct placeStruct) {
         this.placeStruct = placeStruct;
+    }
+
+    public Profile getEditedBy() {
+        return editedBy;
+    }
+
+    public void setEditedBy(Profile editedBy) {
+        this.editedBy = editedBy;
     }
 
     public String getUrl() {

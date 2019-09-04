@@ -11,7 +11,7 @@
           <simple-svg class="wh-48px" fill="#ccc" :filepath="require('~/assets/icon/icons8-camera.svg')"/>
         </div>
       </div>
-      <div class="ml-24 w-100">
+      <div class="ml-24 w-100 flex-grow">
         <div>
           <input class="Name h1" v-model="account.profile.name" placeholder="Name"/>
         </div>
@@ -98,7 +98,7 @@
 </script>
 
 <style scoped lang="less">
-  .ProfilePic > div {
+  .ProfilePic {
     width: 100px;
     height: 100px;
     border-radius: 50%;

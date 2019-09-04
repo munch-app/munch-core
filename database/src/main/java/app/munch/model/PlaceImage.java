@@ -30,13 +30,16 @@ public final class PlaceImage {
     @Column(length = 26, updatable = false, nullable = false, unique = true)
     private String uid;
 
-    @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = true)
+    @NotNull
+    @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = false)
     private Place place;
 
-    @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = true)
+    @NotNull
+    @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = false)
     private Profile profile;
 
-    @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = true)
+    @NotNull
+    @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = false)
     private Image image;
 
     @NotNull
