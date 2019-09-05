@@ -119,6 +119,10 @@ public final class ArticleRevision extends ArticleModel {
         if (getPublished() != null && getPublished()) {
             article.setStatus(ArticleStatus.PUBLISHED);
             preUpdatePublished();
+
+            if (article.getPublishedAt() == null) {
+                article.setPublishedAt(new Timestamp(millis));
+            }
         } else if (article.getStatus() == ArticleStatus.DRAFT) {
             preUpdateDrafting();
         }

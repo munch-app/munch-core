@@ -6,9 +6,7 @@
     head() {
       return this.$head({
         robots: {follow: true, index: true},
-        graph: {
-          url: `https://www.munch.app/locations`,
-        }
+        url: `https://www.munch.app/locations`,
       })
     },
     asyncData({store}) {

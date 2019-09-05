@@ -53,6 +53,7 @@ public final class ProfileLink {
 
     @ValidEnum
     @Enumerated(EnumType.STRING)
+    @Column(length = 100, updatable = true, nullable = false, unique = false)
     private ProfileLinkType type;
 
     @NotNull

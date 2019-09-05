@@ -34,7 +34,16 @@ public final class Article extends ArticleModel {
     private String id;
 
     @ValidEnum
+    @Enumerated(EnumType.STRING)
+    @Column(length = 100, updatable = true, nullable = false, unique = false)
     private ArticleStatus status;
+
+    /**
+     * The first every date it was published.
+     */
+    @NotNull(groups = ArticlePublishedGroup.class)
+    @Column(updatable = false, nullable = true)
+    private Date publishedAt;
 
     @NotNull
     @Version
@@ -59,6 +68,14 @@ public final class Article extends ArticleModel {
 
     public void setStatus(ArticleStatus status) {
         this.status = status;
+    }
+
+    public Date getPublishedAt() {
+        return publishedAt;
+    }
+
+    public void setPublishedAt(Date publishedAt) {
+        this.publishedAt = publishedAt;
     }
 
     public Date getUpdatedAt() {

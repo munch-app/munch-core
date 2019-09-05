@@ -12,7 +12,7 @@ create table image
     loc         varchar(100) not null
         constraint uk_aro66uxyjy7iyj61mspkbtdxu
             unique,
-    source      varchar(255),
+    source      varchar(100) not null,
     width       integer      not null
         constraint image_width_check
             check (width >= 1),
@@ -109,14 +109,15 @@ create table article
     tags        jsonb        not null,
     title       varchar(100),
     createdat   timestamp    not null,
-    status      integer,
+    status      varchar(100) not null,
     updatedat   timestamp    not null,
     image_uid   varchar(26)
         constraint fka1yy6vw2aa0pq256d5kq0joo1
             references image,
     profile_uid varchar(26)  not null
         constraint fkiqhg4aly542ef95o1bqxwenrl
-            references profile
+            references profile,
+    publishedat timestamp
 );
 
 alter table article
@@ -230,13 +231,13 @@ alter table publicationarticle
 
 create table tag
 (
-    id        varchar(13) not null
+    id        varchar(13)  not null
         constraint tag_pkey
             primary key,
-    createdat timestamp   not null,
+    createdat timestamp    not null,
     name      varchar(100),
-    type      varchar(255),
-    updatedat timestamp   not null
+    type      varchar(100) not null,
+    updatedat timestamp    not null
 );
 
 alter table tag
@@ -250,7 +251,7 @@ create table profilelink
     createdat   timestamp     not null,
     name        varchar(50)   not null,
     position    bigint        not null,
-    type        varchar(255),
+    type        varchar(100)  not null,
     updatedat   timestamp     not null,
     url         varchar(1000) not null,
     profile_uid varchar(26)   not null
@@ -263,15 +264,15 @@ alter table profilelink
 
 create table placelocking
 (
-    createdat   timestamp   not null,
-    type        varchar(255),
-    updatedat   timestamp   not null,
-    place_id    varchar(13) not null
+    createdat   timestamp    not null,
+    type        varchar(100) not null,
+    updatedat   timestamp    not null,
+    place_id    varchar(13)  not null
         constraint placelocking_pkey
             primary key
         constraint fksi7jpcgd8yoy746v8h314crfa
             references place,
-    profile_uid varchar(26) not null
+    profile_uid varchar(26)  not null
         constraint fk8f6mcphho03qthvgvi17htrkd
             references profile
 );
@@ -281,12 +282,12 @@ alter table placelocking
 
 create table profilerestriction
 (
-    uid         varchar(26) not null
+    uid         varchar(26)  not null
         constraint profilerestriction_pkey
             primary key,
-    createdat   timestamp   not null,
-    type        varchar(255),
-    profile_uid varchar(26) not null
+    createdat   timestamp    not null,
+    type        varchar(100) not null,
+    profile_uid varchar(26)  not null
         constraint fkapl4pyeiyspqac34t7vj0vq12
             references profile
 );
@@ -367,8 +368,8 @@ create table affiliate
     sourcekey       varchar(2048) not null
         constraint uk_e4vposnyx1qrm5e8vs7l4kvx6
             unique,
-    status          varchar(255),
-    type            varchar(255),
+    status          varchar(100)  not null,
+    type            varchar(100)  not null,
     updatedat       timestamp     not null,
     url             varchar(2048) not null,
     place_id        varchar(13)
@@ -391,7 +392,7 @@ alter table affiliate
 create table placeaffiliate
 (
     createdat     timestamp     not null,
-    type          varchar(255),
+    type          varchar(100)  not null,
     updatedat     timestamp     not null,
     url           varchar(2048) not null,
     affiliate_uid varchar(26)   not null

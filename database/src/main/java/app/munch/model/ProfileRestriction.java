@@ -41,6 +41,7 @@ public final class ProfileRestriction {
 
     @ValidEnum
     @Enumerated(EnumType.STRING)
+    @Column(length = 100, updatable = true, nullable = false, unique = false)
     private ProfileRestrictionType type;
 
     @NotNull(groups = TagDefaultGroup.class)

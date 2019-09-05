@@ -108,6 +108,7 @@ public final class Image {
 
     @ValidEnum(groups = {ImageDefaultGroup.class})
     @Enumerated(EnumType.STRING)
+    @Column(length = 100, updatable = true, nullable = false, unique = false)
     private ImageSource source;
 
     @NotNull(groups = {ImageDefaultGroup.class})

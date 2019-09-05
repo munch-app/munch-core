@@ -101,9 +101,7 @@
     head() {
       return this.$head({
         robots: {follow: false, index: true},
-        graph: {
-          title: `Suggest an edit · Munch - Food Discovery`,
-        },
+        title: `Suggest an edit · Munch - Food Discovery`,
       })
     },
     asyncData({$api, route}) {

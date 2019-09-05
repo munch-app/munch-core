@@ -10,7 +10,7 @@
       <nuxt-link :to="`/@${article.profile.username}`" class="text-decoration-none">
         <div class="mb-4 weight-500 b-a80">{{article.profile.name}}</div>
       </nuxt-link>
-      <div class="tiny b-a75">{{formatMillis(article.updatedAt)}}</div>
+      <div class="tiny b-a75">{{formatMillis(article.publishedAt || article.updatedAt)}}</div>
     </div>
   </div>
 </template>

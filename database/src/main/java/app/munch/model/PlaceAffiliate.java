@@ -56,6 +56,7 @@ public final class PlaceAffiliate {
 
     @ValidEnum
     @Enumerated(EnumType.STRING)
+    @Column(length = 100, updatable = true, nullable = false, unique = false)
     private AffiliateType type;
 
     @URL

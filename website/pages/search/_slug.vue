@@ -6,11 +6,9 @@
     head() {
       return this.$head({
         robots: {follow: true, index: true},
-        graph: {
-          title: this.title || 'Search · Munch - Food Discovery',
-          description: this.description,
-          url: `https://www.munch.app/search/${this.slug}`,
-        },
+        title: this.title || 'Search · Munch - Food Discovery',
+        description: this.description,
+        url: `https://www.munch.app/search/${this.slug}`,
         breadcrumbs: [
           {
             name: 'Search',

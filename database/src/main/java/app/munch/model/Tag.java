@@ -37,6 +37,7 @@ public final class Tag {
 
     @ValidEnum
     @Enumerated(EnumType.STRING)
+    @Column(length = 100, updatable = true, nullable = false, unique = false)
     private TagType type;
 
     @NotBlank

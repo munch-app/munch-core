@@ -19,6 +19,8 @@ import java.util.Date;
 public final class WorkerReport {
 
     @ValidEnum
+    // @Enumerated(EnumType.STRING)
+    //     @Column(length = 100, updatable = true, nullable = false, unique = false)
     private WorkerReportStatus status;
 
     @NotNull

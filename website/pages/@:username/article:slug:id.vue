@@ -1,11 +1,11 @@
 <template>
   <div>
-    <div class="ArticlePage container pt-48 pb-64" :class="{ShowMap: showMap}">
-      <div class="flex">
+    <div class="container pt-48 pb-64">
+      <div class="flex-wrap">
         <article-content class="ArticleContent" :article="article" ref="ArticleContent"/>
-        <aside>
+        <aside class="flex-grow">
           <article-context-map class="Map" v-if="showMap" :article="article" :get-contexts="getContexts"/>
-          <Adsense data-ad-client="ca-pub-7144155418390858" data-ad-slot="9604475829"/>
+          <!--          <Adsense data-ad-client="ca-pub-7144155418390858" data-ad-slot="9604475829"/>-->
         </aside>
       </div>
 
@@ -60,20 +60,26 @@
   export default {
     components: {ArticleCard, CdnImg, ArticleContextMap, ArticleContent},
     head() {
-      const {profile: {name, username}, image, title, description, slug, id} = this.article
+      const {
+        profile: {name: profileName, username},
+        image, title, description, slug, id, updatedAt, publishedAt
+      } = this.article
       return this.$head({
         robots: {follow: true, index: true},
+        url: `https://www.munch.app/@${username}/${slug}-${id}`,
         canonical: `https://www.munch.app/@${username}/${id}`,
-        graph: {
-          title: `${title || 'Untitled Article'} - ${name} · Munch`,
-          description: description,
-          type: 'article',
-          image: image,
-          url: `https://www.munch.app/@${username}/${slug}-${id}`,
-        },
+        type: 'article',
+        title: `${title || 'Untitled Article'} - ${profileName} · Munch`,
+        description: description,
+        image: image,
+        schemaType: 'Article',
+        headline: title,
+        updatedAt: updatedAt,
+        publishedAt: publishedAt,
+        authorName: profileName,
         breadcrumbs: [
           {
-            name: name,
+            name: profileName,
             item: `https://www.munch.app/@${username}`
           },
           {
@@ -115,45 +121,42 @@
 </script>
 
 <style scoped lang="less">
+  .ArticleContent {
+    flex: 0 0 100%;
+
+    @media (min-width: 816px) {
+      flex: 0 0 768px;
+      max-width: 768px;
+    }
+  }
+
   aside {
-    width: 100%;
-    height: 100%;
-    margin-left: 24px;
-
-    .Map {
-      height: 320px;
+    @media (max-width: 1088px) {
+      margin-top: 48px;
+      max-width: 768px;
     }
 
-    @media (max-width: 1199.98px) {
-      display: none;
+    // Content Width + Padding + Aside Margin Left
+    @media (min-width: 1088px) {
+      flex: 0 0 calc(100vw - 48px - 768px - 32px);
+      margin-left: 32px;
+
+      position: sticky;
+      top: calc(72px + 24px);
+      height: 100%;
     }
 
-    @media (min-width: 1300px) {
+    @media (min-width: 1200px) {
+      flex: 0 0 calc(100vw - 160px - 768px - 48px);
       margin-left: 48px;
     }
 
-    position: sticky;
-    top: calc(72px + 24px);
+    @media (min-width: 1400px) {
+      flex: 0 0 424px;
+    }
   }
 
-  .ArticlePage {
-    &.ShowMap {
-      @media (max-width: 1199.98px) {
-        max-width: 768px;
-      }
-
-      .ArticleContent {
-        @media (min-width: 1200px) {
-          min-width: 768px;
-          max-width: 768px;
-        }
-      }
-    }
-
-    &:not(.ShowMap) {
-      max-width: 768px;
-      padding-left: 24px;
-      padding-right: 24px;
-    }
+  .Map {
+    height: 320px;
   }
 </style>

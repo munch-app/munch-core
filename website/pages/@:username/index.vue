@@ -101,13 +101,11 @@
       return this.$head({
         robots: {follow: true, index: true},
         canonical: `https://www.munch.app/@${username}`,
-        graph: {
-          title: `${name} · Munch`,
-          description: bio,
-          type: 'profile',
-          image: image,
-          url: `https://www.munch.app/@${username}`,
-        },
+        title: `${name} · Munch`,
+        description: bio,
+        type: 'profile',
+        image: image,
+        url: `https://www.munch.app/@${username}`,
         breadcrumbs: [
           {
             name: name,

@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.fuxing.validator.ValidEnum;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -22,7 +20,6 @@ import java.util.Set;
 public final class Hour {
 
     @ValidEnum
-    @Enumerated(EnumType.STRING)
     private Day day;
 
     @NotNull

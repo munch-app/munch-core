@@ -63,13 +63,11 @@
         // TODO(fuxing): Note: Right now, don't index, wait for completion and proper migration of /places first
         robots: {follow: true, index: false},
         canonical: `https://www.munch.app/${slug}-${id}`,
-        graph: {
-          title: `${name} · Munch`,
-          description: description,
-          type: 'place',
-          image: image,
-          url: `https://www.munch.app/${slug}-${id}`,
-        },
+        title: `${name} · Munch`,
+        description: description,
+        type: 'place',
+        image: image,
+        url: `https://www.munch.app/${slug}-${id}`,
         breadcrumbs: [
           {
             name: 'Places',

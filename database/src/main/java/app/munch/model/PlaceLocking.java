@@ -47,6 +47,7 @@ public final class PlaceLocking {
      */
     @ValidEnum
     @Enumerated(EnumType.STRING)
+    @Column(length = 100, updatable = true, nullable = false, unique = false)
     private PlaceLockingType type;
 
     @NotNull(groups = TagDefaultGroup.class)

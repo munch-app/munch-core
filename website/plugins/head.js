@@ -1,29 +1,4 @@
-// TODO(fuxing): This needs to be expanded to feature JSON-LD
-
-function scriptBreadcrumbs(breadcrumbs) {
-  if (!breadcrumbs) return []
-
-  const list = breadcrumbs.map(function (obj, index) {
-    return {
-      "@type": "ListItem",
-      "position": index + 1,
-      "name": obj.name,
-      "item": obj.item
-    }
-  })
-
-  if (list.length < 1) return []
-
-  return [{
-    type: 'application/ld+json',
-    innerHTML: JSON.stringify({
-        "@context": "http://schema.org",
-        "@type": "BreadcrumbList",
-        "itemListElement": list
-      }
-    )
-  }]
-}
+import dateformat from 'dateformat'
 
 const publisher = {
   "@type": "Organization",
@@ -34,32 +9,46 @@ const publisher = {
   }
 }
 
-function scriptSchema(graph) {
-  return [{
-    type: 'application/ld+json',
-    innerHTML: JSON.stringify({
-        "@context": "http://schema.org",
-        "@type": "Article",
-        "publisher": publisher,
-      }
-    )
-  }]
+function parseImage(image) {
+  if (typeof image === "string") {
+    return image
+  } else if (image?.sizes && image.sizes['640x640']) {
+    return image.sizes['640x640']
+  }
 }
 
-function metaRobots(robots) {
-  if (!robots) return []
-
-  const {follow, index} = robots
-  return [
-    {name: 'robots', content: `${follow ? 'follow' : 'nofollow'},${index ? 'index' : 'noindex'}`}
-  ]
+function parseDate(millis) {
+  if (millis) {
+    return dateformat(millis, 'yyyy-mm-dd')
+  }
 }
 
-function metaGraph(graph) {
-  if (!graph) return []
+/**
+ * Populate the root head node
+ */
+function root({title}) {
+  if (title) {
+    return {title}
+  }
+  return {}
+}
 
-  const {title, description, image, url, type} = graph
+function link({canonical}) {
+  const links = []
+  if (canonical) {
+    links.push({rel: 'canonical', href: canonical})
+  }
+  return links
+}
+
+function meta({robots, title, description, image, url, type}) {
   const meta = []
+
+  if (robots) {
+    const {follow, index} = robots
+    meta.push({name: 'robots', content: `${follow ? 'follow' : 'nofollow'},${index ? 'index' : 'noindex'}`})
+  }
+
   if (title) {
     meta.push({hid: 'og:title', name: 'og:title', content: title})
   }
@@ -70,15 +59,13 @@ function metaGraph(graph) {
   if (url) {
     meta.push({hid: 'og:url', name: 'og:url', content: url})
   }
+
   /**
    * Url or app.munch.model.Image
    */
+  image = parseImage(image)
   if (image) {
-    if (typeof image === "string") {
-      meta.push({hid: 'og:image', name: 'og:image', content: image})
-    } else if (image.sizes && image.sizes['640x640']) {
-      meta.push({hid: 'og:image', name: 'og:image', content: image.sizes['640x640']})
-    }
+    meta.push({hid: 'og:image', name: 'og:image', content: image})
   }
 
   /**
@@ -88,49 +75,68 @@ function metaGraph(graph) {
   if (type) {
     meta.push({hid: 'og:type', name: 'og:type', content: type})
   }
+
   return meta
 }
 
-/**
- * Populate the root head node
- */
-function root({graph}) {
-  if (graph?.title) {
-    return {
-      title: graph.title
-    }
-  }
-}
+function script({breadcrumbs, image, schemaType, headline, updatedAt, publishedAt, authorName}) {
+  const script = []
 
-function links({canonical}) {
-  const links = []
-  if (canonical) {
-    links.push({rel: 'canonical', href: canonical})
+  if (breadcrumbs) {
+    script.push({
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+          "@context": "http://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": breadcrumbs.map((obj, index) => ({
+            "@type": "ListItem",
+            "position": index + 1,
+            "name": obj.name,
+            "item": obj.item
+          }))
+        }
+      )
+    })
   }
-  return links
+
+  if (schemaType === 'Article') {
+    image = parseImage(image)
+
+    script.push({
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+          "@context": 'http://schema.org',
+          "@type": 'Article',
+          "author": authorName,
+          "dateModified": parseDate(updatedAt),
+          "datePublished": parseDate(publishedAt),
+          "headline": headline,
+          "image": image ? [image] : [],
+          "publisher": publisher,
+        }
+      )
+    })
+  }
+
+  return script
 }
 
 export default (context, inject) => {
-  inject('head', ({graph, robots, breadcrumbs, meta, canonical}) => {
+
+  /**
+   * {
+   *    title, description, image, url, type,
+   *    schemaType, headline, updatedAt, publishedAt, authorName
+   *    robots, canonical, breadcrumbs,
+   * }
+   */
+  inject('head', (properties) => {
     return {
-      ...root({graph}),
-
-      // Links
-      link: links({canonical}),
-
-      // Metas from Graph & Robot
-      meta: [
-        ...metaRobots(robots),
-        ...metaGraph(graph),
-        // Allows raw meta
-        ...(meta || []),
-      ],
-
-      // Scripts
+      ...root(properties),
+      link: link(properties),
+      meta: meta(properties),
+      script: script(properties),
       __dangerouslyDisableSanitizers: ['script'],
-      script: [
-        ...scriptBreadcrumbs(breadcrumbs)
-      ],
     }
   })
 }

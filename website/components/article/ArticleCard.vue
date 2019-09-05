@@ -23,7 +23,7 @@
 
           <div class="ml-16 flex-shrink text-ellipsis-1l">
             <div class="small-bold b-a80">{{article.profile.name}}</div>
-            <div class="tiny b-a75">{{formatMillis(article.updatedAt)}}</div>
+            <div class="tiny b-a75">{{formatMillis(article.publishedAt || article.updatedAt)}}</div>
           </div>
         </div>
       </div>
@@ -50,7 +50,7 @@
 
         <div class="ml-8 flex-shrink text-ellipsis-1l">
           <div class="tiny-bold b-a80">{{article.profile.name}}</div>
-          <div class="tiny b-a75">{{formatMillis(article.updatedAt)}}</div>
+          <div class="tiny b-a75">{{formatMillis(article.publishedAt || article.updatedAt)}}</div>
         </div>
       </div>
     </div>
