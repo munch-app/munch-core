@@ -7,12 +7,10 @@
 
     <global-notification/>
 
-    <!-- TODO(Fuxing):  Rename all below to <global-_> -->
-
-    <!-- Dialog Portal -->
+    <!-- Dialog Portal, TODO(fuxing): Refactoring required -->
     <dialog-portal/>
 
-    <!-- Notification Event on the bottom -->
+    <!-- Notification Event on the bottom TODO(fuxing): remove when eat between is refactored -->
     <notification-event/>
   </div>
 </template>

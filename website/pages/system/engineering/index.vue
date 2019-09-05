@@ -29,30 +29,15 @@
       return {
         groups: [
           {
-            name: 'Partner Management',
+            name: 'Workers',
             features: [
               {
-                name: 'Profile',
-                description: 'Partner profile hand holding process.',
-                path: '/system/profiles',
+                name: 'Worker Group',
+                description: 'Manage worker group and their reporting',
+                path: '/system/engineering/workers',
               },
-              {
-                name: 'Publication',
-                description: 'Articles grouped into a publication.',
-                path: '/system/publications',
-              }
             ],
           },
-          {
-            name: 'Data Management',
-            features: [
-              {
-                name: 'Affiliate',
-                description: 'Affiliate linking management.',
-                path: '/system/affiliates',
-              },
-            ]
-          }
         ],
       }
     },

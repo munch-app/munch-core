@@ -22,20 +22,6 @@ create table image
 alter table image
     owner to munch;
 
-create table managedpage
-(
-    uid       varchar(26)  not null
-        constraint managedpage_pkey
-            primary key,
-    content   jsonb        not null,
-    createdat timestamp    not null,
-    path      varchar(512) not null,
-    published boolean      not null
-);
-
-alter table managedpage
-    owner to munch;
-
 create table profile
 (
     uid       varchar(26)  not null
@@ -191,13 +177,13 @@ create table placeimage
             primary key,
     createdat   timestamp   not null,
     updatedat   timestamp   not null,
-    image_uid   varchar(26)
+    image_uid   varchar(26) not null
         constraint fka3y9kf2ijkydyeqhxdsrpd2pv
             references image,
-    place_id    varchar(13)
+    place_id    varchar(13) not null
         constraint fk62jfar36g6bkqba8rio8g3apl
             references place,
-    profile_uid varchar(26)
+    profile_uid varchar(26) not null
         constraint fka6uu0h5drwepomdakqgps38ui
             references profile
 );
@@ -308,24 +294,95 @@ create table profilerestriction
 alter table profilerestriction
     owner to munch;
 
+create table affiliatebrand
+(
+    uid       varchar(26)  not null
+        constraint affiliatebrand_pkey
+            primary key,
+    name      varchar(100) not null,
+    image_uid varchar(26)  not null
+        constraint fkbof3731q6lnk52lkhfy8jppey
+            references image
+);
+
+alter table affiliatebrand
+    owner to munch;
+
+create table changegroup
+(
+    uid           varchar(26)  not null
+        constraint changegroup_pkey
+            primary key,
+    completedat   timestamp,
+    createdat     timestamp    not null,
+    description   varchar(500),
+    name          varchar(100) not null,
+    createdby_uid varchar(26)  not null
+        constraint fk24h1l2de66jx2q8w2rg2yawj
+            references profile
+);
+
+alter table changegroup
+    owner to munch;
+
+create table placerevision
+(
+    uid             varchar(26) not null
+        constraint placerevision_pkey
+            primary key,
+    description     varchar(250),
+    hours           jsonb,
+    location        jsonb,
+    name            varchar(100),
+    phone           varchar(100),
+    price           jsonb,
+    status          jsonb,
+    synonyms        jsonb,
+    tags            jsonb,
+    website         varchar(1000),
+    createdat       timestamp   not null,
+    id              varchar(13) not null,
+    createdby_uid   varchar(26) not null
+        constraint fkbo4nir8s7isvfvj5xkyspic0t
+            references profile,
+    place_id        varchar(13) not null
+        constraint fk63c2x1604ujiv60fwje9k2knd
+            references place,
+    changegroup_uid varchar(26)
+        constraint fkcqwd4krbgpei17jln0ca4y1fs
+            references changegroup
+);
+
+alter table placerevision
+    owner to munch;
+
 create table affiliate
 (
-    uid         varchar(26)   not null
+    uid             varchar(26)   not null
         constraint affiliate_pkey
             primary key,
-    createdat   timestamp     not null,
-    placestruct jsonb         not null,
-    source      varchar(100)  not null,
-    sourcekey   varchar(2048) not null
+    createdat       timestamp     not null,
+    placestruct     jsonb         not null,
+    source          varchar(100)  not null,
+    sourcekey       varchar(2048) not null
         constraint uk_e4vposnyx1qrm5e8vs7l4kvx6
             unique,
-    status      varchar(255),
-    type        varchar(255),
-    updatedat   timestamp     not null,
-    url         varchar(2048) not null,
-    place_id    varchar(13)
+    status          varchar(255),
+    type            varchar(255),
+    updatedat       timestamp     not null,
+    url             varchar(2048) not null,
+    place_id        varchar(13)
         constraint fko3fjbb266e305a2iy1hmd7f6p
-            references place
+            references place,
+    brand_uid       varchar(26)   not null
+        constraint fk6pamn20ancm82axm3rckmlk83
+            references affiliatebrand,
+    editedby_uid    varchar(26)
+        constraint fk3wiiuxcw26qyd2rj56d25e9xl
+            references profile,
+    changegroup_uid varchar(26)
+        constraint fk9rjd9bti3r6svsjf95vrogqv5
+            references changegroup
 );
 
 alter table affiliate
@@ -344,37 +401,12 @@ create table placeaffiliate
             references affiliate,
     place_id      varchar(13)   not null
         constraint fkmal8rg00eadx44bxos9xq4uh6
-            references place
+            references place,
+    brand_uid     varchar(26)   not null
+        constraint fk26j703b12nw6k0s8kqjvvvlud
+            references affiliatebrand
 );
 
 alter table placeaffiliate
-    owner to munch;
-
-create table placerevision
-(
-    uid           varchar(26) not null
-        constraint placerevision_pkey
-            primary key,
-    description   varchar(250),
-    hours         jsonb,
-    location      jsonb,
-    name          varchar(100),
-    phone         varchar(100),
-    price         jsonb,
-    status        jsonb,
-    synonyms      jsonb,
-    tags          jsonb,
-    website       varchar(1000),
-    createdat     timestamp   not null,
-    id            varchar(13) not null,
-    createdby_uid varchar(26) not null
-        constraint fkbo4nir8s7isvfvj5xkyspic0t
-            references profile,
-    place_id      varchar(13) not null
-        constraint fk63c2x1604ujiv60fwje9k2knd
-            references place
-);
-
-alter table placerevision
     owner to munch;
 

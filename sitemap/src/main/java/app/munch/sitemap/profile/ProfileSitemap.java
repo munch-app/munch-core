@@ -12,7 +12,6 @@ import javax.inject.Singleton;
 import java.net.MalformedURLException;
 import java.util.Iterator;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * Created by: Fuxing
@@ -21,10 +20,7 @@ import java.util.Set;
  */
 @Singleton
 public final class ProfileSitemap implements SitemapProvider {
-    private final Set<String> BLACKLIST = Set.of(
-            Profile.ADMIN_ID,
-            Profile.COMPAT_ID
-    );
+
     private final TransactionProvider provider;
 
     @Inject
@@ -45,7 +41,7 @@ public final class ProfileSitemap implements SitemapProvider {
                     .iterator(), profile -> {
                 Objects.requireNonNull(profile);
 
-                if (BLACKLIST.contains(profile.getUsername())) {
+                if (Profile.ALL_SPECIAL_ID.contains(profile.getUid())) {
                     return null;
                 }
 

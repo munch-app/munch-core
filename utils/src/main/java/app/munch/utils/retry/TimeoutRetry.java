@@ -1,6 +1,7 @@
 package app.munch.utils.retry;
 
-import munch.restful.core.exception.TimeoutException;
+
+import dev.fuxing.err.TimeoutException;
 
 import java.time.Duration;
 

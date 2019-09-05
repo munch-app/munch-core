@@ -15,6 +15,7 @@ import javax.validation.groups.Default;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by: Fuxing
@@ -36,6 +37,13 @@ public final class Profile {
      * Backward compatible support, user different id for each major deprecation so that it's easier to delete.
      */
     public static final String COMPAT_ID = "000000000000000000v22t0v23";
+
+    /**
+     * All special uid.
+     */
+    public static final Set<String> ALL_SPECIAL_ID = Set.of(
+            ADMIN_ID, COMPAT_ID
+    );
 
     @NotNull
     @Pattern(regexp = KeyUtils.ULID_REGEX)
@@ -63,7 +71,6 @@ public final class Profile {
     @ManyToOne(cascade = {}, fetch = FetchType.EAGER, optional = true)
     private Image image;
 
-    // TODO(fuxing): Not Null, issues
     @Size(max = 4)
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, mappedBy = "profile", orphanRemoval = true)
     @OrderBy("position DESC")

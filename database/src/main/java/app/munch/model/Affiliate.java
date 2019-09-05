@@ -90,15 +90,25 @@ public final class Affiliate {
     @Column(length = 2048, updatable = true, nullable = true, unique = false)
     private String url;
 
+    /**
+     * Regardless, group is used for easy look up
+     */
     @NotNull
     @Pattern(regexp = "^[a-z0-9.]{1,100}$")
     @Column(length = 100, updatable = false, nullable = false, unique = false)
     private String source;
 
+    /**
+     * One field used for uniqueness indexing
+     * www.munch.app_base64+/==
+     */
     @NotNull
-    @Pattern(regexp = "^[a-zA-Z0-9+/=]{1,2048}$")
+    @Pattern(regexp = "^[a-z0-9.]{1,100}_[a-zA-Z0-9+/=]{1,1948}$")
     @Column(length = 2048, updatable = false, nullable = false, unique = true)
     private String sourceKey;
+
+    @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = true)
+    private ChangeGroup changeGroup;
 
     @NotNull
     @Version
@@ -113,7 +123,7 @@ public final class Affiliate {
         return uid;
     }
 
-    public void setUid(String uid) {
+    private void setUid(String uid) {
         this.uid = uid;
     }
 
@@ -185,7 +195,7 @@ public final class Affiliate {
         return source;
     }
 
-    public void setSource(String source) {
+    private void setSource(String source) {
         this.source = source;
     }
 
@@ -193,15 +203,28 @@ public final class Affiliate {
         return sourceKey;
     }
 
-    public void setSourceKey(String sourceKey) {
+    private void setSourceKey(String sourceKey) {
         this.sourceKey = sourceKey;
+    }
+
+    public void setSourceKey(String source, String key) {
+        setSource(source);
+        setSourceKey(source + "_" + key);
+    }
+
+    public ChangeGroup getChangeGroup() {
+        return changeGroup;
+    }
+
+    public void setChangeGroup(ChangeGroup changeGroup) {
+        this.changeGroup = changeGroup;
     }
 
     public Date getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
+    private void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
 
@@ -209,7 +232,7 @@ public final class Affiliate {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    private void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -247,6 +270,7 @@ public final class Affiliate {
                     break;
 
                 case DROPPED:
+                case REAPPEAR:
                     ValidationException.validate(this, Default.class, AffiliatePlaceNotNullGroup.class);
                     break;
             }

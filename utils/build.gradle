@@ -1,5 +1,5 @@
 dependencies {
-    compile project(':database')
+    compile group: 'dev.fuxing', name: 'transport-core', version: transportVersion
 
     compile group: 'org.jsoup', name: 'jsoup', version: '1.12.1'
 }

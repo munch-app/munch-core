@@ -342,10 +342,6 @@ public abstract class ArticleModel {
             @Length(max = 500)
             private String caption;
 
-            // TODO(fuxing): similar to medium.com add image style?
-            // - Wide
-            // - Content Width
-
             public Image getImage() {
                 return image;
             }
@@ -581,7 +577,6 @@ public abstract class ArticleModel {
         @JsonInclude(JsonInclude.Include.NON_NULL)
         @JsonIgnoreProperties(ignoreUnknown = true)
         public static final class Attrs {
-
 
             private String href;
 

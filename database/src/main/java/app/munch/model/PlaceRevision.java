@@ -47,6 +47,9 @@ public final class PlaceRevision extends PlaceModel {
     @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = false)
     private Profile createdBy;
 
+    @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = true)
+    private ChangeGroup changeGroup;
+
     @NotNull
     @Column(updatable = false, nullable = false)
     private Date createdAt;
@@ -86,15 +89,21 @@ public final class PlaceRevision extends PlaceModel {
         this.createdBy = createdBy;
     }
 
+    public ChangeGroup getChangeGroup() {
+        return changeGroup;
+    }
+
+    public void setChangeGroup(ChangeGroup changeGroup) {
+        this.changeGroup = changeGroup;
+    }
+
     public Date getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    private void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
-
-    // TODO(fuxing): Copy from PlaceRevision to Place
 
     @PrePersist
     void prePersist() {

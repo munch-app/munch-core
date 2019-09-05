@@ -1,3 +1,5 @@
 dependencies {
     compile project(':database')
+
+    compile group: 'net.sf.supercsv', name: 'super-csv', version: '2.4.0'
 }

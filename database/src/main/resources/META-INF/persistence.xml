@@ -29,5 +29,7 @@
         <class>app.munch.model.Affiliate</class>
         <class>app.munch.model.AffiliateBrand</class>
         <class>app.munch.model.PlaceAffiliate</class>
+
+        <class>app.munch.model.ChangeGroup</class>
     </persistence-unit>
 </persistence>

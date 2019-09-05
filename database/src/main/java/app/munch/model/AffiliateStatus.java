@@ -21,6 +21,11 @@ public enum AffiliateStatus {
     PENDING("PENDING"),
 
     /**
+     * Was once deleted, but reappeared
+     */
+    REAPPEAR("REAPPEAR"),
+
+    /**
      * Affiliate is linked to place, meaning it's serving live now
      */
     LINKED("LINKED"),

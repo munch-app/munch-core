@@ -1,7 +1,16 @@
 rootProject.name = 'munch-core'
 
 /**
+ * Munch App Post-Ignatius Utility
+ * All utility classes are combined into one module.
+ * In the future, it can be separated out and maintained as its own project.
+ */
+include 'utils'
+
+/**
  * Munch App Post-Ignatius Database Engine
+ * All post-ignatius era models must be contained inside this module.
+ * When certain part of the project grows out of scale in the future, it should then be migrated out.
  */
 include 'database'
 
@@ -18,11 +27,9 @@ include 'database'
 include 'elastic'
 
 /**
- * Munch App universal worker
+ * Munch App Post-Ignatius Worker Engine
  */
 include 'worker'
-include 'worker:worker-utils'
-
 include 'worker:worker-affiliate-chope'
 include 'worker:worker-instagram'
 include 'worker:worker-place'
@@ -36,16 +43,18 @@ include 'api:api-core'
 include 'api:api-data'
 include 'api:api-admin'
 
+/**
+ * Feature specific API.
+ */
 include 'api:api-account'
 include 'api:api-page'
 include 'api:api-place'
+// search, filter, trending, between, business
 
-// Improvements & Deprecation
+// Deprecating
 include 'api:api-locations'
 include 'api:api-feed'
 include 'api:api-search'
-
-// Deprecating
 include 'api:api-places'
 include 'api:api-users'
 

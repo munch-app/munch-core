@@ -2,6 +2,7 @@ package app.munch.model;
 
 import app.munch.model.constraint.ArticlePublishedGroup;
 import app.munch.model.constraint.PlaceDefaultGroup;
+import app.munch.utils.spatial.LatLng;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.fuxing.postgres.PojoSetUserType;
@@ -17,7 +18,10 @@ import javax.persistence.MappedSuperclass;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -331,6 +335,42 @@ public abstract class PlaceModel {
         if (!equalsSynonyms(left.getSynonyms(), right.getSynonyms())) return false;
         if (!Hour.equals(left.getHours(), right.getHours())) return false;
         if (!Tag.equals(left.getTags(), right.getTags())) return false;
+        return true;
+    }
+
+    /**
+     * @param left  model
+     * @param right model
+     * @return whether this 2 model data has drastically changed. (Name, Location)
+     */
+    public static boolean isSpatiallySimilar(PlaceModel left, PlaceModel right) {
+        // Check whether name has changed
+        // Improvement: use a StringSimilarity library instead.
+        String leftName = StringUtils.trimToNull(left.getName());
+        String rightName = StringUtils.trimToNull(right.getName());
+        if (!StringUtils.equalsIgnoreCase(leftName, rightName)) {
+            return false;
+        }
+
+        if (left.getLocation() == null && right.getLocation() != null) return true;
+        if (left.getLocation() != null && right.getLocation() == null) return true;
+
+        if (left.getLocation() != null && right.getLocation() != null) {
+            if (left.getLocation().getLatLng() != null && right.getLocation().getLatLng() != null) {
+                double distance = LatLng.distance(left.getLocation().getLatLng(), right.getLocation().getLatLng());
+                if (distance > 100) {
+                    return false;
+                }
+            }
+
+
+            String leftAddress = StringUtils.trimToNull(left.getLocation().getAddress());
+            String rightAddress = StringUtils.trimToNull(right.getLocation().getAddress());
+            if (!StringUtils.equalsIgnoreCase(leftAddress, rightAddress)) {
+                return false;
+            }
+
+        }
         return true;
     }
 

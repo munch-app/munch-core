@@ -151,12 +151,16 @@ public final class ArticleRevision extends ArticleModel {
         String title = Optional.ofNullable(getTitle())
                 .filter(StringUtils::isNotBlank)
                 .or(() -> NodeUtils.findFirstHeading(getContent()))
+                .map(s -> StringUtils.substring(s, 0, 100))
+                .filter(StringUtils::isNotBlank)
                 .orElse("Untitled Article");
         article.setTitle(title);
 
         Optional.ofNullable(getDescription())
                 .filter(StringUtils::isNotBlank)
                 .or(() -> NodeUtils.findFirstParagraph(getContent()))
+                .map(s -> StringUtils.substring(s, 0, 250))
+                .filter(StringUtils::isNotBlank)
                 .ifPresent(s -> {
                     article.setDescription(s);
                 });

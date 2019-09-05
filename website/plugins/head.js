@@ -1,3 +1,5 @@
+// TODO(fuxing): This needs to be expanded to feature JSON-LD
+
 function scriptBreadcrumbs(breadcrumbs) {
   if (!breadcrumbs) return []
 
@@ -18,6 +20,27 @@ function scriptBreadcrumbs(breadcrumbs) {
         "@context": "http://schema.org",
         "@type": "BreadcrumbList",
         "itemListElement": list
+      }
+    )
+  }]
+}
+
+const publisher = {
+  "@type": "Organization",
+  "name": "Munch",
+  "logo": {
+    "@type": "ImageObject",
+    "url": "https://cdn.munch.app/eyJidWNrZXQiOiJtaDQiLCJrZXkiOiJsb2dvXzMwMC5wbmcifQ=="
+  }
+}
+
+function scriptSchema(graph) {
+  return [{
+    type: 'application/ld+json',
+    innerHTML: JSON.stringify({
+        "@context": "http://schema.org",
+        "@type": "Article",
+        "publisher": publisher,
       }
     )
   }]
