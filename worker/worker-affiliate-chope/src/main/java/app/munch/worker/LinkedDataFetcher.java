@@ -20,6 +20,7 @@ import java.time.Duration;
  */
 @Singleton
 public final class LinkedDataFetcher {
+
     private final WebsiteBrowser bookBrowser;
     private final WebsiteBrowser wwwBrowser;
 
