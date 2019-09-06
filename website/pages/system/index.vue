@@ -43,16 +43,16 @@
               }
             ],
           },
-          {
-            name: 'Data Management',
-            features: [
-              {
-                name: 'Affiliate',
-                description: 'Affiliate linking management.',
-                path: '/system/affiliates',
-              },
-            ]
-          }
+          // {
+          //   name: 'Data Management',
+          //   features: [
+          //     {
+          //       name: 'Affiliate',
+          //       description: 'Affiliate linking management.',
+          //       path: '/system/affiliates',
+          //     },
+          //   ]
+          // }
         ],
       }
     },

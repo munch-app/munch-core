@@ -1,6 +1,6 @@
 <template>
   <div class="border-4 overflow-hidden elevation-1 flex-column">
-    <apple-map ref="map" class="flex-grow w-100" :options="map.options">
+    <apple-map ref="map" class="Map flex-grow w-100" :options="map.options">
       <article-context-map-annotation v-for="item in items" :key="item.id" :item="item"/>
     </apple-map>
 
@@ -54,7 +54,7 @@
     const windowCenter = ((height - 72) / 2) - 100
 
     const rect = el.getBoundingClientRect()
-    const rectCenter = rect.top + (rect.height  / 2)
+    const rectCenter = rect.top + (rect.height / 2)
 
     return Math.abs(windowCenter - rectCenter);
   }
@@ -141,3 +141,9 @@
     }
   }
 </script>
+
+<style scoped lang="less">
+  .Map {
+    height: 260px;
+  }
+</style>

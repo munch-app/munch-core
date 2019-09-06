@@ -4,8 +4,10 @@
       <div class="flex-wrap">
         <article-content class="ArticleContent" :article="article" ref="ArticleContent"/>
         <aside class="flex-grow">
-          <article-context-map class="Map" v-if="showMap" :article="article" :get-contexts="getContexts"/>
-          <!--          <Adsense data-ad-client="ca-pub-7144155418390858" data-ad-slot="9604475829"/>-->
+          <article-context-map v-if="showMap" :article="article" :get-contexts="getContexts"/>
+          <div class="mt-24">
+            <Adsense data-ad-client="ca-pub-7144155418390858" data-ad-slot="9676262046"/>
+          </div>
         </aside>
       </div>
 
@@ -33,6 +35,10 @@
           <div class="regular mt-8 b-a60">{{article.profile.bio}}</div>
         </div>
       </div>
+    </div>
+
+    <div class="container mtb-24">
+      <Adsense data-ad-client="ca-pub-7144155418390858" data-ad-slot="7065221202"/>
     </div>
 
     <div class="bg-steam" v-if="moreFromAuthorArticles.length > 0">
@@ -154,9 +160,5 @@
     @media (min-width: 1400px) {
       flex: 0 0 424px;
     }
-  }
-
-  .Map {
-    height: 320px;
   }
 </style>
