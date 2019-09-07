@@ -4,27 +4,20 @@ import app.munch.model.Affiliate;
 import app.munch.model.AffiliateBrand;
 import app.munch.model.AffiliateType;
 import app.munch.model.PlaceStruct;
+import app.munch.worker.google.GoogleSheetService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.Iterators;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.client.utils.URLEncodedUtils;
-import org.supercsv.io.CsvListReader;
-import org.supercsv.io.ICsvListReader;
-import org.supercsv.prefs.CsvPreference;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -44,56 +37,33 @@ public final class ChopeAffiliateFetcher {
     }
 
     private static final Base64.Encoder encoder = Base64.getEncoder();
-    private static final String CSV_URL = "https://docs.google.com/spreadsheets/d/1vNNoveTpyiOaMEE2B16D7rKcG4ZIacTmXPQCbxovDvg/export?format=csv&id=1vNNoveTpyiOaMEE2B16D7rKcG4ZIacTmXPQCbxovDvg&gid=0";
 
+    private final GoogleSheetService googleSheetService;
     private final LinkedDataFetcher linkedDataFetcher;
     private final PlaceStructParser placeStructParser;
 
     @Inject
-    ChopeAffiliateFetcher(LinkedDataFetcher linkedDataFetcher, PlaceStructParser placeStructParser) {
+    ChopeAffiliateFetcher(GoogleSheetService googleSheetService, LinkedDataFetcher linkedDataFetcher, PlaceStructParser placeStructParser) {
+        this.googleSheetService = googleSheetService;
         this.linkedDataFetcher = linkedDataFetcher;
         this.placeStructParser = placeStructParser;
     }
 
     public Iterator<Affiliate> fetch() throws IOException {
-        List<List<String>> rowList = getRowList();
+        Iterator<List<Object>> sheetIterator = googleSheetService.iterator();
 
-        Iterator<Affiliate> iterator = Iterators.transform(rowList.iterator(), this::mapAffiliate);
+        Iterator<Affiliate> iterator = Iterators.transform(sheetIterator, this::mapAffiliate);
         iterator = Iterators.filter(iterator, Objects::nonNull);
         return iterator;
     }
 
-    private List<List<String>> getRowList() throws IOException {
-        try (ICsvListReader csvReader = getCsvReader()) {
-            List<List<String>> rowList = new ArrayList<>();
-
-            List<String> row;
-            while ((row = csvReader.read()) != null) {
-                rowList.add(row);
-            }
-
-            return rowList;
-        }
-    }
-
-    private ICsvListReader getCsvReader() throws IOException {
-        File file = File.createTempFile(RandomStringUtils.randomAlphanumeric(20), ".tmp");
-        FileUtils.copyURLToFile(new URL(CSV_URL), file);
-
-        CsvListReader listReader = new CsvListReader(new FileReader(file), CsvPreference.STANDARD_PREFERENCE);
-
-        // First line is invalid
-        listReader.getHeader(true);
-        return listReader;
-    }
-
     @Nullable
-    private Affiliate mapAffiliate(List<String> row) {
+    private Affiliate mapAffiliate(List<Object> row) {
         if (row.size() < 3) return null;
 
-        String name = row.get(0);
-        String baseReferralUrl = row.get(1);
-        String munchReferralUrl = row.get(2);
+        String name = row.get(0).toString();
+        String baseReferralUrl = row.get(1).toString();
+        String munchReferralUrl = row.get(2).toString();
 
         if (StringUtils.isAnyBlank(name, baseReferralUrl, munchReferralUrl)) return null;
         if (!baseReferralUrl.startsWith("http")) return null;

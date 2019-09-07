@@ -1,0 +1,11 @@
+ext.dockerVersion = 'latest'
+
+apply from: (project.rootDir.toString() + '/docker.gradle')
+
+task publishWorker {
+    dependsOn 'buildImage'
+
+    doLast {
+        exec { commandLine "docker", "push", dockerTag }
+    }
+}

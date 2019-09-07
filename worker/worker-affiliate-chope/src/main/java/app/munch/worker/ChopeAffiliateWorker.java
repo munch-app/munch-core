@@ -5,9 +5,8 @@ import app.munch.manager.AffiliateEntityManager;
 import app.munch.manager.ChangeGroupManager;
 import app.munch.model.Affiliate;
 import app.munch.model.Profile;
-import app.munch.worker.data.WorkerGroup;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
+import app.munch.model.WorkerTask;
+import app.munch.worker.google.GoogleSheetModule;
 
 import javax.inject.Inject;
 import java.util.Iterator;
@@ -18,7 +17,12 @@ import java.util.Iterator;
  * Time: 1:01 PM
  * Project: munch-core
  */
-public final class ChopeAffiliateWorker implements Worker {
+public final class ChopeAffiliateWorker implements WorkerRunner {
+    /*
+     * Email response:
+     * As for the booking widget links and ChopeDeals affiliate links,
+     * you can refer to this sheet which is updated on a weekly basis.
+     */
 
     private final AffiliateEntityManager affiliateEntityManager;
     private final ChopeAffiliateFetcher fetcher;
@@ -31,29 +35,13 @@ public final class ChopeAffiliateWorker implements Worker {
         this.changeGroupManager = changeGroupManager;
     }
 
-    /*
-     * Email response:
-     * As for the booking widget links and ChopeDeals affiliate links,
-     * you can refer to this sheet which is updated on a weekly basis.
-     */
-
     @Override
-    public String group() {
-        return "chope.co";
+    public String groupUid() {
+        return "01dm081jszqt29x1mvmn4d3d7a";
     }
 
     @Override
-    public String name() {
-        return "Chope Affiliate Program";
-    }
-
-    @Override
-    public String description() {
-        return "Synchronization of chope.co affiliate links into munch eco system.";
-    }
-
-    @Override
-    public void run(WorkerGroup workerGroup) throws Exception {
+    public void run(WorkerTask task) throws Exception {
         Iterator<Affiliate> iterator = fetcher.fetch();
 
         changeGroupManager.newGroup(Profile.ADMIN_ID, "Chope Affiliate Worker (Ingest)", null, ingestGroup -> {
@@ -68,9 +56,8 @@ public final class ChopeAffiliateWorker implements Worker {
     }
 
     public static void main(String[] args) {
-        Injector injector = Guice.createInjector(new WorkerModule(), new DatabaseModule());
-        injector.getInstance(WorkerRunner.class).run(
-                injector.getInstance(ChopeAffiliateWorker.class)
+        WorkerRunner.start(ChopeAffiliateWorker.class,
+                new DatabaseModule(), new GoogleSheetModule()
         );
     }
 }

@@ -81,7 +81,7 @@ public final class Tag {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
+    private void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
 
@@ -89,7 +89,7 @@ public final class Tag {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    private void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 

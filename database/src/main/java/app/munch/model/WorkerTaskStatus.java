@@ -1,4 +1,4 @@
-package app.munch.worker.data;
+package app.munch.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -13,8 +13,10 @@ import java.util.stream.Stream;
  * Time: 12:29 PM
  * Project: munch-core
  */
-public enum WorkerReportStatus {
+public enum WorkerTaskStatus {
     STARTED("STARTED"),
+
+    RUNNING("RUNNING"),
 
     COMPLETED("COMPLETED"),
 
@@ -24,7 +26,7 @@ public enum WorkerReportStatus {
 
     private final String value;
 
-    WorkerReportStatus(String value) {
+    WorkerTaskStatus(String value) {
         this.value = value;
     }
 
@@ -41,15 +43,15 @@ public enum WorkerReportStatus {
      * @return WorkerReportStatus corresponding to the value
      */
     @JsonCreator
-    public static WorkerReportStatus fromValue(String value) {
+    public static WorkerTaskStatus fromValue(String value) {
         if (value == null) {
             return null;
         }
-        return Stream.of(WorkerReportStatus.values()).filter(e -> e.toString().equals(value)).findFirst()
+        return Stream.of(WorkerTaskStatus.values()).filter(e -> e.toString().equals(value)).findFirst()
                 .orElse(UNKNOWN_TO_SDK_VERSION);
     }
 
-    public static Set<WorkerReportStatus> knownValues() {
+    public static Set<WorkerTaskStatus> knownValues() {
         return Stream.of(values()).filter(v -> v != UNKNOWN_TO_SDK_VERSION).collect(Collectors.toSet());
     }
 }

@@ -3,6 +3,7 @@ package app.munch.worker;
 import app.munch.utils.website.WebsiteBrowser;
 import com.fasterxml.jackson.databind.JsonNode;
 import dev.fuxing.utils.JsonUtils;
+import dev.fuxing.utils.SleepUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -34,6 +35,8 @@ public final class LinkedDataFetcher {
      * Fetch from book.chope.co then deep fetch from www.chope.co
      */
     public JsonNode fetch(String rid) {
+        SleepUtils.sleep(1000);
+
         try {
             Document document = bookBrowser.open("/booking?rid=" + rid, 3, Duration.ofMinutes(10));
             for (Element anchor : document.select(".logo_box .content a")) {

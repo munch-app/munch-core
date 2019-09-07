@@ -1,11 +1,9 @@
 package app.munch.worker;
 
-import app.munch.worker.data.WorkerGroup;
-import app.munch.worker.data.WorkerGroupManager;
+import app.munch.model.WorkerTask;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import dev.fuxing.health.HealthCheckServer;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
 /**
  * Created by: Fuxing
@@ -13,32 +11,29 @@ import javax.inject.Singleton;
  * Time: 12:57 PM
  * Project: munch-core
  */
-@Singleton
-public final class WorkerRunner {
-
-    private final WorkerGroupManager groupManager;
-
-    @Inject
-    WorkerRunner(WorkerGroupManager groupManager) {
-        this.groupManager = groupManager;
-    }
+public interface WorkerRunner {
 
     /**
-     * Run worker with
-     * - health check
-     * - reporting
-     *
-     * @param worker to run
+     * @return WorkerGroup.uid, must already be created.
      */
-    public void run(Worker worker) {
-        WorkerGroup group = groupManager.start(worker);
+    String groupUid();
+
+    void run(WorkerTask task) throws Exception;
+
+
+    static <T extends WorkerRunner> void start(Class<T> runnerClass, com.google.inject.Module... modules) {
+        Injector injector = Guice.createInjector(modules);
+        WorkerCoordinator coordinator = injector.getInstance(WorkerCoordinator.class);
+
+        T worker = injector.getInstance(runnerClass);
+        WorkerTask task = coordinator.start(worker.groupUid());
 
         HealthCheckServer.startBlocking(() -> {
             try {
-                worker.run(group);
-                groupManager.complete(group);
+                worker.run(task);
+                coordinator.complete(task);
             } catch (Exception e) {
-                groupManager.error(group, e);
+                coordinator.error(task, e);
             }
         });
     }

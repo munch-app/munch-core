@@ -31,5 +31,7 @@
         <class>app.munch.model.PlaceAffiliate</class>
 
         <class>app.munch.model.ChangeGroup</class>
+        <class>app.munch.model.WorkerGroup</class>
+        <class>app.munch.model.WorkerTask</class>
     </persistence-unit>
 </persistence>

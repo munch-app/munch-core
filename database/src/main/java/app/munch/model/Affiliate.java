@@ -255,8 +255,12 @@ public final class Affiliate {
             PlaceAffiliate linked = getLinked();
             linked.setUid(getUid());
             linked.setAffiliate(this);
+            linked.setBrand(getBrand());
             linked.setType(getType());
             linked.setUrl(getUrl());
+
+            // Place copy from Linked.place
+            setPlace(linked.getPlace());
         }
 
         if (getStatus() != null) {

@@ -78,7 +78,7 @@ public final class PlaceAffiliate {
         return uid;
     }
 
-    public void setUid(String uid) {
+    void setUid(String uid) {
         this.uid = uid;
     }
 
@@ -86,7 +86,7 @@ public final class PlaceAffiliate {
         return brand;
     }
 
-    public void setBrand(AffiliateBrand brand) {
+    void setBrand(AffiliateBrand brand) {
         this.brand = brand;
     }
 
@@ -94,7 +94,7 @@ public final class PlaceAffiliate {
         return affiliate;
     }
 
-    public void setAffiliate(Affiliate affiliate) {
+    void setAffiliate(Affiliate affiliate) {
         this.affiliate = affiliate;
     }
 
@@ -110,7 +110,7 @@ public final class PlaceAffiliate {
         return type;
     }
 
-    public void setType(AffiliateType type) {
+    void setType(AffiliateType type) {
         this.type = type;
     }
 
@@ -118,7 +118,7 @@ public final class PlaceAffiliate {
         return url;
     }
 
-    public void setUrl(String url) {
+    void setUrl(String url) {
         this.url = url;
     }
 
@@ -126,7 +126,7 @@ public final class PlaceAffiliate {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
+    void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
 
@@ -134,7 +134,7 @@ public final class PlaceAffiliate {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 

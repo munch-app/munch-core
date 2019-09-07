@@ -46,17 +46,9 @@ public final class PlaceStruct extends PlaceModel {
 
         @Inject
         BuilderFactory(TransactionProvider provider) {
-            this.tags = provider.reduce(entityManager -> {
-                Set<Tag> tags = new HashSet<>();
-                entityManager.createQuery("FROM Tag", Tag.class)
-                        .getResultList()
-                        .forEach(tag -> {
-                            tag.setUpdatedAt(null);
-                            tag.setCreatedAt(null);
-                            tags.add(tag);
-                        });
-                return tags;
-            });
+            this.tags = provider.reduce(true, entityManager -> Set.copyOf(
+                    entityManager.createQuery("FROM Tag", Tag.class).getResultList()
+            ));
         }
 
         @Nullable

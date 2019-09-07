@@ -14,6 +14,7 @@ dependencies {
     compile project(':api:api-search')
 }
 
+ext.dockerVersion = 'latest'
 apply from: (project.rootDir.toString() + '/docker.gradle')
 mainClassName = 'app.munch.sitemap.SitemapModule'
 
