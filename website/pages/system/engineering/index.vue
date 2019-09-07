@@ -5,7 +5,7 @@
         <h1>{{group.name}}</h1>
 
         <div class="mt-24 mb-80">
-          <div class="Features flex-1-2-3-4 flex-align-stretch">
+          <div class="flex-1-2-3-4 m--12 flex-align-stretch">
             <div class="flex-self-stretch p-12 text-decoration-none" v-for="feature in group.features"
                  :key="feature.path">
               <nuxt-link class="bg-steam black block wh-100 border-3 overflow-hidden" :to="feature.path">
@@ -29,11 +29,11 @@
       return {
         groups: [
           {
-            name: 'Workers',
+            name: 'Manage Workers',
             features: [
               {
                 name: 'Worker Group',
-                description: 'Manage worker group and their reporting',
+                description: 'Manage worker group and their reporting.',
                 path: '/system/engineering/workers',
               },
             ],
@@ -45,7 +45,5 @@
 </script>
 
 <style scoped lang="less">
-  .Features {
-    margin: -12px;
-  }
+
 </style>

@@ -5,7 +5,7 @@
         <h1>{{group.name}}</h1>
 
         <div class="mt-24 mb-80">
-          <div class="Features flex-1-2-3-4 flex-align-stretch">
+          <div class="flex-1-2-3-4 m--12 flex-align-stretch">
             <div class="flex-self-stretch p-12 text-decoration-none" v-for="feature in group.features"
                  :key="feature.path">
               <nuxt-link class="bg-steam black block wh-100 border-3 overflow-hidden" :to="feature.path">
@@ -29,7 +29,7 @@
       return {
         groups: [
           {
-            name: 'Partner Management',
+            name: 'Manage Partner',
             features: [
               {
                 name: 'Profile',
@@ -43,16 +43,16 @@
               }
             ],
           },
-          // {
-          //   name: 'Data Management',
-          //   features: [
-          //     {
-          //       name: 'Affiliate',
-          //       description: 'Affiliate linking management.',
-          //       path: '/system/affiliates',
-          //     },
-          //   ]
-          // }
+          {
+            name: 'Manage Data',
+            features: [
+              {
+                name: 'Affiliate',
+                description: 'Place affiliate linking management.',
+                path: '/system/affiliates',
+              },
+            ]
+          }
         ],
       }
     },
@@ -60,7 +60,4 @@
 </script>
 
 <style scoped lang="less">
-  .Features {
-    margin: -12px;
-  }
 </style>

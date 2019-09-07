@@ -4,7 +4,7 @@
       <div class="container h-100 flex-align-center">
         <div class="flex mr-8">
           <header-logo class="mr-16"/>
-          <h3>Admin System</h3>
+          <nuxt-link class="text-decoration-none" to="/system"><h3>Admin System</h3></nuxt-link>
         </div>
         <div class="mlr-8 mtb-8 flex-grow">
           <portal-target name="HeaderMiddle"/>
