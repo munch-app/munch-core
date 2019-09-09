@@ -59,7 +59,7 @@
 
           <div class="mt-16 mb-8 flex">
             <button class="flex-grow" @click="onApply" v-if="applyText"
-                    :class="{'bg-pink white weight-600': isApplicable, 'b-a85 weight-600': !isApplicable}">
+                    :class="{'pink': isApplicable, 'b-a85 weight-600': !isApplicable}">
               {{applyText}}
             </button>
             <beat-loader v-else class="flex-grow border-3 bg-s050 flex-center p-16" color="#084E69" size="8px"/>

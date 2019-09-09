@@ -1,18 +1,19 @@
 package munch.api.feed;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import app.munch.api.ApiRequest;
+import com.fasterxml.jackson.databind.JsonNode;
 import munch.api.ApiService;
 import munch.data.client.PlaceCachedClient;
 import munch.feed.FeedItemClient;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonResult;
-import munch.user.client.UserSavedPlaceClient;
-import munch.user.data.UserSavedPlace;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by: Fuxing
@@ -24,13 +25,11 @@ import java.util.*;
 public final class FeedItemService extends ApiService {
     private final FeedItemClient itemClient;
     private final PlaceCachedClient placeClient;
-    private final UserSavedPlaceClient savedClient;
 
     @Inject
-    public FeedItemService(FeedItemClient itemClient, PlaceCachedClient placeClient, UserSavedPlaceClient savedClient) {
+    public FeedItemService(FeedItemClient itemClient, PlaceCachedClient placeClient) {
         this.itemClient = itemClient;
         this.placeClient = placeClient;
-        this.savedClient = savedClient;
     }
 
     @Override
@@ -53,18 +52,7 @@ public final class FeedItemService extends ApiService {
         return JsonResult.ok(Map.of(
                 "item", feedItem,
                 "places", placeClient.get(placeIds),
-                "savedPlaces", getSavedPlaces(request, placeIds)
+                "savedPlaces", List.of()
         ));
-    }
-
-    private List<UserSavedPlace> getSavedPlaces(ApiRequest request, Set<String> placeIds) {
-        if (!request.accountId().isPresent()) return List.of();
-        String userId = request.accountId().get();
-
-        List<UserSavedPlace> savedPlaces = new ArrayList<>();
-        placeIds.forEach(placeId -> {
-            savedPlaces.add(savedClient.get(userId, placeId));
-        });
-        return savedPlaces;
     }
 }

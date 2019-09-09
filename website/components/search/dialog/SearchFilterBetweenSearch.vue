@@ -23,71 +23,8 @@
         <div class="absolute-0 p-16 flex-justify-center" v-if="loading">
           <beat-loader color="#084E69" size="14px"/>
         </div>
-
-        <div v-if="!loading && text === ''">
-          <h4 class="mb-8" v-if="saved.length > 0">Saved Locations</h4>
-          <div class="hover-pointer flex-align-center" v-for="loc in saved" @click="onLocation(loc, {input: 'history', type: loc.type})">
-            <simple-svg v-if="loc.type === 'home'" class="wh-24px flex-no-shrink"
-                        :filepath="require('~/assets/icon/location/Location_Home.svg')"/>
-            <simple-svg v-if="loc.type === 'work'" class="wh-24px flex-no-shrink"
-                        :filepath="require('~/assets/icon/location/Location_Work.svg')"/>
-            <simple-svg v-if="loc.type === 'saved'" class="wh-24px flex-no-shrink"
-                        :filepath="require('~/assets/icon/location/Location_Bookmark_Filled.svg')"/>
-            <div class="m-8 text text-ellipsis-1l flex-grow">
-              {{loc.name}}
-            </div>
-            <div @click.capture.stop="deleting = loc">
-              <simple-svg class="wh-20px flex-no-shrink" :filepath="require('~/assets/icon/location/Location_Cancel.svg')"/>
-            </div>
-          </div>
-
-          <h4 class="mt-16 mb-8" v-if="recent.length > 0">Recent Searches</h4>
-          <div class="hover-pointer flex-align-center" v-for="loc in recent" @click="onLocation(loc, {input: 'history', type: loc.type})">
-            <simple-svg class="wh-24px flex-no-shrink" :filepath="require('~/assets/icon/location/Location_Recent.svg')"/>
-            <div class="m-8 text text-ellipsis-1l flex-grow">
-              {{loc.name}}
-            </div>
-            <div @click.capture.stop="saving = loc">
-              <simple-svg class="wh-20px flex-no-shrink" :filepath="require('~/assets/icon/location/Location_Bookmark.svg')"/>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
-
-    <portal to="dialog-styled" v-if="deleting">
-      <h3>Removed Saved Location</h3>
-      <p><span class="weight-600">{{deleting.name}}</span> will be permanently removed from your saved locations. Do you
-        want to continue?</p>
-      <div class="right">
-        <button @click="deleting = null">Cancel</button>
-        <button @click="onDelete(deleting)" class="secondary">Confirm</button>
-      </div>
-    </portal>
-
-    <portal to="dialog-styled" v-if="saving">
-      <h6 class="m-0">Name:</h6>
-      <h4>{{saving.name}}</h4>
-      <h4>Save as</h4>
-
-      <div class="SaveAsList zero">
-        <div class="hover-pointer mtb-16 flex-align-center border-3" v-for="save in savingType"
-             @click="onSelectSave(save.type)"
-             :class="savingSelected && save.type === saving.type ? 'bg-pink white': 'bg-whisper100'"
-        >
-          <div class="p-12">
-            <simple-svg class="wh-24px" :filepath="save.icon"
-                        :fill="savingSelected && save.type === saving.type ? 'white': 'black'"/>
-          </div>
-          <div class="text">{{save.name}}</div>
-        </div>
-      </div>
-
-      <div class="right">
-        <button @click="onSaveCancel">Cancel</button>
-        <button @click="onSave(saving)" :class="savingSelected ? 'secondary' : 'disabled'">Confirm</button>
-      </div>
-    </portal>
   </div>
 </template>
 
@@ -191,34 +128,6 @@
         this.recent.splice(0)
         this.loading = true
       },
-      onDelete(location) {
-        this.$api.delete(`/users/locations/${location.sortId}`)
-          .then(() => {
-            this.refresh()
-          })
-          .catch((err) => this.$store.dispatch('addError', err))
-        this.deleting = null
-      },
-      onSelectSave(type) {
-        this.saving.type = type
-        this.savingSelected = true
-      },
-      onSaveCancel() {
-        this.saving = null
-        this.savingSelected = false
-      },
-      onSave(location) {
-        if (!this.savingSelected) return
-
-        this.$api.post('/users/locations', location)
-          .then(() => {
-            this.refresh()
-          })
-          .catch((err) => this.$store.dispatch('addError', err))
-
-        this.saving = null
-        this.savingSelected = false
-      }
     }
   }
 </script>

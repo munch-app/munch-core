@@ -57,9 +57,6 @@ include 'api:api-feed'
 include 'api:api-search'
 include 'api:api-places'
 
-// TODO(fuxing): To be deprecated ASAP
-include 'api:api-users'
-
 /**
  * Munch App Website
  */

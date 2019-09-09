@@ -39,8 +39,8 @@ export default ({app, store}, inject) => {
   })
 
   // Set the user ID using signed-in user_id.
-  const userId = store.state.user.profile && store.state.user.profile.userId;
-  if (userId) gtag('set', {'user_id': userId});
+  const accountId = store.state.account?.id;
+  if (accountId) gtag('set', {'user_id': accountId});
   // @formatter:on
 
   /**

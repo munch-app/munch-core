@@ -57,8 +57,6 @@ project('api-search') {
 
 project('api-feed') {
     dependencies {
-        compile project(':api:api-users')
-
         compile group: 'munch-feed', name: 'munch-feed-client', version: feedVersion
     }
 }
@@ -67,14 +65,6 @@ project('api-locations') {
     dependencies {
         compile group: 'location-service', name: 'location-service-client', version: locationVersion
 
-    }
-}
-
-project('api-users') {
-    dependencies {
-        compile group: 'munch-notification', name: 'munch-notification-client', version: notificationVersion
-
-        compile group: 'munch-taste', name: 'munch-taste-client', version: tasteVersion
     }
 }
 
@@ -92,6 +82,7 @@ project('api-admin') {
 
 project('api-account') {
     dependencies {
+        // Notification Client: Refactor/Migration required.
         compile group: 'munch-notification', name: 'munch-notification-client', version: notificationVersion
     }
 }
@@ -112,13 +103,11 @@ dependencies {
     compile project(':api:api-page')
     compile project(':api:api-place')
 
+    // Deprecating
+    compile project(':api:api-places')
     compile project(':api:api-search')
     compile project(':api:api-feed')
     compile project(':api:api-locations')
-
-    // Deprecating
-    compile project(':api:api-users')
-    compile project(':api:api-places')
 }
 
 apply from: (project.rootDir.toString() + '/docker.gradle')

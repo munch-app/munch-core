@@ -2,10 +2,6 @@
   <div @click="onClick" class="hover-pointer">
     <div class="Card relative" :class="{'Small': small}">
       <div class="absolute w-100 index-content-overlay flex-justify-end">
-        <div @click.capture.stop.prevent="onClickHeart">
-          <simple-svg v-if="saved === true" class="HeartIcon" fill="white"
-                      :filepath="require('~/assets/icon/place/heart-filled.svg')"/>
-        </div>
       </div>
 
       <div class="aspect r-5-3 border-3 overflow-hidden">
@@ -114,12 +110,8 @@
     },
     methods: {
       onClick() {
-        this.$track.view(`RIP`, 'PlaceCard')
         this.$router.push({path: `/places/${this.place.placeId}`})
       },
-      onClickHeart() {
-        this.$store.dispatch('user/places/deletePlace', {place: this.place})
-      }
     }
   }
 </script>
