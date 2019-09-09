@@ -27,10 +27,10 @@ allprojects {
     version '0.24.0'
     ext.dockerVersion = '0.24.0'
 
-    ext.jUnitVersion = '5.4.2'
+    ext.jUnitVersion = '5.5.1'
     ext.guiceVersion = '4.2.2'
-    ext.awsVersion1 = '1.11.620'
-    ext.awsVersion2 = '2.7.21'
+    ext.awsVersion1 = '1.11.627'
+    ext.awsVersion2 = '2.8.3'
 
     ext.transportVersion = '1.0-SNAPSHOT'
 

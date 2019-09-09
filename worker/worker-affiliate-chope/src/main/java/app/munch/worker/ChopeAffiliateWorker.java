@@ -50,6 +50,7 @@ public final class ChopeAffiliateWorker implements WorkerRunner {
             });
 
             changeGroupManager.newGroup(Profile.ADMIN_ID, "Chope Affiliate Worker (Digest)", null, digestGroup -> {
+                // TODO(fuxing): Ability to double check before digest?
                 affiliateEntityManager.digest(ingestGroup, digestGroup, ChopeAffiliateFetcher.SOURCE);
             });
         });

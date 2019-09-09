@@ -1,0 +1,11 @@
+dependencies {
+    compile project(':utils')
+    compile project(':database')
+
+    compile group: 'dev.fuxing', name: 'transport-core', version: transportVersion
+    compile group: 'com.google.inject', name: 'guice', version: guiceVersion
+
+    compile group: 'io.searchbox', name: 'jest', version: '6.3.1'
+    compile group: 'com.amazonaws', name: 'aws-java-sdk-core', version: awsVersion1
+    compile group: 'vc.inreach.aws', name: 'aws-signing-request-interceptor', version: '0.0.22'
+}

@@ -1,19 +1,16 @@
 package app.munch.api;
 
-import app.munch.model.*;
+import app.munch.manager.AffiliateEntityManager;
+import app.munch.model.Affiliate;
+import app.munch.model.AffiliateStatus;
+import app.munch.model.Profile;
 import com.fasterxml.jackson.databind.JsonNode;
-import dev.fuxing.jpa.EntityPatch;
-import dev.fuxing.jpa.EntityStream;
-import dev.fuxing.jpa.HibernateUtils;
 import dev.fuxing.jpa.TransactionProvider;
-import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
 import dev.fuxing.transport.service.TransportContext;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.validation.constraints.NotNull;
-import java.util.Objects;
 
 /**
  * Created by: Fuxing
@@ -23,9 +20,12 @@ import java.util.Objects;
 @Singleton
 public final class AffiliateAdminService extends AdminService {
 
+    private final AffiliateEntityManager affiliateEntityManager;
+
     @Inject
-    AffiliateAdminService(TransactionProvider provider) {
+    AffiliateAdminService(TransactionProvider provider, AffiliateEntityManager affiliateEntityManager) {
         super(provider);
+        this.affiliateEntityManager = affiliateEntityManager;
     }
 
     @Override
@@ -47,81 +47,24 @@ public final class AffiliateAdminService extends AdminService {
         int size = ctx.querySize(20, 50);
         AffiliateStatus status = ctx.queryEnum("status", AffiliateStatus.class, AffiliateStatus.PENDING);
 
-        @NotNull TransportCursor cursor = ctx.queryCursor();
-        String uid = cursor.get("uid");
-
-        return provider.reduce(true, entityManager -> {
-            return EntityStream.of(() -> {
-                if (uid != null) {
-                    return entityManager.createQuery("FROM Affiliate " +
-                            "WHERE status = :status " +
-                            "AND uid > :uid " +
-                            "ORDER BY uid ASC", Affiliate.class)
-                            .setParameter("uid", uid)
-                            .setParameter("status", status)
-                            .setMaxResults(size)
-                            .getResultList();
-                }
-
-                return entityManager.createQuery("FROM Affiliate " +
-                        "WHERE status = :status " +
-                        "ORDER BY uid ASC", Affiliate.class)
-                        .setParameter("status", status)
-                        .setMaxResults(size)
-                        .getResultList();
-            }).peek(HibernateUtils::clean)
-                    .cursor(size, (affiliate, builder) -> {
-                        builder.put("uid", affiliate.getUid());
-                    })
-                    .asTransportList();
-        });
+        return affiliateEntityManager.list(status, size, ctx.queryCursor());
     }
 
     public Affiliate get(TransportContext ctx) {
         String uid = ctx.pathString("uid");
-        return provider.reduce(true, entityManager -> {
-            Affiliate affiliate = entityManager.find(Affiliate.class, uid);
-            HibernateUtils.initialize(affiliate.getPlace());
-            HibernateUtils.initialize(affiliate.getBrand());
-            HibernateUtils.initialize(affiliate.getLinked());
-            return affiliate;
-        });
+        return affiliateEntityManager.get(uid);
     }
 
     public Affiliate patch(TransportContext ctx) {
         ApiRequest request = ctx.get(ApiRequest.class);
-        @NotNull String id = request.getAccountId();
-
         String uid = ctx.pathString("uid");
         JsonNode body = ctx.bodyAsJson();
 
-        return provider.reduce(entityManager -> {
-            Account account = entityManager.find(Account.class, id);
-            Profile profile = account.getProfile();
-
-            Affiliate affiliate = entityManager.find(Affiliate.class, uid);
-
-            affiliate = EntityPatch.with(entityManager, affiliate, body)
-                    .lock()
-                    .patch("status", AffiliateStatus.class, Affiliate::setStatus)
-                    .patch("linked", (EntityPatch.NodeConsumer<Affiliate>) (entity, json) -> {
-                        // Only linked.place.id is required
-                        String placeId = json.path("place").path("id").asText();
-                        Objects.requireNonNull(placeId);
-
-                        PlaceAffiliate linked = new PlaceAffiliate();
-                        linked.setPlace(entityManager.find(Place.class, id));
-                        entity.setLinked(linked);
-                    })
-                    .peek(entity -> {
-                        entity.setEditedBy(profile);
-                    })
-                    .persist();
-
-            HibernateUtils.initialize(affiliate.getPlace());
-            HibernateUtils.initialize(affiliate.getBrand());
-            HibernateUtils.initialize(affiliate.getLinked());
-            return affiliate;
+        return affiliateEntityManager.patch(uid, body, entityManager -> {
+            return entityManager.createQuery("SELECT a.profile FROM Account a " +
+                    "WHERE a.id = :id", Profile.class)
+                    .setParameter("id", request.getAccountId())
+                    .getSingleResult();
         });
     }
 }

@@ -7,10 +7,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import dev.fuxing.validator.ValidEnum;
 import org.hibernate.validator.constraints.Length;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import java.util.Date;
 import java.util.Objects;
 
@@ -150,7 +147,6 @@ public interface Status {
     final class MovedStatus implements Status {
 
         @NotNull
-        @Pattern(regexp = "^[0-9a-hjkmnp-tv-z]{12}0$")
         private String id;
 
         @NotNull
