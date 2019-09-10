@@ -10,6 +10,7 @@ import munch.instagram.InstagramCleaner;
  * Time: 5:21 PM
  * Project: munch-core
  */
+@Deprecated
 public final class PlaceModule extends ApiServiceModule {
     @Override
     protected void configure() {

@@ -44,13 +44,13 @@ public final class ChopeAffiliateWorker implements WorkerRunner {
     public void run(WorkerTask task) throws Exception {
         Iterator<Affiliate> iterator = fetcher.fetch();
 
+        // TODO(fuxing): rework required. Crawl main site instead. LF > Sitemap?
         changeGroupManager.newGroup(Profile.ADMIN_ID, "Chope Affiliate Worker (Ingest)", null, ingestGroup -> {
             iterator.forEachRemaining(affiliate -> {
                 affiliateEntityManager.ingest(ingestGroup, affiliate);
             });
 
             changeGroupManager.newGroup(Profile.ADMIN_ID, "Chope Affiliate Worker (Digest)", null, digestGroup -> {
-                // TODO(fuxing): Ability to double check before digest?
                 affiliateEntityManager.digest(ingestGroup, digestGroup, ChopeAffiliateFetcher.SOURCE);
             });
         });

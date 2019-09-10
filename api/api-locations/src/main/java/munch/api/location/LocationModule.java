@@ -8,6 +8,7 @@ import app.munch.api.ApiServiceModule;
  * Time: 22:00
  * Project: munch-core
  */
+@Deprecated
 public final class LocationModule extends ApiServiceModule {
     @Override
     protected void configure() {

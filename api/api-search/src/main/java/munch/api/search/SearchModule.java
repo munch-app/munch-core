@@ -23,6 +23,7 @@ import munch.api.search.plugin.series.SearchHomeSeriesPlugin;
  * Time: 5:21 PM
  * Project: munch-core
  */
+@Deprecated
 public final class SearchModule extends ApiServiceModule {
 
     @Override

@@ -2,7 +2,6 @@ package munch.api.place;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import app.munch.api.ApiRequest;
 import munch.api.ApiService;
 import munch.article.ArticleLinkClient;
 import munch.article.data.ArticleSection;
@@ -14,9 +13,6 @@ import munch.restful.core.NextNodeList;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonResult;
 import munch.taste.PlaceRatingClient;
-import munch.user.client.AwardCollectionClient;
-import munch.user.client.UserRatedPlaceClient;
-import munch.user.client.UserSavedPlaceClient;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -35,23 +31,15 @@ public final class PlaceService extends ApiService {
     private final PlaceClient placeClient;
 
     private final ArticleLinkClient articleLinkClient;
-    private final AwardCollectionClient awardCollectionClient;
 
     private final PlaceImageClient placeImageClient;
-
-    private final UserSavedPlaceClient savedPlaceClient;
-    private final UserRatedPlaceClient ratedPlaceClient;
-
     private final PlaceRatingClient placeRatingClient;
 
     @Inject
-    public PlaceService(PlaceClient placeClient, ArticleLinkClient articleLinkClient, AwardCollectionClient awardCollectionClient, PlaceImageClient placeImageClient, UserSavedPlaceClient savedPlaceClient, UserRatedPlaceClient ratedPlaceClient, PlaceRatingClient placeRatingClient) {
+    public PlaceService(PlaceClient placeClient, ArticleLinkClient articleLinkClient, PlaceImageClient placeImageClient, PlaceRatingClient placeRatingClient) {
         this.placeClient = placeClient;
         this.articleLinkClient = articleLinkClient;
-        this.awardCollectionClient = awardCollectionClient;
         this.placeImageClient = placeImageClient;
-        this.savedPlaceClient = savedPlaceClient;
-        this.ratedPlaceClient = ratedPlaceClient;
         this.placeRatingClient = placeRatingClient;
     }
 
@@ -109,7 +97,7 @@ public final class PlaceService extends ApiService {
         map.put("place", place);
 
         if (linked.contains(Linked.awards)) {
-            map.put("awards", awardCollectionClient.list(placeId, null, 10));
+            map.put("awards", List.of());
         }
 
         if (linked.contains(Linked.articles)) {
@@ -121,7 +109,7 @@ public final class PlaceService extends ApiService {
         }
 
         if (linked.contains(Linked.user)) {
-            map.put("user", getUser(call, placeId));
+            map.put("user", Map.of());
         }
 
         if (linked.contains(Linked.rating)) {
@@ -129,18 +117,6 @@ public final class PlaceService extends ApiService {
         }
 
         return JsonResult.ok(map);
-    }
-
-    private Map<String, Object> getUser(JsonCall call, String placeId) {
-        ApiRequest request = call.get(ApiRequest.class);
-        if (!request.accountId().isPresent()) return Map.of();
-
-        String userId = request.accountId().get();
-
-        Map<String, Object> user = new HashMap<>();
-        user.put("savedPlace", savedPlaceClient.get(userId, placeId));
-        user.put("ratedPlace", ratedPlaceClient.get(userId, placeId));
-        return user;
     }
 
     /**

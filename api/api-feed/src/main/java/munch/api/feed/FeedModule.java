@@ -8,6 +8,7 @@ import app.munch.api.ApiServiceModule;
  * Time: 2:46 PM
  * Project: munch-core
  */
+@Deprecated
 public final class FeedModule extends ApiServiceModule {
     @Override
     protected void configure() {
