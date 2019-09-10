@@ -15,9 +15,9 @@ export default function (context, inject) {
   })
 
   $axios.onError((err) => {
-    // TODO(fuxing): definitely need a better way to handle this, maybe can attempt at context.$api
     const status = err.response.status
     if (status === 404) {
+      // TODO(fuxing): need a better way to handle 404 error.
     }
   })
 

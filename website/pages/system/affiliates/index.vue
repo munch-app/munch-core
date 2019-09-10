@@ -29,35 +29,15 @@
       return {
         groups: [
           {
-            name: 'Manage Partner',
+            name: 'Manage Workers',
             features: [
               {
-                name: 'Profile',
-                description: 'Partner profile hand holding process.',
-                path: '/system/profiles',
+                name: 'Worker Group',
+                description: 'Manage worker group and their reporting.',
+                path: '/system/engineering/workers',
               },
-              {
-                name: 'Publication',
-                description: 'Articles grouped into a publication.',
-                path: '/system/publications',
-              }
             ],
           },
-          {
-            name: 'Manage Data',
-            features: [
-              {
-                name: 'Place',
-                description: 'Managing places in munch ecosystem.',
-                path: '/system/places',
-              },
-              {
-                name: 'Affiliate',
-                description: 'Place affiliate linking management.',
-                path: '/system/affiliates',
-              },
-            ]
-          }
         ],
       }
     },
@@ -65,4 +45,5 @@
 </script>
 
 <style scoped lang="less">
+
 </style>

@@ -73,7 +73,7 @@
       return this.$head({
         robots: {follow: true, index: true},
         url: `https://www.munch.app/@${username}/${slug}-${id}`,
-        canonical: `https://www.munch.app/@${username}/${id}`,
+        canonical: `https://www.munch.app/@${username}/${slug}-${id}`,
         type: 'article',
         title: `${title || 'Untitled Article'} - ${profileName} · Munch`,
         description: description,

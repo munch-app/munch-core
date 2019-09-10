@@ -87,6 +87,8 @@
       const {placeId, name, description, images} = this.place
 
       return this.$head({
+        // This page will be totally redirected away.
+        // If happen to be clicked on from old content, it will be routed away on mounted.
         robots: {follow: true, index: true},
         canonical: `https://www.munch.app/places/${placeId}`,
         title: `${name} · Munch - Food Discovery`,
