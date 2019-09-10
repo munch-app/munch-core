@@ -1,4 +1,4 @@
-package app.munch.api.migration;
+package app.munch.migration;
 
 import app.munch.model.*;
 import munch.data.location.Location;
@@ -20,16 +20,18 @@ import java.util.stream.Collectors;
  * Time: 2:05 pm
  */
 @Singleton
-public final class PlaceBridge {
+public final class PlaceEntityMapper {
 
-    private final ImageMigrationManager imageMigrationManager;
+    private final ImageMigration imageMigrationManager;
+    private final EntityMigrationTable entityMigrationTable;
 
     @Inject
-    PlaceBridge(ImageMigrationManager imageMigrationManager) {
+    PlaceEntityMapper(ImageMigration imageMigrationManager, EntityMigrationTable entityMigrationTable) {
         this.imageMigrationManager = imageMigrationManager;
+        this.entityMigrationTable = entityMigrationTable;
     }
 
-    public void bridge(EntityManager entityManager, Place place, munch.data.place.Place deprecatedPlace) {
+    public void map(EntityManager entityManager, Place place, munch.data.place.Place deprecatedPlace) {
         munch.data.place.Place.@NotNull @Valid Taste taste = deprecatedPlace.getTaste();
         place.setImportant(taste.getImportance());
         place.setCreatedBy(entityManager.find(Profile.class, Profile.COMPAT_ID));
@@ -114,6 +116,30 @@ public final class PlaceBridge {
         place.setImage(mapImage(entityManager, deprecatedPlace.getImages()));
     }
 
+    public PlaceImage mapPlaceImage(EntityManager entityManager, Place place, munch.gallery.PlaceImage galleryImage) {
+        String imageId = galleryImage.getImageId();
+
+        String uid = entityMigrationTable.getUID("PlaceImage", imageId);
+        if (uid != null) {
+            return entityManager.find(PlaceImage.class, uid);
+        }
+
+        Image image = imageMigrationManager.post(entityManager, galleryImage.getImageId(), galleryImage.getSizes());
+        if (image == null) return null;
+
+        PlaceImage placeImage = new PlaceImage();
+        placeImage.setImage(image);
+        placeImage.setProfile(image.getProfile());
+        placeImage.setPlace(place);
+
+        entityManager.persist(placeImage);
+        Objects.requireNonNull(placeImage.getUid());
+
+        entityMigrationTable.putUID("PlaceImage", imageId, placeImage.getUid());
+        return placeImage;
+    }
+
+
     private Hour mapHour(munch.data.Hour deprecatedHour) {
         Hour hour = new Hour();
         hour.setDay(Day.fromValue(deprecatedHour.getDay().name().toUpperCase()));
@@ -165,7 +191,7 @@ public final class PlaceBridge {
         if (url == null) return null;
 
         try {
-            return imageMigrationManager.post(entityManager, url);
+            return imageMigrationManager.post(entityManager, fileImage.getImageId(), url);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

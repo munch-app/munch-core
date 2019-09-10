@@ -1,0 +1,4 @@
+dependencies {
+    compile project(':api:api-places')
+    compile project(':api:api-data')
+}

@@ -108,6 +108,8 @@ dependencies {
     compile project(':api:api-search')
     compile project(':api:api-feed')
     compile project(':api:api-locations')
+
+    compile project(':migration')
 }
 
 apply from: (project.rootDir.toString() + '/docker.gradle')

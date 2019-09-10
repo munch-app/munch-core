@@ -10,8 +10,6 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 import munch.api.core.CoreModule;
 import munch.api.feed.FeedModule;
 import munch.api.location.LocationModule;
@@ -36,9 +34,8 @@ public class ApiModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        install(getAuthenticationModule());
-
-        // Database Module
+        // Core Modules
+        install(new FirebaseModule());
         install(new DatabaseModule());
 
         // Service Module
@@ -58,35 +55,6 @@ public class ApiModule extends AbstractModule {
         install(new LocationModule());
     }
 
-    /**
-     * @return Firebase Authentication Module
-     */
-    private static FirebaseAuthenticationModule getAuthenticationModule() {
-        Config config = ConfigFactory.load().getConfig("services.firebase");
-        final String projectId = config.getString("projectId");
-
-        try {
-            if (config.hasPath("base64")) {
-                byte[] bytes = Base64.getDecoder().decode(config.getString("base64"));
-                InputStream inputStream = new ByteArrayInputStream(bytes);
-                GoogleCredentials credentials = GoogleCredentials.fromStream(inputStream);
-                return new FirebaseAuthenticationModule(projectId, credentials);
-            }
-
-            String ssmKey = config.getString("ssmKey");
-            AWSSimpleSystemsManagement client = AWSSimpleSystemsManagementClientBuilder.defaultClient();
-            GetParameterResult result = client.getParameter(
-                    new GetParameterRequest().withName(ssmKey).withWithDecryption(true)
-            );
-
-            String value = result.getParameter().getValue();
-            InputStream inputStream = IOUtils.toInputStream(value, "utf-8");
-            GoogleCredentials credentials = GoogleCredentials.fromStream(inputStream);
-            return new FirebaseAuthenticationModule(projectId, credentials);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     /**
      * Start api server with predefined modules

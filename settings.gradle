@@ -27,6 +27,12 @@ include 'database'
 include 'elastic'
 
 /**
+ * Munch App Post-Ignatius Controller
+ * Controller is business logic that is separated out into its own module for brevity sake.
+ */
+include 'controller'
+
+/**
  * Munch App Post-Ignatius Worker Engine
  */
 include 'worker'
@@ -68,3 +74,9 @@ include 'website'
  * Sitemap created is put into AWS s3 www.munch.app-sitemap bucket
  */
 include 'sitemap'
+
+
+/**
+ * Temporary module for v22 to Post-Ignatius migration service.
+ */
+include 'migration'

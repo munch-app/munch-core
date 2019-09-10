@@ -3,6 +3,7 @@ package app.munch.manager;
 import app.munch.exception.PlaceLockedException;
 import app.munch.exception.RestrictionException;
 import app.munch.model.*;
+import dev.fuxing.jpa.HibernateUtils;
 import dev.fuxing.jpa.TransactionProvider;
 import dev.fuxing.utils.JsonUtils;
 
@@ -33,6 +34,15 @@ public final class PlaceEntityManager {
     @Inject
     PlaceEntityManager(TransactionProvider transactionProvider) {
         this.transactionProvider = transactionProvider;
+    }
+
+    public Place get(String id) {
+        return transactionProvider.reduce(true, entityManager -> {
+            Place place = entityManager.find(Place.class, id);
+            HibernateUtils.initialize(place.getImage());
+            HibernateUtils.initialize(place.getCreatedBy());
+            return place;
+        });
     }
 
     /**

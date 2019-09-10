@@ -16,7 +16,7 @@ import javax.inject.Singleton;
 public class MigrationModule extends ApiServiceModule {
     @Override
     protected void configure() {
-        addService(TempMigrationService.class);
+        addService(ElasticMigrationService.class);
         addService(PlaceMigrationService.class);
     }
 

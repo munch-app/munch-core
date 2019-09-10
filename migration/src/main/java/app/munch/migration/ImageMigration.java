@@ -1,8 +1,9 @@
-package app.munch.api.migration;
+package app.munch.migration;
 
 import app.munch.image.ImageUtils;
 import app.munch.model.Image;
 import app.munch.model.ImageSource;
+import app.munch.model.PlaceImage;
 import app.munch.model.Profile;
 import dev.fuxing.utils.KeyUtils;
 import org.apache.commons.io.FileUtils;
@@ -29,21 +30,45 @@ import java.util.List;
  */
 @SuppressWarnings("DuplicatedCode")
 @Singleton
-public final class ImageMigrationManager {
+public final class ImageMigration {
     private static final String BUCKET = "mh0";
     private final S3Client s3Client;
 
+    private EntityMigrationTable entityMigrationTable;
+
     @Inject
-    ImageMigrationManager(S3Client s3Client) {
+    ImageMigration(S3Client s3Client, EntityMigrationTable entityMigrationTable) {
         this.s3Client = s3Client;
+        this.entityMigrationTable = entityMigrationTable;
     }
 
-    public Image post(EntityManager entityManager, String url) throws IOException {
+    public Image findImage(EntityManager entityManager, String imageId) {
+        String uid = entityMigrationTable.getUID("PlaceImage", imageId);
+        if (uid != null) {
+            PlaceImage placeImage = entityManager.find(PlaceImage.class, uid);
+            return placeImage.getImage();
+        }
+
+        uid = entityMigrationTable.getUID("Image", imageId);
+        return entityManager.find(Image.class, uid);
+    }
+
+    public Image post(EntityManager entityManager, String imageId, String url) throws IOException {
+        // Find from EntityMigration Table first
+        Image image = findImage(entityManager, imageId);
+        if (image != null) return image;
+
         Profile profile = entityManager.find(Profile.class, Profile.COMPAT_ID);
-        return post(entityManager, ImageSource.LIBRARY, profile, url);
+        image = post(entityManager, ImageSource.LIBRARY, profile, url);
+
+        entityMigrationTable.putUID("Image", imageId, image.getUid());
+        return image;
     }
 
-    public Image post(EntityManager entityManager, List<munch.file.Image.Size> sizes) {
+    public Image post(EntityManager entityManager, String imageId, List<munch.file.Image.Size> sizes) {
+        Image image = findImage(entityManager, imageId);
+        if (image != null) return image;
+
         String url = sizes.stream().max(Comparator.comparing(munch.file.Image.Size::getHeight))
                 .map(munch.file.Image.Size::getUrl)
                 .orElse(null);
@@ -51,13 +76,13 @@ public final class ImageMigrationManager {
         if (url == null) return null;
 
         try {
-            return post(entityManager, url);
+            return post(entityManager, imageId, url);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public Image post(EntityManager entityManager, ImageSource source, Profile profile, String url) throws IOException {
+    private Image post(EntityManager entityManager, ImageSource source, Profile profile, String url) throws IOException {
         File file = File.createTempFile(RandomStringUtils.randomAlphanumeric(30),
                 "." + FilenameUtils.getExtension(url));
 
