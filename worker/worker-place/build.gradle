@@ -1,0 +1,11 @@
+dependencies {
+    compile project(':utils')
+    compile project(':database')
+    compile project(':elastic')
+    compile project(':migration')
+
+    compile group: 'munch-data', name: 'munch-data-data-client', version: dataVersion
+}
+
+apply from: (project.rootDir.toString() + '/worker/worker.gradle')
+mainClassName = 'app.munch.worker.PlaceWorker'

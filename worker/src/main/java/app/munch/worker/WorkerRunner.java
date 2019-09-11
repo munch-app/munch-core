@@ -4,6 +4,8 @@ import app.munch.model.WorkerTask;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import dev.fuxing.health.HealthCheckServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by: Fuxing
@@ -12,6 +14,7 @@ import dev.fuxing.health.HealthCheckServer;
  * Project: munch-core
  */
 public interface WorkerRunner {
+    Logger logger = LoggerFactory.getLogger(WorkerRunner.class);
 
     /**
      * @return WorkerGroup.uid, must already be created.
@@ -34,7 +37,9 @@ public interface WorkerRunner {
                 coordinator.complete(task);
             } catch (Exception e) {
                 coordinator.error(task, e);
+                logger.error("Worker ended exceptionally", e);
             }
         });
+        System.exit(1);
     }
 }

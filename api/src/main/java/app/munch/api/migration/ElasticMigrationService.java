@@ -1,8 +1,8 @@
 package app.munch.api.migration;
 
 import app.munch.elastic.ElasticMapping;
-import com.fasterxml.jackson.databind.JsonNode;
 import dev.fuxing.transport.service.TransportContext;
+import dev.fuxing.transport.service.TransportResult;
 import dev.fuxing.transport.service.TransportService;
 
 import javax.inject.Inject;
@@ -31,8 +31,9 @@ public final class ElasticMigrationService implements TransportService {
         });
     }
 
-    public JsonNode setup(TransportContext ctx) throws IOException {
-        return mapping.create();
+    public TransportResult setup(TransportContext ctx) throws IOException {
+        mapping.create();
+        return TransportResult.ok();
     }
 }
 

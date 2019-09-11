@@ -2,6 +2,7 @@ project('api-core') {
     dependencies {
         compile project(':utils')
         compile project(':database')
+        compile project(':elastic')
 
         compile group: 'dev.fuxing', name: 'transport-service', version: transportVersion
 

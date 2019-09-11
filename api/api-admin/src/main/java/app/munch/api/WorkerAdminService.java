@@ -2,13 +2,13 @@ package app.munch.api;
 
 import app.munch.model.WorkerGroup;
 import dev.fuxing.jpa.EntityStream;
-import dev.fuxing.jpa.HibernateUtils;
 import dev.fuxing.jpa.TransactionProvider;
 import dev.fuxing.transport.TransportList;
 import dev.fuxing.transport.service.TransportContext;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.stream.Collectors;
 
 /**
  * Created by: Fuxing
@@ -43,7 +43,8 @@ public final class WorkerAdminService extends AdminService {
                         .setMaxResults(size)
                         .getResultList();
             }).peek(o -> {
-                HibernateUtils.initialize(o.getReports());
+                o.setReports(o.getReports().stream().limit(3)
+                        .collect(Collectors.toList()));
             }).asTransportList();
         });
     }
@@ -53,7 +54,8 @@ public final class WorkerAdminService extends AdminService {
 
         return provider.reduce(true, entityManager -> {
             WorkerGroup workerGroup = entityManager.find(WorkerGroup.class, uid);
-            HibernateUtils.initialize(workerGroup.getReports());
+            workerGroup.setReports(workerGroup.getReports().stream().limit(3)
+                    .collect(Collectors.toList()));
             return workerGroup;
         });
     }

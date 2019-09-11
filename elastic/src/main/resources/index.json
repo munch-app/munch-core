@@ -1,243 +1,156 @@
 {
-  "settings": {
-    "analysis": {
-      "normalizer": {
-        "normalizer_lower": {
-          "type": "custom",
-          "char_filter": [],
-          "filter": [
-            "lowercase"
-          ]
-        }
-      },
-      "filter": {
-        "ngram_filter": {
-          "type": "ngram",
-          "min_gram": "2",
-          "max_gram": "20"
-        }
-      },
-      "analyzer": {
-        "ngram_analyzer": {
-          "type": "custom",
-          "tokenizer": "standard",
-          "filter": [
-            "lowercase",
-            "ngram_filter"
-          ]
-        }
-      }
-    }
-  },
   "mappings": {
-    "Data": {
-      "properties": {
-        "suggest_country_sgp": {
-          "type": "completion",
-          "contexts": [
-            {
-              "name": "latLng",
-              "type": "geo",
-              "precision": 6
-            },
-            {
-              "name": "dataType",
-              "type": "category"
-            }
-          ]
-        },
-        "suggest_places": {
-          "type": "completion",
-          "contexts": [
-            {
-              "name": "city",
-              "type": "category"
-            }
-          ]
-        },
-        "type": {
-          "type": "keyword"
-        },
-        "key": {
-          "type": "keyword"
-        },
-        "id": {
-          "type": "keyword"
-        },
-        "uid": {
-          "type": "keyword"
-        },
-        "name": {
-          "type": "text"
-        },
-        "names": {
-          "type": "text",
-          "analyzer": "ngram_analyzer"
-        },
-        "tags": {
-          "properties": {
-            "tagId": {
-              "type": "keyword"
-            },
-            "type": {
-              "type": "keyword"
-            },
-            "name": {
-              "type": "keyword"
-            }
+    "dynamic": false,
+    "properties": {
+      "suggest": {
+        "type": "completion",
+        "contexts": [
+          {
+            "name": "latLng",
+            "type": "geo",
+            "precision": 6
+          },
+          {
+            "name": "type",
+            "type": "category"
           }
-        },
-        "phone": {
-          "enabled": false
-        },
-        "website": {
-          "enabled": false
-        },
-        "email": {
-          "enabled": false
-        },
-        "description": {
-          "enabled": false
-        },
-        "images": {
-          "enabled": false
-        },
-        "hours": {
-          "enabled": false
-        },
-        "company": {
-          "enabled": false
-        },
-        "hour": {
-          "properties": {
-            "mon": {
-              "properties": {
-                "open_close": {
-                  "type": "integer_range",
-                  "store": false
-                }
-              }
-            },
-            "tue": {
-              "properties": {
-                "open_close": {
-                  "type": "integer_range",
-                  "store": false
-                }
-              }
-            },
-            "wed": {
-              "properties": {
-                "open_close": {
-                  "type": "integer_range",
-                  "store": false
-                }
-              }
-            },
-            "thu": {
-              "properties": {
-                "open_close": {
-                  "type": "integer_range",
-                  "store": false
-                }
-              }
-            },
-            "fri": {
-              "properties": {
-                "open_close": {
-                  "type": "integer_range",
-                  "store": false
-                }
-              }
-            },
-            "sat": {
-              "properties": {
-                "open_close": {
-                  "type": "integer_range",
-                  "store": false
-                }
-              }
-            },
-            "sun": {
-              "properties": {
-                "open_close": {
-                  "type": "integer_range",
-                  "store": false
-                }
-              }
-            }
+        ]
+      },
+      "type": {
+        "type": "keyword"
+      },
+      "key": {
+        "type": "keyword"
+      },
+      "id": {
+        "type": "keyword"
+      },
+      "uid": {
+        "type": "keyword"
+      },
+      "name": {
+        "type": "text"
+      },
+      "important": {
+        "type": "double"
+      },
+      "synonyms": {
+        "type": "text"
+      },
+      "tags": {
+        "properties": {
+          "id": {
+            "type": "keyword"
+          },
+          "type": {
+            "type": "keyword"
+          },
+          "name": {
+            "type": "text"
           }
-        },
-        "location": {
-          "properties": {
-            "address": {
-              "type": "text"
-            },
-            "street": {
-              "type": "text"
-            },
-            "unitNumber": {
-              "type": "keyword"
-            },
-            "neighbourhood": {
-              "type": "text"
-            },
-            "city": {
-              "type": "keyword"
-            },
-            "country": {
-              "type": "keyword"
-            },
-            "postcode": {
-              "type": "keyword"
-            },
-            "latLng": {
-              "type": "geo_point"
-            },
-            "geometry": {
-              "type": "geo_shape"
-            },
-            "polygon": {
-              "enabled": false
-            },
-            "landmarks": {
-              "enabled": false
-            }
-          }
-        },
-        "price": {
-          "properties": {
-            "perPax": {
-              "type": "double"
-            }
-          }
-        },
-        "status": {
-          "properties": {
-            "type": {
-              "type": "keyword"
-            },
-            "moved": {
-              "enabled": false
-            },
-            "renamed": {
-              "enabled": false
-            },
-            "redirected": {
-              "enabled": false
-            }
-          }
-        },
-
-        "createdAt": {
-          "type": "long"
-        },
-        "updatedAt": {
-          "type": "long"
-        },
-        "publishedAt": {
-          "type": "long"
         }
+      },
+      "timings": {
+        "properties": {
+          "mon": {
+            "properties": {
+              "range": {
+                "type": "integer_range",
+                "store": false
+              }
+            }
+          },
+          "tue": {
+            "properties": {
+              "range": {
+                "type": "integer_range",
+                "store": false
+              }
+            }
+          },
+          "wed": {
+            "properties": {
+              "range": {
+                "type": "integer_range",
+                "store": false
+              }
+            }
+          },
+          "thu": {
+            "properties": {
+              "range": {
+                "type": "integer_range",
+                "store": false
+              }
+            }
+          },
+          "fri": {
+            "properties": {
+              "range": {
+                "type": "integer_range",
+                "store": false
+              }
+            }
+          },
+          "sat": {
+            "properties": {
+              "range": {
+                "type": "integer_range",
+                "store": false
+              }
+            }
+          },
+          "sun": {
+            "properties": {
+              "range": {
+                "type": "integer_range",
+                "store": false
+              }
+            }
+          }
+        }
+      },
+      "status": {
+        "properties": {
+          "type": {
+            "type": "keyword"
+          }
+        }
+      },
+      "location": {
+        "properties": {
+          "address": {
+            "type": "text"
+          },
+          "unitNumber": {
+            "type": "keyword"
+          },
+          "postcode": {
+            "type": "keyword"
+          },
+          "latLng": {
+            "type": "geo_point"
+          }
+        }
+      },
+      "price": {
+        "properties": {
+          "perPax": {
+            "type": "double"
+          }
+        }
+      },
+      "createdAt": {
+        "type": "date",
+        "format": "epoch_millis"
+      },
+      "updatedAt": {
+        "type": "date",
+        "format": "epoch_millis"
+      },
+      "publishedAt": {
+        "type": "date",
+        "format": "epoch_millis"
       }
     }
   }

@@ -1,9 +1,6 @@
 package app.munch.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.*;
 import dev.fuxing.validator.ValidEnum;
 import org.hibernate.validator.constraints.Length;
 
@@ -28,8 +25,8 @@ import java.util.Objects;
         @JsonSubTypes.Type(value = Status.PermanentlyClosedStatus.class, name = "PERMANENTLY_CLOSED"),
 })
 public interface Status {
-
     @ValidEnum
+    @JsonIgnore
     StatusType getType();
 
     static boolean equals(Status left, Status right) {

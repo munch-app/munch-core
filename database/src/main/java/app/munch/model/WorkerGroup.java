@@ -45,7 +45,7 @@ public final class WorkerGroup {
 
     @OrderBy("uid DESC")
     @BatchSize(size = 3)
-    @OneToMany(cascade = {}, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "group")
+    @OneToMany(cascade = {}, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "group")
     private List<WorkerTask> reports;
 
     @NotNull

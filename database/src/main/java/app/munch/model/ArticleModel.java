@@ -1,10 +1,7 @@
 package app.munch.model;
 
 import app.munch.model.constraint.ArticlePublishedGroup;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.*;
 import dev.fuxing.postgres.PojoListUserType;
 import dev.fuxing.postgres.PojoSetUserType;
 import dev.fuxing.postgres.PojoUserType;
@@ -226,7 +223,9 @@ public abstract class ArticleModel {
             @JsonSubTypes.Type(value = LineNode.class, name = "line"),
             @JsonSubTypes.Type(value = ImageNode.class, name = "image"),
     })
+
     public interface Node {
+        @JsonIgnore
         String getType();
     }
 

@@ -12,6 +12,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.persistence.EntityManager;
@@ -42,6 +43,7 @@ public final class ImageMigration {
         this.entityMigrationTable = entityMigrationTable;
     }
 
+    @Nullable
     public Image findImage(EntityManager entityManager, String imageId) {
         String uid = entityMigrationTable.getUID("PlaceImage", imageId);
         if (uid != null) {
@@ -50,7 +52,11 @@ public final class ImageMigration {
         }
 
         uid = entityMigrationTable.getUID("Image", imageId);
-        return entityManager.find(Image.class, uid);
+        if (uid != null) {
+            return entityManager.find(Image.class, uid);
+        }
+
+        return null;
     }
 
     public Image post(EntityManager entityManager, String imageId, String url) throws IOException {

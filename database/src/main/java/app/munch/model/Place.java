@@ -22,7 +22,7 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "Place")
-public final class Place extends PlaceModel {
+public final class Place extends PlaceModel implements ElasticSerializable {
 
     @NotNull
     @Pattern(regexp = "^[0-9a-hjkmnp-tv-z]{12}0$")
@@ -79,7 +79,7 @@ public final class Place extends PlaceModel {
         return id;
     }
 
-    public void setId(String id) {
+    void setId(String id) {
         this.id = id;
     }
 
@@ -135,7 +135,7 @@ public final class Place extends PlaceModel {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
+    void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
 

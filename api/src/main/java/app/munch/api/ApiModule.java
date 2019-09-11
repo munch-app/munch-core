@@ -2,27 +2,14 @@ package app.munch.api;
 
 import app.munch.api.migration.MigrationModule;
 import app.munch.database.DatabaseModule;
-import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagement;
-import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagementClientBuilder;
-import com.amazonaws.services.simplesystemsmanagement.model.GetParameterRequest;
-import com.amazonaws.services.simplesystemsmanagement.model.GetParameterResult;
-import com.google.auth.oauth2.GoogleCredentials;
+import app.munch.elastic.ElasticModule;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import munch.api.core.CoreModule;
 import munch.api.feed.FeedModule;
 import munch.api.location.LocationModule;
-import munch.api.place.PlaceModule;
 import munch.api.search.SearchModule;
-import munch.api.user.UserModule;
-import munch.restful.server.firebase.FirebaseAuthenticationModule;
-import org.apache.commons.io.IOUtils;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Base64;
 
 /**
  * Created by: Fuxing
@@ -37,6 +24,7 @@ public class ApiModule extends AbstractModule {
         // Core Modules
         install(new FirebaseModule());
         install(new DatabaseModule());
+        install(new ElasticModule());
 
         // Service Module
         install(new CoreModule());
@@ -45,11 +33,11 @@ public class ApiModule extends AbstractModule {
 
         install(new PageModule());
         install(new AccountModule());
+        install(new app.munch.api.PlaceModule());
 
         install(new MigrationModule());
 
-        install(new UserModule());
-        install(new PlaceModule());
+        install(new munch.api.place.PlaceModule());
         install(new SearchModule());
         install(new FeedModule());
         install(new LocationModule());

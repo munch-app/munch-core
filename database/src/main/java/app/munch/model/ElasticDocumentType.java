@@ -12,7 +12,7 @@ import java.util.stream.Stream;
  * Date: 9/9/19
  * Time: 12:11 am
  */
-public enum IndexType {
+public enum ElasticDocumentType {
     PLACE("PLACE"),
 
     ARTICLE("ARTICLE"),
@@ -27,7 +27,7 @@ public enum IndexType {
 
     private final String value;
 
-    IndexType(String value) {
+    ElasticDocumentType(String value) {
         this.value = value;
     }
 
@@ -44,15 +44,15 @@ public enum IndexType {
      * @return IndexedType corresponding to the value
      */
     @JsonCreator
-    public static IndexType fromValue(String value) {
+    public static ElasticDocumentType fromValue(String value) {
         if (value == null) {
             return null;
         }
-        return Stream.of(IndexType.values()).filter(e -> e.toString().equals(value)).findFirst()
+        return Stream.of(ElasticDocumentType.values()).filter(e -> e.toString().equals(value)).findFirst()
                 .orElse(UNKNOWN_TO_SDK_VERSION);
     }
 
-    public static Set<IndexType> knownValues() {
+    public static Set<ElasticDocumentType> knownValues() {
         return Stream.of(values()).filter(v -> v != UNKNOWN_TO_SDK_VERSION).collect(Collectors.toSet());
     }
 }

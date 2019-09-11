@@ -71,8 +71,14 @@ public final class Image {
     @Pattern(regexp = "^\\.(jpg|png|gif|webp)$")
     private String ext;
 
+    /**
+     * AWS S3 Bucket hosted in ap-southeast-1
+     * mh0: generic profile created
+     * mh4: manually uploaded static resources, used for engineering use.
+     * mh5: instagram media images
+     */
     @NotNull(groups = {ImageDefaultGroup.class})
-    @Pattern(regexp = "^mh0$")
+    @Pattern(regexp = "^mh[05]$")
     @Column(length = 32, updatable = false, nullable = false, unique = false)
     private String bucket;
 
@@ -81,7 +87,7 @@ public final class Image {
      * ${bucket}-${uid}${ext}
      */
     @NotNull
-    @Pattern(regexp = "^mh0-[0123456789abcdefghjkmnpqrstvwxyz]{26}\\.(jpg|png|gif|webp)$")
+    @Pattern(regexp = "^mh[05]-[0123456789abcdefghjkmnpqrstvwxyz]{26}\\.(jpg|png|gif|webp)$")
     @Column(length = 100, updatable = false, nullable = false, unique = true)
     private String loc;
 
