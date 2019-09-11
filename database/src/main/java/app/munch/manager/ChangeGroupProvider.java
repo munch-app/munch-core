@@ -15,11 +15,11 @@ import java.util.function.Consumer;
  * Time: 2:16 pm
  */
 @Singleton
-public final class ChangeGroupManager {
+public final class ChangeGroupProvider {
     private final TransactionProvider provider;
 
     @Inject
-    ChangeGroupManager(TransactionProvider provider) {
+    ChangeGroupProvider(TransactionProvider provider) {
         this.provider = provider;
     }
 

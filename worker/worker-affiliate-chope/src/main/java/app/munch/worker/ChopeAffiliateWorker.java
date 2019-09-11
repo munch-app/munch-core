@@ -2,13 +2,17 @@ package app.munch.worker;
 
 import app.munch.database.DatabaseModule;
 import app.munch.manager.AffiliateEntityManager;
-import app.munch.manager.ChangeGroupManager;
+import app.munch.manager.ChangeGroupProvider;
 import app.munch.model.Affiliate;
 import app.munch.model.Profile;
 import app.munch.model.WorkerTask;
-import app.munch.worker.google.GoogleSheetModule;
+import dev.fuxing.utils.SleepUtils;
+import org.jsoup.nodes.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import java.io.IOException;
 import java.util.Iterator;
 
 /**
@@ -18,21 +22,26 @@ import java.util.Iterator;
  * Project: munch-core
  */
 public final class ChopeAffiliateWorker implements WorkerRunner {
+    private static final Logger logger = LoggerFactory.getLogger(ChopeAffiliateWorker.class);
+
     /*
      * Email response:
      * As for the booking widget links and ChopeDeals affiliate links,
      * you can refer to this sheet which is updated on a weekly basis.
      */
 
+    private final ChopeWebBrowser browser;
+    private final ChopeAffiliateParser parser;
     private final AffiliateEntityManager affiliateEntityManager;
-    private final ChopeAffiliateFetcher fetcher;
-    private final ChangeGroupManager changeGroupManager;
+
+    private final ChangeGroupProvider changeProvider;
 
     @Inject
-    ChopeAffiliateWorker(AffiliateEntityManager affiliateEntityManager, ChopeAffiliateFetcher fetcher, ChangeGroupManager changeGroupManager) {
+    ChopeAffiliateWorker(AffiliateEntityManager affiliateEntityManager, ChangeGroupProvider changeProvider, ChopeWebBrowser browser, ChopeAffiliateParser parser) {
         this.affiliateEntityManager = affiliateEntityManager;
-        this.fetcher = fetcher;
-        this.changeGroupManager = changeGroupManager;
+        this.changeProvider = changeProvider;
+        this.browser = browser;
+        this.parser = parser;
     }
 
     @Override
@@ -42,23 +51,35 @@ public final class ChopeAffiliateWorker implements WorkerRunner {
 
     @Override
     public void run(WorkerTask task) throws Exception {
-        Iterator<Affiliate> iterator = fetcher.fetch();
+        Iterator<String> iterator = browser.iterator();
 
-        // TODO(fuxing): rework required. Crawl main site instead. LF > Sitemap?
-        changeGroupManager.newGroup(Profile.ADMIN_ID, "Chope Affiliate Worker (Ingest)", null, ingestGroup -> {
-            iterator.forEachRemaining(affiliate -> {
+        changeProvider.newGroup(Profile.ADMIN_ID, "Chope Affiliate Worker (Ingest)", null, ingestGroup -> {
+            iterator.forEachRemaining(url -> {
+                Affiliate affiliate = getAffiliate(url);
                 affiliateEntityManager.ingest(ingestGroup, affiliate);
             });
 
-            changeGroupManager.newGroup(Profile.ADMIN_ID, "Chope Affiliate Worker (Digest)", null, digestGroup -> {
-                affiliateEntityManager.digest(ingestGroup, digestGroup, ChopeAffiliateFetcher.SOURCE);
+            changeProvider.newGroup(Profile.ADMIN_ID, "Chope Affiliate Worker (Digest)", null, digestGroup -> {
+                affiliateEntityManager.digest(ingestGroup, digestGroup, ChopeAffiliateParser.SOURCE);
             });
         });
     }
 
+    private Affiliate getAffiliate(String url) {
+        try {
+            SleepUtils.sleep(2000);
+            logger.info("Parsing Affiliate: {}", url);
+
+            Document document = browser.get(url);
+            return parser.parse(document);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static void main(String[] args) {
         WorkerRunner.start(ChopeAffiliateWorker.class,
-                new DatabaseModule(), new GoogleSheetModule()
+                new DatabaseModule()
         );
     }
 }

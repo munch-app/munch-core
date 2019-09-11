@@ -22,7 +22,9 @@ public class WebsiteBrowser {
 
     protected final String domain;
     protected final String host;
+
     protected int timeout = 30_000;
+    protected int maxBodySize = 15 * 1024 * 1024;
 
     public WebsiteBrowser(String domain) {
         this.domain = domain;
@@ -66,7 +68,8 @@ public class WebsiteBrowser {
      * @throws IOException failed to load website
      */
     public Document open(String path) throws IOException {
-        return Jsoup.connect(domain + path)
+        return Jsoup.connect(url(path))
+                .maxBodySize(maxBodySize)
                 .header("Connection", "keep-alive")
                 .header("Host", host)
                 .header("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36")
@@ -75,5 +78,19 @@ public class WebsiteBrowser {
                 .header("Accept-Language", "en-GB,en-US;q=0.8,en;q=0.6,ms;q=0.4")
                 .timeout(timeout)
                 .get();
+    }
+
+    private String url(String path) {
+        try {
+            URI uri = new URI(path);
+
+            String url = domain + uri.getPath();
+            if (uri.getQuery() != null) {
+                url += "?" + uri.getQuery();
+            }
+            return url;
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
