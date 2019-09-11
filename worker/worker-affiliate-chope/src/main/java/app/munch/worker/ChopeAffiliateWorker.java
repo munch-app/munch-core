@@ -6,6 +6,7 @@ import app.munch.manager.ChangeGroupProvider;
 import app.munch.model.Affiliate;
 import app.munch.model.Profile;
 import app.munch.model.WorkerTask;
+import dev.fuxing.err.NotFoundException;
 import dev.fuxing.utils.SleepUtils;
 import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
@@ -56,6 +57,8 @@ public final class ChopeAffiliateWorker implements WorkerRunner {
         changeProvider.newGroup(Profile.ADMIN_ID, "Chope Affiliate Worker (Ingest)", null, ingestGroup -> {
             iterator.forEachRemaining(url -> {
                 Affiliate affiliate = getAffiliate(url);
+                if (affiliate == null) return;
+
                 affiliateEntityManager.ingest(ingestGroup, affiliate);
             });
 
@@ -68,12 +71,15 @@ public final class ChopeAffiliateWorker implements WorkerRunner {
     private Affiliate getAffiliate(String url) {
         try {
             SleepUtils.sleep(2000);
-            logger.info("Parsing Affiliate: {}", url);
+            logger.info("Parsing URL: {}", url);
 
             Document document = browser.get(url);
             return parser.parse(document);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } catch (NotFoundException e) {
+            logger.error("Not Found URL: {}", url, e);
+            return null;
         }
     }
 

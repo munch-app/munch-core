@@ -5,6 +5,7 @@ import app.munch.model.AffiliateBrand;
 import app.munch.model.AffiliateType;
 import app.munch.model.PlaceStruct;
 import com.fasterxml.jackson.databind.JsonNode;
+import dev.fuxing.err.NotFoundException;
 import dev.fuxing.utils.JsonUtils;
 import org.apache.http.client.utils.URIBuilder;
 import org.jsoup.nodes.Document;
@@ -13,7 +14,6 @@ import org.jsoup.select.Elements;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Base64;
 
@@ -41,7 +41,7 @@ public final class ChopeAffiliateParser {
         this.builderFactory = builderFactory;
     }
 
-    public Affiliate parse(Document document) throws IOException {
+    public Affiliate parse(Document document) {
         JsonNode node = LinkedData.find(document);
         String rid = RID.findRid(document);
         PlaceStruct struct = parseStruct(node);
@@ -82,7 +82,7 @@ public final class ChopeAffiliateParser {
                 if (validate(node)) return node;
             }
 
-            throw new IllegalStateException("application/json+ld not found.");
+            throw new NotFoundException("application/json+ld not found.");
         }
 
         /**
@@ -122,7 +122,7 @@ public final class ChopeAffiliateParser {
                 return inputs.attr("value");
             }
 
-            throw new IllegalStateException("rid not found.");
+            throw new NotFoundException("rid not found.");
         }
 
     }
