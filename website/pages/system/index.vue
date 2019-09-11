@@ -57,7 +57,17 @@
                 path: '/system/affiliates',
               },
             ]
-          }
+          },
+          {
+            name: 'Engineering',
+            features: [
+              {
+                name: 'Worker Group',
+                description: 'Manage worker group and their reporting.',
+                path: '/system/engineering/workers',
+              },
+            ],
+          },
         ],
       }
     },
