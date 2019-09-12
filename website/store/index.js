@@ -1,6 +1,6 @@
 import uuidv4 from "uuid/v4";
 
-const MUNCH_TEAM = /oNOfWjsL49giM0|sGtVZuFJwYhf5O|7onsywnak2SaVt|GoNd1yY0uVcA8p|CM8wAOSdenMD8d|41qibhP0VjR3qQ/g
+const MUNCH_TEAM = /GoNd1yY0uVcA8p|oNOfWjsL49giM0|sGtVZuFJwYhf5O|uXt6utV89HMZ1Q/g
 
 export const state = () => ({
   origin: process.env.origin,

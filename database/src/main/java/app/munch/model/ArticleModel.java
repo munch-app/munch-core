@@ -214,14 +214,14 @@ public abstract class ArticleModel {
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonIgnoreProperties(ignoreUnknown = true)
-    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type", visible = true)
+    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
     @JsonSubTypes({
-            @JsonSubTypes.Type(value = HeadingNode.class, name = "heading"),
-            @JsonSubTypes.Type(value = ParagraphNode.class, name = "paragraph"),
-            @JsonSubTypes.Type(value = PlaceNode.class, name = "place"),
-            @JsonSubTypes.Type(value = AvatarNode.class, name = "avatar"),
-            @JsonSubTypes.Type(value = LineNode.class, name = "line"),
-            @JsonSubTypes.Type(value = ImageNode.class, name = "image"),
+            @JsonSubTypes.Type(HeadingNode.class),
+            @JsonSubTypes.Type(ParagraphNode.class),
+            @JsonSubTypes.Type(PlaceNode.class),
+            @JsonSubTypes.Type(AvatarNode.class),
+            @JsonSubTypes.Type(LineNode.class),
+            @JsonSubTypes.Type(ImageNode.class),
     })
 
     public interface Node {
@@ -231,6 +231,7 @@ public abstract class ArticleModel {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonIgnoreProperties(ignoreUnknown = true)
+    @JsonTypeName("heading")
     public static final class HeadingNode implements Node {
         private Attrs attrs;
 
@@ -281,6 +282,7 @@ public abstract class ArticleModel {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonIgnoreProperties(ignoreUnknown = true)
+    @JsonTypeName("paragraph")
     public static final class ParagraphNode implements Node {
 
         @Valid
@@ -302,6 +304,7 @@ public abstract class ArticleModel {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonIgnoreProperties(ignoreUnknown = true)
+    @JsonTypeName("line")
     public static final class LineNode implements Node {
         @Override
         public String getType() {
@@ -311,6 +314,7 @@ public abstract class ArticleModel {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonIgnoreProperties(ignoreUnknown = true)
+    @JsonTypeName("image")
     public static final class ImageNode implements Node {
 
         @NotNull
@@ -361,6 +365,7 @@ public abstract class ArticleModel {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonIgnoreProperties(ignoreUnknown = true)
+    @JsonTypeName("place")
     public static final class PlaceNode implements Node {
 
         @NotNull
@@ -444,6 +449,7 @@ public abstract class ArticleModel {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonIgnoreProperties(ignoreUnknown = true)
+    @JsonTypeName("avatar")
     public static final class AvatarNode implements Node {
 
         @NotNull

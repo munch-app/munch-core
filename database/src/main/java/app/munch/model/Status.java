@@ -15,16 +15,17 @@ import java.util.Objects;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type", visible = true)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = Status.OpenStatus.class, name = "OPEN"),
-        @JsonSubTypes.Type(value = Status.DormantStatus.class, name = "DORMANT"),
-        @JsonSubTypes.Type(value = Status.HiddenStatus.class, name = "HIDDEN"),
-        @JsonSubTypes.Type(value = Status.MovedStatus.class, name = "MOVED"),
-        @JsonSubTypes.Type(value = Status.DeletedStatus.class, name = "DELETED"),
-        @JsonSubTypes.Type(value = Status.PermanentlyClosedStatus.class, name = "PERMANENTLY_CLOSED"),
+        @JsonSubTypes.Type(Status.OpenStatus.class),
+        @JsonSubTypes.Type(Status.DormantStatus.class),
+        @JsonSubTypes.Type(Status.HiddenStatus.class),
+        @JsonSubTypes.Type(Status.MovedStatus.class),
+        @JsonSubTypes.Type(Status.DeletedStatus.class),
+        @JsonSubTypes.Type(Status.PermanentlyClosedStatus.class),
 })
 public interface Status {
+
     @ValidEnum
     @JsonIgnore
     StatusType getType();
@@ -38,7 +39,9 @@ public interface Status {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonIgnoreProperties(ignoreUnknown = true)
+    @JsonTypeName("OPEN")
     final class OpenStatus implements Status {
+
         @Override
         public StatusType getType() {
             return StatusType.OPEN;
@@ -54,6 +57,7 @@ public interface Status {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonIgnoreProperties(ignoreUnknown = true)
+    @JsonTypeName("DORMANT")
     final class DormantStatus implements Status {
 
         @NotNull
@@ -83,6 +87,7 @@ public interface Status {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonIgnoreProperties(ignoreUnknown = true)
+    @JsonTypeName("HIDDEN")
     final class HiddenStatus implements Status {
 
         @Override
@@ -100,6 +105,7 @@ public interface Status {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonIgnoreProperties(ignoreUnknown = true)
+    @JsonTypeName("DELETED")
     final class DeletedStatus implements Status {
 
         @Length(max = 255)
@@ -141,6 +147,7 @@ public interface Status {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonIgnoreProperties(ignoreUnknown = true)
+    @JsonTypeName("MOVED")
     final class MovedStatus implements Status {
 
         @NotNull
@@ -182,6 +189,7 @@ public interface Status {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonIgnoreProperties(ignoreUnknown = true)
+    @JsonTypeName("PERMANENTLY_CLOSED")
     final class PermanentlyClosedStatus implements Status {
 
         @NotNull
