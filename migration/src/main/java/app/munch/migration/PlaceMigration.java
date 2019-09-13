@@ -71,10 +71,14 @@ public final class PlaceMigration {
     }
 
     public List<PlaceImage> getPlaceImages(String id) {
+        return getPlaceImages(id, 10);
+    }
+
+    public List<PlaceImage> getPlaceImages(String id, int size) {
         return provider.reduce(entityManager -> {
             Place place = entityManager.find(Place.class, id);
 
-            List<munch.gallery.PlaceImage> images = imageClient.list(place.getCid(), null, 10);
+            List<munch.gallery.PlaceImage> images = imageClient.list(place.getCid(), null, size);
             return images.stream()
                     .map(placeImage -> placeEntityManager.mapPlaceImage(entityManager, place, placeImage))
                     .filter(Objects::nonNull)

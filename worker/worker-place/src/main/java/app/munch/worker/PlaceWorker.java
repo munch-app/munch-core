@@ -49,6 +49,8 @@ public final class PlaceWorker implements WorkerRunner {
 
             // Mapping
             Place mappedPlace = placeMigration.map(place);
+            placeMigration.getPlaceImages(mappedPlace.getId(), 10);
+
             serializableClient.put(mappedPlace);
             logger.info("Mapped: {}", mappedPlace.getId());
         });
