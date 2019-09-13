@@ -16,5 +16,7 @@ public final class AdminModule extends ApiServiceModule {
 
         addService(WorkerAdminService.class);
         addService(ArticleAdminSystem.class);
+
+        addService(AffiliateAdminService.class);
     }
 }
