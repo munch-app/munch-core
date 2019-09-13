@@ -5,7 +5,11 @@
     </div>
 
     <div>
-
+      <div v-for="affiliate in affiliates" :key="affiliate.uid">
+        <div class="overflow-hidden">
+          <pre>{{affiliate}}</pre>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -13,8 +17,12 @@
 <script>
   export default {
     layout: 'system',
-
-
+    asyncData({$api}) {
+      return $api.get('/admin/affiliates', {params: {status: 'PENDING'}})
+        .then(({data: affiliates, cursor}) => {
+          return {affiliates, cursor, status: 'PENDING'}
+        })
+    }
   }
 </script>
 

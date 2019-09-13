@@ -4,87 +4,56 @@
       <h4>{{place.name}}</h4>
     </div>
 
-    <div class="p-16-24 Info desktop">
-      <div v-if="place.price && place.price.perPax">
+    <div class="Info desktop">
+      <div class="mt-16" v-if="place.price && place.price.perPax">
         <h5>Price Per Person</h5>
         <p>~${{place.price.perPax.toFixed(1)}}</p>
       </div>
 
-      <div v-if="place.phone">
+      <div class="mt-16" v-if="place.phone">
         <h5>Phone</h5>
         <p>{{place.phone}}</p>
       </div>
 
-      <div v-if="place.hours.length > 0">
+      <div class="mt-16" v-if="place.hours && place.hours.length > 0">
         <h5>Opening Hours</h5>
-        <place-hour-list :hours="place.hours"/>
+        <opening-hours :hours="place.hours"/>
       </div>
 
-      <div>
+      <div class="mt-16">
         <h5>Address</h5>
-        <div class="text">{{place.location.address}}</div>
+        <p>{{place.location.address}}</p>
       </div>
-    </div>
-
-    <div class="BottomBar flex-end">
     </div>
   </div>
 </template>
 
 <script>
   import {mapGetters} from "vuex";
-  import PlaceHourList from "./PlaceHourList";
+  import OpeningHours from "../utils/hour/OpeningHours";
 
   export default {
     name: "PlaceAside",
-    components: {PlaceHourList},
+    components: {OpeningHours},
     props: {
       place: {
         type: Object,
         required: true
       },
     },
-    data() {
-      return {
-        show: {
-          more: false
-        }
-      }
-    },
     computed: {
       ...mapGetters('account', ['isLoggedIn']),
     },
-    methods: {
-      onShare() {
-        this.show.more = false
-
-        const url = window.location.href
-        this.$copyText(url).then(() => {
-          this.$store.dispatch('addMessage', {title: 'Copied URL!'})
-          this.$track.share('RIP', 'Copied URL')
-        }, (e) => {
-          this.$store.dispatch('addError', e)
-        })
-      }
-    }
+    methods: {}
   }
 </script>
 
 <style scoped lang="less">
   .Info {
-    margin-top: -24px;
-
-    > div {
-      margin-top: 24px;
-    }
+    padding: 0 24px 16px 24px;
   }
 
-  .BottomBar {
-    padding: 16px 16px;
-
-    @media (max-width: 992px) {
-      padding-top: 6px;
-      padding-bottom: 6px;
-    }
+  p {
+    font-size: 16px;
   }
 </style>

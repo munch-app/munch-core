@@ -1,66 +1,62 @@
 <template>
-  <div>
-    <section class="Banner">
-      <place-image-banner :images="images" @onClickImage="(index) => $refs.imageWall.onClickImage(index)"/>
-    </section>
+  <div class="container flex-justify-between">
+    <div class="ContentBody flex-grow">
+      <section class="Max720 mt-32">
+        <h1>{{place.name}}</h1>
+        <!-- TODO: <place-status/> -->
 
-    <div class="Information container flex-justify-between relative">
-      <div class="ContentBody flex-grow">
-        <section class="Max720 mt-32">
-          <!--          <place-status :place="place"/>-->
-
-          <h1>{{place.name}}</h1>
-
-          <div class="mt-16">
-            <div class="m--6 flex-wrap" v-if="place.tags.length > 0">
-              <div class="p-4" v-for="tag in place.tags" :key="tag.id">
-                <div class="bg-steam border-3 p-4-12">{{tag.name}}</div>
-              </div>
+        <div class="mt-16">
+          <div class="m--6 flex-wrap" v-if="place.tags.length > 0">
+            <div class="p-4" v-for="tag in place.tags" :key="tag.id">
+              <div class="bg-steam border-3 p-4-12">{{tag.name}}</div>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section class="Max720 mtb-32">
-          <place-detail :place="place"/>
-        </section>
+      <!-- TODO: <place-about/> -->
+      <!-- TODO: <place-detail/> -->
 
-        <section v-if="place.description" class="Max720">
-          <div v-if="place.description" @click="expanded = !expanded" class="hover-pointer">
-            <p class="Description" :class="{'text-ellipsis-4l': !expanded}">{{place.description}}</p>
-          </div>
-        </section>
+      <section v-if="place.description" class="Max720">
+        <div v-if="place.description" @click="expanded = !expanded" class="hover-pointer">
+          <p class="Description" :class="{'text-ellipsis-4l': !expanded}">{{place.description}}</p>
+        </div>
+      </section>
 
-        <section class="Max720 mtb-48">
-          <h2>Location</h2>
+      <section class="Max720 mtb-48">
+        <h2>Location</h2>
 
-          <p class="mt-16">{{place.location.address}}</p>
+        <p class="mt-16">{{place.location.address}}</p>
+      </section>
 
-          <div class="mt-24 relative">
-            <a class="index-content wh-100 absolute hover-pointer" target="_blank" :href="`https://www.google.com/maps?q=${place.location.latLng}`"
-               style="height: 224px"></a>
-            <google-embed-map :lat-lng="place.location.latLng" height="224"/>
-          </div>
-        </section>
-
-      </div>
-
-      <aside class="mt-24 flex-grow">
-        <place-aside class="PlaceAside" :place="place"/>
-      </aside>
     </div>
+
+    <section class="mt-24">
+      <aside>
+        <place-aside class="PlaceAside" :place="place"/>
+        <!-- TODO: <place-affiliates/> -->
+        <apple-map ref="map" class="Map border-3 overflow-hidden mt-24">
+          <apple-map-pin-annotation :lat-lng="place.location.latLng"/>
+        </apple-map>
+        <div class="mt-24">
+          <Adsense data-ad-client="ca-pub-7144155418390858" data-ad-slot="4206143635"/>
+        </div>
+      </aside>
+    </section>
   </div>
 </template>
 
 <script>
   import PlaceAside from "../components/places/PlaceAside";
   import GoogleEmbedMap from "../components/core/GoogleEmbedMap";
+  import AppleMap from "../components/utils/map/AppleMap";
+  import AppleMapPinAnnotation from "../components/utils/map/AppleMapPinAnnotation";
 
   export default {
-    components: {GoogleEmbedMap, PlaceAside},
+    components: {AppleMapPinAnnotation, AppleMap, GoogleEmbedMap, PlaceAside},
     head() {
       const {image, name, description, slug, id} = this.place
       return this.$head({
-        // TODO(fuxing): Note: Right now, don't index, wait for completion and proper migration of /places first
         robots: {follow: true, index: false},
         canonical: `https://www.munch.app/${slug}-${id}`,
         title: `${name} · Munch`,
@@ -81,21 +77,22 @@
       })
     },
     asyncData({$api, params: {id}}) {
-      return $api.get(`/migrations/places/${id}`)
+      return $api.get(`/places/${id}`)
         .then(({data: place}) => {
           return {place}
         })
+    },
+    mounted() {
+      this.$nextTick(() => {
+        this.$refs.map.centerAnnotations({
+          minimumSpan: new mapkit.CoordinateSpan(0.015, 0.015)
+        })
+      })
     }
   }
 </script>
 
 <style scoped lang="less">
-  .Information {
-    @media (max-width: 991.98px) {
-      flex-direction: column;
-    }
-  }
-
   .Max720 {
     max-width: 720px;
   }
@@ -108,6 +105,11 @@
 
   aside {
     max-width: 360px;
+
+    @media (min-width: 992px) {
+      position: sticky;
+      top: calc(24px + 72px /*Header72px*/);
+    }
   }
 
   .PlaceAside {
@@ -120,10 +122,9 @@
       left: 0;
       right: 0;
     }
+  }
 
-    @media (min-width: 992px) {
-      position: sticky;
-      top: calc(24px + 72px /*Header72px*/);
-    }
+  .Map {
+    height: 216px;
   }
 </style>
