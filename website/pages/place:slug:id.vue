@@ -40,7 +40,14 @@
         <place-articles :articles="place.articles"/>
       </section>
 
-      <section class="mt-64" v-if="place.synonyms && place.synonyms.length > 1">
+      <section v-if="place.createdBy" class="mt-64">
+        <h5>{{place.name}}<span class="b-a50"> is created by:</span></h5>
+        <div class="mt-16">
+          <place-created-by :profile="place.createdBy"/>
+        </div>
+      </section>
+
+      <section class="mt-48" v-if="place.synonyms && place.synonyms.length > 1">
         <h5>{{place.name}}<span class="b-a50"> is also known as: </span></h5>
         <p class="small text-capitalize">
           {{place.synonyms.join(', ')}}
@@ -68,9 +75,13 @@
   import PlaceImages from "../components/places/PlaceImages";
   import PlaceStatus from "../components/places/PlaceStatus";
   import PlaceArticles from "../components/places/PlaceArticles";
+  import PlaceCreatedBy from "../components/places/PlaceCreatedBy";
 
   export default {
-    components: {PlaceArticles, PlaceStatus, PlaceImages, AppleMapPinAnnotation, AppleMap, GoogleEmbedMap, PlaceAside},
+    components: {
+      PlaceCreatedBy,
+      PlaceArticles, PlaceStatus, PlaceImages, AppleMapPinAnnotation, AppleMap, GoogleEmbedMap, PlaceAside
+    },
     head() {
       const {image, name, description, slug, id} = this.place
       return this.$head({
