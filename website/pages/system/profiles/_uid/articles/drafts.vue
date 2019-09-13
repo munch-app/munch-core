@@ -69,7 +69,7 @@
     methods: {
       formatMillis: (millis) => dateformat(millis, 'mmm dd, yyyy'),
       onLoadMore() {
-        this.$api.get(`/admin/profiles/${uid}/articles`, {params: {status: 'DRAFT', size: 20, cursor: this.next}})
+        this.$api.get(`/admin/profiles/${this.profile.uid}/articles`, {params: {status: 'DRAFT', size: 20, cursor: this.next}})
           .then(({data: articles, cursor}) => {
             this.articles.push(...articles)
             this.next = cursor?.next

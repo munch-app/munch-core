@@ -78,15 +78,13 @@
       onMapReadyQueue.splice(0)
     },
     methods: {
-      centerAnnotations(annotations) {
+      centerAnnotations(options) {
         // Change priority for existing
         this.$map?.annotations?.forEach(annotation => {
           annotation.displayPriority = 500
         })
 
-        if (!annotations) {
-          annotations = this.$map.annotations
-        }
+        const annotations = options?.annotations || this.$map.annotations
 
         annotations.forEach(annotation => {
           annotation.displayPriority = 1000
@@ -95,7 +93,7 @@
         this.$map.showItems(annotations, {
           animate: true,
           padding: new mapkit.Padding(64, 64, 64, 64),
-          minimumSpan: new mapkit.CoordinateSpan(0.015, 0.025)
+          minimumSpan: options?.minimumSpan || new mapkit.CoordinateSpan(0.015, 0.025)
         })
       },
       onMapLoaded(func) {

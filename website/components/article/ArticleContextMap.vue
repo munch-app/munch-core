@@ -132,9 +132,11 @@
 
           if (items.length > 0) {
             this.map.focused = this.getData(items[0].id)
-            this.$refs.map.centerAnnotations(this.$refs.map.getAnnotations((p) => {
-              return p.id === items[0].id
-            }))
+            this.$refs.map.centerAnnotations({
+              annotations: this.$refs.map.getAnnotations((p) => {
+                return p.id === items[0].id
+              })
+            })
           }
         })
       },

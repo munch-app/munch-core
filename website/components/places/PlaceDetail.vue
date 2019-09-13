@@ -14,7 +14,6 @@
     </div>
     <div class="flex-align-center flex-justify-between tablet" v-if="place.hours.length > 0">
       <h5 class="s700">Hours</h5>
-      <place-hour-list :place-id="place.placeId" :hours="place.hours"/>
     </div>
   </div>
 </template>

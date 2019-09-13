@@ -32,7 +32,8 @@
       </div>
     </div>
 
-    <nuxt-link v-else :to="`/places/${place.id}`" class="flex-row flex-align-stretch text-decoration-none">
+    <!-- enable slug url redirection? -->
+    <nuxt-link v-else :to="`/${place.id}`" class="flex-row flex-align-stretch text-decoration-none">
       <div class="Image" v-if="place.image">
         <cdn-img class="wh-100" :image="place.image"/>
       </div>
