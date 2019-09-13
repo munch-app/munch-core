@@ -1,52 +1,62 @@
 <template>
   <div class="container flex-justify-between">
-    <div class="ContentBody flex-grow">
-      <section class="Max720 mt-32">
-        <div>
-          <place-images v-if="place.images && place.images.length" :images="place.images"/>
-        </div>
+    <div class="mt-24 pb-64 flex-grow">
+      <section v-if="place.images && place.images.length" class="mb-32">
+        <place-images :images="place.images"/>
+      </section>
 
+      <section v-if="place.status && place.status.type !== 'OPEN'" class="mb-32">
+        <place-status :status="place.status"/>
+      </section>
+
+      <section>
         <h1>{{place.name}}</h1>
-        <!-- TODO: <place-status/> -->
+      </section>
 
-        <div class="mt-16">
-          <div class="m--6 flex-wrap" v-if="place.tags.length > 0">
-            <div class="p-4" v-for="tag in place.tags" :key="tag.id">
-              <div class="bg-steam border-3 p-4-12">{{tag.name}}</div>
-            </div>
+      <section v-if="place.tags.length > 0" class="mt-24">
+        <div class="m--6 flex-wrap">
+          <div class="p-4" v-for="tag in place.tags" :key="tag.id">
+            <div class="bg-steam border-3 p-4-12">{{tag.name}}</div>
           </div>
         </div>
       </section>
 
-      <!-- TODO: <place-about/> -->
-      <!-- TODO: <place-detail/> -->
-
-      <section v-if="place.description" class="Max720">
-        <!--        <div v-if="place.description" @click="expanded = !expanded" class="hover-pointer">-->
-        <!--          <p class="Description" :class="{'text-ellipsis-4l': !expanded}">{{place.description}}</p>-->
-        <!--        </div>-->
+      <section v-if="place.description || place.website" class="mt-32">
+        <div class="p-16 border border-3">
+          <p v-if="place.description">{{place.description}}</p>
+          <div class="mt-8" v-if="place.website">
+            <h5>Website: <a target="_blank" rel="noreferrer noopener nofollow"
+                            :href="place.website">{{place.website}}</a></h5>
+          </div>
+        </div>
       </section>
 
-      <section class="Max720 mtb-48">
-        <h2>Location</h2>
-
-        <p class="mt-16">{{place.location.address}}</p>
+      <section>
+        <!--  TODO Adsense -->
       </section>
 
+      <section v-if="place.articles && place.articles.length" class="mt-48">
+        <h3 class="mb-16 text-ellipsis-1l">Articles about {{place.name}}</h3>
+        <place-articles :articles="place.articles"/>
+      </section>
+
+      <section class="mt-64" v-if="place.synonyms && place.synonyms.length > 1">
+        <h5>{{place.name}}<span class="b-a50"> is also known as: </span></h5>
+        <p class="small text-capitalize">
+          {{place.synonyms.join(', ')}}
+        </p>
+      </section>
     </div>
 
-    <section class="mt-24">
-      <aside>
+    <div class="mt-24 flex-no-shrink">
+      <aside class="pb-24">
         <place-aside class="PlaceAside" :place="place"/>
         <!-- TODO: <place-affiliates/> -->
         <apple-map ref="map" class="Map border-3 overflow-hidden mt-24">
           <apple-map-pin-annotation :lat-lng="place.location.latLng"/>
         </apple-map>
-        <div class="mt-24">
-          <Adsense data-ad-client="ca-pub-7144155418390858" data-ad-slot="4206143635"/>
-        </div>
       </aside>
-    </section>
+    </div>
   </div>
 </template>
 
@@ -56,9 +66,11 @@
   import AppleMap from "../components/utils/map/AppleMap";
   import AppleMapPinAnnotation from "../components/utils/map/AppleMapPinAnnotation";
   import PlaceImages from "../components/places/PlaceImages";
+  import PlaceStatus from "../components/places/PlaceStatus";
+  import PlaceArticles from "../components/places/PlaceArticles";
 
   export default {
-    components: {PlaceImages, AppleMapPinAnnotation, AppleMap, GoogleEmbedMap, PlaceAside},
+    components: {PlaceArticles, PlaceStatus, PlaceImages, AppleMapPinAnnotation, AppleMap, GoogleEmbedMap, PlaceAside},
     head() {
       const {image, name, description, slug, id} = this.place
       return this.$head({
@@ -88,6 +100,9 @@
         })
     },
     mounted() {
+      const {slug, id} = this.place
+      window.history.replaceState({}, document.title, `/${slug}-${id}`)
+
       this.$nextTick(() => {
         this.$refs.map.centerAnnotations({
           minimumSpan: new mapkit.CoordinateSpan(0.015, 0.015)
@@ -98,19 +113,10 @@
 </script>
 
 <style scoped lang="less">
-  .Max720 {
-    max-width: 720px;
-  }
-
-  .ContentBody {
-    @media (min-width: 992px) {
-      margin-right: 48px;
-    }
-  }
-
   aside {
     @media (min-width: 992px) {
-      min-width: 320px;
+      width: 300px;
+      margin-left: 48px;
 
       position: sticky;
       top: calc(24px + 72px /*Header72px*/);

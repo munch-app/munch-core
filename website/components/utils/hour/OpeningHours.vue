@@ -4,6 +4,8 @@
       <div class="text-uppercase">{{todayDay}}:</div>
       <div class="ml-4">{{todayText}}</div>
     </div>
+
+    <!--  TODO need to expand on this  -->
   </div>
 </template>
 
