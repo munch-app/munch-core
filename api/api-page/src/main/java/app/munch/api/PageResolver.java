@@ -1,6 +1,7 @@
 package app.munch.api;
 
 import app.munch.model.*;
+import dev.fuxing.jpa.HibernateUtils;
 import dev.fuxing.jpa.TransactionProvider;
 import org.apache.commons.lang3.StringUtils;
 
@@ -33,29 +34,44 @@ public final class PageResolver {
         return List.of();
     }
 
+    @SuppressWarnings("unchecked")
     private List<Map> home() {
-        return provider.reduce(entityManager -> {
+        List<Map> mapList = provider.reduce(entityManager -> {
             List<Map> list = new ArrayList<>();
             list.add(getFeatured(entityManager));
-
-            List<Publication> publications = entityManager.createQuery("FROM Publication " +
-                    "WHERE id != '3kvgmz1qpnxg5'" +
-                    "ORDER BY updatedAt DESC", Publication.class)
-                    .getResultList();
-            for (Publication publication : publications) {
-                list.add(Map.of(
-                        "articles", selectArticlesFromPublication(entityManager, publication.getId(), 12),
-                        "publication", publication
-                ));
-            }
+            list.addAll(getPublications(entityManager));
             return list;
         });
+
+        mapList.forEach(map -> {
+            HibernateUtils.clean(map.get("publication"));
+            ((List<Article>) map.get("articles")).forEach(article -> {
+                HibernateUtils.clean(article);
+                HibernateUtils.clean(article.getProfile());
+            });
+        });
+        return mapList;
     }
 
     private static Map getFeatured(EntityManager entityManager) {
         return Map.of(
                 "articles", selectArticlesFromPublication(entityManager, "3kvgmz1qpnxg5", 7)
         );
+    }
+
+    private static List<Map> getPublications(EntityManager entityManager) {
+        List<Publication> publications = entityManager.createQuery("FROM Publication " +
+                "WHERE id != '3kvgmz1qpnxg5'" +
+                "ORDER BY updatedAt DESC", Publication.class)
+                .getResultList();
+
+        return publications.stream()
+                .map(publication -> {
+                    return Map.of(
+                            "articles", selectArticlesFromPublication(entityManager, publication.getId(), 12),
+                            "publication", publication
+                    );
+                }).collect(Collectors.toList());
     }
 
     @SuppressWarnings("unchecked")
