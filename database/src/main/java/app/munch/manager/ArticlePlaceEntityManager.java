@@ -64,6 +64,7 @@ public final class ArticlePlaceEntityManager {
             attrsPlaces.forEach(attrsPlace -> {
                 Response response = new Response(attrsPlace);
                 try {
+                    // PublishPlace and get a copy of the representing place
                     Place place = publishPlace(entityManager, profileUid, revision.getOptions(), attrsPlace);
                     if (place != null) {
                         placeIds.add(place.getId());
@@ -92,9 +93,13 @@ public final class ArticlePlaceEntityManager {
                     .setParameter("articleId", revision.getId())
                     .getResultList();
 
-            // Delete any that is not mapped
+            // At this stage, only placeIds that exists is a real place
+
+            // Delete any that is not mapped, ensures only one copy.
             for (ArticlePlace articlePlace : articlePlaces) {
-                if (!placeIds.contains(articlePlace.getPlace().getId())) {
+                if (placeIds.contains(articlePlace.getPlace().getId())) {
+                    placeIds.remove(articlePlace.getPlace().getId());
+                } else {
                     entityManager.remove(articlePlace);
                 }
             }
