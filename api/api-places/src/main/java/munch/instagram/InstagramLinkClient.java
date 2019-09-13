@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
  * Project: munch-core
  */
 @Singleton
+@Deprecated
 public final class InstagramLinkClient {
     private static final String SOURCE = "media.instagram.com";
     private static final String NEXT_KEY = "sourceSortId";

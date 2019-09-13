@@ -7,12 +7,12 @@ import munch.file.Image;
 import java.util.List;
 
 /**
- * Ideally should migrate this to a single project
- * <p>
  * Created by: Fuxing
  * Date: 9/10/18
  * Time: 2:28 PM
  * Project: munch-core
+ *
+ * @deprecated move it to migration module
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)

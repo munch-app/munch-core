@@ -12,6 +12,7 @@ import javax.inject.Singleton;
  * Project: munch-core
  */
 @Singleton
+@Deprecated
 public final class InstagramCleaner extends ObjectCleaner<InstagramMedia> {
 
     @Override

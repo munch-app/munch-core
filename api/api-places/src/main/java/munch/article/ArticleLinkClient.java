@@ -20,6 +20,7 @@ import java.util.Set;
  * Project: munch-core
  */
 @Singleton
+@Deprecated
 public final class ArticleLinkClient extends munch.article.link.ArticleLinkClient {
 
     @Inject

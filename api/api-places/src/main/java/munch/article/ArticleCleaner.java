@@ -12,6 +12,7 @@ import javax.validation.Valid;
  * Time: 10:59 PM
  * Project: munch-core
  */
+@Deprecated
 public final class ArticleCleaner extends ObjectCleaner<Article> {
     @Override
     protected Class<Article> getClazz() {

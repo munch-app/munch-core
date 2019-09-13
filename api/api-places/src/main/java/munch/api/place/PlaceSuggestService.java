@@ -1,6 +1,7 @@
 package munch.api.place;
 
 import app.munch.api.ApiRequest;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConvertedEnum;
 import munch.api.ApiService;
 import munch.file.Image;
 import munch.file.ImageClient;
@@ -39,6 +40,7 @@ import java.util.Objects;
  * Project: munch-core
  */
 @Singleton
+@DynamoDBTypeConvertedEnum
 public final class PlaceSuggestService extends ApiService {
     private static final Logger logger = LoggerFactory.getLogger(PlaceSuggestService.class);
 

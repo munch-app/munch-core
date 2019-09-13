@@ -22,6 +22,8 @@ import java.util.stream.Collectors;
  * Date: 9/10/18
  * Time: 3:39 AM
  * Project: munch-core
+ *
+ * @deprecated move it to migration module
  */
 @Singleton
 public final class PlaceImageClient {
