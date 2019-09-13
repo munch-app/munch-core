@@ -1,3 +1,4 @@
+<!-- @deprecated -->
 <template>
   <div class="container-remove-gutter">
     <horizontal-scroll-view ref="scroll" class="PlaceArticleList" :items="items" :map-key="a => a.articleId"

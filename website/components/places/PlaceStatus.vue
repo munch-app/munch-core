@@ -1,3 +1,4 @@
+<!-- @deprecated -->
 <template>
   <div v-if="status" class="zero">
     <div class="p-16-24 bg-error border-3 mb-24 white">

@@ -1,3 +1,4 @@
+<!-- @deprecated -->
 <template>
   <div>
     <div v-if="place.description" @click="expanded = !expanded" class="hover-pointer">

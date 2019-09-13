@@ -1,3 +1,4 @@
+<!-- @deprecated -->
 <template>
   <div @click="onClick" class="hover-pointer">
     <div class="Card relative" :class="{'Small': small}">
@@ -12,6 +13,7 @@
       </div>
 
       <div class="mt-8">
+        <!-- Although /places/_placeId is deprecated, it will still support URl routing. -->
         <nuxt-link class="Title text-ellipsis-1l large weight-600 b-a80 text-decoration-none" :to="`/places/${place.placeId}`" >
           {{place.name}}
         </nuxt-link>

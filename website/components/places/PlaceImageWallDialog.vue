@@ -1,3 +1,4 @@
+<!-- @deprecated -->
 <template>
   <dialog-navigation @next="$emit('next')" @prev="$emit('prev')" @close="$emit('close')" max-width="600px">
     <div class="ImageWallDialog w-100">

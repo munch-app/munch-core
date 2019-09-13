@@ -1,3 +1,4 @@
+<!-- @deprecated -->
 <template>
   <div class="Detail">
     <div class="flex-align-center flex-justify-between tablet" v-if="place.price && place.price.perPax">

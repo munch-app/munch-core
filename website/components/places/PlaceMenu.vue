@@ -1,3 +1,4 @@
+<!-- @deprecated -->
 <template>
   <div class="PlaceMenu">
     <a class="WebsiteMenuButton elevation-1 border-3 border hover-pointer elevation-hover-2" v-if="menu.url"

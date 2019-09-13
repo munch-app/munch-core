@@ -2,6 +2,10 @@
   <div class="container flex-justify-between">
     <div class="ContentBody flex-grow">
       <section class="Max720 mt-32">
+        <div>
+          <place-images v-if="place.images && place.images.length" :images="place.images"/>
+        </div>
+
         <h1>{{place.name}}</h1>
         <!-- TODO: <place-status/> -->
 
@@ -18,9 +22,9 @@
       <!-- TODO: <place-detail/> -->
 
       <section v-if="place.description" class="Max720">
-        <div v-if="place.description" @click="expanded = !expanded" class="hover-pointer">
-          <p class="Description" :class="{'text-ellipsis-4l': !expanded}">{{place.description}}</p>
-        </div>
+        <!--        <div v-if="place.description" @click="expanded = !expanded" class="hover-pointer">-->
+        <!--          <p class="Description" :class="{'text-ellipsis-4l': !expanded}">{{place.description}}</p>-->
+        <!--        </div>-->
       </section>
 
       <section class="Max720 mtb-48">
@@ -51,9 +55,10 @@
   import GoogleEmbedMap from "../components/core/GoogleEmbedMap";
   import AppleMap from "../components/utils/map/AppleMap";
   import AppleMapPinAnnotation from "../components/utils/map/AppleMapPinAnnotation";
+  import PlaceImages from "../components/places/PlaceImages";
 
   export default {
-    components: {AppleMapPinAnnotation, AppleMap, GoogleEmbedMap, PlaceAside},
+    components: {PlaceImages, AppleMapPinAnnotation, AppleMap, GoogleEmbedMap, PlaceAside},
     head() {
       const {image, name, description, slug, id} = this.place
       return this.$head({
@@ -77,7 +82,7 @@
       })
     },
     asyncData({$api, params: {id}}) {
-      return $api.get(`/places/${id}`)
+      return $api.get(`/places/${id}`, {params: {fields: 'articles,affiliates,images'}})
         .then(({data: place}) => {
           return {place}
         })
@@ -104,9 +109,9 @@
   }
 
   aside {
-    max-width: 360px;
-
     @media (min-width: 992px) {
+      min-width: 320px;
+
       position: sticky;
       top: calc(24px + 72px /*Header72px*/);
     }

@@ -1,3 +1,4 @@
+<!-- @deprecated -->
 <template>
   <div class="container">
     <masonry-wall ref="wall" id="PlaceImageWall" :items="items" @append="append"

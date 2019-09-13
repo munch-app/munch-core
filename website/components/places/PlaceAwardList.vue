@@ -1,3 +1,4 @@
+<!-- @deprecated -->
 <template>
   <horizontal-scroll-view class="PlaceAwardList container-remove-gutter" :items="awards" :map-key="a => a.itemId"
                           :padding="18">

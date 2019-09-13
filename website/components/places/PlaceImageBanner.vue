@@ -1,3 +1,4 @@
+<!-- @deprecated -->
 <template>
   <div v-if="images">
     <div class="container">

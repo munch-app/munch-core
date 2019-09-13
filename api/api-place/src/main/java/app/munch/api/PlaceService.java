@@ -151,16 +151,19 @@ public final class PlaceService implements TransportService {
 
             if (fields.contains("images")) {
                 EntityStream.of(() -> {
-                    return entityManager.createQuery("SELECT pi.uid, pi.image FROM PlaceImage pi " +
+                    return entityManager.createQuery("SELECT " +
+                            "pi.uid AS uid, " +
+                            "pi.image AS image " +
+                            "FROM PlaceImage pi " +
                             "WHERE pi.place = :place " +
-                            "ORDER BY uid DESC", Object[].class)
+                            "ORDER BY pi.uid DESC", Tuple.class)
                             .setParameter("place", place)
                             .setMaxResults(8)
                             .getResultList();
-                }).cursor(8, (objects, builder) -> {
-                    builder.put("uid", objects[0]);
-                }).map(objects -> {
-                    return (PlaceImage) objects[1];
+                }).cursor(8, (tuple, builder) -> {
+                    builder.put("uid", tuple.get("uid"));
+                }).map(tuple -> {
+                    return tuple.get("image", Image.class);
                 }).consume((images, imagesCursor) -> {
                     node.set("images", JsonUtils.valueToTree(images));
                     if (imagesCursor != null) {

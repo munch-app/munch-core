@@ -1,3 +1,4 @@
+<!-- @deprecated -->
 <template>
   <div>
     <div class="Address text">{{location.address}}</div>

@@ -1,3 +1,4 @@
+<!-- @deprecated -->
 <template>
   <div class="border-3 border bg-white index-elevation">
     <div class="p-16-24 hr-bot desktop">
