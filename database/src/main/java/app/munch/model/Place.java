@@ -1,6 +1,7 @@
 package app.munch.model;
 
 import app.munch.model.constraint.PlaceDefaultGroup;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.fuxing.err.ValidationException;
@@ -62,15 +63,18 @@ public final class Place extends PlaceModel implements ElasticSerializable {
     @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = false)
     private Profile createdBy;
 
+    @JsonIgnore
     @NotNull
     @Column(updatable = true, nullable = false)
     private Date interactedAt;
 
+    @JsonIgnore
     @NotNull
     @Version
     @Column(updatable = true, nullable = false)
     private Date updatedAt;
 
+    @JsonIgnore
     @NotNull
     @Column(updatable = false, nullable = false)
     private Date createdAt;
@@ -135,7 +139,7 @@ public final class Place extends PlaceModel implements ElasticSerializable {
         return updatedAt;
     }
 
-    void setUpdatedAt(Date updatedAt) {
+    private void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
 
@@ -143,6 +147,9 @@ public final class Place extends PlaceModel implements ElasticSerializable {
         return createdAt;
     }
 
+    /**
+     * Visibility is temporary public for now
+     */
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }

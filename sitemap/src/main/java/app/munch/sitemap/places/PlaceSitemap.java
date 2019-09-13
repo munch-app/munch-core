@@ -1,15 +1,15 @@
 package app.munch.sitemap.places;
 
+import app.munch.model.Place;
+import app.munch.model.StatusType;
+import app.munch.sitemap.SitemapProvider;
 import com.google.common.collect.Iterators;
 import com.redfin.sitemapgenerator.ChangeFreq;
 import com.redfin.sitemapgenerator.WebSitemapUrl;
-import munch.data.client.PlaceClient;
-import munch.data.place.Place;
-import app.munch.sitemap.SitemapProvider;
+import dev.fuxing.jpa.TransactionProvider;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.Objects;
 
@@ -22,11 +22,11 @@ import java.util.Objects;
 @Singleton
 public final class PlaceSitemap implements SitemapProvider {
 
-    protected final PlaceClient placeClient;
+    private final TransactionProvider provider;
 
     @Inject
-    public PlaceSitemap(PlaceClient placeClient) {
-        this.placeClient = placeClient;
+    PlaceSitemap(TransactionProvider provider) {
+        this.provider = provider;
     }
 
     @Override
@@ -36,17 +36,20 @@ public final class PlaceSitemap implements SitemapProvider {
 
     @Override
     public Iterator<WebSitemapUrl> provide() {
-        Iterator<Place> filtered = Iterators.filter(placeClient.iterator(), place -> {
-            if (place == null) return false;
-            if (place.getTaste() == null) return false;
-            return place.getTaste().getGroup() >= 2;
-        });
+        return provider.reduce(entityManager -> {
+            Iterator<WebSitemapUrl> iterator = Iterators.transform(entityManager.createQuery("FROM Place", Place.class)
+                    .getResultList()
+                    .iterator(), place -> {
+                Objects.requireNonNull(place);
 
-        return Iterators.transform(filtered, place -> {
-            Objects.requireNonNull(place);
-            Place.Taste taste = place.getTaste();
-            Date updated = new Date(place.getUpdatedMillis());
-            return build("/places/" + place.getPlaceId(), updated, taste.getImportance(), ChangeFreq.WEEKLY);
+                if (place.getStatus().getType() == StatusType.OPEN) {
+                    return build("/" + place.getSlug() + "-" + place.getId(), place.getUpdatedAt(), place.getImportant(), ChangeFreq.DAILY);
+                }
+
+                return null;
+            });
+
+            return Iterators.filter(iterator, Objects::nonNull);
         });
     }
 }
