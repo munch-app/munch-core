@@ -5,7 +5,7 @@
 
       <h3 class="Title text-ellipsis-1l">{{article.title}}</h3>
 
-      <div class="Author" :href="article.domain.url" target="_blank" rel="noreferrer nofollow noopener">
+      <div class="Author">
         <h6>by <span class="s700">{{item.author}}</span> on {{format(article.createdMillis, 'mmm dd, yyyy')}}</h6>
       </div>
 

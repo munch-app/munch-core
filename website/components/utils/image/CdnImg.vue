@@ -3,7 +3,7 @@
 -->
 <template>
   <div class="relative">
-    <img v-if="url" :src="url" :alt="alt"/>
+    <img v-if="url" :src="url" :alt="alt" :style="{objectFit}"/>
     <div class="slot absolute-0">
       <slot></slot>
     </div>
@@ -28,6 +28,10 @@
         type: String,
         default: '640x640'
       },
+      objectFit: {
+        type: String,
+        default: 'cover'
+      }
     },
     computed: {
       url() {
@@ -58,7 +62,6 @@
   }
 
   img {
-    object-fit: cover;
     height: 100%;
     width: 100%;
   }
