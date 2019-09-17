@@ -77,7 +77,12 @@
     },
     data() {
       return {
-        map: {options: {}, focused: null}
+        map: {
+          options: {
+            showsUserLocationControl: false,
+          },
+          focused: null
+        }
       }
     },
     mounted() {

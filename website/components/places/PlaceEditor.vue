@@ -1,16 +1,145 @@
 <template>
-  <div>
+  <div class="flex-column">
+    <div v-if="has('NAME')" class="Group">
+      <h6>Name:</h6>
+      <input v-model="editing.name">
+    </div>
 
-    <!-- TODO -->
+    <div v-if="has('PHONE')" class="Group">
+      <h6>Phone:</h6>
+      <input v-model="editing.phone">
+    </div>
+
+    <div v-if="has('WEBSITE')" class="Group">
+      <h6>Website:</h6>
+      <input v-model="editing.website">
+    </div>
+    <div v-if="has('DESCRIPTION')" class="Group">
+      <h6>Description:</h6>
+      <text-auto class="TextAuto" v-model="editing.description"/>
+    </div>
+
+    <div v-if="has('PRICE')" class="Group">
+      <h6>Price:</h6>
+      <input v-model="editing.price.perPax" type="number">
+    </div>
+    <div v-if="has('LOCATION_ADDRESS')" class="Group">
+      <h6>Address: </h6>
+      <input v-model="editing.location.address">
+    </div>
+    <div class="flex-1-2 m--8">
+      <div v-if="has('LOCATION_UNIT_NUMBER')" class="Group p-8">
+        <h6>Unit Number:</h6>
+        <input v-model="editing.location.unitNumber">
+      </div>
+      <div v-if="has('LOCATION_POSTCODE')" class="Group p-8">
+        <h6>Postcode:</h6>
+        <input v-model="editing.location.postcode">
+      </div>
+    </div>
+    <div v-if="has('LOCATION_LAT_LNG')" class="Group">
+      <h6>Lat Lng:</h6>
+      <place-editor-lat-lng v-model="editing.location.latLng"/>
+    </div>
+
+    <div v-if="has('STATUS')" class="Group">
+      <h6>Status:</h6>
+      <place-editor-status v-model="editing.status"/>
+    </div>
+    <div v-if="has('SYNONYMS')" class="Group">
+      <h6>Synonyms:</h6>
+      <place-editor-synonyms v-model="editing.synonyms"/>
+    </div>
+    <div v-if="has('TAGS')" class="Group">
+      <h6>Tags:</h6>
+      <place-editor-tags v-model="editing.tags"/>
+    </div>
+    <div v-if="has('HOURS')" class="Group">
+      <h6>Hours:</h6>
+      <place-editor-hours v-model="editing.hours"/>
+    </div>
   </div>
 </template>
 
 <script>
+  import TextAuto from "../utils/TextAuto";
+  import AppleMap from "../utils/map/AppleMap";
+  import PlaceEditorStatus from "./editor/PlaceEditorStatus";
+  import PlaceEditorSynonyms from "./editor/PlaceEditorSynonyms";
+  import PlaceEditorHours from "./editor/PlaceEditorHours";
+  import PlaceEditorTags from "./editor/PlaceEditorTags";
+  import PlaceEditorLatLng from "./editor/PlaceEditorLatLng";
+
   export default {
-    name: "PlaceEditor"
+    name: "PlaceEditor",
+    components: {
+      PlaceEditorLatLng,
+      PlaceEditorTags, PlaceEditorHours, PlaceEditorSynonyms, PlaceEditorStatus, AppleMap, TextAuto},
+    props: {
+      place: {
+        type: Object
+      },
+      editableFields: {
+        type: Array,
+        default: () => [
+          'NAME', 'PHONE', 'WEBSITE', 'DESCRIPTION', 'PRICE',
+          'LOCATION_UNIT_NUMBER', 'LOCATION_POSTCODE', 'LOCATION_ADDRESS', 'LOCATION_LAT_LNG',
+          'STATUS', 'SYNONYMS', 'TAGS', 'HOURS'
+        ]
+      }
+    },
+    data() {
+      const editing = JSON.parse(JSON.stringify(this.place))
+
+      if (!editing.price) {
+        editing.price = {}
+      }
+
+      if (!editing.location) {
+        editing.location = {}
+      }
+
+      return {editing}
+    },
+    methods: {
+      has(field) {
+        return _.includes(this.editableFields, field)
+      },
+      confirm() {
+        // TODO(fuxing): Trim out known invalid values
+      },
+      onConfirm() {
+        this.$emit('on-confirm', {
+          place: this.editing, editableFields: this.editableFields
+        })
+      }
+    }
   }
 </script>
 
 <style scoped lang="less">
+  .Group {
+    margin-bottom: 16px;
 
+    h6 {
+      margin-bottom: 4px;
+    }
+
+    input, .TextAuto {
+      outline: none;
+      border: none;
+
+      background: #FAFAFA;
+      color: black;
+
+      width: 100%;
+      font-size: 17px;
+      padding: 12px;
+      border-radius: 2px;
+
+      &:focus {
+        background: #F0F0F0;
+      }
+    }
+  }
 </style>

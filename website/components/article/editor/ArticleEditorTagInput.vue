@@ -1,6 +1,6 @@
 <template>
   <div class="TagInput flex-wrap bg-steam p-12">
-    <div class="Spacer" v-for="tag in tags" :key="tag.id" >
+    <div class="Spacer" v-for="tag in tags" :key="tag.id">
       <div class="Tag bg-white border border-3 flex-align-center hover-pointer" @click="onTagRemove(tag)">
         <div class="mr-4">
           <small>{{tag.name}}</small>
@@ -38,8 +38,13 @@
     },
     methods: {
       onTagAdd(tag) {
-        this.query = ""
+        this.query = ''
         this.list = []
+
+        if (_.some(this.tags, t => t.id === tag.id)) {
+          return
+        }
+
         this.$emit('on-add', tag)
       },
       onTagRemove(tag) {

@@ -34,6 +34,11 @@
       if (map && this.$annotation) {
         map.removeAnnotation(this.$annotation)
       }
+    },
+    watch: {
+      latLng(val, oldVal) {
+        this.$annotation.coordinate = AppleMap.Coordinate(val)
+      }
     }
   }
 </script>

@@ -6,13 +6,19 @@ function deg2rad(deg) {
 
 /**
  *
- * @param lat1
- * @param lon1
- * @param lat2
- * @param lon2
+ * @param latLng1
+ * @param latLng2
  * @returns {number}, in KM
  */
-function distance(lat1, lon1, lat2, lon2) {
+function distance(latLng1, latLng2) {
+  const ll1 = latLng1.split(',')
+  const ll2 = latLng2.split(',')
+
+  const lat1 = parseFloat(ll1[0])
+  const lon1 = parseFloat(ll1[1])
+  const lat2 = parseFloat(ll2[0])
+  const lon2 = parseFloat(ll2[1])
+
   const dLat = deg2rad(lat2 - lat1);  // deg2rad below
   const dLon = deg2rad(lon2 - lon1);
   const a =
@@ -23,7 +29,11 @@ function distance(lat1, lon1, lat2, lon2) {
   return R * c;
 }
 
-function dist2Time() {
+/**
+ * @param distance in KM
+ * @returns {string}
+ */
+function dist2Time(distance) {
   const min = distance / 0.070
   return `${min} min`
 }

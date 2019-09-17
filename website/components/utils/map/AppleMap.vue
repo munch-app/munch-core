@@ -56,6 +56,7 @@
         mapkit.$isInited = true
       }
 
+      console.log(this.options)
       this.$map = new mapkit.Map(this.$refs.map, {
         showsUserLocation: this.options.showsUserLocation || false,
         showsUserLocationControl: this.options.showsUserLocationControl || true,
@@ -76,6 +77,10 @@
         func(this.$map)
       })
       onMapReadyQueue.splice(0)
+
+      this.$map.addEventListener("region-change-end", () => {
+        this.$emit('on-change', this.$map)
+      })
     },
     methods: {
       centerAnnotations(options) {

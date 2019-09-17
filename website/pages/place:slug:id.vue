@@ -22,9 +22,9 @@
       </section>
 
       <section v-if="place.description || place.website" class="mt-32">
-        <div class="p-16 border border-3">
-          <p v-if="place.description">{{place.description}}</p>
-          <div class="mt-8" v-if="place.website">
+        <div class="p-0-16 border border-3">
+          <p class="mtb-16" v-if="place.description">{{place.description}}</p>
+          <div class="mtb-16" v-if="place.website">
             <h5>Website: <a target="_blank" rel="noreferrer noopener nofollow"
                             :href="place.website">{{place.website}}</a></h5>
           </div>

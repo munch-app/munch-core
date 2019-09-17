@@ -11,7 +11,7 @@
 </template>
 <script>
   export default {
-    name: 'TextAuto',
+    name: "TextAuto",
     mounted() {
       this.resize()
     },
