@@ -1,68 +1,74 @@
 <template>
-  <div class="container flex-justify-between">
-    <div class="mt-24 pb-64 flex-grow">
-      <section v-if="place.images && place.images.length" class="mb-32">
-        <place-images :images="place.images"/>
-      </section>
+  <div class="container">
+    <div class="flex-justify-between relative">
+      <div class="mt-24 pb-64 flex-grow">
+        <section v-if="place.images && place.images.length" class="mb-32">
+          <place-images :images="place.images"/>
+        </section>
 
-      <section v-if="place.status && place.status.type !== 'OPEN'" class="mb-32">
-        <place-status :status="place.status"/>
-      </section>
+        <section v-if="place.status && place.status.type !== 'OPEN'" class="mb-32">
+          <place-status :status="place.status"/>
+        </section>
 
-      <section>
-        <h1>{{place.name}}</h1>
-      </section>
+        <section>
+          <h1>{{place.name}}</h1>
+        </section>
 
-      <section v-if="place.tags.length > 0" class="mt-24">
-        <div class="m--6 flex-wrap">
-          <div class="p-4" v-for="tag in place.tags" :key="tag.id">
-            <div class="bg-steam border-3 p-4-12">{{tag.name}}</div>
+        <section v-if="place.tags.length > 0" class="mt-24">
+          <div class="m--6 flex-wrap">
+            <div class="p-4" v-for="tag in place.tags" :key="tag.id">
+              <div class="bg-steam border-3 p-4-12">{{tag.name}}</div>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section v-if="place.description || place.website" class="mt-32">
-        <div class="p-0-16 border border-3">
-          <p class="mtb-16" v-if="place.description">{{place.description}}</p>
-          <div class="mtb-16" v-if="place.website">
-            <h5>Website: <a target="_blank" rel="noreferrer noopener nofollow"
-                            :href="place.website">{{place.website}}</a></h5>
+        <section class="mt-32">
+          <aside>
+            <place-aside class="PlaceAside" :place="place"/>
+            <!-- TODO: <place-affiliates/> -->
+            <apple-map ref="map" class="Map border-3 overflow-hidden mt-24">
+              <apple-map-pin-annotation :lat-lng="place.location.latLng"/>
+            </apple-map>
+          </aside>
+        </section>
+
+        <section v-if="place.description || place.website" class="mt-32">
+          <div class="p-0-16 border border-3">
+            <p class="mtb-16" v-if="place.description">{{place.description}}</p>
+            <div class="mtb-16" v-if="place.website">
+              <h5>Website: <a target="_blank" rel="noreferrer noopener nofollow"
+                              :href="place.website">{{place.website}}</a></h5>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section>
-        <!--  TODO Adsense -->
-      </section>
+        <section>
+          <!--  TODO Adsense -->
+        </section>
 
-      <section v-if="place.articles && place.articles.length" class="mt-48">
-        <h3 class="mb-16 text-ellipsis-1l">Articles about {{place.name}}</h3>
-        <place-articles :articles="place.articles"/>
-      </section>
+        <section v-if="place.articles && place.articles.length" class="mt-48">
+          <h3 class="mb-16 text-ellipsis-1l">Articles about {{place.name}}</h3>
+          <place-articles :articles="place.articles"/>
+        </section>
 
-      <section v-if="place.createdBy" class="mt-64">
-        <h5>{{place.name}}<span class="b-a50"> is created by:</span></h5>
-        <div class="mt-16">
-          <place-created-by :profile="place.createdBy"/>
-        </div>
-      </section>
+        <section v-if="place.createdBy" class="mt-64">
+          <h5>{{place.name}}<span class="b-a50"> is created by:</span></h5>
+          <div class="mt-16">
+            <place-created-by :profile="place.createdBy"/>
+          </div>
+        </section>
 
-      <section class="mt-48" v-if="place.synonyms && place.synonyms.length > 1">
-        <h5>{{place.name}}<span class="b-a50"> is also known as: </span></h5>
-        <p class="small text-capitalize">
-          {{place.synonyms.join(', ')}}
-        </p>
-      </section>
-    </div>
+        <section class="mt-48" v-if="place.synonyms && place.synonyms.length > 1">
+          <h5>{{place.name}}<span class="b-a50"> is also known as: </span></h5>
+          <p class="small text-capitalize">
+            {{place.synonyms.join(', ')}}
+          </p>
+        </section>
+      </div>
 
-    <div class="mt-24 flex-no-shrink">
-      <aside class="pb-24">
-        <place-aside class="PlaceAside" :place="place"/>
-        <!-- TODO: <place-affiliates/> -->
-        <apple-map ref="map" class="Map border-3 overflow-hidden mt-24">
-          <apple-map-pin-annotation :lat-lng="place.location.latLng"/>
-        </apple-map>
-      </aside>
+      <div class="mt-24 flex-no-shrink">
+        <div class="AsideContainer pb-32 none desktop-b"></div>
+      </div>
     </div>
   </div>
 </template>
@@ -76,9 +82,11 @@
   import PlaceStatus from "../components/places/PlaceStatus";
   import PlaceArticles from "../components/places/PlaceArticles";
   import PlaceCreatedBy from "../components/places/PlaceCreatedBy";
+  import OpeningHours from "../components/utils/hour/OpeningHours";
 
   export default {
     components: {
+      OpeningHours,
       PlaceCreatedBy,
       PlaceArticles, PlaceStatus, PlaceImages, AppleMapPinAnnotation, AppleMap, GoogleEmbedMap, PlaceAside
     },
@@ -124,29 +132,48 @@
 </script>
 
 <style scoped lang="less">
-  aside {
+  .AsideContainer {
     @media (min-width: 992px) {
       width: 300px;
       margin-left: 48px;
-
-      position: sticky;
-      top: calc(24px + 72px /*Header72px*/);
     }
   }
 
-  .PlaceAside {
-    @media (max-width: 991.98px) {
-      border-radius: 0;
-      border-style: solid none none none;
+  aside {
+    @media (min-width: 992px) {
+      width: 300px;
 
       position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
+      top: calc(24px + 72px /*Header72px*/);
+      left: calc(100vw - 300px - 24px);
+      /*right: calc(100vw - 300px);*/
+    }
+
+    @media (min-width: 1200px) {
+      left: calc(100vw - 300px - 80px);
+    }
+
+    @media (min-width: 1400px) {
+      left: initial;
+      right: calc((100vw - 1400px) / 2 + 80px);
     }
   }
 
   .Map {
     height: 216px;
   }
+
+  /*.PlaceAside {*/
+  /*  @media (max-width: 991.98px) {*/
+  /*    border-radius: 0;*/
+  /*    border-style: solid none none none;*/
+
+  /*    position: fixed;*/
+  /*    bottom: 0;*/
+  /*    left: 0;*/
+  /*    right: 0;*/
+  /*  }*/
+  /*}*/
+
+
 </style>

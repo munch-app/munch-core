@@ -56,7 +56,6 @@
         mapkit.$isInited = true
       }
 
-      console.log(this.options)
       this.$map = new mapkit.Map(this.$refs.map, {
         showsUserLocation: this.options.showsUserLocation || false,
         showsUserLocationControl: this.options.showsUserLocationControl || true,
