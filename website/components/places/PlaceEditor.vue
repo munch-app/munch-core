@@ -39,24 +39,24 @@
     </div>
     <div v-if="has('LOCATION_LAT_LNG')" class="Group">
       <h6>Lat Lng:</h6>
-      <place-editor-lat-lng v-model="editing.location.latLng"/>
+      <editor-lat-lng v-model="editing.location.latLng"/>
     </div>
 
     <div v-if="has('STATUS')" class="Group">
       <h6>Status:</h6>
-      <place-editor-status v-model="editing.status"/>
+      <editor-status v-model="editing.status"/>
     </div>
     <div v-if="has('SYNONYMS')" class="Group">
       <h6>Synonyms:</h6>
-      <place-editor-synonyms v-model="editing.synonyms"/>
+      <editor-synonyms v-model="editing.synonyms"/>
     </div>
     <div v-if="has('TAGS')" class="Group">
       <h6>Tags:</h6>
-      <place-editor-tags v-model="editing.tags"/>
+      <editor-tags v-model="editing.tags"/>
     </div>
     <div v-if="has('HOURS')" class="Group">
-      <h6>Hours:</h6>
-      <place-editor-hours v-model="editing.hours"/>
+      <h6>Opening Hours:</h6>
+      <editor-hours v-model="editing.hours"/>
     </div>
   </div>
 </template>
@@ -64,17 +64,17 @@
 <script>
   import TextAuto from "../utils/TextAuto";
   import AppleMap from "../utils/map/AppleMap";
-  import PlaceEditorStatus from "./editor/PlaceEditorStatus";
-  import PlaceEditorSynonyms from "./editor/PlaceEditorSynonyms";
-  import PlaceEditorHours from "./editor/PlaceEditorHours";
-  import PlaceEditorTags from "./editor/PlaceEditorTags";
-  import PlaceEditorLatLng from "./editor/PlaceEditorLatLng";
+  import EditorStatus from "../editor/EditorStatus";
+  import EditorSynonyms from "../editor/EditorSynonyms";
+  import EditorHours from "../editor/EditorHours";
+  import EditorTags from "../editor/EditorTags";
+  import EditorLatLng from "../editor/EditorLatLng";
 
   export default {
     name: "PlaceEditor",
     components: {
-      PlaceEditorLatLng,
-      PlaceEditorTags, PlaceEditorHours, PlaceEditorSynonyms, PlaceEditorStatus, AppleMap, TextAuto},
+      EditorLatLng,
+      EditorTags, EditorHours, EditorSynonyms, EditorStatus, AppleMap, TextAuto},
     props: {
       place: {
         type: Object

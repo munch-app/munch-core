@@ -1,11 +1,21 @@
 <template>
-  <div class="OpeningHours">
-    <div class="hover-pointer text-ellipsis-1l flex-align-center">
+  <div class="OpeningHours hover-pointer" @click="expanded = !expanded">
+    <div v-if="!expanded" class="text-ellipsis-1l flex-align-center">
       <div class="text-uppercase">{{todayDay}}:</div>
       <div class="ml-4">{{todayText}}</div>
+      <div class="ml-8">
+        <simple-svg class="wh-16px" fill="black" :filepath="require('~/assets/icon/icons8-expand-arrow.svg')"/>
+      </div>
     </div>
 
-    <!--  TODO need to expand on this  -->
+    <div v-if="expanded" class="monospace">
+      <div v-for="type in dayTypes" :key="type">
+        <div class="mt-4 flex">
+          <div class="flex-no-shrink">{{type}}:</div>
+          <div class="ml-16">{{toText(days[type])}}</div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -30,7 +40,21 @@
         required: true
       }
     },
+    data() {
+      return {
+        dayTypes: ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'],
+        expanded: false
+      }
+    },
     computed: {
+      days() {
+        const days = {'MON': [], 'TUE': [], 'WED': [], 'THU': [], 'FRI': [], 'SAT': [], 'SUN': []}
+        for (const hour of this.hours) {
+          days[hour.day].push(hour)
+          days[hour.day].sort(h => h.open)
+        }
+        return days
+      },
       todayDay() {
         const today = new Date()
         switch (today.getDay()) {
@@ -55,9 +79,17 @@
       },
       todayText() {
         const day = this.todayDay
-        return this.hours
-          .filter(h => h.day === day)
-          .sort(h => h.open)
+        return this.toText(this.hours
+          .filter(h => h.day === day))
+      },
+    },
+    methods: {
+      toText(hours) {
+        if (!hours.length) {
+          return 'Closed'
+        }
+
+        return hours.sort(h => h.open)
           .map(mapTimeRange)
           .join(", ")
       }

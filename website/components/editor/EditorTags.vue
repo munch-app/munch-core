@@ -2,7 +2,7 @@
   <div class="border border-3 bg-steam p-16">
     <div class="flex-wrap m--4">
       <div class="p-4" v-for="(tag, index) in editing" :key="tag.id">
-        <div class="bg-white border-2">
+        <div class="bg-white border-2 overflow-hidden">
           <div class="p-4-8 hover-bg-a10 hover-pointer flex-align-center">
             <div class="small-bold">{{tag.name}}</div>
             <div @click="onRemove(index)" class="ml-4">
@@ -29,7 +29,7 @@
   import {pluck, filter, debounceTime, distinctUntilChanged, switchMap, map} from 'rxjs/operators'
 
   export default {
-    name: "PlaceEditorTags",
+    name: "EditorTags",
     props: {
       value: Array
     },

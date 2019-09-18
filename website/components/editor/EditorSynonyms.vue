@@ -20,7 +20,7 @@
 
 <script>
   export default {
-    name: "PlaceEditorSynonyms",
+    name: "EditorSynonyms",
     props: {
       value: Array
     },

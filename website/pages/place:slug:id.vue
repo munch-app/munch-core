@@ -70,6 +70,8 @@
         <div class="AsideContainer pb-32 none desktop-b"></div>
       </div>
     </div>
+
+    <!-- TODO(fuxing): Suggest Edit Popup -->
   </div>
 </template>
 
@@ -162,18 +164,4 @@
   .Map {
     height: 216px;
   }
-
-  /*.PlaceAside {*/
-  /*  @media (max-width: 991.98px) {*/
-  /*    border-radius: 0;*/
-  /*    border-style: solid none none none;*/
-
-  /*    position: fixed;*/
-  /*    bottom: 0;*/
-  /*    left: 0;*/
-  /*    right: 0;*/
-  /*  }*/
-  /*}*/
-
-
 </style>

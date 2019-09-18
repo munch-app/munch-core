@@ -19,11 +19,11 @@
 </template>
 
 <script>
-  import AppleMap from "../../utils/map/AppleMap";
-  import AppleMapPinAnnotation from "../../utils/map/AppleMapPinAnnotation";
+  import AppleMap from "../utils/map/AppleMap";
+  import AppleMapPinAnnotation from "../utils/map/AppleMapPinAnnotation";
 
   export default {
-    name: "PlaceEditorLatLng",
+    name: "EditorLatLng",
     components: {AppleMapPinAnnotation, AppleMap},
     props: {
       value: String

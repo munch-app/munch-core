@@ -6,22 +6,22 @@
 
     <div class="p-0-16">
       <div class="mtb-16" v-if="place.price && place.price.perPax">
-        <h5>Price Per Person</h5>
+        <h6>Price Per Person</h6>
         <p>~${{place.price.perPax.toFixed(1)}}</p>
       </div>
 
       <div class="mtb-16" v-if="place.phone">
-        <h5>Phone</h5>
+        <h6>Phone</h6>
         <p>{{place.phone}}</p>
       </div>
 
       <div class="mtb-16" v-if="place.hours && place.hours.length > 0">
-        <h5>Opening Hours</h5>
+        <h6>Opening Hours</h6>
         <opening-hours :hours="place.hours"/>
       </div>
 
       <div class="mtb-16">
-        <h5>Address</h5>
+        <h6>Address</h6>
         <p>{{place.location.address}}</p>
       </div>
     </div>
@@ -47,13 +47,3 @@
     methods: {}
   }
 </script>
-
-<style scoped lang="less">
-  p {
-    font-size: 16px;
-  }
-
-  h5 {
-    color: #444;
-  }
-</style>

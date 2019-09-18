@@ -42,7 +42,7 @@
 
 <script>
   export default {
-    name: "PlaceEditorStatus",
+    name: "EditorStatus",
     props: {
       value: {
         type: Object,
