@@ -6,7 +6,7 @@
       </div>
       <div class="flex-align-center">
         <button class="border" @click="state = 'delete'" v-if="!state">Delete</button>
-        <button class="danger" @click="state = ''" v-if="state === 'delete'">Confirm Delete?</button>
+        <button class="danger" @click="onDelete" v-if="state === 'delete'">Confirm Delete?</button>
       </div>
     </div>
 
@@ -60,9 +60,9 @@
             </template>
           </search-place>
           <div v-if="state === 'place'">
-            <place-editor :place="place" @on-confirm="onConfirm"/>
+            <place-editor ref="editor" :place="place"/>
             <div class="flex-end mt-24">
-              <button class="blue">Update & Link</button>
+              <button class="blue" @click="onUpdateLink">Update & Link</button>
             </div>
           </div>
           <div v-if="state === 'fetching'" class="flex-center p-16">
@@ -124,10 +124,39 @@
         }
       },
       onDelete() {
-        // TODO(fuxing): send post request
+        this.state = ''
+
+        this.$api.patch(`/admin/affiliates/${this.uid}`, {status: 'DELETED_MUNCH'})
+          .then(() => {
+            this.$router.push({path: `/system/affiliates`})
+          })
+          .catch(err => {
+            this.$store.dispatch('addError', err)
+          })
       },
-      onConfirm(place) {
-        // TODO(fuxing): send post request
+      onUpdateLink() {
+        const $api = this.$api
+
+        function post(place) {
+          if (place.id) {
+            return $api.post(`/places/${place.id}/revisions`, place)
+          } else {
+            return $api.post(`/places`, place)
+          }
+        }
+
+        return this.$refs.editor.confirm(({place}) => {
+          post(place)
+            .then(({data}) => {
+              return $api.patch(`/admin/affiliates/${this.affiliate.uid}`, {status: 'LINKED', linked: {place: data}})
+                .then(() => {
+                  this.$router.push({path: `/system/affiliates`})
+                });
+            })
+            .catch(err => {
+              this.$store.dispatch('addError', err)
+            })
+        })
       }
     }
   }

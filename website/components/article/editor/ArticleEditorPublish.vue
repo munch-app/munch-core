@@ -39,11 +39,11 @@
 
             <article-editor-tag-input class="mt-8" :tags="value.tags" @on-add="onTagAdd" @on-remove="onTagRemove"/>
           </div>
-          <div class="flex-align-center hover-pointer mt-16" @click="onInputMap">
+          <div v-if="hasPlaces" class="flex-align-center hover-pointer mt-16" @click="onInputMap">
             <div class="checkbox" :class="{selected: value.options.map}"/>
             <small class="ml-16">Highlight places on a embedded map?</small>
           </div>
-          <div class="flex-align-center hover-pointer mt-16" @click="onInputPublishing">
+          <div v-if="hasPlaces" class="flex-align-center hover-pointer mt-16" @click="onInputPublishing">
             <div class="checkbox" :class="{selected: value.options.placePublishing}"/>
             <small class="ml-16">Keep your places information updated?</small>
           </div>
@@ -74,6 +74,11 @@
     data() {
       return {
         state: {imageDialog: false},
+      }
+    },
+    computed: {
+      hasPlaces() {
+        return this.value.content.some(s => s.type === 'place')
       }
     },
     methods: {

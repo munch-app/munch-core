@@ -118,6 +118,10 @@
         return this.article.options.map && this.article.content.some(s => s.type === 'place')
       }
     },
+    mounted() {
+      const {profile: {username}, slug, id} = this.article
+      window.history.replaceState({}, document.title, `/@${username}/${slug}-${id}`)
+    },
     methods: {
       getContexts() {
         return this.$refs['ArticleContent'].getContexts()

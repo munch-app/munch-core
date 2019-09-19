@@ -59,6 +59,7 @@
   div.relative {
     height: 100%;
     width: 100%;
+    line-height: 0;
   }
 
   img {

@@ -23,8 +23,9 @@
 
         <hr class="mtb-8">
 
+        <nuxt-link class="black" :to="`/me/articles`">My articles</nuxt-link>
         <nuxt-link class="black" :to="`/me/articles/new`">New article</nuxt-link>
-        <nuxt-link class="black" :to="`/me/articles`">Articles</nuxt-link>
+        <nuxt-link class="black" :to="`/me/places/new`">New place</nuxt-link>
         <hr class="mtb-8">
       </div>
 

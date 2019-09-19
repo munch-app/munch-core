@@ -8,11 +8,11 @@
         </div>
       </div>
 
-      <input v-model="editing">
+      <input v-model.trim="editing">
     </div>
     <div class="w-100 Map relative">
       <apple-map ref="map" class="wh-100" @on-change="onMapChange" :options="map.options">
-        <apple-map-pin-annotation :lat-lng="editing"/>
+        <apple-map-pin-annotation v-if="editing" :lat-lng="editing"/>
       </apple-map>
     </div>
   </div>

@@ -6,7 +6,7 @@
           <place-images :images="place.images"/>
         </section>
 
-        <section v-if="place.status && place.status.type !== 'OPEN'" class="mb-32">
+        <section v-if="place.status && place.status.type !== 'OPEN'" class="mb-32" @click="state = 'suggest-edit'">
           <place-status :status="place.status"/>
         </section>
 
@@ -25,14 +25,14 @@
         <section class="mt-32">
           <aside>
             <place-aside class="PlaceAside" :place="place"/>
-            <!-- TODO: <place-affiliates/> -->
+            <place-affiliates v-if="place.affiliates && place.affiliates.length" class="mtb-24" :place="place"/>
             <apple-map ref="map" class="Map border-3 overflow-hidden mt-24">
               <apple-map-pin-annotation :lat-lng="place.location.latLng"/>
             </apple-map>
           </aside>
         </section>
 
-        <section v-if="place.description || place.website" class="mt-32">
+        <section v-if="place.description || place.website" class="mt-32 mb-48">
           <div class="p-0-16 border border-3">
             <p class="mtb-16" v-if="place.description">{{place.description}}</p>
             <div class="mtb-16" v-if="place.website">
@@ -43,7 +43,7 @@
         </section>
 
         <section>
-          <!--  TODO Adsense -->
+          <Adsense data-ad-client="ca-pub-7144155418390858" data-ad-slot="3161197840"/>
         </section>
 
         <section v-if="place.articles && place.articles.length" class="mt-48">
@@ -58,11 +58,24 @@
           </div>
         </section>
 
-        <section class="mt-48" v-if="place.synonyms && place.synonyms.length > 1">
+        <section class="mt-48">
+          <div>
+            <h5>Is this place information accurate?</h5>
+            <button @click="state = 'suggest-edit'" class="mt-4 tiny border">
+              Suggest an edit
+            </button>
+          </div>
+        </section>
+
+        <section class="mtb-48" v-if="place.synonyms && place.synonyms.length > 1">
           <h5>{{place.name}}<span class="b-a50"> is also known as: </span></h5>
           <p class="small text-capitalize">
             {{place.synonyms.join(', ')}}
           </p>
+        </section>
+
+        <section>
+          <Adsense data-ad-client="ca-pub-7144155418390858" data-ad-slot="7508826332"/>
         </section>
       </div>
 
@@ -71,7 +84,7 @@
       </div>
     </div>
 
-    <!-- TODO(fuxing): Suggest Edit Popup -->
+    <place-editor-dialog :place="place" v-if="state === 'suggest-edit'" @on-close="state = null"/>
   </div>
 </template>
 
@@ -85,9 +98,13 @@
   import PlaceArticles from "../components/places/PlaceArticles";
   import PlaceCreatedBy from "../components/places/PlaceCreatedBy";
   import OpeningHours from "../components/utils/hour/OpeningHours";
+  import PlaceAffiliates from "../components/places/PlaceAffiliates";
+  import PlaceEditorDialog from "../components/dialog/PlaceEditorDialog";
 
   export default {
     components: {
+      PlaceEditorDialog,
+      PlaceAffiliates,
       OpeningHours,
       PlaceCreatedBy,
       PlaceArticles, PlaceStatus, PlaceImages, AppleMapPinAnnotation, AppleMap, GoogleEmbedMap, PlaceAside
@@ -119,6 +136,11 @@
         .then(({data: place}) => {
           return {place}
         })
+    },
+    data() {
+      return {
+        state: null
+      }
     },
     mounted() {
       const {slug, id} = this.place

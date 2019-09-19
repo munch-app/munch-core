@@ -31,7 +31,7 @@
       </div>
     </div>
 
-    <div class="mt-8 no-select">
+    <div class="mt-8 no-select" v-if="editing.length < max">
       <div class="flex m--8">
 
         <div class="p-8">
@@ -77,7 +77,7 @@
         <div class="flex-grow flex">
           <div class="p-8">
             <div class="relative TimeInput bg-white border-2" :class="{'Warning': input.open === null}">
-              <label>OPEN: (HH:MM)</label>
+              <label>OPEN:</label>
               <input v-model="input.editingOpen" @keyup="onInputChange" placeholder="HH:MM"
                      @focus="onFocusOpen">
 
@@ -92,7 +92,7 @@
 
           <div class="p-8">
             <div class="relative TimeInput bg-white border-2" :class="{'Warning': input.close === null}">
-              <label>CLOSE: (HH:MM)</label>
+              <label>CLOSE:</label>
               <input v-model="input.editingClose" @keyup="onInputChange" placeholder="HH:MM"
                      @focus="onFocusClose">
 
@@ -165,11 +165,20 @@
   export default {
     name: "EditorHours",
     props: {
-      value: Array
+      value: Array,
+      max: {
+        type: Number,
+        default: 24
+      }
     },
     data() {
+      let editing = []
+      if (this.value) {
+        editing = JSON.parse(JSON.stringify(this.value))
+      }
+
       return {
-        editing: JSON.parse(JSON.stringify(this.value)),
+        editing: editing,
         dayTypes: ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'],
         input: {
           days: [],
@@ -219,8 +228,20 @@
 
           this.input.open = undefined
           this.input.close = undefined
+          this.input.editingOpen = ''
+          this.input.editingClose = ''
           this.input.days.splice(0)
+
           this.state = null
+
+          if (this.editing.length > 24) {
+            this.editing.splice(24)
+            this.$store.dispatch('addMessage', {
+              type: 'error',
+              title: 'Limitation',
+              message: 'You can only store a maximum of 24 timings.'
+            })
+          }
 
           this.update()
         }

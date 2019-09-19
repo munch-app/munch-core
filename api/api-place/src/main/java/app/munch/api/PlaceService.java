@@ -17,6 +17,8 @@ import org.elasticsearch.search.suggest.SuggestBuilder;
 import org.elasticsearch.search.suggest.SuggestBuilders;
 import org.elasticsearch.search.suggest.SuggestionBuilder;
 import org.elasticsearch.search.suggest.completion.context.CategoryQueryContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.persistence.Tuple;
@@ -30,6 +32,7 @@ import java.util.*;
  * Time: 2:42 pm
  */
 public final class PlaceService implements TransportService {
+    private static final Logger logger = LoggerFactory.getLogger(PlaceService.class);
 
     private final ElasticQueryClient queryClient;
     private final ElasticSerializableClient serializableClient;
@@ -52,6 +55,7 @@ public final class PlaceService implements TransportService {
         PATH("/places", () -> {
             GET("/suggest", this::suggest);
             GET("/search", this::search);
+            POST("", this::post);
 
             PATH("/:id", () -> {
                 GET("", this::idGet);
@@ -217,16 +221,26 @@ public final class PlaceService implements TransportService {
         });
     }
 
+    public Place post(TransportContext ctx) {
+        String accountId = ctx.get(ApiRequest.class).getAccountId();
+        // Have to use PlaceStruct or else reference chain will be picked up
+        PlaceStruct struct = ctx.bodyAsObject(PlaceStruct.class);
+
+        Place place = placeEntityManager.create(struct, PlaceEditableField.ALL, entityManager -> {
+            return Profile.findByAccountId(entityManager, accountId);
+        });
+        serializableClient.put(place);
+        return place;
+    }
+
     public Place idRevisionPost(TransportContext ctx) {
         String id = ctx.pathString("id");
         String accountId = ctx.get(ApiRequest.class).getAccountId();
-        PlaceModel model = ctx.bodyAsObject(PlaceModel.class);
+        // Have to use PlaceStruct or else reference chain will be picked up
+        PlaceStruct struct = ctx.bodyAsObject(PlaceStruct.class);
 
-        Place place = placeEntityManager.update(id, model, PlaceEditableField.ALL, entityManager -> {
-            return entityManager.createQuery("SELECT a.profile FROM Account a " +
-                    "WHERE a.id = :id", Profile.class)
-                    .setParameter("id", accountId)
-                    .getSingleResult();
+        Place place = placeEntityManager.update(id, struct, PlaceEditableField.ALL, entityManager -> {
+            return Profile.findByAccountId(entityManager, accountId);
         });
         serializableClient.put(place);
         return place;

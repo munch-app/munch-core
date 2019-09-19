@@ -1,18 +1,5 @@
-<script>
-  export default {
-    name: "PlaceStatus",
-    props: {
-      status: {
-        type: Object,
-        required: true
-      }
-    }
-  }
-</script>
-
 <template>
   <div v-if="status.type === 'DORMANT'" class="p-16-24 border-3 hover-pointer bg-steam">
-    <!-- TODO(fuxing): Suggest Edit -->
     <h4>This place has been inactive for awhile.</h4>
     <div class="flex mt-4">
       <div class="regular mr-8">Is this place information still accurate?</div>
@@ -54,3 +41,15 @@
   </div>
   <div v-else/>
 </template>
+
+<script>
+  export default {
+    name: "PlaceStatus",
+    props: {
+      status: {
+        type: Object,
+        required: true
+      }
+    }
+  }
+</script>

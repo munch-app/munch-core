@@ -113,6 +113,9 @@ public final class Article extends ArticleModel {
 
         switch (getStatus()) {
             case PUBLISHED:
+                if (getPublishedAt() == null) {
+                    setPublishedAt(new Timestamp(System.currentTimeMillis()));
+                }
                 ValidationException.validate(this, Default.class, ArticlePublishedGroup.class);
                 return;
 

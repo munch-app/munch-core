@@ -176,4 +176,43 @@ public final class Profile {
 
         ValidationException.validate(this, Default.class);
     }
+
+    /**
+     * Helper method to find Profile by Account.id
+     *
+     * @param entityManager to use
+     * @param accountId     to map to Profile
+     * @return Profile
+     */
+    public static Profile findByAccountId(EntityManager entityManager, String accountId) {
+        return entityManager.createQuery("SELECT a.profile FROM Account a " +
+                "WHERE a.id = :id", Profile.class)
+                .setParameter("id", accountId)
+                .getSingleResult();
+    }
+
+    /**
+     * Helper method to find Profile by Profile.uid
+     *
+     * @param entityManager to use
+     * @param uid           to map to Profile
+     * @return Profile
+     */
+    public static Profile findByUid(EntityManager entityManager, String uid) {
+        return entityManager.find(Profile.class, uid);
+    }
+
+    /**
+     * Helper method to find Profile by username
+     *
+     * @param entityManager to use
+     * @param username      to map to Profile
+     * @return Profile
+     */
+    public static Profile findByUsername(EntityManager entityManager, String username) {
+        return entityManager.createQuery("FROM Profile " +
+                "WHERE username = :username", Profile.class)
+                .setParameter("username", username)
+                .getSingleResult();
+    }
 }

@@ -252,15 +252,7 @@ public final class Affiliate {
         setUpdatedAt(new Timestamp(System.currentTimeMillis()));
 
         if (getLinked() != null) {
-            PlaceAffiliate linked = getLinked();
-            linked.setUid(getUid());
-            linked.setAffiliate(this);
-            linked.setBrand(getBrand());
-            linked.setType(getType());
-            linked.setUrl(getUrl());
-
-            // Place copy from Linked.place
-            setPlace(linked.getPlace());
+            copy(this, getLinked());
         }
 
         if (getStatus() != null) {
@@ -281,5 +273,16 @@ public final class Affiliate {
                     break;
             }
         }
+    }
+
+    static void copy(Affiliate affiliate, PlaceAffiliate linked) {
+        linked.setUid(affiliate.getUid());
+        linked.setAffiliate(affiliate);
+        linked.setBrand(affiliate.getBrand());
+        linked.setType(affiliate.getType());
+        linked.setUrl(affiliate.getUrl());
+
+        // Place copy from Linked.place
+        affiliate.setPlace(linked.getPlace());
     }
 }

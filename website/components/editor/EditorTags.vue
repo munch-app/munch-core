@@ -1,20 +1,22 @@
 <template>
   <div class="border border-3 bg-steam p-16">
-    <div class="flex-wrap m--4">
-      <div class="p-4" v-for="(tag, index) in editing" :key="tag.id">
-        <div class="bg-white border-2 overflow-hidden">
-          <div class="p-4-8 hover-bg-a10 hover-pointer flex-align-center">
-            <div class="small-bold">{{tag.name}}</div>
-            <div @click="onRemove(index)" class="ml-4">
-              <simple-svg class="wh-16px" fill="black" :filepath="require('~/assets/icon/icons8-multiply.svg')"/>
+    <div v-if="editing.length" class="mb-16">
+      <div class="flex-wrap m--4">
+        <div class="p-4" v-for="(tag, index) in editing" :key="tag.id">
+          <div class="bg-white border-2 overflow-hidden">
+            <div class="p-4-8 hover-bg-a10 hover-pointer flex-align-center">
+              <div class="small-bold">{{tag.name}}</div>
+              <div @click="onRemove(index)" class="ml-4">
+                <simple-svg class="wh-16px" fill="black" :filepath="require('~/assets/icon/icons8-multiply.svg')"/>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="mt-16 relative">
-      <input class="p-12" v-model="input" @keyup.enter="onKeyEnter" @change="update">
+    <div class="relative" v-if="editing.length < max">
+      <input class="p-12" v-model="input" @keyup.enter="onKeyEnter" @change="update" placeholder="Search tags">
 
       <div class="w-100 hr-bot hr-left hr-right border-3 absolute bg-white index-1">
         <div class="Item hover-pointer hover-bg-a10" v-for="tag in list" :key="tag.id" @click="onAdd(tag)">
@@ -31,13 +33,21 @@
   export default {
     name: "EditorTags",
     props: {
-      value: Array
+      value: Array,
+      max: {
+        type: Number,
+        default: 12
+      }
     },
     data() {
-      return {
-        editing: JSON.parse(JSON.stringify(this.value)),
-        input: ''
+      if (this.value) {
+        return {
+          editing: JSON.parse(JSON.stringify(this.value)),
+          input: ''
+        }
       }
+
+      return {editing: [], input: ''}
     },
     methods: {
       onRemove(index) {

@@ -2,19 +2,19 @@
   <div class="border bg-steam border-3">
     <div v-for="(synonym, index) in editing" :key="synonym">
       <div class="flex-between">
-        <div @click="onSwap(index)"
-             class="flex-grow p-12 hover-pointer hover-bg-a10">
+        <div @click="onSwap(index)" class="flex-grow p-12 hover-pointer hover-bg-a10">
           {{synonym}}
         </div>
 
-        <div @click="onRemove(index)"
-             class="flex-self-stretch flex-center p-12 hover-pointer hover-bg-a10">
+        <div @click="onRemove(index)" class="flex-self-stretch flex-center p-12 hover-pointer hover-bg-a10">
           <simple-svg class="wh-16px" fill="black" :filepath="require('~/assets/icon/icons8-multiply.svg')"/>
         </div>
       </div>
     </div>
 
-    <input class="p-12" v-model="input" @keyup.enter="onKeyEnter" @change="update">
+    <div v-if="editing.length < max">
+      <input class="p-12" v-model.trim="input" @keyup.enter="onKeyEnter" @change="update">
+    </div>
   </div>
 </template>
 
@@ -22,13 +22,21 @@
   export default {
     name: "EditorSynonyms",
     props: {
-      value: Array
+      value: Array,
+      max: {
+        type: Number,
+        default: 4
+      }
     },
     data() {
-      return {
-        editing: JSON.parse(JSON.stringify(this.value)),
-        input: ''
+      if (this.value) {
+        return {
+          editing: JSON.parse(JSON.stringify(this.value)),
+          input: ''
+        }
       }
+
+      return {editing: [], input: ''}
     },
     methods: {
       onSwap(index) {

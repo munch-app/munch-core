@@ -54,6 +54,7 @@ public final class AffiliateEntityManager {
                         Objects.requireNonNull(placeId);
 
                         PlaceAffiliate linked = new PlaceAffiliate();
+                        linked.setAffiliate(entity);
                         linked.setPlace(entityManager.find(Place.class, placeId));
                         entity.setLinked(linked);
                     })
@@ -129,6 +130,7 @@ public final class AffiliateEntityManager {
                     if (entity.getLinked() == null && entity.getPlace() != null) {
                         PlaceAffiliate linked = new PlaceAffiliate();
                         linked.setPlace(entity.getPlace());
+                        linked.setAffiliate(entity);
                         entity.setLinked(linked);
                     }
                     break;

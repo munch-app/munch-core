@@ -174,7 +174,6 @@
     margin-top: -48px;
   }
 
-
   .MediaList {
     margin: 12px -12px;
   }

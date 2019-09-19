@@ -16,7 +16,7 @@
       <h6>At: (Date in Milliseconds)</h6>
       <div class="flex-align-center">
         <div class="flex-grow">
-          <input v-model="editing.at">
+          <input v-model.trim="editing.at">
         </div>
         <div class="ml-16 flex-self-stretch">
           <div
@@ -30,12 +30,12 @@
 
     <div v-if="isActive('id')">
       <h6>Id: (Redirect To Place)</h6>
-      <input v-model="editing.id">
+      <input v-model.trim="editing.id">
     </div>
 
     <div v-if="isActive('reason')">
       <h6>Reason:</h6>
-      <input v-model="editing.reason">
+      <input v-model.trim="editing.reason">
     </div>
   </div>
 </template>

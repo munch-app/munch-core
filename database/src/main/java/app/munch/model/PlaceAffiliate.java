@@ -94,7 +94,7 @@ public final class PlaceAffiliate {
         return affiliate;
     }
 
-    void setAffiliate(Affiliate affiliate) {
+    public void setAffiliate(Affiliate affiliate) {
         this.affiliate = affiliate;
     }
 
@@ -150,6 +150,9 @@ public final class PlaceAffiliate {
     @PreUpdate
     void preUpdate() {
         setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+        if (getAffiliate() != null) {
+            Affiliate.copy(getAffiliate(), this);
+        }
 
         ValidationException.validate(this, Default.class);
     }
