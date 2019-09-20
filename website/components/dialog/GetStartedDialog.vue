@@ -50,8 +50,10 @@
     name: "GetStartedDialog",
     methods: {
       onSignInFacebook() {
-        this.$store.dispatch('account/signInFacebook')
-        this.$store.commit('unfocus', 'Login')
+        this.$store.commit('global/setDialog', 'LoadingDialog')
+        this.$store.dispatch('account/signInFacebook').then(() => {
+          this.$store.commit('global/clearDialog')
+        })
       }
     }
   }

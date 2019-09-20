@@ -1,96 +1,67 @@
 <template>
   <div class="container pt-48 pb-128">
     <div class="flex-between">
-      <h1>Place Data Management</h1>
+      <h2>Place Data Management</h2>
       <div>
         <nuxt-link to="/system/places/_">
-          <button class="pink-outline">New Place</button>
+          <button class="small pink-outline">New Place</button>
         </nuxt-link>
       </div>
     </div>
 
-    <div class="ptb-24 hr-bot">
-      <div class="p-24 bg-steam border-3 overflow-hidden">
-        <input class="h3 clear w-100" ref="input" v-model="query" placeholder="Search: name">
-      </div>
-    </div>
-
-    <div class="mt-24">
-      <nuxt-link :to="`/system/places/${document.id}`" class="block ptb-12 text-decoration-none" v-for="document in documents" :key="document.key">
-        <div class="bg-steam border-4 overflow-hidden hover-pointer">
-          <div class="p-24 flex hover-bg-a10">
-            <div class="flex-no-shrink wh-80px mr-24" v-if="document.image">
-              <cdn-img class="border-3 overflow-hidden" type="320x320" :image="document.image"/>
+    <search-place class="mt-24 border border-3" @on-select="onSelect" input-hint="Search places" :size="30">
+      <template v-slot:default="{document}">
+        <div class="p-16 hover-bg-a10">
+          <div class="flex">
+            <div class="wh-80px flex-no-shrink mr-16" v-if="document.image">
+              <cdn-img class="border-2 overflow-hidden" type="320x320" :image="document.image"/>
             </div>
-            <div class="flex-grow">
-              <h3>{{document.name}}</h3>
-              <div class="regular">{{document.location.address}}</div>
-              <div class="mt-8 flex-align-center">
-                <div class="mr-8 small">Status:</div>
-                <div class="p-4-12 border-3 white small-bold" :class="{
-              'bg-success': document.status.type === 'OPEN',
-              'bg-error': document.status.type !== 'OPEN',
-              }">
+            <div>
+              <h5 class="text-ellipsis-1l">{{document.name}}</h5>
+              <p class="text-ellipsis-1l m-0">{{document.location.address}}</p>
+              <div class="flex-align-center">
+                <div v-if="document.status.type !== 'OPEN'"
+                     class="white tiny-bold bg-error p-6 lh-1 border-2 mr-8">
                   {{document.status.type}}
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </nuxt-link>
-    </div>
+      </template>
+    </search-place>
+
+    <place-editor-dialog :place="place" v-if="state === 'editing'" @on-close="state = null"/>
   </div>
 </template>
 
 <script>
   import {filter, pluck, tap, debounceTime, distinctUntilChanged, switchMap, map} from 'rxjs/operators'
   import CdnImg from "../../../components/utils/image/CdnImg";
+  import SearchPlace from "../../../components/places/SearchPlace";
+  import PlaceEditorDialog from "../../../components/dialog/PlaceEditorDialog";
 
   export default {
-    components: {CdnImg},
+    components: {PlaceEditorDialog, SearchPlace, CdnImg},
     layout: 'system',
     data() {
       return {
-        query: '',
-        loading: false,
-
-        documents: [],
+        state: null,
+        place: null,
       }
     },
-    subscriptions() {
-      const observable = this.$watchAsObservable('query').pipe(
-        pluck('newValue'),
-        tap(() => {
-          this.documents = []
-        }),
-        map((text) => text.trim()),
-        filter((text) => text.length > 1),
-        tap(() => {
-          this.loading = true
-        }),
-        distinctUntilChanged(),
-        debounceTime(333),
-      )
+    methods: {
+      onSelect(document) {
+        this.place = null
+        this.$store.commit('global/setDialog', 'LoadingDialog')
 
-      return {
-        documents: observable.pipe(
-          switchMap((text) => {
-            return this.$api.get('/places/search', {
-              params: {
-                text, fields: 'key,id,name,image,location,tags,status'
-              }
-            }, {progress: false})
-          }),
-          map(({data: documents}) => documents),
-          tap((d) => {
-            this.loading = false
+        this.$api.get(`/places/${document.id}`)
+          .then(({data: place}) => {
+            this.$store.commit('global/clearDialog')
+            this.place = place
+            this.state = 'editing'
           })
-        )
       }
     }
   }
 </script>
-
-<style scoped lang="less">
-
-</style>
