@@ -49,6 +49,9 @@
 
       return {editing: [], input: ''}
     },
+    mounted() {
+      this.update()
+    },
     methods: {
       onRemove(index) {
         this.editing.splice(index, 1)

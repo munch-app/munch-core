@@ -1,16 +1,12 @@
 <template>
-  <div class="input-text">
-    <label>{{label}} <span class="error" v-if="required && value === ''">is required</span></label>
-
-    <div class="relative">
-      <input :value="cleanedValue" @input="onInput($event.target.value)" :placeholder="placeholder"
-             :type="type"
-      >
-
-      <div class="Clear absolute bg-white hover-pointer flex-center" @click="onInput('')">
-        <simple-svg class="Icon" fill="black" :filepath="require('~/assets/icon/close.svg')"/>
-      </div>
-    </div>
+  <div>
+    <label class="h6">
+      {{label}} <span class="error" v-if="required && value === ''">is required</span>
+    </label>
+    <input v-model.trim="editing"
+           :placeholder="placeholder"
+           :type="type"
+    >
   </div>
 </template>
 
@@ -35,36 +31,41 @@
         default: 'text'
       }
     },
-    computed: {
-      cleanedValue() {
-        if (String(this.type).toLowerCase() === 'number') {
-          if (this.value === 0) {
-            return ""
-          }
-        }
-        return this.value
-      }
+    data() {
+      return {editing: this.value}
     },
     methods: {
-      onInput(value) {
-        this.$emit('input', value)
+      update() {
+        this.$emit('input', this.editing)
+      },
+    },
+    watch: {
+      editing() {
+        this.update()
       }
     }
   }
 </script>
 
 <style scoped lang="less">
-  .Clear {
-    top: 3px;
-    bottom: 3px;
-    right: 3px;
+  label {
+    margin-bottom: 4px;
+  }
 
-    padding-left: 5px;
-    padding-right: 5px;
+  input {
+    outline: none;
+    border: none;
 
-    .Icon {
-      width: 18px;
-      height: 18px;
+    background: #FAFAFA;
+    color: black;
+
+    width: 100%;
+    font-size: 17px;
+    padding: 12px;
+    border-radius: 2px;
+
+    &:focus {
+      background: #F0F0F0;
     }
   }
 </style>

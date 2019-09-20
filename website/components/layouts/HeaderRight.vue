@@ -4,7 +4,7 @@
       <button @click.prevent.stop="onSignIn" class="small">
         Sign In
       </button>
-      <button @click.prevent.stop="onSignIn" class="small blue-outline">
+      <button @click.prevent.stop="onSignUp" class="small blue-outline">
         Get Started
       </button>
     </div>
@@ -22,7 +22,10 @@
     },
     methods: {
       onSignIn() {
-        this.$store.commit('global/setDialog', 'GetStartedDialog')
+        this.$store.commit('global/setDialog', {name: 'GetStartedDialog', props: {defaultState: 'sign-in'}})
+      },
+      onSignUp() {
+        this.$store.commit('global/setDialog', {name: 'GetStartedDialog', props: {defaultState: 'sign-up'}})
       },
       mobileOS() {
         const userAgent = navigator.userAgent || navigator.vendor || window.opera;

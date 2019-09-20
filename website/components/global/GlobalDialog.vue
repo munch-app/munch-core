@@ -6,7 +6,7 @@
 <template>
   <div class="bg-fog fixed position-0 index-dialog flex-center" v-if="anyDialog" @click.self.stop.capture="dismiss">
     <div>
-      <div class="flex-justify-end" v-if="dialog !== 'LoadingDialog'">
+      <div class="flex-justify-end" v-if="dialogName !== 'LoadingDialog'">
         <div class="absolute p-8 hover-pointer" @click="dismiss">
           <div class="border-circle bg-white p-8">
             <simple-svg class="wh-24px" fill="black" :filepath="require('~/assets/icon/close.svg')"/>
@@ -14,8 +14,8 @@
         </div>
       </div>
 
-      <loading-dialog class="global-dialog" v-if="dialog === 'LoadingDialog'"/>
-      <get-started-dialog class="global-dialog" v-if="dialog === 'GetStartedDialog'"/>
+      <loading-dialog class="global-dialog" v-if="dialogName === 'LoadingDialog'"/>
+      <get-started-dialog class="global-dialog" v-if="dialogName === 'GetStartedDialog'" v-bind="dialogProps"/>
     </div>
   </div>
 </template>
@@ -29,12 +29,12 @@
   export default {
     components: {GetStartedDialog, LoadingDialog},
     computed: {
-      ...mapGetters('global', ['dialog', 'anyDialog']),
+      ...mapGetters('global', ['dialogName', 'dialogProps', 'anyDialog']),
     },
     methods: {
       dismiss() {
         // Loading Dialog cannot be dismissed
-        if (this.dialog === 'LoadingDialog') {
+        if (this.dialogName === 'LoadingDialog') {
           return
         }
 

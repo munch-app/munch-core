@@ -16,7 +16,7 @@
       <h6>At: (Date in Milliseconds)</h6>
       <div class="flex-align-center">
         <div class="flex-grow">
-          <input v-model.trim="editing.at">
+          <input v-model.trim="editing.at" @keyup="update">
         </div>
         <div class="ml-16 flex-self-stretch">
           <div
@@ -30,12 +30,12 @@
 
     <div v-if="isActive('id')">
       <h6>Id: (Redirect To Place)</h6>
-      <input v-model.trim="editing.id">
+      <input v-model.trim="editing.id" @keyup="update">
     </div>
 
     <div v-if="isActive('reason')">
       <h6>Reason:</h6>
-      <input v-model.trim="editing.reason">
+      <input v-model.trim="editing.reason" @keyup="update">
     </div>
   </div>
 </template>
@@ -67,12 +67,16 @@
         }
       }
     },
+    mounted() {
+      this.update()
+    },
     methods: {
       update() {
         this.$emit('input', this.editing)
       },
       onClick(type) {
         this.editing.type = type.type
+        this.update()
       },
       isActive(field) {
         const config = this.types.filter(value => {

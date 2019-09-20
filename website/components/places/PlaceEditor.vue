@@ -41,7 +41,6 @@
       <h6>Lat Lng:</h6>
       <editor-lat-lng v-model="editing.location.latLng"/>
     </div>
-
     <div v-if="has('STATUS')" class="Group">
       <h6>Status:</h6>
       <editor-status v-model="editing.status"/>

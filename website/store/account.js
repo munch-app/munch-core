@@ -57,16 +57,18 @@ export const actions = {
         return this.dispatch('addError', error)
       })
   },
-
   signInFacebook({commit}) {
     return authenticator.signInFacebook()
       .then(() => {
         return authenticate.call(this, commit)
-      }).catch(error => {
-        return this.dispatch('addError', error)
       })
   },
-
+  setup({commit}, account) {
+    return this.$api.post('/accounts/setup', account)
+      .then(({data: account}) => {
+        commit('setAccount', account)
+      })
+  },
   signOut({commit}) {
     authenticator.signOut()
 

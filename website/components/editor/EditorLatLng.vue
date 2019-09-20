@@ -8,11 +8,11 @@
         </div>
       </div>
 
-      <input v-model.trim="editing">
+      <input v-model.trim="editing" @keyup="update">
     </div>
     <div class="w-100 Map relative">
       <apple-map ref="map" class="wh-100" @on-change="onMapChange" :options="map.options">
-        <apple-map-pin-annotation v-if="editing" :lat-lng="editing"/>
+        <apple-map-pin-annotation v-if="isLatLng" :lat-lng="editing"/>
       </apple-map>
     </div>
   </div>
@@ -46,6 +46,16 @@
         })
       })
     },
+    computed: {
+      isLatLng() {
+        if (!this.editing) return false
+
+        const ll = this.editing.split(',')
+        const lat = parseFloat(ll[0])
+        const lng = parseFloat(ll[1])
+        return lat && lng
+      }
+    },
     methods: {
       onMapChange(map) {
         const coordinate = map.center
@@ -53,7 +63,11 @@
       },
       copyMapCenter() {
         this.editing = this.mapCenter
-      }
+        this.update()
+      },
+      update() {
+        this.$emit('input', this.editing)
+      },
     }
   }
 </script>

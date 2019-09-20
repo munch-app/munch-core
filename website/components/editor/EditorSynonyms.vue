@@ -13,7 +13,7 @@
     </div>
 
     <div v-if="editing.length < max">
-      <input class="p-12" v-model.trim="input" @keyup.enter="onKeyEnter" @change="update">
+      <input class="p-12" v-model.trim="input" @keyup.enter="onKeyEnter" @keyup="update">
     </div>
   </div>
 </template>
@@ -37,6 +37,9 @@
       }
 
       return {editing: [], input: ''}
+    },
+    mounted() {
+      this.update()
     },
     methods: {
       onSwap(index) {

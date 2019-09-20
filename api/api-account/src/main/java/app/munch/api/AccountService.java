@@ -1,9 +1,12 @@
 package app.munch.api;
 
+import app.munch.err.AuthenticateException;
 import app.munch.model.Account;
 import app.munch.model.Profile;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;
+import dev.fuxing.err.ForbiddenException;
 import dev.fuxing.jpa.HibernateUtils;
 import dev.fuxing.jpa.TransactionProvider;
 import dev.fuxing.transport.service.TransportContext;
@@ -13,6 +16,7 @@ import munch.notification.MunchMailingListClient;
 import munch.restful.core.exception.StructuredException;
 import munch.restful.server.firebase.FirebaseAuthenticator;
 import munch.restful.server.jwt.AuthenticatedToken;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,13 +48,17 @@ public final class AccountService implements TransportService {
 
     @Override
     public void route() {
-        PATH("/accounts/tokens", () -> {
-            GET("/custom", this::customToken);
-            POST("/authenticate", this::authenticate);
+        PATH("/accounts", () -> {
+            PATH("/tokens", () -> {
+                POST("/authenticate", this::authenticate);
+                GET("/custom", this::custom);
+            });
+
+            POST("/setup", this::setup);
         });
     }
 
-    public Account authenticate(TransportContext ctx) {
+    public Account authenticate(TransportContext ctx) throws AuthenticateException {
         ApiRequest request = ctx.get(ApiRequest.class);
         AuthenticatedToken token = request.getToken();
         String accountId = request.getAccountId();
@@ -61,31 +69,40 @@ public final class AccountService implements TransportService {
 
         return provider.reduce(entityManager -> {
             Account account = entityManager.find(Account.class, accountId);
+
             if (account == null) {
-                account = new Account();
-                account.setId(accountId);
-                account.setEmail(firebaseToken.getEmail());
-
-                Profile profile = new Profile();
-                profile.setName(firebaseToken.getName());
-                account.setProfile(profile);
-
-                try {
-                    munchMailingListClient.post(account.getEmail(), profile.getName());
-                } catch (StructuredException e) {
-                    logger.warn("MallingList Error accountId: {}, email: {}", account.getId(), account.getEmail(), e);
-                }
+                account = newAccount(accountId, firebaseToken.getEmail(), firebaseToken.getName());
+                postMailing(account);
             }
 
             account.setAuthenticatedAt(new Timestamp(System.currentTimeMillis()));
-
             entityManager.persist(account);
             HibernateUtils.initialize(account);
             return account;
         });
     }
 
-    public TransportResult customToken(TransportContext ctx) throws ExecutionException, InterruptedException {
+    public Account setup(TransportContext ctx) throws ForbiddenException {
+        JsonNode body = ctx.bodyAsJson();
+        String accountId = ctx.get(ApiRequest.class).getAccountId();
+
+        return provider.reduce(entityManager -> {
+            Account account = entityManager.find(Account.class, accountId);
+            if (account != null) {
+                throw new ForbiddenException("Account already setup.");
+            }
+
+            account = newAccount(accountId, body.path("email").asText(), body.path("name").asText());
+            postMailing(account);
+
+            account.setAuthenticatedAt(new Timestamp(System.currentTimeMillis()));
+            entityManager.persist(account);
+            HibernateUtils.initialize(account);
+            return account;
+        });
+    }
+
+    public TransportResult custom(TransportContext ctx) throws ExecutionException, InterruptedException {
         String accountId = ctx.get(ApiRequest.class).getAccountId();
 
         String token = FirebaseAuth.getInstance()
@@ -95,5 +112,34 @@ public final class AccountService implements TransportService {
         return result(200,
                 Map.of("token", token)
         );
+    }
+
+    public void postMailing(Account account) {
+        try {
+            munchMailingListClient.post(account.getEmail(), account.getProfile().getName());
+        } catch (StructuredException e) {
+            logger.warn("MallingList Error accountId: {}, email: {}", account.getId(), account.getEmail(), e);
+        }
+    }
+
+    private static Account newAccount(String accountId, String email, String name) throws AuthenticateException {
+        if (StringUtils.isAnyBlank(email, name)) {
+            throw new AuthenticateException();
+        }
+        if (StringUtils.length(name) > 100) {
+            throw new AuthenticateException();
+        }
+        if (StringUtils.length(email) > 320) {
+            throw new AuthenticateException();
+        }
+
+        Account account = new Account();
+        account.setId(accountId);
+        account.setEmail(email);
+
+        Profile profile = new Profile();
+        profile.setName(name);
+        account.setProfile(profile);
+        return account;
     }
 }

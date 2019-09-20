@@ -2,10 +2,6 @@
 const {Router} = require('express')
 const router = Router()
 
-const multer = require('multer')
-const upload = multer({storage: multer.memoryStorage()})
-const FormData = require('form-data')
-
 const service = require('axios').create({
   baseURL: process.env.API_MUNCH_APP || 'https://api.munch.app/'
 });
@@ -47,22 +43,6 @@ function route(req, res, next, options) {
     }
   })
 }
-
-/**
- * @deprecated soon
- */
-router.post('/api/places/:placeId/suggest/multipart', upload.array('images', 8), function (req, res, next) {
-  const form = new FormData()
-  const files = req.files
-
-  form.append('json', req.body.json)
-  files.forEach(file => {
-    form.append('images', file.buffer, file.originalname);
-  });
-
-  route(req, res, next, {headers: form.getHeaders(), data: form})
-})
-
 
 router.use('/api', function (req, res, next) {
   route(req, res, next)

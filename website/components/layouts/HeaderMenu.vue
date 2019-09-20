@@ -63,8 +63,8 @@
         }
       },
       onSignIn() {
-        this.$store.commit('global/setDialog', 'GetStartedDialog')
-      }
+        this.$store.commit('global/setDialog', {name: 'GetStartedDialog', props: {defaultState: 'sign-in'}})
+      },
     }
   }
 </script>

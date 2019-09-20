@@ -48,15 +48,24 @@ function getIdToken() {
   })
 }
 
+function getUser() {
+  return new Promise(function (resolve, reject) {
+    resolve(firebase.auth().currentUser)
+  })
+}
+
 export default {
   getIdToken,
+  getUser,
   signInCustomToken(token) {
-    return firebase.auth().signInWithCustomToken(token)
+    return firebase.auth()
+      .signInWithCustomToken(token)
       .then(() => getIdToken())
   },
   signInFacebook() {
-    return firebase.auth().signInWithPopup(new firebase.auth.FacebookAuthProvider())
-      .then(() => getIdToken())
+    return firebase.auth()
+      .signInWithPopup(new firebase.auth.FacebookAuthProvider())
+      .then(() => firebase.auth().currentUser)
   },
   signOut() {
     firebase.auth().signOut()

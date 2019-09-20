@@ -200,6 +200,9 @@
         return days
       }
     },
+    mounted() {
+      this.update()
+    },
     methods: {
       toText(hour) {
         return mapTimeRange(hour)

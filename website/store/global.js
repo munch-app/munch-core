@@ -5,8 +5,11 @@ export const state = () => ({
 })
 
 export const getters = {
-  dialog: (state) => {
-    return state.dialog
+  dialogName: (state) => {
+    return state.dialog?.name
+  },
+  dialogProps: (state) => {
+    return state.dialog?.props
   },
   anyDialog: (state) => {
     return state.dialog != null
@@ -14,11 +17,16 @@ export const getters = {
 }
 
 export const mutations = {
-  setDialog: (state, name) => {
-    state.dialog = name
+  setDialog: (state, object) => {
+    if (object?.name) {
+      state.dialog = {name: object.name, props: object.props}
+    } else {
+      state.dialog = object
+    }
+
     disableBodyScroll(document.querySelector('.global-dialog'))
   },
-  clearDialog: (state, name) => {
+  clearDialog: (state) => {
     state.dialog = null
     clearAllBodyScrollLocks()
   }
