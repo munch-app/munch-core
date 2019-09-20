@@ -335,4 +335,11 @@ public final class Image {
             }
         }
     }
+
+    /**
+     * Quick way to generate cdn.munch.app url
+     */
+    public static void main(String[] args) {
+        System.out.println(CdnUtils.create("mh4", "get-started-background.jpg", 1080, 1080));
+    }
 }

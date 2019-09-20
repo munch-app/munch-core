@@ -4,7 +4,7 @@
 
       <div class="text-decoration-none">
         <nuxt-link class="Mobile black" to="/">Home</nuxt-link>
-        <a v-if="!isLoggedIn" @click.prevent.stop="$store.commit('focus', 'Login')">Sign In</a>
+        <a v-if="!isLoggedIn" @click.prevent.stop="onSignIn">Sign In</a>
       </div>
 
       <div v-if="isLoggedIn" class="text-decoration-none">
@@ -61,6 +61,9 @@
         if (this.isFocused('HeaderMenu')) {
           this.$store.commit('unfocus', 'HeaderMenu')
         }
+      },
+      onSignIn() {
+        this.$store.commit('global/setDialog', 'GetStartedDialog')
       }
     }
   }

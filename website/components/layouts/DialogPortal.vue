@@ -18,9 +18,6 @@ Max-width of 400px if > 576vw
     <portal-target class="Dialog ActionSheet elevation-3 index-elevation" name="dialog-action-sheet"/>
     <portal-target class="Dialog elevation-3 index-elevation" name="dialog"/>
 
-    <!-- Universal Dialog -->
-    <profile-on-boarding v-if="isFocused('Login')"/>
-
     <div class="DialogOverlay elevation-overlay index-content-overlay"
          v-observe-visibility="{callback:visibilityChanged,throttle: 1}"/>
   </div>
@@ -28,12 +25,10 @@ Max-width of 400px if > 576vw
 
 <script>
   import {mapGetters} from 'vuex'
-  import ProfileOnBoarding from "../account/ProfileOnBoarding";
   import {disableBodyScroll, clearAllBodyScrollLocks} from 'body-scroll-lock';
 
   export default {
     name: "DialogPortal",
-    components: {ProfileOnBoarding},
     computed: {
       ...mapGetters(['isFocused']),
     },

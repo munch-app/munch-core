@@ -7,12 +7,15 @@
   <div class="bg-fog fixed position-0 index-dialog flex-center" v-if="anyDialog" @click.self.stop.capture="dismiss">
     <div>
       <div class="flex-justify-end" v-if="dialog !== 'LoadingDialog'">
-        <div class="absolute p-12 hover-pointer" @click="dismiss">
-          <simple-svg class="wh-24px" fill="black" :filepath="require('~/assets/icon/close.svg')"/>
+        <div class="absolute p-8 hover-pointer" @click="dismiss">
+          <div class="border-circle bg-white p-8">
+            <simple-svg class="wh-24px" fill="black" :filepath="require('~/assets/icon/close.svg')"/>
+          </div>
         </div>
       </div>
 
       <loading-dialog class="global-dialog" v-if="dialog === 'LoadingDialog'"/>
+      <get-started-dialog class="global-dialog" v-if="dialog === 'GetStartedDialog'"/>
     </div>
   </div>
 </template>
@@ -21,9 +24,10 @@
   import {mapGetters} from 'vuex'
 
   import LoadingDialog from "../dialog/LoadingDialog";
+  import GetStartedDialog from "../dialog/GetStartedDialog";
 
   export default {
-    components: {LoadingDialog},
+    components: {GetStartedDialog, LoadingDialog},
     computed: {
       ...mapGetters('global', ['dialog', 'anyDialog']),
     },
@@ -35,7 +39,7 @@
         }
 
         this.$store.commit('global/clearDialog')
-      }
+      },
     }
   }
 </script>

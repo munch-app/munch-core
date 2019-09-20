@@ -22,7 +22,7 @@
     },
     methods: {
       onSignIn() {
-        this.$store.commit('focus', 'Login')
+        this.$store.commit('global/setDialog', 'GetStartedDialog')
       },
       mobileOS() {
         const userAgent = navigator.userAgent || navigator.vendor || window.opera;
