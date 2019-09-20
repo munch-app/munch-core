@@ -43,7 +43,9 @@
         </section>
 
         <section>
-          <Adsense data-ad-client="ca-pub-7144155418390858" data-ad-slot="3161197840"/>
+          <in-article-adsense class="Place_InArticle_Middle"
+                              data-ad-client="ca-pub-7144155418390858" data-ad-slot="1941106200"
+          />
         </section>
 
         <section v-if="place.articles && place.articles.length" class="mt-48">
@@ -75,7 +77,7 @@
         </section>
 
         <section>
-          <Adsense data-ad-client="ca-pub-7144155418390858" data-ad-slot="7508826332"/>
+          <adsense data-ad-client="ca-pub-7144155418390858" data-ad-slot="7508826332"/>
         </section>
       </div>
 

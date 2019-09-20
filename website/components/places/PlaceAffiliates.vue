@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <h4 class="mb-8">Reservation:</h4>
+      <h4 class="mb-8">Reserve with</h4>
     </div>
     <div class="flex-wrap m--4">
       <div class="p-4" v-for="affiliate in affiliates" :key="affiliate.uid">

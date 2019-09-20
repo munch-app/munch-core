@@ -6,7 +6,7 @@
         <aside class="flex-grow">
           <article-context-map v-if="showMap" :article="article" :get-contexts="getContexts"/>
           <div class="mt-24">
-            <Adsense data-ad-client="ca-pub-7144155418390858" data-ad-slot="9676262046"/>
+            <adsense data-ad-client="ca-pub-7144155418390858" data-ad-slot="9676262046"/>
           </div>
         </aside>
       </div>
@@ -38,7 +38,7 @@
     </div>
 
     <div class="container mtb-24">
-      <Adsense data-ad-client="ca-pub-7144155418390858" data-ad-slot="7065221202"/>
+      <adsense data-ad-client="ca-pub-7144155418390858" data-ad-slot="7065221202"/>
     </div>
 
     <div class="bg-steam" v-if="moreFromAuthorArticles.length > 0">
