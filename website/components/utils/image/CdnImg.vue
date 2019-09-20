@@ -3,7 +3,7 @@
 -->
 <template>
   <div class="relative">
-    <img v-if="url" :src="url" :alt="alt" :style="{objectFit}"/>
+    <img v-if="url" :src="url" :alt="alt" :style="{objectFit, width, height}"/>
     <div class="slot absolute-0">
       <slot></slot>
     </div>
@@ -31,6 +31,14 @@
       objectFit: {
         type: String,
         default: 'cover'
+      },
+      width: {
+        type: String,
+        default: '100%'
+      },
+      height: {
+        type: String,
+        default: '100%'
       }
     },
     computed: {
@@ -57,12 +65,6 @@
 
 <style scoped lang="less">
   div.relative {
-    height: 100%;
-    width: 100%;
-    line-height: 0;
-  }
-
-  img {
     height: 100%;
     width: 100%;
   }

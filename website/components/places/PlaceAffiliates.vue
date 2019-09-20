@@ -6,7 +6,7 @@
     <div class="flex-wrap m--4">
       <div class="p-4" v-for="affiliate in affiliates" :key="affiliate.uid">
         <div class="border border-3 overflow-hidden" @click="onClick(affiliate)">
-          <cdn-img class="Image" :image="affiliate.brand.image" type="320x320" object-fit="contain">
+          <cdn-img :image="affiliate.brand.image" type="320x320" object-fit="contain" height="48px" width="initial">
             <div class="hover-bg-a10 hover-pointer"/>
           </cdn-img>
         </div>
@@ -50,10 +50,3 @@
     }
   }
 </script>
-
-<style lang="less">
-  .Image img {
-    height: 48px !important;
-    width: initial;
-  }
-</style>
