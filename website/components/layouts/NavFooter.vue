@@ -7,7 +7,7 @@
         </a>
       </div>
       <div>
-        <h4>Munch App</h4>
+        <h4>Mobile App</h4>
         <a href="https://itunes.apple.com/sg/app/munch-food-discovery/id1255436754" target="_blank">iOS</a>
         <a href="https://play.google.com/store/apps/details?id=app.munch.munchapp" target="_blank">Android</a>
       </div>
@@ -21,9 +21,8 @@
 
       <div>
         <h4>Product</h4>
-        <nuxt-link to="/about" no-prefetch>About</nuxt-link>
         <nuxt-link to="/press" no-prefetch>Press</nuxt-link>
-        <a href="https://partner.munch.app" target="_blank">Partners</a>
+        <nuxt-link to="/creator" no-prefetch>Creator</nuxt-link>
       </div>
     </div>
   </nav>
