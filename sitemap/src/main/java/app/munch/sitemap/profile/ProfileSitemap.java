@@ -9,7 +9,10 @@ import dev.fuxing.jpa.TransactionProvider;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.persistence.EntityManager;
+import javax.persistence.Tuple;
 import java.net.MalformedURLException;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Objects;
 
@@ -35,20 +38,31 @@ public final class ProfileSitemap implements SitemapProvider {
 
     @Override
     public Iterator<WebSitemapUrl> provide() throws MalformedURLException {
-        return provider.reduce(entityManager -> {
-            Iterator<WebSitemapUrl> iterator = Iterators.transform(entityManager.createQuery("FROM Profile", Profile.class)
-                    .getResultList()
-                    .iterator(), profile -> {
-                Objects.requireNonNull(profile);
+        return provider.reduce(true, entityManager -> {
+            Iterator<WebSitemapUrl> iterator = Iterators.transform(select(entityManager), tuple -> {
+                Objects.requireNonNull(tuple);
+                String uid = tuple.get("uid", String.class);
+                String username = tuple.get("username", String.class);
+                Date updatedAt = tuple.get("updatedAt", Date.class);
 
-                if (Profile.ALL_SPECIAL_ID.contains(profile.getUid())) {
+                if (Profile.ALL_SPECIAL_ID.contains(uid)) {
                     return null;
                 }
 
-                return build("/@" + profile.getUsername(), profile.getUpdatedAt(), 1.0, ChangeFreq.DAILY);
+                return build("/@" + username, updatedAt, 1.0, ChangeFreq.DAILY);
             });
 
             return Iterators.filter(iterator, Objects::nonNull);
         });
+    }
+
+    private Iterator<Tuple> select(EntityManager entityManager) {
+        return entityManager.createQuery("SELECT " +
+                "p.uid as uid, " +
+                "p.username as username, " +
+                "p.updatedAt as updatedAt " +
+                "FROM Profile p", Tuple.class)
+                .getResultList()
+                .iterator();
     }
 }

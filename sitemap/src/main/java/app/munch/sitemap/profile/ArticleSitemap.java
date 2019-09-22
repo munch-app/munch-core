@@ -1,8 +1,6 @@
 package app.munch.sitemap.profile;
 
-import app.munch.model.Article;
 import app.munch.model.ArticleStatus;
-import app.munch.model.Profile;
 import app.munch.sitemap.SitemapProvider;
 import com.google.common.collect.Iterators;
 import com.redfin.sitemapgenerator.ChangeFreq;
@@ -11,7 +9,9 @@ import dev.fuxing.jpa.TransactionProvider;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.net.MalformedURLException;
+import javax.persistence.EntityManager;
+import javax.persistence.Tuple;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Objects;
 
@@ -36,19 +36,30 @@ public final class ArticleSitemap implements SitemapProvider {
     }
 
     @Override
-    public Iterator<WebSitemapUrl> provide() throws MalformedURLException {
-        return provider.reduce(entityManager -> {
-            return Iterators.transform(entityManager.createQuery("FROM Article " +
-                    "WHERE status = :status", Article.class)
-                    .setParameter("status", ArticleStatus.PUBLISHED)
-                    .getResultList()
-                    .iterator(), article -> {
-                Objects.requireNonNull(article);
-                Profile profile = article.getProfile();
+    public Iterator<WebSitemapUrl> provide() {
+        return provider.reduce(true, entityManager -> {
+            return Iterators.transform(select(entityManager), tuple -> {
+                Objects.requireNonNull(tuple);
+                String username = tuple.get("username", String.class);
+                String slug = tuple.get("slug", String.class);
+                String id = tuple.get("id", String.class);
+                Date updatedAt = tuple.get("updatedAt", Date.class);
 
-                return build("/@" + profile.getUsername() + "/" + article.getSlug() + "-" + article.getId(),
-                        article.getUpdatedAt(), 1.0, ChangeFreq.WEEKLY);
+                return build("/@" + username + "/" + slug + "-" + id, updatedAt, 1.0, ChangeFreq.WEEKLY);
             });
         });
+    }
+
+    private Iterator<Tuple> select(EntityManager entityManager) {
+        return entityManager.createQuery("SELECT " +
+                "a.profile.username as username, " +
+                "a.slug as slug, " +
+                "a.id as id, " +
+                "a.updatedAt as updatedAt " +
+                "FROM Article a " +
+                "WHERE a.status = :status", Tuple.class)
+                .setParameter("status", ArticleStatus.PUBLISHED)
+                .getResultList()
+                .iterator();
     }
 }

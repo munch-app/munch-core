@@ -16,6 +16,7 @@ import java.util.Iterator;
  * Time: 8:53 AM
  * Project: munch-core
  */
+@Deprecated
 public final class SGPSearchSitemap implements SitemapProvider {
 
     private final SGPAnywherePermutation anywherePermutation;

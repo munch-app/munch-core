@@ -1,6 +1,6 @@
 package app.munch.sitemap.places;
 
-import app.munch.model.Place;
+import app.munch.model.Status;
 import app.munch.model.StatusType;
 import app.munch.sitemap.SitemapProvider;
 import com.google.common.collect.Iterators;
@@ -10,6 +10,9 @@ import dev.fuxing.jpa.TransactionProvider;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.persistence.EntityManager;
+import javax.persistence.Tuple;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Objects;
 
@@ -36,14 +39,18 @@ public final class PlaceSitemap implements SitemapProvider {
 
     @Override
     public Iterator<WebSitemapUrl> provide() {
-        return provider.reduce(entityManager -> {
-            Iterator<WebSitemapUrl> iterator = Iterators.transform(entityManager.createQuery("FROM Place", Place.class)
-                    .getResultList()
-                    .iterator(), place -> {
-                Objects.requireNonNull(place);
+        return provider.reduce(true, entityManager -> {
+            Iterator<WebSitemapUrl> iterator = Iterators.transform(select(entityManager), tuple -> {
+                Objects.requireNonNull(tuple);
 
-                if (place.getStatus().getType() == StatusType.OPEN) {
-                    return build("/" + place.getSlug() + "-" + place.getId(), place.getUpdatedAt(), place.getImportant(), ChangeFreq.DAILY);
+                String id = tuple.get("id", String.class);
+                String slug = tuple.get("slug", String.class);
+                Status status = tuple.get("status", Status.class);
+                Date updatedAt = tuple.get("updatedAt", Date.class);
+                Double important = tuple.get("important", Double.class);
+
+                if (status.getType() == StatusType.OPEN) {
+                    return build("/" + slug + "-" + id, updatedAt, important, ChangeFreq.DAILY);
                 }
 
                 return null;
@@ -51,5 +58,17 @@ public final class PlaceSitemap implements SitemapProvider {
 
             return Iterators.filter(iterator, Objects::nonNull);
         });
+    }
+
+    private Iterator<Tuple> select(EntityManager entityManager) {
+        return entityManager.createQuery("SELECT " +
+                "p.id as id, " +
+                "p.slug as slug, " +
+                "p.status as status, " +
+                "p.updatedAt as updatedAt, " +
+                "p.important as important " +
+                "FROM Place p", Tuple.class)
+                .getResultList()
+                .iterator();
     }
 }
