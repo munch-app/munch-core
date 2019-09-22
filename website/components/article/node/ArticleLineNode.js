@@ -1,5 +1,5 @@
 import {Node} from 'tiptap'
-import ArticleLineNode from './ArticleLineNode.vue'
+import ArticleLineNode from './ArticleLine.vue'
 
 export default class Line extends Node {
   get name() {

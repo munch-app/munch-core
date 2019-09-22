@@ -95,7 +95,7 @@
           name: 'ImageUploadDialog', props: {
             onImage: (image) => {
               this.$store.commit('global/clearDialog');
-              this.place = {...this.place,image}
+              this.place = {...this.place, image}
             }
           }
         })

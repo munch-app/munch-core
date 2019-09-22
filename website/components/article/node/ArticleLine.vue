@@ -1,10 +1,10 @@
 <template>
-    <hr>
+  <hr>
 </template>
 
 <script>
   export default {
-    name: "ArticleLineNode",
+    name: "ArticleLine",
     props: ['node', 'updateAttrs', 'editable'],
   }
 </script>

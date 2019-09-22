@@ -1,5 +1,5 @@
-import { Node } from 'tiptap'
-import { setBlockType, textblockTypeInputRule, toggleBlockType} from 'tiptap-commands'
+import {Node} from 'tiptap'
+import {setBlockType, textblockTypeInputRule, toggleBlockType} from 'tiptap-commands'
 
 export default class Heading extends Node {
 
@@ -27,30 +27,30 @@ export default class Heading extends Node {
       parseDOM: this.options.levels
         .map(level => ({
           tag: `h${level}`,
-          attrs: { level },
+          attrs: {level},
         })),
       toDOM: node => [`h${node.attrs.level}`, 0],
     }
   }
 
-  commands({ type, schema }) {
+  commands({type, schema}) {
     return attrs => toggleBlockType(type, schema.nodes.paragraph, attrs)
   }
 
-  keys({ type }) {
+  keys({type}) {
     return this.options.levels.reduce((items, level) => ({
       ...items,
       ...{
-        [`Shift-Ctrl-${level}`]: setBlockType(type, { level }),
+        [`Shift-Ctrl-${level}`]: setBlockType(type, {level}),
       },
     }), {})
   }
 
-  inputRules({ type }) {
+  inputRules({type}) {
     return this.options.levels.map(level => textblockTypeInputRule(
       new RegExp(`^(#{1,${level}})\\s$`),
       type,
-      () => ({ level }),
+      () => ({level}),
     ))
   }
 }

@@ -31,17 +31,17 @@
             </div>
           </div>
 
-<!--          <div v-if="creatable && places.length === 0" class="p-12 border-3 hover-pointer hover-bg-a40"-->
-<!--               @click="onNew">-->
-<!--            <div class="flex-align-center">-->
-<!--              <div class="wh-64px p-16 bg-steam border-3">-->
-<!--                <simple-svg fill="#333" :filepath="require('~/assets/icon/icons8-plus-math.svg')"/>-->
-<!--              </div>-->
-<!--              <div class="ml-16">-->
-<!--                <h4>Create new place: {{query}}</h4>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </div>-->
+          <!--          <div v-if="creatable && places.length === 0" class="p-12 border-3 hover-pointer hover-bg-a40"-->
+          <!--               @click="onNew">-->
+          <!--            <div class="flex-align-center">-->
+          <!--              <div class="wh-64px p-16 bg-steam border-3">-->
+          <!--                <simple-svg fill="#333" :filepath="require('~/assets/icon/icons8-plus-math.svg')"/>-->
+          <!--              </div>-->
+          <!--              <div class="ml-16">-->
+          <!--                <h4>Create new place: {{query}}</h4>-->
+          <!--              </div>-->
+          <!--            </div>-->
+          <!--          </div>-->
         </div>
       </div>
     </div>
