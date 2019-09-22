@@ -39,12 +39,11 @@
         </div>
       </portal>
 
-      <portal to="dialog-full" v-if="state.publish">
+      <div class="fixed position-0 index-elevation" v-if="state.publish">
         <article-editor-publish @on-save="onSave" @on-cancel="state.publish = false" @on-publish="onPublish"
                                 v-model="revision"/>
-      </portal>
+      </div>
     </header-middle>
-
   </div>
 </template>
 

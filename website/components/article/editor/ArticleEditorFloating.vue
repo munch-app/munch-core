@@ -1,9 +1,9 @@
 <template>
   <editor-floating-menu :editor="editor">
     <div class="Floating absolute index-elevation flex-align-center"
-         slot-scope="{commands,isActive,menu}"
+         slot-scope="{commands, isActive, menu}"
          v-on-clickaway="onClose"
-         :class="{Active:menu.isActive || state}" :style="`top: ${menu.top}px`">
+         :class="{Active: menu.isActive || state}" :style="`top: ${menu.top}px`">
 
       <div class="LeftButton">
         <div class="Button" @click="onLeftBtn">
@@ -17,43 +17,39 @@
       </div>
 
       <div class="Panel bg-white flex" v-if="state === 'reveal'">
-        <div class="Button" @click="onType(commands, 'line')">
-          <simple-svg fill="#000" :filepath="require('~/assets/icon/icons8-dashed-line.svg')"/>
-        </div>
-
-        <div class="Button" @click="onType(commands, 'image')">
-          <simple-svg fill="#000" :filepath="require('~/assets/icon/icons8-camera.svg')"/>
-        </div>
-
-        <div class="Button" @click="onType(commands, 'place')">
-          <simple-svg fill="#000" :filepath="require('~/assets/icon/icons8-map-pin.svg')"/>
-        </div>
-
-        <div class="Button" @click="onType(commands, 'avatar')">
-          <simple-svg fill="#000" :filepath="require('~/assets/icon/icons8-person.svg')"/>
+        <div v-for="button in buttons" :key="button.type" class="Button" @click="onType(commands, button.type)">
+          <simple-svg fill="#000" :filepath="button.icon"/>
         </div>
       </div>
 
-      <article-place-dialog v-if="state === 'place'" @on-place="(place) => onPlace(commands, place)" @on-close="onClose"/>
-      <image-upload-dialog v-if="state === 'image'" @on-image="(image) => onImage(commands, image)" @on-close="onClose"/>
+<!--      <portal-dialog>-->
+<!--        <div>Place Dialog</div>-->
+<!--      </portal-dialog>-->
     </div>
   </editor-floating-menu>
 </template>
 
 <script>
   import {EditorFloatingMenu} from 'tiptap'
-  import ImageUploadDialog from "../../utils/image/ImageUploadDialog";
+  import ImageUploadDialog from "../../dialog/ImageUploadDialog";
   import ArticlePlaceDialog from "../node/ArticlePlaceDialog";
+  import PortalDialog from "../../dialog/PortalDialog";
 
   export default {
     name: "ArticleEditorFloating",
-    components: {ArticlePlaceDialog, ImageUploadDialog, EditorFloatingMenu},
+    components: {PortalDialog, ArticlePlaceDialog, ImageUploadDialog, EditorFloatingMenu},
     props: {
       editor: Object,
     },
     data() {
       return {
         state: null,
+        buttons: [
+          {type: 'line', icon: require('~/assets/icon/icons8-dashed-line.svg')},
+          {type: 'image', icon: require('~/assets/icon/icons8-camera.svg')},
+          {type: 'place', icon: require('~/assets/icon/icons8-map-pin.svg')},
+          {type: 'avatar', icon: require('~/assets/icon/icons8-person.svg')},
+        ]
       }
     },
     methods: {
@@ -70,8 +66,11 @@
       onType(commands, type) {
         switch (type) {
           case 'place':
+            this.onPlace(commands)
+            break
+
           case 'image':
-            this.state = type
+            this.onImage(commands)
             break
 
           case 'avatar':
@@ -81,13 +80,26 @@
             break
         }
       },
-      onImage(commands, image) {
-        this.state = null
-        commands['image']({image, caption: null})
+      onImage(commands) {
+        this.$store.commit('global/setDialog', {
+          name: 'ImageUploadDialog', props: {
+            onImage: (image) => {
+              this.$store.commit('global/clearDialog');
+              commands['image']({image, caption: null})
+            }
+          }
+        })
       },
-      onPlace(commands, place) {
-        this.state = null
-        commands['place']({place})
+      onPlace(commands) {
+        // this.$store.commit('global/setDialog', {
+        //   name: 'PortalDialog', props: {
+        //     onClose: this.onClose,
+        //     onPlace: (place) => {
+        //       this.state = null
+        //       commands['place']({place})
+        //     }
+        //   }
+        // })
       }
     }
   }

@@ -2,7 +2,7 @@
   <div class="container pt-48 pb-128">
     <div class="w-100">
       <div class="flex-row w-100">
-        <div class="PublicationPic flex-no-shrink hover-pointer" @click="state = 'image'">
+        <div class="PublicationPic flex-no-shrink hover-pointer" @click="onImage">
           <cdn-img v-if="publication.image" :image="publication.image">
             <div class="flex-center bg-overlay">
               <simple-svg class="wh-48px" fill="#ccc" :filepath="require('~/assets/icon/icons8-camera.svg')"/>
@@ -61,8 +61,6 @@
       </div>
     </div>
 
-    <image-upload-dialog v-if="state === 'image'" @on-image="onImage" @on-close="state = null"/>
-
     <system-article-selection-dialog v-if="state === 'add'" @on-article="onArticlePut" @on-close="state = null"/>
   </div>
 </template>
@@ -70,7 +68,7 @@
 <script>
   import TextAuto from "../../../components/utils/TextAuto";
   import CdnImg from "../../../components/utils/image/CdnImg";
-  import ImageUploadDialog from "../../../components/utils/image/ImageUploadDialog";
+  import ImageUploadDialog from "../../../components/dialog/ImageUploadDialog";
   import System from "../../../layouts/system";
   import SystemArticleSelectionDialog from "../../../components/system/SystemArticleSelectionDialog";
 
@@ -111,9 +109,15 @@
       this.reloadArticles()
     },
     methods: {
-      onImage(image) {
-        this.publication.image = image
-        this.state = null
+      onImage() {
+        this.$store.commit('global/setDialog', {
+          name: 'ImageUploadDialog', props: {
+            onImage: (image) => {
+              this.$store.commit('global/clearDialog');
+              this.publication.image = image
+            }
+          }
+        })
       },
       onArticlePut(article) {
         this.state = null

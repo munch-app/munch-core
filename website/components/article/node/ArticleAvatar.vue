@@ -1,7 +1,7 @@
 <template>
   <div class="Avatar bg-steam border-3 flex-align-center p-12">
     <div class="flex-no-shrink">
-      <div class="wh-64px border-circle overflow-hidden bg-white" @click="state = 'image'">
+      <div class="wh-64px border-circle overflow-hidden bg-white" @click="onImage">
         <cdn-img v-if="image" :image="image">
           <div v-if="editing" class="p-12" :class="{'hover-bg-a40 hover-pointer': editing}">
             <simple-svg fill="#fff" :filepath="require('~/assets/icon/icons8-person.svg')"/>
@@ -23,14 +23,12 @@
         <div class="regular b-a60">{{line2}}</div>
       </template>
     </div>
-
-    <image-upload-dialog v-if="editing && state === 'image'" @on-image="onImage" @on-close="state = null"/>
   </div>
 </template>
 
 <script>
   import CdnImg from "../../utils/image/CdnImg";
-  import ImageUploadDialog from "../../utils/image/ImageUploadDialog";
+  import ImageUploadDialog from "../../dialog/ImageUploadDialog";
 
   export default {
     name: "ArticleAvatar",
@@ -80,9 +78,19 @@
       }
     },
     methods: {
-      onImage(image) {
-        this.images = [image]
-        this.state = null
+      onImage() {
+        if (!this.editing) {
+          return
+        }
+
+        this.$store.commit('global/setDialog', {
+          name: 'ImageUploadDialog', props: {
+            onImage: (image) => {
+              this.$store.commit('global/clearDialog');
+              this.images = [image]
+            }
+          }
+        })
       }
     }
   }

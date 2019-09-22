@@ -5,6 +5,7 @@
       <div class="text-decoration-none">
         <nuxt-link class="Mobile black" to="/">Home</nuxt-link>
         <a v-if="!isLoggedIn" @click.prevent.stop="onSignIn">Sign In</a>
+        <a v-if="!isLoggedIn" @click.prevent.stop="onSignUp">Sign Up</a>
       </div>
 
       <div v-if="isLoggedIn" class="text-decoration-none">
@@ -64,6 +65,9 @@
       },
       onSignIn() {
         this.$store.commit('global/setDialog', {name: 'GetStartedDialog', props: {defaultState: 'sign-in'}})
+      },
+      onSignUp() {
+        this.$store.commit('global/setDialog', {name: 'GetStartedDialog', props: {defaultState: 'sign-up'}})
       },
     }
   }

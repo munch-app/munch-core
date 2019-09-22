@@ -3,7 +3,7 @@
     <div class="container-1200 flex-1-2">
       <div class="p-24">
         <h4>Article Preview</h4>
-        <div class="Image mt-16" @click="state.imageDialog = true">
+        <div class="Image mt-16" @click="onImage">
           <cdn-img v-if="value.image" :image="value.image" class="wh-100">
             <div class="flex-center">
               <button class="border small">Change Article Image</button>
@@ -54,15 +54,13 @@
         </div>
       </div>
     </div>
-
-    <image-upload-dialog v-if="state.imageDialog" @on-image="onInputImage" @on-close="state.imageDialog = false"/>
   </div>
 </template>
 
 <script>
   import TextAuto from "../../utils/TextAuto";
   import CdnImg from "../../utils/image/CdnImg";
-  import ImageUploadDialog from "../../utils/image/ImageUploadDialog";
+  import ImageUploadDialog from "../../dialog/ImageUploadDialog";
   import ArticleEditorTagInput from "./ArticleEditorTagInput";
 
   export default {
@@ -70,11 +68,6 @@
     components: {ArticleEditorTagInput, ImageUploadDialog, CdnImg, TextAuto},
     props: {
       value: Object
-    },
-    data() {
-      return {
-        state: {imageDialog: false},
-      }
     },
     computed: {
       hasPlaces() {
@@ -99,10 +92,16 @@
       onInputDescription(description) {
         this.$emit('input', {...this.value, description: description.substring(0, 250)})
       },
-      onInputImage(image) {
-        this.state.imageDialog = false
-        this.$emit('input', {...this.value, image})
-        this.$emit('on-save')
+      onImage() {
+        this.$store.commit('global/setDialog', {
+          name: 'ImageUploadDialog', props: {
+            onImage: (image) => {
+              this.$store.commit('global/clearDialog');
+              this.$emit('input', {...this.value, image})
+              this.$emit('on-save')
+            }
+          }
+        })
       },
       onInputMap() {
         this.$emit('input', {...this.value, options: {...this.value.options, map: !this.value.options.map}})

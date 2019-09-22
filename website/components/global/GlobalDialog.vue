@@ -6,7 +6,7 @@
 <template>
   <div class="bg-fog fixed position-0 index-dialog flex-center" v-if="anyDialog" @click.self.stop.capture="dismiss">
     <div>
-      <div class="flex-justify-end" v-if="dialogName !== 'LoadingDialog'">
+      <div class="flex-justify-end" v-if="isCloseable">
         <div class="absolute p-8 hover-pointer" @click="dismiss">
           <div class="border-circle bg-white p-8">
             <simple-svg class="wh-24px" fill="black" :filepath="require('~/assets/icon/close.svg')"/>
@@ -14,8 +14,11 @@
         </div>
       </div>
 
-      <loading-dialog class="global-dialog" v-if="dialogName === 'LoadingDialog'"/>
-      <get-started-dialog class="global-dialog" v-if="dialogName === 'GetStartedDialog'" v-bind="dialogProps"/>
+      <div class="GlobalDialog">
+        <loading-dialog v-if="dialogName === 'LoadingDialog'"/>
+        <get-started-dialog v-if="dialogName === 'GetStartedDialog'" v-bind="dialogProps"/>
+        <image-upload-dialog v-if="dialogName === 'ImageUploadDialog'" v-bind="dialogProps"/>
+      </div>
     </div>
   </div>
 </template>
@@ -25,20 +28,22 @@
 
   import LoadingDialog from "../dialog/LoadingDialog";
   import GetStartedDialog from "../dialog/GetStartedDialog";
+  import ImageUploadDialog from "../dialog/ImageUploadDialog";
 
   export default {
-    components: {GetStartedDialog, LoadingDialog},
+    name: "GlobalDialog",
+    components: {ImageUploadDialog, GetStartedDialog, LoadingDialog},
     computed: {
       ...mapGetters('global', ['dialogName', 'dialogProps', 'anyDialog']),
+      isCloseable() {
+        return this.dialogName !== 'LoadingDialog'
+      }
     },
     methods: {
       dismiss() {
-        // Loading Dialog cannot be dismissed
-        if (this.dialogName === 'LoadingDialog') {
-          return
+        if (this.isCloseable) {
+          this.$store.commit('global/clearDialog')
         }
-
-        this.$store.commit('global/clearDialog')
       },
     }
   }

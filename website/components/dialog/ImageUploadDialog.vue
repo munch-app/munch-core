@@ -1,62 +1,51 @@
 <template>
-  <div class="fixed position-0 bg-overlay flex-center index-dialog">
-    <div>
-      <div class="flex-justify-end">
-        <div class="CloseButton absolute hover-pointer" @click="onClose">
-          <simple-svg class="wh-24px" fill="black" :filepath="require('~/assets/icon/icons8-multiply.svg')"/>
+  <div class="dialog-xlarge dialog-h80vh p-0 flex">
+    <div class="hr-right">
+      <div v-for="select in selectors" :key="select.type" @click="onSelect(select)"
+           class="p-16-24 hover-pointer hr-bot flex-column-align-center">
+        <div class="wh-40px border-circle flex-center" :class="select.type === selected ? 'bg-blue' : 'bg-steam'">
+          <simple-svg class="wh-24px" :fill="select.type === selected ? '#FFF' : '#000'" :filepath="select.icon"/>
         </div>
+        <div :class="{'blue': select.type === selected}" class="mt-4 tiny-bold">{{select.text}}</div>
       </div>
+    </div>
 
-      <div class="Dialog dialog-xlarge flex-row wh-100" v-on-clickaway="onClose">
-        <div class="hr-right">
-          <div v-for="select in selectors" :key="select.type" @click="onSelect(select.type)"
-               class="p-16-24 hover-pointer hr-bot flex-column-align-center">
-            <simple-svg class="wh-24px" :fill="select.type === selected ? '#07F' : '#000'" :filepath="select.icon"/>
-            <div :class="{'blue': select.type === selected}" class="mt-4 small-bold">{{select.text}}</div>
-          </div>
-        </div>
-
-        <div class="flex-grow p-32 flex-column">
-          <h2 class="h2">Media library</h2>
-
-          <div class="overflow-y-auto flex-grow">
-            <div class="MediaList flex-wrap">
-              <div class="MediaItem p-12" v-for="image in images" :key="image.id" @click="onImage(image)">
-                <div class="aspect r-1-1 ">
-                  <cdn-img class="border-3 overflow-hidden" type="320x320" :image="image">
-                    <div class="hover-bg-a40 hover-pointer">
-                    </div>
-                  </cdn-img>
+    <div class="flex-grow flex-column p-24">
+      <div class="overflow-y-auto flex-grow">
+        <div class="flex-wrap">
+          <div class="Image p-12" v-for="image in images" :key="image.id" @click="onImage(image)">
+            <div class="aspect r-1-1">
+              <cdn-img class="border-3 overflow-hidden" type="320x320" :image="image">
+                <div class="hover-bg-a40 hover-pointer">
                 </div>
-              </div>
-            </div>
-
-            <div class="flex-center ptb-48" v-if="next">
-              <button class="blue-outline" @click="loadRecentMore">Load More</button>
-            </div>
-
-            <div v-if="!loaded" class="flex-center p-24">
-              <beat-loader color="#07F" size="16px"/>
-            </div>
-
-            <div class="flex-center ptb-48" v-if="loaded && images.length === 0">
-              <p>You don't have any image available.</p>
+              </cdn-img>
             </div>
           </div>
         </div>
 
-        <div class="absolute" v-show="false">
-          <!-- Must be placed inside v-on-clickaway="onClose" -->
-          <input ref="fileInput" type="file" accept="image/x-png,image/gif,image/jpeg"
-                 @change="(e) => onFileChanged(e)">
+        <div class="flex-center ptb-48" v-if="next">
+          <button class="blue-outline" @click="loadRecentMore">Load More</button>
+        </div>
+
+        <div v-if="!loaded" class="flex-center p-24">
+          <beat-loader color="#07F" size="16px"/>
+        </div>
+
+        <div class="flex-center ptb-48" v-if="loaded && images.length === 0">
+          <p>You don't have any image available.</p>
         </div>
       </div>
+    </div>
+
+    <div class="absolute" v-show="false">
+      <input ref="fileInput" type="file" accept="image/x-png,image/gif,image/jpeg"
+             @change="(e) => onFileChanged(e)">
     </div>
   </div>
 </template>
 
 <script>
-  import CdnImg from "./CdnImg";
+  import CdnImg from "../utils/image/CdnImg";
 
   export default {
     name: "ImageUploadDialog",
@@ -69,13 +58,14 @@
       place: {
         type: Object,
         default: null
-      }
+      },
+      onImage: Function,
     },
     data() {
       return {
         selectors: [
           {type: 'upload', text: 'UPLOAD', icon: require('~/assets/icon/icons8-camera.svg')},
-          {type: 'recent', text: 'RECENT', icon: require('~/assets/icon/icons8-time-machine.svg')},
+          {type: 'recent', text: 'RECENT', icon: require('~/assets/icon/icons8-time.svg')},
           ...(this.place != null ? [
             {type: 'place', text: 'PLACE', icon: require('~/assets/icon/icons8-map-pin.svg')}
           ] : []),
@@ -96,8 +86,8 @@
       this.loadRecent()
     },
     methods: {
-      onSelect(type) {
-        switch (type) {
+      onSelect(select) {
+        switch (select.type) {
           case 'upload':
             return this.onUploadImage()
 
@@ -140,12 +130,6 @@
             this.loaded = true
           })
       },
-      onClose() {
-        this.$emit('on-close')
-      },
-      onImage(image) {
-        this.$emit('on-image', image)
-      },
       onUploadImage() {
         this.$refs.fileInput.click()
       },
@@ -165,20 +149,7 @@
 </script>
 
 <style scoped lang="less">
-  .Dialog {
-    height: 600px;
-    padding: 0;
-  }
-
-  .CloseButton {
-    margin-top: -48px;
-  }
-
-  .MediaList {
-    margin: 12px -12px;
-  }
-
-  .MediaItem {
+  .Image {
     flex: 0 0 100%;
     max-width: 100%;
 

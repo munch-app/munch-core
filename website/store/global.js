@@ -24,7 +24,7 @@ export const mutations = {
       state.dialog = object
     }
 
-    disableBodyScroll(document.querySelector('.global-dialog'))
+    disableBodyScroll(document.querySelector('.GlobalDialog > *'))
   },
   clearDialog: (state) => {
     state.dialog = null

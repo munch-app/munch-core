@@ -1,7 +1,7 @@
 <template>
   <div class="Place bg-steam border-2 overflow-hidden">
     <div v-if="editing" class="flex-row flex-align-stretch">
-      <div class="Image hover-pointer" @click="state = 'image'">
+      <div class="Image hover-pointer" @click="onImage">
         <cdn-img v-if="place.image" class="wh-100" :image="place.image">
           <div class="flex-center hover-bg-a40">
             <simple-svg class="wh-48px" fill="#ccc" :filepath="require('~/assets/icon/icons8-camera.svg')"/>
@@ -57,16 +57,12 @@
         </div>
       </div>
     </nuxt-link>
-
-    <template v-if="editing">
-      <image-upload-dialog v-if="state === 'image'" @on-image="onImage" @on-close="state = null" :place="place"/>
-    </template>
   </div>
 </template>
 
 <script>
   import CdnImg from "../../utils/image/CdnImg";
-  import ImageUploadDialog from "../../utils/image/ImageUploadDialog";
+  import ImageUploadDialog from "../../dialog/ImageUploadDialog";
 
   export default {
     name: "ArticlePlace",
@@ -94,9 +90,15 @@
       }
     },
     methods: {
-      onImage(image) {
-        this.place = {...this.place,image}
-        this.state = null
+      onImage() {
+        this.$store.commit('global/setDialog', {
+          name: 'ImageUploadDialog', props: {
+            onImage: (image) => {
+              this.$store.commit('global/clearDialog');
+              this.place = {...this.place,image}
+            }
+          }
+        })
       }
     }
   }
