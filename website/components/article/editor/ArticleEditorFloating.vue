@@ -22,9 +22,32 @@
         </div>
       </div>
 
-<!--      <portal-dialog>-->
-<!--        <div>Place Dialog</div>-->
-<!--      </portal-dialog>-->
+      <portal-dialog>
+        <div class="dialog-large dialog-h80vh border p-0">
+          <search-place class="" input-hint="Search restaurant" :size="20" create
+                        @on-select="(document) => onPlaceSelect(commands, document)">
+            <template v-slot:default="{document}">
+              <div class="p-16 hover-bg-a10">
+                <div class="flex">
+                  <div class="wh-80px flex-no-shrink mr-16" v-if="document.image">
+                    <cdn-img class="border-2 overflow-hidden" type="320x320" :image="document.image"/>
+                  </div>
+                  <div>
+                    <h5 class="text-ellipsis-1l">{{document.name}}</h5>
+                    <p class="text-ellipsis-1l m-0">{{document.location.address}}</p>
+                    <div class="flex-align-center">
+                      <div v-if="document.status.type !== 'OPEN'"
+                           class="white tiny-bold bg-error p-6 lh-1 border-2 mr-8">
+                        {{document.status.type}}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </search-place>
+        </div>
+      </portal-dialog>
     </div>
   </editor-floating-menu>
 </template>
@@ -34,10 +57,12 @@
   import ImageUploadDialog from "../../dialog/ImageUploadDialog";
   import ArticlePlaceDialog from "../node/ArticlePlaceDialog";
   import PortalDialog from "../../dialog/PortalDialog";
+  import SearchPlace from "../../places/SearchPlace";
+  import CdnImg from "../../utils/image/CdnImg";
 
   export default {
     name: "ArticleEditorFloating",
-    components: {PortalDialog, ArticlePlaceDialog, ImageUploadDialog, EditorFloatingMenu},
+    components: {CdnImg, SearchPlace, PortalDialog, ArticlePlaceDialog, ImageUploadDialog, EditorFloatingMenu},
     props: {
       editor: Object,
     },
@@ -91,15 +116,22 @@
         })
       },
       onPlace(commands) {
-        // this.$store.commit('global/setDialog', {
-        //   name: 'PortalDialog', props: {
-        //     onClose: this.onClose,
-        //     onPlace: (place) => {
-        //       this.state = null
-        //       commands['place']({place})
-        //     }
-        //   }
-        // })
+        this.$store.commit('global/setDialog', {
+          name: 'PortalDialog'
+        })
+      },
+      onPlaceSelect(commands, document) {
+        this.$store.commit('global/setDialog', 'LoadingDialog')
+        this.$api.get(`/places/${document.id}`)
+          .then(({data: place}) => {
+            commands['place']({place})
+          })
+          .catch(err => {
+            this.$store.dispatch('addError', err)
+          })
+          .finally(() => {
+            this.$store.commit('global/clearDialog');
+          })
       }
     }
   }

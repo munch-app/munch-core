@@ -16,8 +16,11 @@
 
       <div class="GlobalDialog">
         <loading-dialog v-if="dialogName === 'LoadingDialog'"/>
-        <get-started-dialog v-if="dialogName === 'GetStartedDialog'" v-bind="dialogProps"/>
-        <image-upload-dialog v-if="dialogName === 'ImageUploadDialog'" v-bind="dialogProps"/>
+        <portal-target name="PortalDialog" v-else-if="dialogName === 'PortalDialog'">
+
+        </portal-target>
+        <get-started-dialog v-else-if="dialogName === 'GetStartedDialog'" v-bind="dialogProps"/>
+        <image-upload-dialog v-else-if="dialogName === 'ImageUploadDialog'" v-bind="dialogProps"/>
       </div>
     </div>
   </div>
@@ -29,10 +32,11 @@
   import LoadingDialog from "../dialog/LoadingDialog";
   import GetStartedDialog from "../dialog/GetStartedDialog";
   import ImageUploadDialog from "../dialog/ImageUploadDialog";
+  import PortalDialog from "../dialog/PortalDialog";
 
   export default {
     name: "GlobalDialog",
-    components: {ImageUploadDialog, GetStartedDialog, LoadingDialog},
+    components: {PortalDialog, ImageUploadDialog, GetStartedDialog, LoadingDialog},
     computed: {
       ...mapGetters('global', ['dialogName', 'dialogProps', 'anyDialog']),
       isCloseable() {

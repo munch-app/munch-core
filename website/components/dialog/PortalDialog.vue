@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <portal to="PortalDialog">
     <slot>
 
     </slot>
-  </div>
+  </portal>
 </template>
 
 <script>
