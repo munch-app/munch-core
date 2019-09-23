@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <div class="hr-bot">
-      <input class="large w-100 p-12-16" ref="input" v-model="query" :placeholder="inputHint">
+  <div class="Border" :class="{Fixed: fixed}">
+    <div class="Field index-navigation hr-bot">
+      <input class="h3 clear w-100 p-16" ref="input" v-model="query" :placeholder="inputHint">
     </div>
 
     <div class="flex-column">
@@ -12,7 +12,7 @@
       </div>
 
       <div v-if="documents">
-        <div v-if="create && query" @click="onSelect({name: query})" class="flex-grow flex-self-stretch">
+        <div v-if="create && query" @click="onCreate({name: query, location: {}})" class="flex-grow flex-self-stretch">
           <slot name="create">
             <div class="p-16 hr-bot flex-column-align-center hover-bg-a10 hover-pointer h-100">
               <h5 class="mb-4"><span class="weight-400">Can't find</span> {{query}}?</h5>
@@ -20,6 +20,7 @@
             </div>
           </slot>
         </div>
+
         <div v-if="hasMore" @click="onAppend" class="flex-self-stretch">
           <slot name="loadMore">
             <div class="p-16 hr-top flex-justify-center flex-align-center hover-bg-a10 hover-pointer">
@@ -67,6 +68,9 @@
       },
       preFill: {
         type: String,
+      },
+      fixed: {
+        type: Boolean
       }
     },
     data() {
@@ -162,12 +166,17 @@
 
 <style scoped lang="less">
   input {
-    outline: none;
-    border: none;
-    background: none;
-
     &:focus {
       background: #FAFAFA;
+    }
+
+    border: 3px solid #EFEFEF;
+  }
+
+  .Fixed {
+    .Field {
+      position: sticky;
+      top: 0;
     }
   }
 </style>

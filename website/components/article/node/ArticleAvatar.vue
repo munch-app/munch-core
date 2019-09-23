@@ -1,5 +1,5 @@
 <template>
-  <div class="Avatar bg-steam border-3 flex-align-center p-12">
+  <div class="Avatar bg-steam border-3 flex-align-center p-12" :class="{Editing: editing}">
     <div class="flex-no-shrink">
       <div class="wh-64px border-circle overflow-hidden bg-white" @click="onImage">
         <cdn-img v-if="image" :image="image">
@@ -15,8 +15,8 @@
 
     <div class="ml-16 flex-column flex-grow">
       <template v-if="editing">
-        <input class="w-100 h4" v-model="line1"/>
-        <input class="w-100 regular b-a60" v-model="line2"/>
+        <input class="p-0 clear w-100 h4" v-model="line1"/>
+        <input class="p-0 clear w-100 regular b-a60" v-model="line2"/>
       </template>
       <template v-else>
         <h4>{{line1}}</h4>
@@ -97,10 +97,9 @@
 </script>
 
 <style scoped lang="less">
-  input {
-    outline: none;
-    border: none;
-    background: none;
-    padding: 0;
+  .Avatar.Editing {
+    &:hover {
+      outline: 3px solid #07F;
+    }
   }
 </style>

@@ -1,5 +1,5 @@
 import {Node} from 'tiptap'
-import ArticlePlace from './ArticlePlace.vue'
+import ArticlePlaceEditing from './ArticlePlaceEditing.vue'
 
 export default class Place extends Node {
   get name() {
@@ -29,6 +29,6 @@ export default class Place extends Node {
   }
 
   get view() {
-    return ArticlePlace
+    return ArticlePlaceEditing
   }
 }

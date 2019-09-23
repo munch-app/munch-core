@@ -4,11 +4,11 @@
   All dialog must be registered in this component.
 -->
 <template>
-  <div class="bg-fog fixed position-0 index-dialog flex-center" v-if="anyDialog" @click.self.stop.capture="dismiss">
+  <div class="bg-fog fixed position-0 index-dialog flex-center" v-if="anyDialog" @click.self.stop.capture="onClose">
     <div>
       <div class="flex-justify-end" v-if="isCloseable">
-        <div class="absolute p-8 hover-pointer" @click="dismiss">
-          <div class="border-circle bg-white p-8">
+        <div class="index-elevation absolute p-8 hover-pointer" @click="onClose">
+          <div class="elevation-1 border-circle bg-white p-8">
             <simple-svg class="wh-24px" fill="black" :filepath="require('~/assets/icon/close.svg')"/>
           </div>
         </div>
@@ -16,9 +16,8 @@
 
       <div class="GlobalDialog">
         <loading-dialog v-if="dialogName === 'LoadingDialog'"/>
-        <portal-target name="PortalDialog" v-else-if="dialogName === 'PortalDialog'">
-
-        </portal-target>
+        <portal-target v-else-if="dialogName === 'PortalDialog'" name="PortalDialog"/>
+        <place-editor-dialog v-else-if="dialogName === 'PlaceEditorDialog'" v-bind="dialogProps"/>
         <get-started-dialog v-else-if="dialogName === 'GetStartedDialog'" v-bind="dialogProps"/>
         <image-upload-dialog v-else-if="dialogName === 'ImageUploadDialog'" v-bind="dialogProps"/>
       </div>
@@ -33,10 +32,11 @@
   import GetStartedDialog from "../dialog/GetStartedDialog";
   import ImageUploadDialog from "../dialog/ImageUploadDialog";
   import PortalDialog from "../dialog/PortalDialog";
+  import PlaceEditorDialog from "../dialog/PlaceEditorDialog";
 
   export default {
     name: "GlobalDialog",
-    components: {PortalDialog, ImageUploadDialog, GetStartedDialog, LoadingDialog},
+    components: {PlaceEditorDialog, PortalDialog, ImageUploadDialog, GetStartedDialog, LoadingDialog},
     computed: {
       ...mapGetters('global', ['dialogName', 'dialogProps', 'anyDialog']),
       isCloseable() {
@@ -44,7 +44,7 @@
       }
     },
     methods: {
-      dismiss() {
+      onClose() {
         if (this.isCloseable) {
           this.$store.commit('global/clearDialog')
         }

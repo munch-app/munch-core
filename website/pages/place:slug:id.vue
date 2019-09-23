@@ -6,7 +6,7 @@
           <place-images :images="place.images"/>
         </section>
 
-        <section v-if="place.status && place.status.type !== 'OPEN'" class="mb-32" @click="state = 'suggest-edit'">
+        <section v-if="place.status && place.status.type !== 'OPEN'" class="mb-32" @click="onSuggestEdit">
           <place-status :status="place.status"/>
         </section>
 
@@ -63,7 +63,7 @@
         <section class="mt-48">
           <div>
             <h5>Is this place information accurate?</h5>
-            <button @click="state = 'suggest-edit'" class="mt-4 tiny border">
+            <button @click="onSuggestEdit" class="mt-4 tiny border">
               Suggest an edit
             </button>
           </div>
@@ -85,8 +85,6 @@
         <div class="AsideContainer pb-32 none desktop-b"></div>
       </div>
     </div>
-
-    <place-editor-dialog :place="place" v-if="state === 'suggest-edit'" @on-close="state = null"/>
   </div>
 </template>
 
@@ -153,6 +151,27 @@
           minimumSpan: new mapkit.CoordinateSpan(0.015, 0.015)
         })
       })
+    },
+    methods: {
+      onSuggestEdit() {
+        this.$store.commit('global/setDialog', {
+          name: 'PlaceEditorDialog', props: {
+            place: this.place,
+            onSubmit: (place) => {
+              this.$api.post(`/places/${place.id}/revisions`, place)
+                .then(() => {
+                  this.$store.dispatch('addMessage', {title: 'Added Revision', message: 'Thanks for contributing!'})
+                })
+                .catch(err => {
+                  this.$store.dispatch('addError', err)
+                })
+                .finally(() => {
+                  this.$store.commit('global/clearDialog')
+                })
+            }
+          }
+        })
+      }
     }
   }
 </script>

@@ -18,10 +18,10 @@ export const getters = {
 
 export const mutations = {
   setDialog: (state, object) => {
-    if (object?.name) {
-      state.dialog = {name: object.name, props: object.props}
+    if (typeof object === 'string') {
+      state.dialog = {name: object}
     } else {
-      state.dialog = object
+      state.dialog = {name: object.name, props: object.props}
     }
 
     disableBodyScroll(document.querySelector('.GlobalDialog > *'))

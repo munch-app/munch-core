@@ -37,7 +37,9 @@
           </div>
         </div>
         <div class="p-12">
-          <search-place v-if="state === null" :pre-fill="preFill" class="border border-3" create @on-select="onSelect">
+          <search-place v-if="state === null" :pre-fill="preFill" class="border border-3" create
+                        @on-select="onSelect"
+                        @on-create="onCreate">
             <template v-slot:default="{document}">
               <div class="p-16 hover-bg-a10">
                 <div class="flex">
@@ -109,18 +111,17 @@
         }
       },
       onSelect(document) {
-        if (document.id) {
-          this.state = 'fetching'
-          this.$api.get(`/places/${document.id}`)
-            .then(({data}) => {
-              this.state = 'place'
-              this.place = data
-            })
-        } else {
-          this.state = 'place'
-          this.place = {
-            name: document.name
-          }
+        this.state = 'fetching'
+        this.$api.get(`/places/${document.id}`)
+          .then(({data}) => {
+            this.state = 'place'
+            this.place = data
+          })
+      },
+      onCreate() {
+        this.state = 'place'
+        this.place = {
+          name: document.name
         }
       },
       onDelete() {

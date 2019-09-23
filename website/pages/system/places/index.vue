@@ -30,8 +30,6 @@
         </div>
       </template>
     </search-place>
-
-    <place-editor-dialog :place="place" v-if="state === 'editing'" @on-close="state = null"/>
   </div>
 </template>
 
@@ -46,22 +44,36 @@
     layout: 'system',
     data() {
       return {
-        state: null,
-        place: null,
+        state: null
       }
     },
     methods: {
       onSelect(document) {
-        this.place = null
         this.$store.commit('global/setDialog', 'LoadingDialog')
-
         this.$api.get(`/places/${document.id}`)
           .then(({data: place}) => {
-            this.$store.commit('global/clearDialog')
-            this.place = place
-            this.state = 'editing'
+            this.onEditing(place)
           })
-      }
+      },
+      onEditing(place) {
+        this.$store.commit('global/setDialog', {
+          name: 'PlaceEditorDialog', props: {
+            place: place,
+            onSubmit: (place) => {
+              this.$api.post(`/places/${place.id}/revisions`, place)
+                .then(() => {
+                  this.$store.dispatch('addMessage', {title: 'Added Revision', message: 'Thanks for contributing!'})
+                })
+                .catch(err => {
+                  this.$store.dispatch('addError', err)
+                })
+                .finally(() => {
+                  this.$store.commit('global/clearDialog')
+                })
+            }
+          }
+        })
+      },
     }
   }
 </script>

@@ -24,8 +24,10 @@
 
       <portal-dialog>
         <div class="dialog-large dialog-h80vh border p-0">
-          <search-place class="" input-hint="Search restaurant" :size="20" create
-                        @on-select="(document) => onPlaceSelect(commands, document)">
+          <search-place input-hint="Search restaurant" :size="20" create fixed
+                        @on-select="(document) => onPlaceSelect(commands, document)"
+                        @on-create="(document) => onPlaceCreate(commands, document)"
+          >
             <template v-slot:default="{document}">
               <div class="p-16 hover-bg-a10">
                 <div class="flex">
@@ -55,14 +57,13 @@
 <script>
   import {EditorFloatingMenu} from 'tiptap'
   import ImageUploadDialog from "../../dialog/ImageUploadDialog";
-  import ArticlePlaceDialog from "../node/ArticlePlaceDialog";
   import PortalDialog from "../../dialog/PortalDialog";
   import SearchPlace from "../../places/SearchPlace";
   import CdnImg from "../../utils/image/CdnImg";
 
   export default {
     name: "ArticleEditorFloating",
-    components: {CdnImg, SearchPlace, PortalDialog, ArticlePlaceDialog, ImageUploadDialog, EditorFloatingMenu},
+    components: {CdnImg, SearchPlace, PortalDialog, ImageUploadDialog, EditorFloatingMenu},
     props: {
       editor: Object,
     },
@@ -132,6 +133,10 @@
           .finally(() => {
             this.$store.commit('global/clearDialog');
           })
+      },
+      onPlaceCreate(commands, document) {
+        this.$store.commit('global/clearDialog');
+        commands['place']({place: document})
       }
     }
   }

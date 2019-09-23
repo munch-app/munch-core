@@ -93,5 +93,30 @@
     &.Focused {
       background: rgba(0, 0, 0, 0.1);
     }
+
+    .Image {
+      flex: 0 0 30%;
+      max-width: 30%;
+
+      min-height: 80px;
+
+      @media (min-width: 576px) {
+        min-height: 160px;
+      }
+
+      @media (min-width: 768px) {
+        min-height: 160px;
+      }
+    }
+
+    .Tags {
+      margin: -6px;
+
+      max-height: 38px;
+
+      @media (min-width: 576px) {
+        max-height: 76px;
+      }
+    }
   }
 }
