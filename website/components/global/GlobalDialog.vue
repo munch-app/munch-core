@@ -22,6 +22,7 @@
         <image-upload-dialog v-else-if="dialogName === 'ImageUploadDialog'" v-bind="dialogProps"/>
 
         <search-tag-dialog v-else-if="dialogName === 'SearchTagDialog'" v-bind="dialogProps"/>
+        <editor-lat-lng-dialog v-else-if="dialogName === 'EditorLatLngDialog'" v-bind="dialogProps"/>
       </div>
     </div>
   </div>
@@ -36,10 +37,13 @@
   import PortalDialog from "../dialog/PortalDialog";
   import PlaceEditorDialog from "../dialog/PlaceEditorDialog";
   import SearchTagDialog from "../dialog/SearchTagDialog";
+  import EditorLatLngDialog from "../dialog/EditorLatLngDialog";
 
   export default {
     name: "GlobalDialog",
-    components: {SearchTagDialog, PlaceEditorDialog, PortalDialog, ImageUploadDialog, GetStartedDialog, LoadingDialog},
+    components: {
+      EditorLatLngDialog,
+      SearchTagDialog, PlaceEditorDialog, PortalDialog, ImageUploadDialog, GetStartedDialog, LoadingDialog},
     computed: {
       ...mapGetters('global', ['dialogName', 'dialogProps', 'anyDialog']),
       isCloseable() {

@@ -32,11 +32,15 @@
         </div>
       </div>
 
-      <div class="absolute position-r-0 mt-16 mr-16">
+      <div class="absolute position-tb-0 position-r-0 mtb-16 mr-16 flex-column-justify-between flex-end">
         <button class="blue-outline tiny flex-align-center" @click="onEnlarge">
           <simple-svg class="wh-16px" fill="#07F" :filepath="require('~/assets/icon/icons8-enlarge.svg')"/>
           <span>EDIT</span>
         </button>
+
+        <div class="p-4-12 bg-white border-error border-2" v-if="requiredFields.length" @click="onMissing">
+          <div class="error small-bold">Missing: {{requiredFields.join(', ')}}</div>
+        </div>
       </div>
     </div>
   </div>
@@ -59,6 +63,14 @@
           this.updateAttrs({place})
         },
       },
+      requiredFields() {
+        const fields = []
+        if (!this.place.name) fields.push('Name')
+        if (!this.place.location.address) fields.push('Address')
+        if (!this.place.location.latLng) fields.push('Location')
+
+        return fields
+      }
     },
     data() {
       return {pricePerPax: null}
@@ -90,6 +102,21 @@
           }
         })
       },
+      onMissing() {
+        if (!this.place.location.latLng) {
+          this.onLocation()
+        }
+      },
+      onLocation() {
+        this.$store.commit('global/setDialog', {
+          name: 'EditorLatLngDialog', props: {
+            latLng: this.place.location.latLng,
+            onLatLng: (latLng) => {
+              this.place = {...this.place, location: {...this.place.location, latLng}}
+            }
+          }
+        })
+      },
       onPriceInput({target: {value}}) {
         if (value.substring(0, 1) === '$') {
           value = value.substring(1)
@@ -97,10 +124,10 @@
 
         const perPax = parseInt(value)
         if (!isNaN(perPax)) {
-          this.place.price = {perPax}
+          this.place = {...this.place, price: {perPax}}
           this.pricePerPax = `$${perPax.toFixed(1)}`
         } else {
-          delete this.place['price']
+          this.place = {...this.place, price: null}
         }
       },
     }

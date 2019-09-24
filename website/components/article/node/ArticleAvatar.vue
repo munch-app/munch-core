@@ -13,10 +13,16 @@
       </div>
     </div>
 
-    <div class="ml-16 flex-column flex-grow">
+    <div class="ml-16 flex-column flex-grow relative">
       <template v-if="editing">
-        <input class="p-0 clear w-100 h4" v-model="line1"/>
-        <input class="p-0 clear w-100 regular b-a60" v-model="line2"/>
+        <input class="clear h4" v-model="line1" placeholder="Title"/>
+        <input class="clear regular b-a60" v-model="line2" placeholder="Subtitle"/>
+
+        <div class="absolute position-tb-0 position-r-0 flex-column-justify-end flex-end">
+          <div class="p-4-12 bg-white border-error border-2" v-if="requiredFields.length">
+            <div class="error small-bold">Missing: {{requiredFields.join(', ')}}</div>
+          </div>
+        </div>
       </template>
       <template v-else>
         <h4>{{line1}}</h4>
@@ -53,7 +59,7 @@
       },
       line1: {
         get() {
-          return this.node.attrs.line1 || 'Sponsored by'
+          return this.node.attrs.line1
         },
         set(line1) {
           this.updateAttrs({
@@ -63,7 +69,7 @@
       },
       line2: {
         get() {
-          return this.node.attrs.line2 || 'Munch.app'
+          return this.node.attrs.line2
         },
         set(line2) {
           this.updateAttrs({
@@ -71,6 +77,12 @@
           })
         },
       },
+      requiredFields() {
+        const fields = []
+        if(!this.line1) fields.push('Title')
+        if(!this.line2) fields.push('Subtitle')
+        return fields
+      }
     },
     data() {
       return {
@@ -100,6 +112,17 @@
   .Avatar.Editing {
     &:hover {
       outline: 3px solid #07F;
+    }
+  }
+
+  input {
+    width: 100%;
+    padding: 2px 6px;
+    margin: -2px -6px;
+    border-radius: 2px;
+
+    &:hover, &:focus {
+      background: #FFF;
     }
   }
 </style>
