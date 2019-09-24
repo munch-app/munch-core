@@ -1,0 +1,9 @@
+dependencies {
+    compile project(':utils')
+    compile project(':database')
+
+    compile group: 'dev.fuxing', name: 'transport-core', version: transportVersion
+
+    compile group: 'software.amazon.awssdk', name: 's3', version: awsVersion2
+    compile group: 'org.apache.tika', name: 'tika-core', version: '1.13'
+}

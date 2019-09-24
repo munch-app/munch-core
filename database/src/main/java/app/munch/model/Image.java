@@ -337,6 +337,23 @@ public final class Image {
     }
 
     /**
+     * @param source to resolve to respective bucket
+     * @return bucket name
+     */
+    public static String resolveBucket(ImageSource source) {
+        switch (source) {
+            case INSTAGRAM:
+                return "mh5";
+
+            default:
+                return "mh0";
+
+            case UNKNOWN_TO_SDK_VERSION:
+                throw new IllegalStateException("ImageSource.UNKNOWN_TO_SDK_VERSION");
+        }
+    }
+
+    /**
      * Quick way to generate cdn.munch.app url
      */
     public static void main(String[] args) {

@@ -1,14 +1,20 @@
 package app.munch.api;
 
-import app.munch.image.ImageEntityManager;
+import app.munch.image.ImageQueryClient;
+import app.munch.image.ImageUploadClient;
 import app.munch.model.Image;
 import app.munch.model.ImageSource;
 import dev.fuxing.err.ConflictException;
+import dev.fuxing.err.ForbiddenException;
 import dev.fuxing.err.NotFoundException;
+import dev.fuxing.err.ValidationException;
 import dev.fuxing.jpa.TransactionProvider;
 import dev.fuxing.transport.TransportList;
 import dev.fuxing.transport.service.TransportContext;
 import dev.fuxing.transport.service.TransportResult;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.hibernate.HibernateException;
 
 import javax.inject.Inject;
@@ -16,7 +22,9 @@ import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletException;
 import javax.servlet.http.Part;
 import javax.validation.constraints.NotNull;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Set;
 
 /**
@@ -27,12 +35,14 @@ import java.util.Set;
 public final class ImageService extends DataService {
     private static final MultipartConfigElement MULTIPART_CONFIG = new MultipartConfigElement("/temp");
 
-    private final ImageEntityManager imageEntityManager;
+    private final ImageQueryClient queryClient;
+    private final ImageUploadClient uploadClient;
 
     @Inject
-    ImageService(TransactionProvider provider, ImageEntityManager imageEntityManager) {
+    ImageService(TransactionProvider provider, ImageQueryClient queryClient, ImageUploadClient uploadClient) {
         super(provider);
-        this.imageEntityManager = imageEntityManager;
+        this.queryClient = queryClient;
+        this.uploadClient = uploadClient;
     }
 
     @Override
@@ -52,7 +62,7 @@ public final class ImageService extends DataService {
         final int size = ctx.querySize(20, 50);
         Set<ImageSource> sources = ImageSource.fromArray(ctx.queryString("sources", null));
 
-        return imageEntityManager.list(accountId, sources, size, ctx.queryCursor());
+        return queryClient.query(accountId, sources, size, ctx.queryCursor());
     }
 
     public Image post(TransportContext ctx) throws IOException, ServletException {
@@ -60,7 +70,37 @@ public final class ImageService extends DataService {
         @NotNull String accountId = ctx.get(ApiRequest.class).getAccountId();
         Part part = ctx.request().raw().getPart("file");
         ImageSource source = ImageSource.fromValue(ctx.request().raw().getParameter("source"));
-        return imageEntityManager.post(accountId, part, source);
+
+        try {
+            return post(accountId, part, source);
+        } finally {
+            try {
+                part.delete();
+            } catch (Exception ignored) {
+            }
+        }
+    }
+
+    private Image post(String accountId, Part part, ImageSource source) throws IOException {
+        if (part.getSize() > 15_000_000) {
+            throw new ValidationException("file", "File must be below 15MB.");
+        }
+
+        if (source == null || source == ImageSource.UNKNOWN_TO_SDK_VERSION) {
+            throw new ValidationException("source", "Source is not valid.");
+        }
+
+        if (accountId == null) {
+            throw new ForbiddenException();
+        }
+
+        File file = File.createTempFile(RandomStringUtils.randomAlphanumeric(30),
+                "." + FilenameUtils.getExtension(part.getName()));
+
+        try (InputStream inputStream = part.getInputStream()) {
+            FileUtils.copyInputStreamToFile(inputStream, file);
+        }
+        return uploadClient.upload(accountId, file, source);
     }
 
     public TransportResult options(TransportContext ctx) {

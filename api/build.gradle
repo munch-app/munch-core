@@ -71,8 +71,7 @@ project('api-locations') {
 
 project('api-data') {
     dependencies {
-        compile group: 'software.amazon.awssdk', name: 's3', version: awsVersion2
-        compile group: 'org.apache.tika', name: 'tika-core', version: '1.13'
+        compile project(':image')
     }
 }
 

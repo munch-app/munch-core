@@ -15,6 +15,12 @@ include 'utils'
 include 'database'
 
 /**
+ * Munch App Post-Ignatius Image module
+ * Image is just a simple module to hold the ImageUploadManager
+ */
+include 'image'
+
+/**
  * Munch App Post-Ignatius Elastic Engine
  * Elastic service is separated out from the database engine to reduce
  * coupling of internal services.
@@ -79,3 +85,4 @@ include 'sitemap'
  * Temporary module for v22 to Post-Ignatius migration service.
  */
 include 'migration'
+
