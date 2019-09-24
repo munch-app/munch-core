@@ -106,6 +106,20 @@
 
   export default {
     components: {HeaderMiddle},
+    head() {
+      return this.$head({
+        robots: {follow: true, index: false},
+        canonical: `https://www.munch.app/partner`,
+        title: `Partner Program · Munch`,
+        url: `https://www.munch.app/partner`,
+        breadcrumbs: [
+          {
+            name: 'Partner',
+            item: `https://www.munch.app/partner`
+          },
+        ]
+      })
+    },
     data() {
       return {
         features: [

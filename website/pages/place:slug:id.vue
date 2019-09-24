@@ -112,7 +112,7 @@
     head() {
       const {image, name, description, slug, id} = this.place
       return this.$head({
-        robots: {follow: true, index: false},
+        robots: {follow: true, index: true},
         canonical: `https://www.munch.app/${slug}-${id}`,
         title: `${name} · Munch`,
         description: description,
