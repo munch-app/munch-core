@@ -22,7 +22,7 @@
       <div>
         <h4>Product</h4>
         <nuxt-link to="/press" no-prefetch>Press</nuxt-link>
-        <nuxt-link to="/creator" no-prefetch>Creator</nuxt-link>
+        <nuxt-link to="/partner" no-prefetch>Partner</nuxt-link>
       </div>
     </div>
   </nav>
