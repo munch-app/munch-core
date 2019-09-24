@@ -8,28 +8,27 @@
           </div>
         </cdn-img>
 
-        <div v-else class="border wh-100 bg-white flex-center">
-          <simple-svg class="wh-48px" fill="#ccc" :filepath="require('~/assets/icon/icons8-camera.svg')"/>
+        <div v-else class="border wh-100 bg-white">
+          <div class="wh-100 flex-center hover-bg-a40">
+            <simple-svg class="wh-48px" fill="#ccc" :filepath="require('~/assets/icon/icons8-camera.svg')"/>
+          </div>
         </div>
       </div>
 
       <div class="flex-grow p-16-24 overflow-hidden">
-        <input class="h3 clear" v-model="place.name" placeholder="Name">
+        <input class="Name h3 clear" v-model="place.name" placeholder="Name">
         <div class="flex-align-center mt-8 mb-16">
-          <div class="mr-16" v-if="place.price && place.price.perPax">
-            <div class="border-3 bg-white p-8 flex-column-align-center">
-              <h6 class="pink lh-1">${{place.price.perPax.toFixed(1)}}</h6>
-            </div>
+          <div>
+            <input class="Price text-center border-3 h6 pink clear" placeholder="$$$"
+                   :value="pricePerPax" @input="onPriceInput">
           </div>
-          <div class="flex-grow">
-            <input class="h6 clear" v-model="place.location.address" placeholder="Address">
+          <div class="ml-16 flex-grow">
+            <input class="Address h6 clear" v-model="place.location.address" placeholder="Restaurant Address">
           </div>
         </div>
 
-        <div class="Tags flex-wrap overflow-hidden">
-          <div v-for="tag in place.tags" :key="tag.id" class="p-6">
-            <div class="block small border-3 flex-no-shrink p-6-12 lh-1 bg-white">{{tag.name}}</div>
-          </div>
+        <div>
+          <article-place-editor-tags v-model="place.tags"/>
         </div>
       </div>
 
@@ -45,15 +44,13 @@
 
 <script>
   import CdnImg from "../../utils/image/CdnImg";
+  import ArticlePlaceEditorTags from "./ArticlePlaceEditorTags";
 
   export default {
     name: "ArticlePlaceEditing",
-    components: {CdnImg},
+    components: {ArticlePlaceEditorTags, CdnImg},
     props: ['node', 'updateAttrs', 'editable'],
     computed: {
-      editing() {
-        return !!this.updateAttrs
-      },
       place: {
         get() {
           return this.node.attrs.place || {}
@@ -62,6 +59,14 @@
           this.updateAttrs({place})
         },
       },
+    },
+    data() {
+      return {pricePerPax: null}
+    },
+    mounted() {
+      if (this.place.price?.perPax) {
+        this.pricePerPax = `$${this.place.price.perPax.toFixed(1)}`
+      }
     },
     methods: {
       onImage() {
@@ -84,21 +89,40 @@
             }
           }
         })
-      }
+      },
+      onPriceInput({target: {value}}) {
+        if (value.substring(0, 1) === '$') {
+          value = value.substring(1)
+        }
+
+        const perPax = parseInt(value)
+        if (!isNaN(perPax)) {
+          this.place.price = {perPax}
+          this.pricePerPax = `$${perPax.toFixed(1)}`
+        } else {
+          delete this.place['price']
+        }
+      },
     }
   }
 </script>
 
 <style scoped lang="less">
-  input {
+  .Name, .Address {
     width: 100%;
     padding: 4px 8px;
     margin: -4px -8px;
+    border-radius: 3px;
 
-    &:focus {
-      border-radius: 3px;
+    &:hover, &:focus {
       background: #FFF;
     }
+  }
+
+  .Price {
+    background: #FFF;
+    height: 30px;
+    width: 60px;
   }
 
   .Place {

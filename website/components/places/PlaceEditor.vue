@@ -51,7 +51,7 @@
     </div>
     <div v-if="has('TAGS')" class="Group">
       <h6>Tags:</h6>
-      <editor-tags v-model="editing.tags"/>
+      <editor-tags class="border border-3 bg-steam p-16" v-model="editing.tags"/>
     </div>
     <div v-if="has('HOURS')" class="Group">
       <h6>Opening Hours:</h6>

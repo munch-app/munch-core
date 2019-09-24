@@ -1,12 +1,12 @@
 <template>
-  <div class="border border-3 bg-steam p-16">
+  <div>
     <div v-if="editing.length" class="mb-16">
       <div class="flex-wrap m--4">
         <div class="p-4" v-for="(tag, index) in editing" :key="tag.id">
           <div class="bg-white border-2 overflow-hidden">
-            <div class="p-4-8 hover-bg-a10 hover-pointer flex-align-center">
+            <div class="p-4-8 hover-bg-a10 hover-pointer flex-align-center" @click="onRemove(index)">
               <div class="small-bold">{{tag.name}}</div>
-              <div @click="onRemove(index)" class="ml-4">
+              <div class="ml-4">
                 <simple-svg class="wh-16px" fill="black" :filepath="require('~/assets/icon/icons8-multiply.svg')"/>
               </div>
             </div>
@@ -16,7 +16,7 @@
     </div>
 
     <div class="relative" v-if="editing.length < max">
-      <input class="p-12" v-model="input" @keyup.enter="onKeyEnter" @change="update" placeholder="Search tags">
+      <input class="p-8-12" v-model="input" @change="update" placeholder="Add a tag">
 
       <div class="w-100 hr-bot hr-left hr-right border-3 absolute bg-white index-1">
         <div class="Item hover-pointer hover-bg-a10" v-for="tag in list" :key="tag.id" @click="onAdd(tag)">
