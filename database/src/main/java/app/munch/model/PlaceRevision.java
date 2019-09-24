@@ -40,7 +40,7 @@ public final class PlaceRevision extends PlaceModel {
 
     @JsonIgnore
     @NotNull
-    @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(cascade = {CascadeType.PERSIST}, fetch = FetchType.LAZY, optional = false)
     private Place place;
 
     @NotNull

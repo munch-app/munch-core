@@ -83,8 +83,10 @@ public final class ArticlePlaceEntityManager {
 
             // Persist Revision content, copy from detached entity and paste over,
             // because UserType is JSONB it's won't corrupt the data
+            // Cascade.Persist will cascade to 'ArticleRevision' & 'Article'
             ArticleRevision revisionEntity = entityManager.find(ArticleRevision.class, revision.getUid());
             revisionEntity.setContent(revision.getContent());
+            revisionEntity.getArticle().setContent(revision.getContent());
             entityManager.persist(revisionEntity);
 
             // Find all ArticlePlace, Delete/Create any that is required
@@ -137,28 +139,35 @@ public final class ArticlePlaceEntityManager {
     /**
      * Publish Image in Attrs.Place into PlaceImage linked to the Place
      */
-    private void publishImage(EntityManager entityManager, Article.Options options, Place place, Image image) {
-        if (options.getPlacePublishing() != null && options.getPlacePublishing()) {
+    private void publishImage(EntityManager entityManager, Article.Options options, Place place, Image detachedImage) {
+        // Need to use Mention Engine to Deal with Image as we scale
+
+        if (options.getPlacePublishing() == null || !options.getPlacePublishing()) {
+            return;
+        }
+
+        Image.EntityUtils.map(entityManager, detachedImage, image -> {
             List list = entityManager.createQuery("FROM PlaceImage " +
                     "WHERE place.id = :placeId AND image.uid = :imageId")
                     .setParameter("placeId", place.getId())
                     .setParameter("imageId", image.getUid())
                     .getResultList();
 
-            if (list.isEmpty()) {
-                // Don't already exist, Add PlaceImage to Place
-
-                PlaceImage placeImage = new PlaceImage();
-                placeImage.setPlace(place);
-                Image.EntityUtils.map(entityManager, image, placeImage::setImage);
-                entityManager.persist(placeImage);
-
-                // Publish Image will fill Place.Image if it don't already exist
-                if (place.getImage() == null) {
-                    place.setImage(image);
-                }
+            if (!list.isEmpty()) {
+                // Don't add if already exist
+                return;
             }
-        }
+
+            PlaceImage placeImage = new PlaceImage();
+            placeImage.setPlace(place);
+            placeImage.setImage(image);
+            entityManager.persist(placeImage);
+
+            // Publish Image will fill Place.Image if it don't already exist
+            if (place.getImage() == null) {
+                place.setImage(image);
+            }
+        });
     }
 
     /**

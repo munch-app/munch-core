@@ -8,33 +8,32 @@
           <button @click="onPublishStart" class="tiny pink-outline">Ready to publish?</button>
         </div>
         <div>
-          <button @click="state.more = !state.more" class="small">
+          <button @click="onMore" class="small">
             <simple-svg class="wh-20px" fill="black" :filepath="require('~/assets/icon/icons8-more.svg')"/>
           </button>
         </div>
 
-        <div class="MoreHeader absolute no-select" v-if="state.more" @click="state.more = false"
-             v-on-clickaway="() => {if(state.more) state.more = false}">
+        <div class="MoreHeader absolute no-select" v-if="state === 'more'" v-on-clickaway="onClose">
           <div class="border-3 bg-white w-100 elevation-2 index-top-elevation border">
             <div @click="onSave">Save</div>
             <div @click="onPreview">Preview</div>
-            <div @click="state.delete = true">Delete</div>
+            <div @click="state = 'delete'">Delete</div>
           </div>
         </div>
       </div>
 
-      <portal to="dialog-styled" v-if="state.delete">
+      <portal to="dialog-styled" v-if="state === 'delete'">
         <h3>Are you sure?</h3>
         <p>Once the article is deleted, it cannot be recovered.</p>
 
         <div class="right">
-          <button class="" @click="state.delete = false">Cancel</button>
+          <button class="" @click="state = null">Cancel</button>
           <button class="danger" @click="onDelete">Confirm</button>
         </div>
       </portal>
 
-      <div class="fixed position-0 index-elevation" v-if="state.publish">
-        <article-editor-publish @on-save="onSave" @on-cancel="state.publish = false" @on-publish="onPublish"
+      <div class="fixed position-0 index-elevation" v-if="state === 'publish'">
+        <article-editor-publish @on-save="onSave" @on-cancel="state = null" @on-publish="onPublish"
                                 v-model="revision"/>
       </div>
     </header-middle>
@@ -59,11 +58,7 @@
     data() {
       return {
         error: null,
-        state: {
-          more: false,
-          delete: false,
-          publish: false
-        }
+        state: null,
       }
     },
     asyncData({$api, params: {id}}) {
@@ -95,7 +90,20 @@
         })
     },
     methods: {
+      onMore() {
+        if (this.state === 'more') {
+          this.state = null
+        } else {
+          this.state = 'more'
+        }
+      },
+      onClose() {
+        if (this.state === 'more') {
+          this.state = null
+        }
+      },
       onSave(object) {
+        this.state = null
         if (this.error) return null
 
         this.revision.published = false
@@ -169,10 +177,10 @@
             .filter(value => value)[0] || ""
         }
 
-        this.state.publish = true
+        this.state = 'publish'
       },
       onPublish() {
-        this.state.publish = false
+        this.state = null
 
         return this.$api.post(`/me/articles/${this.revision.id}/revisions/publish`, this.revision)
           .then(({data: revision}) => {
