@@ -43,11 +43,17 @@
     name: "GlobalDialog",
     components: {
       EditorLatLngDialog,
-      SearchTagDialog, PlaceEditorDialog, PortalDialog, ImageUploadDialog, GetStartedDialog, LoadingDialog},
+      SearchTagDialog, PlaceEditorDialog, PortalDialog, ImageUploadDialog, GetStartedDialog, LoadingDialog
+    },
     computed: {
       ...mapGetters('global', ['dialogName', 'dialogProps', 'anyDialog']),
       isCloseable() {
         return this.dialogName !== 'LoadingDialog'
+      }
+    },
+    watch:{
+      $route (to, from){
+        this.$store.commit('global/clearDialog')
       }
     },
     methods: {
