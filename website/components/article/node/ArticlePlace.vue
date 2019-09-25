@@ -22,6 +22,18 @@
             <div class="block small border-3 flex-no-shrink p-6-12 lh-1 bg-white">{{tag.name}}</div>
           </div>
         </div>
+
+        <div class="Affiliates mt-16">
+          <div class="m--4 flex-wrap overflow-hidden">
+            <div class="p-4" v-for="affiliate in affiliates" :key="affiliate.uid">
+              <div class="border border-3 overflow-hidden" @click="onAffiliate(affiliate)">
+                <cdn-img :image="affiliate.brand.image" type="320x320" object-fit="contain" height="48px" width="initial">
+                  <div class="hover-bg-a10 hover-pointer"/>
+                </cdn-img>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </nuxt-link>
   </div>
@@ -37,6 +49,9 @@
       node: {
         type: Object,
         required: true
+      },
+      affiliates: {
+        type: Array,
       }
     },
     computed: {
@@ -50,6 +65,13 @@
         }
         return `/${id}`
       },
+    },
+    methods: {
+      onAffiliate(affiliate) {
+        const url = affiliate.url
+        const win = window.open(url, '_blank')
+        win.focus()
+      }
     }
   }
 </script>

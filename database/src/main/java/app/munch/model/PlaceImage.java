@@ -38,6 +38,9 @@ public final class PlaceImage {
     @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = false)
     private Profile profile;
 
+    /**
+     * ManyToOne because a single Image can be used by multiple Places
+     */
     @NotNull
     @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = false)
     private Image image;

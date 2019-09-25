@@ -21,8 +21,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.persistence.Tuple;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Place service is not grouped into api-data because there are too many complex operations that are coupled with multiple services.
@@ -31,6 +33,7 @@ import java.util.*;
  * Date: 9/9/19
  * Time: 2:42 pm
  */
+@Singleton
 public final class PlaceService implements TransportService {
     private static final Logger logger = LoggerFactory.getLogger(PlaceService.class);
 
@@ -55,6 +58,7 @@ public final class PlaceService implements TransportService {
         PATH("/places", () -> {
             GET("/suggest", this::suggest);
             GET("/search", this::search);
+            GET("/affiliates", this::affiliates);
             POST("", this::post);
 
             PATH("/:id", () -> {
@@ -121,6 +125,21 @@ public final class PlaceService implements TransportService {
         });
 
         return response.getDocuments();
+    }
+
+    public Map<String, List<PlaceAffiliate>> affiliates(TransportContext ctx) {
+        String[] ids = ctx.queryString("ids").split(", *");
+
+        return provider.reduce(true, entityManager -> {
+            List<PlaceAffiliate> affiliates = entityManager.createQuery("FROM PlaceAffiliate " +
+                    "WHERE affiliate.place.id IN (:ids)", PlaceAffiliate.class)
+                    .setParameter("ids", Arrays.asList(ids))
+                    .getResultList();
+
+            return affiliates.stream().collect(Collectors.groupingBy(o -> {
+                return o.getPlace().getId();
+            }));
+        });
     }
 
     public TransportResult idGet(TransportContext ctx) {

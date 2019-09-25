@@ -15,7 +15,8 @@ ArticleContent.vue must be structured as such to follow exactly ProseMirror stru
         <hr v-else-if="node.type === 'line'" :key="index">
         <article-image v-else-if="node.type ==='image'" :key="index" :node="node"/>
         <article-avatar v-else-if="node.type ==='avatar'" :key="index" :node="node"/>
-        <article-place ref="context" v-else-if="node.type ==='place'" :key="index" :node="node"/>
+        <article-place ref="context" v-else-if="node.type ==='place'" :key="index" :node="node"
+                       :affiliates="placeAffiliates[node.attrs.place.id]"/>
         <div v-else :key="index"/>
       </template>
     </div>
@@ -36,7 +37,10 @@ ArticleContent.vue must be structured as such to follow exactly ProseMirror stru
       article: {
         type: Object,
         required: true
-      }
+      },
+    },
+    data() {
+      return {placeAffiliates: {}}
     },
     computed: {
       content() {
@@ -50,6 +54,21 @@ ArticleContent.vue must be structured as such to follow exactly ProseMirror stru
         }
 
         return content
+      },
+      placeIds() {
+        return this.article.content
+          .filter(n => n.type === 'place')
+          .map(n => n.attrs.place.id)
+          .filter(id => id)
+      }
+    },
+    mounted() {
+      const ids = this.placeIds
+      if (ids.length) {
+        this.$api.get(`/places/affiliates`, {params: {ids: ids.join(',')}})
+          .then(({data: affiliates}) => {
+            this.placeAffiliates = affiliates
+          })
       }
     },
     methods: {
@@ -58,7 +77,7 @@ ArticleContent.vue must be structured as such to follow exactly ProseMirror stru
       },
       getContexts() {
         return this.$refs['context']
-      }
+      },
     }
   }
 </script>

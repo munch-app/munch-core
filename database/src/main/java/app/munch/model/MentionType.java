@@ -13,6 +13,8 @@ import java.util.stream.Stream;
  * Time: 8:16 pm
  */
 public enum MentionType {
+    // TODO(fuxing): create Subtype?
+
     IMAGE("IMAGE"),
 
     ARTICLE("ARTICLE"),

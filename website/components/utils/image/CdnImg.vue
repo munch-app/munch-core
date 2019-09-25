@@ -2,7 +2,7 @@
   Image served from cdn.munch.app
 -->
 <template>
-  <div class="relative">
+  <div class="relative lh-0">
     <img v-if="url" :src="url" :alt="alt" :style="{objectFit, width, height}"/>
     <div class="slot absolute-0">
       <slot></slot>
