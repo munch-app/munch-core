@@ -120,9 +120,8 @@
       },
       onCreate() {
         this.state = 'place'
-        this.place = {
-          name: document.name
-        }
+        this.place = this.affiliate?.placeStruct
+        window.scrollTo(0, 0)
       },
       onDelete() {
         this.state = ''

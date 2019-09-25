@@ -83,21 +83,22 @@
     },
     methods: {
       centerAnnotations(options) {
-        // Change priority for existing
-        this.$map?.annotations?.forEach(annotation => {
-          annotation.displayPriority = 500
-        })
+        this.onMapLoaded((map) => {
+          map.annotations?.forEach(annotation => {
+            annotation.displayPriority = 500
+          })
 
-        const annotations = options?.annotations || this.$map.annotations
+          const annotations = options?.annotations || map.annotations
 
-        annotations.forEach(annotation => {
-          annotation.displayPriority = 1000
-        })
+          annotations.forEach(annotation => {
+            annotation.displayPriority = 1000
+          })
 
-        this.$map.showItems(annotations, {
-          animate: true,
-          padding: new mapkit.Padding(64, 64, 64, 64),
-          minimumSpan: options?.minimumSpan || new mapkit.CoordinateSpan(0.015, 0.025)
+          map.showItems(annotations, {
+            animate: true,
+            padding: new mapkit.Padding(64, 64, 64, 64),
+            minimumSpan: options?.minimumSpan || new mapkit.CoordinateSpan(0.015, 0.025)
+          })
         })
       },
       onMapLoaded(func) {
