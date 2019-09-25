@@ -24,8 +24,8 @@ allprojects {
     apply plugin: 'maven-publish'
 
     group 'app.munch'
-    version '0.24.0'
-    ext.dockerVersion = '0.24.0'
+    version '0.25.0'
+    ext.dockerVersion = '0.25.0'
 
     ext.jUnitVersion = '5.5.1'
     ext.guiceVersion = '4.2.2'
