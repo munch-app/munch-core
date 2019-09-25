@@ -16,6 +16,8 @@
 
       <div class="GlobalDialog">
         <loading-dialog v-if="dialogName === 'LoadingDialog'"/>
+        <confirmation-dialog v-else-if="dialogName === 'ConfirmationDialog'" v-bind="dialogProps"/>
+
         <portal-target v-else-if="dialogName === 'PortalDialog'" name="PortalDialog"/>
         <place-editor-dialog v-else-if="dialogName === 'PlaceEditorDialog'" v-bind="dialogProps"/>
         <get-started-dialog v-else-if="dialogName === 'GetStartedDialog'" v-bind="dialogProps"/>
@@ -38,21 +40,25 @@
   import PlaceEditorDialog from "../dialog/PlaceEditorDialog";
   import SearchTagDialog from "../dialog/SearchTagDialog";
   import EditorLatLngDialog from "../dialog/EditorLatLngDialog";
+  import ConfirmationDialog from "../dialog/ConfirmationDialog";
 
   export default {
     name: "GlobalDialog",
     components: {
+      ConfirmationDialog,
       EditorLatLngDialog,
       SearchTagDialog, PlaceEditorDialog, PortalDialog, ImageUploadDialog, GetStartedDialog, LoadingDialog
     },
     computed: {
       ...mapGetters('global', ['dialogName', 'dialogProps', 'anyDialog']),
       isCloseable() {
-        return this.dialogName !== 'LoadingDialog'
+        if (this.dialogName === 'LoadingDialog') return false
+        if (this.dialogName === 'ConfirmationDialog') return false
+        return true;
       }
     },
-    watch:{
-      $route (to, from){
+    watch: {
+      $route() {
         this.$store.commit('global/clearDialog')
       }
     },

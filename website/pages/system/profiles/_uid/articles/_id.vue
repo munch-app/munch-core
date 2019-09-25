@@ -23,20 +23,10 @@
           <div class="border-3 bg-white w-100 elevation-2 index-top-elevation border">
             <div @click="onSave">Save</div>
             <div @click="onPreview">Preview</div>
-            <div @click="state = 'delete'">Delete</div>
+            <div @click="onDelete">Delete</div>
           </div>
         </div>
       </div>
-
-      <portal to="dialog-styled" v-if="state = 'delete'">
-        <h3>Are you sure?</h3>
-        <p>Once the article is deleted, it cannot be recovered.</p>
-
-        <div class="right">
-          <button class="" @click="state = null">Cancel</button>
-          <button class="danger" @click="onDelete">Confirm</button>
-        </div>
-      </portal>
 
       <div class="fixed position-0 index-elevation" v-if="state === 'publish'">
         <article-editor-publish @on-save="onSave" @on-cancel="state = null" @on-publish="onPublish"
@@ -151,16 +141,28 @@
           });
       },
       onDelete() {
-        this.$store.commit('global/setDialog', 'LoadingDialog')
-        this.$api.patch(`/admin/profiles/${this.profile.uid}/articles/${this.revision.id}`, {status: 'DELETED'})
-          .then(() => {
-            this.$store.commit('global/clearDialog')
-            this.$router.push({path: `/system/profiles/${this.profile.uid}/articles/draft`})
-          })
-          .catch((error) => {
-            this.$store.commit('global/clearDialog')
-            this.$store.dispatch('addError', error)
-          });
+        this.$store.commit('global/setDialog', {
+          name: 'ConfirmationDialog', props: {
+            title: 'Are you sure?',
+            message: 'Once the article is deleted, it cannot be recovered.',
+            options: {
+              confirm: {class: 'danger'},
+            },
+            onConfirm: () => {
+              this.$store.commit('global/setDialog', 'LoadingDialog')
+              this.$api.patch(`/admin/profiles/${this.profile.uid}/articles/${this.revision.id}`, {status: 'DELETED'})
+                .then(() => {
+                  this.$router.push({path: `/system/profiles/${this.profile.uid}/articles/draft`})
+                })
+                .catch((error) => {
+                  this.$store.dispatch('addError', error)
+                })
+                .finally(() => {
+                  this.$store.commit('global/clearDialog')
+                })
+            },
+          }
+        })
       },
       onPublishStart() {
         // Fill in title, description to assist publishing

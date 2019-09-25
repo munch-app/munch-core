@@ -1,22 +1,9 @@
 <!--
-dialog:
-Where you have to style everything yourself.
-
-dialog-styled:
-Where there is build in default styling for certain elements.
-
-dialog-w400:
-Max-width of 400px if > 576vw
+@deprecated, left with dialog-full that needs to be removed
 -->
 <template>
   <div class="DialogPortal index-dialog flex-center zero">
     <portal-target class="Dialog Full index-elevation" name="dialog-full"/>
-    <portal-target class="Dialog Blank elevation-3 index-elevation" name="dialog-blank"/>
-    <portal-target class="Dialog W400 elevation-3 index-elevation" name="dialog-w400"/>
-    <portal-target class="Dialog W768 elevation-3 index-elevation" name="dialog-w768"/>
-    <portal-target class="Dialog Styled elevation-3 index-elevation" name="dialog-styled"/>
-    <portal-target class="Dialog ActionSheet elevation-3 index-elevation" name="dialog-action-sheet"/>
-    <portal-target class="Dialog elevation-3 index-elevation" name="dialog"/>
 
     <div class="DialogOverlay elevation-overlay index-content-overlay"
          v-observe-visibility="{callback:visibilityChanged,throttle: 1}"/>
