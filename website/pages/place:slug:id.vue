@@ -90,24 +90,24 @@
 
 <script>
   import PlaceAside from "../components/places/PlaceAside";
-  import GoogleEmbedMap from "../components/core/GoogleEmbedMap";
   import AppleMap from "../components/utils/map/AppleMap";
   import AppleMapPinAnnotation from "../components/utils/map/AppleMapPinAnnotation";
   import PlaceImages from "../components/places/PlaceImages";
   import PlaceStatus from "../components/places/PlaceStatus";
   import PlaceArticles from "../components/places/PlaceArticles";
   import PlaceCreatedBy from "../components/places/PlaceCreatedBy";
-  import OpeningHours from "../components/utils/hour/OpeningHours";
   import PlaceAffiliates from "../components/places/PlaceAffiliates";
-  import PlaceEditorDialog from "../components/dialog/PlaceEditorDialog";
 
   export default {
     components: {
-      PlaceEditorDialog,
       PlaceAffiliates,
-      OpeningHours,
       PlaceCreatedBy,
-      PlaceArticles, PlaceStatus, PlaceImages, AppleMapPinAnnotation, AppleMap, GoogleEmbedMap, PlaceAside
+      PlaceArticles,
+      PlaceStatus,
+      PlaceImages,
+      AppleMapPinAnnotation,
+      AppleMap,
+      PlaceAside
     },
     head() {
       const {image, name, description, slug, id} = this.place
@@ -131,10 +131,16 @@
         ]
       })
     },
-    asyncData({$api, params: {id}}) {
+    asyncData({$api, error, params: {id}}) {
       return $api.get(`/places/${id}`, {params: {fields: 'articles,affiliates,images'}})
         .then(({data: place}) => {
           return {place}
+        })
+        .catch(err => {
+          if (err.response.status === 404) {
+            return error({statusCode: 404, message: 'Place Not Found'})
+          }
+          throw err
         })
     },
     data() {

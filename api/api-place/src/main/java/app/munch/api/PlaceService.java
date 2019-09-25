@@ -148,6 +148,8 @@ public final class PlaceService implements TransportService {
 
         return provider.reduce(true, entityManager -> {
             Place place = entityManager.find(Place.class, id);
+            if (place == null) return null;
+
             HibernateUtils.initialize(place.getImage());
             HibernateUtils.initialize(place.getCreatedBy());
             ObjectNode node = JsonUtils.valueToTree(place);

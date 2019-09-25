@@ -46,6 +46,7 @@ public final class ProfileService extends DataService {
             Profile profile = entityManager.createQuery("FROM Profile WHERE username = :username", Profile.class)
                     .setParameter("username", username)
                     .getSingleResult();
+            if (profile == null) return null;
 
             HibernateUtils.initialize(profile.getLinks());
             return profile;

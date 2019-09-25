@@ -99,7 +99,13 @@
       const url = uid ? `/articles/${id}/revisions/${uid}` : `/articles/${id}`
       return Promise.all([
         $api.get(url)
-          .then(({data: article}) => article),
+          .then(({data: article}) => article)
+          .catch(err => {
+            if (err.response.status === 404) {
+              return error({statusCode: 404, message: 'Article Not Found'})
+            }
+            throw err
+          }),
         $api.get(`/profiles/${username}/articles`, {params: {size: 5}})
           .then(({data: articles}) => articles)
       ]).then(([article, articles]) => {

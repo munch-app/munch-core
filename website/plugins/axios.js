@@ -5,19 +5,12 @@ import FormData from "form-data"
 const apiVersion = 'v0.24.0'
 
 export default function (context, inject) {
-  const {$axios, store, req, error, redirect} = context
+  const {$axios, store, req} = context
 
   $axios.onResponse((response) => {
     if (response.data && response.data.error) {
       const error = response.data.error
       throw({statusCode: error.code, message: error.message, response})
-    }
-  })
-
-  $axios.onError((err) => {
-    const status = err.response.status
-    if (status === 404) {
-      // TODO(fuxing): need a better way to handle 404 error.
     }
   })
 
