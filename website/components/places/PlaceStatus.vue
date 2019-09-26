@@ -30,7 +30,7 @@
   <div v-else-if="status.type === 'MOVED'" class="p-16-24 border-3 hover-pointer bg-error">
     <h4 class="white">This place has been moved.</h4>
     <div class="flex mt-4" v-if="status.id">
-      <nuxt-link :to="`/${status.id}`">https://munch.app/{{status.id}}</nuxt-link>
+      <nuxt-link class="white" :to="`/${status.id}`">https://munch.app/{{status.id}}</nuxt-link>
     </div>
   </div>
   <div v-else-if="status.type === 'PERMANENTLY_CLOSED'" class="p-16-24 border-3 hover-pointer bg-error">
