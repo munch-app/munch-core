@@ -27,8 +27,9 @@
         <class>app.munch.model.Tag</class>
 
         <class>app.munch.model.ProfileSocial</class>
-        <class>app.munch.model.SocialObject</class>
+        <class>app.munch.model.ProfileMedia</class>
         <class>app.munch.model.Mention</class>
+        <class>app.munch.model.MentionStatus</class>
 
         <class>app.munch.model.Affiliate</class>
         <class>app.munch.model.AffiliateBrand</class>

@@ -59,8 +59,9 @@ public final class ProfileSocial {
     @Column(length = 100, updatable = false, nullable = false, unique = false)
     private ProfileSocialType type;
 
-    @NotNull
-    @Valid
+    @ValidEnum
+    @Enumerated(EnumType.STRING)
+    @Column(length = 100, updatable = true, nullable = false, unique = false)
     private ProfileSocialStatus status;
 
     @JsonIgnore

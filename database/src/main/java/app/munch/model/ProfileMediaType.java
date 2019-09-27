@@ -9,23 +9,23 @@ import java.util.stream.Stream;
 
 /**
  * Created by: Fuxing
- * Date: 10/9/19
- * Time: 8:16 pm
+ * Date: 26/9/19
+ * Time: 7:57 pm
  */
-public enum MentionType {
-    SOCIAL("SOCIAL"),
+public enum ProfileMediaType {
+    INSTAGRAM_PHOTO("INSTAGRAM_PHOTO"),
 
-    IMAGE("IMAGE"),
+    INSTAGRAM_VIDEO("INSTAGRAM_VIDEO"),
 
-    ARTICLE("ARTICLE"),
+    INSTAGRAM_STORY("INSTAGRAM_STORY"),
 
-    REVIEW("REVIEW"),
+    INSTAGRAM_ALBUM("INSTAGRAM_ALBUM"),
 
     UNKNOWN_TO_SDK_VERSION(null);
 
     private final String value;
 
-    MentionType(String value) {
+    ProfileMediaType(String value) {
         this.value = value;
     }
 
@@ -39,18 +39,18 @@ public enum MentionType {
      * Use this in place of valueOf to convert the raw string returned by the service into the enum value.
      *
      * @param value real value
-     * @return MentionType corresponding to the value
+     * @return SocialObjectType corresponding to the value
      */
     @JsonCreator
-    public static MentionType fromValue(String value) {
+    public static ProfileMediaType fromValue(String value) {
         if (value == null) {
             return null;
         }
-        return Stream.of(MentionType.values()).filter(e -> e.toString().equals(value)).findFirst()
+        return Stream.of(ProfileMediaType.values()).filter(e -> e.toString().equals(value)).findFirst()
                 .orElse(UNKNOWN_TO_SDK_VERSION);
     }
 
-    public static Set<MentionType> knownValues() {
+    public static Set<ProfileMediaType> knownValues() {
         return Stream.of(values()).filter(v -> v != UNKNOWN_TO_SDK_VERSION).collect(Collectors.toSet());
     }
 }

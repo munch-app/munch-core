@@ -9,23 +9,29 @@ import java.util.stream.Stream;
 
 /**
  * Created by: Fuxing
- * Date: 26/9/19
- * Time: 7:57 pm
+ * Date: 10/9/19
+ * Time: 8:21 pm
  */
-public enum SocialObjectType {
-    INSTAGRAM_PHOTO("INSTAGRAM_PHOTO"),
+public enum MentionStatusStatus {
+    PENDING("PENDING"),
 
-    INSTAGRAM_VIDEO("INSTAGRAM_VIDEO"),
+    PROFILE_LINKED("PROFILE_LINKED"),
 
-    INSTAGRAM_STORY("INSTAGRAM_STORY"),
+    PROFILE_DELETED("PROFILE_DELETED"),
 
-    INSTAGRAM_ALBUM("INSTAGRAM_ALBUM"),
+    MACHINE_LINKED("MACHINE_LINKED"),
+
+    MACHINE_DELETED("MACHINE_DELETED"),
+
+    MODERATOR_LINKED("MODERATOR_LINKED"),
+
+    MODERATOR_DELETED("MODERATOR_DELETED"),
 
     UNKNOWN_TO_SDK_VERSION(null);
 
     private final String value;
 
-    SocialObjectType(String value) {
+    MentionStatusStatus(String value) {
         this.value = value;
     }
 
@@ -39,18 +45,18 @@ public enum SocialObjectType {
      * Use this in place of valueOf to convert the raw string returned by the service into the enum value.
      *
      * @param value real value
-     * @return SocialObjectType corresponding to the value
+     * @return MentionStatus corresponding to the value
      */
     @JsonCreator
-    public static SocialObjectType fromValue(String value) {
+    public static MentionStatusStatus fromValue(String value) {
         if (value == null) {
             return null;
         }
-        return Stream.of(SocialObjectType.values()).filter(e -> e.toString().equals(value)).findFirst()
+        return Stream.of(MentionStatusStatus.values()).filter(e -> e.toString().equals(value)).findFirst()
                 .orElse(UNKNOWN_TO_SDK_VERSION);
     }
 
-    public static Set<SocialObjectType> knownValues() {
+    public static Set<MentionStatusStatus> knownValues() {
         return Stream.of(values()).filter(v -> v != UNKNOWN_TO_SDK_VERSION).collect(Collectors.toSet());
     }
 }

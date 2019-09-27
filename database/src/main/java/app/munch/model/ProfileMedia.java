@@ -10,13 +10,13 @@ import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 import java.util.Date;
 import java.util.List;
 
 /**
+ * Media is a top level object that is a short-form of Social Media
+ * <p>
  * Created by: Fuxing
  * Date: 25/9/19
  * Time: 11:31 pm
@@ -24,10 +24,10 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
-@Table(name = "SocialObject")
-@TypeDef(name = "SocialObject.Content", typeClass = SocialObject.ContentType.class)
-@TypeDef(name = "SocialObject.Metric", typeClass = SocialObject.MetricType.class)
-public final class SocialObject {
+@Table(name = "ProfileMedia")
+@TypeDef(name = "ProfileMedia.Content", typeClass = ProfileMedia.ContentType.class)
+@TypeDef(name = "ProfileMedia.Metric", typeClass = ProfileMedia.MetricType.class)
+public final class ProfileMedia {
 
     /**
      * Internal id, unique to SocialObject table
@@ -45,22 +45,31 @@ public final class SocialObject {
     @Column(length = 512, updatable = false, nullable = false, unique = true)
     private String eid;
 
+    @NotNull
+    @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = false)
+    private Profile profile;
+
+    @NotNull
+    @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = false)
+    private ProfileSocial profileSocial;
+
     @ValidEnum
     @Enumerated(EnumType.STRING)
     @Column(length = 100, updatable = false, nullable = false, unique = false)
-    private SocialObjectType type;
+    private ProfileMediaType type;
 
     @ManyToMany(cascade = {}, fetch = FetchType.EAGER)
     private List<Image> images;
 
     @Valid
     @NotNull
-    @Type(type = "SocialObject.Content")
+    @Type(type = "ProfileMedia.Content")
+    @Size(max = 20)
     private List<@NotNull Node> content;
 
     @NotNull
     @Valid
-    @Type(type = "SocialObject.Metric")
+    @Type(type = "ProfileMedia.Metric")
     private Metric metric;
 
     @NotNull
@@ -88,11 +97,27 @@ public final class SocialObject {
         this.eid = eid;
     }
 
-    public SocialObjectType getType() {
+    public Profile getProfile() {
+        return profile;
+    }
+
+    public void setProfile(Profile profile) {
+        this.profile = profile;
+    }
+
+    public ProfileSocial getProfileSocial() {
+        return profileSocial;
+    }
+
+    public void setProfileSocial(ProfileSocial profileSocial) {
+        this.profileSocial = profileSocial;
+    }
+
+    public ProfileMediaType getType() {
         return type;
     }
 
-    public void setType(SocialObjectType type) {
+    public void setType(ProfileMediaType type) {
         this.type = type;
     }
 
@@ -151,7 +176,11 @@ public final class SocialObject {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Metric {
+
+        @Min(0)
         private Long up;
+
+        @Min(0)
         private Long down;
 
         public Long getUp() {
