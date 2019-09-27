@@ -207,11 +207,6 @@ public abstract class ArticleModel {
         }
     }
 
-    /**
-     * Created by: Fuxing
-     * Date: 21/8/19
-     * Time: 8:24 pm
-     */
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonIgnoreProperties(ignoreUnknown = true)
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
@@ -223,7 +218,6 @@ public abstract class ArticleModel {
             @JsonSubTypes.Type(LineNode.class),
             @JsonSubTypes.Type(ImageNode.class),
     })
-
     public interface Node {
         @JsonIgnore
         String getType();
