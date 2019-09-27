@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.fuxing.err.ConflictException;
 import dev.fuxing.err.ValidationException;
-import dev.fuxing.postgres.PojoSetUserType;
+import dev.fuxing.postgres.PojoUserType;
 import dev.fuxing.utils.KeyUtils;
 import dev.fuxing.validator.ValidEnum;
 import org.hibernate.annotations.Type;
@@ -28,16 +28,26 @@ import java.util.Date;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-//@Entity
-//@Table(name = "ProfileSocial")
+@Entity
+@Table(name = "ProfileSocial")
 @TypeDef(name = "ProfileSocial.Secrets", typeClass = ProfileSocial.SecretsType.class)
 public final class ProfileSocial {
 
+    /**
+     * Internal unique generated id
+     */
     @NotNull
     @Pattern(regexp = KeyUtils.ULID_REGEX)
     @Id
     @Column(length = 26, updatable = false, nullable = false, unique = true)
     private String uid;
+
+    /**
+     * External unique id, from the platform
+     */
+    @NotNull
+    @Column(length = 512, updatable = false, nullable = false, unique = true)
+    private String eid;
 
     @JsonIgnore
     @NotNull
@@ -49,16 +59,19 @@ public final class ProfileSocial {
     @Column(length = 100, updatable = false, nullable = false, unique = false)
     private ProfileSocialType type;
 
+    @NotNull
+    @Valid
+    private ProfileSocialStatus status;
+
     @JsonIgnore
     @NotNull
     @Valid
     @Type(type = "ProfileSocial.Secrets")
     private Secrets secrets;
 
-
-    // TODO(fuxing): Access
-
-    // TODO(fuxing): Unique Id?, URL & Raw?
+    @NotNull
+    @Column(updatable = true, nullable = false, unique = false)
+    private Date connectedAt;
 
     @NotNull
     @Version
@@ -75,6 +88,14 @@ public final class ProfileSocial {
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    public String getEid() {
+        return eid;
+    }
+
+    public void setEid(String sid) {
+        this.eid = sid;
     }
 
     public Profile getProfile() {
@@ -101,6 +122,22 @@ public final class ProfileSocial {
         this.secrets = secrets;
     }
 
+    public ProfileSocialStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ProfileSocialStatus status) {
+        this.status = status;
+    }
+
+    public Date getConnectedAt() {
+        return connectedAt;
+    }
+
+    public void setConnectedAt(Date connectedAt) {
+        this.connectedAt = connectedAt;
+    }
+
     public Date getCreatedAt() {
         return createdAt;
     }
@@ -117,7 +154,7 @@ public final class ProfileSocial {
         this.updatedAt = updatedAt;
     }
 
-    public static final class SecretsType extends PojoSetUserType<Secrets> {
+    public static final class SecretsType extends PojoUserType<Secrets> {
         public SecretsType() {
             super(Secrets.class);
         }
@@ -221,17 +258,11 @@ public final class ProfileSocial {
         }
     }
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public static final class Access {
-        // TODO(fuxing):  Date, Error message if any
-    }
-
     @PrePersist
     void prePersist() {
         long millis = System.currentTimeMillis();
         setUid(KeyUtils.nextULID(millis));
-        setCreatedAt(new Timestamp(System.currentTimeMillis()));
+        setCreatedAt(new Timestamp(millis));
 
         preUpdate();
     }

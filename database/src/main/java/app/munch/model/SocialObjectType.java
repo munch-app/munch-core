@@ -9,19 +9,23 @@ import java.util.stream.Stream;
 
 /**
  * Created by: Fuxing
- * Date: 10/9/19
- * Time: 7:27 pm
+ * Date: 26/9/19
+ * Time: 7:57 pm
  */
-public enum ProfileSocialType {
-    INSTAGRAM("INSTAGRAM"),
+public enum SocialObjectType {
+    INSTAGRAM_PHOTO("INSTAGRAM_PHOTO"),
 
-    FACEBOOK("FACEBOOK"),
+    INSTAGRAM_VIDEO("INSTAGRAM_VIDEO"),
+
+    INSTAGRAM_STORY("INSTAGRAM_STORY"),
+
+    INSTAGRAM_ALBUM("INSTAGRAM_ALBUM"),
 
     UNKNOWN_TO_SDK_VERSION(null);
 
     private final String value;
 
-    ProfileSocialType(String value) {
+    SocialObjectType(String value) {
         this.value = value;
     }
 
@@ -35,18 +39,18 @@ public enum ProfileSocialType {
      * Use this in place of valueOf to convert the raw string returned by the service into the enum value.
      *
      * @param value real value
-     * @return SocialType corresponding to the value
+     * @return SocialObjectType corresponding to the value
      */
     @JsonCreator
-    public static ProfileSocialType fromValue(String value) {
+    public static SocialObjectType fromValue(String value) {
         if (value == null) {
             return null;
         }
-        return Stream.of(ProfileSocialType.values()).filter(e -> e.toString().equals(value)).findFirst()
+        return Stream.of(SocialObjectType.values()).filter(e -> e.toString().equals(value)).findFirst()
                 .orElse(UNKNOWN_TO_SDK_VERSION);
     }
 
-    public static Set<ProfileSocialType> knownValues() {
+    public static Set<SocialObjectType> knownValues() {
         return Stream.of(values()).filter(v -> v != UNKNOWN_TO_SDK_VERSION).collect(Collectors.toSet());
     }
 }
