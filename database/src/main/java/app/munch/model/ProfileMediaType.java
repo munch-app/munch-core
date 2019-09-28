@@ -8,9 +8,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Created by: Fuxing
  * Date: 26/9/19
  * Time: 7:57 pm
+ * @author Fuxing Loh
  */
 public enum ProfileMediaType {
     INSTAGRAM_PHOTO("INSTAGRAM_PHOTO"),

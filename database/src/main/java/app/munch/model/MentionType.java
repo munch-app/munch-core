@@ -8,17 +8,30 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Created by: Fuxing
  * Date: 10/9/19
  * Time: 8:16 pm
+ *
+ * @author Fuxing Loh
  */
 public enum MentionType {
-    SOCIAL("SOCIAL"),
+    /**
+     * @see ProfileMedia
+     */
+    MEDIA("MEDIA"),
 
-    IMAGE("IMAGE"),
-
+    /**
+     * @see Article
+     */
     ARTICLE("ARTICLE"),
 
+    /**
+     * Not Yet Implemented
+     */
+    IMAGE("IMAGE"),
+
+    /**
+     * Not Yet Implemented
+     */
     REVIEW("REVIEW"),
 
     UNKNOWN_TO_SDK_VERSION(null);

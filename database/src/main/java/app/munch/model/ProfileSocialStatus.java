@@ -8,9 +8,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Created by: Fuxing
  * Date: 26/9/19
  * Time: 10:02 pm
+ * @author Fuxing Loh
  */
 public enum ProfileSocialStatus {
 

@@ -8,9 +8,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Created by: Fuxing
  * Date: 10/9/19
  * Time: 7:27 pm
+ * @author Fuxing Loh
  */
 public enum ProfileSocialType {
     INSTAGRAM("INSTAGRAM"),

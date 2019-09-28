@@ -1,5 +1,7 @@
 package app.munch.model;
 
+import app.munch.model.annotation.ValidMentionStatus;
+import app.munch.model.annotation.ValidMentionType;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.fuxing.err.ValidationException;
@@ -14,15 +16,24 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 /**
- * Created by: Fuxing
  * Date: 10/9/19
  * Time: 8:04 pm
+ *
+ * @author Fuxing Loh
+ * @see app.munch.model.validator.MentionStatusValidator for class level validation
+ * @see app.munch.model.validator.MentionTypeValidator for class level validation
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
-@Table(name = "Mention")
+@Table(name = "Mention", uniqueConstraints = {
+        @UniqueConstraint(name = "uk_2rjxx36ptzagatrp", columnNames = {"place_id", "article"}),
+        @UniqueConstraint(name = "uk_88jnqnzqvndsmhnm", columnNames = {"place_id", "media"}),
+})
+@ValidMentionType
+@ValidMentionStatus
 public final class Mention {
+    // TODO(fuxing): Future: MentionLocking, to prevent it from unwanted editing.
 
     /**
      * Mention uses L16 ids, mention is not a top level node, it's a unique node tho.
@@ -34,7 +45,9 @@ public final class Mention {
     @Column(length = 16, updatable = false, nullable = false, unique = true)
     private String id;
 
-    @NotNull
+    /**
+     * @see ValidMentionStatus for how validation works
+     */
     @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = true)
     private Place place;
 
@@ -42,16 +55,40 @@ public final class Mention {
     @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = false)
     private Profile profile;
 
+    /**
+     * @see ValidMentionType for how validation works
+     */
     @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = true)
     private Article article;
 
+    /**
+     * @see ValidMentionType for how validation works
+     */
     @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = true)
     private ProfileMedia media;
 
+    /**
+     * @see ValidMentionType for how validation works
+     */
     @ValidEnum
     @Enumerated(EnumType.STRING)
     @Column(length = 100, updatable = false, nullable = false, unique = false)
     private MentionType type;
+
+    /**
+     * @see ValidMentionStatus for how validation works
+     */
+    @ValidEnum
+    @Enumerated(EnumType.STRING)
+    @Column(length = 100, updatable = true, nullable = false, unique = false)
+    private MentionStatus status;
+
+    /**
+     * Who created this mention linking
+     */
+    @NotNull
+    @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = false)
+    private Profile createdBy;
 
     @NotNull
     @Version
@@ -110,6 +147,22 @@ public final class Mention {
         this.type = type;
     }
 
+    public MentionStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(MentionStatus status) {
+        this.status = status;
+    }
+
+    public Profile getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(Profile createdBy) {
+        this.createdBy = createdBy;
+    }
+
     public Date getUpdatedAt() {
         return updatedAt;
     }
@@ -138,7 +191,5 @@ public final class Mention {
     void preUpdate() {
         setUpdatedAt(new Timestamp(System.currentTimeMillis()));
         ValidationException.validate(this, Default.class);
-
-        // TODO(fuxing): Strict Validation
     }
 }

@@ -13,14 +13,16 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 /**
- * Created by: Fuxing
  * Date: 2019-07-31
  * Time: 15:27
+ * @author Fuxing Loh
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
-@Table(name = "PlaceImage")
+@Table(name = "PlaceImage", uniqueConstraints = {
+        @UniqueConstraint(name = "uk_my3rcdy96e9fdwfs", columnNames = {"place_id", "image_uid"})
+})
 public final class PlaceImage {
     // Implement: importance
 

@@ -17,14 +17,16 @@ import java.util.List;
 /**
  * Media is a top level object that is a short-form of Social Media
  * <p>
- * Created by: Fuxing
  * Date: 25/9/19
  * Time: 11:31 pm
+ * @author Fuxing Loh
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
-@Table(name = "ProfileMedia")
+@Table(name = "ProfileMedia", uniqueConstraints = {
+        @UniqueConstraint(name = "an27370fqpajyefr", columnNames = {"profile_uid", "eid"})
+})
 @TypeDef(name = "ProfileMedia.Content", typeClass = ProfileMedia.ContentType.class)
 @TypeDef(name = "ProfileMedia.Metric", typeClass = ProfileMedia.MetricType.class)
 public final class ProfileMedia {
@@ -42,7 +44,7 @@ public final class ProfileMedia {
      * External id, unique from each the platform
      */
     @NotNull
-    @Column(length = 512, updatable = false, nullable = false, unique = true)
+    @Column(length = 512, updatable = false, nullable = false, unique = false)
     private String eid;
 
     @NotNull
@@ -51,7 +53,7 @@ public final class ProfileMedia {
 
     @NotNull
     @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = false)
-    private ProfileSocial profileSocial;
+    private ProfileSocial social;
 
     @ValidEnum
     @Enumerated(EnumType.STRING)
@@ -105,12 +107,12 @@ public final class ProfileMedia {
         this.profile = profile;
     }
 
-    public ProfileSocial getProfileSocial() {
-        return profileSocial;
+    public ProfileSocial getSocial() {
+        return social;
     }
 
-    public void setProfileSocial(ProfileSocial profileSocial) {
-        this.profileSocial = profileSocial;
+    public void setSocial(ProfileSocial profileSocial) {
+        this.social = profileSocial;
     }
 
     public ProfileMediaType getType() {

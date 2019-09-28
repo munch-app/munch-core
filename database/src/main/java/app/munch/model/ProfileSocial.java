@@ -22,14 +22,16 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 /**
- * Created by: Fuxing
  * Date: 10/9/19
  * Time: 7:27 pm
+ * @author Fuxing Loh
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
-@Table(name = "ProfileSocial")
+@Table(name = "ProfileSocial", uniqueConstraints = {
+        @UniqueConstraint(name = "7hpdm0jqy7tbkerx", columnNames = {"profile_uid", "eid"})
+})
 @TypeDef(name = "ProfileSocial.Secrets", typeClass = ProfileSocial.SecretsType.class)
 public final class ProfileSocial {
 
@@ -46,7 +48,7 @@ public final class ProfileSocial {
      * External unique id, from the platform
      */
     @NotNull
-    @Column(length = 512, updatable = false, nullable = false, unique = true)
+    @Column(length = 512, updatable = false, nullable = false, unique = false)
     private String eid;
 
     @JsonIgnore
