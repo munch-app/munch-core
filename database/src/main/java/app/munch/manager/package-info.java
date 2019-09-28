@@ -1,4 +1,6 @@
 /**
+ * @deprecated use/migrate to controller instead.
+ * <p>
  * Why some entity have their own manager?
  * <p>
  * When there are too many rules and it involve data lifecycle, an EntityManager will be created to help facilitate

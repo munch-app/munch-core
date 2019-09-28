@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import dev.fuxing.err.UnauthorizedException;
 import dev.fuxing.jpa.EntityPatch;
 import dev.fuxing.jpa.HibernateUtils;
-import dev.fuxing.jpa.TransactionProvider;
 import dev.fuxing.transport.service.TransportContext;
 import dev.fuxing.utils.JsonUtils;
 
@@ -27,8 +26,7 @@ public final class MeService extends DataService {
     private final UsernameValidator usernameValidator;
 
     @Inject
-    MeService(TransactionProvider provider, UsernameValidator usernameValidator) {
-        super(provider);
+    MeService(UsernameValidator usernameValidator) {
         this.usernameValidator = usernameValidator;
     }
 
@@ -38,7 +36,7 @@ public final class MeService extends DataService {
             GET("", this::get);
             PATCH("", this::patch);
 
-            POST("/profile/username/attempt", this::usernameAttempt);
+            POST("/username/attempt", this::usernameAttempt);
         });
     }
 

@@ -63,7 +63,8 @@ public final class PlaceService implements TransportService {
 
             PATH("/:id", () -> {
                 GET("", this::idGet);
-                POST("/revisions", this::idRevisionPost);
+                POST("/revisions", this::idRevisionsPost);
+                GET("/mentions", this::idMentionsList);
             });
         });
     }
@@ -254,7 +255,7 @@ public final class PlaceService implements TransportService {
         return place;
     }
 
-    public Place idRevisionPost(TransportContext ctx) {
+    public Place idRevisionsPost(TransportContext ctx) {
         String id = ctx.pathString("id");
         String accountId = ctx.get(ApiRequest.class).getAccountId();
         // Have to use PlaceStruct or else reference chain will be picked up
@@ -265,5 +266,10 @@ public final class PlaceService implements TransportService {
         });
         serializableClient.put(place);
         return place;
+    }
+
+    public TransportResult idMentionsList(TransportContext ctx) {
+        // TODO(fuxing): implementation
+        return TransportResult.ok();
     }
 }

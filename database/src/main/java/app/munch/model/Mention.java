@@ -103,7 +103,7 @@ public final class Mention {
         return id;
     }
 
-    public void setId(String id) {
+    private void setId(String id) {
         this.id = id;
     }
 
@@ -167,7 +167,7 @@ public final class Mention {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
+    private void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
 
@@ -175,7 +175,7 @@ public final class Mention {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    private void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 

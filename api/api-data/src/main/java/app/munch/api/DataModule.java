@@ -15,6 +15,10 @@ public final class DataModule extends ApiServiceModule {
         addHealth(DataHealthCheck.class);
 
         addService(MeService.class);
+        addService(MeSocialService.class);
+        addService(MeMediaService.class);
+        addService(MeMentionService.class);
+
         addService(ProfileService.class);
 
         addService(ImageService.class);
@@ -23,5 +27,6 @@ public final class DataModule extends ApiServiceModule {
         addService(PublicationService.class);
 
         addService(TagService.class);
+
     }
 }

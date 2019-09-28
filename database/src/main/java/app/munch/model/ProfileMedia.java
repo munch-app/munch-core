@@ -87,7 +87,7 @@ public final class ProfileMedia {
         return uid;
     }
 
-    public void setUid(String uid) {
+    private void setUid(String uid) {
         this.uid = uid;
     }
 
@@ -151,7 +151,7 @@ public final class ProfileMedia {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
+    private void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
 
@@ -159,7 +159,7 @@ public final class ProfileMedia {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    private void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 

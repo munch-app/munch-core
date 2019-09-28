@@ -89,7 +89,7 @@ public final class ProfileSocial {
         return uid;
     }
 
-    public void setUid(String uid) {
+    private void setUid(String uid) {
         this.uid = uid;
     }
 
@@ -145,7 +145,7 @@ public final class ProfileSocial {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    private void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -153,7 +153,7 @@ public final class ProfileSocial {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
+    private void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
 

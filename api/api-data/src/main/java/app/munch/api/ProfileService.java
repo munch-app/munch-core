@@ -8,6 +8,7 @@ import dev.fuxing.jpa.TransactionProvider;
 import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
 import dev.fuxing.transport.service.TransportContext;
+import dev.fuxing.transport.service.TransportResult;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -36,6 +37,10 @@ public final class ProfileService extends DataService {
             PATH("/articles", () -> {
                 GET("", this::articlesList);
             });
+
+            PATH("/mentions", () -> {
+                GET("", this::mentionsList);
+            });
         });
     }
 
@@ -63,5 +68,10 @@ public final class ProfileService extends DataService {
                     .setParameter("username", username)
                     .getSingleResult();
         }, size, cursor);
+    }
+
+    public TransportResult mentionsList(TransportContext ctx) {
+        // TODO(fuxing): implementation
+        return TransportResult.ok();
     }
 }
