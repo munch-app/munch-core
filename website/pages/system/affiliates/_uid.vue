@@ -21,7 +21,7 @@
             <h5>Status:</h5>
             <div class="ml-8 p-4-8 small-bold bg-steam border-2">{{affiliate.status}}</div>
           </div>
-          <div class="border border-3 p-8-12 mt-16 overflow-hidden">
+          <div class="border border-3 p-8-12 mt-16 overflow-x-auto">
             <h5>Details:</h5>
             <pre>{{affiliate.placeStruct}}</pre>
           </div>
