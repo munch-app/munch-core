@@ -2,8 +2,5 @@ User-Agent: *
 Disallow: /_health/
 Disallow: /_nuxt/
 
-Disallow: /me
-Disallow: /system
-
 Disallow: /@admin
 Disallow: /@compat
