@@ -2,6 +2,7 @@ package app.munch.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import dev.fuxing.err.ForbiddenException;
 import dev.fuxing.err.ValidationException;
 import dev.fuxing.utils.KeyUtils;
 import org.hibernate.validator.constraints.Length;
@@ -175,6 +176,22 @@ public final class Profile {
         }
 
         ValidationException.validate(this, Default.class);
+    }
+
+    /**
+     * @param entityManager to use
+     * @param accountId     to match
+     * @param profile       to match
+     * @throws ForbiddenException if not authorized
+     */
+    public static void authorize(EntityManager entityManager, String accountId, Profile profile) {
+        Profile accountProfile = findByAccountId(entityManager, accountId);
+        if (accountProfile == null) throw new ForbiddenException();
+        if (profile == null) throw new ForbiddenException();
+
+        if (!accountProfile.getUid().equals(profile.getUid())) {
+            throw new ForbiddenException();
+        }
     }
 
     /**
