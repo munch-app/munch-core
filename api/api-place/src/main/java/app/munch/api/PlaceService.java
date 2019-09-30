@@ -1,5 +1,6 @@
 package app.munch.api;
 
+import app.munch.controller.MentionController;
 import app.munch.elastic.ElasticQueryClient;
 import app.munch.elastic.ElasticSerializableClient;
 import app.munch.manager.PlaceEntityManager;
@@ -8,6 +9,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import dev.fuxing.jpa.EntityStream;
 import dev.fuxing.jpa.HibernateUtils;
 import dev.fuxing.jpa.TransactionProvider;
+import dev.fuxing.transport.TransportCursor;
+import dev.fuxing.transport.TransportList;
 import dev.fuxing.transport.service.TransportContext;
 import dev.fuxing.transport.service.TransportResult;
 import dev.fuxing.transport.service.TransportService;
@@ -42,13 +45,15 @@ public final class PlaceService implements TransportService {
     private final PlaceEntityManager placeEntityManager;
 
     private final TransactionProvider provider;
+    private final MentionController mentionController;
 
     @Inject
-    PlaceService(ElasticQueryClient queryClient, ElasticSerializableClient serializableClient, PlaceEntityManager placeEntityManager, TransactionProvider provider) {
+    PlaceService(ElasticQueryClient queryClient, ElasticSerializableClient serializableClient, PlaceEntityManager placeEntityManager, TransactionProvider provider, MentionController mentionController) {
         this.queryClient = queryClient;
         this.serializableClient = serializableClient;
         this.placeEntityManager = placeEntityManager;
         this.provider = provider;
+        this.mentionController = mentionController;
     }
 
     @Override
@@ -268,8 +273,12 @@ public final class PlaceService implements TransportService {
         return place;
     }
 
-    public TransportResult idMentionsList(TransportContext ctx) {
-        // TODO(fuxing): implementation
-        return TransportResult.ok();
+    public TransportList idMentionsList(TransportContext ctx) {
+        final String id = ctx.pathString("id");
+        final int size = ctx.querySize(10, 33);
+        Set<MentionType> types = MentionType.fromQueryString(ctx.queryString("types", null));
+        TransportCursor cursor = ctx.queryCursor();
+
+        return mentionController.queryByPlace(id, size, types, cursor);
     }
 }

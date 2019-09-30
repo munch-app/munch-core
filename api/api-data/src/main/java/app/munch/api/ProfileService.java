@@ -1,17 +1,19 @@
 package app.munch.api;
 
+import app.munch.controller.MentionController;
 import app.munch.manager.ArticleEntityManager;
 import app.munch.model.ArticleStatus;
+import app.munch.model.MentionType;
 import app.munch.model.Profile;
 import dev.fuxing.jpa.HibernateUtils;
 import dev.fuxing.jpa.TransactionProvider;
 import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
 import dev.fuxing.transport.service.TransportContext;
-import dev.fuxing.transport.service.TransportResult;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.Set;
 
 /**
  * Created by: Fuxing
@@ -22,11 +24,13 @@ import javax.inject.Singleton;
 public final class ProfileService extends DataService {
 
     private final ArticleEntityManager articleEntityManager;
+    private final MentionController mentionController;
 
     @Inject
-    ProfileService(TransactionProvider provider, ArticleEntityManager articleEntityManager) {
+    ProfileService(TransactionProvider provider, ArticleEntityManager articleEntityManager, MentionController mentionController) {
         super(provider);
         this.articleEntityManager = articleEntityManager;
+        this.mentionController = mentionController;
     }
 
     @Override
@@ -70,8 +74,12 @@ public final class ProfileService extends DataService {
         }, size, cursor);
     }
 
-    public TransportResult mentionsList(TransportContext ctx) {
-        // TODO(fuxing): implementation
-        return TransportResult.ok();
+    public TransportList mentionsList(TransportContext ctx) {
+        final int size = ctx.querySize(20, 50);
+        final String username = ctx.pathString("username");
+        Set<MentionType> types = MentionType.fromQueryString(ctx.queryString("types", null));
+        TransportCursor cursor = ctx.queryCursor();
+
+        return mentionController.queryByUsername(username, size, types, cursor);
     }
 }

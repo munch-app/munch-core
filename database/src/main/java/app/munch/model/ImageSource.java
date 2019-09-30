@@ -56,7 +56,7 @@ public enum ImageSource {
         return String.valueOf(value);
     }
 
-    public static Set<ImageSource> fromArray(String value) {
+    public static Set<ImageSource> fromQueryString(String value) {
         if (StringUtils.isBlank(value)) {
             return Set.of();
         }

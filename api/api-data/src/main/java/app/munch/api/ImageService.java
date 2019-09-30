@@ -60,7 +60,7 @@ public final class ImageService extends DataService {
     public TransportList list(TransportContext ctx) {
         String accountId = ctx.get(ApiRequest.class).getAccountId();
         final int size = ctx.querySize(20, 50);
-        Set<ImageSource> sources = ImageSource.fromArray(ctx.queryString("sources", null));
+        Set<ImageSource> sources = ImageSource.fromQueryString(ctx.queryString("sources", null));
 
         return queryClient.query(accountId, sources, size, ctx.queryCursor());
     }
