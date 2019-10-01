@@ -25,14 +25,14 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "ProfileMedia", uniqueConstraints = {
-        @UniqueConstraint(name = "an27370fqpajyefr", columnNames = {"profile_uid", "eid"})
+        @UniqueConstraint(name = "uk_an27370fqpajyefr", columnNames = {"type", "eid"})
 })
 @TypeDef(name = "ProfileMedia.Content", typeClass = ProfileMedia.ContentType.class)
 @TypeDef(name = "ProfileMedia.Metric", typeClass = ProfileMedia.MetricType.class)
 public final class ProfileMedia {
 
     /**
-     * Internal id, unique to SocialObject table
+     * Internal uid, unique to ProfileMedia table
      */
     @NotNull
     @Pattern(regexp = KeyUtils.ULID_REGEX)

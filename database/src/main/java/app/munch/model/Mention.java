@@ -27,8 +27,8 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "Mention", uniqueConstraints = {
-        @UniqueConstraint(name = "uk_2rjxx36ptzagatrp", columnNames = {"place_id", "article"}),
-        @UniqueConstraint(name = "uk_88jnqnzqvndsmhnm", columnNames = {"place_id", "media"}),
+        @UniqueConstraint(name = "uk_2rjxx36ptzagatrp", columnNames = {"place_id", "article_id"}),
+        @UniqueConstraint(name = "uk_88jnqnzqvndsmhnm", columnNames = {"place_id", "media_uid"}),
 })
 @ValidMentionType
 @ValidMentionStatus

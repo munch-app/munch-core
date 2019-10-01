@@ -2,7 +2,7 @@ package app.munch.model.validator;
 
 import app.munch.model.Mention;
 import app.munch.model.MentionStatus;
-import app.munch.model.annotation.ValidMentionType;
+import app.munch.model.annotation.ValidMentionStatus;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -13,7 +13,7 @@ import javax.validation.ConstraintValidatorContext;
  *
  * @author Fuxing Loh
  */
-public class MentionStatusValidator implements ConstraintValidator<ValidMentionType, Mention> {
+public class MentionStatusValidator implements ConstraintValidator<ValidMentionStatus, Mention> {
 
     @Override
     public boolean isValid(Mention mention, ConstraintValidatorContext context) {
