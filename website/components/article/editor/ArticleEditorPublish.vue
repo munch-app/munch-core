@@ -14,13 +14,14 @@
           </div>
         </div>
         <div class="pt-24 hr-bot">
-          <text-auto class="mb-4 h3" :value="value.title" @input="onInputTitle" placeholder="Title"/>
-          <div class="tiny mb-4">{{(value.title || "").length}}/100 (required)</div>
+          <text-auto class="mb-4 h3" :value="value.title" @input="onInputTitle"
+                     placeholder="Title"/>
+          <div class="tiny b-a75 mb-8">{{(value.title || "").length}}/100 (required)</div>
         </div>
         <div class="pt-24 hr-bot">
           <text-auto class="mb-4 regular" :value="value.description" @input="onInputDescription"
                      placeholder="Description"/>
-          <div class="tiny mb-4">{{(value.description || "").length}}/250 (required)</div>
+          <div class="tiny b-a75 mb-8">{{(value.description || "").length}}/250 (required)</div>
         </div>
 
         <div class="ptb-16">

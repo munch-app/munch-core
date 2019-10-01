@@ -179,6 +179,8 @@
             .filter(value => value)[0] || ""
         }
 
+        this.revision.title = this.revision.title.substring(0, 100).trim()
+        this.revision.description = this.revision.description.substring(0, 250).trim()
         this.state = 'publish'
       },
       onPublish() {

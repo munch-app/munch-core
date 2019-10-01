@@ -10,7 +10,7 @@
     <!-- Dialog Portal, TODO(fuxing): Refactoring required -->
     <dialog-portal/>
 
-    <!-- Notification Event on the bottom TODO(fuxing): remove when eat between is refactored -->
+    <!-- Notification Event on the bottom TODO(fuxing): remove when /between is refactored -->
     <notification-event/>
   </div>
 </template>
