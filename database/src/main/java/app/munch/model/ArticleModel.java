@@ -39,10 +39,12 @@ public abstract class ArticleModel {
     private String slug;
 
     @NotBlank(groups = ArticlePublishedGroup.class)
+    @Length(max = 100)
     @Column(length = 100, updatable = true, nullable = true, unique = false)
     private String title;
 
     @NotBlank(groups = ArticlePublishedGroup.class)
+    @Length(max = 250)
     @Column(length = 250, updatable = true, nullable = true, unique = false)
     private String description;
 

@@ -1,6 +1,7 @@
 package app.munch.model;
 
 import app.munch.model.constraint.TagDefaultGroup;
+import app.munch.model.group.ProfileSocialAuthenticateGroup;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -24,6 +25,7 @@ import java.util.Date;
 /**
  * Date: 10/9/19
  * Time: 7:27 pm
+ *
  * @author Fuxing Loh
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -51,12 +53,17 @@ public final class ProfileSocial {
     @Column(length = 512, updatable = false, nullable = false, unique = false)
     private String eid;
 
+    @NotNull
+    @Length(max = 100)
+    @Column(length = 100, updatable = true, nullable = false, unique = false)
+    private String name;
+
     @JsonIgnore
     @NotNull
     @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = false)
     private Profile profile;
 
-    @ValidEnum
+    @ValidEnum(groups = {Default.class, ProfileSocialAuthenticateGroup.class})
     @Enumerated(EnumType.STRING)
     @Column(length = 100, updatable = false, nullable = false, unique = false)
     private ProfileSocialType type;
@@ -67,7 +74,7 @@ public final class ProfileSocial {
     private ProfileSocialStatus status;
 
     @JsonIgnore
-    @NotNull
+    @NotNull(groups = {Default.class, ProfileSocialAuthenticateGroup.class})
     @Valid
     @Type(type = "ProfileSocial.Secrets")
     private Secrets secrets;
@@ -99,6 +106,14 @@ public final class ProfileSocial {
 
     public void setEid(String sid) {
         this.eid = sid;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Profile getProfile() {
@@ -187,6 +202,9 @@ public final class ProfileSocial {
         @Length(max = 2048)
         private String refreshToken;
 
+        /**
+         * https://www.instagram.com/developer/ uses access_token only
+         */
         @Length(max = 2048)
         private String accessToken;
 
