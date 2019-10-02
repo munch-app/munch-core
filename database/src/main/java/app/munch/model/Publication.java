@@ -134,7 +134,7 @@ public final class Publication {
 
     @PrePersist
     void prePersist() {
-        setId(KeyUtils.nextL12() + "5");
+        setId(KeyUtils.nextL(12, '5'));
         setCreatedAt(new Timestamp(System.currentTimeMillis()));
 
         preUpdate();

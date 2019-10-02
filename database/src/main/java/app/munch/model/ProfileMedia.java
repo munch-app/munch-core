@@ -1,6 +1,7 @@
 package app.munch.model;
 
 import com.fasterxml.jackson.annotation.*;
+import dev.fuxing.err.ValidationException;
 import dev.fuxing.postgres.PojoListUserType;
 import dev.fuxing.postgres.PojoUserType;
 import dev.fuxing.utils.KeyUtils;
@@ -11,6 +12,8 @@ import org.hibernate.annotations.TypeDef;
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
+import javax.validation.groups.Default;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -19,6 +22,7 @@ import java.util.List;
  * <p>
  * Date: 25/9/19
  * Time: 11:31 pm
+ *
  * @author Fuxing Loh
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -31,14 +35,11 @@ import java.util.List;
 @TypeDef(name = "ProfileMedia.Metric", typeClass = ProfileMedia.MetricType.class)
 public final class ProfileMedia {
 
-    /**
-     * Internal uid, unique to ProfileMedia table
-     */
     @NotNull
-    @Pattern(regexp = KeyUtils.ULID_REGEX)
+    @Pattern(regexp = "^[0-9a-hjkmnp-tv-z]{16}$")
     @Id
-    @Column(length = 26, updatable = false, nullable = false, unique = true)
-    private String uid;
+    @Column(length = 16, updatable = false, nullable = false, unique = true)
+    private String id;
 
     /**
      * External id, unique from each the platform
@@ -83,12 +84,12 @@ public final class ProfileMedia {
     @Column(updatable = false, nullable = false, unique = false)
     private Date createdAt;
 
-    public String getUid() {
-        return uid;
+    public String getId() {
+        return id;
     }
 
-    private void setUid(String uid) {
-        this.uid = uid;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getEid() {
@@ -173,6 +174,23 @@ public final class ProfileMedia {
         public MetricType() {
             super(Metric.class);
         }
+    }
+
+    @PrePersist
+    void prePersist() {
+        long millis = System.currentTimeMillis();
+
+        setId(KeyUtils.nextL(15, 's'));
+        setCreatedAt(new Timestamp(millis));
+
+        preUpdate();
+    }
+
+    @PreUpdate
+    void preUpdate() {
+        setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+
+        ValidationException.validate(this, Default.class);
     }
 
     @JsonInclude(JsonInclude.Include.NON_NULL)

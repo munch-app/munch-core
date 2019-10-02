@@ -157,7 +157,7 @@ public final class Place extends PlaceModel implements ElasticSerializable {
     @PrePersist
     void prePersist() {
         if (getId() == null) {
-            setId(KeyUtils.nextL12() + "0");
+            setId(KeyUtils.nextL(12, '0'));
         }
 
         if (getCreatedAt() == null) {

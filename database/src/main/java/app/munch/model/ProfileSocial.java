@@ -36,6 +36,7 @@ import java.util.Date;
 })
 @TypeDef(name = "ProfileSocial.Secrets", typeClass = ProfileSocial.SecretsType.class)
 public final class ProfileSocial {
+    // TODO(fuxing): Add count & internal worker schedule
 
     /**
      * Internal unique generated id

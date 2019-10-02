@@ -111,7 +111,7 @@ public final class PlaceRevision extends PlaceModel {
         assert place != null;
 
         if (place.getId() == null) {
-            place.setId(KeyUtils.nextL12() + "0");
+            place.setId(KeyUtils.nextL(12, '0'));
         }
 
         setId(place.getId());

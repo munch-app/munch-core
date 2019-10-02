@@ -97,7 +97,7 @@ public final class Article extends ArticleModel {
     @PrePersist
     void prePersist() {
         if (getId() == null) {
-            setId(KeyUtils.nextL12() + "1");
+            setId(KeyUtils.nextL(12, '1'));
         }
         if (getCreatedAt() == null) {
             setCreatedAt(new Timestamp(System.currentTimeMillis()));

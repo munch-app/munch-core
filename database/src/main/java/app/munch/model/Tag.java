@@ -119,7 +119,7 @@ public final class Tag {
 
     @PrePersist
     void prePersist() {
-        setId(KeyUtils.nextL12() + "4");
+        setId(KeyUtils.nextL(12, '4'));
         setCreatedAt(new Timestamp(System.currentTimeMillis()));
 
         preUpdate();

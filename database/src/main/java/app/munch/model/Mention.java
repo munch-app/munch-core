@@ -28,7 +28,7 @@ import java.util.Date;
 @Entity
 @Table(name = "Mention", uniqueConstraints = {
         @UniqueConstraint(name = "uk_2rjxx36ptzagatrp", columnNames = {"place_id", "article_id"}),
-        @UniqueConstraint(name = "uk_88jnqnzqvndsmhnm", columnNames = {"place_id", "media_uid"}),
+        @UniqueConstraint(name = "uk_88jnqnzqvndsmhnm", columnNames = {"place_id", "media_id"}),
 })
 @ValidMentionType
 @ValidMentionStatus
@@ -181,7 +181,7 @@ public final class Mention {
 
     @PrePersist
     void prePersist() {
-        setId(KeyUtils.nextL16());
+        setId(KeyUtils.nextL(15, 'm'));
         setCreatedAt(new Timestamp(System.currentTimeMillis()));
 
         preUpdate();
