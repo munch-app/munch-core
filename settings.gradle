@@ -44,6 +44,7 @@ include 'controller'
 include 'worker'
 include 'worker:worker-affiliate-chope'
 include 'worker:worker-instagram'
+include 'worker:worker-mention'
 include 'worker:worker-place'
 
 /**
