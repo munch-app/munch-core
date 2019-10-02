@@ -24,15 +24,15 @@
 
         <hr class="mtb-8">
 
-        <nuxt-link class="black" :to="`/me/articles`">My articles</nuxt-link>
+        <nuxt-link class="black" :to="`/me/articles`">Articles</nuxt-link>
         <nuxt-link class="black" :to="`/me/articles/new`">New article</nuxt-link>
         <nuxt-link class="black" :to="`/me/places/new`">New place</nuxt-link>
         <hr class="mtb-8">
       </div>
 
       <div>
-        <nuxt-link class="black" :to="`/me/socials`">My socials</nuxt-link>
-        <nuxt-link class="black" :to="`/me/mentions`">My mentions</nuxt-link>
+        <nuxt-link class="black" :to="`/me/socials`">Social Accounts</nuxt-link>
+        <nuxt-link class="black" :to="`/me/mentions`">Mentions</nuxt-link>
         <hr class="mtb-8">
       </div>
 
