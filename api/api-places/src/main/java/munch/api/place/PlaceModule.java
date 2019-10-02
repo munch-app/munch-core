@@ -18,6 +18,5 @@ public final class PlaceModule extends ApiServiceModule {
         addCleaner(ArticleCleaner.class);
 
         addDeprecatedService(PlaceService.class);
-        addDeprecatedService(PlaceSuggestService.class);
     }
 }

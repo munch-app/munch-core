@@ -16,6 +16,7 @@ import java.util.List;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Deprecated
 public final class PlaceImage {
     private String imageId;
     private String sort;

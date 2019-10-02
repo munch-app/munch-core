@@ -1,15 +1,12 @@
 package app.munch.api;
 
-import app.munch.controller.ProfileSocialController;
 import app.munch.controller.QueryChain;
 import app.munch.model.Profile;
 import app.munch.model.ProfileSocial;
 import dev.fuxing.err.ConflictException;
 import dev.fuxing.transport.TransportList;
 import dev.fuxing.transport.service.TransportContext;
-import dev.fuxing.transport.service.TransportResult;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
@@ -20,19 +17,10 @@ import javax.inject.Singleton;
  */
 @Singleton
 public final class MeSocialService extends DataService {
-
-    private final ProfileSocialController socialController;
-
-    @Inject
-    MeSocialService(ProfileSocialController socialController) {
-        this.socialController = socialController;
-    }
-
     @Override
     public void route() {
         PATH("/me/socials", () -> {
             GET("", this::list);
-            POST("/authenticate", this::authenticate);
 
             PATH("/:uid", () -> {
                 GET("", this::uidGet);
@@ -58,16 +46,6 @@ public final class MeSocialService extends DataService {
                         builder.put("uid", social.getUid());
                     });
         });
-    }
-
-    public TransportResult authenticate(TransportContext ctx) {
-        final String accountId = ctx.get(ApiRequest.class).getAccountId();
-
-        ProfileSocial social = ctx.bodyAsObject(ProfileSocial.class);
-        socialController.authenticate(social, entityManager -> {
-            return Profile.findByAccountId(entityManager, accountId);
-        });
-        return TransportResult.ok();
     }
 
     public ProfileSocial uidGet(TransportContext ctx) {

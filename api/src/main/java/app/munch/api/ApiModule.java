@@ -1,6 +1,7 @@
 package app.munch.api;
 
 import app.munch.api.migration.MigrationModule;
+import app.munch.api.social.SocialModule;
 import app.munch.database.DatabaseModule;
 import app.munch.elastic.ElasticModule;
 import com.google.inject.AbstractModule;
@@ -34,6 +35,7 @@ public class ApiModule extends AbstractModule {
         install(new PageModule());
         install(new AccountModule());
         install(new app.munch.api.PlaceModule());
+        install(new SocialModule());
 
         install(new MigrationModule());
 

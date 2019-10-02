@@ -12,10 +12,7 @@
         return this.$router.push({path: `/@${username}`})
       }
 
-      this.$store.dispatch('addMessage', {
-        type: 'error',
-        message: 'Profile not found.'
-      })
+      this.$store.dispatch('addMessage', {type: 'error', message: 'Profile not found.'})
       return this.$router.push({path: `/`})
     }
   }

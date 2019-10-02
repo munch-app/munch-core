@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
  * @deprecated move it to migration module
  */
 @Singleton
+@Deprecated
 public final class PlaceImageClient {
     private final ImageMutationClient imageMutationClient;
     private final ArticleLinkClient articleLinkClient;

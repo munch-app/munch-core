@@ -62,6 +62,7 @@ include 'api:api-admin'
 include 'api:api-account'
 include 'api:api-page'
 include 'api:api-place'
+include 'api:api-social'
 // search, filter, trending, between, business
 
 // Deprecating

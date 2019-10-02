@@ -2,8 +2,6 @@ package app.munch.elastic;
 
 import app.munch.model.ElasticDocumentType;
 
-import java.util.Date;
-
 /**
  * Created by: Fuxing
  * Date: 10/9/19
@@ -15,10 +13,9 @@ public class ElasticDocumentQueue {
      * This class will facilitate it.
      */
 
-    // TODO(fuxing): PlaceEntityManager -> Auto queue?
-    // TODO(fuxing): controllers -> to manage entities
+    // TODO(fuxing): implementation
 
-    public void queue(ElasticDocumentType type, String id, Date date) {
+    public void queue(ElasticDocumentType type, String id) {
 
     }
 }

@@ -1,13 +1,26 @@
 <template>
   <div class="container pt-64 pb-64">
     <div class="flex-align-center flex-justify-between">
-      <h1>Your socials</h1>
-      <button @click="onConnectNew" class="blue-outline">Connect new</button>
+      <h1>Your social accounts</h1>
+      <button @click="onConnectInstagram" class="pink-outline">Connect Instagram</button>
     </div>
 
     <div class="mt-32">
-      <div v-if="socials.length > 0">
-        <pre>{{socials}}</pre>
+      <div class="flex-1-2-3-4 m--12" v-if="socials.length > 0">
+        <div class="p-12" v-for="social in socials" :key="social.uid">
+          <div class="border border-3 p-16">
+            <div v-if="social.type === 'INSTAGRAM'" class="flex-align-center">
+              <simple-svg class="wh-24px" :filepath="require('~/assets/icon/icons8-instagram.svg')"/>
+              <h4 class="ml-8">Instagram: {{social.name}}</h4>
+            </div>
+            <div class="mt-8 flex-align-center">
+              <div>
+                <span class="small-bold">{{social.status}}</span>,
+                <span class="small">{{formatMillis(social.updatedAt)}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div v-else>
@@ -20,24 +33,6 @@
     <div class="flex-center ptb-32" v-if="next">
       <button class="blue-outline" @click="onLoadMore">Load more</button>
     </div>
-
-    <portal-dialog>
-      <div class="dialog-small border">
-        <div class="flex">
-          <div class="border-blue border-3 overflow-hidden">
-            <div class="p-16-24 hover-bg-a10 hover-pointer" @click="onConnectInstagram">
-              <div class="flex-align-center">
-                <simple-svg class="wh-32px" fill="black" :filepath="require('~/assets/icon/icons8-instagram.svg')"/>
-                <h3 class="ml-8">Instagram</h3>
-              </div>
-              <div class="mt-4">
-                <small>Connecting your instagram with Munch.</small>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </portal-dialog>
   </div>
 </template>
 
@@ -75,13 +70,11 @@
             this.next = cursor?.next
           })
       },
-      onConnectNew() {
-        this.$store.commit('global/setDialog', {
-          name: 'PortalDialog'
-        })
-      },
       onConnectInstagram() {
-        // TODO(fuxing): Connect Instagram
+        const clientId = '74fc31293dde4a45b593a5deedc3ebbe'
+        const redirectUri = `${process.env.origin}/me/socials/authenticate/instagram`
+        const url = `https://api.instagram.com/oauth/authorize/?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code`
+        window.open(url, '_self')
       }
     }
   }

@@ -1,7 +1,6 @@
 package app.munch.model;
 
 import app.munch.model.constraint.TagDefaultGroup;
-import app.munch.model.group.ProfileSocialAuthenticateGroup;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -63,7 +62,7 @@ public final class ProfileSocial {
     @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = false)
     private Profile profile;
 
-    @ValidEnum(groups = {Default.class, ProfileSocialAuthenticateGroup.class})
+    @ValidEnum
     @Enumerated(EnumType.STRING)
     @Column(length = 100, updatable = false, nullable = false, unique = false)
     private ProfileSocialType type;
@@ -74,7 +73,7 @@ public final class ProfileSocial {
     private ProfileSocialStatus status;
 
     @JsonIgnore
-    @NotNull(groups = {Default.class, ProfileSocialAuthenticateGroup.class})
+    @NotNull
     @Valid
     @Type(type = "ProfileSocial.Secrets")
     private Secrets secrets;

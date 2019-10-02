@@ -34,8 +34,6 @@ project('api-places') {
         compile group: 'article-system', name: 'article-system-data-client', version: articleVersion
         compile group: 'munch-taste', name: 'munch-taste-client', version: tasteVersion
 
-        compile group: 'munch-suggest', name: 'munch-suggest-client', version: suggestVersion
-
         compile group: 'file-service', name: 'file-service-client', version: fileVersion
 
         compile group: 'catalyst', name: 'catalyst-link-client', version: catalystVersion
@@ -93,6 +91,12 @@ project('api-place') {
     }
 }
 
+project('api-social') {
+    dependencies {
+        compile group: 'dev.fuxing', name: 'transport-client', version: transportVersion
+    }
+}
+
 dependencies {
     compile group: 'com.amazonaws', name: 'aws-java-sdk-ssm', version: awsVersion1
 
@@ -103,6 +107,7 @@ dependencies {
     compile project(':api:api-account')
     compile project(':api:api-page')
     compile project(':api:api-place')
+    compile project(':api:api-social')
 
     // Deprecating
     compile project(':api:api-places')
