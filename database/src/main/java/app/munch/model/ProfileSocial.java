@@ -36,7 +36,6 @@ import java.util.Date;
 })
 @TypeDef(name = "ProfileSocial.Secrets", typeClass = ProfileSocial.SecretsType.class)
 public final class ProfileSocial {
-    // TODO(fuxing): Add count & internal worker schedule
 
     /**
      * Internal unique generated id
@@ -157,20 +156,20 @@ public final class ProfileSocial {
         this.connectedAt = connectedAt;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    private void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
-
     public Date getUpdatedAt() {
         return updatedAt;
     }
 
     private void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
     public static final class SecretsType extends PojoUserType<Secrets> {
