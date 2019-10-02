@@ -1,0 +1,3 @@
+dependencies {
+    compile group: 'dev.fuxing', name: 'transport-client', version: transportVersion
+}
