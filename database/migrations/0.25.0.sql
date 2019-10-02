@@ -25,7 +25,7 @@ alter table profilesocial
 
 create table profilemedia
 (
-    uid         varchar(26)  not null
+    id          varchar(16)  not null
         constraint profilemedia_pkey
             primary key,
     content     jsonb        not null,
@@ -49,10 +49,10 @@ alter table profilemedia
 
 create table profilemedia_image
 (
-    profilemedia_uid varchar(26) not null
-        constraint fk5adja6fhtc9fy0qxgj245us4
+    profilemedia_id varchar(16) not null
+        constraint fk2xdvhu7e6rbfewhilafi9ddds
             references profilemedia,
-    images_uid       varchar(26) not null
+    images_uid      varchar(26) not null
         constraint fk9bi7kls8xox8k23p11soi2o5w
             references image
 );
@@ -75,8 +75,8 @@ create table mention
     createdby_uid varchar(26)  not null
         constraint fk8sixvsyxlyibd660bah64147g
             references profile,
-    media_uid     varchar(26)
-        constraint fkrna4ftrdrmk130g6kf7ktoj1p
+    media_id      varchar(16)
+        constraint fk2lj5a0s27na4jw6rckbqkrqci
             references profilemedia,
     place_id      varchar(13)
         constraint fk4n1l3c7a4o5c1qs7b1w44iy8i
@@ -87,7 +87,7 @@ create table mention
     constraint uk_2rjxx36ptzagatrp
         unique (place_id, article_id),
     constraint uk_88jnqnzqvndsmhnm
-        unique (place_id, media_uid)
+        unique (place_id, media_id)
 );
 
 alter table mention
