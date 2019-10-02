@@ -1,14 +1,14 @@
 <template>
   <div class="HeaderMenu flex-justify-end index-top-elevation no-select" v-if="isFocused('HeaderMenu')">
-    <ul class="NavLink fixed bg-white w-100 elevation-3 text index-top-elevation border">
+    <ul class="NavLink fixed bg-white w-100 elevation-3 text index-top-elevation border text-decoration-none">
 
-      <div class="text-decoration-none">
+      <div>
         <nuxt-link class="Mobile black" to="/">Home</nuxt-link>
         <a v-if="!isLoggedIn" @click.prevent.stop="onSignIn">Sign In</a>
         <a v-if="!isLoggedIn" @click.prevent.stop="onSignUp">Sign Up</a>
       </div>
 
-      <div v-if="isLoggedIn" class="text-decoration-none">
+      <div v-if="isLoggedIn">
         <nuxt-link :to="`/@${username}`">
           <div class="flex-row flex-align-center">
             <div v-if="profile.image" class="flex-no-shrink wh-40px border-circle overflow-hidden mr-8">
@@ -30,13 +30,19 @@
         <hr class="mtb-8">
       </div>
 
-      <div v-if="isLoggedIn" class="text-decoration-none">
+      <div>
+        <nuxt-link class="black" :to="`/me/socials`">My socials</nuxt-link>
+        <nuxt-link class="black" :to="`/me/mentions`">My mentions</nuxt-link>
+        <hr class="mtb-8">
+      </div>
+
+      <div v-if="isLoggedIn">
         <nuxt-link class="black" :to="`/@${username}`" >Profile</nuxt-link>
         <nuxt-link class="black" to="/support">Help</nuxt-link>
         <nuxt-link class="black" to="/me/signout">Sign out</nuxt-link>
       </div>
 
-      <div v-if="isMunchTeam" class="text-decoration-none black">
+      <div v-if="isMunchTeam">
         <hr class="mtb-8">
         <nuxt-link class="black" to="/system">Admin System</nuxt-link>
       </div>
