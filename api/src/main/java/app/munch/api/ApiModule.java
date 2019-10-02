@@ -34,12 +34,11 @@ public class ApiModule extends AbstractModule {
 
         install(new PageModule());
         install(new AccountModule());
-        install(new app.munch.api.PlaceModule());
+        install(new PlaceModule());
         install(new SocialModule());
 
         install(new MigrationModule());
 
-        install(new munch.api.place.PlaceModule());
         install(new SearchModule());
         install(new FeedModule());
         install(new LocationModule());
