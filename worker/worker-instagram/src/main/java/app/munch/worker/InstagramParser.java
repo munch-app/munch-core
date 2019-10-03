@@ -1,5 +1,7 @@
 package app.munch.worker;
 
+import com.instagram.model.InstagramMedia;
+
 import javax.inject.Singleton;
 
 /**
@@ -11,7 +13,7 @@ import javax.inject.Singleton;
 @Singleton
 public final class InstagramParser {
 
-    public void parse() {
+    public void parse(InstagramMedia media) {
 
     }
 

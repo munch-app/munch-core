@@ -70,6 +70,9 @@ public final class ProfileMedia {
     @Size(max = 20)
     private List<@NotNull Node> content;
 
+    @OneToMany(cascade = {}, fetch = FetchType.LAZY, mappedBy = "media", orphanRemoval = false)
+    private List<Mention> mentions;
+
     @NotNull
     @Valid
     @Type(type = "ProfileMedia.Metric")
@@ -138,6 +141,14 @@ public final class ProfileMedia {
 
     public void setContent(List<Node> content) {
         this.content = content;
+    }
+
+    public List<Mention> getMentions() {
+        return mentions;
+    }
+
+    public void setMentions(List<Mention> mentions) {
+        this.mentions = mentions;
     }
 
     public Metric getMetric() {

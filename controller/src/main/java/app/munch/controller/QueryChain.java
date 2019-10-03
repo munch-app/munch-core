@@ -126,6 +126,10 @@ public class QueryChain<T> {
         return asQuery().getResultList();
     }
 
+    public EntityStream<T> asStream() {
+        return EntityStream.of(asList());
+    }
+
     public TransportList asTransportList(BiConsumer<T, TransportCursor.Builder> consumer) {
         EntityStream<T> stream = EntityStream.of(asList());
         stream.cursor(size, consumer);
