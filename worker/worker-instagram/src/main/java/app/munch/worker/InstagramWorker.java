@@ -19,12 +19,15 @@ public final class InstagramWorker implements WorkerRunner {
 
     @Override
     public String groupUid() {
-        // TODO(fuxing): required
-        return null;
+        return "01dp6jafyrdfvhbz07fsf6ndb3";
     }
 
     @Override
     public void run(WorkerTask task) throws Exception {
+        // TODO(fuxing): DynamoDB
+    }
+
+    public static void main(String[] args) {
         WorkerRunner.start(InstagramWorker.class,
                 new DatabaseModule()
         );

@@ -2,7 +2,7 @@ package com.instagram.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Date: 2/10/19
@@ -12,7 +12,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class AccessTokenResponse {
+public final class AccessTokenResponse {
 
     @JsonProperty("access_token")
     private String accessToken;

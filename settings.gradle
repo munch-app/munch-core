@@ -88,3 +88,8 @@ include 'sitemap'
  */
 include 'migration'
 
+/**
+ * Services, external
+ */
+include 'services'
+include 'services:services-instagram'

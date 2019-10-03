@@ -1,4 +1,4 @@
-package app.munch.instagram;
+package app.munch.worker;
 
 import javax.inject.Singleton;
 

@@ -93,7 +93,7 @@ project('api-place') {
 
 project('api-social') {
     dependencies {
-        compile group: 'dev.fuxing', name: 'transport-client', version: transportVersion
+        compile project(':services:services-instagram')
     }
 }
 

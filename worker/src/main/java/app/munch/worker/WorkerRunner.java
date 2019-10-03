@@ -23,7 +23,6 @@ public interface WorkerRunner {
 
     void run(WorkerTask task) throws Exception;
 
-
     static <T extends WorkerRunner> void start(Class<T> runnerClass, com.google.inject.Module... modules) {
         Injector injector = Guice.createInjector(modules);
         WorkerCoordinator coordinator = injector.getInstance(WorkerCoordinator.class);

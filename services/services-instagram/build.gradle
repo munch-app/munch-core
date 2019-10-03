@@ -1,0 +1,4 @@
+dependencies {
+    compile group: 'dev.fuxing', name: 'transport-core', version: transportVersion
+    compile group: 'dev.fuxing', name: 'transport-client', version: transportVersion
+}

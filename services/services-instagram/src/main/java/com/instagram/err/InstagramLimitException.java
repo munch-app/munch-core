@@ -1,4 +1,4 @@
-package app.munch.instagram.err;
+package com.instagram.err;
 
 import dev.fuxing.err.ExceptionParser;
 import dev.fuxing.err.TransportException;
