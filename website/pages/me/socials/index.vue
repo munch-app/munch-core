@@ -8,7 +8,7 @@
     <div class="mt-32">
       <div class="flex-1-2-3-4 m--12" v-if="socials.length > 0">
         <div class="p-12" v-for="social in socials" :key="social.uid">
-          <div class="border border-3 p-16">
+          <div class="border-3 p-16 bg-steam">
             <div v-if="social.type === 'INSTAGRAM'" class="flex-align-center">
               <simple-svg class="wh-24px" :filepath="require('~/assets/icon/icons8-instagram.svg')"/>
               <h4 class="ml-8">Instagram: {{social.name}}</h4>
