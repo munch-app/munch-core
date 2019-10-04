@@ -17,6 +17,11 @@ ArticleContent.vue must be structured as such to follow exactly ProseMirror stru
         <article-avatar v-else-if="node.type ==='avatar'" :key="index" :node="node"/>
         <article-place ref="context" v-else-if="node.type ==='place'" :key="index" :node="node"
                        :affiliates="placeAffiliates[node.attrs.place.id]"/>
+
+        <in-article-adsense v-else-if="node.type === 'adsense'" :key="index"
+          data-ad-client="ca-pub-7144155418390858"
+          data-ad-slot="8163543825"/>
+
         <div v-else :key="index"/>
       </template>
     </div>
@@ -40,7 +45,10 @@ ArticleContent.vue must be structured as such to follow exactly ProseMirror stru
       },
     },
     data() {
-      return {placeAffiliates: {}}
+      return {
+        placeAffiliates: {},
+        views: this.$path.views()
+      }
     },
     computed: {
       content() {
@@ -51,6 +59,15 @@ ArticleContent.vue must be structured as such to follow exactly ProseMirror stru
           content.splice(1, 0, {type: 'profile'})
         } else {
           content.splice(0, 0, {type: 'profile'})
+        }
+
+        if (this.views['ads-ig-1']) {
+          let pos = 10
+
+          while (pos < (content.length - 4)) {
+            content.splice(pos, 0, {type: 'adsense'})
+            pos += 10
+          }
         }
 
         return content

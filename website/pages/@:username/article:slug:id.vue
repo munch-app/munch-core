@@ -1,14 +1,17 @@
 <template>
   <div>
-    <div class="container pt-48 pb-64">
-      <div class="flex-wrap">
-        <article-content class="ArticleContent" :article="article" ref="ArticleContent"/>
-        <aside class="flex-grow">
-          <article-context-map v-if="showMap" :article="article" :get-contexts="getContexts"/>
-          <div class="mt-24">
-            <adsense data-ad-client="ca-pub-7144155418390858" data-ad-slot="9676262046"/>
-          </div>
-        </aside>
+    <div class="container">
+      <div class="mt-48">
+        <in-article-adsense v-if="views['ads-ig-1']" data-ad-client="ca-pub-7144155418390858" data-ad-slot="8163543825"/>
+        <div class="flex-wrap mt-48">
+          <article-content class="ArticleContent" :article="article" ref="ArticleContent"/>
+          <aside class="flex-grow">
+            <article-context-map v-if="showMap" :article="article" :get-contexts="getContexts"/>
+            <div v-if="!views['ads-hide']" class="mt-24">
+              <adsense data-ad-client="ca-pub-7144155418390858" data-ad-slot="9676262046"/>
+            </div>
+          </aside>
+        </div>
       </div>
 
       <div class="mt-64">
@@ -22,9 +25,9 @@
       </div>
 
       <div class="flex hr-top mt-24 pt-32">
-        <div class="flex-no-shrink wh-80px border-circle overflow-hidden">
+        <div class="flex-no-shrink wh-80px border-circle overflow-hidden flex-center bg-steam">
           <cdn-img v-if="article.profile.image" :image="article.profile.image" type="320x320"/>
-          <div v-else class="wh-100 bg-blue"/>
+          <simple-svg v-else class="wh-64px" fill="#ccc" :filepath="require('~/assets/icon/icons8-person.svg')"/>
         </div>
 
         <div class="ml-24 flex-shrink">
@@ -37,8 +40,10 @@
       </div>
     </div>
 
-    <div class="container mtb-24">
-      <adsense data-ad-client="ca-pub-7144155418390858" data-ad-slot="7065221202"/>
+    <div class="container mt-64 mb-24">
+      <div v-if="!views['ads-hide']">
+        <adsense data-ad-client="ca-pub-7144155418390858" data-ad-slot="7065221202"/>
+      </div>
     </div>
 
     <div class="bg-steam" v-if="moreFromAuthorArticles.length > 0">
@@ -95,7 +100,7 @@
         ]
       })
     },
-    asyncData({$api, params: {username, id}, query: {uid}}) {
+    asyncData({$api, $path, params: {username, id}, query: {uid}}) {
       const url = uid ? `/articles/${id}/revisions/${uid}` : `/articles/${id}`
       return Promise.all([
         $api.get(url)
@@ -112,7 +117,8 @@
         return {
           article, more: {
             author: {articles: articles.filter(a => a.id !== article.id)}
-          }
+          },
+          views: $path.views()
         }
       })
     },
@@ -126,7 +132,7 @@
     },
     mounted() {
       const {profile: {username}, slug, id} = this.article
-      window.history.replaceState({}, document.title, `/@${username}/${slug}-${id}`)
+      this.$path.replace({path: `/@${username}/${slug}-${id}`})
     },
     methods: {
       getContexts() {

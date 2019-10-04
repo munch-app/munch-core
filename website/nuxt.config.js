@@ -83,13 +83,14 @@ export default {
   },
   plugins: [
     // Plugins developed by Munch
+    '~/plugins/api',
+    '~/plugins/path',
     '~/plugins/head',
     '~/plugins/error',
     '~/plugins/router',
     {src: '~/plugins/tracker', ssr: false},
 
     // Core Plugin
-    '~/plugins/axios',
     '~/plugins/vue-rx',
     '~/plugins/prismic-vue',
 
