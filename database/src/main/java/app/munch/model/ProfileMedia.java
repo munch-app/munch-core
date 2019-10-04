@@ -61,6 +61,11 @@ public final class ProfileMedia {
     @Column(length = 100, updatable = false, nullable = false, unique = false)
     private ProfileMediaType type;
 
+    @ValidEnum
+    @Enumerated(EnumType.STRING)
+    @Column(length = 100, updatable = false, nullable = false, unique = false)
+    private ProfileMediaStatus status;
+
     @ManyToMany(cascade = {}, fetch = FetchType.EAGER)
     private List<Image> images;
 
@@ -125,6 +130,14 @@ public final class ProfileMedia {
 
     public void setType(ProfileMediaType type) {
         this.type = type;
+    }
+
+    public ProfileMediaStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ProfileMediaStatus status) {
+        this.status = status;
     }
 
     public List<Image> getImages() {
