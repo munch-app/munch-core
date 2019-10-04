@@ -171,7 +171,7 @@ public final class ProfileMedia {
         return createdAt;
     }
 
-    private void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -189,11 +189,7 @@ public final class ProfileMedia {
 
     @PrePersist
     void prePersist() {
-        long millis = System.currentTimeMillis();
-
         setId(KeyUtils.nextL(15, 's'));
-        setCreatedAt(new Timestamp(millis));
-
         preUpdate();
     }
 
