@@ -130,7 +130,7 @@
               this.$store.commit('global/clearDialog');
               this.$router.push({
                 path: `/@${this.username}/${this.revision.id}`,
-                query: {uid: this.revision.uid}
+                query: {uid: this.revision.uid, views: this.$path.encodeViews('ads-hide')}
               })
             }, 1000);
           })

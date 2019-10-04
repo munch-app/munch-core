@@ -150,7 +150,7 @@
     },
     mounted() {
       const {slug, id} = this.place
-      window.history.replaceState({}, document.title, `/${slug}-${id}`)
+      this.$path.replace({path: `/${slug}-${id}`})
 
       this.$nextTick(() => {
         this.$refs.map.centerAnnotations({

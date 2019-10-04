@@ -73,6 +73,7 @@
       items() {
         return this.article?.content?.map(node => this.mapData({place: node.attrs?.place}))
           .filter(node => node)
+          .filter(node => node.latLng)
       },
     },
     data() {
