@@ -33,6 +33,7 @@ create table profilemedia
     eid         varchar(512) not null,
     metric      jsonb        not null,
     type        varchar(100) not null,
+    status        varchar(100) not null,
     updatedat   timestamp    not null,
     profile_uid varchar(26)  not null
         constraint fkk10up286cdfvb7f44ju5cy6eu
