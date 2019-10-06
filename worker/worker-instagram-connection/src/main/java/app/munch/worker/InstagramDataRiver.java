@@ -40,7 +40,6 @@ public final class InstagramDataRiver {
 
     public void open(InstagramAccountConnectionTask connectionTask) throws InstagramException {
         InstagramAccountConnection connection = connectionTask.getConnection();
-        Profile profile = connection.getSocial().getProfile();
 
         openIterator(connection.getAccessToken()).forEachRemaining(instagramMedia -> {
             provider.with(entityManager -> {
@@ -51,7 +50,8 @@ public final class InstagramDataRiver {
                         .setMaxResults(1)
                         .getResultList();
 
-                flow(entityManager, profile, instagramMedia, list.isEmpty() ? null : list.get(0));
+                ProfileSocial social = entityManager.find(ProfileSocial.class, connection.getSocial().getUid());
+                flow(entityManager, social, instagramMedia, list.isEmpty() ? null : list.get(0));
             });
             SleepUtils.sleep(Duration.ofSeconds(1));
         });
@@ -83,14 +83,17 @@ public final class InstagramDataRiver {
         };
     }
 
-    private void flow(EntityManager entityManager, Profile profile, InstagramMedia instagramMedia, @Nullable ProfileMedia profileMedia) {
+    private void flow(EntityManager entityManager, ProfileSocial social, InstagramMedia instagramMedia, @Nullable ProfileMedia profileMedia) {
         if (profileMedia == null) {
             profileMedia = new ProfileMedia();
             profileMedia.setStatus(ProfileMediaStatus.PENDING);
             profileMedia.setEid(dataMapper.mapEid(instagramMedia));
             profileMedia.setType(dataMapper.mapType(instagramMedia));
             profileMedia.setCreatedAt(dataMapper.mapCreatedAt(instagramMedia));
-            profileMedia.setImages(dataMapper.mapImages(profile, instagramMedia));
+            profileMedia.setImages(dataMapper.mapImages(social.getProfile(), instagramMedia));
+
+            profileMedia.setSocial(social);
+            profileMedia.setProfile(social.getProfile());
         }
 
         profileMedia.setContent(dataMapper.mapContent(instagramMedia));

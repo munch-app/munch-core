@@ -33,7 +33,7 @@ public final class InstagramAccountConnectionTask {
     private String uid;
 
     @NotNull
-    @OneToOne(cascade = {}, fetch = FetchType.LAZY, optional = false, orphanRemoval = false)
+    @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = false)
     private InstagramAccountConnection connection;
 
     @NotNull

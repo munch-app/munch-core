@@ -1,6 +1,7 @@
 package app.munch.worker;
 
 import app.munch.database.DatabaseModule;
+import app.munch.image.ImageModule;
 import app.munch.model.*;
 import com.instagram.err.InstagramAccessException;
 import com.instagram.err.InstagramException;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.persistence.EntityManager;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.util.List;
@@ -44,7 +46,7 @@ public final class InstagramWorker implements WorkerRunner {
     @Override
     public void run(WorkerTask task) {
         do {
-            InstagramAccountConnectionTask connectionTask = acquire();
+            InstagramAccountConnectionTask connectionTask = acquireTask();
             if (connectionTask != null) {
                 connect(connectionTask);
                 continue;
@@ -58,17 +60,12 @@ public final class InstagramWorker implements WorkerRunner {
      * @return Acquired ConnectionTask
      */
     @Nullable
-    private InstagramAccountConnectionTask acquire() {
+    private InstagramAccountConnectionTask acquireTask() {
         InstagramAccountConnectionTask acquired = provider.reduce(entityManager -> {
-            List<InstagramAccountConnection> list = entityManager.createQuery("FROM InstagramAccountConnection " +
-                    "WHERE status = :status " +
-                    "ORDER BY connectedAt DESC", InstagramAccountConnection.class)
-                    .setParameter("status", InstagramAccountConnectionStatus.CONNECTED)
-                    .setMaxResults(1)
-                    .getResultList();
-
-            if (list.isEmpty()) return null;
-            InstagramAccountConnection connection = list.get(0);
+            InstagramAccountConnection connection = acquireConnection(entityManager);
+            if (connection == null) {
+                return null;
+            }
 
             InstagramAccountConnectionTask task = new InstagramAccountConnectionTask();
             task.setConnection(connection);
@@ -101,6 +98,31 @@ public final class InstagramWorker implements WorkerRunner {
         });
     }
 
+    @Nullable
+    private InstagramAccountConnection acquireConnection(EntityManager entityManager) {
+        List<InstagramAccountConnection> list = entityManager.createQuery("FROM InstagramAccountConnection " +
+                "WHERE status = :status AND connectedAt IS NULL", InstagramAccountConnection.class)
+                .setParameter("status", InstagramAccountConnectionStatus.CONNECTED)
+                .setMaxResults(1)
+                .getResultList();
+
+        if (!list.isEmpty()) {
+            return list.get(0);
+        }
+
+        list = entityManager.createQuery("FROM InstagramAccountConnection " +
+                "WHERE status = :status " +
+                "ORDER BY connectedAt ASC", InstagramAccountConnection.class)
+                .setParameter("status", InstagramAccountConnectionStatus.CONNECTED)
+                .setMaxResults(1)
+                .getResultList();
+
+        if (!list.isEmpty()) {
+            return list.get(0);
+        }
+        return null;
+    }
+
     private void connect(InstagramAccountConnectionTask connectionTask) {
         try {
             dataRiver.open(connectionTask);
@@ -121,7 +143,7 @@ public final class InstagramWorker implements WorkerRunner {
 
     public static void main(String[] args) {
         WorkerRunner.start(InstagramWorker.class,
-                new DatabaseModule()
+                new DatabaseModule(), new ImageModule()
         );
     }
 }

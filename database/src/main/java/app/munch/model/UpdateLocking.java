@@ -17,7 +17,9 @@ import java.util.Date;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
-@Table(name = "UpdateLocking")
+@Table(name = "UpdateLocking", uniqueConstraints = {
+        @UniqueConstraint(name = "uk_aqgc0bg0fbv1ftp6", columnNames = {"type", "id"}),
+})
 public final class UpdateLocking {
 
     @NotNull
@@ -32,7 +34,6 @@ public final class UpdateLocking {
     private UpdateLockingType type;
 
     @NotNull
-    @Id
     @Column(length = 255, updatable = false, nullable = false)
     private String id;
 

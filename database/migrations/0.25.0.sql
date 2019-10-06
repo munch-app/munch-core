@@ -7,17 +7,17 @@ create table profilesocial
     uid         varchar(26)  not null
         constraint profilesocial_pkey
             primary key,
-    connectedat timestamp    not null,
     createdat   timestamp    not null,
     eid         varchar(512) not null,
     name        varchar(100) not null,
-    secrets     jsonb        not null,
     status      varchar(100) not null,
     type        varchar(100) not null,
     updatedat   timestamp    not null,
     profile_uid varchar(26)  not null
         constraint fklx406av986hdln6jlumxchfge
-            references profile
+            references profile,
+    constraint uk_7hpdm0jqy7tbkerx
+        unique (profile_uid, eid)
 );
 
 alter table profilesocial
@@ -32,8 +32,8 @@ create table profilemedia
     createdat   timestamp    not null,
     eid         varchar(512) not null,
     metric      jsonb        not null,
+    status      varchar(100) not null,
     type        varchar(100) not null,
-    status        varchar(100) not null,
     updatedat   timestamp    not null,
     profile_uid varchar(26)  not null
         constraint fkk10up286cdfvb7f44ju5cy6eu
@@ -93,3 +93,62 @@ create table mention
 
 alter table mention
     owner to munch;
+
+create table updatelocking
+(
+    uid           varchar(26)  not null
+        constraint updatelocking_pkey
+            primary key,
+    createdat     timestamp    not null,
+    id            varchar(255) not null,
+    level         varchar(100) not null,
+    type          varchar(100) not null,
+    updatedat     timestamp    not null,
+    createdby_uid varchar(26)  not null
+        constraint fk51jkm04qfowp1e9mc35du71iq
+            references profile,
+    constraint uk_aqgc0bg0fbv1ftp6
+        unique (type, id)
+);
+
+alter table updatelocking
+    owner to munch;
+
+create table instagramaccountconnection
+(
+    accesstoken varchar(2048),
+    connectedat timestamp,
+    createdat   timestamp    not null,
+    status      varchar(100) not null,
+    updatedat   timestamp    not null,
+    version     varchar(255) not null,
+    social_uid  varchar(26)  not null
+        constraint instagramaccountconnection_pkey
+            primary key
+        constraint fkiu61dvrindp6lk4b85y8aevbk
+            references profilesocial
+);
+
+alter table instagramaccountconnection
+    owner to munch;
+
+create index instagramaccountconnection_connectedat
+    on instagramaccountconnection (connectedat);
+
+create table instagramaccountconnectiontask
+(
+    uid                   varchar(26) not null
+        constraint instagramaccountconnectiontask_pkey
+            primary key,
+    createdat             timestamp   not null,
+    connection_social_uid varchar(26) not null
+        constraint fk10ln4golm611urubwnx2ouvar
+            references instagramaccountconnection
+);
+
+alter table instagramaccountconnectiontask
+    owner to munch;
+
+create index instagramaccountconnectiontask_createdat
+    on instagramaccountconnectiontask (createdat);
+

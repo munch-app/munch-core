@@ -14,9 +14,9 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 /**
- * Created by: Fuxing
- * Date: 31/8/19
- * Time: 4:37 pm
+ * @author Fuxing Loh
+ * @since 31/8/19 at 4:37 pm
+ * @deprecated Migrate to UpdateLocking instead
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
