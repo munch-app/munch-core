@@ -3,6 +3,7 @@ package app.munch.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import dev.fuxing.err.ConflictException;
 import dev.fuxing.err.ValidationException;
 import dev.fuxing.utils.KeyUtils;
 import dev.fuxing.validator.ValidEnum;
@@ -16,18 +17,19 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 /**
- * Date: 10/9/19
- * Time: 7:27 pm
+ * Date: 5/10/19
+ * Time: 10:01 pm
  *
  * @author Fuxing Loh
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
-@Table(name = "ProfileSocial", uniqueConstraints = {
-        @UniqueConstraint(name = "uk_7hpdm0jqy7tbkerx", columnNames = {"profile_uid", "eid"})
+@Table(name = "InstagramAccountConnection", indexes = {
+        @Index(name = "instagramaccountconnection_connectedat", columnList = "connectedat")
 })
-public final class ProfileSocial {
+public final class InstagramAccountConnection {
+    private static final String CURRENT_VERSION = "2019-09-10";
 
     @NotNull
     @Pattern(regexp = KeyUtils.ULID_REGEX)
@@ -35,32 +37,26 @@ public final class ProfileSocial {
     @Column(length = 26, updatable = false, nullable = false, unique = true)
     private String uid;
 
-    /**
-     * External unique id, from the platform
-     */
-    @NotNull
-    @Column(length = 512, updatable = false, nullable = false, unique = false)
-    private String eid;
-
-    @NotNull
-    @Length(max = 100)
-    @Column(length = 100, updatable = true, nullable = false, unique = false)
-    private String name;
-
     @JsonIgnore
     @NotNull
-    @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = false)
-    private Profile profile;
+    @OneToOne(cascade = {}, fetch = FetchType.LAZY, optional = false, orphanRemoval = false)
+    @MapsId
+    private ProfileSocial social;
 
-    @ValidEnum
-    @Enumerated(EnumType.STRING)
-    @Column(length = 100, updatable = false, nullable = false, unique = false)
-    private ProfileSocialType type;
+    @NotNull
+    @Pattern(regexp = "[0-9]{4}-[0-9]{2}-[0-9]{2}")
+    private String version;
+
+    @Length(max = 2048)
+    private String accessToken;
 
     @ValidEnum
     @Enumerated(EnumType.STRING)
     @Column(length = 100, updatable = true, nullable = false, unique = false)
-    private ProfileSocialStatus status;
+    private InstagramAccountConnectionStatus status;
+
+    @Column(updatable = true, nullable = true, unique = false)
+    private Date connectedAt;
 
     @NotNull
     @Version
@@ -75,55 +71,55 @@ public final class ProfileSocial {
         return uid;
     }
 
-    private void setUid(String uid) {
+    public void setUid(String uid) {
         this.uid = uid;
     }
 
-    public String getEid() {
-        return eid;
+    public ProfileSocial getSocial() {
+        return social;
     }
 
-    public void setEid(String sid) {
-        this.eid = sid;
+    public void setSocial(ProfileSocial social) {
+        this.social = social;
     }
 
-    public String getName() {
-        return name;
+    public String getVersion() {
+        return version;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setVersion(String version) {
+        this.version = version;
     }
 
-    public Profile getProfile() {
-        return profile;
+    public String getAccessToken() {
+        return accessToken;
     }
 
-    public void setProfile(Profile profile) {
-        this.profile = profile;
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 
-    public ProfileSocialType getType() {
-        return type;
-    }
-
-    public void setType(ProfileSocialType type) {
-        this.type = type;
-    }
-
-    public ProfileSocialStatus getStatus() {
+    public InstagramAccountConnectionStatus getStatus() {
         return status;
     }
 
-    public void setStatus(ProfileSocialStatus status) {
+    public void setStatus(InstagramAccountConnectionStatus status) {
         this.status = status;
+    }
+
+    public Date getConnectedAt() {
+        return connectedAt;
+    }
+
+    public void setConnectedAt(Date connectedAt) {
+        this.connectedAt = connectedAt;
     }
 
     public Date getUpdatedAt() {
         return updatedAt;
     }
 
-    private void setUpdatedAt(Date updatedAt) {
+    public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
 
@@ -146,6 +142,14 @@ public final class ProfileSocial {
 
     @PreUpdate
     void preUpdate() {
+        if (getVersion() != null) {
+            // Always check this version before write
+            if (getVersion().compareTo(CURRENT_VERSION) > 0) {
+                throw new ConflictException("Editing of InstagramAccountConnection with outdated api version is not allowed.");
+            }
+        }
+
+        setVersion(CURRENT_VERSION);
         setUpdatedAt(new Timestamp(System.currentTimeMillis()));
         ValidationException.validate(this, Default.class);
     }

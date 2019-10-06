@@ -167,20 +167,24 @@ public final class InstagramApi {
      * }
      * </pre>
      */
-    public MediaRecentResponse getUserSelfMediaRecent(String accessToken, int count, @Nullable String maxId) throws URISyntaxException, IOException {
-        URIBuilder builder = new URIBuilder("https://api.instagram.com/v1/users/self/media/recent/");
-        builder.addParameter("access_token", accessToken);
-        builder.addParameter("count", String.valueOf(count));
+    public MediaRecentResponse getUserSelfMediaRecent(String accessToken, int count, @Nullable String maxId) {
+        try {
+            URIBuilder builder = new URIBuilder("https://api.instagram.com/v1/users/self/media/recent/");
+            builder.addParameter("access_token", accessToken);
+            builder.addParameter("count", String.valueOf(count));
 
-        if (maxId != null) {
-            builder.addParameter("max_id", maxId);
+            if (maxId != null) {
+                builder.addParameter("max_id", maxId);
+            }
+
+            HttpResponse response = Request.Get(builder.build())
+                    .execute()
+                    .returnResponse();
+
+            return parseResponse(response, MediaRecentResponse.class);
+        } catch (URISyntaxException | IOException e) {
+            throw new InstagramException(e);
         }
-
-        HttpResponse response = Request.Get(builder.build())
-                .execute()
-                .returnResponse();
-
-        return parseResponse(response, MediaRecentResponse.class);
     }
 
     /**

@@ -1,4 +1,4 @@
-package app.munch.model.constraint;
+package app.munch.model.group;
 
 /**
  * Created by: Fuxing

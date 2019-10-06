@@ -18,9 +18,9 @@ import java.util.stream.Stream;
  */
 public enum MentionStatus {
     /**
-     * Mention has been linked to a Place.
+     * Mention is public and linked to place.
      */
-    LINKED("LINKED"),
+    PUBLIC("PUBLIC"),
 
     /**
      * Mention is possible but has not been made it and is not tied to any place.

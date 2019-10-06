@@ -34,8 +34,13 @@
         <class>app.munch.model.AffiliateBrand</class>
         <class>app.munch.model.PlaceAffiliate</class>
 
+        <class>app.munch.model.UpdateLocking</class>
+
         <class>app.munch.model.ChangeGroup</class>
         <class>app.munch.model.WorkerGroup</class>
         <class>app.munch.model.WorkerTask</class>
+
+        <class>app.munch.model.InstagramAccountConnection</class>
+        <class>app.munch.model.InstagramAccountConnectionTask</class>
     </persistence-unit>
 </persistence>

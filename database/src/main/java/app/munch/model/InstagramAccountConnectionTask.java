@@ -1,11 +1,9 @@
 package app.munch.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.fuxing.err.ValidationException;
 import dev.fuxing.utils.KeyUtils;
-import dev.fuxing.validator.ValidEnum;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -15,22 +13,18 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 /**
- * AccountRestriction prevent a certain account from doing certain things in the Munch ecosystem.
- * <p>
- * Created by: Fuxing
- * Date: 31/8/19
- * Time: 4:37 pm
+ * Date: 6/10/19
+ * Time: 11:31 am
+ *
+ * @author Fuxing Loh
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
-@Table(name = "ProfileRestriction")
-public final class ProfileRestriction {
-
-    @JsonIgnore
-    @NotNull
-    @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = false)
-    private Profile profile;
+@Table(name = "InstagramAccountConnectionTask", indexes = {
+        @Index(name = "instagramaccountconnectiontask_createdat", columnList = "createdat")
+})
+public final class InstagramAccountConnectionTask {
 
     @NotNull
     @Pattern(regexp = KeyUtils.ULID_REGEX)
@@ -38,13 +32,12 @@ public final class ProfileRestriction {
     @Column(length = 26, updatable = false, nullable = false, unique = true)
     private String uid;
 
-    @ValidEnum
-    @Enumerated(EnumType.STRING)
-    @Column(length = 100, updatable = true, nullable = false, unique = false)
-    private ProfileRestrictionType type;
+    @NotNull
+    @OneToOne(cascade = {}, fetch = FetchType.LAZY, optional = false, orphanRemoval = false)
+    private InstagramAccountConnection connection;
 
     @NotNull
-    @Column(updatable = false, nullable = false)
+    @Column(updatable = false, nullable = false, unique = false)
     private Date createdAt;
 
     public String getUid() {
@@ -55,20 +48,12 @@ public final class ProfileRestriction {
         this.uid = uid;
     }
 
-    public Profile getProfile() {
-        return profile;
+    public InstagramAccountConnection getConnection() {
+        return connection;
     }
 
-    public void setProfile(Profile profile) {
-        this.profile = profile;
-    }
-
-    public ProfileRestrictionType getType() {
-        return type;
-    }
-
-    public void setType(ProfileRestrictionType type) {
-        this.type = type;
+    public void setConnection(InstagramAccountConnection connection) {
+        this.connection = connection;
     }
 
     public Date getCreatedAt() {
@@ -81,8 +66,9 @@ public final class ProfileRestriction {
 
     @PrePersist
     void prePersist() {
-        setUid(KeyUtils.nextULID());
-        setCreatedAt(new Timestamp(System.currentTimeMillis()));
+        long millis = System.currentTimeMillis();
+        setUid(KeyUtils.nextULID(millis));
+        setCreatedAt(new Timestamp(millis));
 
         preUpdate();
     }

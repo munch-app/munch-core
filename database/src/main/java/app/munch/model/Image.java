@@ -1,6 +1,6 @@
 package app.munch.model;
 
-import app.munch.model.constraint.ImageDefaultGroup;
+import app.munch.model.group.ImageDefaultGroup;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;

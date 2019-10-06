@@ -1,6 +1,5 @@
 package app.munch.model;
 
-import app.munch.model.constraint.TagDefaultGroup;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -23,6 +22,7 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "PlaceLocking")
+@Deprecated
 public final class PlaceLocking {
 
     @NotNull
@@ -50,12 +50,12 @@ public final class PlaceLocking {
     @Column(length = 100, updatable = true, nullable = false, unique = false)
     private PlaceLockingType type;
 
-    @NotNull(groups = TagDefaultGroup.class)
+    @NotNull
     @Version
     @Column(updatable = true, nullable = false)
     private Date updatedAt;
 
-    @NotNull(groups = TagDefaultGroup.class)
+    @NotNull
     @Column(updatable = false, nullable = false)
     private Date createdAt;
 

@@ -8,23 +8,22 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Date: 4/10/19
- * Time: 8:45 pm
+ * Date: 5/10/19
+ * Time: 10:40 pm
  *
  * @author Fuxing Loh
  */
-public enum ProfileMediaStatus {
-    PENDING("PENDING"),
+public enum InstagramAccountConnectionStatus {
 
-    PUBLIC("PUBLIC"),
+    CONNECTED("CONNECTED"),
 
-    HIDDEN("HIDDEN"),
+    DISCONNECTED("DISCONNECTED"),
 
     UNKNOWN_TO_SDK_VERSION(null);
 
     private final String value;
 
-    ProfileMediaStatus(String value) {
+    InstagramAccountConnectionStatus(String value) {
         this.value = value;
     }
 
@@ -38,18 +37,18 @@ public enum ProfileMediaStatus {
      * Use this in place of valueOf to convert the raw string returned by the service into the enum value.
      *
      * @param value real value
-     * @return ProfileMediaStatus corresponding to the value
+     * @return InstagramAccountConnectorStatus corresponding to the value
      */
     @JsonCreator
-    public static ProfileMediaStatus fromValue(String value) {
+    public static InstagramAccountConnectionStatus fromValue(String value) {
         if (value == null) {
             return null;
         }
-        return Stream.of(ProfileMediaStatus.values()).filter(e -> e.toString().equals(value)).findFirst()
+        return Stream.of(InstagramAccountConnectionStatus.values()).filter(e -> e.toString().equals(value)).findFirst()
                 .orElse(UNKNOWN_TO_SDK_VERSION);
     }
 
-    public static Set<ProfileMediaStatus> knownValues() {
+    public static Set<InstagramAccountConnectionStatus> knownValues() {
         return Stream.of(values()).filter(v -> v != UNKNOWN_TO_SDK_VERSION).collect(Collectors.toSet());
     }
 }

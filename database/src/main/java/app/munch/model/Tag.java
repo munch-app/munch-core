@@ -1,6 +1,5 @@
 package app.munch.model;
 
-import app.munch.model.constraint.TagDefaultGroup;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -49,7 +48,7 @@ public final class Tag {
      * Date is tracked but it's json ignored when parsing
      */
     @JsonIgnore
-    @NotNull(groups = TagDefaultGroup.class)
+    @NotNull(groups = Groups.TagDefault.class)
     @Version
     @Column(updatable = true, nullable = false)
     private Date updatedAt;
@@ -58,7 +57,7 @@ public final class Tag {
      * Date is tracked but it's json ignored when parsing
      */
     @JsonIgnore
-    @NotNull(groups = TagDefaultGroup.class)
+    @NotNull(groups = Groups.TagDefault.class)
     @Column(updatable = false, nullable = false)
     private Date createdAt;
 
@@ -128,7 +127,7 @@ public final class Tag {
     @PreUpdate
     void preUpdate() {
         setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-        ValidationException.validate(this, Default.class, TagDefaultGroup.class);
+        ValidationException.validate(this, Default.class, Groups.TagDefault.class);
     }
 
     /**

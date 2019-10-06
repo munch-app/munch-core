@@ -8,6 +8,7 @@ import app.munch.model.ElasticDocumentType;
  * Time: 8:31 pm
  */
 public class ElasticDocumentQueue {
+
     /*
      * Future: certain env does allow access to elastic env, there need to be a way to queue indexing task
      * This class will facilitate it.

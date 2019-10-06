@@ -4,6 +4,7 @@ import app.munch.image.ImageQueryClient;
 import app.munch.image.ImageUploadClient;
 import app.munch.model.Image;
 import app.munch.model.ImageSource;
+import app.munch.model.Profile;
 import dev.fuxing.err.ConflictException;
 import dev.fuxing.err.ForbiddenException;
 import dev.fuxing.err.NotFoundException;
@@ -100,7 +101,9 @@ public final class ImageService extends DataService {
         try (InputStream inputStream = part.getInputStream()) {
             FileUtils.copyInputStreamToFile(inputStream, file);
         }
-        return uploadClient.upload(accountId, file, source);
+        return uploadClient.upload(file, source, entityManager -> {
+            return Profile.findByAccountId(entityManager, accountId);
+        });
     }
 
     public TransportResult options(TransportContext ctx) {

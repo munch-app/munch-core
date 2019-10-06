@@ -44,7 +44,7 @@ public final class MentionController extends Controller {
                     "WHERE status = :status AND place.id = :placeId AND type IN (:types) " +
                     "AND (createdAt < :createdAt OR (createdAt = :createdAt AND id < :id)) " +
                     "ORDER BY createdAt DESC, id DESC ", Mention.class)
-                    .setParameter("status", MentionStatus.LINKED)
+                    .setParameter("status", MentionStatus.PUBLIC)
                     .setParameter("placeId", placeId)
                     .setParameter("types", types)
                     .setParameter("createdAt", new Date(createdAt))
@@ -56,7 +56,7 @@ public final class MentionController extends Controller {
         return entityManager.createQuery("FROM Mention " +
                 "WHERE status = :status AND place.id = :placeId AND type IN (:types) " +
                 "ORDER BY createdAt DESC, id DESC ", Mention.class)
-                .setParameter("status", MentionStatus.LINKED)
+                .setParameter("status", MentionStatus.PUBLIC)
                 .setParameter("placeId", placeId)
                 .setParameter("types", types)
                 .setMaxResults(size)
@@ -72,7 +72,7 @@ public final class MentionController extends Controller {
                     "WHERE m.status = :status AND m.place.id = :placeId " +
                     "AND (createdAt < :createdAt OR (createdAt = :createdAt AND id < :id)) " +
                     "ORDER BY createdAt DESC, id DESC ", Mention.class)
-                    .setParameter("status", MentionStatus.LINKED)
+                    .setParameter("status", MentionStatus.PUBLIC)
                     .setParameter("placeId", placeId)
                     .setParameter("createdAt", new Date(createdAt))
                     .setParameter("id", id)
@@ -83,7 +83,7 @@ public final class MentionController extends Controller {
         return entityManager.createQuery("SELECT m FROM Mention m " +
                 "WHERE m.status = :status AND m.place.id = :placeId " +
                 "ORDER BY createdAt DESC, id DESC ", Mention.class)
-                .setParameter("status", MentionStatus.LINKED)
+                .setParameter("status", MentionStatus.PUBLIC)
                 .setParameter("placeId", placeId)
                 .setMaxResults(size)
                 .getResultList();
@@ -112,7 +112,7 @@ public final class MentionController extends Controller {
                     "WHERE status = :status AND profile.username = :username AND type IN (:types) " +
                     "AND (createdAt < :createdAt OR (createdAt = :createdAt AND id < :id)) " +
                     "ORDER BY createdAt DESC, id DESC ", Mention.class)
-                    .setParameter("status", MentionStatus.LINKED)
+                    .setParameter("status", MentionStatus.PUBLIC)
                     .setParameter("username", username)
                     .setParameter("types", types)
                     .setParameter("createdAt", new Date(createdAt))
@@ -124,7 +124,7 @@ public final class MentionController extends Controller {
         return entityManager.createQuery("FROM Mention " +
                 "WHERE status = :status AND profile.username = :username AND type IN (:types) " +
                 "ORDER BY createdAt DESC, id DESC ", Mention.class)
-                .setParameter("status", MentionStatus.LINKED)
+                .setParameter("status", MentionStatus.PUBLIC)
                 .setParameter("username", username)
                 .setParameter("types", types)
                 .setMaxResults(size)
@@ -140,7 +140,7 @@ public final class MentionController extends Controller {
                     "WHERE m.status = :status AND m.profile.username = :username " +
                     "AND (createdAt < :createdAt OR (createdAt = :createdAt AND id < :id)) " +
                     "ORDER BY createdAt DESC, id DESC ", Mention.class)
-                    .setParameter("status", MentionStatus.LINKED)
+                    .setParameter("status", MentionStatus.PUBLIC)
                     .setParameter("username", username)
                     .setParameter("createdAt", new Date(createdAt))
                     .setParameter("id", id)
@@ -151,7 +151,7 @@ public final class MentionController extends Controller {
         return entityManager.createQuery("SELECT m FROM Mention m " +
                 "WHERE m.status = :status AND m.profile.username = :username " +
                 "ORDER BY createdAt DESC, id DESC ", Mention.class)
-                .setParameter("status", MentionStatus.LINKED)
+                .setParameter("status", MentionStatus.PUBLIC)
                 .setParameter("username", username)
                 .setMaxResults(size)
                 .getResultList();

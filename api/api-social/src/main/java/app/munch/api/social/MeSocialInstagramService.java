@@ -1,12 +1,9 @@
 package app.munch.api.social;
 
 import app.munch.api.ApiRequest;
-import app.munch.model.Profile;
-import app.munch.model.ProfileSocial;
-import app.munch.model.ProfileSocialStatus;
-import app.munch.model.ProfileSocialType;
-import com.instagram.model.AccessTokenResponse;
+import app.munch.model.*;
 import com.instagram.InstagramApi;
+import com.instagram.model.AccessTokenResponse;
 import dev.fuxing.err.ConflictException;
 import dev.fuxing.jpa.TransactionProvider;
 import dev.fuxing.transport.service.TransportContext;
@@ -15,8 +12,6 @@ import dev.fuxing.transport.service.TransportResult;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.sql.Timestamp;
 
 /**
  * Date: 2/10/19
@@ -43,7 +38,7 @@ public final class MeSocialInstagramService implements SocialService {
         });
     }
 
-    public TransportResult authenticate(TransportContext ctx) throws IOException, URISyntaxException {
+    public TransportResult authenticate(TransportContext ctx) throws IOException {
         final String accountId = ctx.get(ApiRequest.class).getAccountId();
         final String code = ctx.bodyAsJson().path("code").asText();
         final String redirectUri = ctx.bodyAsJson().path("redirectUri").asText();
@@ -55,31 +50,28 @@ public final class MeSocialInstagramService implements SocialService {
             Profile profile = Profile.findByAccountId(entityManager, accountId);
             if (profile == null) throw new ConflictException("Profile not found.");
 
-            ProfileSocial entity = findByTypeEid(entityManager, ProfileSocialType.INSTAGRAM, eid);
-            if (entity != null) {
-                if (!entity.getProfile().getUid().equals(profile.getUid())) {
+            ProfileSocial social = findByTypeEid(entityManager, ProfileSocialType.INSTAGRAM, eid);
+            if (social != null) {
+                if (!social.getProfile().getUid().equals(profile.getUid())) {
                     throw new ConflictException("This account is owned by another profile.");
                 }
             } else {
-                entity = new ProfileSocial();
-                entity.setEid(eid);
-                entity.setType(ProfileSocialType.INSTAGRAM);
-                entity.setProfile(profile);
+                social = new ProfileSocial();
+                social.setEid(eid);
+                social.setType(ProfileSocialType.INSTAGRAM);
+                social.setProfile(profile);
             }
 
-            entity.setName(response.getUser().getUsername());
-            entity.setStatus(ProfileSocialStatus.CONNECTED);
-            entity.setSecrets(createSecrets(response.getAccessToken()));
-            entity.setConnectedAt(new Timestamp(System.currentTimeMillis()));
+            social.setName(response.getUser().getUsername());
+            social.setStatus(ProfileSocialStatus.CONNECTED);
+            entityManager.persist(social);
 
-            entityManager.persist(entity);
+            InstagramAccountConnection connection = new InstagramAccountConnection();
+            connection.setStatus(InstagramAccountConnectionStatus.CONNECTED);
+            connection.setAccessToken(response.getAccessToken());
+            connection.setSocial(social);
+            entityManager.persist(connection);
         });
         return TransportResult.ok();
-    }
-
-    private static ProfileSocial.Secrets createSecrets(String accessToken) {
-        ProfileSocial.Secrets secrets = new ProfileSocial.Secrets();
-        secrets.setAccessToken(accessToken);
-        return secrets;
     }
 }

@@ -33,7 +33,7 @@ import java.util.Date;
 @ValidMentionType
 @ValidMentionStatus
 public final class Mention {
-    // TODO(fuxing): Future: MentionLocking, to prevent it from unwanted editing.
+    // TODO(fuxing): Future: EditLocking (type: Mention), to prevent it from unwanted editing.
 
     /**
      * Mention uses L16 ids, mention is not a top level node, it's a unique node tho.

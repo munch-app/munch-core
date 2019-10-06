@@ -11,9 +11,11 @@ import software.amazon.awssdk.services.s3.S3Client;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.persistence.EntityManager;
 import java.awt.*;
 import java.io.File;
 import java.util.Objects;
+import java.util.function.Function;
 
 /**
  * Created by: Fuxing
@@ -31,9 +33,10 @@ public final class ImageUploadClient {
         this.s3Client = s3Client;
     }
 
-    public Image upload(String accountId, File file, ImageSource source) {
-        Objects.requireNonNull(accountId);
+    public Image upload(File file, ImageSource source, Function<EntityManager, Profile> function) {
+        Objects.requireNonNull(file);
         Objects.requireNonNull(source);
+        Objects.requireNonNull(function);
 
         String bucket = Image.resolveBucket(source);
 
@@ -51,10 +54,7 @@ public final class ImageUploadClient {
             image.setHeight((int) dimension.getHeight());
 
             provider.with(entityManager -> {
-                Profile profile = entityManager.createQuery("SELECT a.profile FROM Account a " +
-                        "WHERE a.id = :id", Profile.class)
-                        .setParameter("id", accountId)
-                        .getSingleResult();
+                Profile profile = function.apply(entityManager);
                 image.setProfile(profile);
                 entityManager.persist(image);
             });

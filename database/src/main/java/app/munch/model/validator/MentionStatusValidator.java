@@ -25,7 +25,7 @@ public class MentionStatusValidator implements ConstraintValidator<ValidMentionS
                 return mention.getPlace() == null;
 
             case DELETED:
-            case LINKED:
+            case PUBLIC:
             case LINK_SUGGEST:
                 return mention.getPlace() != null;
         }

@@ -24,6 +24,10 @@ public class InstagramException extends TransportException {
         super(code, InstagramException.class, message);
     }
 
+    public InstagramException(Exception e) {
+        super(500, InstagramException.class, e.getMessage(), e);
+    }
+
     protected InstagramException(int code, Class<? extends InstagramException> clazz, String message) {
         super(code, clazz, message);
     }

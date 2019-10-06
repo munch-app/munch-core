@@ -8,23 +8,31 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Date: 4/10/19
- * Time: 8:45 pm
- *
  * @author Fuxing Loh
+ * @since 6/10/19 at 6:47 pm
  */
-public enum ProfileMediaStatus {
-    PENDING("PENDING"),
+public enum UpdateLockingLevel {
 
-    PUBLIC("PUBLIC"),
+    /**
+     * Admin, highest level of locking by someone in the Munch team.
+     */
+    ADMIN("ADMIN"),
 
-    HIDDEN("HIDDEN"),
+    /**
+     * Owner, locked by someone in that claimed it.
+     */
+    CLAIMED("CLAIMED"),
+
+    /**
+     * System, locked by machine.
+     */
+    SYSTEM("SYSTEM"),
 
     UNKNOWN_TO_SDK_VERSION(null);
 
     private final String value;
 
-    ProfileMediaStatus(String value) {
+    UpdateLockingLevel(String value) {
         this.value = value;
     }
 
@@ -38,18 +46,18 @@ public enum ProfileMediaStatus {
      * Use this in place of valueOf to convert the raw string returned by the service into the enum value.
      *
      * @param value real value
-     * @return ProfileMediaStatus corresponding to the value
+     * @return UpdateLockingType corresponding to the value
      */
     @JsonCreator
-    public static ProfileMediaStatus fromValue(String value) {
+    public static UpdateLockingLevel fromValue(String value) {
         if (value == null) {
             return null;
         }
-        return Stream.of(ProfileMediaStatus.values()).filter(e -> e.toString().equals(value)).findFirst()
+        return Stream.of(UpdateLockingLevel.values()).filter(e -> e.toString().equals(value)).findFirst()
                 .orElse(UNKNOWN_TO_SDK_VERSION);
     }
 
-    public static Set<ProfileMediaStatus> knownValues() {
+    public static Set<UpdateLockingLevel> knownValues() {
         return Stream.of(values()).filter(v -> v != UNKNOWN_TO_SDK_VERSION).collect(Collectors.toSet());
     }
 }
