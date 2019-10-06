@@ -24,7 +24,7 @@
         </div>
 
         <div class="flex-center ptb-48" v-if="next">
-          <button class="blue-outline" @click="loadRecentMore">Load More</button>
+          <button class="blue-outline" @click="loadMore">Load More</button>
         </div>
 
         <div v-if="!loaded" class="flex-center p-24">
@@ -66,6 +66,7 @@
         selectors: [
           {type: 'upload', text: 'UPLOAD', icon: require('~/assets/icon/icons8-camera.svg')},
           {type: 'recent', text: 'RECENT', icon: require('~/assets/icon/icons8-time.svg')},
+          {type: 'instagram', text: 'INSTAGRAM', icon: require('~/assets/icon/icons8-instagram.svg')},
           ...(this.place != null ? [
             {type: 'place', text: 'PLACE', icon: require('~/assets/icon/icons8-map-pin.svg')}
           ] : []),
@@ -83,7 +84,7 @@
       },
     },
     mounted() {
-      this.loadRecent()
+      this.load()
     },
     methods: {
       onSelect(select) {
@@ -92,43 +93,55 @@
             return this.onUploadImage()
 
           case 'recent':
-            return this.loadRecent()
-
+          case 'instagram':
           case 'place':
-            return this.loadPlace()
+            if (this.selected !== select.type) {
+              this.selected = select.type
+              return this.load()
+            }
         }
       },
-      loadRecent() {
-        this.selected = 'recent'
+      load() {
+        const request = () => {
+          switch (this.selected) {
+            case 'place':
+              return this.$api.get(`/migrations/places/${this.place.id}/images`)
+                .then(({data: placeImages}) => {
+                  return {data: placeImages.map(pi => pi.image), cursor: null}
+                })
+
+            case 'recent':
+              return this.$api.get('/me/images', {params: {size: 20}})
+
+            case 'instagram':
+              return this.$api.get('/me/images', {params: {sources: 'INSTAGRAM', size: 20}})
+          }
+        }
+
         this.images.splice(0)
         this.loaded = false
 
-        this.$api.get('/me/images', {params: {size: 20}})
-          .then(({data: images, cursor}) => {
-            this.images.push(...images)
-            this.cursor = cursor
-            this.loaded = true
-          })
+        request().then(({data: images, cursor}) => {
+          this.images.push(...images)
+          this.cursor = cursor
+          this.loaded = true
+        })
       },
-      loadRecentMore() {
-        this.$api.get('/me/images', {params: {size: 20, cursor: this.next}})
-          .then(({data: images, cursor}) => {
-            this.images.push(...images)
-            this.cursor = cursor
-          })
-      },
-      loadPlace() {
-        this.selected = 'place'
-        this.images.splice(0)
-        this.loaded = false
+      loadMore() {
+        const request = () => {
+          switch (this.selected) {
+            case 'instagram':
+              return this.$api.get('/me/images', {params: {sources: 'INSTAGRAM', size: 20, cursor: this.next}})
 
-        this.$api.get(`/migrations/places/${this.place.id}/images`)
-          .then(({data: placeImages}) => {
-            const images = placeImages.map(pi => pi.image)
-            this.images.push(...images)
-            this.cursor = null
-            this.loaded = true
-          })
+            case 'recent':
+              return this.$api.get('/me/images', {params: {size: 20, cursor: this.next}})
+          }
+        }
+
+        request().then(({data: images, cursor}) => {
+          this.images.push(...images)
+          this.cursor = cursor
+        })
       },
       onUploadImage() {
         this.$refs.fileInput.click()
