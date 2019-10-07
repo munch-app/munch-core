@@ -3,6 +3,7 @@ package app.munch.manager;
 import app.munch.exception.PlaceLockedException;
 import app.munch.exception.RestrictionException;
 import app.munch.model.*;
+import dev.fuxing.err.ConflictException;
 import dev.fuxing.jpa.HibernateUtils;
 import dev.fuxing.jpa.TransactionProvider;
 import dev.fuxing.utils.JsonUtils;
@@ -55,6 +56,9 @@ public final class PlaceEntityManager {
     public Place create(PlaceModel model, Set<PlaceEditableField> editableFields, Function<EntityManager, Profile> profileProvider) throws RestrictionException {
         return transactionProvider.reduce(entityManager -> {
             Profile profile = profileProvider.apply(entityManager);
+            if (profile == null) {
+                throw new ConflictException("Profile not available.");
+            }
             return publish(entityManager, profile.getUid(), null, model, editableFields);
         });
     }
@@ -76,6 +80,9 @@ public final class PlaceEntityManager {
 
         return transactionProvider.reduce(entityManager -> {
             Profile profile = profileProvider.apply(entityManager);
+            if (profile == null) {
+                throw new ConflictException("Profile not available.");
+            }
             return publish(entityManager, profile.getUid(), id, model, editableFields);
         });
     }

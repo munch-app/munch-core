@@ -99,6 +99,7 @@ public final class ImageService extends ApiService {
         try (InputStream inputStream = part.getInputStream()) {
             FileUtils.copyInputStreamToFile(inputStream, file);
         }
+
         return uploadClient.upload(file, source, entityManager -> {
             return Profile.findByAccountId(entityManager, accountId);
         });

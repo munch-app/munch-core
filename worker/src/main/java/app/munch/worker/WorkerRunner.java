@@ -32,11 +32,12 @@ public interface WorkerRunner {
 
         HealthCheckServer.startBlocking(() -> {
             try {
+                logger.info("Starting: {}", task.getUid());
                 worker.run(task);
                 coordinator.complete(task);
             } catch (Exception e) {
-                coordinator.error(task, e);
                 logger.error("Worker ended exceptionally", e);
+                coordinator.error(task, e);
             }
         });
 

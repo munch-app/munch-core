@@ -3,6 +3,8 @@ package app.munch.worker;
 import app.munch.database.DatabaseModule;
 import app.munch.model.WorkerTask;
 import dev.fuxing.jpa.TransactionProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -13,6 +15,7 @@ import javax.inject.Singleton;
  */
 @Singleton
 public final class MentionWorker implements WorkerRunner {
+    private static final Logger logger = LoggerFactory.getLogger(MentionWorker.class);
 
     private final TransactionProvider provider;
 
@@ -23,7 +26,7 @@ public final class MentionWorker implements WorkerRunner {
 
     @Override
     public String groupUid() {
-        return null;
+        return "01dpkgdhd659pbb520my5k6h8j";
     }
 
     @Override

@@ -50,7 +50,9 @@ public final class MeSocialInstagramService implements SocialService {
 
         provider.with(entityManager -> {
             Profile profile = Profile.findByAccountId(entityManager, accountId);
-            if (profile == null) throw new ConflictException("Profile not found.");
+            if (profile == null) {
+                throw new ConflictException("Profile not available.");
+            }
 
             ProfileSocial social = findByTypeEid(entityManager, ProfileSocialType.INSTAGRAM, eid);
             if (social != null) {

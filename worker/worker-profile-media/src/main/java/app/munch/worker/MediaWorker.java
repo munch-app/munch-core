@@ -1,6 +1,7 @@
 package app.munch.worker;
 
 import app.munch.database.DatabaseModule;
+import app.munch.image.ImageModule;
 import app.munch.model.*;
 import catalyst.edit.PlaceEdit;
 import catalyst.edit.PlaceEditClient;
@@ -52,7 +53,7 @@ public final class MediaWorker implements WorkerRunner {
 
     @Override
     public String groupUid() {
-        return null;
+        return "01dpkgbwqqmrk9ht5bzhw2jthh";
     }
 
     @Override
@@ -76,8 +77,10 @@ public final class MediaWorker implements WorkerRunner {
     }
 
     private void createAccount(InstagramAccount account) {
+        logger.info("CreateAccount Running: {}", account.getUser().getUsername());
+
         @NotBlank String eid = account.getAccountId();
-        @NotBlank String username = account.getUser().getUsername();
+        @NotBlank String username = fixUsername(account.getUser().getUsername());
         String accessToken = account.getAccessToken();
 
         provider.with(entityManager -> {
@@ -109,12 +112,14 @@ public final class MediaWorker implements WorkerRunner {
                 connection.setAccessToken(accessToken);
                 connection.setSocial(social);
                 entityManager.persist(connection); // Persisted
+
+                logger.info("CreateAccount Success: {}", social.getName());
             }
         });
     }
 
     private void createMedia(InstagramMedia media) {
-        String username = media.getUser().getUsername();
+        String username = fixUsername(media.getUser().getUsername());
 
         provider.with(entityManager -> {
             Profile profile = Profile.findByUsername(entityManager, username);
@@ -131,6 +136,7 @@ public final class MediaWorker implements WorkerRunner {
                     .getResultList();
 
             dataRiver.flow(entityManager, social, media, list.isEmpty() ? null : list.get(0));
+            logger.info("Flowed: {}", media.getMediaId());
         });
     }
 
@@ -147,7 +153,9 @@ public final class MediaWorker implements WorkerRunner {
                 .filter(places -> !places.isEmpty())
                 .map(places -> places.get(0))
                 .ifPresent(place -> {
-                    ProfileMedia media = entityManager.createQuery("FROM ProfileMedia WHERE eid = :eid", ProfileMedia.class).getSingleResult();
+                    ProfileMedia media = entityManager.createQuery("FROM ProfileMedia WHERE eid = :eid", ProfileMedia.class)
+                            .setParameter("eid", link.getId())
+                            .getSingleResult();
                     media.setStatus(ProfileMediaStatus.PUBLIC);
                     entityManager.persist(media);
 
@@ -163,15 +171,20 @@ public final class MediaWorker implements WorkerRunner {
                         mention.setProfile(media.getProfile());
                         mention.setPlace(place);
 
-
+                        logger.info("Mentioned: {}, {}", place.getId(), media.getId());
                         mention.setCreatedBy(entityManager.find(Profile.class, Profile.COMPAT_ID));
+                        entityManager.persist(mention);
                     }
                 }));
     }
 
+    private String fixUsername(String username) {
+        return username.toLowerCase().replaceAll("[^a-z0-9]", "");
+    }
+
     public static void main(String[] args) {
         WorkerRunner.start(MediaWorker.class,
-                new DatabaseModule()
+                new DatabaseModule(), new ImageModule()
         );
     }
 }

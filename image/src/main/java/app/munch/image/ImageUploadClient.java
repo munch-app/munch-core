@@ -3,12 +3,14 @@ package app.munch.image;
 import app.munch.model.Image;
 import app.munch.model.ImageSource;
 import app.munch.model.Profile;
+import dev.fuxing.err.ConflictException;
 import dev.fuxing.jpa.TransactionProvider;
 import dev.fuxing.utils.KeyUtils;
 import org.apache.commons.io.FileUtils;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.persistence.EntityManager;
@@ -77,7 +79,10 @@ public final class ImageUploadClient {
             }
 
             provider.with(entityManager -> {
-                Profile profile = profileMapper.apply(entityManager);
+                @Nullable Profile profile = profileMapper.apply(entityManager);
+                if (profile == null) {
+                    throw new ConflictException("Profile not available.");
+                }
                 image.setProfile(profile);
                 entityManager.persist(image);
             });

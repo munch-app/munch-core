@@ -7,6 +7,7 @@ import dev.fuxing.err.ValidationException;
 import dev.fuxing.utils.KeyUtils;
 import org.hibernate.validator.constraints.Length;
 
+import javax.annotation.Nullable;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -204,11 +205,15 @@ public final class Profile {
      * @param accountId     to map to Profile
      * @return Profile
      */
+    @Nullable
     public static Profile findByAccountId(EntityManager entityManager, String accountId) {
-        return entityManager.createQuery("SELECT a.profile FROM Account a " +
+        List<Profile> list = entityManager.createQuery("SELECT a.profile FROM Account a " +
                 "WHERE a.id = :id", Profile.class)
                 .setParameter("id", accountId)
-                .getSingleResult();
+                .setMaxResults(1)
+                .getResultList();
+
+        return list.isEmpty() ? null : list.get(0);
     }
 
     /**
@@ -218,6 +223,7 @@ public final class Profile {
      * @param uid           to map to Profile
      * @return Profile
      */
+    @Nullable
     public static Profile findByUid(EntityManager entityManager, String uid) {
         return entityManager.find(Profile.class, uid);
     }
@@ -229,10 +235,14 @@ public final class Profile {
      * @param username      to map to Profile
      * @return Profile
      */
+    @Nullable
     public static Profile findByUsername(EntityManager entityManager, String username) {
-        return entityManager.createQuery("FROM Profile " +
+        List<Profile> list = entityManager.createQuery("FROM Profile " +
                 "WHERE username = :username", Profile.class)
                 .setParameter("username", username)
-                .getSingleResult();
+                .setMaxResults(1)
+                .getResultList();
+
+        return list.isEmpty() ? null : list.get(0);
     }
 }
