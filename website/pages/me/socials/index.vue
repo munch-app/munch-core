@@ -16,7 +16,7 @@
               <div v-if="social.type === 'INSTAGRAM'">
                 <simple-svg class="wh-24px" :filepath="require('~/assets/icon/icons8-instagram.svg')"/>
               </div>
-              <div class="ml-8 p-6 border-blue border-2 tiny-bold lh-1">
+              <div class="ml-8 p-6-8 bg-white border-2 tiny-bold lh-1">
                 {{social.status}}
               </div>
             </div>
