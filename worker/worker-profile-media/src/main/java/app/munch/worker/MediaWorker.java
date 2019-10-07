@@ -65,20 +65,18 @@ public final class MediaWorker implements WorkerRunner {
 
         mediaClient.iterator().forEachRemaining(instagramMedia -> {
             createMedia(instagramMedia);
-            SleepUtils.sleep(Duration.ofSeconds(1));
+            SleepUtils.sleep(Duration.ofMillis(100));
         });
 
         editClient.iterator("media.instagram.com", 30).forEachRemaining(edit -> {
             linkClient.iteratorSourceId(edit.getSource(), edit.getId(), 30).forEachRemaining(placeLink -> {
                 createMention(edit, placeLink);
             });
-            SleepUtils.sleep(Duration.ofSeconds(1));
+            SleepUtils.sleep(Duration.ofMillis(100));
         });
     }
 
     private void createAccount(InstagramAccount account) {
-        logger.info("CreateAccount Running: {}", account.getUser().getUsername());
-
         @NotBlank String eid = account.getAccountId();
         @NotBlank String username = fixUsername(account.getUser().getUsername());
         String accessToken = account.getAccessToken();
@@ -113,7 +111,7 @@ public final class MediaWorker implements WorkerRunner {
                 connection.setSocial(social);
                 entityManager.persist(connection); // Persisted
 
-                logger.info("CreateAccount Success: {}", social.getName());
+                logger.info("CreateAccount: {}", social.getName());
             }
         });
     }
@@ -129,8 +127,7 @@ public final class MediaWorker implements WorkerRunner {
                     .getSingleResult();
 
             List<ProfileMedia> list = entityManager.createQuery("FROM ProfileMedia " +
-                    "WHERE type = :type AND eid = :eid", ProfileMedia.class)
-                    .setParameter("type", ProfileSocialType.INSTAGRAM)
+                    "WHERE eid = :eid", ProfileMedia.class)
                     .setParameter("eid", media.getMediaId())
                     .setMaxResults(1)
                     .getResultList();

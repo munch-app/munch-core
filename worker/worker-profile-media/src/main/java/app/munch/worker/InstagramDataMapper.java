@@ -36,7 +36,7 @@ public final class InstagramDataMapper {
     }
 
     public String mapEid(InstagramMedia media) {
-        return media.getAccountId();
+        return media.getMediaId();
     }
 
     public ProfileMediaType mapType(InstagramMedia instagram) {
