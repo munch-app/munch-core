@@ -39,6 +39,8 @@ public interface WorkerRunner {
                 logger.error("Worker ended exceptionally", e);
             }
         });
+
+        logger.error("System.exit(1)");
         System.exit(1);
     }
 }

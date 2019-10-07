@@ -17,6 +17,7 @@ import javax.inject.Singleton;
 import javax.persistence.EntityManager;
 import java.sql.Timestamp;
 import java.time.Duration;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -49,10 +50,11 @@ public final class InstagramWorker implements WorkerRunner {
             InstagramAccountConnectionTask connectionTask = acquireTask();
             if (connectionTask != null) {
                 connect(connectionTask);
+                logger.info("Completed: {}", connectionTask.getConnection().getSocial().getName());
                 continue;
             }
 
-            SleepUtils.sleep(Duration.ofMinutes(1));
+            SleepUtils.sleep(Duration.ofMinutes(3));
         } while (true);
     }
 
@@ -75,6 +77,10 @@ public final class InstagramWorker implements WorkerRunner {
             entityManager.persist(task);
             return task;
         });
+
+        if (acquired == null) {
+            return null;
+        }
 
         // Acquired task, wait 10 seconds to reconfirm no one else did.
         SleepUtils.sleep(Duration.ofSeconds(10));
@@ -111,9 +117,10 @@ public final class InstagramWorker implements WorkerRunner {
         }
 
         list = entityManager.createQuery("FROM InstagramAccountConnection " +
-                "WHERE status = :status " +
+                "WHERE status = :status AND connectedAt < :at " +
                 "ORDER BY connectedAt ASC", InstagramAccountConnection.class)
                 .setParameter("status", InstagramAccountConnectionStatus.CONNECTED)
+                .setParameter("at", new Date(System.currentTimeMillis() - Duration.ofMinutes(75).toMillis()))
                 .setMaxResults(1)
                 .getResultList();
 

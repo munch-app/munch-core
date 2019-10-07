@@ -1,22 +1,23 @@
 <template>
   <div class="container pt-64 pb-64">
     <div class="flex-align-center flex-justify-between">
-      <h1>Your social accounts</h1>
+      <h1>Your connected accounts</h1>
       <button @click="onConnectInstagram" class="pink-outline">Connect Instagram</button>
     </div>
 
     <div class="mt-32">
-      <div class="flex-1-2-3-4 m--12" v-if="socials.length > 0">
-        <div class="p-12" v-for="social in socials" :key="social.uid">
-          <div class="border-3 p-16 bg-steam">
-            <div v-if="social.type === 'INSTAGRAM'" class="flex-align-center">
-              <simple-svg class="wh-24px" :filepath="require('~/assets/icon/icons8-instagram.svg')"/>
-              <h4 class="ml-8">Instagram: {{social.name}}</h4>
+      <div class="" v-if="socials.length > 0">
+        <div v-for="social in socials" :key="social.uid">
+          <div class="border-4 p-12-16 bg-steam">
+            <div>
+              <h4>{{social.name}}</h4>
             </div>
             <div class="mt-8 flex-align-center">
-              <div>
-                <span class="small-bold">{{social.status}}</span>,
-                <span class="small">{{formatMillis(social.updatedAt)}}</span>
+              <div v-if="social.type === 'INSTAGRAM'">
+                <simple-svg class="wh-24px" :filepath="require('~/assets/icon/icons8-instagram.svg')"/>
+              </div>
+              <div class="ml-8 p-6 border-blue border-2 tiny-bold lh-1">
+                {{social.status}}
               </div>
             </div>
           </div>

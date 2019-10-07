@@ -11,7 +11,9 @@ import dev.fuxing.transport.service.TransportResult;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.persistence.EntityManager;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Date: 2/10/19
@@ -66,12 +68,26 @@ public final class MeSocialInstagramService implements SocialService {
             social.setStatus(ProfileSocialStatus.CONNECTED);
             entityManager.persist(social);
 
-            InstagramAccountConnection connection = new InstagramAccountConnection();
+            InstagramAccountConnection connection = findConnection(entityManager, social);
             connection.setStatus(InstagramAccountConnectionStatus.CONNECTED);
             connection.setAccessToken(response.getAccessToken());
             connection.setSocial(social);
             entityManager.persist(connection);
+
         });
         return TransportResult.ok();
+    }
+
+    private InstagramAccountConnection findConnection(EntityManager entityManager, ProfileSocial social) {
+        List<InstagramAccountConnection> list = entityManager.createQuery("FROM InstagramAccountConnection WHERE social = :social", InstagramAccountConnection.class)
+                .setParameter("social", social)
+                .setMaxResults(1)
+                .getResultList();
+
+        if (!list.isEmpty()) {
+            return list.get(0);
+        }
+
+        return new InstagramAccountConnection();
     }
 }

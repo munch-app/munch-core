@@ -31,8 +31,8 @@
       </div>
 
       <div>
-        <nuxt-link class="black" :to="`/me/socials`">Social Accounts</nuxt-link>
-        <nuxt-link class="black" :to="`/me/mentions`">Mentions</nuxt-link>
+        <nuxt-link class="black" :to="`/me/socials`">Instagram Connect</nuxt-link>
+<!--        <nuxt-link class="black" :to="`/me/mentions`">Mentions</nuxt-link>-->
         <hr class="mtb-8">
       </div>
 
