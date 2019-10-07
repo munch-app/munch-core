@@ -13,9 +13,8 @@ import static java.lang.annotation.ElementType.TYPE_USE;
 
 /**
  * {@link app.munch.model.MentionStatus#PUBLIC}: Place is required
- * {@link app.munch.model.MentionStatus#LINK_SUGGEST}: Place is required
+ * {@link app.munch.model.MentionStatus#SUGGESTED}: Place is required
  * {@link app.munch.model.MentionStatus#DELETED}: Place is required
- * {@link app.munch.model.MentionStatus#PENDING}: Place is not required
  * <p>
  * Date: 28/9/19
  * Time: 9:44 pm

@@ -7,8 +7,8 @@
 
     <div class="mt-32">
       <div class="" v-if="socials.length > 0">
-        <div v-for="social in socials" :key="social.uid">
-          <div class="border-4 p-12-16 bg-steam">
+        <div class="border-4 bg-steam overflow-hidden" v-for="social in socials" :key="social.uid">
+          <div class="p-16-24-20 hover-bg-a10 hover-pointer">
             <div>
               <h4>{{social.name}}</h4>
             </div>

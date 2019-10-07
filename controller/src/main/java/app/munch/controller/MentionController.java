@@ -3,14 +3,15 @@ package app.munch.controller;
 import app.munch.model.Mention;
 import app.munch.model.MentionStatus;
 import app.munch.model.MentionType;
-import app.munch.model.Profile;
 import dev.fuxing.jpa.EntityStream;
 import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
 
 import javax.inject.Singleton;
 import javax.persistence.EntityManager;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Date: 28/9/19
@@ -19,6 +20,7 @@ import java.util.*;
  * @author Fuxing Loh
  */
 @Singleton
+@Deprecated
 public final class MentionController extends Controller {
 
     public TransportList queryByPlace(String id, int size, Set<MentionType> types, TransportCursor cursor) {
@@ -156,45 +158,4 @@ public final class MentionController extends Controller {
                 .setMaxResults(size)
                 .getResultList();
     }
-
-    public TransportList queryByMe(String accountId, int size, Set<MentionStatus> statuses, Set<MentionType> types, TransportCursor cursor) {
-        return provider.reduce(true, entityManager -> {
-            return EntityStream.of(() -> {
-                return selectByMe(entityManager, accountId, size, statuses, types, cursor);
-            }).cursor(size, (mention, builder) -> {
-                builder.put("createdAt", mention.getCreatedAt().getTime());
-                builder.put("id", mention.getId());
-            }).asTransportList();
-        });
-    }
-
-    private List<Mention> selectByMe(EntityManager entityManager, String accountId, int size, Set<MentionStatus> statuses, Set<MentionType> types, TransportCursor cursor) {
-        QueryChain<Mention> chain = QueryChain.select(entityManager, "FROM Mention", Mention.class);
-        chain.orderBy("createdAt DESC");
-        chain.orderBy("id DESC");
-        chain.size(size);
-
-        Profile profile = Profile.findByAccountId(entityManager, accountId);
-        if (profile == null) return List.of();
-        chain.where("profile = :profile", "profile", profile);
-
-        final Long createdAt = cursor.getLong("createdAt");
-        final String id = cursor.get("id");
-        if (createdAt != null && id != null) {
-            chain.where("(createdAt < :createdAt OR (createdAt = :createdAt AND id < :id))",
-                    "id", id, "createdAt", new Date(createdAt)
-            );
-        }
-
-        if (!statuses.isEmpty()) {
-            chain.where("type IN (:types)", "types", statuses);
-        }
-
-        if (!types.isEmpty()) {
-            chain.where("status IN (:statues)", "statues", types);
-        }
-
-        return chain.asList();
-    }
-
 }

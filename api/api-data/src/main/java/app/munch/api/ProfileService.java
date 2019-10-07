@@ -6,8 +6,8 @@ import app.munch.manager.ArticleEntityManager;
 import app.munch.model.ArticleStatus;
 import app.munch.model.MentionType;
 import app.munch.model.Profile;
+import app.munch.model.ProfileMediaStatus;
 import dev.fuxing.jpa.HibernateUtils;
-import dev.fuxing.jpa.TransactionProvider;
 import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
 import dev.fuxing.transport.service.TransportContext;
@@ -26,14 +26,13 @@ import java.util.Set;
  * Time: 05:46
  */
 @Singleton
-public final class ProfileService extends DataService {
+public final class ProfileService extends ApiService {
 
     private final ArticleEntityManager articleEntityManager;
     private final MentionController mentionController;
 
     @Inject
-    ProfileService(TransactionProvider provider, ArticleEntityManager articleEntityManager, MentionController mentionController) {
-        super(provider);
+    ProfileService(ArticleEntityManager articleEntityManager, MentionController mentionController) {
         this.articleEntityManager = articleEntityManager;
         this.mentionController = mentionController;
     }
@@ -87,8 +86,8 @@ public final class ProfileService extends DataService {
         final int size = ctx.querySize(20, 50);
         final String username = ctx.pathString("username");
 
-        Set<MentionType> types = MentionType.fromQueryString(ctx.queryString("types", null));
         TransportCursor cursor = ctx.queryCursor();
+        Set<MentionType> types = cursor.getEnums("types", MentionType.class);
         return mentionController.queryByUsername(username, size, types, cursor);
     }
 
@@ -110,6 +109,7 @@ public final class ProfileService extends DataService {
                             "FROM ProfileMedia m", Tuple.class);
 
             chain.where("m.profile.username = :username", "username", username);
+            chain.where("m.status = :status", "status", ProfileMediaStatus.PUBLIC);
             chain.size(size);
 
             chain.orderBy("createdAt DESC");

@@ -9,7 +9,6 @@ import dev.fuxing.err.ConflictException;
 import dev.fuxing.err.ForbiddenException;
 import dev.fuxing.err.NotFoundException;
 import dev.fuxing.err.ValidationException;
-import dev.fuxing.jpa.TransactionProvider;
 import dev.fuxing.transport.TransportList;
 import dev.fuxing.transport.service.TransportContext;
 import dev.fuxing.transport.service.TransportResult;
@@ -33,15 +32,14 @@ import java.util.Set;
  * Date: 2019-08-12
  * Time: 05:47
  */
-public final class ImageService extends DataService {
+public final class ImageService extends ApiService {
     private static final MultipartConfigElement MULTIPART_CONFIG = new MultipartConfigElement("/temp");
 
     private final ImageQueryClient queryClient;
     private final ImageUploadClient uploadClient;
 
     @Inject
-    ImageService(TransactionProvider provider, ImageQueryClient queryClient, ImageUploadClient uploadClient) {
-        super(provider);
+    ImageService(ImageQueryClient queryClient, ImageUploadClient uploadClient) {
         this.queryClient = queryClient;
         this.uploadClient = uploadClient;
     }

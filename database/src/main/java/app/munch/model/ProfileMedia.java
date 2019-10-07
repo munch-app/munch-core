@@ -75,6 +75,9 @@ public final class ProfileMedia {
     @Size(max = 20)
     private List<@NotNull Node> content;
 
+    /**
+     * Non cascading, edit from Mention
+     */
     @OneToMany(cascade = {}, fetch = FetchType.LAZY, mappedBy = "media", orphanRemoval = false)
     private List<Mention> mentions;
 

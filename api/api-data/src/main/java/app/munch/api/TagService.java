@@ -3,10 +3,8 @@ package app.munch.api;
 import app.munch.model.Tag;
 import com.fasterxml.jackson.databind.JsonNode;
 import dev.fuxing.err.ParamException;
-import dev.fuxing.jpa.TransactionProvider;
 import dev.fuxing.transport.service.TransportContext;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.List;
 
@@ -16,12 +14,7 @@ import java.util.List;
  * Time: 4:11 am
  */
 @Singleton
-public final class TagService extends DataService {
-
-    @Inject
-    TagService(TransactionProvider provider) {
-        super(provider);
-    }
+public final class TagService extends ApiService {
 
     @Override
     public void route() {

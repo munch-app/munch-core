@@ -21,7 +21,7 @@ import java.util.Map;
  * Date: 2019-08-12
  * Time: 05:46
  */
-public final class MeService extends DataService {
+public final class MeService extends ApiService {
 
     private final UsernameValidator usernameValidator;
 

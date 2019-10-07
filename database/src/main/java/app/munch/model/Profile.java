@@ -185,11 +185,14 @@ public final class Profile {
      * @throws ForbiddenException if not authorized
      */
     public static void authorize(EntityManager entityManager, String accountId, Profile profile) {
-        Profile accountProfile = findByAccountId(entityManager, accountId);
-        if (accountProfile == null) throw new ForbiddenException();
-        if (profile == null) throw new ForbiddenException();
+        authorize(profile, findByAccountId(entityManager, accountId));
+    }
 
-        if (!accountProfile.getUid().equals(profile.getUid())) {
+    public static void authorize(Profile left, Profile right) {
+        if (left == null) throw new ForbiddenException();
+        if (right == null) throw new ForbiddenException();
+
+        if (!left.getUid().equals(right.getUid())) {
             throw new ForbiddenException();
         }
     }

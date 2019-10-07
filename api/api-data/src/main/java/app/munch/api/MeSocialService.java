@@ -16,7 +16,8 @@ import javax.inject.Singleton;
  * @author Fuxing Loh
  */
 @Singleton
-public final class MeSocialService extends DataService {
+public final class MeSocialService extends ApiService {
+
     @Override
     public void route() {
         PATH("/me/socials", () -> {

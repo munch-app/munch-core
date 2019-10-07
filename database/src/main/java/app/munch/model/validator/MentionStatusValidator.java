@@ -21,12 +21,9 @@ public class MentionStatusValidator implements ConstraintValidator<ValidMentionS
         if (status == null) return false;
 
         switch (status) {
-            case PENDING:
-                return mention.getPlace() == null;
-
             case DELETED:
             case PUBLIC:
-            case LINK_SUGGEST:
+            case SUGGESTED:
                 return mention.getPlace() != null;
         }
 

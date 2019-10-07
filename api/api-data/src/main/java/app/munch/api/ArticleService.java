@@ -7,7 +7,6 @@ import app.munch.model.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import dev.fuxing.err.ForbiddenException;
 import dev.fuxing.err.UnauthorizedException;
-import dev.fuxing.jpa.TransactionProvider;
 import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
 import dev.fuxing.transport.service.TransportContext;
@@ -26,14 +25,13 @@ import java.util.Map;
  * Time: 05:46
  */
 @Singleton
-public final class ArticleService extends DataService {
+public final class ArticleService extends ApiService {
 
     private final ArticleEntityManager articleEntityManager;
     private final ArticlePlaceEntityManager articlePlaceEntityManager;
 
     @Inject
-    ArticleService(TransactionProvider provider, ArticleEntityManager articleEntityManager, ArticlePlaceEntityManager articlePlaceEntityManager) {
-        super(provider);
+    ArticleService(ArticleEntityManager articleEntityManager, ArticlePlaceEntityManager articlePlaceEntityManager) {
         this.articleEntityManager = articleEntityManager;
         this.articlePlaceEntityManager = articlePlaceEntityManager;
     }

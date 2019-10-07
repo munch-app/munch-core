@@ -1,19 +1,12 @@
 package app.munch.api;
 
-import app.munch.controller.MentionController;
-import app.munch.model.Mention;
-import app.munch.model.MentionStatus;
-import app.munch.model.MentionType;
-import app.munch.model.Profile;
-import com.fasterxml.jackson.databind.JsonNode;
-import dev.fuxing.jpa.EntityPatch;
-import dev.fuxing.transport.TransportCursor;
+import app.munch.model.*;
+import dev.fuxing.err.NotFoundException;
+import dev.fuxing.err.ValidationException;
 import dev.fuxing.transport.TransportList;
 import dev.fuxing.transport.service.TransportContext;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.Set;
 
 /**
  * Date: 28/9/19
@@ -22,19 +15,13 @@ import java.util.Set;
  * @author Fuxing Loh
  */
 @Singleton
-public final class MeMentionService extends DataService {
-
-    private final MentionController mentionController;
-
-    @Inject
-    MeMentionService(MentionController mentionController) {
-        this.mentionController = mentionController;
-    }
+public final class MeMentionService extends ApiService {
 
     @Override
     public void route() {
         PATH("/me/mentions", () -> {
             GET("", this::query);
+            POST("", this::post);
 
             PATH("/:id", () -> {
                 GET("", this::idGet);
@@ -44,43 +31,80 @@ public final class MeMentionService extends DataService {
     }
 
     public TransportList query(TransportContext ctx) {
-        final String accountId = ctx.get(ApiRequest.class).getAccountId();
-        final int size = ctx.querySize(20, 40);
-        final Set<MentionStatus> statuses = MentionStatus.fromQueryString(ctx.queryString("statuses", null));
-        final Set<MentionType> types = MentionType.fromQueryString(ctx.queryString("types", null));
-        TransportCursor cursor = ctx.queryCursor();
+        return queryAuthorized(ctx, "FROM Mention", Mention.class, (profile, cursor, chain) -> {
+            chain.orderBy("createdAt DESC");
+            chain.orderBy("id DESC");
+            chain.size(cursor.size(20, 40));
 
-        return mentionController.queryByMe(accountId, size, statuses, types, cursor);
+            chain.where("profile = :profile", "profile", profile);
+
+            if (cursor.has("createdAt", "id")) {
+                chain.where("(createdAt < :createdAt OR (createdAt = :createdAt AND id < :id))",
+                        "id", cursor.get("id"), "createdAt", cursor.getDate("createdAt")
+                );
+            }
+
+            if (cursor.has("statuses")) {
+                chain.where("status IN (:statuses)", "statuses", cursor.getEnums("statuses", MentionStatus.class));
+            }
+
+            if (cursor.has("types")) {
+                chain.where("type IN (:types)", "types", cursor.getEnums("statuses", MentionType.class));
+            }
+        }, (builder, mention) -> {
+            builder.put("createdAt", mention.getCreatedAt().getTime());
+            builder.put("id", mention.getId());
+        });
     }
 
-    public Mention idGet(TransportContext ctx) {
-        final String id = ctx.pathString("id");
-        final String accountId = ctx.get(ApiRequest.class).getAccountId();
+    public Mention post(TransportContext ctx) {
+        Mention mention = ctx.bodyAsObject(Mention.class);
 
-        return provider.reduce(true, entityManager -> {
-            Mention mention = entityManager.find(Mention.class, id);
-            if (mention == null) return null;
+        return postAuthorized(ctx, (entityManager, profile) -> {
+            switch (mention.getStatus()) {
+                case UNKNOWN_TO_SDK_VERSION:
+                case SUGGESTED:
+                    throw new ValidationException("status", "['PUBLIC','DELETED'] Only");
+            }
 
-            Profile.authorize(entityManager, accountId, mention.getProfile());
+            switch (mention.getType()) {
+                case ARTICLE:
+                    Article article = entityManager.find(Article.class, mention.getArticle().getId());
+                    if (article == null) throw new NotFoundException("Article not found.");
+                    mention.setArticle(article);
+                    Profile.authorize(article.getProfile(), profile);
+                    break;
+
+                case MEDIA:
+                    ProfileMedia media = entityManager.find(ProfileMedia.class, mention.getMedia().getId());
+                    if (media == null) throw new NotFoundException("ProfileMedia not found.");
+                    mention.setMedia(media);
+                    Profile.authorize(media.getProfile(), profile);
+                    break;
+            }
+
+            mention.setProfile(profile);
+            mention.setCreatedBy(profile);
+
+            entityManager.persist(mention);
             return mention;
         });
     }
 
+    public Mention idGet(TransportContext ctx) {
+        final String id = ctx.pathString("id");
+        return getAuthorized(ctx, entityManager -> {
+            return entityManager.find(Mention.class, id);
+        }, Mention::getProfile);
+    }
+
     public Mention idPatch(TransportContext ctx) {
         final String id = ctx.pathString("id");
-        final String accountId = ctx.get(ApiRequest.class).getAccountId();
-        final JsonNode body = ctx.bodyAsJson();
-
-        return provider.reduce(entityManager -> {
-            Mention mention = entityManager.find(Mention.class, id);
-            if (mention == null) return null;
-            Profile.authorize(entityManager, accountId, mention.getProfile());
-
-            return EntityPatch.with(entityManager, mention, body)
-                    .patch("status", MentionStatus.class, Mention::setStatus)
-                    .persist(mention1 -> {
-                        mention1.setCreatedBy(mention1.getProfile());
-                    });
+        return patchAuthorized(ctx, entityManager -> {
+            return entityManager.find(Mention.class, id);
+        }, Mention::getProfile, patcher -> {
+            return patcher.patch("status", MentionStatus.class, Mention::setStatus)
+                    .persist();
         });
     }
 }

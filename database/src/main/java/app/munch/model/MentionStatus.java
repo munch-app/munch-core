@@ -2,10 +2,7 @@ package app.munch.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import org.apache.commons.lang3.StringUtils;
 
-import java.util.Arrays;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -23,17 +20,12 @@ public enum MentionStatus {
     PUBLIC("PUBLIC"),
 
     /**
-     * Mention is possible but has not been made it and is not tied to any place.
+     * Mention is possible and suggested.
      */
-    PENDING("PENDING"),
+    SUGGESTED("SUGGESTED"),
 
     /**
-     * Link is possible and suggested.
-     */
-    LINK_SUGGEST("LINK_SUGGEST"),
-
-    /**
-     * Mention that was once linked is now deleted.
+     * Mention that was once linked but is now deleted.
      */
     DELETED("DELETED"),
 
@@ -49,16 +41,6 @@ public enum MentionStatus {
     @JsonValue
     public String toString() {
         return String.valueOf(value);
-    }
-
-    public static Set<MentionStatus> fromQueryString(String value) {
-        if (StringUtils.isBlank(value)) {
-            return Set.of();
-        }
-        return Arrays.stream(value.split(", *"))
-                .map(MentionStatus::fromValue)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
     }
 
     /**

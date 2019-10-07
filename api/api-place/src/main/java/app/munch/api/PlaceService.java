@@ -276,8 +276,8 @@ public final class PlaceService implements TransportService {
     public TransportList idMentionsList(TransportContext ctx) {
         final String id = ctx.pathString("id");
         final int size = ctx.querySize(10, 33);
-        Set<MentionType> types = MentionType.fromQueryString(ctx.queryString("types", null));
         TransportCursor cursor = ctx.queryCursor();
+        Set<MentionType> types = cursor.getEnums("types", MentionType.class);
 
         return mentionController.queryByPlace(id, size, types, cursor);
     }

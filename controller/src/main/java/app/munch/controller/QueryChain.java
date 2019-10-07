@@ -83,6 +83,12 @@ public class QueryChain<T> {
         return where(ql, name1, value1, name2, value2, name3, value3);
     }
 
+    /**
+     * @param cursor    to chain
+     * @param predicate before running consumer
+     * @param consumer  to run if predicate pass
+     * @return QueryChain instance for chaining
+     */
     public QueryChain<T> cursor(TransportCursor cursor, Predicate<TransportCursor> predicate, BiConsumer<QueryChain<T>, TransportCursor> consumer) {
         if (predicate.test(cursor)) {
             consumer.accept(this, cursor);
@@ -104,6 +110,11 @@ public class QueryChain<T> {
         return this;
     }
 
+    /**
+     * @param size to query, will be used for created TransportList in EntitySteam
+     * @return QueryChain instance for chaining
+     * @see EntityStream#cursor(int, BiConsumer)
+     */
     public QueryChain<T> size(int size) {
         this.size = size;
         return this;
