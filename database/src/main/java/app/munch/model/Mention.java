@@ -1,6 +1,5 @@
 package app.munch.model;
 
-import app.munch.model.annotation.ValidMentionStatus;
 import app.munch.model.annotation.ValidMentionType;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -31,7 +30,6 @@ import java.util.Date;
         @UniqueConstraint(name = "uk_88jnqnzqvndsmhnm", columnNames = {"place_id", "media_id"}),
 })
 @ValidMentionType
-@ValidMentionStatus
 public final class Mention {
     // TODO(fuxing): Future: EditLocking (type: Mention), to prevent it from unwanted editing.
 
@@ -45,9 +43,7 @@ public final class Mention {
     @Column(length = 16, updatable = false, nullable = false, unique = true)
     private String id;
 
-    /**
-     * @see ValidMentionStatus for how validation works
-     */
+    @NotNull
     @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = true)
     private Place place;
 
@@ -75,9 +71,6 @@ public final class Mention {
     @Column(length = 100, updatable = false, nullable = false, unique = false)
     private MentionType type;
 
-    /**
-     * @see ValidMentionStatus for how validation works
-     */
     @ValidEnum
     @Enumerated(EnumType.STRING)
     @Column(length = 100, updatable = true, nullable = false, unique = false)

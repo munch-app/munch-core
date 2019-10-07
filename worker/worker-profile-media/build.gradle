@@ -1,4 +1,9 @@
 dependencies {
+
+    compile group: 'instagram-system', name: 'instagram-system-data-client', version: '1.0-SNAPSHOT'
+    compile group: 'catalyst', name: 'catalyst-link-client', version: catalystVersion
+    compile group: 'catalyst', name: 'catalyst-edit-client', version: catalystVersion
+    compile project(':image')
 }
 
 apply from: (project.rootDir.toString() + '/worker/worker.gradle')

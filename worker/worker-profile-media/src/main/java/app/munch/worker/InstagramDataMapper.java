@@ -2,9 +2,7 @@ package app.munch.worker;
 
 import app.munch.image.ImageUploadClient;
 import app.munch.model.*;
-import com.instagram.err.InstagramException;
-import com.instagram.model.InstagramFile;
-import com.instagram.model.InstagramMedia;
+import munch.instagram.data.InstagramMedia;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -12,13 +10,14 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 
 /**
  * Date: 2/10/19
@@ -37,10 +36,12 @@ public final class InstagramDataMapper {
     }
 
     public String mapEid(InstagramMedia media) {
-        return media.getId();
+        return media.getAccountId();
     }
 
     public ProfileMediaType mapType(InstagramMedia instagram) {
+        Objects.requireNonNull(instagram.getType());
+
         switch (instagram.getType()) {
             case "carousel":
                 return ProfileMediaType.INSTAGRAM_ALBUM;
@@ -57,7 +58,7 @@ public final class InstagramDataMapper {
     }
 
     public List<ProfileMedia.Node> mapContent(InstagramMedia instagram) {
-        String text = instagram.getCaption().getText();
+        String text = instagram.getCaption();
         if (StringUtils.isBlank(text)) {
             return List.of();
         }
@@ -69,12 +70,12 @@ public final class InstagramDataMapper {
 
     public ProfileMedia.Metric mapMetric(InstagramMedia instagram) {
         ProfileMedia.Metric metric = new ProfileMedia.Metric();
-        metric.setUp(Long.valueOf(instagram.getLikes().getCount()));
+        metric.setUp(instagram.getCount().getLikes());
         return metric;
     }
 
     public Date mapCreatedAt(InstagramMedia instagram) {
-        return new Date(instagram.getCreatedTime() * 1000);
+        return new Date(instagram.getCreatedMillis());
     }
 
     public List<Image> mapImages(Profile profile, InstagramMedia instagram) {
@@ -87,7 +88,7 @@ public final class InstagramDataMapper {
             }, i -> i.setCreatedAt(mapCreatedAt(instagram)));
             return List.of(image);
         } catch (IOException e) {
-            throw new InstagramException(e);
+            throw new RuntimeException(e);
         } finally {
             FileUtils.deleteQuietly(file);
         }
@@ -101,10 +102,10 @@ public final class InstagramDataMapper {
     }
 
     private String findLargestImage(InstagramMedia instagram) {
-        Map<String, InstagramFile> files = instagram.getImages();
-        return files.values().stream()
-                .max(Comparator.comparingInt(InstagramFile::getHeight))
-                .map(InstagramFile::getUrl)
+        munch.file.@NotNull Image image = instagram.getImage();
+        return image.getSizes().stream()
+                .max(Comparator.comparingInt(munch.file.Image.Size::getHeight))
+                .map(munch.file.Image.Size::getUrl)
                 .orElseThrow(() -> {
                     throw new IllegalStateException("findLargestImage unable to find image.");
                 });

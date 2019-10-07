@@ -1,7 +1,6 @@
 package app.munch.model.validator;
 
-import app.munch.model.Mention;
-import app.munch.model.MentionType;
+import app.munch.model.*;
 import app.munch.model.annotation.ValidMentionType;
 
 import javax.validation.ConstraintValidator;
@@ -24,14 +23,20 @@ public class MentionTypeValidator implements ConstraintValidator<ValidMentionTyp
         if (mention.getArticle() != null) count++;
         if (mention.getMedia() != null) count++;
 
+        if (count != 1) {
+            return false;
+        }
+
+        // Non bidirectional validation
         switch (type) {
             case MEDIA:
-                return mention.getMedia() != null && count == 1;
+                return mention.getMedia() != null
+                        && mention.getMedia().getStatus() == ProfileMediaStatus.PUBLIC;
 
             case ARTICLE:
-                return mention.getArticle() != null && count == 1;
+                return mention.getArticle() != null
+                        && mention.getArticle().getStatus() == ArticleStatus.PUBLISHED;
         }
         return false;
     }
-
 }
