@@ -1,7 +1,6 @@
 <template>
   <div>
-    <!--<no-ssr>-->
-      <vue-slider ref="slider" @input="onInput" @click.native="onClick" v-bind="{
+    <vue-slider ref="slider" @input="onInput" @click.native="onClick" v-bind="{
       value, min, max,
       formatter: '${value}',
       mergeFormatter: '${value1} - ${value2}',
@@ -28,7 +27,6 @@
         backgroundColor: '#F05F3B'
       }
   }"/>
-    <!--</no-ssr>-->
   </div>
 </template>
 

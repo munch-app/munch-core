@@ -7,11 +7,11 @@
         />
 
         <div class="flex-center w-100" style="height: 64px">
-          <no-ssr>
+          <client-only>
             <div class="p-24" v-if="more" v-observe-visibility="{callback: (v) => visibleLoading(v),throttle:300}">
               <beat-loader color="#084E69" size="14px"/>
             </div>
-          </no-ssr>
+          </client-only>
         </div>
       </div>
 

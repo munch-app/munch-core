@@ -25,15 +25,15 @@
       </template>
     </masonry-wall>
 
-    <no-ssr>
+    <client-only>
       <place-image-wall-dialog
         v-if="selectedItem" :item="selectedItem" @next="selected++" @prev="selected--" @close="selected = -1"
       />
-    </no-ssr>
+    </client-only>
 
-    <no-ssr class="flex-center" style="padding: 24px 0 48px 0">
+    <client-only class="flex-center" style="padding: 24px 0 48px 0">
       <beat-loader color="#084E69" v-if="next.sort" size="14px"/>
-    </no-ssr>
+    </client-only>
   </div>
 </template>
 

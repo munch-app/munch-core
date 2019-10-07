@@ -109,7 +109,8 @@ public final class ProfileService extends ApiService {
                             "FROM ProfileMedia m", Tuple.class);
 
             chain.where("m.profile.username = :username", "username", username);
-            chain.where("m.status = :status", "status", ProfileMediaStatus.PUBLIC);
+            // TODO(fuxing): Change back to PUBLIC when completed
+            chain.where("m.status = :status", "status", ProfileMediaStatus.PENDING);
             chain.size(size);
 
             chain.orderBy("createdAt DESC");
