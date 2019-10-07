@@ -12,12 +12,12 @@ import javax.inject.Singleton;
  * @since 7/10/19 at 5:00 pm
  */
 @Singleton
-public final class MentionWorker implements WorkerRunner {
+public final class MediaWorker implements WorkerRunner {
 
     private final TransactionProvider provider;
 
     @Inject
-    MentionWorker(TransactionProvider provider) {
+    MediaWorker(TransactionProvider provider) {
         this.provider = provider;
     }
 
@@ -32,7 +32,7 @@ public final class MentionWorker implements WorkerRunner {
     }
 
     public static void main(String[] args) {
-        WorkerRunner.start(MentionWorker.class,
+        WorkerRunner.start(MediaWorker.class,
                 new DatabaseModule()
         );
     }

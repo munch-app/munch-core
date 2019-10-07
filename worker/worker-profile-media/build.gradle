@@ -1,0 +1,5 @@
+dependencies {
+}
+
+apply from: (project.rootDir.toString() + '/worker/worker.gradle')
+mainClassName = 'app.munch.worker.MediaWorker'
