@@ -15,12 +15,14 @@ import javax.persistence.EntityManager;
 import java.awt.*;
 import java.io.File;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
- * Created by: Fuxing
- * Date: 16/8/19
- * Time: 10:07 pm
+ * ImageUploadClient to upload image into Munch ecosystem.
+ *
+ * @author Fuxing Loh
+ * @since 16/8/19 at 10:07 pm
  */
 @Singleton
 public final class ImageUploadClient {
@@ -33,10 +35,27 @@ public final class ImageUploadClient {
         this.s3Client = s3Client;
     }
 
-    public Image upload(File file, ImageSource source, Function<EntityManager, Profile> function) {
+    /**
+     * @param file          to upload
+     * @param source        of where the image is coming from
+     * @param profileMapper to get Profile for the Image
+     * @return Image model created
+     */
+    public Image upload(File file, ImageSource source, Function<EntityManager, Profile> profileMapper) {
+        return upload(file, source, profileMapper, null);
+    }
+
+    /**
+     * @param file          to upload
+     * @param source        of where the image is coming from
+     * @param profileMapper to get Profile for the Image
+     * @param imageConsumer to inject data into Image before persisting
+     * @return Image model created
+     */
+    public Image upload(File file, ImageSource source, Function<EntityManager, Profile> profileMapper, Consumer<Image> imageConsumer) {
         Objects.requireNonNull(file);
         Objects.requireNonNull(source);
-        Objects.requireNonNull(function);
+        Objects.requireNonNull(profileMapper);
 
         String bucket = Image.resolveBucket(source);
 
@@ -53,8 +72,12 @@ public final class ImageUploadClient {
             image.setWidth((int) dimension.getWidth());
             image.setHeight((int) dimension.getHeight());
 
+            if (imageConsumer != null) {
+                imageConsumer.accept(image);
+            }
+
             provider.with(entityManager -> {
-                Profile profile = function.apply(entityManager);
+                Profile profile = profileMapper.apply(entityManager);
                 image.setProfile(profile);
                 entityManager.persist(image);
             });

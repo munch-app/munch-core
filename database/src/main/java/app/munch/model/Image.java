@@ -1,6 +1,5 @@
 package app.munch.model;
 
-import app.munch.model.group.ImageDefaultGroup;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -61,13 +60,13 @@ public final class Image {
      * S3 Stores it as such:
      * bucket: uid+ext
      */
-    @NotNull(groups = {ImageDefaultGroup.class})
+    @NotNull(groups = {Groups.ImageDefault.class})
     @Pattern(regexp = KeyUtils.ULID_REGEX)
     @Id
     @Column(length = 26, updatable = false, nullable = false, unique = true)
     private String uid;
 
-    @NotNull(groups = {ImageDefaultGroup.class})
+    @NotNull(groups = {Groups.ImageDefault.class})
     @Pattern(regexp = "^\\.(jpg|png|gif|webp)$")
     private String ext;
 
@@ -77,7 +76,7 @@ public final class Image {
      * mh4: manually uploaded static resources, used for engineering use.
      * mh5: instagram media images
      */
-    @NotNull(groups = {ImageDefaultGroup.class})
+    @NotNull(groups = {Groups.ImageDefault.class})
     @Pattern(regexp = "^mh[05]$")
     @Column(length = 32, updatable = false, nullable = false, unique = false)
     private String bucket;
@@ -92,7 +91,7 @@ public final class Image {
     private String loc;
 
     @JsonIgnore
-    @NotNull(groups = {ImageDefaultGroup.class})
+    @NotNull(groups = {Groups.ImageDefault.class})
     @ManyToOne(fetch = FetchType.LAZY, cascade = {})
     private Profile profile;
 
@@ -112,12 +111,12 @@ public final class Image {
     @Column(updatable = false, nullable = false, unique = false)
     private Integer height;
 
-    @ValidEnum(groups = {ImageDefaultGroup.class})
+    @ValidEnum(groups = {Groups.ImageDefault.class})
     @Enumerated(EnumType.STRING)
     @Column(length = 100, updatable = true, nullable = false, unique = false)
     private ImageSource source;
 
-    @NotNull(groups = {ImageDefaultGroup.class})
+    @NotNull(groups = {Groups.ImageDefault.class})
     @Column(updatable = false, nullable = false, unique = false)
     private Date createdAt;
 
@@ -195,7 +194,9 @@ public final class Image {
 
     @PrePersist
     void prePersist() {
-        setCreatedAt(new Timestamp(System.currentTimeMillis()));
+        if (getCreatedAt() == null) {
+            setCreatedAt(new Timestamp(System.currentTimeMillis()));
+        }
 
         if (StringUtils.isNoneBlank(getExt(), getUid(), getBucket())) {
             setLoc(getBucket() + "-" + getUid() + getExt());
@@ -206,7 +207,7 @@ public final class Image {
 
     @PreUpdate
     void preUpdate() {
-        ValidationException.validate(this, Default.class, ImageDefaultGroup.class);
+        ValidationException.validate(this, Default.class, Groups.ImageDefault.class);
     }
 
     /**

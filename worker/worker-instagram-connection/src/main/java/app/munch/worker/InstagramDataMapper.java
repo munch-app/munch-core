@@ -81,7 +81,7 @@ public final class InstagramDataMapper {
             file = downloadFile(url);
             Image image = client.upload(file, ImageSource.INSTAGRAM, entityManager -> {
                 return entityManager.find(Profile.class, profile.getUid());
-            });
+            }, i -> i.setCreatedAt(mapCreatedAt(instagram)));
             return List.of(image);
         } catch (IOException e) {
             throw new InstagramException(e);
