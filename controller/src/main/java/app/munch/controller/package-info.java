@@ -5,10 +5,9 @@
  * Controller created here should not accept 'jpa.EntityManager'.
  * The manager itself should procure their own transaction and close them within it's lifecycle.
  * <p>
- * Date: 2019-09-28
- * Time: 23:23
  *
  * @author Fuxing Loh
+ * @since 2019-09-28 at 23:23
  */
 package app.munch.controller;
 

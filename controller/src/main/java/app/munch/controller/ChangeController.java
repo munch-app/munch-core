@@ -1,10 +1,8 @@
-package app.munch.manager;
+package app.munch.controller;
 
 import app.munch.model.ChangeGroup;
 import app.munch.model.Profile;
-import dev.fuxing.jpa.TransactionProvider;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.sql.Timestamp;
 import java.util.function.Consumer;
@@ -15,13 +13,7 @@ import java.util.function.Consumer;
  * Time: 2:16 pm
  */
 @Singleton
-public final class ChangeGroupProvider {
-    private final TransactionProvider provider;
-
-    @Inject
-    ChangeGroupProvider(TransactionProvider provider) {
-        this.provider = provider;
-    }
+public final class ChangeController extends Controller {
 
     public void newGroup(String profileUid, String name, String description, Consumer<ChangeGroup> consumer) {
         Profile profile = new Profile();

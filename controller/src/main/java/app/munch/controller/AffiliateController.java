@@ -1,9 +1,7 @@
-package app.munch.manager;
+package app.munch.controller;
 
 import app.munch.model.*;
-import dev.fuxing.jpa.TransactionProvider;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -15,13 +13,7 @@ import java.util.Objects;
  * Time: 1:10 pm
  */
 @Singleton
-public final class AffiliateController {
-    private final TransactionProvider provider;
-
-    @Inject
-    AffiliateController(TransactionProvider provider) {
-        this.provider = provider;
-    }
+public final class AffiliateController extends Controller {
 
     public void ingest(ChangeGroup group, Affiliate incoming) {
         String sourceKey = incoming.getSourceKey();

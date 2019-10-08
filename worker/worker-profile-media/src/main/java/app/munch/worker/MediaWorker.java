@@ -58,10 +58,10 @@ public final class MediaWorker implements WorkerRunner {
 
     @Override
     public void run(WorkerTask task) {
-        accountClient.iterator(20).forEachRemaining(account -> {
-            createAccount(account);
-            SleepUtils.sleep(Duration.ofSeconds(1));
-        });
+//        accountClient.iterator(20).forEachRemaining(account -> {
+//            createAccount(account);
+//            SleepUtils.sleep(Duration.ofSeconds(1));
+//        });
 
         mediaClient.iterator().forEachRemaining(instagramMedia -> {
             createMedia(instagramMedia);
@@ -117,13 +117,10 @@ public final class MediaWorker implements WorkerRunner {
     }
 
     private void createMedia(InstagramMedia media) {
-        String username = fixUsername(media.getUser().getUsername());
-
         provider.with(entityManager -> {
-            Profile profile = Profile.findByUsername(entityManager, username);
             ProfileSocial social = entityManager.createQuery("FROM ProfileSocial " +
-                    "WHERE profile = :profile", ProfileSocial.class)
-                    .setParameter("profile", profile)
+                    "WHERE eid = :eid", ProfileSocial.class)
+                    .setParameter("eid", media.getAccountId())
                     .getSingleResult();
 
             List<ProfileMedia> list = entityManager.createQuery("FROM ProfileMedia " +

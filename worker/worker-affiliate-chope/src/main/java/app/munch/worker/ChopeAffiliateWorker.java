@@ -1,8 +1,8 @@
 package app.munch.worker;
 
 import app.munch.database.DatabaseModule;
-import app.munch.manager.AffiliateEntityManager;
-import app.munch.manager.ChangeGroupProvider;
+import app.munch.controller.AffiliateController;
+import app.munch.controller.ChangeController;
 import app.munch.model.Affiliate;
 import app.munch.model.Profile;
 import app.munch.model.WorkerTask;
@@ -33,13 +33,13 @@ public final class ChopeAffiliateWorker implements WorkerRunner {
 
     private final ChopeWebBrowser browser;
     private final ChopeAffiliateParser parser;
-    private final AffiliateEntityManager affiliateEntityManager;
+    private final AffiliateController affiliateController;
 
-    private final ChangeGroupProvider changeProvider;
+    private final ChangeController changeProvider;
 
     @Inject
-    ChopeAffiliateWorker(AffiliateEntityManager affiliateEntityManager, ChangeGroupProvider changeProvider, ChopeWebBrowser browser, ChopeAffiliateParser parser) {
-        this.affiliateEntityManager = affiliateEntityManager;
+    ChopeAffiliateWorker(AffiliateController affiliateController, ChangeController changeProvider, ChopeWebBrowser browser, ChopeAffiliateParser parser) {
+        this.affiliateController = affiliateController;
         this.changeProvider = changeProvider;
         this.browser = browser;
         this.parser = parser;
@@ -59,11 +59,11 @@ public final class ChopeAffiliateWorker implements WorkerRunner {
                 Affiliate affiliate = getAffiliate(url);
                 if (affiliate == null) return;
 
-                affiliateEntityManager.ingest(ingestGroup, affiliate);
+                affiliateController.ingest(ingestGroup, affiliate);
             });
 
             changeProvider.newGroup(Profile.ADMIN_ID, "Chope Affiliate Worker (Digest)", null, digestGroup -> {
-                affiliateEntityManager.digest(ingestGroup, digestGroup, ChopeAffiliateParser.SOURCE);
+                affiliateController.digest(ingestGroup, digestGroup, ChopeAffiliateParser.SOURCE);
             });
         });
     }
