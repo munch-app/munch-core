@@ -1,9 +1,10 @@
 package app.munch.api;
 
-import app.munch.controller.QueryChain;
+import app.munch.controller.EntityQuery;
 import app.munch.model.Profile;
 import app.munch.model.ProfileSocial;
 import dev.fuxing.err.ConflictException;
+import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
 import dev.fuxing.transport.service.TransportContext;
 
@@ -31,16 +32,17 @@ public final class MeSocialService extends ApiService {
 
     public TransportList list(TransportContext ctx) {
         final String accountId = ctx.get(ApiRequest.class).getAccountId();
+        TransportCursor cursor = ctx.queryCursor();
 
         return provider.reduce(true, entityManager -> {
             Profile profile = Profile.findByAccountId(entityManager, accountId);
             if (profile == null) throw new ConflictException("Profile not found.");
 
-            return QueryChain.select(entityManager, "FROM ProfileSocial", ProfileSocial.class)
+            return EntityQuery.select(entityManager, "FROM ProfileSocial", ProfileSocial.class)
                     .where("profile = :profile", "profile", profile)
                     .orderBy("uid DESC")
                     .size(ctx.querySize(30, 50))
-                    .cursor(ctx.queryCursor(), c -> c.has("uid"), (chain, cursor) -> {
+                    .predicate(cursor.has("uid"), (chain) -> {
                         chain.where("uid < :uid", "uid", cursor.get("uid"));
                     })
                     .asTransportList((social, builder) -> {

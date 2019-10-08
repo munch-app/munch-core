@@ -101,6 +101,9 @@ public final class Affiliate {
     private String source;
 
     /**
+     * Note: This is similar to 'eid', can be renamed to such
+     *
+     * <p>
      * One field used for uniqueness indexing
      * www.munch.app_base64+/==
      */

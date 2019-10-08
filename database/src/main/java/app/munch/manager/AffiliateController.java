@@ -1,20 +1,13 @@
 package app.munch.manager;
 
 import app.munch.model.*;
-import com.fasterxml.jackson.databind.JsonNode;
-import dev.fuxing.jpa.EntityPatch;
-import dev.fuxing.jpa.EntityStream;
-import dev.fuxing.jpa.HibernateUtils;
 import dev.fuxing.jpa.TransactionProvider;
-import dev.fuxing.transport.TransportCursor;
-import dev.fuxing.transport.TransportList;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 
 /**
  * Created by: Fuxing
@@ -22,82 +15,12 @@ import java.util.function.Function;
  * Time: 1:10 pm
  */
 @Singleton
-public final class AffiliateEntityManager {
+public final class AffiliateController {
     private final TransactionProvider provider;
 
     @Inject
-    AffiliateEntityManager(TransactionProvider provider) {
+    AffiliateController(TransactionProvider provider) {
         this.provider = provider;
-    }
-
-    public Affiliate get(String uid) {
-        return provider.reduce(true, entityManager -> {
-            Affiliate affiliate = entityManager.find(Affiliate.class, uid);
-            HibernateUtils.initialize(affiliate.getPlace());
-            HibernateUtils.initialize(affiliate.getBrand());
-            HibernateUtils.initialize(affiliate.getLinked());
-            return affiliate;
-        });
-    }
-
-    public Affiliate patch(String uid, JsonNode body, Function<EntityManager, Profile> profileSupplier) {
-        return provider.reduce(entityManager -> {
-            Profile profile = profileSupplier.apply(entityManager);
-
-            Affiliate affiliate = entityManager.find(Affiliate.class, uid);
-            affiliate = EntityPatch.with(entityManager, affiliate, body)
-                    .lock()
-                    .patch("status", AffiliateStatus.class, Affiliate::setStatus)
-                    .patch("linked", (EntityPatch.NodeConsumer<Affiliate>) (entity, json) -> {
-                        // Only linked.place.id is required
-                        String placeId = json.path("place").path("id").asText();
-                        Objects.requireNonNull(placeId);
-
-                        PlaceAffiliate linked = new PlaceAffiliate();
-                        linked.setAffiliate(entity);
-                        linked.setPlace(entityManager.find(Place.class, placeId));
-                        entity.setLinked(linked);
-                    })
-                    .peek(entity -> {
-                        entity.setEditedBy(profile);
-                    })
-                    .persist();
-
-            HibernateUtils.initialize(affiliate.getPlace());
-            HibernateUtils.initialize(affiliate.getBrand());
-            HibernateUtils.initialize(affiliate.getLinked());
-            return affiliate;
-        });
-    }
-
-    public TransportList list(AffiliateStatus status, int size, TransportCursor cursor) {
-        String uid = cursor.get("uid");
-
-        return provider.reduce(true, entityManager -> {
-            return EntityStream.of(() -> {
-                if (uid != null) {
-                    return entityManager.createQuery("FROM Affiliate " +
-                            "WHERE status = :status " +
-                            "AND uid > :uid " +
-                            "ORDER BY uid ASC", Affiliate.class)
-                            .setParameter("uid", uid)
-                            .setParameter("status", status)
-                            .setMaxResults(size)
-                            .getResultList();
-                }
-
-                return entityManager.createQuery("FROM Affiliate " +
-                        "WHERE status = :status " +
-                        "ORDER BY uid ASC", Affiliate.class)
-                        .setParameter("status", status)
-                        .setMaxResults(size)
-                        .getResultList();
-            }).peek(HibernateUtils::clean)
-                    .cursor(size, (affiliate, builder) -> {
-                        builder.put("uid", affiliate.getUid());
-                    })
-                    .asTransportList();
-        });
     }
 
     public void ingest(ChangeGroup group, Affiliate incoming) {
@@ -110,7 +33,7 @@ public final class AffiliateEntityManager {
             // Get currently persisted affiliate entity.
             Affiliate persisted = find(entityManager, sourceKey);
 
-            // Find status it is going to be resolved to
+            // Find the status that is going to be resolved to
             AffiliateStatus status = resolveStatus(persisted, incoming);
 
             Affiliate entity = persisted != null ? persisted : incoming;
@@ -137,9 +60,7 @@ public final class AffiliateEntityManager {
 
                 case DROPPED:
                     entity.setLinked(null);
-                    entity.setPlace(null);
                     break;
-
             }
 
             ChangeGroup.EntityUtils.map(entityManager, group, entity::setChangeGroup);

@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import dev.fuxing.jpa.EntityPatch;
 import dev.fuxing.jpa.EntityStream;
 import dev.fuxing.jpa.HibernateUtils;
-import dev.fuxing.jpa.TransactionProvider;
 import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
 import dev.fuxing.transport.service.TransportContext;
@@ -29,8 +28,7 @@ public final class ProfileAdminService extends AdminService {
     private final ArticlePlaceEntityManager articlePlaceEntityManager;
 
     @Inject
-    ProfileAdminService(TransactionProvider provider, ArticleEntityManager articleEntityManager, ArticlePlaceEntityManager articlePlaceEntityManager) {
-        super(provider);
+    ProfileAdminService(ArticleEntityManager articleEntityManager, ArticlePlaceEntityManager articlePlaceEntityManager) {
         this.articleEntityManager = articleEntityManager;
         this.articlePlaceEntityManager = articlePlaceEntityManager;
     }

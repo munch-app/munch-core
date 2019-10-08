@@ -5,12 +5,10 @@ import app.munch.model.TagType;
 import com.fasterxml.jackson.databind.JsonNode;
 import dev.fuxing.jpa.EntityPatch;
 import dev.fuxing.jpa.EntityStream;
-import dev.fuxing.jpa.TransactionProvider;
 import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
 import dev.fuxing.transport.service.TransportContext;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
 
@@ -21,11 +19,6 @@ import javax.validation.constraints.NotNull;
  */
 @Singleton
 public final class TagAdminService extends AdminService {
-
-    @Inject
-    TagAdminService(TransactionProvider provider) {
-        super(provider);
-    }
 
     @Override
     public void route() {

@@ -3,12 +3,10 @@ package app.munch.api;
 import app.munch.model.Article;
 import app.munch.model.ArticleStatus;
 import dev.fuxing.jpa.EntityStream;
-import dev.fuxing.jpa.TransactionProvider;
 import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
 import dev.fuxing.transport.service.TransportContext;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.Date;
 
@@ -19,11 +17,6 @@ import java.util.Date;
  */
 @Singleton
 public final class ArticleAdminSystem extends AdminService {
-
-    @Inject
-    ArticleAdminSystem(TransactionProvider provider) {
-        super(provider);
-    }
 
     @Override
     public void route() {

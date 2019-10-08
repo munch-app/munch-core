@@ -1,7 +1,7 @@
 package app.munch.api;
 
 import app.munch.controller.MentionController;
-import app.munch.controller.QueryChain;
+import app.munch.controller.EntityQuery;
 import app.munch.manager.ArticleEntityManager;
 import app.munch.model.ArticleStatus;
 import app.munch.model.MentionType;
@@ -97,7 +97,7 @@ public final class ProfileService extends ApiService {
         TransportCursor cursor = ctx.queryCursor();
 
         return provider.reduce(entityManager -> {
-            QueryChain<Tuple> chain = QueryChain.select(entityManager,
+            EntityQuery<Tuple> chain = EntityQuery.select(entityManager,
                     "SELECT " +
                             "m.id AS id, " +
                             "m.type AS type, " +

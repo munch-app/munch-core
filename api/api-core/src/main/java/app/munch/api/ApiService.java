@@ -1,7 +1,8 @@
 package app.munch.api;
 
-import app.munch.controller.QueryChain;
+import app.munch.controller.EntityQuery;
 import app.munch.model.Profile;
+import dev.fuxing.err.ConflictException;
 import dev.fuxing.err.ForbiddenException;
 import dev.fuxing.jpa.EntityPatch;
 import dev.fuxing.jpa.TransactionProvider;
@@ -34,7 +35,7 @@ public abstract class ApiService implements TransportService {
     protected <T> TransportList queryAuthorized(TransportContext context,
                                                 @Language("HQL") String select,
                                                 Class<T> clazz,
-                                                TriConsumer<Profile, TransportCursor, QueryChain<T>> queryChaining,
+                                                TriConsumer<Profile, TransportCursor, EntityQuery<T>> queryChaining,
                                                 BiConsumer<TransportCursor.Builder, T> cursorBuilder) {
         @NotNull TransportCursor cursor = context.queryCursor();
         String accountId = context.get(ApiRequest.class).getAccountId();
@@ -43,7 +44,7 @@ public abstract class ApiService implements TransportService {
             Profile profile = Profile.findByAccountId(entityManager, accountId);
             if (profile == null) throw new ForbiddenException("profile not found");
 
-            QueryChain<T> chain = QueryChain.select(entityManager, select, clazz);
+            EntityQuery<T> chain = EntityQuery.select(entityManager, select, clazz);
             queryChaining.accept(profile, cursor, chain);
 
             return chain.asTransportList((entity, builder) -> {
@@ -70,6 +71,16 @@ public abstract class ApiService implements TransportService {
             T entity = entityMapper.apply(entityManager);
             Profile.authorize(entityManager, accountId, profileMapper.apply(entity));
             return entity;
+        });
+    }
+
+    protected <T> T patch(TransportContext context,
+                          Function<EntityManager, T> entityMapper,
+                          BiFunction<EntityManager, EntityPatch.JsonBody<T>, T> patcher) throws ForbiddenException {
+        return provider.reduce(false, entityManager -> {
+            T entity = entityMapper.apply(entityManager);
+            if (entity == null) return null;
+            return patcher.apply(entityManager, EntityPatch.with(entityManager, entity, context.bodyAsJson()));
         });
     }
 
@@ -112,6 +123,22 @@ public abstract class ApiService implements TransportService {
     public void isAuthorized(EntityManager entityManager, TransportContext context, Profile profile) {
         String accountId = context.get(ApiRequest.class).getAccountId();
         Profile.authorize(entityManager, accountId, profile);
+    }
+
+    /**
+     * @param entityManager to use
+     * @param context       to resolve ApiRequest for Profile
+     * @return current logged in use Profile
+     * @throws ConflictException  if profile not found
+     * @throws ForbiddenException if use not logged in
+     */
+    public Profile findProfile(EntityManager entityManager, TransportContext context) {
+        String accountId = context.get(ApiRequest.class).getAccountId();
+        Profile profile = Profile.findByAccountId(entityManager, accountId);
+        if (profile != null) {
+            return null;
+        }
+        throw new ConflictException("Profile not found.");
     }
 
     public interface TriConsumer<A, B, C> {

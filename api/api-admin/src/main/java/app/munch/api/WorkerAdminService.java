@@ -2,11 +2,9 @@ package app.munch.api;
 
 import app.munch.model.WorkerGroup;
 import dev.fuxing.jpa.EntityStream;
-import dev.fuxing.jpa.TransactionProvider;
 import dev.fuxing.transport.TransportList;
 import dev.fuxing.transport.service.TransportContext;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.stream.Collectors;
 
@@ -17,11 +15,6 @@ import java.util.stream.Collectors;
  */
 @Singleton
 public final class WorkerAdminService extends AdminService {
-
-    @Inject
-    WorkerAdminService(TransactionProvider provider) {
-        super(provider);
-    }
 
     @Override
     public void route() {
