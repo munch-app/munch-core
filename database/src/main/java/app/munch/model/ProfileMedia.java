@@ -63,7 +63,7 @@ public final class ProfileMedia {
 
     @ValidEnum
     @Enumerated(EnumType.STRING)
-    @Column(length = 100, updatable = false, nullable = false, unique = false)
+    @Column(length = 100, updatable = true, nullable = false, unique = false)
     private ProfileMediaStatus status;
 
     @ManyToMany(cascade = {}, fetch = FetchType.EAGER)

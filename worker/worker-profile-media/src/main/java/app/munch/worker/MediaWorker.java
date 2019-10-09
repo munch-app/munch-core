@@ -8,7 +8,6 @@ import catalyst.edit.PlaceEditClient;
 import catalyst.link.PlaceLink;
 import catalyst.link.PlaceLinkClient;
 import dev.fuxing.jpa.TransactionProvider;
-import dev.fuxing.utils.SleepUtils;
 import munch.instagram.data.InstagramAccount;
 import munch.instagram.data.InstagramAccountClient;
 import munch.instagram.data.InstagramMedia;
@@ -20,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.validation.constraints.NotBlank;
-import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,17 +61,17 @@ public final class MediaWorker implements WorkerRunner {
 //            SleepUtils.sleep(Duration.ofSeconds(1));
 //        });
 
-        mediaClient.iterator().forEachRemaining(instagramMedia -> {
-            createMedia(instagramMedia);
-            SleepUtils.sleep(Duration.ofMillis(100));
-        });
+//        mediaClient.iterator().forEachRemaining(instagramMedia -> {
+//            createMedia(instagramMedia);
+//            SleepUtils.sleep(Duration.ofMillis(100));
+//        });
 
-        editClient.iterator("media.instagram.com", 30).forEachRemaining(edit -> {
-            linkClient.iteratorSourceId(edit.getSource(), edit.getId(), 30).forEachRemaining(placeLink -> {
-                createMention(edit, placeLink);
-            });
-            SleepUtils.sleep(Duration.ofMillis(100));
-        });
+//        editClient.iterator("media.instagram.com", 30).forEachRemaining(edit -> {
+//            linkClient.iteratorSourceId(edit.getSource(), edit.getId(), 30).forEachRemaining(placeLink -> {
+//                createMention(edit, placeLink);
+//            });
+//            SleepUtils.sleep(Duration.ofMillis(100));
+//        });
     }
 
     private void createAccount(InstagramAccount account) {
@@ -147,9 +145,17 @@ public final class MediaWorker implements WorkerRunner {
                 .filter(places -> !places.isEmpty())
                 .map(places -> places.get(0))
                 .ifPresent(place -> {
-                    ProfileMedia media = entityManager.createQuery("FROM ProfileMedia WHERE eid = :eid", ProfileMedia.class)
+                    List<ProfileMedia> existing = entityManager.createQuery("FROM ProfileMedia WHERE eid = :eid", ProfileMedia.class)
                             .setParameter("eid", link.getId())
-                            .getSingleResult();
+                            .getResultList();
+
+                    if (existing.isEmpty()) {
+                        logger.info("Media not found: {}", link.getId());
+                        return;
+                    }
+
+                    ProfileMedia media = existing.get(0);
+                    // TODO(fuxing): why not getting updated
                     media.setStatus(ProfileMediaStatus.PUBLIC);
                     entityManager.persist(media);
 
