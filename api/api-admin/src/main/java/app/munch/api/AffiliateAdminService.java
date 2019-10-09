@@ -1,6 +1,6 @@
 package app.munch.api;
 
-import app.munch.controller.EntityQuery;
+import app.munch.query.EntityQuery;
 import app.munch.model.*;
 import dev.fuxing.jpa.EntityPatch;
 import dev.fuxing.jpa.HibernateUtils;
@@ -35,18 +35,19 @@ public final class AffiliateAdminService extends AdminService {
      * Affiliate list is sorting uid by ASC so that the earliest status get returned first
      */
     public TransportList list(TransportContext ctx) {
+        final int size = ctx.querySize(20, 50);
         TransportCursor cursor = ctx.queryCursor();
 
         return provider.reduce(true, entityManager -> {
             return EntityQuery.select(entityManager, "FROM Affiliate", Affiliate.class)
-                    .size(cursor.size(20, 50))
+                    .size(size)
                     .where("status = :status", "status", cursor.getEnum("status", AffiliateStatus.class, AffiliateStatus.PENDING))
                     .predicate(cursor.has("uid"), (query) -> {
                         query.where("uid > :uid", "uid", cursor.get("uid"));
                     })
                     .orderBy("uid ASC")
                     .asTransportList((affiliate, builder) -> {
-                        builder.put(cursor);
+                        builder.putAll(cursor);
                         builder.put("uid", affiliate.getUid());
                     });
         });

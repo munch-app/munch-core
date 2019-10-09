@@ -1,10 +1,10 @@
 package app.munch.api;
 
-import app.munch.controller.MentionController;
 import app.munch.elastic.ElasticQueryClient;
 import app.munch.elastic.ElasticSerializableClient;
 import app.munch.manager.PlaceEntityManager;
 import app.munch.model.*;
+import app.munch.query.MentionQuery;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import dev.fuxing.jpa.EntityStream;
 import dev.fuxing.jpa.HibernateUtils;
@@ -45,15 +45,15 @@ public final class PlaceService implements TransportService {
     private final PlaceEntityManager placeEntityManager;
 
     private final TransactionProvider provider;
-    private final MentionController mentionController;
+    private final MentionQuery mentionQuery;
 
     @Inject
-    PlaceService(ElasticQueryClient queryClient, ElasticSerializableClient serializableClient, PlaceEntityManager placeEntityManager, TransactionProvider provider, MentionController mentionController) {
+    PlaceService(ElasticQueryClient queryClient, ElasticSerializableClient serializableClient, PlaceEntityManager placeEntityManager, TransactionProvider provider, MentionQuery mentionQuery) {
         this.queryClient = queryClient;
         this.serializableClient = serializableClient;
         this.placeEntityManager = placeEntityManager;
         this.provider = provider;
-        this.mentionController = mentionController;
+        this.mentionQuery = mentionQuery;
     }
 
     @Override
@@ -69,7 +69,7 @@ public final class PlaceService implements TransportService {
             PATH("/:id", () -> {
                 GET("", this::idGet);
                 POST("/revisions", this::idRevisionsPost);
-                GET("/mentions", this::idMentionsList);
+                GET("/mentions", this::idMentionsGet);
             });
         });
     }
@@ -150,7 +150,7 @@ public final class PlaceService implements TransportService {
 
     public TransportResult idGet(TransportContext ctx) {
         String id = ctx.pathString("id");
-        Set<String> fields = Set.of(ctx.queryString("fields", "").split(", *"));
+        Set<String> fields = ctx.queryFields();
 
         return provider.reduce(true, entityManager -> {
             Place place = entityManager.find(Place.class, id);
@@ -159,7 +159,6 @@ public final class PlaceService implements TransportService {
             HibernateUtils.initialize(place.getImage());
             HibernateUtils.initialize(place.getCreatedBy());
             ObjectNode node = JsonUtils.valueToTree(place);
-
             Map<String, String> cursor = new HashMap<>();
 
             if (fields.contains("affiliates")) {
@@ -273,12 +272,9 @@ public final class PlaceService implements TransportService {
         return place;
     }
 
-    public TransportList idMentionsList(TransportContext ctx) {
+    public TransportList idMentionsGet(TransportContext ctx) {
         final String id = ctx.pathString("id");
-        final int size = ctx.querySize(10, 33);
         TransportCursor cursor = ctx.queryCursor();
-        Set<MentionType> types = cursor.getEnums("types", MentionType.class);
-
-        return mentionController.queryByPlace(id, size, types, cursor);
+        return mentionQuery.queryByPlace(id, cursor);
     }
 }

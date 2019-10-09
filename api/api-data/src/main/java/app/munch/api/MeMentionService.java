@@ -31,10 +31,12 @@ public final class MeMentionService extends ApiService {
     }
 
     public TransportList query(TransportContext ctx) {
+        final int size = ctx.querySize(20, 40);
+
         return queryAuthorized(ctx, "FROM Mention", Mention.class, (profile, cursor, chain) -> {
             chain.orderBy("createdAt DESC");
             chain.orderBy("id DESC");
-            chain.size(cursor.size(20, 40));
+            chain.size(size);
 
             chain.where("profile = :profile", "profile", profile);
 

@@ -3,6 +3,7 @@ package app.munch.api;
 import app.munch.manager.ArticleEntityManager;
 import app.munch.manager.ArticlePlaceEntityManager;
 import app.munch.model.*;
+import app.munch.query.ArticleQuery;
 import com.fasterxml.jackson.databind.JsonNode;
 import dev.fuxing.jpa.EntityPatch;
 import dev.fuxing.jpa.EntityStream;
@@ -24,11 +25,13 @@ import java.util.Map;
  */
 public final class ProfileAdminService extends AdminService {
 
+    private final ArticleQuery articleQuery;
     private final ArticleEntityManager articleEntityManager;
     private final ArticlePlaceEntityManager articlePlaceEntityManager;
 
     @Inject
-    ProfileAdminService(ArticleEntityManager articleEntityManager, ArticlePlaceEntityManager articlePlaceEntityManager) {
+    ProfileAdminService(ArticleQuery articleQuery, ArticleEntityManager articleEntityManager, ArticlePlaceEntityManager articlePlaceEntityManager) {
+        this.articleQuery = articleQuery;
         this.articleEntityManager = articleEntityManager;
         this.articlePlaceEntityManager = articlePlaceEntityManager;
     }
@@ -130,15 +133,10 @@ public final class ProfileAdminService extends AdminService {
     }
 
     public TransportList profileArticleList(TransportContext ctx) {
-        final int size = ctx.querySize(100, 100);
-        final ArticleStatus status = ctx.queryEnum("status", ArticleStatus.class);
-
-        String profileId = ctx.pathString("profileId");
-        TransportCursor cursor = ctx.queryCursor();
-
-        return articleEntityManager.list(status, entityManager -> {
-            return entityManager.find(Profile.class, profileId);
-        }, size, cursor);
+        final String profileId = ctx.pathString("profileId");
+        return articleQuery.query(ctx.queryCursor(), entityManager -> {
+            return Profile.findByUid(entityManager, profileId);
+        });
     }
 
     public Article profileArticlePost(TransportContext ctx) {
@@ -152,7 +150,9 @@ public final class ProfileAdminService extends AdminService {
 
     public Article profileArticleGet(TransportContext ctx) {
         String articleId = ctx.pathString("articleId");
-        return articleEntityManager.get(articleId, null);
+        return provider.reduce(true, entityManager -> {
+            return entityManager.find(Article.class, articleId);
+        });
     }
 
     public Article profileArticlePatch(TransportContext ctx) {

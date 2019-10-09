@@ -5,16 +5,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import dev.fuxing.err.ForbiddenException;
 import dev.fuxing.err.NotFoundException;
 import dev.fuxing.jpa.EntityPatch;
-import dev.fuxing.jpa.EntityStream;
 import dev.fuxing.jpa.TransactionProvider;
-import dev.fuxing.transport.TransportCursor;
-import dev.fuxing.transport.TransportList;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.persistence.EntityManager;
-import java.util.Date;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -30,44 +26,6 @@ public final class ArticleEntityManager {
     @Inject
     ArticleEntityManager(TransactionProvider provider) {
         this.provider = provider;
-    }
-
-    public TransportList list(ArticleStatus status, Function<EntityManager, Profile> profileSupplier, int size, TransportCursor cursor) {
-        String cursorId = cursor.get("id");
-        Long cursorUpdatedAt = cursor.getLong("updatedAt");
-        return provider.reduce(true, entityManager -> {
-            Profile profile = profileSupplier.apply(entityManager);
-            if (profile == null) throw new ForbiddenException();
-
-            return EntityStream.of(() -> {
-                if (cursorId != null && cursorUpdatedAt != null) {
-                    return entityManager.createQuery("FROM Article " +
-                            "WHERE profile.uid = :profileId AND status = :status " +
-                            "AND (updatedAt < :cursorUpdatedAt OR (updatedAt = :cursorUpdatedAt AND id < :cursorId)) " +
-                            "ORDER BY updatedAt DESC, id DESC", Article.class)
-                            .setParameter("profileId", profile.getUid())
-                            .setParameter("status", status)
-                            .setParameter("cursorUpdatedAt", new Date(cursorUpdatedAt))
-                            .setParameter("cursorId", cursorId)
-                            .setMaxResults(size)
-                            .getResultList();
-                }
-
-                return entityManager.createQuery("FROM Article " +
-                        "WHERE profile.uid = :profileId AND status = :status " +
-                        "ORDER BY updatedAt DESC, id DESC", Article.class)
-                        .setParameter("profileId", profile.getUid())
-                        .setParameter("status", status)
-                        .setMaxResults(size)
-                        .getResultList();
-            }).peek(article -> {
-                // Remove content to reduce content-length
-                article.setContent(null);
-            }).cursor(size, (article, builder) -> {
-                builder.put("id", article.getId());
-                builder.put("updatedAt", article.getUpdatedAt().getTime());
-            }).asTransportList();
-        });
     }
 
     public Article post(ArticleRevision revision, Function<EntityManager, Profile> profileSupplier) {
@@ -122,18 +80,6 @@ public final class ArticleEntityManager {
                         article1.setStatus(ArticleStatus.DELETED);
                     })
                     .persist();
-        });
-    }
-
-    public Article get(String id, @Nullable BiConsumer<EntityManager, Article> consumer) {
-        return provider.reduce(true, entityManager -> {
-            Article article = entityManager.find(Article.class, id);
-            if (article == null) throw new NotFoundException();
-
-            if (consumer != null) {
-                consumer.accept(entityManager, article);
-            }
-            return article;
         });
     }
 

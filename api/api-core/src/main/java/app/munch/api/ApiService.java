@@ -1,6 +1,6 @@
 package app.munch.api;
 
-import app.munch.controller.EntityQuery;
+import app.munch.query.EntityQuery;
 import app.munch.model.Profile;
 import dev.fuxing.err.ConflictException;
 import dev.fuxing.err.ForbiddenException;
@@ -48,7 +48,7 @@ public abstract class ApiService implements TransportService {
             queryChaining.accept(profile, cursor, chain);
 
             return chain.asTransportList((entity, builder) -> {
-                builder.put(cursor);
+                builder.putAll(cursor);
                 cursorBuilder.accept(builder, entity);
             });
         });

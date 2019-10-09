@@ -30,8 +30,10 @@ public final class MeMediaService extends ApiService {
     }
 
     public TransportList query(TransportContext ctx) {
+        final int size = ctx.querySize(20, 50);
+
         return queryAuthorized(ctx, "FROM ProfileMedia", ProfileMedia.class, (profile, cursor, chain) -> {
-            chain.size(cursor.size(20, 50));
+            chain.size(size);
             chain.where("profile = :profile", "profile", profile);
 
             if (cursor.has("status")) {

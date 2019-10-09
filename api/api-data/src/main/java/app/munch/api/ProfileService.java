@@ -1,21 +1,21 @@
 package app.munch.api;
 
-import app.munch.controller.MentionController;
-import app.munch.controller.EntityQuery;
-import app.munch.manager.ArticleEntityManager;
 import app.munch.model.ArticleStatus;
-import app.munch.model.MentionType;
 import app.munch.model.Profile;
 import app.munch.model.ProfileMediaStatus;
+import app.munch.query.ArticleQuery;
+import app.munch.query.MediaQuery;
+import app.munch.query.MentionQuery;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import dev.fuxing.jpa.HibernateUtils;
 import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
 import dev.fuxing.transport.service.TransportContext;
+import dev.fuxing.transport.service.TransportResult;
+import dev.fuxing.utils.JsonUtils;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.persistence.Tuple;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -28,116 +28,98 @@ import java.util.Set;
 @Singleton
 public final class ProfileService extends ApiService {
 
-    private final ArticleEntityManager articleEntityManager;
-    private final MentionController mentionController;
+    private final MediaQuery mediaQuery;
+    private final ArticleQuery articleQuery;
+    private final MentionQuery mentionQuery;
 
     @Inject
-    ProfileService(ArticleEntityManager articleEntityManager, MentionController mentionController) {
-        this.articleEntityManager = articleEntityManager;
-        this.mentionController = mentionController;
+    ProfileService(MediaQuery mediaQuery, ArticleQuery articleQuery, MentionQuery mentionQuery) {
+        this.mediaQuery = mediaQuery;
+        this.articleQuery = articleQuery;
+        this.mentionQuery = mentionQuery;
     }
 
     @Override
     public void route() {
         PATH("/profiles/:username", () -> {
-            GET("", this::profileGet);
+            GET("", this::get);
 
             PATH("/articles", () -> {
-                GET("", this::articlesList);
+                GET("", this::articles);
             });
 
             PATH("/medias", () -> {
-                GET("", this::mediasList);
+                GET("", this::medias);
             });
 
             PATH("/mentions", () -> {
-                GET("", this::mentionsList);
+                GET("", this::mentions);
             });
         });
     }
 
-    public Profile profileGet(TransportContext ctx) {
+    public TransportResult get(TransportContext ctx) {
+        final int size = ctx.querySize(10, 20);
         String username = ctx.pathString("username");
+        Set<String> fields = ctx.queryFields();
 
         return provider.reduce(true, entityManager -> {
-            Profile profile = entityManager.createQuery("FROM Profile WHERE username = :username", Profile.class)
-                    .setParameter("username", username)
-                    .getSingleResult();
+            Profile profile = Profile.findByUsername(entityManager, username);
             if (profile == null) return null;
 
             HibernateUtils.initialize(profile.getLinks());
-            return profile;
-        });
-    }
+            ObjectNode node = JsonUtils.valueToTree(profile);
+            Map<String, String> cursor = new HashMap<>();
 
-    public TransportList articlesList(TransportContext ctx) {
-        final int size = ctx.querySize(20, 50);
-        final String username = ctx.pathString("username");
 
-        TransportCursor cursor = ctx.queryCursor();
-        return articleEntityManager.list(ArticleStatus.PUBLISHED, entityManager -> {
-            return entityManager.createQuery("FROM Profile WHERE username = :username", Profile.class)
-                    .setParameter("username", username)
-                    .getSingleResult();
-        }, size, cursor);
-    }
-
-    public TransportList mentionsList(TransportContext ctx) {
-        final int size = ctx.querySize(20, 50);
-        final String username = ctx.pathString("username");
-
-        TransportCursor cursor = ctx.queryCursor();
-        Set<MentionType> types = cursor.getEnums("types", MentionType.class);
-        return mentionController.queryByUsername(username, size, types, cursor);
-    }
-
-    public TransportList mediasList(TransportContext ctx) {
-        final int size = ctx.querySize(20, 50);
-        final String username = ctx.pathString("username");
-        TransportCursor cursor = ctx.queryCursor();
-
-        return provider.reduce(entityManager -> {
-            EntityQuery<Tuple> chain = EntityQuery.select(entityManager,
-                    "SELECT " +
-                            "m.id AS id, " +
-                            "m.type AS type, " +
-                            "m.images AS images, " +
-                            "m.content AS content," +
-                            "m.updatedAt AS updatedAt, " +
-                            "m.mentions AS mentions, " +
-                            "m.createdAt AS createdAt " +
-                            "FROM ProfileMedia m", Tuple.class);
-
-            chain.where("m.profile.username = :username", "username", username);
-            // TODO(fuxing): Change back to PUBLIC when completed
-            chain.where("m.status = :status", "status", ProfileMediaStatus.PENDING);
-            chain.size(size);
-
-            chain.orderBy("createdAt DESC");
-            chain.orderBy("id DESC");
-
-            final Long createdAt = cursor.getLong("createdAt");
-            final String id = cursor.get("id");
-            if (createdAt != null && id != null) {
-                chain.where("(createdAt < :createdAt OR (createdAt = :createdAt AND id < :id))",
-                        "id", id, "createdAt", new Date(createdAt)
-                );
+            if (fields.contains("medias")) {
+                MediaQuery.query(entityManager, TransportCursor.EMPTY, query -> {
+                    query.where("profile", profile);
+                }).cursor(size, (media, builder) -> {
+                    builder.put("status", ProfileMediaStatus.PUBLIC);
+                    builder.put("createdAt", media.getCreatedAt().getTime());
+                    builder.put("id", media.getId());
+                }).consume((medias, mediasCursor) -> {
+                    node.set("medias", JsonUtils.valueToTree(medias));
+                    if (mediasCursor != null) {
+                        cursor.put("next.medias", mediasCursor.get("next"));
+                    }
+                });
             }
 
-            return chain.asStream().cursor(size, (tuple, builder) -> {
-                builder.put("createdAt", tuple.get("createdAt", Date.class).getTime());
-                builder.put("id", tuple.get("id"));
-            }).map(tuple -> {
-                Map<String, Object> map = new HashMap<>();
-                map.put("id", tuple.get("id"));
-                map.put("type", tuple.get("type"));
-                map.put("images", tuple.get("images"));
-                map.put("content", tuple.get("content"));
-                map.put("mentions", tuple.get("mentions"));
-                map.put("updatedAt", tuple.get("updatedAt"));
-                map.put("createdAt", tuple.get("createdAt"));
-                return map;
-            }).asTransportList();
+            if (fields.contains("articles")) {
+                ArticleQuery.query(entityManager, TransportCursor.EMPTY, ArticleStatus.PUBLISHED, query -> {
+                    query.where("profile", profile);
+                }).cursor(size, (article, builder) -> {
+                    builder.put("status", ArticleStatus.PUBLISHED);
+                    builder.put("publishedAt", article.getPublishedAt().getTime());
+                    builder.put("id", article.getId());
+                }).consume((articles, articleCursor) -> {
+                    node.set("articles", JsonUtils.valueToTree(articles));
+                    if (articleCursor != null) {
+                        cursor.put("next.articles", articleCursor.get("next"));
+                    }
+                });
+            }
+
+            return TransportResult.ok(node)
+                    .put("cursor", cursor);
         });
+    }
+
+    public TransportList articles(TransportContext ctx) {
+        return articleQuery.query(ctx.queryCursor(), ArticleStatus.PUBLISHED, entityManager -> {
+            return Profile.findByUsername(entityManager, ctx.pathString("username"));
+        });
+    }
+
+    public TransportList medias(TransportContext ctx) {
+        final String username = ctx.pathString("username");
+        return mediaQuery.query(username, ctx.queryCursor());
+    }
+
+    public TransportList mentions(TransportContext ctx) {
+        final String username = ctx.pathString("username");
+        return mentionQuery.queryByUsername(username, ctx.queryCursor());
     }
 }

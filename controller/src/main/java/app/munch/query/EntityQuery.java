@@ -1,4 +1,4 @@
-package app.munch.controller;
+package app.munch.query;
 
 import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
@@ -46,9 +46,14 @@ public class EntityQuery<T> {
         if (where == null) {
             where = " WHERE " + ql;
         } else {
-            where += " AND" + ql;
+            where += " AND " + ql;
         }
         return this;
+    }
+
+    public EntityQuery<T> where(String name, Object value) {
+        String ql = name + " = :" + name;
+        return where(ql, name, value);
     }
 
     /**
@@ -61,7 +66,7 @@ public class EntityQuery<T> {
         if (where == null) {
             where = " WHERE " + ql;
         } else {
-            where += " AND" + ql;
+            where += " AND " + ql;
         }
         parameters.put(name, value);
         return this;
@@ -91,6 +96,15 @@ public class EntityQuery<T> {
         if (predicate) {
             consumer.accept(this);
         }
+        return this;
+    }
+
+    /**
+     * @param consumer for functional chaining
+     * @return QueryChain instance for chaining
+     */
+    public EntityQuery<T> consume(Consumer<EntityQuery<T>> consumer) {
+        consumer.accept(this);
         return this;
     }
 
@@ -158,6 +172,12 @@ public class EntityQuery<T> {
         public TransportList asTransportList(BiConsumer<T, TransportCursor.Builder> consumer) {
             cursor(consumer);
             return asTransportList();
+        }
+
+        @Override
+        public EntityStream peek(Consumer<T> consumer) {
+            super.peek(consumer);
+            return this;
         }
     }
 }

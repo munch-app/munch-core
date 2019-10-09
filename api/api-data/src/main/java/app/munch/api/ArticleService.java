@@ -4,10 +4,10 @@ import app.munch.exception.RestrictionException;
 import app.munch.manager.ArticleEntityManager;
 import app.munch.manager.ArticlePlaceEntityManager;
 import app.munch.model.*;
+import app.munch.query.ArticleQuery;
 import com.fasterxml.jackson.databind.JsonNode;
 import dev.fuxing.err.ForbiddenException;
 import dev.fuxing.err.UnauthorizedException;
-import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
 import dev.fuxing.transport.service.TransportContext;
 import dev.fuxing.transport.service.TransportResult;
@@ -27,11 +27,13 @@ import java.util.Map;
 @Singleton
 public final class ArticleService extends ApiService {
 
+    private final ArticleQuery articleQuery;
     private final ArticleEntityManager articleEntityManager;
     private final ArticlePlaceEntityManager articlePlaceEntityManager;
 
     @Inject
-    ArticleService(ArticleEntityManager articleEntityManager, ArticlePlaceEntityManager articlePlaceEntityManager) {
+    ArticleService(ArticleQuery articleQuery, ArticleEntityManager articleEntityManager, ArticlePlaceEntityManager articlePlaceEntityManager) {
+        this.articleQuery = articleQuery;
         this.articleEntityManager = articleEntityManager;
         this.articlePlaceEntityManager = articlePlaceEntityManager;
     }
@@ -77,18 +79,9 @@ public final class ArticleService extends ApiService {
     }
 
     public TransportList meArticleList(TransportContext ctx) {
-        String accountId = ctx.get(ApiRequest.class).getAccountId();
-        final ArticleStatus status = ctx.queryEnum("status", ArticleStatus.class);
-
-        TransportCursor cursor = ctx.queryCursor();
-        int size = ctx.querySize(20, 50);
-
-        return articleEntityManager.list(status, entityManager -> {
-            return entityManager.createQuery("SELECT a.profile FROM Account a " +
-                    "WHERE a.id = :id", Profile.class)
-                    .setParameter("id", accountId)
-                    .getSingleResult();
-        }, size, cursor);
+        return articleQuery.query(ctx.queryCursor(), entityManager -> {
+            return findProfile(entityManager, ctx);
+        });
     }
 
     public Article meArticlePost(TransportContext ctx) {
@@ -110,9 +103,7 @@ public final class ArticleService extends ApiService {
     public Article meArticleGet(TransportContext ctx) {
         String id = ctx.pathString("id");
 
-        return articleEntityManager.get(id, (entityManager, article) -> {
-            validate(entityManager, article, ctx);
-        });
+        return getAuthorized(ctx, em -> em.find(Article.class, id), ArticleModel::getProfile);
     }
 
     public Article meArticlePatch(TransportContext ctx) {
@@ -170,10 +161,16 @@ public final class ArticleService extends ApiService {
 
     public Article articleGet(TransportContext ctx) {
         String id = ctx.pathString("id");
-        return articleEntityManager.get(id, (entityManager, article) -> {
+
+        return provider.reduce(true, entityManager -> {
+            Article article = entityManager.find(Article.class, id);
+            if (article == null) return null;
+
             if (article.getStatus() != ArticleStatus.PUBLISHED) {
                 throw new ForbiddenException();
             }
+
+            return article;
         });
     }
 

@@ -1,6 +1,6 @@
 package app.munch.api;
 
-import app.munch.controller.EntityQuery;
+import app.munch.query.EntityQuery;
 import app.munch.model.Profile;
 import app.munch.model.ProfileSocial;
 import dev.fuxing.err.ConflictException;

@@ -23,14 +23,19 @@ public final class AffiliateController extends Controller {
             AffiliateBrand brand = entityManager.getReference(AffiliateBrand.class, incoming.getBrand().getUid());
 
             // Get currently persisted affiliate entity.
-            Affiliate persisted = find(entityManager, sourceKey);
+            Affiliate entity = find(entityManager, sourceKey);
 
             // Find the status that is going to be resolved to
-            AffiliateStatus status = resolveStatus(persisted, incoming);
+            AffiliateStatus status = resolveStatus(entity, incoming);
 
-            Affiliate entity = persisted != null ? persisted : incoming;
+            if (entity == null) {
+                entity = incoming;
+            }
+
             entity.setBrand(brand);
             entity.setStatus(status);
+
+            // TODO(fuxing): Rollback Exception
 
             switch (status) {
                 case PENDING:
