@@ -49,6 +49,7 @@ public final class ProfileSitemap implements SitemapProvider {
                     return null;
                 }
 
+                // TODO(fuxing): '/', '/articles', '/medias'
                 return build("/@" + username, updatedAt, 1.0, ChangeFreq.DAILY);
             });
 
