@@ -5,6 +5,7 @@
     </div>
     <div class="mt-24">
       <button class="blue-outline">Accounts</button>
+      <button class="blue-outline">Status</button>
     </div>
 
     <div class="mt-32">

@@ -1,5 +1,5 @@
 <template>
-  <div class="container-768 ptb-64">
+  <div class="container pt-48 pb-64">
     <div>
       <div class="flex-row">
         <div v-if="profile.image" class="ProfilePic flex-no-shrink">
@@ -54,32 +54,88 @@
       </div>
     </div>
 
-    <div class="mt-48 pb-256">
-      <div class="hr-bot">
-        <div class="mr-16 mb-8 header hover-pointer">
-          Articles
+    <div class="mt-24">
+      <div class="hr-bot ptb-16">
+        <div class="flex-wrap m--8">
+          <div class="p-8" v-for="nav in navigations" :key="nav.name" @click="onFocus(nav)">
+            <div v-if="focused.name === nav.name"
+                 class="border-3 p-6-12 hover-pointer border-black black">
+              <div class="flex-center">
+                <simple-svg fill="#000" class="wh-16px" :filepath="nav.icon"/>
+                <div class="ml-4 bold">{{nav.name}}</div>
+              </div>
+            </div>
+            <div v-else
+                 class="border-3 p-6-12 hover-pointer border b-a75">
+              <div class="flex-center">
+                <simple-svg fill="rgba(0,0,0,0.75)" class="wh-16px" :filepath="nav.icon"/>
+                <div class="ml-4 bold">{{nav.name}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pb-256">
+      <div class="mt-24" v-if="focused.path === ''">
+        <div>
+          <h4>{{profile.name}} articles</h4>
+          <div></div>
+        </div>
+
+        <div>
+          <h4>{{profile.name}} images</h4>
+          <div></div>
         </div>
       </div>
 
-      <div class="mt-24">
-        <div v-if="articles.length > 0">
-          <div v-for="article in articles" :key="article.id" class="ptb-12">
-            <article-card :article="article"/>
+      <div class="mt-48" v-else-if="focused.path === '/articles'">
+        <div v-if="profile.articles.length > 0">
+          <div class="flex-1-2-3 m--16">
+            <div v-for="article in profile.articles" :key="article.id" class="p-16">
+              <article-card :article="article"/>
+            </div>
           </div>
 
-          <div v-if="next">
-            <div class="flex-center ptb-32" v-if="articleLoading">
+          <div v-if="hasNext('next.articles')">
+            <div class="flex-center ptb-32" v-if="loading.articles">
               <beat-loader color="#07F" size="16px"/>
             </div>
             <div class="flex-center ptb-32" v-else>
-              <button class="blue-outline" @click="onArticleLoadMore">Load more</button>
+              <button class="blue-outline" @click="loadMoreArticles">Load more</button>
             </div>
           </div>
         </div>
 
         <div v-else>
           <div class="ptb-48 flex-center">
-            <p>This profile hasn't written any article yet.</p>
+            <p><b>{{profile.name}}</b> hasn't written any article yet.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-48" v-else-if="focused.path === '/medias'">
+        <div v-if="profile.medias.length > 0">
+          <div class="flex-1-2-3-4-5 m--12">
+            <div v-for="media in profile.medias" :key="media.id" class="p-12">
+              <pre class="overflow-hidden">{{media}}</pre>
+            </div>
+          </div>
+
+          <div v-if="hasNext('next.medias')">
+            <div class="flex-center ptb-32" v-if="loading.medias">
+              <beat-loader color="#07F" size="16px"/>
+            </div>
+            <div class="flex-center ptb-32" v-else>
+              <button class="blue-outline" @click="loadMoreMedias">Load more</button>
+            </div>
+          </div>
+        </div>
+
+        <div v-else>
+          <div class="ptb-48 flex-center">
+            <p><b>{{profile.name}}</b> hasn't uploaded any media yet.</p>
           </div>
         </div>
       </div>
@@ -93,19 +149,16 @@
 
   export default {
     components: {ArticleCard, CdnImg},
-    validate({params: {username}}) {
-      return /^[a-z0-9]{3,32}$/.test(_.toLower(username))
-    },
     head() {
       const {name, username, bio, image} = this.profile
       return this.$head({
         robots: {follow: true, index: true},
-        canonical: `https://www.munch.app/@${username}`,
-        title: `${name} · Munch`,
-        description: bio,
         type: 'profile',
+        title: `${name}${this.focused.title}· Munch`,
+        description: bio,
         image: image,
         url: `https://www.munch.app/@${username}`,
+        canonical: `https://www.munch.app/@${username}`,
         breadcrumbs: [
           {
             name: name,
@@ -115,18 +168,32 @@
       })
     },
     asyncData({$api, params: {username}}) {
-      return Promise.all([
-        $api.get(`/profiles/${username}`)
-          .then(({data: profile}) => ({profile})),
-        $api.get(`/profiles/${username}/articles`, {params: {size: 10}})
-          .then(({data: articles, cursor}) => ({articles, cursor}))
-      ]).then(([{profile}, {articles, cursor}]) => {
-        return {articles, profile, cursor}
-      })
+      return $api.get(`/profiles/${username}`, {params: {fields: 'articles,medias'}})
+        .then(({data: profile, cursor}) => {
+          return {profile, cursor}
+        });
     },
     data() {
+      const navigations = [
+        {name: 'All', path: '', title: ' ', icon: require('~/assets/icon/icons8-collage.svg')},
+        {name: 'Articles', path: '/articles', title: ' - Articles ', icon: require('~/assets/icon/icons8-web.svg')},
+        {name: 'Images', path: '/medias', title: ' - Media ', icon: require('~/assets/icon/icons8-gallery.svg')}
+      ]
+
+      const routes = {
+        '@:username': navigations[0],
+        '@:username-articles': navigations[1],
+        '@:username-medias': navigations[2],
+      }
+
+      console.log(this.$route.name)
+
       return {
-        articleLoading: false
+        loading: {
+          articles: false, medias: false
+        },
+        navigations,
+        focused: routes[this.$route.name],
       }
     },
     computed: {
@@ -134,22 +201,41 @@
         const uid = this.$store.state.account.profile?.uid
         return uid && uid === this.profile.uid
       },
-      next() {
-        return this.cursor?.next
-      }
     },
     methods: {
-      onArticleLoadMore() {
-        this.articleLoading = true
+      onFocus(nav) {
+        this.focused = nav
 
-        this.$api.get(`/profiles/${this.profile.username}/articles`, {params: {size: 15, cursor: this.next}})
-          .then(({data: articles, cursor}) => {
-            this.articles.push(...articles)
-            this.cursor = cursor
-            this.articleLoading = false
-          })
-          .catch(error => this.$store.dispatch('addError', error))
-      }
+        const {username} = this.profile
+        this.$path.replace({path: `/@${username}${nav.path}`})
+      },
+      hasNext(name) {
+        if (this.cursor) {
+          return this.cursor[name]
+        }
+      },
+      loadMoreArticles() {
+        this.loading.articles = true
+
+        this.$api.get(`/profiles/${this.profile.username}/articles`, {
+          params: {size: 15, cursor: this.cursor['next.articles']}
+        }).then(({data: articles, cursor}) => {
+          this.profile.articles.push(...articles)
+          this.cursor['next.articles'] = cursor.next
+          this.loading.articles = false
+        }).catch(error => this.$store.dispatch('addError', error))
+      },
+      loadMoreMedias() {
+        this.loading.medias = true
+
+        this.$api.get(`/profiles/${this.profile.username}/medias`, {
+          params: {size: 15, cursor: this.cursor['next.medias']}
+        }).then(({data: medias, cursor}) => {
+          this.profile.medias.push(...medias)
+          this.cursor['next.medias'] = cursor.next
+          this.loading.medias = false
+        }).catch(error => this.$store.dispatch('addError', error))
+      },
     }
   }
 </script>

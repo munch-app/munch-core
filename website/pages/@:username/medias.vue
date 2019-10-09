@@ -7,19 +7,19 @@
       const {name, username, bio, image} = this.profile
       return this.$head({
         robots: {follow: true, index: true},
-        title: `${name} - Articles · Munch`,
+        title: `${name} - Media · Munch`,
         description: bio,
         image: image,
-        url: `https://www.munch.app/@${username}/articles`,
-        canonical: `https://www.munch.app/@${username}/articles`,
+        url: `https://www.munch.app/@${username}/medias`,
+        canonical: `https://www.munch.app/@${username}/medias`,
         breadcrumbs: [
           {
             name: name,
             item: `https://www.munch.app/@${username}`
           },
           {
-            name: 'Articles',
-            item: `https://www.munch.app/@${username}/articles`
+            name: 'Media',
+            item: `https://www.munch.app/@${username}/medias`
           },
         ]
       })
