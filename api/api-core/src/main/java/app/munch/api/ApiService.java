@@ -136,7 +136,7 @@ public abstract class ApiService implements TransportService {
         String accountId = context.get(ApiRequest.class).getAccountId();
         Profile profile = Profile.findByAccountId(entityManager, accountId);
         if (profile != null) {
-            return null;
+            return profile;
         }
         throw new ConflictException("Profile not found.");
     }

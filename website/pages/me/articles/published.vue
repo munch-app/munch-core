@@ -65,9 +65,6 @@
             next: cursor?.next
           }
         })
-        .catch(error => {
-          this.$store.dispatch('addError', error)
-        })
     },
     methods: {
       formatMillis: (millis) => dateformat(millis, 'mmm dd, yyyy'),
