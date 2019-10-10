@@ -1,3 +1,5 @@
+<!-- @deprecated -->
+
 <template>
   <div class="ScrollWrapper relative" :class="{'container-full': container}">
     <div class="flex-align-center absolute wh-100" :class="{container: container}" v-if="nav">

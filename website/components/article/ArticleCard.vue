@@ -10,10 +10,10 @@
       </div>
 
       <div class="p-24 flex-column flex-grow">
-        <h2 class="text-ellipsis-2l">{{article.title}}</h2>
+        <h3 class="text-ellipsis-2l">{{article.title}}</h3>
 
         <div class="pt-8 flex-grow">
-          <p class="large b-a50 text-ellipsis-3l">{{article.description}}</p>
+          <p class="b-a50 text-ellipsis-3l">{{article.description}}</p>
         </div>
 
         <div class="flex mt-16">

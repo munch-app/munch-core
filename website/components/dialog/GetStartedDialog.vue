@@ -60,10 +60,10 @@
         <h3>We need more information to setup your account.</h3>
       </div>
       <div class="mt-24">
-        <input-text label="Email" v-model="account.email"/>
+        <text-input label="Email" v-model="account.email"/>
       </div>
       <div class="mt-24">
-        <input-text label="Name" v-model="account.profile.name"/>
+        <text-input label="Name" v-model="account.profile.name"/>
       </div>
       <div class="mt-24 flex-end">
         <button @click="onSetup" class="blue-outline">Continue</button>
@@ -90,11 +90,11 @@
 
 <script>
   import authenticator from '~/services/authenticator'
-  import InputText from "../core/InputText";
+  import TextInput from "../utils/TextInput";
 
   export default {
     name: "GetStartedDialog",
-    components: {InputText},
+    components: {TextInput},
     props: {
       defaultState: {
         type: String,

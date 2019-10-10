@@ -1,3 +1,5 @@
+<!-- @deprecated -->
+
 <template>
   <div>
     <div class="relative" ref="container">

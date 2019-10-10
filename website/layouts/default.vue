@@ -3,7 +3,7 @@
     <nav class="Header fixed w-100 index-top-elevation hr-bot bg-white" :class="{Clear: isClear}">
       <div class="container h-100 flex-align-center">
         <header-logo class="mr-8" :clear="isClear" :class="{'IsSearching': searching}"/>
-        <div class="mlr-8 mtb-8 flex-grow">
+        <div class="ml-8 mtb-8 flex-grow">
           <portal-target name="HeaderMiddle">
             <search-bar class="SearchBar" @onBlur="onBlur" @onFocus="onFocus"/>
           </portal-target>

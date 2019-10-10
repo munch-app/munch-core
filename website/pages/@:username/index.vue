@@ -78,15 +78,41 @@
     </div>
 
     <div class="pb-256">
-      <div class="mt-24" v-if="focused.path === ''">
-        <div>
-          <h4>{{profile.name}} articles</h4>
-          <div></div>
-        </div>
+      <div v-if="focused.path === ''">
+        <div v-if="profile.medias.length > 0 || profile.articles.length > 0">
+          <div class="mt-24 mb-48" v-if="profile.articles.length > 0">
+            <h3>{{profile.name}} articles</h3>
+            <div class="mt-24">
+              <horizontal-list :items="profile.articles">
+                <template v-slot:default="{item}">
+                  <article-card class="ArticleCard" :article="item"/>
+                </template>
+              </horizontal-list>
+            </div>
+          </div>
 
-        <div>
-          <h4>{{profile.name}} images</h4>
-          <div></div>
+          <div class="mt-24 mb-48" v-if="profile.medias.length > 0">
+            <h3>{{profile.name}} images</h3>
+            <div class="mt-24">
+              <div class="flex-1-2-3-4-5 m--12">
+                <div v-for="media in profile.medias" :key="media.id" class="p-12">
+                  <profile-media :media="media"/>
+                </div>
+              </div>
+
+              <div v-if="hasNext('next.medias')">
+                <div class="flex-center ptb-32" v-if="loading.medias">
+                  <beat-loader color="#07F" size="16px"/>
+                </div>
+                <div class="flex-center ptb-32" v-else>
+                  <button class="blue-outline" @click="loadMoreMedias">Load more</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div v-else class="mt-48 ptb-48 flex-center">
+          <p><b>{{profile.name}}</b> hasn't created any content yet.</p>
         </div>
       </div>
 
@@ -108,10 +134,8 @@
           </div>
         </div>
 
-        <div v-else>
-          <div class="ptb-48 flex-center">
-            <p><b>{{profile.name}}</b> hasn't written any article yet.</p>
-          </div>
+        <div v-else class="ptb-48 flex-center">
+          <p><b>{{profile.name}}</b> hasn't written any article yet.</p>
         </div>
       </div>
 
@@ -119,7 +143,7 @@
         <div v-if="profile.medias.length > 0">
           <div class="flex-1-2-3-4-5 m--12">
             <div v-for="media in profile.medias" :key="media.id" class="p-12">
-              <pre class="overflow-hidden">{{media}}</pre>
+              <profile-media :media="media"/>
             </div>
           </div>
 
@@ -133,10 +157,8 @@
           </div>
         </div>
 
-        <div v-else>
-          <div class="ptb-48 flex-center">
-            <p><b>{{profile.name}}</b> hasn't uploaded any media yet.</p>
-          </div>
+        <div v-else class="ptb-48 flex-center">
+          <p><b>{{profile.name}}</b> hasn't uploaded any media yet.</p>
         </div>
       </div>
     </div>
@@ -146,9 +168,11 @@
 <script>
   import CdnImg from "../../components/utils/image/CdnImg";
   import ArticleCard from "../../components/article/ArticleCard";
+  import ProfileMedia from "../../components/profile/ProfileMedia";
+  import HorizontalList from "../../components/utils/HorizontalList";
 
   export default {
-    components: {ArticleCard, CdnImg},
+    components: {HorizontalList, ProfileMedia, ArticleCard, CdnImg},
     head() {
       const {name, username, bio, image} = this.profile
       return this.$head({
@@ -251,11 +275,6 @@
       width: 64px;
       height: 64px;
     }
-  }
-
-  button {
-    margin-top: auto;
-    margin-bottom: auto;
   }
 
   .BioRight {

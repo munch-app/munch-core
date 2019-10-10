@@ -1,3 +1,5 @@
+<!-- @deprecated -->
+
 <template>
   <!-- Deprecated: use ImageSizes instead -->
   <div class="ImageSize" :style="style">

@@ -46,7 +46,7 @@ public final class MediaQuery extends Query {
                             "createdAt", cursor.getDate("createdAt"), "id", cursor.get("id"));
                 })
                 .orderBy("createdAt DESC, id DESC")
-                .size(cursor.size(10, 33))
+                .size(cursor.size(20, 40))
                 .asStream()
                 .peek(MediaQuery::peek);
     }

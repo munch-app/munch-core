@@ -59,7 +59,6 @@ public final class ProfileService extends ApiService {
     }
 
     public TransportResult get(TransportContext ctx) {
-        final int size = ctx.querySize(10, 20);
         String username = ctx.pathString("username");
         Set<String> fields = ctx.queryFields();
 
@@ -75,7 +74,7 @@ public final class ProfileService extends ApiService {
             if (fields.contains("medias")) {
                 MediaQuery.query(entityManager, TransportCursor.EMPTY, query -> {
                     query.where("profile", profile);
-                }).cursor(size, (media, builder) -> {
+                }).cursor((media, builder) -> {
                     builder.put("status", ProfileMediaStatus.PUBLIC);
                     builder.put("createdAt", media.getCreatedAt().getTime());
                     builder.put("id", media.getId());
@@ -90,7 +89,7 @@ public final class ProfileService extends ApiService {
             if (fields.contains("articles")) {
                 ArticleQuery.query(entityManager, TransportCursor.EMPTY, ArticleStatus.PUBLISHED, query -> {
                     query.where("profile", profile);
-                }).cursor(size, (article, builder) -> {
+                }).cursor((article, builder) -> {
                     builder.put("status", ArticleStatus.PUBLISHED);
                     builder.put("publishedAt", article.getPublishedAt().getTime());
                     builder.put("id", article.getId());

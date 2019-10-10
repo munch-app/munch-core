@@ -1,3 +1,5 @@
+<!-- @deprecated -->
+
 <!--
 This is a rewrite of ImageSize with emphasis on
 - More fluid rendering by width or height
