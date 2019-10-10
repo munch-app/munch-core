@@ -1,12 +1,14 @@
 <template>
-  <div class="container-768 pt-48 pb-128">
-    <div class="mb-48">
-      <h1>Create a new place</h1>
-    </div>
+  <div class="container pt-48 pb-128">
+    <div class="Form">
+      <div class="mb-48">
+        <h1>Create a new place</h1>
+      </div>
 
-    <place-editor ref="editor" :place="place"/>
-    <div class="flex-end mt-24">
-      <button class="blue" @click="onSubmit">Submit</button>
+      <place-editor ref="editor" :place="place"/>
+      <div class="flex-end mt-24">
+        <button class="blue" @click="onSubmit">Submit</button>
+      </div>
     </div>
   </div>
 </template>
@@ -41,5 +43,7 @@
 </script>
 
 <style scoped lang="less">
-
+  .Form {
+    max-width: 600px;
+  }
 </style>

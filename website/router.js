@@ -23,8 +23,6 @@ const paths = {
     '/@:username([a-z0-9]{3,32})/medias',
   '@:username-media:id':
     '/@:username([a-z0-9]{3,32})/:id([0-9a-hjkmnp-tv-z]{15}s)',
-  '@:username-mention:id':
-    '/@:username([a-z0-9]{3,32})/:id([0-9a-hjkmnp-tv-z]{15}m)',
   '@:username-article:slug:id':
     '/@:username([a-z0-9]{3,32})/:slug([0-9a-z-]{0,1000}):id([0-9a-hjkmnp-tv-z]{12}1)',
 

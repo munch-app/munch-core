@@ -2,7 +2,8 @@
   <div>
     <div class="container">
       <div class="mt-48">
-        <in-article-adsense v-if="views['ads-ig-1']" data-ad-client="ca-pub-7144155418390858" data-ad-slot="8163543825"/>
+        <in-article-adsense v-if="views['ads-ig-1']" data-ad-client="ca-pub-7144155418390858"
+                            data-ad-slot="8163543825"/>
         <div class="flex-wrap mt-48">
           <article-content class="ArticleContent" :article="article" ref="ArticleContent"/>
           <aside class="flex-grow">
@@ -100,7 +101,7 @@
         ]
       })
     },
-    asyncData({$api, $path, params: {username, id}, query: {uid}}) {
+    asyncData({$api, $path, error, params: {username, id}, query: {uid}}) {
       const url = uid ? `/articles/${id}/revisions/${uid}` : `/articles/${id}`
       return Promise.all([
         $api.get(url)
