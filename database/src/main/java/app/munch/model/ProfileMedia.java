@@ -36,7 +36,7 @@ import java.util.List;
 public final class ProfileMedia {
 
     @NotNull
-    @Pattern(regexp = "^[0-9a-hjkmnp-tv-z]{16}$")
+    @Pattern(regexp = "^[0-9a-hjkmnp-tv-z]{15}s$")
     @Id
     @Column(length = 16, updatable = false, nullable = false, unique = true)
     private String id;

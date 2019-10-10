@@ -19,7 +19,6 @@ import java.util.Date;
  * Time: 8:04 pm
  *
  * @author Fuxing Loh
- * @see app.munch.model.validator.MentionStatusValidator for class level validation
  * @see app.munch.model.validator.MentionTypeValidator for class level validation
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -38,7 +37,7 @@ public final class Mention {
      * In comparision with places, mention can generate as many as 10_000x of place (too many of them)
      */
     @NotNull
-    @Pattern(regexp = "^[0-9a-hjkmnp-tv-z]{16}$")
+    @Pattern(regexp = "^[0-9a-hjkmnp-tv-z]{15}m$")
     @Id
     @Column(length = 16, updatable = false, nullable = false, unique = true)
     private String id;
