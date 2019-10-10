@@ -104,7 +104,7 @@
                 <div class="flex-center ptb-32" v-if="loading.medias">
                   <beat-loader color="#07F" size="16px"/>
                 </div>
-                <div class="flex-center ptb-32" v-else>
+                <div class="flex-center ptb-48" v-else>
                   <button class="blue-outline" @click="loadMoreMedias">Load more</button>
                 </div>
               </div>
@@ -128,7 +128,7 @@
             <div class="flex-center ptb-32" v-if="loading.articles">
               <beat-loader color="#07F" size="16px"/>
             </div>
-            <div class="flex-center ptb-32" v-else>
+            <div class="flex-center ptb-48" v-else>
               <button class="blue-outline" @click="loadMoreArticles">Load more</button>
             </div>
           </div>
@@ -151,7 +151,7 @@
             <div class="flex-center ptb-32" v-if="loading.medias">
               <beat-loader color="#07F" size="16px"/>
             </div>
-            <div class="flex-center ptb-32" v-else>
+            <div class="flex-center ptb-48" v-else>
               <button class="blue-outline" @click="loadMoreMedias">Load more</button>
             </div>
           </div>

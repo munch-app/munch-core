@@ -49,7 +49,6 @@
           list: {
             class: this.options?.list?.class || ''
           },
-          increment: this.options?.increment || 1,
           size: this.options?.size || 4,
           mapKey: this.options?.mapKey || ((item) => item.id)
         }
@@ -81,14 +80,16 @@
     },
     methods: {
       go(position) {
-        this.position = position
-        this.$refs.scrollable.scrollLeft = this.width.item * position
+        const maxPosition = this.items.length - this.column
+        this.position = position > maxPosition ? maxPosition : position
+
+        this.$refs.scrollable.scrollLeft = this.width.item * this.position
       },
       prev() {
-        this.go(this.position - this._options.increment)
+        this.go(this.position - this.column)
       },
       next() {
-        this.go(this.position + this._options.increment)
+        this.go(this.position + this.column)
       },
     }
   }
