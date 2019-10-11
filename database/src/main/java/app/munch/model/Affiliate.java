@@ -1,8 +1,6 @@
 package app.munch.model;
 
-import app.munch.model.constraint.AffiliatePlaceNotNullGroup;
-import app.munch.model.constraint.AffiliatePlaceNullGroup;
-import app.munch.model.constraint.AffiliateLinkedGroup;
+import app.munch.model.annotation.ValidAffiliateStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -17,7 +15,6 @@ import org.hibernate.validator.constraints.URL;
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 import javax.validation.constraints.Pattern;
 import javax.validation.groups.Default;
 import java.sql.Timestamp;
@@ -34,6 +31,7 @@ import java.util.Date;
 @Entity
 @Table(name = "Affiliate")
 @TypeDef(name = "PlaceStruct", typeClass = PlaceStruct.UserType.class)
+@ValidAffiliateStatus
 public final class Affiliate {
 
     @NotNull
@@ -62,7 +60,6 @@ public final class Affiliate {
      * This Place association is for house keeping purpose, and indicates when affiliate is linked even if it's linked historically.
      */
     @JsonIgnore
-    @NotNull(groups = {AffiliatePlaceNotNullGroup.class, AffiliateLinkedGroup.class})
     @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = true)
     private Place place;
 
@@ -72,8 +69,6 @@ public final class Affiliate {
      * Linked is for operational purpose, this is used to show user places with affiliates
      */
     @Valid
-    @NotNull(groups = {AffiliateLinkedGroup.class})
-    @Null(groups = {AffiliatePlaceNullGroup.class})
     @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER, optional = true, orphanRemoval = true, mappedBy = "affiliate")
     private PlaceAffiliate linked;
 
@@ -82,7 +77,6 @@ public final class Affiliate {
     @Type(type = "PlaceStruct")
     private PlaceStruct placeStruct;
 
-    @NotNull(groups = {AffiliatePlaceNotNullGroup.class, AffiliateLinkedGroup.class})
     @ManyToOne(cascade = {}, fetch = FetchType.EAGER, optional = true)
     private Profile editedBy;
 
@@ -258,24 +252,7 @@ public final class Affiliate {
             copy(this, getLinked());
         }
 
-        if (getStatus() != null) {
-            switch (getStatus()) {
-                case LINKED:
-                    ValidationException.validate(this, Default.class, AffiliateLinkedGroup.class);
-                    break;
-
-                case PENDING:
-                case DELETED_MUNCH:
-                case DELETED_SOURCE:
-                    ValidationException.validate(this, Default.class, AffiliatePlaceNullGroup.class);
-                    break;
-
-                case DROPPED:
-                case REAPPEAR:
-                    ValidationException.validate(this, Default.class, AffiliatePlaceNotNullGroup.class);
-                    break;
-            }
-        }
+        ValidationException.validate(this, Default.class);
     }
 
     static void copy(Affiliate affiliate, PlaceAffiliate linked) {

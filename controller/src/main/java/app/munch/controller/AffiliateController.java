@@ -34,8 +34,7 @@ public final class AffiliateController extends Controller {
 
             entity.setBrand(brand);
             entity.setStatus(status);
-
-            // TODO(fuxing): Rollback Exception
+            ChangeGroup.EntityUtils.map(entityManager, group, entity::setChangeGroup);
 
             switch (status) {
                 case PENDING:
@@ -56,11 +55,11 @@ public final class AffiliateController extends Controller {
                     break;
 
                 case DROPPED:
+                    entityManager.remove(entity.getLinked());
                     entity.setLinked(null);
                     break;
             }
 
-            ChangeGroup.EntityUtils.map(entityManager, group, entity::setChangeGroup);
             entityManager.persist(entity);
         });
 

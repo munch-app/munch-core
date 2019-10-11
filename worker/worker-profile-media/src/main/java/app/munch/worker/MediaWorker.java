@@ -155,7 +155,6 @@ public final class MediaWorker implements WorkerRunner {
                     }
 
                     ProfileMedia media = existing.get(0);
-                    // TODO(fuxing): why not getting updated
                     media.setStatus(ProfileMediaStatus.PUBLIC);
                     entityManager.persist(media);
 

@@ -1,6 +1,5 @@
 package app.munch.model;
 
-import app.munch.model.constraint.PlaceDefaultGroup;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -184,6 +183,6 @@ public final class Place extends PlaceModel implements ElasticSerializable {
             setUpdatedAt(new Timestamp(System.currentTimeMillis()));
         }
 
-        ValidationException.validate(this, Default.class, PlaceDefaultGroup.class);
+        ValidationException.validate(this, Default.class, Groups.PlaceDefault.class);
     }
 }

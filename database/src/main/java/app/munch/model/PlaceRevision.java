@@ -1,6 +1,5 @@
 package app.munch.model;
 
-import app.munch.model.constraint.PlaceDefaultGroup;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -133,7 +132,7 @@ public final class PlaceRevision extends PlaceModel {
                 .map(StringUtils::trim)
                 .collect(Collectors.toSet()));
 
-        ValidationException.validate(this, Default.class, PlaceDefaultGroup.class);
+        ValidationException.validate(this, Default.class, Groups.PlaceDefault.class);
     }
 
     void copyToPlace() {

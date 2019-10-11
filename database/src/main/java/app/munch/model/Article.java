@@ -1,8 +1,5 @@
 package app.munch.model;
 
-import app.munch.model.constraint.ArticleDeletedGroup;
-import app.munch.model.constraint.ArticleDraftGroup;
-import app.munch.model.constraint.ArticlePublishedGroup;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.fuxing.err.ValidationException;
@@ -41,7 +38,7 @@ public final class Article extends ArticleModel {
     /**
      * The first every date it was published.
      */
-    @NotNull(groups = ArticlePublishedGroup.class)
+    @NotNull(groups = Groups.ArticlePublished.class)
     @Column(updatable = false, nullable = true)
     private Date publishedAt;
 
@@ -111,25 +108,11 @@ public final class Article extends ArticleModel {
         setSlug(KeyUtils.generateSlug(getTitle(), 200));
         setUpdatedAt(new Timestamp(System.currentTimeMillis()));
 
-        switch (getStatus()) {
-            case PUBLISHED:
-                if (getPublishedAt() == null) {
-                    setPublishedAt(new Timestamp(System.currentTimeMillis()));
-                }
-                ValidationException.validate(this, Default.class, ArticlePublishedGroup.class);
-                return;
-
-            case DRAFT:
-                ValidationException.validate(this, Default.class, ArticleDraftGroup.class);
-                return;
-
-            case DELETED:
-                ValidationException.validate(this, Default.class, ArticleDeletedGroup.class);
-                return;
-
-            case UNKNOWN_TO_SDK_VERSION:
-            default:
-
+        if (getStatus() == ArticleStatus.PUBLISHED) {
+            setPublishedAt(new Timestamp(System.currentTimeMillis()));
+            ValidationException.validate(this, Default.class, Groups.ArticlePublished.class);
+        } else {
+            ValidationException.validate(this, Default.class);
         }
     }
 }

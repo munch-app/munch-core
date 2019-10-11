@@ -1,6 +1,5 @@
 package app.munch.model;
 
-import app.munch.model.constraint.ArticlePublishedGroup;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -132,7 +131,7 @@ public final class ArticleRevision extends ArticleModel {
         setSlug(KeyUtils.generateSlug(article.getTitle(), 200));
 
         if (getPublished() != null && getPublished()) {
-            ValidationException.validate(this, Default.class, ArticlePublishedGroup.class);
+            ValidationException.validate(this, Default.class, Groups.ArticlePublished.class);
         } else {
             ValidationException.validate(this, Default.class);
         }

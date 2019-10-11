@@ -15,17 +15,17 @@ import java.util.stream.Stream;
 public enum ArticleStatus {
 
     /**
-     * @see app.munch.model.constraint.ArticleDraftGroup
+     * Article is still getting edited
      */
     DRAFT("DRAFT"),
 
     /**
-     * @see app.munch.model.constraint.ArticleDeletedGroup
+     * Article is deleted
      */
     DELETED("DELETED"),
 
     /**
-     * @see app.munch.model.constraint.ArticlePublishedGroup
+     * @see Groups.ArticlePublished
      */
     PUBLISHED("PUBLISHED"),
 

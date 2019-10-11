@@ -1,7 +1,5 @@
 package app.munch.model;
 
-import app.munch.model.constraint.ArticlePublishedGroup;
-import app.munch.model.constraint.PlaceDefaultGroup;
 import app.munch.utils.spatial.LatLng;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -56,7 +54,7 @@ public abstract class PlaceModel {
      * - Menu, JsonUserType
      */
 
-    @NotBlank(groups = {PlaceDefaultGroup.class, ArticlePublishedGroup.class})
+    @NotBlank(groups = {Groups.PlaceDefault.class, Groups.ArticlePublished.class})
     @Length(max = 100)
     @Column(length = 100, updatable = true, nullable = true, unique = false)
     private String name;
@@ -65,7 +63,7 @@ public abstract class PlaceModel {
     @Column(length = 100, updatable = true, nullable = true, unique = false)
     private String phone;
 
-    @URL(groups = {PlaceDefaultGroup.class, ArticlePublishedGroup.class})
+    @URL(groups = {Groups.PlaceDefault.class, Groups.ArticlePublished.class})
     @Length(max = 1000)
     @Column(length = 1000, updatable = true, nullable = true, unique = false)
     private String website;
@@ -79,17 +77,17 @@ public abstract class PlaceModel {
     private Price price;
 
     @Valid
-    @NotNull(groups = {PlaceDefaultGroup.class})
+    @NotNull(groups = {Groups.PlaceDefault.class})
     @Type(type = "PlaceModel.LocationType")
     private Location location;
 
     @Valid
-    @NotNull(groups = {PlaceDefaultGroup.class})
+    @NotNull(groups = {Groups.PlaceDefault.class})
     @Type(type = "PlaceModel.StatusType")
     private Status status;
 
     @Valid
-    @NotNull(groups = {PlaceDefaultGroup.class})
+    @NotNull(groups = {Groups.PlaceDefault.class})
     @Size(max = 4)
     @Type(type = "PlaceModel.SynonymsType")
     private Set<@NotBlank @Length(max = 100) String> synonyms;
@@ -98,7 +96,7 @@ public abstract class PlaceModel {
      * Regardless of Groups, validation is default because data is retrieved from external source
      */
     @Valid
-    @NotNull(groups = {PlaceDefaultGroup.class})
+    @NotNull(groups = {Groups.PlaceDefault.class})
     @Size(max = 12)
     @Type(type = "PlaceModel.TagsType")
     private Set<@NotNull Tag> tags;
@@ -107,7 +105,7 @@ public abstract class PlaceModel {
      * Regardless of Groups, validation is default because data is retrieved from external source
      */
     @Valid
-    @NotNull(groups = {PlaceDefaultGroup.class})
+    @NotNull(groups = {Groups.PlaceDefault.class})
     @Size(max = 24)
     @Type(type = "PlaceModel.HoursType")
     private Set<@NotNull Hour> hours;
@@ -203,11 +201,11 @@ public abstract class PlaceModel {
         private String postcode;
 
         @Length(max = 255)
-        @NotNull(groups = {PlaceDefaultGroup.class, ArticlePublishedGroup.class})
+        @NotNull(groups = {Groups.PlaceDefault.class, Groups.ArticlePublished.class})
         private String address;
 
         @Length(max = 255)
-        @NotNull(groups = {PlaceDefaultGroup.class, ArticlePublishedGroup.class})
+        @NotNull(groups = {Groups.PlaceDefault.class, Groups.ArticlePublished.class})
         @Pattern(regexp = "^[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?),\\s*[-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)$")
         private String latLng;
 

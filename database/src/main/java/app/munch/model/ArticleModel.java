@@ -1,6 +1,5 @@
 package app.munch.model;
 
-import app.munch.model.constraint.ArticlePublishedGroup;
 import com.fasterxml.jackson.annotation.*;
 import dev.fuxing.postgres.PojoListUserType;
 import dev.fuxing.postgres.PojoSetUserType;
@@ -38,12 +37,12 @@ public abstract class ArticleModel {
     @Column(length = 200, updatable = true, nullable = false, unique = false)
     private String slug;
 
-    @NotBlank(groups = ArticlePublishedGroup.class)
+    @NotBlank(groups = Groups.ArticlePublished.class)
     @Length(max = 100)
     @Column(length = 100, updatable = true, nullable = true, unique = false)
     private String title;
 
-    @NotBlank(groups = ArticlePublishedGroup.class)
+    @NotBlank(groups = Groups.ArticlePublished.class)
     @Length(max = 250)
     @Column(length = 250, updatable = true, nullable = true, unique = false)
     private String description;
@@ -473,11 +472,11 @@ public abstract class ArticleModel {
             @NotNull
             private List<Image> images;
 
-            @NotBlank(groups = {ArticlePublishedGroup.class})
+            @NotBlank(groups = {Groups.ArticlePublished.class})
             @Length(max = 100)
             private String line1;
 
-            @NotBlank(groups = {ArticlePublishedGroup.class})
+            @NotBlank(groups = {Groups.ArticlePublished.class})
             @Length(max = 100)
             private String line2;
 
