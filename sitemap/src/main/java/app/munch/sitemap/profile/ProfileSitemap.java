@@ -11,9 +11,9 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.Tuple;
-import java.net.MalformedURLException;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -37,23 +37,27 @@ public final class ProfileSitemap implements SitemapProvider {
     }
 
     @Override
-    public Iterator<WebSitemapUrl> provide() throws MalformedURLException {
+    public Iterator<WebSitemapUrl> provide() {
         return provider.reduce(true, entityManager -> {
-            Iterator<WebSitemapUrl> iterator = Iterators.transform(select(entityManager), tuple -> {
+            Iterator<List<WebSitemapUrl>> iterator = Iterators.transform(select(entityManager), tuple -> {
                 Objects.requireNonNull(tuple);
                 String uid = tuple.get("uid", String.class);
                 String username = tuple.get("username", String.class);
                 Date updatedAt = tuple.get("updatedAt", Date.class);
 
                 if (Profile.ALL_SPECIAL_ID.contains(uid)) {
-                    return null;
+                    return List.of();
                 }
 
-                // TODO(fuxing): '/', '/articles', '/medias'
-                return build("/@" + username, updatedAt, 1.0, ChangeFreq.DAILY);
+                return List.of(
+                        build("/@" + username, updatedAt, 1.0, ChangeFreq.DAILY),
+                        build("/@" + username + "/articles", updatedAt, 1.0, ChangeFreq.DAILY),
+                        build("/@" + username + "/medias", updatedAt, 1.0, ChangeFreq.DAILY)
+                );
             });
 
-            return Iterators.filter(iterator, Objects::nonNull);
+            Iterator<Iterator<WebSitemapUrl>> transform = Iterators.transform(iterator, List::iterator);
+            return Iterators.concat(transform);
         });
     }
 
