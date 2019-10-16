@@ -1,9 +1,9 @@
 package app.munch.api;
 
-import app.munch.query.EntityQuery;
 import app.munch.model.Profile;
 import app.munch.model.ProfileSocial;
 import dev.fuxing.err.ConflictException;
+import dev.fuxing.jpa.EntityQuery;
 import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
 import dev.fuxing.transport.service.TransportContext;

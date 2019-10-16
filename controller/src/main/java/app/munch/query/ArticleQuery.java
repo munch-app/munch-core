@@ -4,6 +4,7 @@ import app.munch.model.Article;
 import app.munch.model.ArticleStatus;
 import app.munch.model.Profile;
 import dev.fuxing.err.ForbiddenException;
+import dev.fuxing.jpa.EntityQuery;
 import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
 

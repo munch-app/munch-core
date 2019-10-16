@@ -3,6 +3,7 @@ package app.munch.query;
 import app.munch.model.ProfileMedia;
 import app.munch.model.ProfileMediaStatus;
 import dev.fuxing.err.ForbiddenException;
+import dev.fuxing.jpa.EntityQuery;
 import dev.fuxing.jpa.HibernateUtils;
 import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;

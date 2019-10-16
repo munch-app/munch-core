@@ -3,6 +3,7 @@ package app.munch.query;
 import app.munch.model.Mention;
 import app.munch.model.MentionStatus;
 import app.munch.model.MentionType;
+import dev.fuxing.jpa.EntityQuery;
 import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
 

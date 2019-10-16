@@ -1,10 +1,10 @@
 package app.munch.api;
 
-import app.munch.query.EntityQuery;
 import app.munch.model.Profile;
 import dev.fuxing.err.ConflictException;
 import dev.fuxing.err.ForbiddenException;
 import dev.fuxing.jpa.EntityPatch;
+import dev.fuxing.jpa.EntityQuery;
 import dev.fuxing.jpa.TransactionProvider;
 import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
