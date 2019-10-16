@@ -1,11 +1,10 @@
 package app.munch.api;
 
 import app.munch.model.ProfileMedia;
-import app.munch.model.ProfileMediaStatus;
-import dev.fuxing.err.ForbiddenException;
-import dev.fuxing.jpa.HibernateUtils;
+import app.munch.query.MediaQuery;
 import dev.fuxing.transport.service.TransportContext;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
@@ -14,6 +13,13 @@ import javax.inject.Singleton;
  */
 @Singleton
 public final class MediaService extends ApiService {
+
+    private final MediaQuery mediaQuery;
+
+    @Inject
+    public MediaService(MediaQuery mediaQuery) {
+        this.mediaQuery = mediaQuery;
+    }
 
     @Override
     public void route() {
@@ -24,20 +30,6 @@ public final class MediaService extends ApiService {
 
     public ProfileMedia get(TransportContext ctx) {
         final String id = ctx.pathString("id");
-
-        return provider.reduce(entityManager -> {
-            ProfileMedia media = entityManager.find(ProfileMedia.class, id);
-            if (media == null) {
-                return null;
-            }
-
-            if (media.getStatus() != ProfileMediaStatus.PUBLIC) {
-                throw new ForbiddenException();
-            }
-
-            HibernateUtils.initialize(media.getProfile());
-            HibernateUtils.initialize(media.getImages());
-            return media;
-        });
+        return mediaQuery.find(id);
     }
 }

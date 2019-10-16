@@ -58,6 +58,9 @@ public final class MentionQuery extends Query {
                 }));
     }
 
+    /**
+     * @param mention to peek when querying, readOnly must be {@code true}
+     */
     private static void peek(Mention mention) {
         switch (mention.getType()) {
             case MEDIA:

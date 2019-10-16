@@ -2,6 +2,8 @@ package app.munch.query;
 
 import app.munch.model.ProfileMedia;
 import app.munch.model.ProfileMediaStatus;
+import dev.fuxing.err.ForbiddenException;
+import dev.fuxing.jpa.HibernateUtils;
 import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
 
@@ -37,6 +39,25 @@ public final class MediaQuery extends Query {
         });
     }
 
+    public ProfileMedia find(String id) {
+        return provider.reduce(true, entityManager -> {
+            ProfileMedia media = entityManager.find(ProfileMedia.class, id);
+            if (media == null) {
+                return null;
+            }
+
+            if (media.getStatus() != ProfileMediaStatus.PUBLIC) {
+                throw new ForbiddenException();
+            }
+
+            HibernateUtils.initialize(media.getProfile());
+            HibernateUtils.initialize(media.getImages());
+            HibernateUtils.initialize(media.getMentions());
+            peek(media);
+            return media;
+        });
+    }
+
     public static EntityQuery<ProfileMedia>.EntityStream query(EntityManager entityManager, TransportCursor cursor, Consumer<EntityQuery<ProfileMedia>> consumer) {
         return EntityQuery.select(entityManager, "FROM ProfileMedia", ProfileMedia.class)
                 .where("status", ProfileMediaStatus.PUBLIC)
@@ -51,6 +72,9 @@ public final class MediaQuery extends Query {
                 .peek(MediaQuery::peek);
     }
 
+    /**
+     * @param media to peek when querying, readOnly must be {@code true}
+     */
     private static void peek(ProfileMedia media) {
         media.getMentions().forEach(mention -> {
             mention.setMedia(null);
