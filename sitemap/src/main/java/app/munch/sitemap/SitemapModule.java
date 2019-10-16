@@ -3,6 +3,7 @@ package app.munch.sitemap;
 import app.munch.database.DatabaseModule;
 import app.munch.sitemap.places.PlaceSitemap;
 import app.munch.sitemap.profile.ArticleSitemap;
+import app.munch.sitemap.profile.MediaSitemap;
 import app.munch.sitemap.profile.ProfileSitemap;
 import app.munch.sitemap.search.SGPSearchSitemap;
 import catalyst.utils.health.HealthCheckServer;
@@ -24,9 +25,10 @@ public final class SitemapModule extends AbstractModule {
         Multibinder<SitemapProvider> binder = Multibinder.newSetBinder(binder(), SitemapProvider.class);
         binder.addBinding().to(ProfileSitemap.class);
         binder.addBinding().to(ArticleSitemap.class);
+        binder.addBinding().to(MediaSitemap.class);
 
-        binder.addBinding().to(SGPSearchSitemap.class);
         binder.addBinding().to(PlaceSitemap.class);
+        binder.addBinding().to(SGPSearchSitemap.class);
 
         install(new AmazonModule());
         install(new DatabaseModule());
