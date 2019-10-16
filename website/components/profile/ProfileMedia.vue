@@ -18,7 +18,6 @@
               <simple-svg class="wh-20px" fill="#000" :filepath="require('~/assets/icon/icons8-map-pin.svg')"/>
             </div>
           </nuxt-link>
-
         </div>
       </cdn-img>
     </div>

@@ -1,9 +1,7 @@
 <template>
   <div class="flex-align-center mt-24 mb-32">
-    <nuxt-link :to="`/@${article.profile.username}`"
-               class="text-decoration-none flex-no-shrink wh-48px border-circle flex-center bg-steam overflow-hidden">
-      <cdn-img v-if="article.profile.image" :image="article.profile.image" type="320x320"/>
-      <simple-svg v-else class="wh-32px" fill="#ccc" :filepath="require('~/assets/icon/icons8-person.svg')"/>
+    <nuxt-link :to="`/@${article.profile.username}`" class="flex-no-shrink wh-48px">
+      <profile-pic :profile="article.profile"/>
     </nuxt-link>
 
     <div class="ml-16 flex-shrink text-ellipsis-1l">
@@ -18,10 +16,11 @@
 <script>
   import dateformat from 'dateformat'
   import CdnImg from "../../utils/image/CdnImg";
+  import ProfilePic from "../../profile/ProfilePic";
 
   export default {
     name: "ProfileNode",
-    components: {CdnImg},
+    components: {ProfilePic, CdnImg},
     props: {
       article: {
         type: Object,

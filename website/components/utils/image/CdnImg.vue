@@ -28,6 +28,13 @@
         type: String,
         default: '640x640'
       },
+      /**
+       * cover
+       * contain
+       * fill
+       * none
+       * scale-down
+       */
       objectFit: {
         type: String,
         default: 'cover'

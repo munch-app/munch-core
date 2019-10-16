@@ -1,22 +1,19 @@
 <template>
   <div class="flex-no-shrink hover-pointer" v-if="isLoggedIn" @click="$store.commit('toggleFocus', 'HeaderMenu')">
-    <div class="ProfileImage">
-      <div class="bg-blue wh-100 flex-center border-circle">
-        <div class="NameChar text-capitalize white">
-          {{name && name[0]}}
-        </div>
-      </div>
-    </div>
+    <profile-pic class="wh-40px" :profile="profile"/>
   </div>
 </template>
 
 <script>
   import {mapGetters} from 'vuex'
+  import CdnImg from "../utils/image/CdnImg";
+  import ProfilePic from "../profile/ProfilePic";
 
   export default {
     name: "HeaderProfile",
+    components: {ProfilePic, CdnImg},
     computed: {
-      ...mapGetters('account', ['isLoggedIn', 'name']),
+      ...mapGetters('account', ['isLoggedIn', 'name', 'profile']),
     },
     data() {
       return {
@@ -27,16 +24,7 @@
 </script>
 
 <style scoped lang="less">
-  .NameChar {
-    font-size: 19px;
-    font-weight: 500;
-    line-height: 36px;
-  }
-
-  .ProfileImage {
-    height: 36px;
-    width: 36px;
-
+  .ProfilePic {
     @media (max-width: 767.98px) {
       display: none;
     }
