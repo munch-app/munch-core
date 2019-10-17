@@ -1,5 +1,5 @@
 <template>
-  <div class="flex-align-center mt-24 mb-32">
+  <div class="flex-align-center">
     <nuxt-link :to="`/@${article.profile.username}`" class="flex-no-shrink wh-48px">
       <profile-pic :profile="article.profile"/>
     </nuxt-link>

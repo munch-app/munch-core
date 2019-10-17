@@ -2,14 +2,24 @@
   <div>
     <div class="container">
       <div class="mt-48">
-        <in-article-adsense v-if="views['ads-ig-1']" data-ad-client="ca-pub-7144155418390858"
-                            data-ad-slot="8163543825"/>
+        <div v-if="!views['ads-hide']" class="w-100">
+          <adsbygoogle class="Article_Top"
+                       ad-slot="4700759194"
+                       ad-format="auto"
+                       :ad-style="{display: 'block', height: '90px'}"
+          />
+        </div>
+
         <div class="flex-wrap mt-48">
           <article-content class="ArticleContent" :article="article" ref="ArticleContent"/>
           <aside class="flex-grow">
             <article-context-map v-if="showMap" :article="article" :get-contexts="getContexts"/>
-            <div v-if="!views['ads-hide']" class="mt-24">
-              <adsense data-ad-client="ca-pub-7144155418390858" data-ad-slot="9676262046"/>
+            <div v-if="!views['ads-hide']" class="mt-24 w-100">
+              <adsbygoogle class="Article_Aside"
+                           ad-slot="9676262046"
+                           ad-format="auto"
+                           :ad-style="{display: 'block', width: '100%'}"
+              />
             </div>
           </aside>
         </div>
@@ -42,8 +52,11 @@
     </div>
 
     <div class="container mt-64 mb-24">
-      <div v-if="!views['ads-hide']">
-        <adsense data-ad-client="ca-pub-7144155418390858" data-ad-slot="7065221202"/>
+      <div v-if="!views['ads-hide']" class="w-100">
+        <adsbygoogle class="Article_Bottom"
+                     ad-slot="7065221202"
+                     ad-format="auto"
+        />
       </div>
     </div>
 
@@ -159,9 +172,8 @@
       max-width: 768px;
     }
 
-    // Content Width + Padding + Aside Margin Left
     @media (min-width: 1088px) {
-      flex: 0 0 calc(100vw - 48px - 768px - 32px);
+      flex: 0 0 calc(100vw - 48px - 768px/*.ArticleContent*/ - 32px /*margin-left*/);
       margin-left: 32px;
 
       position: sticky;
@@ -170,7 +182,7 @@
     }
 
     @media (min-width: 1200px) {
-      flex: 0 0 calc(100vw - 160px - 768px - 48px);
+      flex: 0 0 calc(100vw - 160px - 768px/*.ArticleContent*/ - 48px /*margin-left*/);
       margin-left: 48px;
     }
 

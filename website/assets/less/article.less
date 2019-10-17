@@ -1,19 +1,39 @@
-// ArticleContent css path-ing must be done exactly so that it does not override default css
+/*
+ * ArticleContent css path-ing must be done exactly so that it does not override default css
+ */
 .article-content > div {
-  // TODO(fuxing): Default top px spacing (ad unit problems)
+  > * {
+    margin-top: 32px;
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+
+  > h1, > h2 {
+    margin-top: 48px;
+  }
+
+  > h1 + p, > h2 + p {
+    margin-top: 16px;
+  }
+
+  > hr, > figure, > .Avatar, > .Place {
+    margin-bottom: 32px;
+  }
 
   > p {
     font-size: 19px;
     line-height: 1.8;
     color: rgba(0, 0, 0, 0.8);
-
-    margin-top: 16px;
-    margin-bottom: 32px;
   }
 
   > h1 {
-    margin-top: 48px;
     font-size: 30px;
+
+    &:first-child {
+      font-size: 34px;
+    }
   }
 
   > h2 {
@@ -21,12 +41,6 @@
   }
 
   > h1, > h2 {
-    margin-bottom: 16px;
-
-    &:first-child {
-      margin-top: 0;
-    }
-
     * {
       text-decoration: inherit;
       font-style: inherit;
@@ -36,11 +50,6 @@
       cursor: inherit;
       pointer-events: none;
     }
-  }
-
-  // Acts as a title
-  > h1:first-child {
-    font-size: 34px;
   }
 
   > hr {
@@ -64,8 +73,6 @@
     font-size: 0;
     line-height: 0;
     display: block;
-
-    margin: 32px 0 32px 0;
     padding: 0;
 
     img {
@@ -78,15 +85,12 @@
   }
 
   > .Avatar {
-    margin-bottom: 32px;
-
     &.Focused {
       background: rgba(0, 0, 0, 0.1);
     }
   }
 
   > .Place {
-    margin-bottom: 32px;
     font-size: 0;
     line-height: 0;
     display: block;

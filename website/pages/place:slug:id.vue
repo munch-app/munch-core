@@ -42,9 +42,11 @@
           </div>
         </section>
 
-        <section>
-          <in-article-adsense class="Place_InArticle_Middle"
-                              data-ad-client="ca-pub-7144155418390858" data-ad-slot="1941106200"
+        <section class="w-100">
+          <adsbygoogle class="Place_InArticle_Middle"
+                       ad-slot="1941106200"
+                       ad-layout="in-article"
+                       ad-format="fluid"
           />
         </section>
 
@@ -76,8 +78,11 @@
           </p>
         </section>
 
-        <section>
-          <adsense data-ad-client="ca-pub-7144155418390858" data-ad-slot="7508826332"/>
+        <section class="w-100">
+          <adsbygoogle class="Place_Bottom"
+                       ad-slot="7508826332"
+                       ad-format="auto"
+          />
         </section>
       </div>
 

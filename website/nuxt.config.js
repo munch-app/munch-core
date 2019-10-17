@@ -90,18 +90,15 @@ export default {
     '~/plugins/router',
     {src: '~/plugins/tracker', ssr: false},
 
-    // Core Plugin
+    // Core & Required Plugin (Library)
+    '~/plugins/vue-simple-svg',
     '~/plugins/vue-rx',
     '~/plugins/prismic-vue',
-
-    // Required Plugin
     '~/plugins/vue-browser-geolocation',
     {src: '~/plugins/vuex-persistedstate', ssr: false},
-    {src: '~/plugins/vue-google-adsense', ssr: false},
 
     // Useful Plugin
     '~/plugins/vue-clickaway',
-    '~/plugins/vue-simple-svg',
     '~/plugins/vue-scrollto',
     '~/plugins/vue-observe-visibility',
     {src: '~/plugins/vue-clipboard2', ssr: false},
@@ -131,6 +128,11 @@ export default {
       // For use by other Tag Subscriber only, GA & GTAG is done natively
       pageTracking: true
     }],
+    ['@nuxtjs/google-adsense', {
+      id: 'ca-pub-7144155418390858',
+      analyticsUacct: 'UA-117480436-1',
+      analyticsDomainName: 'www.munch.app'
+    }]
   ],
   axios: {},
   sitemap: {
