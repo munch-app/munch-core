@@ -6,15 +6,15 @@
           <adsbygoogle class="Article_Top"
                        ad-slot="4700759194"
                        ad-format="auto"
-                       :ad-style="{display: 'block', height: '90px'}"
+                       :ad-style="{display: 'inline-block', height: '120px', width: '100%'}"
           />
         </div>
 
         <div class="flex-wrap mt-48">
           <article-content class="ArticleContent" :article="article" ref="ArticleContent"/>
-          <aside class="flex-grow">
+          <aside id="aside" class="flex-grow">
             <article-context-map v-if="showMap" :article="article" :get-contexts="getContexts"/>
-            <div v-if="!views['ads-hide']" class="mt-24 w-100">
+            <div v-if="!views['ads-hide']" class="mt-32 w-100">
               <adsbygoogle class="Article_Aside"
                            ad-slot="9676262046"
                            ad-format="auto"
@@ -147,10 +147,22 @@
     mounted() {
       const {profile: {username}, slug, id} = this.article
       this.$path.replace({path: `/@${username}/${slug}-${id}`})
+      this.addAsideObserver()
     },
     methods: {
       getContexts() {
         return this.$refs['ArticleContent'].getContexts()
+      },
+      addAsideObserver() {
+        let aside = document.getElementById('aside')
+        const observer = new MutationObserver(() => {
+          aside.style.height = ''
+          aside.style.minHeight = ''
+        })
+        observer.observe(aside, {
+          attributes: true,
+          attributeFilter: ['style']
+        })
       }
     }
   }
@@ -178,7 +190,7 @@
 
       position: sticky;
       top: calc(72px + 24px);
-      height: 100%;
+      height: 100% !important;
     }
 
     @media (min-width: 1200px) {
