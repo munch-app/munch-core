@@ -9,7 +9,7 @@
           </portal-target>
         </div>
         <header-right class="HeaderRight"/>
-        <header-profile/>
+        <header-profile class="HeaderProfile"/>
       </div>
     </nav>
 
@@ -119,6 +119,7 @@
 
   @media (max-width: 767.98px) {
     .HeaderRight,
+    .HeaderProfile,
     .IsSearching {
       display: none;
     }

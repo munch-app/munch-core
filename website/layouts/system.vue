@@ -10,7 +10,7 @@
           <portal-target name="HeaderMiddle"/>
         </div>
         <header-right class="HeaderRight"/>
-        <header-profile/>
+        <header-profile class="HeaderProfile"/>
       </div>
     </nav>
 

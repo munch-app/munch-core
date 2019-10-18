@@ -22,11 +22,3 @@
     }
   }
 </script>
-
-<style scoped lang="less">
-  .ProfilePic {
-    @media (max-width: 767.98px) {
-      display: none;
-    }
-  }
-</style>
