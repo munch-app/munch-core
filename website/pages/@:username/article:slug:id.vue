@@ -193,6 +193,10 @@
   @media (min-width: 992px) {
     aside {
       padding-left: 32px;
+
+      position: sticky;
+      top: calc(72px + 24px);
+      height: 100% !important;
     }
   }
 
