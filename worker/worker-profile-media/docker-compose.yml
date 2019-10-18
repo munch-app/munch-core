@@ -1,0 +1,7 @@
+version: '2'
+
+services:
+  vision-type:
+    image: 197547471367.dkr.ecr.ap-southeast-1.amazonaws.com/vision-service/service-type:2
+    ports:
+      - "8221:80"
