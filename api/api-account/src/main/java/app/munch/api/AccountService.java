@@ -115,6 +115,7 @@ public final class AccountService implements TransportService {
     }
 
     /**
+     * In-house this service
      * @deprecated TODO(fuxing): migrating of MunchMailingListClient required
      */
     @Deprecated
