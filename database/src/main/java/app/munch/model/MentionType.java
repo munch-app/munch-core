@@ -14,18 +14,26 @@ import java.util.stream.Stream;
  * @author Fuxing Loh
  */
 public enum MentionType {
+
     /**
+     * Media from external platform owned by a profile.
+     *
      * @see ProfileMedia
+     * @see ProfileSocial
      */
     MEDIA("MEDIA"),
 
     /**
+     * Article owned by a profile.
+     *
      * @see Article
      */
     ARTICLE("ARTICLE"),
 
     /**
-     * Not Yet Implemented
+     * Image owned by a profile uploaded directly to the place?
+     *
+     * @see Image
      */
     IMAGE("IMAGE"),
 

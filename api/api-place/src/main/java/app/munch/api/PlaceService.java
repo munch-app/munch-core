@@ -74,6 +74,12 @@ public final class PlaceService implements TransportService {
         });
     }
 
+    /**
+     * Required for /places/:uuid -> /:slug-:id redirect
+     *
+     * @param ctx transport context
+     * @return id and slug of the new Place
+     */
     public Map cidGet(TransportContext ctx) {
         String cid = ctx.pathString("cid");
         return provider.reduce(true, entityManager -> {

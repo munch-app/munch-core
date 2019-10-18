@@ -10,7 +10,7 @@ services:
       - "30431:5432"
 
   api:
-    image: 197547471367.dkr.ecr.ap-southeast-1.amazonaws.com/munch-core/api:0.25.0
+    image: 197547471367.dkr.ecr.ap-southeast-1.amazonaws.com/munch-core/api:0.26.0
     environment:
       - MUNCH_DATABASE_URL=jdbc:postgresql://postgres:5432/postgres
       - MUNCH_DATABASE_USERNAME=postgres_user

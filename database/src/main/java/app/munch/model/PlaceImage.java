@@ -13,9 +13,8 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 /**
- * Date: 2019-07-31
- * Time: 15:27
  * @author Fuxing Loh
+ * @since 2019-07-31 at 15:27
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -24,7 +23,6 @@ import java.util.Date;
         @UniqueConstraint(name = "uk_my3rcdy96e9fdwfs", columnNames = {"place_id", "image_uid"})
 })
 public final class PlaceImage {
-    // Implement: importance
 
     @NotNull
     @Pattern(regexp = KeyUtils.ULID_REGEX)
