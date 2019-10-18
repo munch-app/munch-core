@@ -114,6 +114,10 @@ public final class AccountService implements TransportService {
         );
     }
 
+    /**
+     * @deprecated TODO(fuxing): migrating of MunchMailingListClient required
+     */
+    @Deprecated
     public void postMailing(Account account) {
         try {
             munchMailingListClient.post(account.getEmail(), account.getProfile().getName());
