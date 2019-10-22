@@ -1,5 +1,6 @@
 /**
- Forces you to define the sizing of every single element
+ * @deprecated because its not a good design
+ * All references that are still using is @deprecated as well
  */
 .zero {
   * {
@@ -135,6 +136,9 @@
   padding-right: 24px;
 }
 
+/**
+ * @deprecated because its not a good design
+ */
 .container-remove-gutter {
   margin-left: -24px !important;
   margin-right: -24px !important;
@@ -145,10 +149,6 @@
     margin-right: -80px !important;
     width: calc(100% + 160px) !important;
   }
-}
-
-.container-min-height {
-  min-height: calc(100vh - 64px);
 }
 
 .fixed {

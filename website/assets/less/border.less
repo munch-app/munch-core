@@ -7,18 +7,14 @@
 
 .border-2 {
   border-radius: 2px;
-
-  &-top {
-    border-radius: 2px 2px 0 0;
-  }
-
-  &-bot {
-    border-radius: 0 0 2px 2px;
-  }
 }
 
 .border-3 {
   border-radius: 3px;
+
+  /**
+   * @deprecate &-top, &-bot
+   */
 
   &-top {
     border-radius: 3px 3px 0 0;
@@ -31,22 +27,10 @@
 
 .border-4 {
   border-radius: 4px;
-
-  &-top {
-    border-radius: 4px 4px 0 0;
-  }
-
-  &-bot {
-    border-radius: 0 0 4px 4px;
-  }
 }
 
 .border-5 {
   border-radius: 5px;
-}
-
-.border-8 {
-  border-radius: 8px;
 }
 
 .border-circle {
