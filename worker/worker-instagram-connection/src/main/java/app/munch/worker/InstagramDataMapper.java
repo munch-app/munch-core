@@ -57,6 +57,10 @@ public final class InstagramDataMapper {
     }
 
     public List<ProfileMedia.Node> mapContent(InstagramMedia instagram) {
+        if (instagram.getCaption() == null) {
+            return List.of();
+        }
+
         String text = instagram.getCaption().getText();
         if (StringUtils.isBlank(text)) {
             return List.of();
