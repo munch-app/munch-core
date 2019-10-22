@@ -18,9 +18,17 @@
       <div class="m--12 flex-1-2-3-4-5">
         <div class="p-12" v-for="media in medias" :key="media.id">
           <div class="aspect r-1-1 bg-steam border-4 overflow-hidden hover-pointer">
-            <div class="border-3 overflow-hidden">
+            <div class="border-3 overflow-hidden" @click="onMedia(media)">
               <cdn-img :image="media.images[0]">
-
+                <div class="flex-end p-12 wh-100">
+                  <div class="p-6-12 border-2 h6 lh-1" :class="{
+                       'bg-white': media.status === 'PENDING',
+                       'bg-success white': media.status === 'PUBLIC',
+                       'bg-error white': media.status === 'HIDDEN',
+                       }">
+                    {{media.status}}
+                  </div>
+                </div>
               </cdn-img>
             </div>
           </div>
@@ -28,22 +36,63 @@
       </div>
 
       <div v-if="medias.length === 0" class="flex-center p-24">
-        <p>You don't have any <b v-if="!selected.status.default" class="text-lowercase">{{selected.status.name}}</b> media.</p>
+        <p>You don't have any <b v-if="!selected.status.default" class="text-lowercase">{{selected.status.name}}</b>
+          media yet.</p>
       </div>
     </div>
 
-    <div v-else class="flex-center p-24">
+    <div v-else class="flex-center ptb-48">
       <beat-loader color="#07F" size="16px"/>
     </div>
+
+    <div v-if="cursor && cursor.next" class="flex-center ptb-48">
+      <button class="blue-outline" @click="onLoadMore">Load More</button>
+    </div>
+
+    <portal-dialog>
+      <div class="dialog-large border" v-if="focused">
+        <div class="flex-1-2 m--12">
+          <div class="p-12">
+            <div class="aspect r-1-1 bg-steam border-4 overflow-hidden hover-pointer">
+              <div class="border-3 overflow-hidden">
+                <cdn-img :image="focused.images[0]" type="1080x1080">
+                </cdn-img>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-12 flex-column-justify-between">
+            <div>
+              <h3>
+                Media privacy
+              </h3>
+              <div class="mt-16">
+                <select-button label="Status" :selected="{name: focused.status}"
+                               :selections="[{name: 'PUBLIC'}, {name: 'HIDDEN'}]"
+                               @select="(selection) => focused.status = selection.name"
+                />
+              </div>
+            </div>
+
+            <div class="flex-end mt-24">
+              <button class="pink-outline" @click="onUpdate(focused)">
+                Update
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </portal-dialog>
   </div>
 </template>
 
 <script>
   import CdnImg from "../../../components/utils/image/CdnImg";
   import SelectButton from "../../../components/utils/SelectButton";
+  import PortalDialog from "../../../components/dialog/PortalDialog";
 
   export default {
-    components: {SelectButton, CdnImg},
+    components: {PortalDialog, SelectButton, CdnImg},
     asyncData({$api}) {
       return $api.get('/me/socials')
         .then(({data: socials}) => {
@@ -71,7 +120,8 @@
         },
         params: {},
         cursor: {},
-        medias: null
+        medias: null,
+        focused: null
       }
     },
     mounted() {
@@ -88,6 +138,25 @@
       this.reload()
     },
     methods: {
+      onMedia(media) {
+        this.focused = media
+        this.$store.commit('global/setDialog', {
+          name: 'PortalDialog'
+        })
+      },
+      onUpdate(media) {
+        this.$store.commit('global/setDialog', 'LoadingDialog')
+        this.$api.patch(`/me/medias/${media.id}`, media)
+          .then(() => {
+            this.$store.dispatch('addMessage', {title: 'Updated Media'})
+          })
+          .catch(err => {
+            this.$store.dispatch('addError', err)
+          })
+          .finally(() => {
+            this.$store.commit('global/clearDialog')
+          })
+      },
       onAccount(selection) {
         this.selected.social = selection
         this.updateParams()
@@ -123,7 +192,14 @@
           })
       },
       onLoadMore() {
-        // TODO(fuxing):
+        this.$api.get('/me/medias', {params: {size: 30, cursor: this.cursor.next}})
+          .then(({data: medias, cursor}) => {
+            this.medias.push(...medias)
+            this.cursor = cursor
+          })
+          .catch(err => {
+            this.$store.dispatch('addError', err)
+          })
       },
     }
   }

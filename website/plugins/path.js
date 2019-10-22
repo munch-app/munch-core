@@ -20,10 +20,13 @@ export default function (context, inject) {
 
       const getQuery = () => {
         if (query) {
-          return '?' + Object
-            .keys(query)
-            .map(k => `${encodeURIComponent(k)}=${encodeURIComponent(query[k])}`)
-            .join('&');
+          if (Object.keys(query).length > 0) {
+            return '?' + Object.keys(query)
+              .map(k => `${encodeURIComponent(k)}=${encodeURIComponent(query[k])}`)
+              .join('&');
+          }
+
+          return ''
         }
         return window.location.search || ''
       }

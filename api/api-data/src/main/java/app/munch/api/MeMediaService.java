@@ -45,7 +45,7 @@ public final class MeMediaService extends ApiService {
             }
 
             if (cursor.has("createdAt", "id")) {
-                chain.where("(createdAt < :createdAt OR (createdAt = :createdAt AND id < :id)",
+                chain.where("(createdAt < :createdAt OR (createdAt = :createdAt AND id < :id))",
                         "createdAt", cursor.getDate("createdAt"), "id", cursor.get("id")
                 );
             }

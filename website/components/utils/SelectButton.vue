@@ -1,5 +1,5 @@
 <template>
-  <div class="SelectButton relative" :class="{Focused: focused, Default: _isDefault}">
+  <div class="SelectButton relative" :class="{Focused: focused, Default: _isDefault}" v-on-clickaway="onClose">
     <div @click="onToggle"
          class="Button overflow-hidden hover-pointer elevation-hover-2 flex-align-center flex-between bg-white">
       <h5 class="lh-1 black-a70">
@@ -69,6 +69,9 @@
       }
     },
     methods: {
+      onClose() {
+        this.focused = false
+      },
       onToggle() {
         this.focused = !this.focused
       },
