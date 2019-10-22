@@ -108,7 +108,7 @@
     components: {HeaderMiddle},
     head() {
       return this.$head({
-        robots: {follow: true, index: false},
+        robots: {follow: true, index: true},
         canonical: `https://www.munch.app/partner`,
         title: `Partner Program · Munch`,
         url: `https://www.munch.app/partner`,
