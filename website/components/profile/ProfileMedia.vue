@@ -1,6 +1,6 @@
 <template>
   <nuxt-link :to="`/@${media.profile.username}/${media.id}`" class="text-decoration-none">
-    <div class="Media aspect r-1-1 border border-4 overflow-hidden hover-pointer">
+    <div class="Media aspect r-1-1 bg-steam border-4 overflow-hidden hover-pointer">
 
       <cdn-img :image="media.images[0]">
         <div class="flex-column-justify-end">

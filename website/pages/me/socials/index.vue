@@ -6,22 +6,30 @@
     </div>
 
     <div class="mt-32">
-      <div class="" v-if="socials.length > 0">
-        <div class="border-4 bg-steam overflow-hidden" v-for="social in socials" :key="social.uid">
-          <div class="p-16-24-20 hover-bg-a10 hover-pointer">
+      <div class="flex-1-2-3-4" v-if="socials.length > 0">
+        <div class="border-4 bg-steam elevation-hover-2 hover-pointer"
+             v-for="social in socials" :key="social.uid" @click="onSocial(social)">
+          <div class="p-16-24-20">
             <div>
-              <h4>{{social.name}}</h4>
+              <p class="large">{{social.name}}</p>
             </div>
-            <div class="mt-8 flex-align-center">
-              <div v-if="social.type === 'INSTAGRAM'">
-                <simple-svg class="wh-24px" :filepath="require('~/assets/icon/icons8-instagram.svg')"/>
-              </div>
-              <div class="ml-8 p-6-8 bg-white border-2 tiny-bold lh-1">
+
+            <div class="flex mt-4">
+              <div class="border p-6-8 bg-white border-2 tiny-bold lh-1">
                 {{social.status}}
+              </div>
+            </div>
+
+            <div class="mt-16">
+              <div v-if="social.type === 'INSTAGRAM'" class="flex-align-center">
+                <simple-svg class="wh-24px" fill="rgba(0,0,0,0.7)"
+                            :filepath="require('~/assets/icon/icons8-instagram.svg')"/>
+                <h5 class="ml-4 lh-0 black-a70">INSTAGRAM</h5>
               </div>
             </div>
           </div>
         </div>
+
       </div>
 
       <div v-else>
@@ -64,6 +72,9 @@
     },
     methods: {
       formatMillis: (millis) => dateformat(millis, 'mmm dd, yyyy'),
+      onSocial(social) {
+        this.$router.push({path: `/me/medias`, query: {'social.uid': social.uid}})
+      },
       onLoadMore() {
         this.$api.get('/me/socials', {params: {size: 20, cursor: this.next}})
           .then(({data: socials, cursor}) => {
