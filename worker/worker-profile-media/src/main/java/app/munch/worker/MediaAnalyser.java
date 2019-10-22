@@ -8,7 +8,6 @@ import app.munch.vision.VisionResult;
 import app.munch.vision.VisionResultType;
 import dev.fuxing.jpa.TransactionProvider;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.core.sync.ResponseTransformer;
@@ -64,15 +63,14 @@ public final class MediaAnalyser {
     /**
      * @param image to download from s3
      * @return File
-     * @throws IOException unable to create temp file, upload to donwload file s3
      */
-    private File getFile(Image image) throws IOException {
-        String key = RandomStringUtils.randomAlphanumeric(30);
-        File file = File.createTempFile(key, image.getExt());
+    private File getFile(Image image) {
+        String key = image.getUid() + image.getExt();
+        File file = new File(FileUtils.getTempDirectory(), key);
 
         s3Client.getObject(builder -> {
             builder.bucket(image.getBucket());
-            builder.key(image.getUid() + image.getExt());
+            builder.key(key);
         }, ResponseTransformer.toFile(file));
         return file;
     }
