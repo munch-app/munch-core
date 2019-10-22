@@ -58,7 +58,7 @@
     components: {ProfilePic, CdnImg},
     head() {
       const {
-        profile: {name: profileName, username},
+        profile: {name, username},
         title, id, images, updatedAt, createdAt,
       } = this.media
 
@@ -66,19 +66,19 @@
         robots: {follow: true, index: true},
         url: `https://www.munch.app/@${username}/${id}`,
         canonical: `https://www.munch.app/@${username}/${id}`,
-        title: `${this.title || 'Media'} - ${profileName} · Munch`,
+        title: `${this.title || 'Media'} - ${name} · Munch`,
         description: this.description,
         image: images && images[0],
         updatedAt: updatedAt,
         publishedAt: createdAt,
-        authorName: profileName,
+        authorName: name,
         breadcrumbs: [
           {
-            name: profileName,
+            name: name,
             item: `https://www.munch.app/@${username}`
           },
           {
-            name: title,
+            name: title || 'Media',
             item: `https://www.munch.app/@${username}/${id}`
           },
         ]
