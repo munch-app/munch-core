@@ -5,7 +5,7 @@
     </div>
 
     <div class="Content flex-wrap">
-      <div class="Main">
+      <section class="Main">
         <nuxt-link class="text-decoration-none"
                    :to="`/@${mainArticle.profile.username}/${mainArticle.slug}-${mainArticle.id}`">
           <div class="aspect r-5-2 border-2 overflow-hidden">
@@ -17,36 +17,40 @@
           <h2 class="mt-16 mb-8">{{mainArticle.title}}</h2>
           <p class="text-ellipsis-3l">{{mainArticle.description}}</p>
         </nuxt-link>
-      </div>
-      <div class="Side1">
-        <div class="Article" v-for="article in side1Articles" :key="article.id">
-          <nuxt-link class="flex-row text-decoration-none"
-                     :to="`/@${article.profile.username}/${article.slug}-${article.id}`">
-            <div class="wh-80px border-2 overflow-hidden flex-no-shrink mr-16">
-              <cdn-img :image="article.image" type="320x320"/>
-            </div>
-            <div>
-              <h5 class="b-a80 text-ellipsis-1l">{{article.title}}</h5>
-              <p class="b-a80 text-ellipsis-2l small">{{article.description}}</p>
-            </div>
-          </nuxt-link>
+      </section>
+      <section class="Side1">
+        <div>
+          <div class="Article" v-for="article in side1Articles" :key="article.id">
+            <nuxt-link class="flex-row text-decoration-none"
+                       :to="`/@${article.profile.username}/${article.slug}-${article.id}`">
+              <div class="wh-80px border-2 overflow-hidden flex-no-shrink mr-16">
+                <cdn-img :image="article.image" type="320x320"/>
+              </div>
+              <div>
+                <h5 class="b-a80 text-ellipsis-1l">{{article.title}}</h5>
+                <p class="b-a80 text-ellipsis-2l small">{{article.description}}</p>
+              </div>
+            </nuxt-link>
+          </div>
         </div>
-      </div>
-      <div class="Side2">
-        <div class="Article" v-for="article in side2Articles" :key="article.id">
-          <nuxt-link class="flex-row text-decoration-none"
-                     :to="`/@${article.profile.username}/${article.slug}-${article.id}`">
-            <div class="wh-80px border-2 overflow-hidden flex-no-shrink mr-16">
-              <cdn-img :image="article.image" type="320x320"/>
-            </div>
+      </section>
+      <section class="Side2">
+        <div>
+          <div class="Article" v-for="article in side2Articles" :key="article.id">
+            <nuxt-link class="flex-row text-decoration-none"
+                       :to="`/@${article.profile.username}/${article.slug}-${article.id}`">
+              <div class="wh-80px border-2 overflow-hidden flex-no-shrink mr-16">
+                <cdn-img :image="article.image" type="320x320"/>
+              </div>
 
-            <div>
-              <h5 class="b-a80 text-ellipsis-1l">{{article.title}}</h5>
-              <p class="b-a80 text-ellipsis-2l small">{{article.description}}</p>
-            </div>
-          </nuxt-link>
+              <div>
+                <h5 class="b-a80 text-ellipsis-1l">{{article.title}}</h5>
+                <p class="b-a80 text-ellipsis-2l small">{{article.description}}</p>
+              </div>
+            </nuxt-link>
+          </div>
         </div>
-      </div>
+      </section>
     </div>
   </div>
 </template>
@@ -92,7 +96,10 @@
     flex: 0 0 30%;
     max-width: 30%;
     padding: 12px;
-    margin: -8px;
+
+    > div {
+      margin: -8px;
+    }
 
     .Article {
       padding: 8px;

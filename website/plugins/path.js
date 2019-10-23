@@ -1,4 +1,4 @@
-import { Base64 } from 'js-base64';
+import {Base64} from 'js-base64';
 
 export default function (context, inject) {
   const {query: {views}} = context
@@ -13,9 +13,25 @@ export default function (context, inject) {
         return dict
       }, {})
     },
-    replace: ({path}) => {
-      const qs = window.location.search || ''
-      window.history.replaceState({}, document.title, `${path}${qs}`)
+    replace: ({path, query}) => {
+      const getPath = () => {
+        return path ? path : window.location.pathname;
+      }
+
+      const getQuery = () => {
+        if (query) {
+          if (Object.keys(query).length > 0) {
+            return '?' + Object.keys(query)
+              .map(k => `${encodeURIComponent(k)}=${encodeURIComponent(query[k])}`)
+              .join('&');
+          }
+
+          return ''
+        }
+        return window.location.search || ''
+      }
+
+      window.history.replaceState({}, document.title, `${getPath()}${getQuery()}`)
     },
     encodeViews: (...views) => {
       return Base64.encodeURI(views.join(','))

@@ -172,7 +172,9 @@ public final class ProfileAdminService extends AdminService {
         revision.setPublished(false);
 
         revision = articleEntityManager.post(articleId, revision, null);
-        return TransportResult.ok(Map.of("uid", revision.getUid()));
+        return TransportResult.builder()
+                .data(Map.of("uid", revision.getUid()))
+                .build();
     }
 
     public TransportResult profileArticleRevisionPublish(TransportContext ctx) {
@@ -183,10 +185,12 @@ public final class ProfileAdminService extends AdminService {
         revision = articleEntityManager.post(articleId, revision, null);
         List<ArticlePlaceEntityManager.Response> responses = articlePlaceEntityManager.populateAll(Profile.ADMIN_ID, revision);
 
-        return TransportResult.ok(Map.of(
-                "revision", revision,
-                "responses", responses
-        ));
+        return TransportResult.builder()
+                .data(Map.of(
+                        "revision", revision,
+                        "responses", responses
+                ))
+                .build();
     }
 
     public ArticleRevision profileArticleRevisionGet(TransportContext ctx) {

@@ -1,5 +1,5 @@
 <template>
-  <div class="container-768 ptb-64">
+  <div class="container ptb-64">
     <div class="flex-row">
       <div class="ProfilePic flex-no-shrink hover-pointer" @click="onProfilePicStart">
         <cdn-img v-if="account.profile.image" :image="account.profile.image">

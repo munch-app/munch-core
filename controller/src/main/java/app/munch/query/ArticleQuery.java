@@ -53,6 +53,7 @@ public final class ArticleQuery extends Query {
 
     public static EntityQuery<Article>.EntityStream query(EntityManager entityManager, TransportCursor cursor, ArticleStatus status, Consumer<EntityQuery<Article>> consumer) {
         return EntityQuery.select(entityManager, "FROM Article", Article.class)
+                .size(cursor.size(10, 33))
                 .consume(consumer)
                 .where("status = :status", "status", status)
                 .predicate(cursor.has("updatedAt", "id"), query -> {
@@ -61,7 +62,6 @@ public final class ArticleQuery extends Query {
                     );
                 })
                 .orderBy("updatedAt DESC, id DESC")
-                .size(cursor.size(10, 33))
                 .asStream()
                 .peek(article -> {
                     article.setContent(null);

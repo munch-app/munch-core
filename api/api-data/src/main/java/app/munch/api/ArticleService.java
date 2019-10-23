@@ -5,9 +5,11 @@ import app.munch.manager.ArticleEntityManager;
 import app.munch.manager.ArticlePlaceEntityManager;
 import app.munch.model.*;
 import app.munch.query.ArticleQuery;
+import app.munch.query.MediaQuery;
 import com.fasterxml.jackson.databind.JsonNode;
 import dev.fuxing.err.ForbiddenException;
 import dev.fuxing.err.UnauthorizedException;
+import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
 import dev.fuxing.transport.service.TransportContext;
 import dev.fuxing.transport.service.TransportResult;
@@ -18,6 +20,7 @@ import javax.persistence.EntityManager;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by: Fuxing
@@ -28,6 +31,7 @@ import java.util.Map;
 public final class ArticleService extends ApiService {
 
     private final ArticleQuery articleQuery;
+
     private final ArticleEntityManager articleEntityManager;
     private final ArticlePlaceEntityManager articlePlaceEntityManager;
 
@@ -129,7 +133,10 @@ public final class ArticleService extends ApiService {
         revision = articleEntityManager.post(id, revision, (entityManager, article) -> {
             validate(entityManager, article, ctx);
         });
-        return TransportResult.ok(Map.of("uid", revision.getUid()));
+
+        return TransportResult.builder()
+                .data(Map.of("uid", revision.getUid()))
+                .build();
     }
 
     public TransportResult meArticleRevisionPublish(TransportContext ctx) {
@@ -144,10 +151,11 @@ public final class ArticleService extends ApiService {
         String profileUid = revision.getProfile().getUid();
         List<ArticlePlaceEntityManager.Response> responses = articlePlaceEntityManager.populateAll(profileUid, revision);
 
-        return TransportResult.ok(Map.of(
-                "revision", revision,
-                "responses", responses
-        ));
+        return TransportResult.builder()
+                .data(Map.of(
+                        "revision", revision,
+                        "responses", responses
+                )).build();
     }
 
     public ArticleRevision meArticleRevisionGet(TransportContext ctx) {
@@ -159,8 +167,9 @@ public final class ArticleService extends ApiService {
         });
     }
 
-    public Article articleGet(TransportContext ctx) {
+    public TransportResult articleGet(TransportContext ctx) {
         String id = ctx.pathString("id");
+        Set<String> fields = ctx.queryFields();
 
         return provider.reduce(true, entityManager -> {
             Article article = entityManager.find(Article.class, id);
@@ -170,7 +179,33 @@ public final class ArticleService extends ApiService {
                 throw new ForbiddenException();
             }
 
-            return article;
+            return result(builder -> {
+                builder.data(article);
+
+                if (fields.contains("extra.profile.articles")) {
+                    TransportCursor cursor = TransportCursor.size(
+                            ctx.queryInt("extra.profile.articles.size", 5)
+                    );
+                    ArticleQuery.query(entityManager, cursor, ArticleStatus.PUBLISHED, query -> {
+                        query.where("profile", article.getProfile());
+                    }).removeIf(a -> {
+                        return article.getId().equals(a.getId());
+                    }).consume((articles, c) -> {
+                        builder.extra("profile.articles", articles);
+                    });
+                }
+
+                if (fields.contains("extra.profile.medias")) {
+                    TransportCursor cursor = TransportCursor.size(
+                            ctx.queryInt("extra.profile.medias.size", 5)
+                    );
+                    MediaQuery.query(entityManager, cursor, query -> {
+                        query.where("profile", article.getProfile());
+                    }).consume((medias, c) -> {
+                        builder.extra("profile.medias", medias);
+                    });
+                }
+            });
         });
     }
 

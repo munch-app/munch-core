@@ -170,36 +170,39 @@
 
 <style scoped lang="less">
   .ArticleContent {
-    flex: 0 0 100%;
-
-    @media (min-width: 816px) {
-      flex: 0 0 768px;
-      max-width: 768px;
-    }
+    flex: 0 0 65%;
+    max-width: 65%;
   }
 
   aside {
-    @media (max-width: 1088px) {
-      margin-top: 48px;
-      max-width: 768px;
+    flex: 0 0 35%;
+    max-width: 35%;
+  }
+
+  @media (max-width: 992px) {
+    .ArticleContent {
+      flex: 0 0 100%;
+      max-width: 100%;
     }
 
-    @media (min-width: 1088px) {
-      flex: 0 0 calc(100vw - 48px - 768px/*.ArticleContent*/ - 32px /*margin-left*/);
-      margin-left: 32px;
+    aside {
+      display: none;
+    }
+  }
+
+  @media (min-width: 992px) {
+    aside {
+      padding-left: 32px;
 
       position: sticky;
       top: calc(72px + 24px);
       height: 100% !important;
     }
+  }
 
-    @media (min-width: 1200px) {
-      flex: 0 0 calc(100vw - 160px - 768px/*.ArticleContent*/ - 48px /*margin-left*/);
-      margin-left: 48px;
-    }
-
-    @media (min-width: 1400px) {
-      flex: 0 0 424px;
+  @media (min-width: 1200px) {
+    aside {
+      padding-left: 48px;
     }
   }
 </style>

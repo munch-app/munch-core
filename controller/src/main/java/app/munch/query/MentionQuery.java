@@ -8,6 +8,7 @@ import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
 
 import javax.inject.Singleton;
+import javax.persistence.EntityManager;
 import java.util.function.Consumer;
 
 /**
@@ -38,7 +39,18 @@ public final class MentionQuery extends Query {
     }
 
     public TransportList query(TransportCursor cursor, Consumer<EntityQuery<Mention>> consumer) {
-        return provider.reduce(true, entityManager -> EntityQuery.select(entityManager, "FROM Mention", Mention.class)
+        return provider.reduce(true, entityManager -> {
+            return query(entityManager, cursor, consumer)
+                    .asTransportList((mention, builder) -> {
+                        builder.putAll(cursor);
+                        builder.put("createdAt", mention.getCreatedAt().getTime());
+                        builder.put("id", mention.getId());
+                    });
+        });
+    }
+
+    public static EntityQuery<Mention>.EntityStream query(EntityManager entityManager, TransportCursor cursor, Consumer<EntityQuery<Mention>> consumer) {
+        return EntityQuery.select(entityManager, "FROM Mention", Mention.class)
                 .where("status", MentionStatus.PUBLIC)
                 .consume(consumer)
                 .predicate(cursor.has("createdAt", "id"), query -> {
@@ -51,12 +63,7 @@ public final class MentionQuery extends Query {
                 .orderBy("createdAt DESC, id DESC")
                 .size(cursor.size(10, 33))
                 .asStream()
-                .peek(MentionQuery::peek)
-                .asTransportList((mention, builder) -> {
-                    builder.putAll(cursor);
-                    builder.put("createdAt", mention.getCreatedAt().getTime());
-                    builder.put("id", mention.getId());
-                }));
+                .peek(MentionQuery::peek);
     }
 
     /**

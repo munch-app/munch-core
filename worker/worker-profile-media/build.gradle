@@ -1,4 +1,6 @@
 dependencies {
+    compile project(':image')
+
     compile group: 'dev.fuxing', name: 'transport-client', version: transportVersion
 }
 

@@ -28,8 +28,14 @@ import java.util.Set;
 @Singleton
 public final class ApiServer extends TransportServer {
     private static final Logger logger = LoggerFactory.getLogger(ApiServer.class);
+
     private static final Set<String> ORIGINS = Set.of(
-            "http://localhost:3000", "https://munch.app", "https://www.munch.app", "https://staging.munch.app"
+            // Local development environment
+            "http://localhost:3000",
+            // Production
+            "https://munch.app", "https://www.munch.app",
+            // Staging
+            "https://staging.munch.app"
     );
 
     private final ApiAuthenticator authenticator;

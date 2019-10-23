@@ -101,8 +101,10 @@ public final class ProfileService extends ApiService {
                 });
             }
 
-            return TransportResult.ok(node)
-                    .put("cursor", cursor);
+            return TransportResult.builder()
+                    .data(node)
+                    .cursor(cursor)
+                    .build();
         });
     }
 

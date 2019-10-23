@@ -40,8 +40,12 @@ public final class MeMediaService extends ApiService {
                 chain.where("status = :status", "status", cursor.getEnum("status", ProfileMediaStatus.class));
             }
 
+            if (cursor.has("social.uid")) {
+                chain.where("social.uid = :socialUid", "socialUid", cursor.get("social.uid"));
+            }
+
             if (cursor.has("createdAt", "id")) {
-                chain.where("(createdAt < :createdAt OR (createdAt = :createdAt AND id < :id)",
+                chain.where("(createdAt < :createdAt OR (createdAt = :createdAt AND id < :id))",
                         "createdAt", cursor.getDate("createdAt"), "id", cursor.get("id")
                 );
             }

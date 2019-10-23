@@ -1,5 +1,5 @@
 <template>
-  <nav class="zero hr-top index-6 bg-white">
+  <nav class="hr-top index-6 bg-white">
     <div class="NavFooter flex container">
       <div class="Brand">
         <a href="/" class="m-0">

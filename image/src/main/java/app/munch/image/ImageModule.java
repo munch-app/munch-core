@@ -20,7 +20,7 @@ public final class ImageModule extends AbstractModule {
 
     @Provides
     @Singleton
-    S3Client provideSqsClient() {
+    S3Client provideS3Client() {
         Config config = ConfigFactory.load().getConfig("services.aws.s3");
 
         if (config.hasPath("url")) {

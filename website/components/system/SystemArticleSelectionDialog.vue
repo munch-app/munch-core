@@ -15,7 +15,7 @@
             <div class="ArticleList flex-wrap overflow-y-auto">
               <div class="p-12" v-for="article in articles" :key="article.id" @click="onArticle(article)">
                 <div class="aspect r-1-1 bg-steam hover-pointer border-3">
-                  <div class="zero p-16">
+                  <div class="p-16">
                     <h4 class="m-0 text-ellipsis-2l">{{article.title}}</h4>
                     <p class="text-ellipsis-3l">{{article.description}}</p>
                     <h6 class="mt-8">Profile: {{article.profile.username}}</h6>
