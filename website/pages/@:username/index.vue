@@ -85,7 +85,7 @@
             <div class="mt-24">
               <horizontal-list :items="profile.articles">
                 <template v-slot:default="{item}">
-                  <article-card class="ArticleCard" :article="item"/>
+                  <article-card :article="item"/>
                 </template>
               </horizontal-list>
             </div>

@@ -36,7 +36,7 @@
           <div class="p-0-16 border border-3">
             <p class="mtb-16" v-if="place.description">{{place.description}}</p>
             <div class="mtb-16" v-if="place.website">
-              <h5>Website: <a target="_blank" rel="noreferrer noopener nofollow"
+              <h5 class="text-ellipsis-1l">Website: <a target="_blank" rel="noreferrer noopener nofollow"
                               :href="place.website">{{place.website}}</a></h5>
             </div>
           </div>
@@ -52,7 +52,13 @@
 
         <section v-if="place.articles && place.articles.length" class="mt-48">
           <h3 class="mb-16 text-ellipsis-1l">Articles about {{place.name}}</h3>
-          <place-articles :articles="place.articles"/>
+          <div class="mt-24">
+            <horizontal-list :items="place.articles">
+              <template v-slot:default="{item}">
+                <article-card :article="item"/>
+              </template>
+            </horizontal-list>
+          </div>
         </section>
 
         <section v-if="place.createdBy" class="mt-64">
@@ -102,9 +108,13 @@
   import PlaceArticles from "../components/places/PlaceArticles";
   import PlaceCreatedBy from "../components/places/PlaceCreatedBy";
   import PlaceAffiliates from "../components/places/PlaceAffiliates";
+  import HorizontalList from "../components/utils/HorizontalList";
+  import ArticleCard from "../components/article/ArticleCard";
 
   export default {
     components: {
+      ArticleCard,
+      HorizontalList,
       PlaceAffiliates,
       PlaceCreatedBy,
       PlaceArticles,
@@ -154,14 +164,14 @@
       }
     },
     mounted() {
-      const {slug, id} = this.place
-      this.$path.replace({path: `/${slug}-${id}`})
-
-      this.$nextTick(() => {
-        this.$refs.map.centerAnnotations({
-          minimumSpan: new mapkit.CoordinateSpan(0.015, 0.015)
-        })
-      })
+      // const {slug, id} = this.place
+      // this.$path.replace({path: `/${slug}-${id}`})
+      //
+      // this.$nextTick(() => {
+      //   this.$refs.map.centerAnnotations({
+      //     minimumSpan: new mapkit.CoordinateSpan(0.015, 0.015)
+      //   })
+      // })
     },
     methods: {
       onSuggestEdit() {
