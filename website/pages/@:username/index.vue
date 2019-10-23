@@ -94,8 +94,8 @@
           <div class="mt-24 mb-48" v-if="profile.medias.length > 0">
             <h3>{{profile.name}} images</h3>
             <div class="mt-24">
-              <div class="flex-1-2-3-4-5 m--12">
-                <div v-for="media in profile.medias" :key="media.id" class="p-12">
+              <div class="flex-wrap m--12">
+                <div class="p-12 flex-2 flex-3 flex-4 flex-5" v-for="media in profile.medias" :key="media.id">
                   <profile-media :media="media"/>
                 </div>
               </div>
@@ -141,8 +141,8 @@
 
       <div class="mt-48" v-else-if="focused.path === '/medias'">
         <div v-if="profile.medias.length > 0">
-          <div class="flex-1-2-3-4-5 m--12">
-            <div v-for="media in profile.medias" :key="media.id" class="p-12">
+          <div class="flex-wrap m--12">
+            <div class="p-12 flex-2 flex-3 flex-4 flex-5" v-for="media in profile.medias" :key="media.id">
               <profile-media :media="media"/>
             </div>
           </div>

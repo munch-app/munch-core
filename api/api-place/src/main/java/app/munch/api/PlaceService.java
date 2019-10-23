@@ -7,7 +7,6 @@ import app.munch.model.*;
 import app.munch.query.MentionQuery;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import dev.fuxing.jpa.EntityStream;
-import dev.fuxing.jpa.HibernateUtils;
 import dev.fuxing.jpa.TransactionProvider;
 import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
@@ -20,6 +19,7 @@ import org.elasticsearch.search.suggest.SuggestBuilder;
 import org.elasticsearch.search.suggest.SuggestBuilders;
 import org.elasticsearch.search.suggest.SuggestionBuilder;
 import org.elasticsearch.search.suggest.completion.context.CategoryQueryContext;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -162,8 +162,8 @@ public final class PlaceService implements TransportService {
             Place place = entityManager.find(Place.class, id);
             if (place == null) return null;
 
-            HibernateUtils.initialize(place.getImage());
-            HibernateUtils.initialize(place.getCreatedBy());
+            Hibernate.initialize(place.getImage());
+            Hibernate.initialize(place.getCreatedBy());
             ObjectNode node = JsonUtils.valueToTree(place);
             Map<String, String> cursor = new HashMap<>();
 

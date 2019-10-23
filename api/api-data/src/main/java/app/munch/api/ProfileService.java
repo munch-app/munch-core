@@ -7,12 +7,12 @@ import app.munch.query.ArticleQuery;
 import app.munch.query.MediaQuery;
 import app.munch.query.MentionQuery;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import dev.fuxing.jpa.HibernateUtils;
 import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
 import dev.fuxing.transport.service.TransportContext;
 import dev.fuxing.transport.service.TransportResult;
 import dev.fuxing.utils.JsonUtils;
+import org.hibernate.Hibernate;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -66,7 +66,7 @@ public final class ProfileService extends ApiService {
             Profile profile = Profile.findByUsername(entityManager, username);
             if (profile == null) return null;
 
-            HibernateUtils.initialize(profile.getLinks());
+            Hibernate.initialize(profile.getLinks());
             ObjectNode node = JsonUtils.valueToTree(profile);
             Map<String, String> cursor = new HashMap<>();
 

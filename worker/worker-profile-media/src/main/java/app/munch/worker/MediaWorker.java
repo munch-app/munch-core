@@ -5,8 +5,8 @@ import app.munch.image.ImageModule;
 import app.munch.model.ProfileMedia;
 import app.munch.model.ProfileMediaStatus;
 import app.munch.model.WorkerTask;
-import dev.fuxing.jpa.HibernateUtils;
 import dev.fuxing.jpa.TransactionProvider;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +49,7 @@ public final class MediaWorker implements WorkerRunner {
                         .getResultList();
 
                 list.forEach(media -> {
-                    HibernateUtils.initialize(media.getImages());
+                    Hibernate.initialize(media.getImages());
                 });
                 return list;
             });

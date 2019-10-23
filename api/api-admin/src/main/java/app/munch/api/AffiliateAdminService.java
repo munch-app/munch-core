@@ -3,10 +3,10 @@ package app.munch.api;
 import app.munch.model.*;
 import dev.fuxing.jpa.EntityPatch;
 import dev.fuxing.jpa.EntityQuery;
-import dev.fuxing.jpa.HibernateUtils;
 import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
 import dev.fuxing.transport.service.TransportContext;
+import org.hibernate.Hibernate;
 
 import javax.inject.Singleton;
 import java.util.Objects;
@@ -57,9 +57,9 @@ public final class AffiliateAdminService extends AdminService {
         String uid = ctx.pathString("uid");
         return provider.reduce(true, entityManager -> {
             Affiliate affiliate = entityManager.find(Affiliate.class, uid);
-            HibernateUtils.initialize(affiliate.getPlace());
-            HibernateUtils.initialize(affiliate.getBrand());
-            HibernateUtils.initialize(affiliate.getLinked());
+            Hibernate.initialize(affiliate.getPlace());
+            Hibernate.initialize(affiliate.getBrand());
+            Hibernate.initialize(affiliate.getLinked());
             return affiliate;
         });
     }
@@ -85,9 +85,9 @@ public final class AffiliateAdminService extends AdminService {
                     .peek(entity -> {
                         entity.setEditedBy(profile);
 
-                        HibernateUtils.initialize(entity.getPlace());
-                        HibernateUtils.initialize(entity.getBrand());
-                        HibernateUtils.initialize(entity.getLinked());
+                        Hibernate.initialize(entity.getPlace());
+                        Hibernate.initialize(entity.getBrand());
+                        Hibernate.initialize(entity.getLinked());
                     })
                     .persist();
         });

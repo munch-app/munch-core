@@ -2,9 +2,9 @@ package app.munch.api;
 
 import app.munch.model.ProfileMedia;
 import app.munch.model.ProfileMediaStatus;
-import dev.fuxing.jpa.HibernateUtils;
 import dev.fuxing.transport.TransportList;
 import dev.fuxing.transport.service.TransportContext;
+import org.hibernate.Hibernate;
 
 import javax.inject.Singleton;
 
@@ -62,8 +62,8 @@ public final class MeMediaService extends ApiService {
 
         return getAuthorized(ctx, entityManager -> {
             ProfileMedia media = entityManager.find(ProfileMedia.class, id);
-            HibernateUtils.initialize(media.getProfile());
-            HibernateUtils.initialize(media.getImages());
+            Hibernate.initialize(media.getProfile());
+            Hibernate.initialize(media.getImages());
             return media;
         }, ProfileMedia::getProfile);
     }
@@ -73,8 +73,8 @@ public final class MeMediaService extends ApiService {
 
         return patchAuthorized(ctx, entityManager -> {
             ProfileMedia media = entityManager.find(ProfileMedia.class, id);
-            HibernateUtils.initialize(media.getProfile());
-            HibernateUtils.initialize(media.getImages());
+            Hibernate.initialize(media.getProfile());
+            Hibernate.initialize(media.getImages());
             return media;
         }, ProfileMedia::getProfile, patcher -> {
             patcher.patch("status", ProfileMediaStatus.class, ProfileMedia::setStatus);

@@ -8,9 +8,9 @@ import app.munch.username.UsernameValidator;
 import com.fasterxml.jackson.databind.JsonNode;
 import dev.fuxing.err.UnauthorizedException;
 import dev.fuxing.jpa.EntityPatch;
-import dev.fuxing.jpa.HibernateUtils;
 import dev.fuxing.transport.service.TransportContext;
 import dev.fuxing.utils.JsonUtils;
+import org.hibernate.Hibernate;
 
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
@@ -46,7 +46,7 @@ public final class MeService extends ApiService {
 
         return provider.reduce(true, entityManager -> {
             Account account = entityManager.find(Account.class, id);
-            HibernateUtils.initialize(account.getProfile().getLinks());
+            Hibernate.initialize(account.getProfile().getLinks());
             return account;
         });
     }
@@ -93,7 +93,7 @@ public final class MeService extends ApiService {
                         });
                     })
                     .persist();
-            HibernateUtils.initialize(account.getProfile());
+            Hibernate.initialize(account.getProfile());
             return account;
         });
     }

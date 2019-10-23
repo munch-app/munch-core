@@ -188,8 +188,7 @@ public final class ArticleService extends ApiService {
                     );
                     ArticleQuery.query(entityManager, cursor, ArticleStatus.PUBLISHED, query -> {
                         query.where("profile", article.getProfile());
-                    }).removeIf(a -> {
-                        return article.getId().equals(a.getId());
+                        query.where("id != :aid", "aid", article.getId());
                     }).consume((articles, c) -> {
                         builder.extra("profile.articles", articles);
                     });
@@ -201,6 +200,9 @@ public final class ArticleService extends ApiService {
                     );
                     MediaQuery.query(entityManager, cursor, query -> {
                         query.where("profile", article.getProfile());
+                    }).peek(media -> {
+                        media.setSocial(null);
+                        media.setMetric(null);
                     }).consume((medias, c) -> {
                         builder.extra("profile.medias", medias);
                     });

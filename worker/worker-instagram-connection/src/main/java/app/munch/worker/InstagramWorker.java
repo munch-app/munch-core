@@ -5,9 +5,9 @@ import app.munch.image.ImageModule;
 import app.munch.model.*;
 import com.instagram.err.InstagramAccessException;
 import com.instagram.err.InstagramException;
-import dev.fuxing.jpa.HibernateUtils;
 import dev.fuxing.jpa.TransactionProvider;
 import dev.fuxing.utils.SleepUtils;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,9 +93,9 @@ public final class InstagramWorker implements WorkerRunner {
 
             InstagramAccountConnectionTask latest = tasks.get(0);
             if (latest.getUid().equals(acquired.getUid())) {
-                HibernateUtils.initialize(latest.getConnection());
-                HibernateUtils.initialize(latest.getConnection().getSocial());
-                HibernateUtils.initialize(latest.getConnection().getSocial().getProfile());
+                Hibernate.initialize(latest.getConnection());
+                Hibernate.initialize(latest.getConnection().getSocial());
+                Hibernate.initialize(latest.getConnection().getSocial().getProfile());
                 return latest;
             }
 

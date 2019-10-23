@@ -4,9 +4,9 @@ import app.munch.exception.PlaceLockedException;
 import app.munch.exception.RestrictionException;
 import app.munch.model.*;
 import dev.fuxing.err.ConflictException;
-import dev.fuxing.jpa.HibernateUtils;
 import dev.fuxing.jpa.TransactionProvider;
 import dev.fuxing.utils.JsonUtils;
+import org.hibernate.Hibernate;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -40,8 +40,8 @@ public final class PlaceEntityManager {
     public Place get(String id) {
         return transactionProvider.reduce(true, entityManager -> {
             Place place = entityManager.find(Place.class, id);
-            HibernateUtils.initialize(place.getImage());
-            HibernateUtils.initialize(place.getCreatedBy());
+            Hibernate.initialize(place.getImage());
+            Hibernate.initialize(place.getCreatedBy());
             return place;
         });
     }

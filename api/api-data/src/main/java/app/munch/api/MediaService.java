@@ -1,16 +1,17 @@
 package app.munch.api;
 
 import app.munch.model.ArticleStatus;
+import app.munch.model.Mention;
 import app.munch.model.ProfileMedia;
 import app.munch.model.ProfileMediaStatus;
 import app.munch.query.ArticleQuery;
 import app.munch.query.MediaQuery;
 import app.munch.query.MentionQuery;
 import dev.fuxing.err.ForbiddenException;
-import dev.fuxing.jpa.HibernateUtils;
 import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.service.TransportContext;
 import dev.fuxing.transport.service.TransportResult;
+import org.hibernate.Hibernate;
 
 import javax.inject.Singleton;
 import java.util.Set;
@@ -43,9 +44,9 @@ public final class MediaService extends ApiService {
                 throw new ForbiddenException();
             }
 
-            HibernateUtils.initialize(media.getProfile());
-            HibernateUtils.initialize(media.getImages());
-            HibernateUtils.initialize(media.getMentions());
+            Hibernate.initialize(media.getProfile());
+            Hibernate.initialize(media.getImages());
+            Hibernate.initialize(media.getMentions());
             MediaQuery.peek(media);
 
             return result(builder -> {
@@ -68,19 +69,20 @@ public final class MediaService extends ApiService {
                     );
                     MediaQuery.query(entityManager, cursor, query -> {
                         query.where("profile", media.getProfile());
-                    }).removeIf(m -> {
-                        return m.getId().equals(media.getId());
+                        query.where("id != :mid", "mid", media.getId());
                     }).consume((medias, c) -> {
                         builder.extra("profile.medias", medias);
                     });
                 }
 
                 if (fields.contains("extra.mention.place.mentions") && !media.getMentions().isEmpty()) {
+                    Mention mention = media.getMentions().get(0);
                     TransportCursor cursor = TransportCursor.size(
-                            ctx.queryInt("extra.mention.place.mentions.size", 4)
+                            ctx.queryInt("extra.mention.place.mentions", 4)
                     );
-                    MentionQuery.query(entityManager, cursor, query -> {
-                        query.where("place", media.getMentions().get(0).getPlace());
+                    MentionQuery.query(entityManager, TransportCursor.EMPTY, query -> {
+                        query.where("place", mention.getPlace());
+                        query.where("id != :mid", "mid", mention.getId());
                     }).consume((mentions, c) -> {
                         builder.extra("mention.place.mentions", mentions);
                     });

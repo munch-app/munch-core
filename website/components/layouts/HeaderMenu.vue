@@ -30,7 +30,7 @@
         <hr class="mtb-8">
       </div>
 
-      <div>
+      <div v-if="isLoggedIn">
         <nuxt-link class="black" :to="`/me/socials`">Instagram Connect</nuxt-link>
 <!--        <nuxt-link class="black" :to="`/me/mentions`">Mentions</nuxt-link>-->
         <hr class="mtb-8">

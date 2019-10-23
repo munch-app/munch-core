@@ -82,6 +82,18 @@
   import CdnImg from "../../components/utils/image/CdnImg";
   import ArticleCard from "../../components/article/ArticleCard";
 
+  function addAsideObserver() {
+    let aside = document.getElementById('aside')
+    const observer = new MutationObserver(() => {
+      aside.style.height = ''
+      aside.style.minHeight = ''
+    })
+    observer.observe(aside, {
+      attributes: true,
+      attributeFilter: ['style']
+    })
+  }
+
   export default {
     components: {ArticleCard, CdnImg, ArticleContextMap, ArticleContent},
     head() {
@@ -115,55 +127,43 @@
       })
     },
     asyncData({$api, $path, error, params: {username, id}, query: {uid}}) {
-      const url = uid ? `/articles/${id}/revisions/${uid}` : `/articles/${id}`
-      return Promise.all([
-        $api.get(url)
-          .then(({data: article}) => article)
+      if (uid) {
+        return $api.get(`/articles/${id}/revisions/${uid}`)
+          .then(({data: article}) => {
+            return {article, views: $path.views()}
+          })
+      } else {
+        return $api.get(`/articles/${id}`, {params: {fields: 'extra.profile.articles'}})
+          .then(({data: article, extra}) => {
+            console.log(article)
+            return {article, extra, views: $path.views()}
+          })
           .catch(err => {
             if (err.response.status === 404) {
               return error({statusCode: 404, message: 'Article Not Found'})
             }
             throw err
-          }),
-        $api.get(`/profiles/${username}/articles`, {params: {size: 5}})
-          .then(({data: articles}) => articles)
-      ]).then(([article, articles]) => {
-        return {
-          article, more: {
-            author: {articles: articles.filter(a => a.id !== article.id)}
-          },
-          views: $path.views()
-        }
-      })
+          })
+      }
     },
     computed: {
       moreFromAuthorArticles() {
         return this.more?.author?.articles?.slice(0, 3) || []
       },
       showMap() {
-        return this.article.options.map && this.article.content.some(s => s.type === 'place')
+        return false;
+        // return this.article.options.map && this.article.content.some(s => s.type === 'place')
       }
     },
     mounted() {
       const {profile: {username}, slug, id} = this.article
       this.$path.replace({path: `/@${username}/${slug}-${id}`})
-      this.addAsideObserver()
+      addAsideObserver()
     },
     methods: {
       getContexts() {
         return this.$refs['ArticleContent'].getContexts()
       },
-      addAsideObserver() {
-        let aside = document.getElementById('aside')
-        const observer = new MutationObserver(() => {
-          aside.style.height = ''
-          aside.style.minHeight = ''
-        })
-        observer.observe(aside, {
-          attributes: true,
-          attributeFilter: ['style']
-        })
-      }
     }
   }
 </script>

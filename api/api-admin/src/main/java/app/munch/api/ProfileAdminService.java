@@ -7,11 +7,11 @@ import app.munch.query.ArticleQuery;
 import com.fasterxml.jackson.databind.JsonNode;
 import dev.fuxing.jpa.EntityPatch;
 import dev.fuxing.jpa.EntityStream;
-import dev.fuxing.jpa.HibernateUtils;
 import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
 import dev.fuxing.transport.service.TransportContext;
 import dev.fuxing.transport.service.TransportResult;
+import org.hibernate.Hibernate;
 
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
@@ -108,7 +108,7 @@ public final class ProfileAdminService extends AdminService {
 
         return provider.reduce(entityManager -> {
             Profile profile = entityManager.find(Profile.class, profileId);
-            HibernateUtils.initialize(profile.getLinks());
+            Hibernate.initialize(profile.getLinks());
             return profile;
         });
     }

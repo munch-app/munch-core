@@ -2,7 +2,7 @@ import * as Cookies from 'js-cookie'
 import authenticator from '~/services/authenticator'
 import FormData from "form-data"
 
-const apiVersion = 'v0.26.0'
+const apiVersion = 'v0.27.0'
 
 export default function (context, inject) {
   const {$axios, store, req} = context

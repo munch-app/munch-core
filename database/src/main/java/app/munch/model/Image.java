@@ -7,11 +7,11 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import dev.fuxing.err.ValidationException;
-import dev.fuxing.jpa.HibernateUtils;
 import dev.fuxing.utils.JsonUtils;
 import dev.fuxing.utils.KeyUtils;
 import dev.fuxing.validator.ValidEnum;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Hibernate;
 
 import javax.annotation.Nullable;
 import javax.persistence.*;
@@ -243,8 +243,8 @@ public final class Image {
         node.put("source", getSource().toString());
 
 
-        HibernateUtils.initialize(this);
-        HibernateUtils.initialize(getProfile());
+        Hibernate.initialize(this);
+        Hibernate.initialize(getProfile());
 
         Profile profile = getProfile();
         if (profile != null) {

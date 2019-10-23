@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;
 import dev.fuxing.err.ForbiddenException;
-import dev.fuxing.jpa.HibernateUtils;
 import dev.fuxing.jpa.TransactionProvider;
 import dev.fuxing.transport.service.TransportContext;
 import dev.fuxing.transport.service.TransportResult;
@@ -17,6 +16,7 @@ import munch.restful.core.exception.StructuredException;
 import munch.restful.server.firebase.FirebaseAuthenticator;
 import munch.restful.server.jwt.AuthenticatedToken;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,7 +77,7 @@ public final class AccountService implements TransportService {
 
             account.setAuthenticatedAt(new Timestamp(System.currentTimeMillis()));
             entityManager.persist(account);
-            HibernateUtils.initialize(account);
+            Hibernate.initialize(account);
             return account;
         });
     }
@@ -97,7 +97,7 @@ public final class AccountService implements TransportService {
 
             account.setAuthenticatedAt(new Timestamp(System.currentTimeMillis()));
             entityManager.persist(account);
-            HibernateUtils.initialize(account);
+            Hibernate.initialize(account);
             return account;
         });
     }
