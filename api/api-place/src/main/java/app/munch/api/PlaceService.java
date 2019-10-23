@@ -161,6 +161,8 @@ public final class PlaceService implements TransportService {
             ObjectNode node = JsonUtils.valueToTree(place);
             Map<String, String> cursor = new HashMap<>();
 
+            // TODO(fuxing): extra['mentions']
+
             if (fields.contains("affiliates")) {
                 EntityStream.of(() -> {
                     return entityManager.createQuery("FROM PlaceAffiliate " +
@@ -242,8 +244,10 @@ public final class PlaceService implements TransportService {
                 });
             }
 
-            return TransportResult.ok(node)
-                    .put("cursor", cursor);
+            return TransportResult.builder()
+                    .data(node)
+                    .cursor(cursor)
+                    .build();
         });
     }
 

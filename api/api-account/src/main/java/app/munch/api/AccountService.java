@@ -109,13 +109,14 @@ public final class AccountService implements TransportService {
                 .createCustomTokenAsync(accountId)
                 .get();
 
-        return result(200,
-                Map.of("token", token)
-        );
+        return result(builder -> {
+            builder.data(Map.of("token", token));
+        });
     }
 
     /**
      * In-house this service
+     *
      * @deprecated TODO(fuxing): migrating of MunchMailingListClient required
      */
     @Deprecated

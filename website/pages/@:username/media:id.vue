@@ -7,8 +7,8 @@
         </div>
       </div>
 
-      <div>
-        <div class="Content">
+      <div class="Content">
+        <div>
           <div class="mb-24" v-for="mention in media.mentions" :key="mention.id">
             <nuxt-link :to="`/${mention.place.slug}-${mention.place.id}`"
                        class="block text-decoration-none border-4 bg-steam">
@@ -158,7 +158,22 @@
     }
 
     .Content {
-      width: 300px;
+      flex: 0 0 40%;
+      max-width: 40%;
+    }
+  }
+
+  @media (min-width: 992px) {
+    .Content {
+      flex: 0 0 35%;
+      max-width: 35%;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .Content {
+      flex: 0 0 33.33%;
+      max-width: 33.33%;
     }
   }
 </style>

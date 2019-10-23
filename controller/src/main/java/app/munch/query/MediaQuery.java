@@ -2,9 +2,7 @@ package app.munch.query;
 
 import app.munch.model.ProfileMedia;
 import app.munch.model.ProfileMediaStatus;
-import dev.fuxing.err.ForbiddenException;
 import dev.fuxing.jpa.EntityQuery;
-import dev.fuxing.jpa.HibernateUtils;
 import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
 
@@ -32,30 +30,11 @@ public final class MediaQuery extends Query {
     public TransportList query(TransportCursor cursor, Consumer<EntityQuery<ProfileMedia>> consumer) {
         return provider.reduce(true, entityManager -> {
             return query(entityManager, cursor, consumer)
-                    .asTransportList((mention, builder) -> {
+                    .asTransportList((media, builder) -> {
                         builder.putAll(cursor);
-                        builder.put("createdAt", mention.getCreatedAt().getTime());
-                        builder.put("id", mention.getId());
+                        builder.put("createdAt", media.getCreatedAt().getTime());
+                        builder.put("id", media.getId());
                     });
-        });
-    }
-
-    public ProfileMedia find(String id) {
-        return provider.reduce(true, entityManager -> {
-            ProfileMedia media = entityManager.find(ProfileMedia.class, id);
-            if (media == null) {
-                return null;
-            }
-
-            if (media.getStatus() != ProfileMediaStatus.PUBLIC) {
-                throw new ForbiddenException();
-            }
-
-            HibernateUtils.initialize(media.getProfile());
-            HibernateUtils.initialize(media.getImages());
-            HibernateUtils.initialize(media.getMentions());
-            peek(media);
-            return media;
         });
     }
 
@@ -76,7 +55,7 @@ public final class MediaQuery extends Query {
     /**
      * @param media to peek when querying, readOnly must be {@code true}
      */
-    private static void peek(ProfileMedia media) {
+    public static void peek(ProfileMedia media) {
         media.getMentions().forEach(mention -> {
             mention.setMedia(null);
         });
