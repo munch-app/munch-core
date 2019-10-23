@@ -70,7 +70,6 @@ public final class ProfileService extends ApiService {
             ObjectNode node = JsonUtils.valueToTree(profile);
             Map<String, String> cursor = new HashMap<>();
 
-
             if (fields.contains("medias")) {
                 MediaQuery.query(entityManager, TransportCursor.EMPTY, query -> {
                     query.where("profile", profile);

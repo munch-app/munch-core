@@ -128,7 +128,7 @@ public final class Profile {
     }
 
     public List<ProfileLink> getLinks() {
-        return links;
+        return Lazy.load(links, null);
     }
 
     public void setLinks(List<ProfileLink> links) {
