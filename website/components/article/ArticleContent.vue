@@ -3,7 +3,7 @@ ArticleContent.vue must be structured as such to follow exactly ProseMirror stru
 .article-content > div
 -->
 <template>
-  <div class="article-content">
+  <article class="article-content">
     <div>
       <template v-for="(node, index) in content">
         <profile-node v-if="node.type === 'profile'" :article="article" :key="index"/>
@@ -27,7 +27,7 @@ ArticleContent.vue must be structured as such to follow exactly ProseMirror stru
         <div v-else :key="index"/>
       </template>
     </div>
-  </div>
+  </article>
 </template>
 
 <script>
