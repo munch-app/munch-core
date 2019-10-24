@@ -5,6 +5,7 @@ import app.munch.model.ProfileMediaStatus;
 import dev.fuxing.jpa.EntityQuery;
 import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
+import org.hibernate.Hibernate;
 
 import javax.inject.Singleton;
 import javax.persistence.EntityManager;
@@ -49,15 +50,29 @@ public final class MediaQuery extends Query {
                 .orderBy("createdAt DESC, id DESC")
                 .size(cursor.size(20, 40))
                 .asStream()
-                .peek(MediaQuery::peek);
+                .peek(MediaQuery::clean);
     }
 
     /**
      * @param media to peek when querying, readOnly must be {@code true}
      */
-    public static void peek(ProfileMedia media) {
+    public static void clean(ProfileMedia media) {
         media.getMentions().forEach(mention -> {
             mention.setMedia(null);
         });
+    }
+
+    public static void initialize(ProfileMedia media) {
+        if (media.getProfile() != null) {
+            Hibernate.initialize(media.getProfile());
+        }
+
+        if (media.getImages() != null) {
+            Hibernate.initialize(media.getImages());
+        }
+
+        if (media.getMentions() != null) {
+            Hibernate.initialize(media.getMentions());
+        }
     }
 }

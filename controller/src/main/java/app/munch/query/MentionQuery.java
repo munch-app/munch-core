@@ -63,13 +63,13 @@ public final class MentionQuery extends Query {
                 .orderBy("createdAt DESC, id DESC")
                 .size(cursor.size(10, 33))
                 .asStream()
-                .peek(MentionQuery::peek);
+                .peek(MentionQuery::clean);
     }
 
     /**
      * @param mention to peek when querying, readOnly must be {@code true}
      */
-    private static void peek(Mention mention) {
+    public static void clean(Mention mention) {
         switch (mention.getType()) {
             case MEDIA:
                 mention.getMedia().setMentions(null);

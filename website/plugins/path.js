@@ -1,18 +1,10 @@
 import {Base64} from 'js-base64';
 
+/**
+ * Path & views manipulation plugin.
+ */
 export default function (context, inject) {
-  const {query: {views}} = context
-  context.$path = {
-    views: () => {
-      if (!views) return {}
-      const decoded = Base64.decode(views)
-      if (!decoded) return {}
-
-      return decoded.split(',').reduce((dict, object) => {
-        dict[object] = true
-        return dict
-      }, {})
-    },
+  inject('path', {
     replace: ({path, query}) => {
       const getPath = () => {
         return path ? path : window.location.pathname;
@@ -33,9 +25,32 @@ export default function (context, inject) {
 
       window.history.replaceState({}, document.title, `${getPath()}${getQuery()}`)
     },
-    encodeViews: (...views) => {
-      return Base64.encodeURI(views.join(','))
-    },
+  })
+
+  function views() {
+    const vs = context?.query?.vs
+    if (!vs) return {}
+    const decoded = Base64.decode(vs)
+    if (!decoded) return {}
+
+    return decoded.split(',').reduce((dict, object) => {
+      dict[object] = true
+      return dict
+    }, {})
   }
-  inject('path', context.$path)
+
+  /**
+   * 'vs' short of 'views'
+   */
+  inject('vs', {
+    has: (view) => {
+      return views()[view]
+    },
+    none: (view) => {
+      return !views()[view]
+    },
+    encode: (...views) => {
+      return Base64.encodeURI(views.join(','))
+    }
+  })
 }

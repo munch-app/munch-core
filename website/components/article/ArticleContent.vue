@@ -18,11 +18,9 @@ ArticleContent.vue must be structured as such to follow exactly ProseMirror stru
         <article-place ref="context" v-else-if="node.type ==='place'" :key="index" :node="node"
                        :affiliates="placeAffiliates[node.attrs.place.id]"/>
 
-        <div v-else-if="node.type === 'adsense'" :key="index" class="w-100">
-          <adsbygoogle class="Article_InContent"
-                       ad-slot="8163543825"
-                       ad-layout="in-article"
-                       ad-format="fluid"
+        <div v-else-if="node.type === 'advert'" :key="index" class="w-100">
+          <advert class="Article_InContent"
+                  :google="{slot: 8163543825, layout: 'in-article', format: 'fluid'}"
           />
         </div>
 
@@ -38,10 +36,11 @@ ArticleContent.vue must be structured as such to follow exactly ProseMirror stru
   import ArticleImage from "./node/ArticleImage.vue";
   import ArticleAvatar from "./node/ArticleAvatar.vue";
   import ArticlePlace from "./node/ArticlePlace.vue";
+  import Advert from "../utils/ads/Advert";
 
   export default {
     name: "ArticleContent",
-    components: {ArticlePlace, ArticleAvatar, ArticleImage, ProfileNode, TextContent},
+    components: {Advert, ArticlePlace, ArticleAvatar, ArticleImage, ProfileNode, TextContent},
     props: {
       article: {
         type: Object,
@@ -50,8 +49,7 @@ ArticleContent.vue must be structured as such to follow exactly ProseMirror stru
     },
     data() {
       return {
-        placeAffiliates: {},
-        views: this.$path.views()
+        placeAffiliates: {}
       }
     },
     computed: {
@@ -65,11 +63,11 @@ ArticleContent.vue must be structured as such to follow exactly ProseMirror stru
           content.splice(0, 0, {type: 'profile'})
         }
 
-        if (!this.views['ads-hide']) {
+        if (this.$vs.none('ads-hide')) {
           let pos = 15
 
           while (pos < (content.length - 5)) {
-            content.splice(pos, 0, {type: 'adsense'})
+            content.splice(pos, 0, {type: 'advert'})
             pos += 15
           }
         }

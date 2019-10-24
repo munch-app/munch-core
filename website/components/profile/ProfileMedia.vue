@@ -4,9 +4,8 @@
 
       <cdn-img :image="media.images[0]">
         <div class="flex-column-justify-end">
-
           <nuxt-link v-if="mention" :to="`/${mention.place.slug}-${mention.place.id}`"
-                     class="Mention cubic-bezier p-8 flex-between text-decoration-none">
+                     class="Bottom cubic-bezier p-8 flex-between text-decoration-none">
             <div class="mlr-4">
               <h6 class="text-ellipsis-1l">{{mention.place.name}}</h6>
               <p class="small text-ellipsis-1l">
@@ -14,10 +13,18 @@
               </p>
             </div>
 
-            <div class="Icon p-8 bg-translucent border-circle elevation-2">
-              <simple-svg class="wh-20px" fill="#000" :filepath="require('~/assets/icon/icons8-map-pin.svg')"/>
+            <div class="Icon p-8 bg-pink border-circle elevation-2">
+              <simple-svg class="wh-20px" fill="#FFF" :filepath="require('~/assets/icon/icons8-map-pin.svg')"/>
             </div>
           </nuxt-link>
+
+          <div v-else class="Bottom cubic-bezier p-8 flex-between text-decoration-none">
+            <div class="mlr-4">
+              <p class="small text-ellipsis-2l">
+                {{text}}
+              </p>
+            </div>
+          </div>
         </div>
       </cdn-img>
     </div>
@@ -38,32 +45,38 @@
     },
     computed: {
       mention() {
-        return this.media.mentions[0]
+        if (this.media?.mentions) {
+          return this.media.mentions[0]
+        }
+      },
+      text() {
+        const textNodes = this.media.content
+          .filter(n => n.type === 'text')
+
+        if (textNodes.length) {
+          return textNodes[0].text.substring(0, 80).trim()
+        }
       }
     }
   }
 </script>
 
 <style scoped lang="less">
-  .Mention {
+  .Bottom {
     h6, p {
       opacity: 0;
     }
   }
 
-  .Media:hover .Mention {
+  .Media:hover .Bottom {
     h6, p {
       opacity: 1;
-    }
-
-    .Icon {
-      background: white;
     }
 
     background: rgba(240, 240, 240, 0.95);
   }
 
-  .Mention:hover {
+  .Bottom:hover {
     h6, p {
       text-decoration: underline;
     }

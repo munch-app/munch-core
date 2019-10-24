@@ -1,51 +1,65 @@
 <template>
-  <div class="container">
-    <div class="Container flex">
-      <div class="flex-grow">
-        <div class="MediaBox flex-center overflow-hidden lh-0 bg-steam border-3" v-if="media.images.length">
-          <cdn-img class="Media" :image="media.images[0]" type="1080x1080" object-fit="contain"/>
+  <div>
+    <div class="container">
+      <div class="Container flex">
+        <div class="flex-grow">
+          <div class="MediaBox flex-center overflow-hidden lh-0 bg-steam border-3" v-if="media.images.length">
+            <cdn-img class="Media" :image="media.images[0]" type="1080x1080" object-fit="contain"/>
+          </div>
         </div>
-      </div>
 
-      <div class="Content">
-        <div>
-          <div class="mb-24" v-for="mention in media.mentions" :key="mention.id">
-            <nuxt-link :to="`/${mention.place.slug}-${mention.place.id}`"
-                       class="block text-decoration-none border-4 bg-steam">
-              <div class="flex-between elevation-hover-2 p-16">
-                <div class="mlr-4">
-                  <h5 class="pink text-ellipsis-1l">{{mention.place.name}}</h5>
-                  <p class="small text-ellipsis-1l">
-                    {{mention.place.location.address}}
-                  </p>
-                </div>
-
-                <div class="p-8 bg-pink border-circle">
-                  <simple-svg class="wh-20px" fill="#FFF" :filepath="require('~/assets/icon/icons8-map-pin.svg')"/>
-                </div>
+        <div class="Content">
+          <div>
+            <nuxt-link :to="`/@${media.profile.username}`"
+                       class="text-decoration-none p-16 border-4 bg-steam flex-align-center">
+              <profile-pic class="wh-40px" :profile="media.profile" icon-class="bg-white"/>
+              <div class="ml-16">
+                <h6>{{media.profile.name}}</h6>
+                <p class="small">{{formatMillis(media.createdAt)}}</p>
               </div>
             </nuxt-link>
-          </div>
 
-          <nuxt-link :to="`/@${media.profile.username}`"
-                     class="text-decoration-none p-16 border-4 bg-steam flex-align-center">
-            <profile-pic class="wh-40px" :profile="media.profile" icon-class="bg-white"/>
-            <div class="ml-16">
-              <h6>{{media.profile.name}}</h6>
-              <p class="small">{{formatMillis(media.createdAt)}}</p>
+            <div class="mt-24 p-16 border-4 bg-steam">
+              <template v-for="(node, index) in media.content">
+                <div class="small lh-1-3 text-ellipsis-3l" v-if="node.type === 'text'" :key="index">
+                  {{node.text}}
+                </div>
+              </template>
             </div>
-          </nuxt-link>
 
-          <div class="mt-24 p-16 border-4 bg-steam">
-            <template v-for="(node, index) in media.content">
-              <div class="small lh-1-3 text-ellipsis-4l" v-if="node.type === 'text'" :key="index">
-                {{node.text}}
-              </div>
-            </template>
+            <div class="mt-24" v-for="mention in media.mentions" :key="mention.id">
+              <nuxt-link :to="`/${mention.place.slug}-${mention.place.id}`"
+                         class="block text-decoration-none">
+                <div class="elevation-hover-2 p-16 bg-steam border-4">
+                  <div class="flex-between">
+                    <div class="mr-4">
+                      <h5 class="pink text-ellipsis-1l">{{mention.place.name}}</h5>
+                      <p class="small text-ellipsis-1l">
+                        {{mention.place.location.address}}
+                      </p>
+                    </div>
+
+                    <div class="p-8 bg-pink border-circle">
+                      <simple-svg class="wh-20px" fill="#FFF" :filepath="require('~/assets/icon/icons8-map-pin.svg')"/>
+                    </div>
+                  </div>
+
+                  <div class="mt-16" v-if="placeMedias.length">
+                    <div class="m--6 flex-wrap">
+                      <div class="p-6 flex-2" v-for="pMedia in placeMedias" :key="pMedia.id">
+                        <profile-media :media="pMedia"/>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </nuxt-link>
+            </div>
           </div>
         </div>
       </div>
     </div>
+
+    <profile-footer :profile="media.profile" :extra="extra"/>
   </div>
 </template>
 
@@ -53,9 +67,11 @@
   import dateformat from 'dateformat'
   import CdnImg from "../../components/utils/image/CdnImg";
   import ProfilePic from "../../components/profile/ProfilePic";
+  import ProfileFooter from "../../components/profile/ProfileFooter";
+  import ProfileMedia from "../../components/profile/ProfileMedia";
 
   export default {
-    components: {ProfilePic, CdnImg},
+    components: {ProfileMedia, ProfileFooter, ProfilePic, CdnImg},
     head() {
       const {
         profile: {name, username},
@@ -85,16 +101,18 @@
       })
     },
     asyncData({$api, error, params: {id}}) {
-      return $api.get(`/medias/${id}`)
-        .then(({data}) => {
-          return {media: data}
-        })
-        .catch(err => {
-          if (err.response.status === 404) {
-            return error({statusCode: 404, message: 'Media Not Found'})
-          }
-          throw err
-        })
+      return $api.get(`/medias/${id}`, {
+        params: {
+          fields: 'extra.profile.articles,extra.profile.medias,extra.place.medias'
+        }
+      }).then(({data: media, extra}) => {
+        return {media, extra}
+      }).catch(err => {
+        if (err.response.status === 404) {
+          return error({statusCode: 404, message: 'Media Not Found'})
+        }
+        throw err
+      })
     },
     mounted() {
       const {profile: {username}, id} = this.media
@@ -113,6 +131,9 @@
         if (textNodes.length) {
           return textNodes[0].text.substring(0, 80).trim()
         }
+      },
+      placeMedias() {
+        return this.extra && this.extra['place.medias'] || []
       }
     },
     methods: {

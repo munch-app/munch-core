@@ -2,25 +2,18 @@
   <div>
     <div class="container">
       <div class="mt-48">
-        <div v-if="!views['ads-hide']" class="w-100">
-          <adsbygoogle class="Article_Top"
-                       ad-slot="4700759194"
-                       ad-format="auto"
-                       :ad-style="{display: 'inline-block', height: '120px', width: '100%'}"
-          />
-        </div>
+        <advert class="Article_Top"
+                :google="{slot: 4700759194, format: 'auto', style: {display: 'inline-block', height: '120px', width: '100%'}}"
+        />
 
         <div class="flex-wrap mt-48">
           <article-content class="ArticleContent" :article="article" ref="ArticleContent"/>
           <aside id="aside" class="flex-grow">
             <article-context-map v-if="showMap" :article="article" :get-contexts="getContexts"/>
-            <div v-if="!views['ads-hide']" class="mt-32 w-100">
-              <adsbygoogle class="Article_Aside"
-                           ad-slot="9676262046"
-                           ad-format="auto"
-                           :ad-style="{display: 'block', width: '100%'}"
-              />
-            </div>
+
+            <advert class="Article_Aside mt-32"
+                    :google="{slot: 9676262046, format: 'auto', style: {display: 'block', width: '100%'}}"
+            />
           </aside>
         </div>
       </div>
@@ -52,27 +45,12 @@
     </div>
 
     <div class="container mt-64 mb-24">
-      <div v-if="!views['ads-hide']" class="w-100">
-        <adsbygoogle class="Article_Bottom"
-                     ad-slot="7065221202"
-                     ad-format="auto"
-        />
-      </div>
+      <advert class="Article_Bottom"
+              :google="{slot: 7065221202, format: 'auto'}"
+      />
     </div>
 
-    <div class="bg-steam" v-if="moreFromAuthorArticles.length > 0">
-      <div class="container pt-24 pb-48">
-        <h4>More from {{article.profile.name}}</h4>
-
-        <div class="mt-24">
-          <div class="flex-1-2-3 m--12">
-            <div v-for="article in moreFromAuthorArticles" :key="article.id" class="flex-self-stretch p-12">
-              <article-card type="mini" :article="article"/>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <profile-footer :profile="article.profile" :extra="extra"/>
   </div>
 </template>
 
@@ -80,22 +58,27 @@
   import ArticleContent from "../../components/article/ArticleContent";
   import ArticleContextMap from "../../components/article/ArticleContextMap";
   import CdnImg from "../../components/utils/image/CdnImg";
-  import ArticleCard from "../../components/article/ArticleCard";
+  import Advert from "../../components/utils/ads/Advert";
+  import ProfileFooter from "../../components/profile/ProfileFooter";
 
   function addAsideObserver() {
     let aside = document.getElementById('aside')
-    const observer = new MutationObserver(() => {
-      aside.style.height = ''
-      aside.style.minHeight = ''
-    })
-    observer.observe(aside, {
-      attributes: true,
-      attributeFilter: ['style']
-    })
+    if (aside) {
+      const observer = new MutationObserver(() => {
+        aside.style.height = ''
+        aside.style.minHeight = ''
+      })
+      observer.observe(aside, {
+        attributes: true,
+        attributeFilter: ['style']
+      })
+    }
   }
 
   export default {
-    components: {ArticleCard, CdnImg, ArticleContextMap, ArticleContent},
+    components: {
+      ProfileFooter, Advert, CdnImg, ArticleContextMap, ArticleContent
+    },
     head() {
       const {
         profile: {name: profileName, username},
@@ -126,17 +109,16 @@
         ]
       })
     },
-    asyncData({$api, $path, error, params: {username, id}, query: {uid}}) {
+    asyncData({$api, error, params: {username, id}, query: {uid}}) {
       if (uid) {
         return $api.get(`/articles/${id}/revisions/${uid}`)
           .then(({data: article}) => {
-            return {article, views: $path.views()}
+            return {article}
           })
       } else {
-        return $api.get(`/articles/${id}`, {params: {fields: 'extra.profile.articles'}})
+        return $api.get(`/articles/${id}`, {params: {fields: 'extra.profile.articles,extra.profile.medias'}})
           .then(({data: article, extra}) => {
-            console.log(article)
-            return {article, extra, views: $path.views()}
+            return {article, extra}
           })
           .catch(err => {
             if (err.response.status === 404) {
@@ -147,12 +129,8 @@
       }
     },
     computed: {
-      moreFromAuthorArticles() {
-        return this.more?.author?.articles?.slice(0, 3) || []
-      },
       showMap() {
-        return false;
-        // return this.article.options.map && this.article.content.some(s => s.type === 'place')
+        return this.article.options.map && this.article.content.some(s => s.type === 'place')
       }
     },
     mounted() {

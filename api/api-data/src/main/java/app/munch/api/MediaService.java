@@ -1,17 +1,13 @@
 package app.munch.api;
 
-import app.munch.model.ArticleStatus;
-import app.munch.model.Mention;
-import app.munch.model.ProfileMedia;
-import app.munch.model.ProfileMediaStatus;
+import app.munch.model.*;
 import app.munch.query.ArticleQuery;
 import app.munch.query.MediaQuery;
-import app.munch.query.MentionQuery;
 import dev.fuxing.err.ForbiddenException;
+import dev.fuxing.jpa.EntityQuery;
 import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.service.TransportContext;
 import dev.fuxing.transport.service.TransportResult;
-import org.hibernate.Hibernate;
 
 import javax.inject.Singleton;
 import java.util.Set;
@@ -44,10 +40,8 @@ public final class MediaService extends ApiService {
                 throw new ForbiddenException();
             }
 
-            Hibernate.initialize(media.getProfile());
-            Hibernate.initialize(media.getImages());
-            Hibernate.initialize(media.getMentions());
-            MediaQuery.peek(media);
+            MediaQuery.initialize(media);
+            MediaQuery.clean(media);
 
             return result(builder -> {
                 builder.data(media);
@@ -75,17 +69,27 @@ public final class MediaService extends ApiService {
                     });
                 }
 
-                if (fields.contains("extra.mention.place.mentions") && !media.getMentions().isEmpty()) {
-                    Mention mention = media.getMentions().get(0);
+                if (fields.contains("extra.place.medias") && !media.getMentions().isEmpty()) {
                     TransportCursor cursor = TransportCursor.size(
-                            ctx.queryInt("extra.mention.place.mentions", 4)
+                            ctx.queryInt("extra.place.medias.size", 4)
                     );
-                    MentionQuery.query(entityManager, TransportCursor.EMPTY, query -> {
-                        query.where("place", mention.getPlace());
-                        query.where("id != :mid", "mid", mention.getId());
-                    }).consume((mentions, c) -> {
-                        builder.extra("mention.place.mentions", mentions);
-                    });
+                    Mention mention = media.getMentions().get(0);
+
+                    EntityQuery.select(entityManager, "SELECT m.media FROM Mention m", ProfileMedia.class)
+                            .where("m.id != :mid", "mid", mention.getId())
+                            .where("m.place = :place", "place", mention.getPlace())
+                            .where("m.status = :status", "status", MentionStatus.PUBLIC)
+                            .where("m.type = :type", "type", MentionType.MEDIA)
+                            .orderBy("m.createdAt DESC, m.id DESC")
+                            .size(cursor.size(4, 8))
+                            .asStream()
+                            .peek(m -> {
+                                m.setMentions(null);
+                                MediaQuery.initialize(m);
+                            })
+                            .consume((medias, c) -> {
+                                builder.extra("place.medias", medias);
+                            });
                 }
             });
         });
