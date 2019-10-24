@@ -33,7 +33,7 @@
     <div v-else class="p-16 border border-4 elevation-1 bg-white h-100">
       <div v-if="article.image">
         <div class="aspect r-5-3 overflow-hidden border-2">
-          <cdn-img :image="article.image"/>
+          <cdn-img :image="article.image" :alt="article.title"/>
         </div>
 
         <h5 class="mt-8 text-ellipsis-2l">{{article.title}}</h5>

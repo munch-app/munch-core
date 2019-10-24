@@ -2,7 +2,7 @@
   <nuxt-link :to="`/@${media.profile.username}/${media.id}`" class="text-decoration-none">
     <div class="Media aspect r-1-1 bg-steam border-4 overflow-hidden hover-pointer">
 
-      <cdn-img :image="media.images[0]">
+      <cdn-img :image="media.images[0]" :alt="alt">
         <div class="flex-column-justify-end">
           <nuxt-link v-if="mention" :to="`/${mention.place.slug}-${mention.place.id}`"
                      class="Bottom cubic-bezier p-8 flex-between text-decoration-none">
@@ -55,6 +55,11 @@
 
         if (textNodes.length) {
           return textNodes[0].text.substring(0, 80).trim()
+        }
+      },
+      alt() {
+        if (this.text) {
+          return this.text.substring(0, 20).trim() + "..."
         }
       }
     }

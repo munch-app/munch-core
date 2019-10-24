@@ -4,7 +4,7 @@
       <div class="Container flex">
         <div class="flex-grow">
           <div class="MediaBox flex-center overflow-hidden lh-0 bg-steam border-3" v-if="media.images.length">
-            <cdn-img class="Media" :image="media.images[0]" type="1080x1080" object-fit="contain"/>
+            <cdn-img class="Media" :image="media.images[0]" type="1080x1080" object-fit="contain" :alt="title"/>
           </div>
         </div>
 
