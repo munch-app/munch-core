@@ -1,3 +1,7 @@
+<!--
+@deprecated not recommended for use anymore due to the restrictive nature of this design
+-->
+
 <template>
   <portal to="dialog-full">
     <div ref="dialog" class="DialogNavigation" @click.self="close">
