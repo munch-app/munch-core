@@ -1,7 +1,7 @@
 package app.munch.controller;
 
 import app.munch.elastic.ElasticIndexPublisher;
-import app.munch.exception.DataLockedException;
+import app.munch.exception.EditLockedException;
 import app.munch.exception.RestrictionException;
 import app.munch.model.*;
 import dev.fuxing.err.ConflictException;
@@ -61,9 +61,9 @@ public final class PlaceController extends Controller {
      * @param profileProvider profile used for creating the revision
      * @return Mutated Place, (Will not mutate if no changes)
      * @throws RestrictionException unable to make changes due to account restriction
-     * @throws DataLockedException  unable to make changes due to place locking mechanism
+     * @throws EditLockedException  unable to make changes due to place locking mechanism
      */
-    public Place update(String id, PlaceModel model, Set<PlaceEditableField> editableFields, Function<EntityManager, Profile> profileProvider) throws RestrictionException, DataLockedException {
+    public Place update(String id, PlaceModel model, Set<PlaceEditableField> editableFields, Function<EntityManager, Profile> profileProvider) throws RestrictionException, EditLockedException {
         Objects.requireNonNull(id);
         Objects.requireNonNull(model);
 

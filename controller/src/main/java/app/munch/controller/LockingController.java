@@ -1,6 +1,6 @@
 package app.munch.controller;
 
-import app.munch.exception.DataLockedException;
+import app.munch.exception.EditLockedException;
 import app.munch.model.PlaceLocking;
 import app.munch.model.Profile;
 
@@ -19,11 +19,11 @@ public final class LockingController extends Controller {
      * @param entityManager jpa entity manager
      * @param profile       profile trying to write PlaceRevision
      * @param placeId       of place to make changes
-     * @throws DataLockedException unable to make changes due to place locking mechanism
+     * @throws EditLockedException unable to make changes due to place locking mechanism
      * @deprecated awaiting new DataLocking entity to control locking
      */
     @Deprecated
-    public void check(EntityManager entityManager, Profile profile, String placeId) throws DataLockedException {
+    public void check(EntityManager entityManager, Profile profile, String placeId) throws EditLockedException {
         Objects.requireNonNull(profile);
 
         // Check if any locking is in place
@@ -41,7 +41,7 @@ public final class LockingController extends Controller {
             }
 
             // Else, throw locking exception
-            throw new DataLockedException(locking.getType());
+            throw new EditLockedException(locking.getType());
         }
     }
 }

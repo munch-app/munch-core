@@ -1,6 +1,6 @@
 package app.munch.controller;
 
-import app.munch.exception.DataLockedException;
+import app.munch.exception.EditLockedException;
 import app.munch.exception.RestrictionException;
 import app.munch.model.*;
 import dev.fuxing.jpa.TransactionProvider;
@@ -77,7 +77,7 @@ public final class ArticlePlaceController {
                             publishImage(entityManager, revision.getOptions(), place, attrsPlace.getImage());
                         }
                     }
-                } catch (RestrictionException | DataLockedException e) {
+                } catch (RestrictionException | EditLockedException e) {
                     response.error = e.toError();
                 }
                 responses.add(response);
