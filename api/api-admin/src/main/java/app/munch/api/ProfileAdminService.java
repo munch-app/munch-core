@@ -96,7 +96,7 @@ public final class ProfileAdminService extends AdminService {
         Profile profile = ctx.bodyAsObject(Profile.class);
 
         return provider.reduce(entityManager -> {
-            Image.EntityUtils.map(entityManager, profile.getImage(), profile::setImage);
+            Image.EntityUtils.initialize(entityManager, profile.getImage(), profile::setImage);
 
             entityManager.persist(profile);
             return profile;
@@ -126,7 +126,7 @@ public final class ProfileAdminService extends AdminService {
                     .patch("name", Profile::setName)
                     .patch("bio", Profile::setBio)
                     .patch("image", (EntityPatch.NodeConsumer<Profile>) (entity, json) -> {
-                        Image.EntityUtils.map(entityManager, json, profile::setImage);
+                        Image.EntityUtils.initialize(entityManager, json, profile::setImage);
                     })
                     .persist();
         });

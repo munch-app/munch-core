@@ -13,14 +13,40 @@ import java.util.stream.Stream;
  * Time: 12:11 am
  */
 public enum ElasticDocumentType {
+
+    /**
+     * @see Place
+     */
     PLACE("PLACE"),
 
-    ARTICLE("ARTICLE"),
-
+    /**
+     * @see Tag
+     */
     TAG("TAG"),
 
+    /**
+     * @see Article
+     */
+    ARTICLE("ARTICLE"),
+
+    /**
+     * @see Mention
+     */
+    MENTION("MENTION"),
+
+    /**
+     * @see Publication
+     */
+    PUBLICATION("PUBLICATION"),
+
+    /**
+     * Not Yet Implemented
+     */
     BRAND("BRAND"),
 
+    /**
+     * Not Yet Implemented
+     */
     LOCATION("LOCATION"),
 
     UNKNOWN_TO_SDK_VERSION(null);

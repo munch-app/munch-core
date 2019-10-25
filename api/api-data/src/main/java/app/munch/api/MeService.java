@@ -78,7 +78,7 @@ public final class MeService extends ApiService {
                         patcher.patch("name", Profile::setName);
                         patcher.patch("bio", Profile::setBio);
                         patcher.patch("image", (EntityPatch.NodeConsumer<Profile>) (profile, json) -> {
-                            Image.EntityUtils.map(entityManager, json, profile::setImage);
+                            Image.EntityUtils.initialize(entityManager, json, profile::setImage);
                         });
                         patcher.patch("links", Profile::getLinks, (profileLink, jsonNode) -> {
                             return profileLink.getUid().equals(jsonNode.path("uid").asText());

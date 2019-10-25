@@ -81,7 +81,7 @@ public final class PublicationAdminService extends AdminService {
         Publication publication = ctx.bodyAsObject(Publication.class);
 
         return provider.reduce(entityManager -> {
-            Image.EntityUtils.map(entityManager, publication.getImage(), publication::setImage);
+            Image.EntityUtils.initialize(entityManager, publication.getImage(), publication::setImage);
 
             entityManager.persist(publication);
             return publication;
@@ -100,7 +100,7 @@ public final class PublicationAdminService extends AdminService {
                     .patch("description", Publication::setDescription)
                     .patch("body", Publication::setBody)
                     .patch("image", (EntityPatch.NodeConsumer<Publication>) (pub, json) -> {
-                        Image.EntityUtils.map(entityManager, json, pub::setImage);
+                        Image.EntityUtils.initialize(entityManager, json, pub::setImage);
                     })
                     .patch("tags", (EntityPatch.NodeConsumer<Publication>) (pub, json) -> {
                         pub.setTags(JsonUtils.toSet(json, Tag.class));

@@ -164,6 +164,7 @@ public final class ArticleService extends ApiService {
 
         return articleEntityManager.get(id, uid, (entityManager, articleRevision) -> {
             validate(entityManager, articleRevision.getArticle(), ctx);
+            initializeImage(entityManager, articleRevision);
         });
     }
 
@@ -179,6 +180,7 @@ public final class ArticleService extends ApiService {
                 throw new ForbiddenException();
             }
 
+            initializeImage(entityManager, article);
             return result(builder -> {
                 builder.data(article);
 
@@ -211,12 +213,22 @@ public final class ArticleService extends ApiService {
         });
     }
 
+    private static void initializeImage(EntityManager entityManager, ArticleModel article) {
+        article.getContent().stream()
+                .filter(node -> node.getType().equals("image"))
+                .map(node -> (ArticleModel.ImageNode) node)
+                .forEach(node -> {
+                    ArticleModel.ImageNode.Attrs attrs = node.getAttrs();
+                    Image.EntityUtils.initialize(entityManager, attrs::getImage, attrs::setImage);
+                });
+    }
+
     public ArticleRevision articleRevisionGet(TransportContext ctx) {
         String id = ctx.pathString("id");
         String uid = ctx.pathString("uid");
         if (uid.equals("latest")) {
             throw new ForbiddenException("latest not allowed");
         }
-        return articleEntityManager.get(id, uid, null);
+        return articleEntityManager.get(id, uid, ArticleService::initializeImage);
     }
 }

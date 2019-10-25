@@ -23,6 +23,7 @@ import java.sql.Timestamp;
 import java.util.Base64;
 import java.util.Date;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 
 /**
@@ -241,17 +242,6 @@ public final class Image {
         node.put("uid", getUid());
         node.put("ext", getExt());
         node.put("source", getSource().toString());
-
-
-        Hibernate.initialize(this);
-        Hibernate.initialize(getProfile());
-
-        Profile profile = getProfile();
-        if (profile != null) {
-            node.putObject("profile")
-                    .put("id", profile.getUid())
-                    .put("username", profile.getUsername());
-        }
         return node;
     }
 
@@ -260,6 +250,13 @@ public final class Image {
         node.put("loc", getLoc());
         node.put("width", getWidth());
         node.put("height", getHeight());
+
+        Hibernate.initialize(getProfile());
+        if (getProfile() != null) {
+            node.putObject("profile")
+                    .put("uid", getProfile().getUid())
+                    .put("username", getProfile().getUsername());
+        }
         return node;
     }
 
@@ -309,22 +306,57 @@ public final class Image {
     }
 
     public static final class EntityUtils {
+        /**
+         * @param image to look for uid
+         * @return uid or null if not found
+         */
+        @Nullable
+        static String findUid(Image image) {
+            String uid = image.getUid();
+            if (uid != null) return uid;
 
-        public static void map(EntityManager entityManager, Image image, Consumer<Image> setter) {
+            return CdnUtils.locToUid(image.getLoc());
+        }
+
+        /**
+         * Attempt to find Image entity
+         *
+         * @param entityManager to initializing
+         * @param image         to initialize
+         * @return initialized Image, or object if Image cannot be found.
+         */
+        public static Image find(EntityManager entityManager, Image image) {
+            if (image == null) {
+                return null;
+            }
+
+            String uid = findUid(image);
+            if (uid == null) {
+                return image;
+            }
+
+            return entityManager.find(Image.class, uid);
+        }
+
+        public static void initialize(EntityManager entityManager, Supplier<Image> getter, Consumer<Image> setter) {
+            initialize(entityManager, getter.get(), setter);
+        }
+
+        public static void initialize(EntityManager entityManager, Image image, Consumer<Image> setter) {
             if (image != null) {
-                map(entityManager, image.getUid(), image.getLoc(), setter);
+                initialize(entityManager, image.getUid(), image.getLoc(), setter);
             }
         }
 
-        public static void map(EntityManager entityManager, JsonNode node, Consumer<Image> setter) {
+        public static void initialize(EntityManager entityManager, JsonNode node, Consumer<Image> setter) {
             if (node.isNull()) {
                 setter.accept(null);
             } else {
-                map(entityManager, node.path("uid").asText(null), node.path("loc").asText(null), setter);
+                initialize(entityManager, node.path("uid").asText(null), node.path("loc").asText(null), setter);
             }
         }
 
-        public static void map(EntityManager entityManager, String uid, String loc, Consumer<Image> setter) {
+        public static void initialize(EntityManager entityManager, String uid, String loc, Consumer<Image> setter) {
             if (uid != null) {
                 setter.accept(entityManager.find(Image.class, uid));
             } else if (loc != null) {

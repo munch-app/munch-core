@@ -55,7 +55,7 @@ public final class ArticleEntityManager {
 
             revision.setArticle(article);
 
-            Image.EntityUtils.map(entityManager, revision.getImage(), revision::setImage);
+            Image.EntityUtils.initialize(entityManager, revision.getImage(), revision::setImage);
 
             entityManager.persist(revision);
             return revision;

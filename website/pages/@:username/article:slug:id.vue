@@ -113,7 +113,7 @@
       if (uid) {
         return $api.get(`/articles/${id}/revisions/${uid}`)
           .then(({data: article}) => {
-            return {article}
+            return {article, extra: {}}
           })
       } else {
         return $api.get(`/articles/${id}`, {params: {fields: 'extra.profile.articles,extra.profile.medias'}})

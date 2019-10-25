@@ -146,7 +146,7 @@ public final class ArticlePlaceEntityManager {
             return;
         }
 
-        Image.EntityUtils.map(entityManager, detachedImage, image -> {
+        Image.EntityUtils.initialize(entityManager, detachedImage, image -> {
             List list = entityManager.createQuery("FROM PlaceImage " +
                     "WHERE place.id = :placeId AND image.uid = :imageId")
                     .setParameter("placeId", place.getId())
