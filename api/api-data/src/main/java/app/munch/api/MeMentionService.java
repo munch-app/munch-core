@@ -17,6 +17,9 @@ import javax.inject.Singleton;
 @Singleton
 public final class MeMentionService extends ApiService {
 
+    /**
+     * MeMentionService is not yet used by any interface yet.
+     */
     @Override
     public void route() {
         PATH("/me/mentions", () -> {
@@ -59,6 +62,9 @@ public final class MeMentionService extends ApiService {
         });
     }
 
+    /**
+     * @deprecated migrate to use MentionController
+     */
     public Mention post(TransportContext ctx) {
         Mention mention = ctx.bodyAsObject(Mention.class);
 

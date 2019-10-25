@@ -27,6 +27,7 @@ import java.util.Date;
 @Table(name = "Mention", uniqueConstraints = {
         @UniqueConstraint(name = "uk_2rjxx36ptzagatrp", columnNames = {"place_id", "article_id"}),
         @UniqueConstraint(name = "uk_88jnqnzqvndsmhnm", columnNames = {"place_id", "media_id"}),
+//        @UniqueConstraint(name = "uk_nvs8jmndqnhmzn8q", columnNames = {"place_id", "image_id"}),
 })
 @ValidMentionType
 public final class Mention {

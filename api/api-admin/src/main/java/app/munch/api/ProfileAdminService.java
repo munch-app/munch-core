@@ -160,7 +160,7 @@ public final class ProfileAdminService extends AdminService {
 
         Article article = articleController.patch(articleId, body, null);
         if (article.getStatus() == ArticleStatus.DELETED) {
-            articlePlaceController.deleteAll(articleId);
+            articlePlaceController.removeAll(articleId);
         }
         return article;
     }

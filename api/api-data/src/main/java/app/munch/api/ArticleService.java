@@ -113,7 +113,7 @@ public final class ArticleService extends ApiService {
             restrictionController.check(entityManager, articleObj.getProfile(), ProfileRestrictionType.ARTICLE_WRITE);
         });
         if (article.getStatus() == ArticleStatus.DELETED) {
-            articlePlaceController.deleteAll(articleId);
+            articlePlaceController.removeAll(articleId);
         }
         return article;
     }

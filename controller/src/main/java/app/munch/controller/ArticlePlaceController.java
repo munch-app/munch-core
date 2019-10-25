@@ -36,7 +36,10 @@ public final class ArticlePlaceController {
         this.placeController = placeController;
     }
 
-    public void deleteAll(String articleId) {
+    /**
+     * @param articleId article id
+     */
+    public void removeAll(String articleId) {
         provider.with(entityManager -> {
             entityManager.createQuery("DELETE FROM ArticlePlace " +
                     "WHERE article.id = :articleId")

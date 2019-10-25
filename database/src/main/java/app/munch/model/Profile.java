@@ -245,4 +245,20 @@ public final class Profile {
 
         return list.isEmpty() ? null : list.get(0);
     }
+
+    /**
+     * Profile Supplier
+     */
+    @FunctionalInterface
+    public interface Supplier {
+        Profile supply(EntityManager entityManager);
+    }
+
+    /**
+     * @param entityManager jpa entity manager
+     * @return attached Profile
+     */
+    public Profile attach(EntityManager entityManager) {
+        return entityManager.find(Profile.class, getUid());
+    }
 }
