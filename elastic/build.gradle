@@ -5,7 +5,10 @@ dependencies {
     compile group: 'com.google.inject', name: 'guice', version: guiceVersion
 
     compile group: 'dev.fuxing', name: 'transport-core', version: transportVersion
+    compile group: 'dev.fuxing', name: 'transport-pubsub', version: transportVersion
     compile group: 'dev.fuxing', name: 'transport-elastic', version: transportVersion
 
     compile group: 'org.elasticsearch.client', name: 'elasticsearch-rest-high-level-client', version: '7.1.1'
+
+    compile group: 'software.amazon.awssdk', name: 'sqs', version: awsVersion2
 }

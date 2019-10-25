@@ -167,7 +167,7 @@ public final class PlaceService implements TransportService {
             ObjectNode node = JsonUtils.valueToTree(place);
             Map<String, String> cursor = new HashMap<>();
 
-            // TODO(fuxing): extra['mentions']
+            // TODO(fuxing): E.g. extra['mentions']
 
             if (fields.contains("affiliates")) {
                 EntityStream.of(() -> {

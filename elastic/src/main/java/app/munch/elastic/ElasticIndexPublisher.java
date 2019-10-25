@@ -1,7 +1,12 @@
 package app.munch.elastic;
 
+import app.munch.elastic.pubsub.DocumentIndexMessage;
+import app.munch.elastic.pubsub.SqsPublisher;
 import app.munch.model.*;
+import com.typesafe.config.ConfigFactory;
+import software.amazon.awssdk.services.sqs.SqsClient;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
@@ -16,7 +21,12 @@ import javax.inject.Singleton;
  * @since 2019-09-10 at 20:31
  */
 @Singleton
-public final class ElasticDocumentQueue {
+public final class ElasticIndexPublisher extends SqsPublisher<DocumentIndexMessage> {
+
+    @Inject
+    public ElasticIndexPublisher(SqsClient client) {
+        super(client, ConfigFactory.load().getString("services.sqs.index.url"));
+    }
 
     public void queue(Place place) {
         queue(ElasticDocumentType.PLACE, place.getId());
@@ -38,11 +48,10 @@ public final class ElasticDocumentQueue {
         queue(ElasticDocumentType.PUBLICATION, publication.getId());
     }
 
-    protected void queue(ElasticDocumentType type, String id) {
-        // TODO(fuxing): SQS Service
+    private void queue(ElasticDocumentType type, String id) {
+        DocumentIndexMessage message = new DocumentIndexMessage();
+        message.setType(type);
+        message.setId(id);
+        publish(message);
     }
-
-    // TODO(fuxing): Dequeue Service
-
-    // Not Yet Implemented, Brand & Location
 }

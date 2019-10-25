@@ -7,6 +7,7 @@ import com.typesafe.config.ConfigFactory;
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
+import software.amazon.awssdk.services.sqs.SqsClient;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -29,6 +30,13 @@ public final class ElasticModule extends AbstractModule {
                 throw new RuntimeException(e);
             }
         }));
+    }
+
+    @Provides
+    @Singleton
+    SqsClient provideSqsClient() {
+        return SqsClient.builder()
+                .build();
     }
 
     @Provides

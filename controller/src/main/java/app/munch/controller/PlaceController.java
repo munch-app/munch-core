@@ -1,6 +1,6 @@
 package app.munch.controller;
 
-import app.munch.elastic.ElasticDocumentQueue;
+import app.munch.elastic.ElasticIndexPublisher;
 import app.munch.exception.DataLockedException;
 import app.munch.exception.RestrictionException;
 import app.munch.model.*;
@@ -26,10 +26,10 @@ public final class PlaceController extends Controller {
 
     private final LockingController locking;
     private final RestrictionController restriction;
-    private final ElasticDocumentQueue documentQueue;
+    private final ElasticIndexPublisher documentQueue;
 
     @Inject
-    public PlaceController(LockingController locking, RestrictionController restriction, ElasticDocumentQueue documentQueue) {
+    public PlaceController(LockingController locking, RestrictionController restriction, ElasticIndexPublisher documentQueue) {
         this.locking = locking;
         this.restriction = restriction;
         this.documentQueue = documentQueue;
