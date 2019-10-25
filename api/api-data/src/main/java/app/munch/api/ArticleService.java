@@ -1,14 +1,14 @@
 package app.munch.api;
 
+import app.munch.controller.ArticleController;
+import app.munch.controller.ArticlePlaceController;
+import app.munch.controller.RestrictionController;
 import app.munch.exception.RestrictionException;
-import app.munch.manager.ArticleEntityManager;
-import app.munch.manager.ArticlePlaceEntityManager;
 import app.munch.model.*;
 import app.munch.query.ArticleQuery;
 import app.munch.query.MediaQuery;
 import com.fasterxml.jackson.databind.JsonNode;
 import dev.fuxing.err.ForbiddenException;
-import dev.fuxing.err.UnauthorizedException;
 import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
 import dev.fuxing.transport.service.TransportContext;
@@ -16,8 +16,6 @@ import dev.fuxing.transport.service.TransportResult;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.persistence.EntityManager;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,25 +30,31 @@ public final class ArticleService extends ApiService {
 
     private final ArticleQuery articleQuery;
 
-    private final ArticleEntityManager articleEntityManager;
-    private final ArticlePlaceEntityManager articlePlaceEntityManager;
+    private final ArticleController articleController;
+    private final ArticlePlaceController articlePlaceController;
+    private final RestrictionController restrictionController;
 
     @Inject
-    ArticleService(ArticleQuery articleQuery, ArticleEntityManager articleEntityManager, ArticlePlaceEntityManager articlePlaceEntityManager) {
+    ArticleService(ArticleQuery articleQuery, ArticleController articleController, ArticlePlaceController articlePlaceController, RestrictionController restrictionController) {
         this.articleQuery = articleQuery;
-        this.articleEntityManager = articleEntityManager;
-        this.articlePlaceEntityManager = articlePlaceEntityManager;
+        this.articleController = articleController;
+        this.articlePlaceController = articlePlaceController;
+        this.restrictionController = restrictionController;
     }
 
     @Override
     public void route() {
         PATH("/me/articles", () -> {
             POST("", this::meArticlePost);
-            GET("", this::meArticleList);
+            GET("", this::meArticleQuery);
 
             PATH("/:id", () -> {
                 GET("", this::meArticleGet);
                 PATCH("", this::meArticlePatch);
+
+                PATH("/images", () -> {
+                    GET("", this::meArticleImagesQuery);
+                });
 
                 PATH("/revisions", () -> {
                     POST("", this::meArticleRevisionPost);
@@ -66,23 +70,7 @@ public final class ArticleService extends ApiService {
         });
     }
 
-    /**
-     * Validate ArticleId belong to AccountId
-     */
-    private static void validate(EntityManager entityManager, Article article, TransportContext ctx) {
-        @NotNull String accountId = ctx.get(ApiRequest.class).getAccountId();
-
-        String profileId = entityManager.createQuery("SELECT a.profile.uid FROM Account a " +
-                "WHERE a.id = :id", String.class)
-                .setParameter("id", accountId)
-                .getSingleResult();
-
-        if (!article.getProfile().getUid().equals(profileId)) {
-            throw new UnauthorizedException();
-        }
-    }
-
-    public TransportList meArticleList(TransportContext ctx) {
+    public TransportList meArticleQuery(TransportContext ctx) {
         return articleQuery.query(ctx.queryCursor(), entityManager -> {
             return findProfile(entityManager, ctx);
         });
@@ -92,7 +80,7 @@ public final class ArticleService extends ApiService {
         String accountId = ctx.get(ApiRequest.class).getAccountId();
         ArticleRevision revision = ctx.bodyAsObject(ArticleRevision.class);
 
-        return articleEntityManager.post(revision, entityManager -> {
+        return articleController.post(revision, entityManager -> {
             Profile profile = entityManager.createQuery("SELECT a.profile FROM Account a " +
                     "WHERE a.id = :id", Profile.class)
                     .setParameter("id", accountId)
@@ -110,17 +98,22 @@ public final class ArticleService extends ApiService {
         return getAuthorized(ctx, em -> em.find(Article.class, id), ArticleModel::getProfile);
     }
 
+    public TransportList<TransportList> meArticleImagesQuery(TransportContext ctx) {
+        // TODO(fuxing): Read from place node in article
+        return null;
+    }
+
     public Article meArticlePatch(TransportContext ctx) {
         String articleId = ctx.pathString("id");
         JsonNode body = ctx.bodyAsJson();
 
-        Article article = articleEntityManager.patch(articleId, body, (entityManager, articleObj) -> {
+        Article article = articleController.patch(articleId, body, (entityManager, articleObj) -> {
             // Checking user has write access
-            RestrictionException.check(entityManager, articleObj.getProfile(), ProfileRestrictionType.ARTICLE_WRITE);
-            validate(entityManager, articleObj, ctx);
+            authorized(entityManager, ctx, articleObj.getProfile());
+            restrictionController.check(entityManager, articleObj.getProfile(), ProfileRestrictionType.ARTICLE_WRITE);
         });
         if (article.getStatus() == ArticleStatus.DELETED) {
-            articlePlaceEntityManager.deleteAll(articleId);
+            articlePlaceController.deleteAll(articleId);
         }
         return article;
     }
@@ -130,8 +123,8 @@ public final class ArticleService extends ApiService {
         ArticleRevision revision = ctx.bodyAsObject(ArticleRevision.class);
         revision.setPublished(false);
 
-        revision = articleEntityManager.post(id, revision, (entityManager, article) -> {
-            validate(entityManager, article, ctx);
+        revision = articleController.post(id, revision, (entityManager, article) -> {
+            authorized(entityManager, ctx, article.getProfile());
         });
 
         return TransportResult.builder()
@@ -144,12 +137,12 @@ public final class ArticleService extends ApiService {
         ArticleRevision revision = ctx.bodyAsObject(ArticleRevision.class);
         revision.setPublished(true);
 
-        revision = articleEntityManager.post(id, revision, (entityManager, article) -> {
-            validate(entityManager, article, ctx);
+        revision = articleController.post(id, revision, (entityManager, article) -> {
+            authorized(entityManager, ctx, article.getProfile());
         });
 
         String profileUid = revision.getProfile().getUid();
-        List<ArticlePlaceEntityManager.Response> responses = articlePlaceEntityManager.populateAll(profileUid, revision);
+        List<ArticlePlaceController.Response> responses = articlePlaceController.populateAll(profileUid, revision);
 
         return TransportResult.builder()
                 .data(Map.of(
@@ -162,9 +155,8 @@ public final class ArticleService extends ApiService {
         String id = ctx.pathString("id");
         String uid = ctx.pathString("uid");
 
-        return articleEntityManager.get(id, uid, (entityManager, articleRevision) -> {
-            validate(entityManager, articleRevision.getArticle(), ctx);
-            initializeImage(entityManager, articleRevision);
+        return articleController.find(id, uid, (entityManager, articleRevision) -> {
+            authorized(entityManager, ctx, articleRevision.getProfile());
         });
     }
 
@@ -173,14 +165,8 @@ public final class ArticleService extends ApiService {
         Set<String> fields = ctx.queryFields();
 
         return provider.reduce(true, entityManager -> {
-            Article article = entityManager.find(Article.class, id);
-            if (article == null) return null;
+            Article article = articleController.find(entityManager, id, null);
 
-            if (article.getStatus() != ArticleStatus.PUBLISHED) {
-                throw new ForbiddenException();
-            }
-
-            initializeImage(entityManager, article);
             return result(builder -> {
                 builder.data(article);
 
@@ -213,22 +199,12 @@ public final class ArticleService extends ApiService {
         });
     }
 
-    private static void initializeImage(EntityManager entityManager, ArticleModel article) {
-        article.getContent().stream()
-                .filter(node -> node.getType().equals("image"))
-                .map(node -> (ArticleModel.ImageNode) node)
-                .forEach(node -> {
-                    ArticleModel.ImageNode.Attrs attrs = node.getAttrs();
-                    Image.EntityUtils.initialize(entityManager, attrs::getImage, attrs::setImage);
-                });
-    }
-
     public ArticleRevision articleRevisionGet(TransportContext ctx) {
         String id = ctx.pathString("id");
         String uid = ctx.pathString("uid");
         if (uid.equals("latest")) {
-            throw new ForbiddenException("latest not allowed");
+            throw new ForbiddenException("Article latest not allowed.");
         }
-        return articleEntityManager.get(id, uid, ArticleService::initializeImage);
+        return articleController.find(id, uid, null);
     }
 }

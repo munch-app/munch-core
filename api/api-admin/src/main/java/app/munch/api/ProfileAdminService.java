@@ -1,7 +1,7 @@
 package app.munch.api;
 
-import app.munch.manager.ArticleEntityManager;
-import app.munch.manager.ArticlePlaceEntityManager;
+import app.munch.controller.ArticleController;
+import app.munch.controller.ArticlePlaceController;
 import app.munch.model.*;
 import app.munch.query.ArticleQuery;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -26,14 +26,14 @@ import java.util.Map;
 public final class ProfileAdminService extends AdminService {
 
     private final ArticleQuery articleQuery;
-    private final ArticleEntityManager articleEntityManager;
-    private final ArticlePlaceEntityManager articlePlaceEntityManager;
+    private final ArticleController articleController;
+    private final ArticlePlaceController articlePlaceController;
 
     @Inject
-    ProfileAdminService(ArticleQuery articleQuery, ArticleEntityManager articleEntityManager, ArticlePlaceEntityManager articlePlaceEntityManager) {
+    ProfileAdminService(ArticleQuery articleQuery, ArticleController articleController, ArticlePlaceController articlePlaceController) {
         this.articleQuery = articleQuery;
-        this.articleEntityManager = articleEntityManager;
-        this.articlePlaceEntityManager = articlePlaceEntityManager;
+        this.articleController = articleController;
+        this.articlePlaceController = articlePlaceController;
     }
 
     @Override
@@ -143,25 +143,24 @@ public final class ProfileAdminService extends AdminService {
         String profileId = ctx.pathString("profileId");
         ArticleRevision revision = ctx.bodyAsObject(ArticleRevision.class);
 
-        return articleEntityManager.post(revision, entityManager -> {
+        return articleController.post(revision, entityManager -> {
             return entityManager.find(Profile.class, profileId);
         });
     }
 
     public Article profileArticleGet(TransportContext ctx) {
         String articleId = ctx.pathString("articleId");
-        return provider.reduce(true, entityManager -> {
-            return entityManager.find(Article.class, articleId);
-        });
+
+        return articleController.find(articleId, null);
     }
 
     public Article profileArticlePatch(TransportContext ctx) {
         String articleId = ctx.pathString("articleId");
         JsonNode body = ctx.bodyAsJson();
 
-        Article article = articleEntityManager.patch(articleId, body, null);
+        Article article = articleController.patch(articleId, body, null);
         if (article.getStatus() == ArticleStatus.DELETED) {
-            articlePlaceEntityManager.deleteAll(articleId);
+            articlePlaceController.deleteAll(articleId);
         }
         return article;
     }
@@ -171,7 +170,7 @@ public final class ProfileAdminService extends AdminService {
         ArticleRevision revision = ctx.bodyAsObject(ArticleRevision.class);
         revision.setPublished(false);
 
-        revision = articleEntityManager.post(articleId, revision, null);
+        revision = articleController.post(articleId, revision, null);
         return TransportResult.builder()
                 .data(Map.of("uid", revision.getUid()))
                 .build();
@@ -182,8 +181,8 @@ public final class ProfileAdminService extends AdminService {
         ArticleRevision revision = ctx.bodyAsObject(ArticleRevision.class);
         revision.setPublished(true);
 
-        revision = articleEntityManager.post(articleId, revision, null);
-        List<ArticlePlaceEntityManager.Response> responses = articlePlaceEntityManager.populateAll(Profile.ADMIN_ID, revision);
+        revision = articleController.post(articleId, revision, null);
+        List<ArticlePlaceController.Response> responses = articlePlaceController.populateAll(Profile.ADMIN_ID, revision);
 
         return TransportResult.builder()
                 .data(Map.of(
@@ -197,6 +196,6 @@ public final class ProfileAdminService extends AdminService {
         String articleId = ctx.pathString("articleId");
         String uid = ctx.pathString("uid");
 
-        return articleEntityManager.get(articleId, uid, null);
+        return articleController.find(articleId, uid, null);
     }
 }

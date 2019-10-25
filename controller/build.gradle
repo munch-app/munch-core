@@ -1,6 +1,8 @@
 dependencies {
     compile project(':utils')
     compile project(':database')
+    compile project(':elastic')
+
     compile group: 'com.google.inject', name: 'guice', version: guiceVersion
 
     compile group: 'dev.fuxing', name: 'transport-core', version: transportVersion

@@ -2,7 +2,7 @@ package app.munch.api;
 
 import app.munch.elastic.ElasticQueryClient;
 import app.munch.elastic.ElasticSerializableClient;
-import app.munch.manager.PlaceEntityManager;
+import app.munch.controller.PlaceController;
 import app.munch.model.*;
 import app.munch.query.MentionQuery;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -42,16 +42,16 @@ public final class PlaceService implements TransportService {
 
     private final ElasticQueryClient queryClient;
     private final ElasticSerializableClient serializableClient;
-    private final PlaceEntityManager placeEntityManager;
+    private final PlaceController placeController;
 
     private final TransactionProvider provider;
     private final MentionQuery mentionQuery;
 
     @Inject
-    PlaceService(ElasticQueryClient queryClient, ElasticSerializableClient serializableClient, PlaceEntityManager placeEntityManager, TransactionProvider provider, MentionQuery mentionQuery) {
+    PlaceService(ElasticQueryClient queryClient, ElasticSerializableClient serializableClient, PlaceController placeController, TransactionProvider provider, MentionQuery mentionQuery) {
         this.queryClient = queryClient;
         this.serializableClient = serializableClient;
-        this.placeEntityManager = placeEntityManager;
+        this.placeController = placeController;
         this.provider = provider;
         this.mentionQuery = mentionQuery;
     }
@@ -262,7 +262,7 @@ public final class PlaceService implements TransportService {
         // Have to use PlaceStruct or else reference chain will be picked up
         PlaceStruct struct = ctx.bodyAsObject(PlaceStruct.class);
 
-        Place place = placeEntityManager.create(struct, PlaceEditableField.ALL, entityManager -> {
+        Place place = placeController.create(struct, PlaceEditableField.ALL, entityManager -> {
             return Profile.findByAccountId(entityManager, accountId);
         });
         serializableClient.put(place);
@@ -275,7 +275,7 @@ public final class PlaceService implements TransportService {
         // Have to use PlaceStruct or else reference chain will be picked up
         PlaceStruct struct = ctx.bodyAsObject(PlaceStruct.class);
 
-        Place place = placeEntityManager.update(id, struct, PlaceEditableField.ALL, entityManager -> {
+        Place place = placeController.update(id, struct, PlaceEditableField.ALL, entityManager -> {
             return Profile.findByAccountId(entityManager, accountId);
         });
         serializableClient.put(place);

@@ -1,6 +1,6 @@
-package app.munch.manager;
+package app.munch.controller;
 
-import app.munch.exception.PlaceLockedException;
+import app.munch.exception.DataLockedException;
 import app.munch.exception.RestrictionException;
 import app.munch.model.*;
 import dev.fuxing.jpa.TransactionProvider;
@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static app.munch.model.PlaceEditableField.*;
+import static app.munch.model.PlaceEditableField.HOURS;
 
 /**
  * Created by: Fuxing
@@ -25,14 +26,14 @@ import static app.munch.model.PlaceEditableField.*;
  * Time: 9:53 pm
  */
 @Singleton
-public final class ArticlePlaceEntityManager {
+public final class ArticlePlaceController {
     private final TransactionProvider provider;
-    private final PlaceEntityManager placeEntityManager;
+    private final PlaceController placeController;
 
     @Inject
-    ArticlePlaceEntityManager(TransactionProvider provider, PlaceEntityManager placeEntityManager) {
+    ArticlePlaceController(TransactionProvider provider, PlaceController placeController) {
         this.provider = provider;
-        this.placeEntityManager = placeEntityManager;
+        this.placeController = placeController;
     }
 
     public void deleteAll(String articleId) {
@@ -65,7 +66,8 @@ public final class ArticlePlaceEntityManager {
                 Response response = new Response(attrsPlace);
                 try {
                     // PublishPlace and get a copy of the representing place
-                    Place place = publishPlace(entityManager, profileUid, revision.getOptions(), attrsPlace);
+                    Profile profile = Profile.findByUid(entityManager, profileUid);
+                    Place place = publishPlace(entityManager, profile, revision.getOptions(), attrsPlace);
                     if (place != null) {
                         placeIds.add(place.getId());
                         attrsPlace.setId(place.getId());
@@ -75,7 +77,7 @@ public final class ArticlePlaceEntityManager {
                             publishImage(entityManager, revision.getOptions(), place, attrsPlace.getImage());
                         }
                     }
-                } catch (RestrictionException | PlaceLockedException e) {
+                } catch (RestrictionException | DataLockedException e) {
                     response.error = e.toError();
                 }
                 responses.add(response);
@@ -119,15 +121,21 @@ public final class ArticlePlaceEntityManager {
     }
 
     @Nullable
-    private Place publishPlace(EntityManager entityManager, String profileUid, Article.Options options, ArticleModel.PlaceNode.Attrs.Place attrsPlace) {
-        // If publishing is enabled, publish and get Place
-        if (options.getPlacePublishing() != null && options.getPlacePublishing()) {
-            return placeEntityManager.publish(entityManager, profileUid, attrsPlace.getId(), attrsPlace,
-                    Set.of(NAME, PHONE, WEBSITE, PRICE, LOCATION_ADDRESS, LOCATION_LAT_LNG, STATUS, TAGS, HOURS)
-            );
+    private Place publishPlace(EntityManager entityManager, Profile profile, Article.Options options, ArticleModel.PlaceNode.Attrs.Place attrsPlace) {
+        // If publishing is enabled, publish place
+        if (options.getPlacePublishing() != null) {
+            if (attrsPlace.getId() != null) {
+                return placeController.update(entityManager, profile, attrsPlace.getId(), attrsPlace,
+                        Set.of(NAME, PHONE, WEBSITE, PRICE, LOCATION_ADDRESS, LOCATION_LAT_LNG, STATUS, TAGS, HOURS)
+                );
+            } else {
+                return placeController.create(entityManager, profile, attrsPlace,
+                        Set.of(NAME, PHONE, WEBSITE, PRICE, LOCATION_ADDRESS, LOCATION_LAT_LNG, STATUS, TAGS, HOURS)
+                );
+            }
         }
 
-        // Else if placeId exist, fetch and return
+        // else if placeId exist, fetch and return
         if (attrsPlace.getId() != null) {
             return entityManager.find(Place.class, attrsPlace.getId());
         }

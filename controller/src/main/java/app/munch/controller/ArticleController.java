@@ -1,4 +1,4 @@
-package app.munch.manager;
+package app.munch.controller;
 
 import app.munch.model.*;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -11,6 +11,7 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.persistence.EntityManager;
+import javax.validation.constraints.NotNull;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -20,11 +21,11 @@ import java.util.function.Function;
  * Time: 09:23
  */
 @Singleton
-public final class ArticleEntityManager {
+public final class ArticleController {
     private final TransactionProvider provider;
 
     @Inject
-    ArticleEntityManager(TransactionProvider provider) {
+    ArticleController(TransactionProvider provider) {
         this.provider = provider;
     }
 
@@ -83,7 +84,8 @@ public final class ArticleEntityManager {
         });
     }
 
-    public ArticleRevision get(String id, String uid, @Nullable BiConsumer<EntityManager, ArticleRevision> consumer) {
+    @NotNull
+    public ArticleRevision find(String id, String uid, @Nullable BiConsumer<EntityManager, ArticleRevision> consumer) {
         return provider.reduce(true, entityManager -> {
             ArticleRevision articleRevision;
 
@@ -102,13 +104,52 @@ public final class ArticleEntityManager {
                         .getSingleResult();
             }
 
-            if (articleRevision == null) throw new NotFoundException();
+            if (articleRevision == null) {
+                throw new NotFoundException();
+            }
 
             if (consumer != null) {
                 consumer.accept(entityManager, articleRevision);
             }
 
+            initializeImage(entityManager, articleRevision);
             return articleRevision;
         });
+    }
+
+    @NotNull
+    public Article find(String id, @Nullable BiConsumer<EntityManager, Article> consumer) {
+        return provider.reduce(true, entityManager -> {
+            return find(entityManager, id, consumer);
+        });
+    }
+
+    @NotNull
+    public Article find(EntityManager entityManager, String id, @Nullable BiConsumer<EntityManager, Article> consumer) {
+        Article article = entityManager.find(Article.class, id);
+        if (article == null) {
+            throw new NotFoundException();
+        }
+
+        if (article.getStatus() != ArticleStatus.PUBLISHED) {
+            throw new ForbiddenException();
+        }
+
+        if (consumer != null) {
+            consumer.accept(entityManager, article);
+        }
+
+        initializeImage(entityManager, article);
+        return article;
+    }
+
+    private static void initializeImage(EntityManager entityManager, ArticleModel article) {
+        article.getContent().stream()
+                .filter(node -> node.getType().equals("image"))
+                .map(node -> (ArticleModel.ImageNode) node)
+                .forEach(node -> {
+                    ArticleModel.ImageNode.Attrs attrs = node.getAttrs();
+                    Image.EntityUtils.initialize(entityManager, attrs::getImage, attrs::setImage);
+                });
     }
 }

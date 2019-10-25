@@ -33,6 +33,7 @@ public enum MentionType {
     /**
      * Image owned by a profile uploaded directly to the place?
      *
+     * @see PlaceImage
      * @see Image
      */
     IMAGE("IMAGE"),

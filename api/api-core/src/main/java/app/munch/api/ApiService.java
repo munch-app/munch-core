@@ -120,7 +120,7 @@ public abstract class ApiService implements TransportService {
         });
     }
 
-    public void isAuthorized(EntityManager entityManager, TransportContext context, Profile profile) {
+    public void authorized(EntityManager entityManager, TransportContext context, Profile profile) {
         String accountId = context.get(ApiRequest.class).getAccountId();
         Profile.authorize(entityManager, accountId, profile);
     }

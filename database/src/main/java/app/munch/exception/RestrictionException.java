@@ -28,12 +28,14 @@ public final class RestrictionException extends TransportException {
         super(403, RestrictionException.class, "You are restricted from access this resource: '" + type.name() + "'");
     }
 
+    @Deprecated
     public static void check(EntityManager entityManager, Profile profile, ProfileRestrictionType type) {
         Objects.requireNonNull(profile);
 
         check(entityManager, profile.getUid(), type);
     }
 
+    @Deprecated
     public static void check(EntityManager entityManager, String profileUid, ProfileRestrictionType type) throws RestrictionException {
         Objects.requireNonNull(profileUid);
 
