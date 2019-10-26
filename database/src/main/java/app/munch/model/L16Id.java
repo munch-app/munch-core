@@ -21,22 +21,19 @@ import java.util.stream.Stream;
  * Date: 14/8/19
  * Time: 2:13 pm
  */
-public enum HighLevelId {
-    PLACE("0"),
-    ARTICLE("1"),
-    LOCATION("2"),
-    BRAND("3"),
-    TAG("4"),
-    PUBLICATION("5"),
+public enum L16Id {
+    MEDIA("s"),
+    MENTION("m"),
+    POST("p"),
 
     UNKNOWN_TO_SDK_VERSION(null);
 
     public final String postfix;
     public final String regex;
 
-    HighLevelId(String postfix) {
+    L16Id(String postfix) {
         this.postfix = postfix;
-        this.regex = "^[0-9a-hjkmnp-tv-z]{12}" + postfix + "$";
+        this.regex = "^[0-9a-hjkmnp-tv-z]{15}" + postfix + "$";
     }
 
     @Override
@@ -52,15 +49,15 @@ public enum HighLevelId {
      * @return NodePostfix corresponding to the value
      */
     @JsonCreator
-    public static HighLevelId fromValue(String value) {
+    public static L16Id fromValue(String value) {
         if (value == null) {
             return null;
         }
-        return Stream.of(HighLevelId.values()).filter(e -> e.toString().equals(value)).findFirst()
+        return Stream.of(L16Id.values()).filter(e -> e.toString().equals(value)).findFirst()
                 .orElse(UNKNOWN_TO_SDK_VERSION);
     }
 
-    public static Set<HighLevelId> knownValues() {
+    public static Set<L16Id> knownValues() {
         return Stream.of(values()).filter(v -> v != UNKNOWN_TO_SDK_VERSION).collect(Collectors.toSet());
     }
 }

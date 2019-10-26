@@ -13,9 +13,11 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 /**
- * Created by: Fuxing
- * Date: 2019-07-14
- * Time: 14:46
+ * ArticlePlace is a Place in an Article.
+ * The position indicate where is the place is in the article in ascending order.
+ *
+ * @author Fuxing Loh
+ * @since 2019-07-14 at 14:46
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)

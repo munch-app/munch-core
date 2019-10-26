@@ -8,39 +8,21 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Date: 10/9/19
- * Time: 8:16 pm
- *
  * @author Fuxing Loh
+ * @since 2019-10-26 at 15:58
  */
-public enum MentionType {
+public enum PlacePostStatus {
+    DRAFT("DRAFT"),
 
-    /**
-     * Media from external platform owned by a profile.
-     *
-     * @see ProfileMedia
-     */
-    MEDIA("MEDIA"),
+    PUBLISHED("PUBLISHED"),
 
-    /**
-     * Article owned by a profile.
-     *
-     * @see Article
-     */
-    ARTICLE("ARTICLE"),
-
-    /**
-     * Post created by a profile.
-     *
-     * @see PlacePost
-     */
-    POST("POST"),
+    DELETED("DELETED"),
 
     UNKNOWN_TO_SDK_VERSION(null);
 
     private final String value;
 
-    MentionType(String value) {
+    PlacePostStatus(String value) {
         this.value = value;
     }
 
@@ -54,18 +36,18 @@ public enum MentionType {
      * Use this in place of valueOf to convert the raw string returned by the service into the enum value.
      *
      * @param value real value
-     * @return MentionType corresponding to the value
+     * @return ProfilePostStatus corresponding to the value
      */
     @JsonCreator
-    public static MentionType fromValue(String value) {
+    public static PlacePostStatus fromValue(String value) {
         if (value == null) {
             return null;
         }
-        return Stream.of(MentionType.values()).filter(e -> e.toString().equals(value)).findFirst()
+        return Stream.of(PlacePostStatus.values()).filter(e -> e.toString().equals(value)).findFirst()
                 .orElse(UNKNOWN_TO_SDK_VERSION);
     }
 
-    public static Set<MentionType> knownValues() {
+    public static Set<PlacePostStatus> knownValues() {
         return Stream.of(values()).filter(v -> v != UNKNOWN_TO_SDK_VERSION).collect(Collectors.toSet());
     }
 }

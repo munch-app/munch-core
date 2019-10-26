@@ -15,11 +15,12 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 /**
- * Date: 10/9/19
- * Time: 8:04 pm
+ * Mention links Place together with content related to the place.
+ * Data here is not exclusive, the content itself might link to a place directly.
  *
  * @author Fuxing Loh
  * @see app.munch.model.validator.MentionTypeValidator for class level validation
+ * @since 2019-09-10 at 20:04
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -27,7 +28,7 @@ import java.util.Date;
 @Table(name = "Mention", uniqueConstraints = {
         @UniqueConstraint(name = "uk_2rjxx36ptzagatrp", columnNames = {"place_id", "article_id"}),
         @UniqueConstraint(name = "uk_88jnqnzqvndsmhnm", columnNames = {"place_id", "media_id"}),
-//        @UniqueConstraint(name = "uk_nvs8jmndqnhmzn8q", columnNames = {"place_id", "image_id"}),
+        @UniqueConstraint(name = "uk_nvs8jmndqnhmzn8q", columnNames = {"place_id", "post_id"}),
 })
 @ValidMentionType
 public final class Mention {
@@ -62,6 +63,12 @@ public final class Mention {
      */
     @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = true)
     private ProfileMedia media;
+
+    /**
+     * @see ValidMentionType for how validation works
+     */
+    @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = true)
+    private PlacePost post;
 
     /**
      * @see ValidMentionType for how validation works
@@ -130,6 +137,14 @@ public final class Mention {
 
     public void setMedia(ProfileMedia media) {
         this.media = media;
+    }
+
+    public PlacePost getPost() {
+        return post;
+    }
+
+    public void setPost(PlacePost post) {
+        this.post = post;
     }
 
     public MentionType getType() {

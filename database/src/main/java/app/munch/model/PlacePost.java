@@ -1,9 +1,12 @@
 package app.munch.model;
 
+import app.munch.model.annotation.ValidPlacePost;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.fuxing.err.ValidationException;
 import dev.fuxing.utils.KeyUtils;
+import dev.fuxing.validator.ValidEnum;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -11,40 +14,48 @@ import javax.validation.constraints.Pattern;
 import javax.validation.groups.Default;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Fuxing Loh
- * @since 2019-07-31 at 15:27
+ * @since 2019-10-25 at 19:51
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
-@Table(name = "PlaceImage", uniqueConstraints = {
-        @UniqueConstraint(name = "uk_my3rcdy96e9fdwfs", columnNames = {"place_id", "image_uid"})
-})
-@Deprecated
-public final class PlaceImage {
+@Table(name = "PlacePost")
+@ValidPlacePost
+public final class PlacePost {
 
+    /**
+     * Post uses L16 ids, post is not a top level node, it's a unique node tho.
+     * In comparision with places, post can generate as many as 10_000x of place (too many of them)
+     */
     @NotNull
-    @Pattern(regexp = KeyUtils.ULID_REGEX)
+    @Pattern(regexp = "^[0-9a-hjkmnp-tv-z]{15}p$")
     @Id
-    @Column(length = 26, updatable = false, nullable = false, unique = true)
-    private String uid;
+    @Column(length = 16, updatable = false, nullable = false, unique = true)
+    private String id;
 
     @NotNull
     @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = false)
     private Place place;
 
+    @ManyToMany(cascade = {}, fetch = FetchType.EAGER)
+    private List<Image> images;
+
     @NotNull
     @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = false)
     private Profile profile;
 
-    /**
-     * ManyToOne because a single Image can be used by multiple Places
-     */
-    @NotNull
-    @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = false)
-    private Image image;
+    @ValidEnum
+    @Enumerated(EnumType.STRING)
+    @Column(length = 100, updatable = false, nullable = false, unique = false)
+    private PlacePostStatus status;
+
+    @Length(max = 500)
+    @Column(length = 500, updatable = true, nullable = true, unique = false)
+    private String content;
 
     @NotNull
     @Version
@@ -55,12 +66,12 @@ public final class PlaceImage {
     @Column(updatable = false, nullable = false)
     private Date createdAt;
 
-    public String getUid() {
-        return uid;
+    public String getId() {
+        return id;
     }
 
-    public void setUid(String id) {
-        this.uid = id;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public Place getPlace() {
@@ -71,6 +82,14 @@ public final class PlaceImage {
         this.place = place;
     }
 
+    public List<Image> getImages() {
+        return images;
+    }
+
+    public void setImages(List<Image> images) {
+        this.images = images;
+    }
+
     public Profile getProfile() {
         return profile;
     }
@@ -79,12 +98,20 @@ public final class PlaceImage {
         this.profile = profile;
     }
 
-    public Image getImage() {
-        return image;
+    public PlacePostStatus getStatus() {
+        return status;
     }
 
-    public void setImage(Image image) {
-        this.image = image;
+    public void setStatus(PlacePostStatus status) {
+        this.status = status;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public Date getUpdatedAt() {
@@ -105,13 +132,8 @@ public final class PlaceImage {
 
     @PrePersist
     void prePersist() {
-        long millis = System.currentTimeMillis();
-        setUid(KeyUtils.nextULID(millis));
-        setCreatedAt(new Timestamp(millis));
-
-        if (getProfile() == null && getImage() != null) {
-            setProfile(getImage().getProfile());
-        }
+        setId(KeyUtils.nextL(15, 'p'));
+        setCreatedAt(new Timestamp(System.currentTimeMillis()));
 
         preUpdate();
     }
@@ -119,7 +141,6 @@ public final class PlaceImage {
     @PreUpdate
     void preUpdate() {
         setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-
         ValidationException.validate(this, Default.class);
     }
 }
