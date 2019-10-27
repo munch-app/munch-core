@@ -26,6 +26,7 @@ import static app.munch.model.PlaceEditableField.HOURS;
  * Time: 9:53 pm
  */
 @Singleton
+@Deprecated
 public final class ArticlePlaceController {
     private final TransactionProvider provider;
     private final PlaceController placeController;
@@ -35,19 +36,6 @@ public final class ArticlePlaceController {
         this.provider = provider;
         this.placeController = placeController;
     }
-
-    /**
-     * @param articleId article id
-     */
-    public void removeAll(String articleId) {
-        provider.with(entityManager -> {
-            entityManager.createQuery("DELETE FROM ArticlePlace " +
-                    "WHERE article.id = :articleId")
-                    .setParameter("articleId", articleId)
-                    .executeUpdate();
-        });
-    }
-
     /**
      * Note: you are passing in Detached entities
      */

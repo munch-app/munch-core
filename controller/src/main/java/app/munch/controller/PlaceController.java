@@ -22,7 +22,7 @@ import java.util.function.Function;
  * Time: 4:46 pm
  */
 @Singleton
-public final class PlaceController extends Controller {
+public class PlaceController extends Controller {
 
     private final LockingController locking;
     private final RestrictionController restriction;

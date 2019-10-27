@@ -12,6 +12,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.groups.Default;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * Created by: Fuxing
@@ -151,6 +152,23 @@ public final class Place extends PlaceModel implements ElasticSerializable {
      */
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    /**
+     * @param o to compare
+     * @return if 2 Place is the same entity. (only id/pk is checked)
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Place place = (Place) o;
+        return id.equals(place.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     @PrePersist

@@ -1,7 +1,6 @@
 package app.munch.api;
 
 import app.munch.controller.ArticleController;
-import app.munch.controller.ArticlePlaceController;
 import app.munch.controller.RestrictionController;
 import app.munch.exception.RestrictionException;
 import app.munch.model.*;
@@ -16,8 +15,6 @@ import dev.fuxing.transport.service.TransportResult;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -31,14 +28,12 @@ public final class ArticleService extends ApiService {
     private final ArticleQuery articleQuery;
 
     private final ArticleController articleController;
-    private final ArticlePlaceController articlePlaceController;
     private final RestrictionController restrictionController;
 
     @Inject
-    ArticleService(ArticleQuery articleQuery, ArticleController articleController, ArticlePlaceController articlePlaceController, RestrictionController restrictionController) {
+    ArticleService(ArticleQuery articleQuery, ArticleController articleController, RestrictionController restrictionController) {
         this.articleQuery = articleQuery;
         this.articleController = articleController;
-        this.articlePlaceController = articlePlaceController;
         this.restrictionController = restrictionController;
     }
 
@@ -76,15 +71,14 @@ public final class ArticleService extends ApiService {
         });
     }
 
+    /**
+     * Logged in profile is creating a new Article
+     */
     public Article meArticlePost(TransportContext ctx) {
-        String accountId = ctx.get(ApiRequest.class).getAccountId();
         ArticleRevision revision = ctx.bodyAsObject(ArticleRevision.class);
 
         return articleController.post(revision, entityManager -> {
-            Profile profile = entityManager.createQuery("SELECT a.profile FROM Account a " +
-                    "WHERE a.id = :id", Profile.class)
-                    .setParameter("id", accountId)
-                    .getSingleResult();
+            Profile profile = findProfile(entityManager, ctx);
 
             // Checking user has write access
             RestrictionException.check(entityManager, profile, ProfileRestrictionType.ARTICLE_WRITE);
@@ -92,6 +86,9 @@ public final class ArticleService extends ApiService {
         });
     }
 
+    /**
+     * Logged in profile is getting an Article they own
+     */
     public Article meArticleGet(TransportContext ctx) {
         String id = ctx.pathString("id");
 
@@ -107,48 +104,31 @@ public final class ArticleService extends ApiService {
         String articleId = ctx.pathString("id");
         JsonNode body = ctx.bodyAsJson();
 
-        Article article = articleController.patch(articleId, body, (entityManager, articleObj) -> {
+        return articleController.patch(articleId, body, (entityManager, articleObj) -> {
             // Checking user has write access
             authorized(entityManager, ctx, articleObj.getProfile());
             restrictionController.check(entityManager, articleObj.getProfile(), ProfileRestrictionType.ARTICLE_WRITE);
         });
-        if (article.getStatus() == ArticleStatus.DELETED) {
-            articlePlaceController.removeAll(articleId);
-        }
-        return article;
     }
 
-    public TransportResult meArticleRevisionPost(TransportContext ctx) {
+    public ArticleController.PostResponse meArticleRevisionPost(TransportContext ctx) {
         String id = ctx.pathString("id");
         ArticleRevision revision = ctx.bodyAsObject(ArticleRevision.class);
         revision.setPublished(false);
 
-        revision = articleController.post(id, revision, (entityManager, article) -> {
+        return articleController.post(id, revision, (entityManager, article) -> {
             authorized(entityManager, ctx, article.getProfile());
         });
-
-        return TransportResult.builder()
-                .data(Map.of("uid", revision.getUid()))
-                .build();
     }
 
-    public TransportResult meArticleRevisionPublish(TransportContext ctx) {
+    public ArticleController.PostResponse meArticleRevisionPublish(TransportContext ctx) {
         String id = ctx.pathString("id");
         ArticleRevision revision = ctx.bodyAsObject(ArticleRevision.class);
         revision.setPublished(true);
 
-        revision = articleController.post(id, revision, (entityManager, article) -> {
+        return articleController.post(id, revision, (entityManager, article) -> {
             authorized(entityManager, ctx, article.getProfile());
         });
-
-        String profileUid = revision.getProfile().getUid();
-        List<ArticlePlaceController.Response> responses = articlePlaceController.populateAll(profileUid, revision);
-
-        return TransportResult.builder()
-                .data(Map.of(
-                        "revision", revision,
-                        "responses", responses
-                )).build();
     }
 
     public ArticleRevision meArticleRevisionGet(TransportContext ctx) {

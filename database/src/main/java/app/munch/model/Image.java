@@ -325,7 +325,7 @@ public final class Image {
          * @param image         to initialize
          * @return initialized Image, or object if Image cannot be found.
          */
-        public static Image find(EntityManager entityManager, Image image) {
+        public static Image initialize(EntityManager entityManager, Image image) {
             if (image == null) {
                 return null;
             }

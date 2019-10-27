@@ -1,8 +1,10 @@
 package app.munch.api;
 
 import app.munch.controller.ArticleController;
-import app.munch.controller.ArticlePlaceController;
-import app.munch.model.*;
+import app.munch.model.Article;
+import app.munch.model.ArticleRevision;
+import app.munch.model.Image;
+import app.munch.model.Profile;
 import app.munch.query.ArticleQuery;
 import com.fasterxml.jackson.databind.JsonNode;
 import dev.fuxing.jpa.EntityPatch;
@@ -15,8 +17,6 @@ import org.hibernate.Hibernate;
 
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by: Fuxing
@@ -27,13 +27,11 @@ public final class ProfileAdminService extends AdminService {
 
     private final ArticleQuery articleQuery;
     private final ArticleController articleController;
-    private final ArticlePlaceController articlePlaceController;
 
     @Inject
-    ProfileAdminService(ArticleQuery articleQuery, ArticleController articleController, ArticlePlaceController articlePlaceController) {
+    ProfileAdminService(ArticleQuery articleQuery, ArticleController articleController) {
         this.articleQuery = articleQuery;
         this.articleController = articleController;
-        this.articlePlaceController = articlePlaceController;
     }
 
     @Override
@@ -54,6 +52,10 @@ public final class ProfileAdminService extends AdminService {
                     PATH("/:articleId", () -> {
                         GET("", this::profileArticleGet);
                         PATCH("", this::profileArticlePatch);
+
+                        PATH("/images", () -> {
+                            GET("", this::profileArticleImagesQuery);
+                        });
 
                         PATH("/revisions", () -> {
                             POST("", this::profileArticleRevisionPost);
@@ -158,38 +160,28 @@ public final class ProfileAdminService extends AdminService {
         String articleId = ctx.pathString("articleId");
         JsonNode body = ctx.bodyAsJson();
 
-        Article article = articleController.patch(articleId, body, null);
-        if (article.getStatus() == ArticleStatus.DELETED) {
-            articlePlaceController.removeAll(articleId);
-        }
-        return article;
+        return articleController.patch(articleId, body, null);
     }
 
-    public TransportResult profileArticleRevisionPost(TransportContext ctx) {
+    public TransportResult profileArticleImagesQuery(TransportContext ctx) {
+        // TODO(fuxing):
+        return TransportResult.ok();
+    }
+
+    public ArticleController.PostResponse profileArticleRevisionPost(TransportContext ctx) {
         String articleId = ctx.pathString("articleId");
         ArticleRevision revision = ctx.bodyAsObject(ArticleRevision.class);
         revision.setPublished(false);
 
-        revision = articleController.post(articleId, revision, null);
-        return TransportResult.builder()
-                .data(Map.of("uid", revision.getUid()))
-                .build();
+        return articleController.post(articleId, revision, null);
     }
 
-    public TransportResult profileArticleRevisionPublish(TransportContext ctx) {
+    public ArticleController.PostResponse profileArticleRevisionPublish(TransportContext ctx) {
         String articleId = ctx.pathString("articleId");
         ArticleRevision revision = ctx.bodyAsObject(ArticleRevision.class);
         revision.setPublished(true);
 
-        revision = articleController.post(articleId, revision, null);
-        List<ArticlePlaceController.Response> responses = articlePlaceController.populateAll(Profile.ADMIN_ID, revision);
-
-        return TransportResult.builder()
-                .data(Map.of(
-                        "revision", revision,
-                        "responses", responses
-                ))
-                .build();
+        return articleController.post(articleId, revision, null);
     }
 
     public ArticleRevision profileArticleRevisionGet(TransportContext ctx) {
