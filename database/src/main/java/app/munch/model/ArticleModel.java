@@ -62,6 +62,7 @@ public abstract class ArticleModel {
 
     @Valid
     @NotNull
+    @Size(max = 1000)
     @Type(type = "ArticleModel.ContentType")
     private List<@NotNull Node> content;
 

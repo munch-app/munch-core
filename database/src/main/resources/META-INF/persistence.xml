@@ -20,8 +20,10 @@
         <class>app.munch.model.Image</class>
 
         <class>app.munch.model.Place</class>
-        <class>app.munch.model.PlaceImage</class>
         <class>app.munch.model.PlaceRevision</class>
+        <class>app.munch.model.PlacePost</class>
+
+        <class>app.munch.model.PlaceImage</class>
         <class>app.munch.model.PlaceLocking</class>
 
         <class>app.munch.model.Tag</class>

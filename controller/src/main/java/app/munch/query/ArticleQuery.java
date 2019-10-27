@@ -1,8 +1,8 @@
 package app.munch.query;
 
-import app.munch.model.Article;
-import app.munch.model.ArticleStatus;
-import app.munch.model.Profile;
+import app.munch.model.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.fuxing.err.ForbiddenException;
 import dev.fuxing.jpa.EntityQuery;
 import dev.fuxing.transport.TransportCursor;
@@ -10,8 +10,10 @@ import dev.fuxing.transport.TransportList;
 
 import javax.inject.Singleton;
 import javax.persistence.EntityManager;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author Fuxing Loh
@@ -66,5 +68,94 @@ public final class ArticleQuery extends Query {
                 .peek(article -> {
                     article.setContent(null);
                 });
+    }
+
+    @Singleton
+    public static final class ImageQuery {
+
+        public TransportList<ImageGroup> query(EntityManager entityManager, Article article, TransportCursor cursor) {
+            ArticleRevision revision = entityManager.createQuery("FROM ArticleRevision " +
+                    "WHERE article = :article " +
+                    "ORDER BY uid DESC ", ArticleRevision.class)
+                    .setParameter("article", article)
+                    .setMaxResults(1)
+                    .getSingleResult();
+
+            @SuppressWarnings("ConstantConditions") final int from = cursor.getInt("from", 0);
+            final int size = 5;
+
+            List<ImageGroup> groups = revision.getContent()
+                    .stream()
+                    .filter(node -> node.getType().equals("place"))
+                    .map(node -> (ArticleModel.PlaceNode) node)
+                    .map(placeNode -> placeNode.getAttrs().getPlace())
+                    .filter(Objects::nonNull)
+                    .map(ArticleModel.PlaceNode.Attrs.Place::getId)
+                    .filter(Objects::nonNull)
+                    .skip(from)
+                    .limit(size)
+                    .map(placeId -> query(entityManager, placeId))
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+
+            return new TransportList<>(groups, size, (g, builder) -> {
+                builder.put("from", from + size);
+                builder.put("size", size);
+            });
+        }
+
+        public ImageGroup query(EntityManager entityManager, String placeId) {
+            Place place = entityManager.find(Place.class, placeId);
+            Set<Image> images = new HashSet<>();
+
+            entityManager.createQuery("FROM Mention " +
+                    "WHERE place = :place " +
+                    "AND status = :status " +
+                    "AND type IN (:types)", Mention.class)
+                    .setParameter("place", place)
+                    .setParameter("status", MentionStatus.PUBLIC)
+                    .setParameter("types", Set.of(MentionType.MEDIA, MentionType.POST))
+                    .setMaxResults(10)
+                    .getResultList()
+                    .forEach(mention -> {
+                        switch (mention.getType()) {
+                            case POST:
+                                images.addAll(mention.getPost().getImages());
+                                return;
+
+                            case MEDIA:
+                                images.addAll(mention.getMedia().getImages());
+                                return;
+
+                            default:
+                        }
+                    });
+
+            if (images.isEmpty()) {
+                return null;
+            }
+
+            return new ImageGroup(place, new ArrayList<>(images));
+        }
+
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        public static class ImageGroup {
+            private final Place place;
+            private final List<Image> images;
+
+            private ImageGroup(Place place, List<Image> images) {
+                this.place = place;
+                this.images = images;
+            }
+
+            public Place getPlace() {
+                return place;
+            }
+
+            public List<Image> getImages() {
+                return images;
+            }
+        }
     }
 }

@@ -11,6 +11,7 @@ import org.hibernate.validator.constraints.Length;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import javax.validation.groups.Default;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -41,6 +42,7 @@ public final class PlacePost {
     @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = false)
     private Place place;
 
+    @Size(max = 10)
     @ManyToMany(cascade = {}, fetch = FetchType.EAGER)
     private List<Image> images;
 

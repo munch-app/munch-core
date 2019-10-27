@@ -12,17 +12,20 @@ import dev.fuxing.jpa.EntityStream;
 import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
 import dev.fuxing.transport.service.TransportContext;
-import dev.fuxing.transport.service.TransportResult;
 import org.hibernate.Hibernate;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
 
 /**
+ * Should deprecate the /admin/profiles/:id/articles service to reduce complexity.
+ * <p>
  * Created by: Fuxing
  * Date: 2019-08-13
  * Time: 21:51
  */
+@Singleton
 public final class ProfileAdminService extends AdminService {
 
     private final ArticleQuery articleQuery;
@@ -44,7 +47,6 @@ public final class ProfileAdminService extends AdminService {
                 GET("", this::profileGet);
                 PATCH("", this::profilePatch);
 
-
                 PATH("/articles", () -> {
                     GET("", this::profileArticleList);
                     POST("", this::profileArticlePost);
@@ -52,10 +54,6 @@ public final class ProfileAdminService extends AdminService {
                     PATH("/:articleId", () -> {
                         GET("", this::profileArticleGet);
                         PATCH("", this::profileArticlePatch);
-
-                        PATH("/images", () -> {
-                            GET("", this::profileArticleImagesQuery);
-                        });
 
                         PATH("/revisions", () -> {
                             POST("", this::profileArticleRevisionPost);
@@ -161,11 +159,6 @@ public final class ProfileAdminService extends AdminService {
         JsonNode body = ctx.bodyAsJson();
 
         return articleController.patch(articleId, body, null);
-    }
-
-    public TransportResult profileArticleImagesQuery(TransportContext ctx) {
-        // TODO(fuxing):
-        return TransportResult.ok();
     }
 
     public ArticleController.PostResponse profileArticleRevisionPost(TransportContext ctx) {

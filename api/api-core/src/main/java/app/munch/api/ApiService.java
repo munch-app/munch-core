@@ -55,6 +55,23 @@ public abstract class ApiService implements TransportService {
     }
 
     /**
+     * Syntactical sugar for {@code getAuthorized(TransportContext, Function<EntityManager, T>, Function<T, Profile>)}
+     *
+     * @param context       transport context to read from request
+     * @param name          of the primary key in path params
+     * @param entityClass   to map/find
+     * @param profileMapper entity -> profile mapper, used to check whether current account has access to profile
+     * @param <T>           Entity model type
+     * @return Entity, if authorized
+     */
+    protected <T> T getAuthorized(TransportContext context, String name, Class<T> entityClass, Function<T, Profile> profileMapper) {
+        String primaryKey = context.pathString(name);
+        return getAuthorized(context, entityManager -> {
+            return entityManager.find(entityClass, primaryKey);
+        }, profileMapper);
+    }
+
+    /**
      * @param context       transport context to read from request
      * @param entityMapper  map to the entity you are getting
      * @param profileMapper entity -> profile mapper, used to check whether current account has access to profile

@@ -76,8 +76,7 @@ public final class MentionQuery extends Query {
                 break;
 
             case ARTICLE:
-            case IMAGE:
-            case REVIEW:
+            case POST:
                 break;
         }
     }

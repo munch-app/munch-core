@@ -26,13 +26,15 @@ import java.util.Set;
 public final class ArticleService extends ApiService {
 
     private final ArticleQuery articleQuery;
+    private final ArticleQuery.ImageQuery imageQuery;
 
     private final ArticleController articleController;
     private final RestrictionController restrictionController;
 
     @Inject
-    ArticleService(ArticleQuery articleQuery, ArticleController articleController, RestrictionController restrictionController) {
+    ArticleService(ArticleQuery articleQuery, ArticleQuery.ImageQuery imageQuery, ArticleController articleController, RestrictionController restrictionController) {
         this.articleQuery = articleQuery;
+        this.imageQuery = imageQuery;
         this.articleController = articleController;
         this.restrictionController = restrictionController;
     }
@@ -90,14 +92,18 @@ public final class ArticleService extends ApiService {
      * Logged in profile is getting an Article they own
      */
     public Article meArticleGet(TransportContext ctx) {
-        String id = ctx.pathString("id");
-
-        return getAuthorized(ctx, em -> em.find(Article.class, id), ArticleModel::getProfile);
+        return getAuthorized(ctx, "id", Article.class, ArticleModel::getProfile);
     }
 
-    public TransportList<TransportList> meArticleImagesQuery(TransportContext ctx) {
-        // TODO(fuxing): Read from place node in article
-        return null;
+    public TransportList<ArticleQuery.ImageQuery.ImageGroup> meArticleImagesQuery(TransportContext ctx) {
+        String id = ctx.pathString("id");
+
+        return provider.reduce(entityManager -> {
+            Article article = entityManager.find(Article.class, id);
+            authorized(entityManager, ctx, article.getProfile());
+
+            return imageQuery.query(entityManager, article, ctx.queryCursor());
+        });
     }
 
     public Article meArticlePatch(TransportContext ctx) {
