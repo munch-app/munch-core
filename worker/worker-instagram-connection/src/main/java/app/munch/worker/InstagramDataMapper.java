@@ -78,7 +78,8 @@ public final class InstagramDataMapper {
     }
 
     public Date mapCreatedAt(InstagramMedia instagram) {
-        return new Date(instagram.getCreatedTime() * 1000);
+        long createdAt = instagram.getCreatedTime();
+        return new Date(createdAt * 1000);
     }
 
     public List<Image> mapImages(Profile profile, InstagramMedia instagram) {
