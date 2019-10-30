@@ -13,7 +13,7 @@ import java.util.Objects;
  * @since 2019-10-25 at 15:07
  */
 @Singleton
-public class MentionController extends Controller {
+public class MentionController extends AbstractController{
 
     public Mention add(Place place, Article article, Profile.Supplier createdBy) {
         return provider.reduce(entityManager -> {

@@ -13,7 +13,7 @@ import java.util.Objects;
  * @since 2019-10-25 at 16:20
  */
 @Singleton
-public final class LockingController extends Controller {
+public final class LockingController extends AbstractController {
 
     /**
      * @param entityManager jpa entity manager

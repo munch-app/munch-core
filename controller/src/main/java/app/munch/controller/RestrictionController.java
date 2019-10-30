@@ -14,7 +14,7 @@ import java.util.Objects;
  * @since 2019-10-25 at 16:26
  */
 @Singleton
-public final class RestrictionController extends Controller {
+public final class RestrictionController extends AbstractController {
 
     public void check(EntityManager entityManager, Profile profile, ProfileRestrictionType type) throws RestrictionException {
         Objects.requireNonNull(profile);

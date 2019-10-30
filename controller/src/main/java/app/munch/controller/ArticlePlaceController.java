@@ -21,6 +21,8 @@ import static app.munch.model.PlaceEditableField.*;
 import static app.munch.model.PlaceEditableField.HOURS;
 
 /**
+ * @deprecated removing once migration is successful
+ *
  * Created by: Fuxing
  * Date: 1/9/19
  * Time: 9:53 pm

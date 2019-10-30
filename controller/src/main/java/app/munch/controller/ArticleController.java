@@ -10,7 +10,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import dev.fuxing.err.ForbiddenException;
 import dev.fuxing.err.NotFoundException;
 import dev.fuxing.jpa.EntityPatch;
-import dev.fuxing.jpa.TransactionProvider;
 import dev.fuxing.transport.TransportError;
 
 import javax.annotation.Nullable;
@@ -33,13 +32,11 @@ import static app.munch.model.PlaceEditableField.*;
  * Time: 09:23
  */
 @Singleton
-public final class ArticleController {
-    private final TransactionProvider provider;
+public final class ArticleController extends AbstractController {
     private final PlaceController placeController;
 
     @Inject
-    ArticleController(TransactionProvider provider, PlaceController placeController) {
-        this.provider = provider;
+    ArticleController(PlaceController placeController) {
         this.placeController = placeController;
     }
 
