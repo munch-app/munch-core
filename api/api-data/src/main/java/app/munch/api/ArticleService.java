@@ -198,11 +198,8 @@ public final class ArticleService extends ApiService {
                     TransportCursor cursor = TransportCursor.size(
                             ctx.queryInt("extra.profile.medias.size", 5)
                     );
-                    MediaQuery.query(entityManager, cursor, query -> {
-                        query.where("m.profile = :profile", "profile", article.getProfile());
-                    }).peek(media -> {
-                        media.setSocial(null);
-                        media.setMetric(null);
+                    MediaQuery.query(entityManager, cursor, b -> {
+                        b.where("profile", article.getProfile());
                     }).consume((medias, c) -> {
                         builder.extra("profile.medias", medias);
                     });
