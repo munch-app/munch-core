@@ -199,7 +199,7 @@ public final class ArticleService extends ApiService {
                             ctx.queryInt("extra.profile.medias.size", 5)
                     );
                     MediaQuery.query(entityManager, cursor, query -> {
-                        query.where("profile", article.getProfile());
+                        query.where("m.profile = :profile", "profile", article.getProfile());
                     }).peek(media -> {
                         media.setSocial(null);
                         media.setMetric(null);

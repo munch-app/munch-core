@@ -24,7 +24,7 @@ public final class MediaQuery extends Query {
      */
     public TransportList query(String username, TransportCursor cursor) {
         return query(cursor, query -> {
-            query.where("profile.username = :username", "username", username);
+            query.where("m.profile.username = :username", "username", username);
         });
     }
 
@@ -39,15 +39,15 @@ public final class MediaQuery extends Query {
         });
     }
 
-    public static EntityQuery<ProfileMedia>.EntityStream query(EntityManager entityManager, TransportCursor cursor, Consumer<EntityQuery<ProfileMedia>> consumer) {
-        return EntityQuery.select(entityManager, "FROM ProfileMedia", ProfileMedia.class)
-                .where("status", ProfileMediaStatus.PUBLIC)
+    public static EntityQuery.EntityStream<ProfileMedia> query(EntityManager entityManager, TransportCursor cursor, Consumer<EntityQuery<ProfileMedia>> consumer) {
+        return EntityQuery.select(entityManager, "SELECT m FROM ProfileMedia m", ProfileMedia.class)
+                .where("m.status = :status", "status", ProfileMediaStatus.PUBLIC)
                 .consume(consumer)
                 .predicate(cursor.has("createdAt", "id"), query -> {
-                    query.where("(createdAt < :createdAt OR (createdAt = :createdAt AND id < :id))",
+                    query.where("(m.createdAt < :createdAt OR (m.createdAt = :createdAt AND m.id < :id))",
                             "createdAt", cursor.getDate("createdAt"), "id", cursor.get("id"));
                 })
-                .orderBy("createdAt DESC, id DESC")
+                .orderBy("m.createdAt DESC, m.id DESC")
                 .size(cursor.size(20, 40))
                 .asStream()
                 .peek(MediaQuery::clean);
@@ -57,9 +57,10 @@ public final class MediaQuery extends Query {
      * @param media to peek when querying, readOnly must be {@code true}
      */
     public static void clean(ProfileMedia media) {
-        media.getMentions().forEach(mention -> {
-            mention.setMedia(null);
-        });
+        media.setMentions(null);
+//        media.getMentions().forEach(mention -> {
+//            mention.setMedia(null);
+//        });
     }
 
     public static void initialize(ProfileMedia media) {

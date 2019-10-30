@@ -51,7 +51,7 @@ public final class ArticleQuery extends Query {
         });
     }
 
-    public static EntityQuery<Article>.EntityStream query(EntityManager entityManager, TransportCursor cursor, ArticleStatus status, Consumer<EntityQuery<Article>> consumer) {
+    public static EntityQuery.EntityStream<Article> query(EntityManager entityManager, TransportCursor cursor, ArticleStatus status, Consumer<EntityQuery<Article>> consumer) {
         return EntityQuery.select(entityManager, "FROM Article", Article.class)
                 .size(cursor.size(10, 33))
                 .consume(consumer)

@@ -49,7 +49,7 @@ public final class MentionQuery extends Query {
         });
     }
 
-    public static EntityQuery<Mention>.EntityStream query(EntityManager entityManager, TransportCursor cursor, Consumer<EntityQuery<Mention>> consumer) {
+    public static EntityQuery.EntityStream<Mention> query(EntityManager entityManager, TransportCursor cursor, Consumer<EntityQuery<Mention>> consumer) {
         return EntityQuery.select(entityManager, "FROM Mention", Mention.class)
                 .where("status", MentionStatus.PUBLIC)
                 .consume(consumer)
