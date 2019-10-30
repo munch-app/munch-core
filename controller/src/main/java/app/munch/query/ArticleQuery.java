@@ -18,7 +18,7 @@ import java.util.function.Function;
  * @since 2019-10-09 at 12:26 am
  */
 @Singleton
-public final class ArticleQuery extends Query {
+public final class ArticleQuery extends AbstractQuery {
 
     /**
      * @param cursor          for querying

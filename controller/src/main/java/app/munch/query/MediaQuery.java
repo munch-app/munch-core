@@ -16,7 +16,7 @@ import java.util.function.Consumer;
  * @since 2019-10-09 at 2:11 pm
  */
 @Singleton
-public final class MediaQuery extends Query {
+public final class MediaQuery extends AbstractQuery {
 
     /**
      * @param username of profile

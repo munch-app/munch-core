@@ -13,7 +13,7 @@ import java.util.function.Consumer;
  * Time: 2:16 pm
  */
 @Singleton
-public final class ChangeController extends Controller {
+public final class ChangeController extends AbstractController {
 
     public void newGroup(String profileUid, String name, String description, Consumer<ChangeGroup> consumer) {
         Profile profile = new Profile();

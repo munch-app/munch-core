@@ -13,7 +13,7 @@ import java.util.Objects;
  * Time: 1:10 pm
  */
 @Singleton
-public final class AffiliateController extends Controller {
+public final class AffiliateController extends AbstractController {
 
     public void ingest(ChangeGroup group, Affiliate incoming) {
         String sourceKey = incoming.getSourceKey();
