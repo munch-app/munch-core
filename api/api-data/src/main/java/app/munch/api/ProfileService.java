@@ -2,7 +2,6 @@ package app.munch.api;
 
 import app.munch.model.ArticleStatus;
 import app.munch.model.Profile;
-import app.munch.model.ProfileMediaStatus;
 import app.munch.query.ArticleQuery;
 import app.munch.query.MediaQuery;
 import app.munch.query.MentionQuery;
@@ -71,12 +70,8 @@ public final class ProfileService extends ApiService {
             Map<String, String> cursor = new HashMap<>();
 
             if (fields.contains("medias")) {
-                MediaQuery.query(entityManager, TransportCursor.EMPTY, query -> {
-                    query.where("profile", profile);
-                }).cursor((media, builder) -> {
-                    builder.put("status", ProfileMediaStatus.PUBLIC);
-                    builder.put("createdAt", media.getCreatedAt().getTime());
-                    builder.put("id", media.getId());
+                MediaQuery.query(entityManager, TransportCursor.EMPTY, b -> {
+                    b.where("profile", profile);
                 }).consume((medias, mediasCursor) -> {
                     node.set("medias", JsonUtils.valueToTree(medias));
                     if (mediasCursor != null) {

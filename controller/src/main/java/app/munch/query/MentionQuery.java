@@ -16,7 +16,7 @@ import java.util.function.Consumer;
  * @since 2019-10-09 at 2:11 pm
  */
 @Singleton
-public final class MentionQuery extends Query {
+public final class MentionQuery extends AbstractQuery {
 
     /**
      * @param username of profile
@@ -49,7 +49,7 @@ public final class MentionQuery extends Query {
         });
     }
 
-    public static EntityQuery<Mention>.EntityStream query(EntityManager entityManager, TransportCursor cursor, Consumer<EntityQuery<Mention>> consumer) {
+    public static EntityQuery.EntityStream<Mention> query(EntityManager entityManager, TransportCursor cursor, Consumer<EntityQuery<Mention>> consumer) {
         return EntityQuery.select(entityManager, "FROM Mention", Mention.class)
                 .where("status", MentionStatus.PUBLIC)
                 .consume(consumer)

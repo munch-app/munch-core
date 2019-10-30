@@ -1,8 +1,9 @@
 package app.munch.query;
 
+import app.munch.jpa.QueryBuilder;
 import app.munch.model.ProfileMedia;
 import app.munch.model.ProfileMediaStatus;
-import dev.fuxing.jpa.EntityQuery;
+import dev.fuxing.jpa.EntityStream;
 import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
 import org.hibernate.Hibernate;
@@ -16,7 +17,7 @@ import java.util.function.Consumer;
  * @since 2019-10-09 at 2:11 pm
  */
 @Singleton
-public final class MediaQuery extends Query {
+public final class MediaQuery extends AbstractQuery {
 
     /**
      * @param username of profile
@@ -24,33 +25,23 @@ public final class MediaQuery extends Query {
      */
     public TransportList query(String username, TransportCursor cursor) {
         return query(cursor, query -> {
-            query.where("profile.username = :username", "username", username);
+            query.where("username", username);
         });
     }
 
-    public TransportList query(TransportCursor cursor, Consumer<EntityQuery<ProfileMedia>> consumer) {
+    public TransportList query(TransportCursor cursor, Consumer<QueryBuilder<ProfileMedia>> consumer) {
         return provider.reduce(true, entityManager -> {
-            return query(entityManager, cursor, consumer)
-                    .asTransportList((media, builder) -> {
-                        builder.putAll(cursor);
-                        builder.put("createdAt", media.getCreatedAt().getTime());
-                        builder.put("id", media.getId());
-                    });
+            return query(entityManager, cursor, consumer).asTransportList();
         });
     }
 
-    public static EntityQuery<ProfileMedia>.EntityStream query(EntityManager entityManager, TransportCursor cursor, Consumer<EntityQuery<ProfileMedia>> consumer) {
-        return EntityQuery.select(entityManager, "FROM ProfileMedia", ProfileMedia.class)
+    public static EntityStream<ProfileMedia> query(EntityManager entityManager, TransportCursor cursor, Consumer<QueryBuilder<ProfileMedia>> consumer) {
+        return QueryBuilder.from(ProfileMedia.class, entityManager)
+                .select("id", "profile", "type", "status", "images", "content", "mentions", "updatedAt", "createdAt")
                 .where("status", ProfileMediaStatus.PUBLIC)
-                .consume(consumer)
-                .predicate(cursor.has("createdAt", "id"), query -> {
-                    query.where("(createdAt < :createdAt OR (createdAt = :createdAt AND id < :id))",
-                            "createdAt", cursor.getDate("createdAt"), "id", cursor.get("id"));
-                })
-                .orderBy("createdAt DESC, id DESC")
-                .size(cursor.size(20, 40))
-                .asStream()
-                .peek(MediaQuery::clean);
+                .with(consumer)
+                .max(cursor.size(20, 40))
+                .cursorAtIdDesc(cursor, "createdAt", "id");
     }
 
     /**

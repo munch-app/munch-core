@@ -15,7 +15,7 @@ import javax.inject.Inject;
  * @author Fuxing Loh
  * @since 2019-09-28 at 23:23
  */
-public abstract class Controller {
+public abstract class AbstractController {
     protected TransactionProvider provider;
 
     @Inject

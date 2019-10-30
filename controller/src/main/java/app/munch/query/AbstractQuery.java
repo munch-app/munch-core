@@ -10,7 +10,7 @@ import javax.inject.Inject;
  * @author Fuxing Loh
  * @since 2019-10-09 at 12:25 am
  */
-public abstract class Query {
+public abstract class AbstractQuery {
     protected TransactionProvider provider;
 
     @Inject

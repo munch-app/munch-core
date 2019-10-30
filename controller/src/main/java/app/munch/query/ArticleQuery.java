@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  * @since 2019-10-09 at 12:26 am
  */
 @Singleton
-public final class ArticleQuery extends Query {
+public final class ArticleQuery extends AbstractQuery {
 
     /**
      * @param cursor          for querying
@@ -53,7 +53,7 @@ public final class ArticleQuery extends Query {
         });
     }
 
-    public static EntityQuery<Article>.EntityStream query(EntityManager entityManager, TransportCursor cursor, ArticleStatus status, Consumer<EntityQuery<Article>> consumer) {
+    public static EntityQuery.EntityStream<Article> query(EntityManager entityManager, TransportCursor cursor, ArticleStatus status, Consumer<EntityQuery<Article>> consumer) {
         return EntityQuery.select(entityManager, "FROM Article", Article.class)
                 .size(cursor.size(10, 33))
                 .consume(consumer)
