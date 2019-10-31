@@ -49,7 +49,7 @@ public final class ProfileMedia {
     private String eid;
 
     @NotNull
-    @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(cascade = {}, fetch = FetchType.EAGER, optional = false)
     private Profile profile;
 
     @NotNull
@@ -78,7 +78,7 @@ public final class ProfileMedia {
     /**
      * Non cascading, edit from Mention
      */
-    @OneToMany(cascade = {}, fetch = FetchType.LAZY, mappedBy = "media", orphanRemoval = false)
+    @OneToMany(cascade = {}, fetch = FetchType.EAGER, mappedBy = "media", orphanRemoval = false)
     private List<Mention> mentions;
 
     @NotNull
@@ -120,7 +120,7 @@ public final class ProfileMedia {
     }
 
     public ProfileSocial getSocial() {
-        return social;
+        return Lazy.load(social, null);
     }
 
     public void setSocial(ProfileSocial profileSocial) {

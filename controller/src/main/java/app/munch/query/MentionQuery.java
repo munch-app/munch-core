@@ -4,6 +4,7 @@ import app.munch.model.Mention;
 import app.munch.model.MentionStatus;
 import app.munch.model.MentionType;
 import dev.fuxing.jpa.EntityQuery;
+import dev.fuxing.jpa.EntityStream;
 import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
 
@@ -41,15 +42,11 @@ public final class MentionQuery extends AbstractQuery {
     public TransportList query(TransportCursor cursor, Consumer<EntityQuery<Mention>> consumer) {
         return provider.reduce(true, entityManager -> {
             return query(entityManager, cursor, consumer)
-                    .asTransportList((mention, builder) -> {
-                        builder.putAll(cursor);
-                        builder.put("createdAt", mention.getCreatedAt().getTime());
-                        builder.put("id", mention.getId());
-                    });
+                    .asTransportList();
         });
     }
 
-    public static EntityQuery.EntityStream<Mention> query(EntityManager entityManager, TransportCursor cursor, Consumer<EntityQuery<Mention>> consumer) {
+    public static EntityStream<Mention> query(EntityManager entityManager, TransportCursor cursor, Consumer<EntityQuery<Mention>> consumer) {
         return EntityQuery.select(entityManager, "FROM Mention", Mention.class)
                 .where("status", MentionStatus.PUBLIC)
                 .consume(consumer)
@@ -62,7 +59,11 @@ public final class MentionQuery extends AbstractQuery {
                 })
                 .orderBy("createdAt DESC, id DESC")
                 .size(cursor.size(10, 33))
-                .asStream()
+                .asStream((mention, builder) -> {
+                    builder.putAll(cursor);
+                    builder.put("createdAt", mention.getCreatedAt().getTime());
+                    builder.put("id", mention.getId());
+                })
                 .peek(MentionQuery::clean);
     }
 

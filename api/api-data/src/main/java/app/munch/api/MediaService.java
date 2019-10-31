@@ -62,8 +62,8 @@ public final class MediaService extends ApiService {
                             ctx.queryInt("extra.profile.medias.size", 5)
                     );
                     MediaQuery.query(entityManager, cursor, query -> {
-                        query.where("m.profile = :profile", "profile", media.getProfile());
-                        query.where("m.id != :mid", "mid", media.getId());
+                        query.where("profile", media.getProfile());
+                        query.whereNotEqual("id", media.getId());
                     }).consume((medias, c) -> {
                         builder.extra("profile.medias", medias);
                     });

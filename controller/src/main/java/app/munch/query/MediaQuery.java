@@ -3,6 +3,7 @@ package app.munch.query;
 import app.munch.model.ProfileMedia;
 import app.munch.model.ProfileMediaStatus;
 import dev.fuxing.jpa.EntityQuery;
+import dev.fuxing.jpa.EntityStream;
 import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
 import org.hibernate.Hibernate;
@@ -23,33 +24,28 @@ public final class MediaQuery extends AbstractQuery {
      * @return TransportList with entity in json and cursor information for next
      */
     public TransportList query(String username, TransportCursor cursor) {
-        return query(cursor, query -> {
-            query.where("m.profile.username = :username", "username", username);
-        });
-    }
-
-    public TransportList query(TransportCursor cursor, Consumer<EntityQuery<ProfileMedia>> consumer) {
         return provider.reduce(true, entityManager -> {
-            return query(entityManager, cursor, consumer)
-                    .asTransportList((media, builder) -> {
-                        builder.putAll(cursor);
-                        builder.put("createdAt", media.getCreatedAt().getTime());
-                        builder.put("id", media.getId());
-                    });
+            return query(entityManager, cursor, query -> {
+                query.where("profile.username = :username", "username", username);
+            }).asTransportList();
         });
     }
 
-    public static EntityQuery.EntityStream<ProfileMedia> query(EntityManager entityManager, TransportCursor cursor, Consumer<EntityQuery<ProfileMedia>> consumer) {
-        return EntityQuery.select(entityManager, "SELECT m FROM ProfileMedia m", ProfileMedia.class)
-                .where("m.status = :status", "status", ProfileMediaStatus.PUBLIC)
+    public static EntityStream<ProfileMedia> query(EntityManager entityManager, TransportCursor cursor, Consumer<EntityQuery<ProfileMedia>> consumer) {
+        return EntityQuery.select(entityManager, "FROM ProfileMedia", ProfileMedia.class)
+                .where("status", ProfileMediaStatus.PUBLIC)
                 .consume(consumer)
                 .predicate(cursor.has("createdAt", "id"), query -> {
-                    query.where("(m.createdAt < :createdAt OR (m.createdAt = :createdAt AND m.id < :id))",
+                    query.where("(createdAt < :createdAt OR (createdAt = :createdAt AND id < :id))",
                             "createdAt", cursor.getDate("createdAt"), "id", cursor.get("id"));
                 })
-                .orderBy("m.createdAt DESC, m.id DESC")
+                .orderBy("createdAt DESC, id DESC")
                 .size(cursor.size(20, 40))
-                .asStream()
+                .asStream((media, builder) -> {
+                    builder.putAll(cursor);
+                    builder.put("createdAt", media.getCreatedAt().getTime());
+                    builder.put("id", media.getId());
+                })
                 .peek(MediaQuery::clean);
     }
 
@@ -57,10 +53,9 @@ public final class MediaQuery extends AbstractQuery {
      * @param media to peek when querying, readOnly must be {@code true}
      */
     public static void clean(ProfileMedia media) {
-        media.setMentions(null);
-//        media.getMentions().forEach(mention -> {
-//            mention.setMedia(null);
-//        });
+        media.getMentions().forEach(mention -> {
+            mention.setMedia(null);
+        });
     }
 
     public static void initialize(ProfileMedia media) {

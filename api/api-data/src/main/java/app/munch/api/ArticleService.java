@@ -188,7 +188,7 @@ public final class ArticleService extends ApiService {
                     );
                     ArticleQuery.query(entityManager, cursor, ArticleStatus.PUBLISHED, query -> {
                         query.where("profile", article.getProfile());
-                        query.where("id != :aid", "aid", article.getId());
+                        query.whereNotEqual("id", article.getId());
                     }).consume((articles, c) -> {
                         builder.extra("profile.articles", articles);
                     });
@@ -199,7 +199,7 @@ public final class ArticleService extends ApiService {
                             ctx.queryInt("extra.profile.medias.size", 5)
                     );
                     MediaQuery.query(entityManager, cursor, query -> {
-                        query.where("m.profile = :profile", "profile", article.getProfile());
+                        query.where("profile", article.getProfile());
                     }).peek(media -> {
                         media.setSocial(null);
                         media.setMetric(null);
