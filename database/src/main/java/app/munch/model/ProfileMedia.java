@@ -69,7 +69,6 @@ public final class ProfileMedia {
     private ProfileMediaStatus status;
 
     @OrderBy("createdAt DESC")
-    @JoinColumn
     @LazyCollection(LazyCollectionOption.FALSE)
     @ManyToMany(cascade = {})
     private List<Image> images;
@@ -84,7 +83,6 @@ public final class ProfileMedia {
      * Non cascading, edit from Mention
      */
     @OrderBy("createdAt DESC")
-    @JoinColumn
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(cascade = {}, mappedBy = "media", orphanRemoval = false)
     private List<Mention> mentions;

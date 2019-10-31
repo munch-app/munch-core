@@ -46,7 +46,6 @@ public final class PlacePost {
 
     @Size(max = 10)
     @OrderBy("createdAt DESC")
-    @JoinColumn
     @LazyCollection(LazyCollectionOption.FALSE)
     @ManyToMany(cascade = {})
     private List<Image> images;
