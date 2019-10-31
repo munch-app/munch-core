@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -73,7 +74,7 @@ public class QueryBuilder<T> implements
         return this;
     }
 
-    public List<JsonNode> asJson() {
+    public List<JsonNode> asJson(Function<Object, JsonNode> mapper) {
         CriteriaQuery<Tuple> query = this.query
                 .where(predicates.toArray(Predicate[]::new))
                 .orderBy(orders);
@@ -93,7 +94,7 @@ public class QueryBuilder<T> implements
             return results.stream()
                     .map(tuple -> {
                         T data = tuple.get("data", clazz);
-                        return (JsonNode) JsonUtils.valueToTree(data);
+                        return mapper.apply(data);
                     })
                     .collect(Collectors.toList());
         } else {
@@ -103,7 +104,7 @@ public class QueryBuilder<T> implements
                         tuple.getElements().forEach(element -> {
                             String name = element.getAlias();
                             Object object = tuple.get(name);
-                            node.set(name, JsonUtils.valueToTree(object));
+                            node.set(name, mapper.apply(object));
                         });
                         return node;
                     })
@@ -112,7 +113,8 @@ public class QueryBuilder<T> implements
     }
 
     public List<T> asList() {
-        return asJson().stream()
+        return asJson(JsonUtils::valueToTree)
+                .stream()
                 .map(node -> JsonUtils.toObject(node, clazz))
                 .collect(Collectors.toList());
     }

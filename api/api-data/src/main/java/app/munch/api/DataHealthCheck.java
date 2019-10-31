@@ -1,6 +1,5 @@
 package app.munch.api;
 
-import app.munch.model.Profile;
 import dev.fuxing.jpa.TransactionProvider;
 
 import javax.inject.Inject;
@@ -21,10 +20,19 @@ public final class DataHealthCheck extends ApiHealthCheck {
         this.provider = provider;
     }
 
+    /**
+     * This method will be called multiple times for check.
+     * Because checks can come from multiple availability zone.
+     *
+     * @throws Exception if any error in health check
+     */
     @Override
+    @SuppressWarnings("SqlNoDataSourceInspection")
     public void check() throws Exception {
-        provider.with(entityManager -> {
-            entityManager.find(Profile.class, Profile.ADMIN_ID);
+        provider.with(em -> {
+            em.createNativeQuery("SELECT 'h'")
+                    .getSingleResult();
         });
     }
 }
+

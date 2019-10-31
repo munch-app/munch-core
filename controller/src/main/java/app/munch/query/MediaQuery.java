@@ -1,11 +1,14 @@
 package app.munch.query;
 
 import app.munch.jpa.QueryBuilder;
+import app.munch.model.Mention;
 import app.munch.model.ProfileMedia;
 import app.munch.model.ProfileMediaStatus;
+import com.fasterxml.jackson.databind.JsonNode;
 import dev.fuxing.jpa.EntityStream;
 import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
+import dev.fuxing.utils.JsonUtils;
 import org.hibernate.Hibernate;
 
 import javax.inject.Singleton;
@@ -35,13 +38,19 @@ public final class MediaQuery extends AbstractQuery {
         });
     }
 
-    public static EntityStream<ProfileMedia> query(EntityManager entityManager, TransportCursor cursor, Consumer<QueryBuilder<ProfileMedia>> consumer) {
+    public static EntityStream<JsonNode> query(EntityManager entityManager, TransportCursor cursor, Consumer<QueryBuilder<ProfileMedia>> consumer) {
         return QueryBuilder.from(ProfileMedia.class, entityManager)
-                .select("id", "profile", "type", "status", "images", "content", "mentions", "updatedAt", "createdAt")
+                .select("id", "profile", "type", "status", "content", "updatedAt", "createdAt")
+                .join("images", "mentions")
                 .where("status", ProfileMediaStatus.PUBLIC)
                 .with(consumer)
                 .max(cursor.size(20, 40))
-                .cursorAtIdDesc(cursor, "createdAt", "id");
+                .cursorAtIdDesc(cursor, "createdAt", "id", o -> {
+                    if (o instanceof Mention) {
+                        ((Mention) o).setMedia(null);
+                    }
+                    return JsonUtils.valueToTree(o);
+                });
     }
 
     /**

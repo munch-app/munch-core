@@ -44,5 +44,9 @@
 
         <class>app.munch.model.InstagramAccountConnection</class>
         <class>app.munch.model.InstagramAccountConnectionTask</class>
+
+        <properties>
+            <property name="hibernate.show_sql" value="true"/>
+        </properties>
     </persistence-unit>
 </persistence>

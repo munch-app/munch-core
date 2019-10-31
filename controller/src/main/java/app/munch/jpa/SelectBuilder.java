@@ -14,9 +14,17 @@ public interface SelectBuilder<T, B extends QueryBuilder<T>> extends Builder<T, 
     }
 
     default B select(String... names) {
-        return with(builder -> {
+        return with(b -> {
             for (String name : names) {
-                builder.selections.add(builder.root.get(name).alias(name));
+                b.selections.add(b.root.get(name).alias(name));
+            }
+        });
+    }
+
+    default B join(String... names) {
+        return with(b -> {
+            for (String name : names) {
+                b.selections.add(b.root.join(name));
             }
         });
     }
