@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.fuxing.err.ForbiddenException;
 import dev.fuxing.jpa.EntityQuery;
+import dev.fuxing.jpa.EntityStream;
 import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
 
@@ -45,15 +46,11 @@ public final class ArticleQuery extends AbstractQuery {
 
             return query(entityManager, cursor, status, query -> {
                 query.where("profile", profile);
-            }).asTransportList((article, builder) -> {
-                builder.putAll(cursor);
-                builder.put("id", article.getId());
-                builder.put("updatedAt", article.getUpdatedAt().getTime());
-            });
+            }).asTransportList();
         });
     }
 
-    public static EntityQuery.EntityStream<Article> query(EntityManager entityManager, TransportCursor cursor, ArticleStatus status, Consumer<EntityQuery<Article>> consumer) {
+    public static EntityStream<Article> query(EntityManager entityManager, TransportCursor cursor, ArticleStatus status, Consumer<EntityQuery<Article>> consumer) {
         return EntityQuery.select(entityManager, "FROM Article", Article.class)
                 .size(cursor.size(10, 33))
                 .consume(consumer)
@@ -64,7 +61,11 @@ public final class ArticleQuery extends AbstractQuery {
                     );
                 })
                 .orderBy("updatedAt DESC, id DESC")
-                .asStream()
+                .asStream((article, builder) -> {
+                    builder.putAll(cursor);
+                    builder.put("id", article.getId());
+                    builder.put("updatedAt", article.getUpdatedAt().getTime());
+                })
                 .peek(article -> {
                     article.setContent(null);
                 });

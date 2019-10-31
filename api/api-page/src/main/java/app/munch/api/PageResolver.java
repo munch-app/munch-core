@@ -3,7 +3,6 @@ package app.munch.api;
 import app.munch.model.*;
 import dev.fuxing.jpa.HibernateUtils;
 import dev.fuxing.jpa.TransactionProvider;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -27,11 +26,13 @@ public final class PageResolver {
     }
 
     public List<Map> resolve(String name) {
-        if (StringUtils.equals(name, "home")) {
-            return home();
-        }
+        switch (name) {
+            case "home":
+                return home();
 
-        return List.of();
+            default:
+                return List.of();
+        }
     }
 
     @SuppressWarnings("unchecked")

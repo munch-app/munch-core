@@ -5,18 +5,14 @@ import app.munch.model.Profile;
 import app.munch.query.ArticleQuery;
 import app.munch.query.MediaQuery;
 import app.munch.query.MentionQuery;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
 import dev.fuxing.transport.service.TransportContext;
 import dev.fuxing.transport.service.TransportResult;
-import dev.fuxing.utils.JsonUtils;
 import org.hibernate.Hibernate;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -66,39 +62,34 @@ public final class ProfileService extends ApiService {
             if (profile == null) return null;
 
             Hibernate.initialize(profile.getLinks());
-            ObjectNode node = JsonUtils.valueToTree(profile);
-            Map<String, String> cursor = new HashMap<>();
+            return result(builder -> {
+                builder.data(profile);
 
-            if (fields.contains("medias")) {
-                MediaQuery.query(entityManager, TransportCursor.EMPTY, b -> {
-                    b.where("profile", profile);
-                }).consume((medias, mediasCursor) -> {
-                    node.set("medias", JsonUtils.valueToTree(medias));
-                    if (mediasCursor != null) {
-                        cursor.put("next.medias", mediasCursor.get("next"));
-                    }
-                });
-            }
+                if (fields.contains("extra.medias")) {
+                    MediaQuery.query(entityManager, TransportCursor.EMPTY, query -> {
+                        query.where("profile", profile);
+                    }).consume((medias, cursor) -> {
+                        builder.extra("medias", medias);
 
-            if (fields.contains("articles")) {
-                ArticleQuery.query(entityManager, TransportCursor.EMPTY, ArticleStatus.PUBLISHED, query -> {
-                    query.where("profile", profile);
-                }).cursor((article, builder) -> {
-                    builder.put("status", ArticleStatus.PUBLISHED);
-                    builder.put("publishedAt", article.getPublishedAt().getTime());
-                    builder.put("id", article.getId());
-                }).consume((articles, articleCursor) -> {
-                    node.set("articles", JsonUtils.valueToTree(articles));
-                    if (articleCursor != null) {
-                        cursor.put("next.articles", articleCursor.get("next"));
-                    }
-                });
-            }
+                        if (cursor != null) {
+                            builder.cursor("next.medias", cursor.get("next"));
+                        }
+                    });
+                }
 
-            return TransportResult.builder()
-                    .data(node)
-                    .cursor(cursor)
-                    .build();
+                if (fields.contains("extra.articles")) {
+                    ArticleQuery.query(entityManager, TransportCursor.EMPTY, ArticleStatus.PUBLISHED, query -> {
+                        query.where("profile", profile);
+                    }).consume((articles, cursor) -> {
+                        builder.extra("articles", articles);
+
+                        if (cursor != null) {
+                            builder.cursor("next.articles", cursor.get("next"));
+                        }
+                    });
+                }
+
+            });
         });
     }
 

@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.fuxing.err.ValidationException;
 import dev.fuxing.utils.KeyUtils;
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -45,7 +47,8 @@ public final class WorkerGroup {
 
     @OrderBy("uid DESC")
     @BatchSize(size = 3)
-    @OneToMany(cascade = {}, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "group")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(cascade = {}, orphanRemoval = true, mappedBy = "group")
     private List<WorkerTask> reports;
 
     @NotNull

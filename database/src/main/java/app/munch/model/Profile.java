@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.fuxing.err.ForbiddenException;
 import dev.fuxing.err.ValidationException;
 import dev.fuxing.utils.KeyUtils;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.constraints.Length;
 
 import javax.annotation.Nullable;
@@ -74,8 +76,9 @@ public final class Profile {
     private Image image;
 
     @Size(max = 4)
-    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, mappedBy = "profile", orphanRemoval = true)
     @OrderBy("position DESC")
+    @LazyCollection(LazyCollectionOption.TRUE)
+    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "profile", orphanRemoval = true)
     private List<ProfileLink> links;
 
     @NotNull

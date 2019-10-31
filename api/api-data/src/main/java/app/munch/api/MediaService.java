@@ -61,9 +61,10 @@ public final class MediaService extends ApiService {
                     TransportCursor cursor = TransportCursor.size(
                             ctx.queryInt("extra.profile.medias.size", 5)
                     );
-                    MediaQuery.query(entityManager, cursor, b -> {
-                        b.where("profile", media.getProfile());
-                        b.whereNotEqual("id", media.getId());
+
+                    MediaQuery.query(entityManager, cursor, query -> {
+                        query.where("profile", media.getProfile());
+                        query.whereNotEqual("id", media.getId());
                     }).consume((medias, c) -> {
                         builder.extra("profile.medias", medias);
                     });

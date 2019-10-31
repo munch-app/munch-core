@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.fuxing.err.ValidationException;
 import dev.fuxing.utils.KeyUtils;
 import dev.fuxing.validator.ValidEnum;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -43,7 +45,10 @@ public final class PlacePost {
     private Place place;
 
     @Size(max = 10)
-    @ManyToMany(cascade = {}, fetch = FetchType.EAGER)
+    @OrderBy("createdAt DESC")
+    @JoinColumn
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @ManyToMany(cascade = {})
     private List<Image> images;
 
     @NotNull

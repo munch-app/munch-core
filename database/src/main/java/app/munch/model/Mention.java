@@ -45,7 +45,7 @@ public final class Mention {
     private String id;
 
     @NotNull
-    @ManyToOne(cascade = {}, fetch = FetchType.LAZY, optional = true)
+    @ManyToOne(cascade = {}, fetch = FetchType.EAGER, optional = true)
     private Place place;
 
     @NotNull
@@ -164,7 +164,7 @@ public final class Mention {
     }
 
     public Profile getCreatedBy() {
-        return createdBy;
+        return Lazy.load(createdBy, null);
     }
 
     public void setCreatedBy(Profile createdBy) {
