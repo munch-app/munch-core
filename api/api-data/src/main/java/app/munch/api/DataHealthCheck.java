@@ -1,6 +1,5 @@
 package app.munch.api;
 
-import app.munch.model.Profile;
 import dev.fuxing.jpa.TransactionProvider;
 
 import javax.inject.Inject;
@@ -24,7 +23,7 @@ public final class DataHealthCheck extends ApiHealthCheck {
     @Override
     public void check() throws Exception {
         provider.with(entityManager -> {
-            entityManager.find(Profile.class, Profile.ADMIN_ID);
+            entityManager.createNativeQuery("SELECT 'h'").getSingleResult();
         });
     }
 }

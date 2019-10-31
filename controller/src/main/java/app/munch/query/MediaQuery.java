@@ -3,6 +3,7 @@ package app.munch.query;
 import app.munch.model.ProfileMedia;
 import app.munch.model.ProfileMediaStatus;
 import dev.fuxing.jpa.EntityQuery;
+import dev.fuxing.jpa.EntityStream;
 import dev.fuxing.transport.TransportCursor;
 import dev.fuxing.transport.TransportList;
 import org.hibernate.Hibernate;
@@ -30,16 +31,11 @@ public final class MediaQuery extends Query {
 
     public TransportList query(TransportCursor cursor, Consumer<EntityQuery<ProfileMedia>> consumer) {
         return provider.reduce(true, entityManager -> {
-            return query(entityManager, cursor, consumer)
-                    .asTransportList((media, builder) -> {
-                        builder.putAll(cursor);
-                        builder.put("createdAt", media.getCreatedAt().getTime());
-                        builder.put("id", media.getId());
-                    });
+            return query(entityManager, cursor, consumer).asTransportList();
         });
     }
 
-    public static EntityQuery<ProfileMedia>.EntityStream query(EntityManager entityManager, TransportCursor cursor, Consumer<EntityQuery<ProfileMedia>> consumer) {
+    public static EntityStream<ProfileMedia> query(EntityManager entityManager, TransportCursor cursor, Consumer<EntityQuery<ProfileMedia>> consumer) {
         return EntityQuery.select(entityManager, "FROM ProfileMedia", ProfileMedia.class)
                 .where("status", ProfileMediaStatus.PUBLIC)
                 .consume(consumer)
@@ -49,7 +45,11 @@ public final class MediaQuery extends Query {
                 })
                 .orderBy("createdAt DESC, id DESC")
                 .size(cursor.size(20, 40))
-                .asStream()
+                .asStream((media, builder) -> {
+                    builder.putAll(cursor);
+                    builder.put("createdAt", media.getCreatedAt().getTime());
+                    builder.put("id", media.getId());
+                })
                 .peek(MediaQuery::clean);
     }
 
