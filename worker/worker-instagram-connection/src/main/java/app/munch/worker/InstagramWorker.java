@@ -45,12 +45,12 @@ public final class InstagramWorker implements WorkerRunner {
     }
 
     @Override
-    public void run(WorkerTask task) {
+    public void run(WorkerTask workerTask) {
         do {
-            InstagramAccountConnectionTask connectionTask = acquireTask();
-            if (connectionTask != null) {
-                connect(connectionTask);
-                logger.info("Completed: {}", connectionTask.getConnection().getSocial().getName());
+            InstagramAccountConnectionTask task = acquireTask();
+            if (task != null) {
+                connect(task);
+                logger.info("Completed: {}", task.getConnection().getSocial().getName());
                 continue;
             }
 
@@ -130,22 +130,27 @@ public final class InstagramWorker implements WorkerRunner {
         return null;
     }
 
-    private void connect(InstagramAccountConnectionTask connectionTask) {
+    private void connect(InstagramAccountConnectionTask task) {
         try {
-            dataRiver.open(connectionTask);
+            dataRiver.open(task);
         } catch (InstagramAccessException e) {
-            provider.with(entityManager -> {
-                InstagramAccountConnection connection = entityManager.find(InstagramAccountConnection.class, connectionTask.getConnection().getUid());
-                connection.setStatus(InstagramAccountConnectionStatus.DISCONNECTED);
-                entityManager.persist(connection);
-
-                ProfileSocial social = entityManager.find(ProfileSocial.class, connection.getSocial().getUid());
-                social.setStatus(ProfileSocialStatus.DISCONNECTED);
-                entityManager.persist(social);
-            });
+            disconnect(task);
         } catch (InstagramException e) {
             logger.error("InstagramException: {}", e.getMessage(), e);
         }
+    }
+
+    private void disconnect(InstagramAccountConnectionTask task) {
+        String uid = task.getConnection().getUid();
+        provider.with(entityManager -> {
+            InstagramAccountConnection connection = entityManager.find(InstagramAccountConnection.class, uid);
+            connection.setStatus(InstagramAccountConnectionStatus.DISCONNECTED);
+            entityManager.persist(connection);
+
+            ProfileSocial social = entityManager.find(ProfileSocial.class, connection.getSocial().getUid());
+            social.setStatus(ProfileSocialStatus.DISCONNECTED);
+            entityManager.persist(social);
+        });
     }
 
     public static void main(String[] args) {

@@ -53,7 +53,7 @@ public final class InstagramDataRiver {
                 ProfileSocial social = entityManager.find(ProfileSocial.class, connection.getSocial().getUid());
                 flow(entityManager, social, instagramMedia, list.isEmpty() ? null : list.get(0));
             });
-            SleepUtils.sleep(Duration.ofSeconds(1));
+            SleepUtils.sleep(Duration.ofSeconds(2));
         });
     }
 

@@ -6,6 +6,7 @@ import app.munch.model.ProfileMedia;
 import app.munch.model.ProfileMediaStatus;
 import app.munch.model.WorkerTask;
 import dev.fuxing.jpa.TransactionProvider;
+import dev.fuxing.utils.SleepUtils;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.List;
 
 /**
@@ -37,26 +39,30 @@ public final class MediaWorker implements WorkerRunner {
         return "01dpkgbwqqmrk9ht5bzhw2jthh";
     }
 
+    private List<ProfileMedia> getPendingMedias(int size) {
+        return provider.reduce(true, entityManager -> {
+            List<ProfileMedia> list = entityManager.createQuery(
+                    "FROM ProfileMedia WHERE status = :status ORDER BY createdAt DESC",
+                    ProfileMedia.class)
+                    .setParameter("status", ProfileMediaStatus.PENDING)
+                    .setMaxResults(size)
+                    .getResultList();
+
+            list.forEach(media -> {
+                Hibernate.initialize(media.getImages());
+            });
+            return list;
+        });
+    }
+
     @Override
     public void run(WorkerTask task) throws IOException {
         do {
-            List<ProfileMedia> medias = provider.reduce(true, entityManager -> {
-                List<ProfileMedia> list = entityManager.createQuery(
-                        "FROM ProfileMedia WHERE status = :status ORDER BY createdAt DESC",
-                        ProfileMedia.class)
-                        .setParameter("status", ProfileMediaStatus.PENDING)
-                        .setMaxResults(10)
-                        .getResultList();
-
-                list.forEach(media -> {
-                    Hibernate.initialize(media.getImages());
-                });
-                return list;
-            });
-
-            for (ProfileMedia media : medias) {
+            for (ProfileMedia media : getPendingMedias(10)) {
                 analyser.analyse(media);
             }
+
+            SleepUtils.sleep(Duration.ofSeconds(6));
         } while (true);
     }
 
