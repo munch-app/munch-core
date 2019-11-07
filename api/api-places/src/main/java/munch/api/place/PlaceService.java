@@ -13,7 +13,6 @@ import munch.gallery.PlaceImageClient;
 import munch.restful.core.NextNodeList;
 import munch.restful.server.JsonCall;
 import munch.restful.server.JsonResult;
-import munch.taste.PlaceRatingClient;
 import munch.user.client.AwardCollectionClient;
 import munch.user.client.UserRatedPlaceClient;
 import munch.user.client.UserSavedPlaceClient;
@@ -42,17 +41,14 @@ public final class PlaceService extends ApiService {
     private final UserSavedPlaceClient savedPlaceClient;
     private final UserRatedPlaceClient ratedPlaceClient;
 
-    private final PlaceRatingClient placeRatingClient;
-
     @Inject
-    public PlaceService(PlaceClient placeClient, ArticleLinkClient articleLinkClient, AwardCollectionClient awardCollectionClient, PlaceImageClient placeImageClient, UserSavedPlaceClient savedPlaceClient, UserRatedPlaceClient ratedPlaceClient, PlaceRatingClient placeRatingClient) {
+    public PlaceService(PlaceClient placeClient, ArticleLinkClient articleLinkClient, AwardCollectionClient awardCollectionClient, PlaceImageClient placeImageClient, UserSavedPlaceClient savedPlaceClient, UserRatedPlaceClient ratedPlaceClient) {
         this.placeClient = placeClient;
         this.articleLinkClient = articleLinkClient;
         this.awardCollectionClient = awardCollectionClient;
         this.placeImageClient = placeImageClient;
         this.savedPlaceClient = savedPlaceClient;
         this.ratedPlaceClient = ratedPlaceClient;
-        this.placeRatingClient = placeRatingClient;
     }
 
     enum Linked {
@@ -122,10 +118,6 @@ public final class PlaceService extends ApiService {
 
         if (linked.contains(Linked.user)) {
             map.put("user", getUser(call, placeId));
-        }
-
-        if (linked.contains(Linked.rating)) {
-            map.put("rating", placeRatingClient.get(placeId));
         }
 
         return JsonResult.ok(map);

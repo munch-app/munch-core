@@ -9,7 +9,6 @@ import munch.api.search.plugin.SearchCardPlugin;
 import munch.data.client.ElasticClient;
 import munch.data.place.Place;
 import munch.restful.core.JsonUtils;
-import munch.taste.GlobalTasteClient;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -28,14 +27,11 @@ public final class SearchDelegator {
     private final SearchCardParser cardParser;
     private final SearchCardPlugin.Runner cardInjector;
 
-    private final GlobalTasteClient tasteClient;
-
     @Inject
-    public SearchDelegator(ElasticClient elasticClient, SearchCardParser cardParser, SearchCardPlugin.Runner cardInjector, GlobalTasteClient tasteClient) {
+    public SearchDelegator(ElasticClient elasticClient, SearchCardParser cardParser, SearchCardPlugin.Runner cardInjector) {
         this.elasticClient = elasticClient;
         this.cardParser = cardParser;
         this.cardInjector = cardInjector;
-        this.tasteClient = tasteClient;
     }
 
     /**
@@ -46,8 +42,6 @@ public final class SearchDelegator {
         if (request.getPage() >= getMaxPage(request)) return List.of();
 
         List<Place> places = searchPlaces(request);
-        places = tasteClient.sort(places, request.getLocalTime());
-
         List<SearchCard> cards = cardParser.parse(places, request);
         cards = cardInjector.run(cards, request);
         return cards;

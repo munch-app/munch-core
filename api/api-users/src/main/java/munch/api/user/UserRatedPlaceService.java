@@ -3,7 +3,6 @@ package munch.api.user;
 import munch.api.ApiRequest;
 import munch.api.ApiService;
 import munch.restful.server.JsonCall;
-import munch.taste.PlaceRatingClient;
 import munch.user.client.UserRatedPlaceClient;
 import munch.user.data.UserRatedPlace;
 
@@ -20,12 +19,10 @@ import javax.inject.Singleton;
 public final class UserRatedPlaceService extends ApiService {
 
     private final UserRatedPlaceClient ratedPlaceClient;
-    private final PlaceRatingClient placeRatingClient;
 
     @Inject
-    public UserRatedPlaceService(UserRatedPlaceClient ratedPlaceClient, PlaceRatingClient placeRatingClient) {
+    public UserRatedPlaceService(UserRatedPlaceClient ratedPlaceClient) {
         this.ratedPlaceClient = ratedPlaceClient;
-        this.placeRatingClient = placeRatingClient;
     }
 
     @Override
@@ -46,7 +43,6 @@ public final class UserRatedPlaceService extends ApiService {
         ratedPlace.setUpdatedMillis(null);
 
         ratedPlaceClient.put(ratedPlace);
-        placeRatingClient.queue(placeId, userId);
         return ratedPlace;
     }
 }
