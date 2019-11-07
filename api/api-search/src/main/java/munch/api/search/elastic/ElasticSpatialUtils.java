@@ -22,9 +22,7 @@ import java.util.stream.Collectors;
  * Project: munch-core
  */
 public final class ElasticSpatialUtils {
-    private static final GeometryFactory geometryFactory = new GeometryFactory();
 
-    private final static String BASE32 = "0123456789bcdefghjkmnpqrstuvwxyz";
     private final static String[] GROUP_4 = new String[]{"0123", "4567", "89bc", "defg", "hjkm", "npqr", "stuv", "wxyz"};
     private final static Map<String, Integer> GROUP_4_INT = new HashMap<>();
 
@@ -36,10 +34,6 @@ public final class ElasticSpatialUtils {
                 GROUP_4_INT.put(s, i);
             }
         }
-    }
-
-    public static void main(String[] args) {
-        System.out.println(GROUP_4_INT);
     }
 
     public static JsonNode filterBoundingBox(String latLng, double latOffsetMeter, double lngOffsetMeter) {
@@ -80,32 +74,11 @@ public final class ElasticSpatialUtils {
         return filter;
     }
 
-    public static String groupInto4(String hash) {
-        String substring = hash.substring(0, hash.length() - 1);
-        return substring + getGroup4(hash);
-    }
-
     public static int getGroup4(String hash) {
         int index = hash.length() - 1;
         String h = hash.substring(index, index + 1).toLowerCase();
         return GROUP_4_INT.get(h);
     }
 
-    public static boolean isGroup4(String hash, String compare) {
-        if (hash.length() != compare.length())
-            throw new IllegalStateException("length of hash and compare must be the same");
 
-        return getGroup4(hash) == getGroup4(compare);
-    }
-
-    public static Polygon getPolygon(List<String> points) {
-        return geometryFactory.createPolygon(points.stream()
-                .map(s -> {
-                    String[] split = s.split(",");
-                    return new Coordinate(
-                            Double.parseDouble(split[1]),
-                            Double.parseDouble(split[0])
-                    );
-                }).toArray(Coordinate[]::new));
-    }
 }

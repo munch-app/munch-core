@@ -24,12 +24,13 @@ configure(subprojects.findAll { !it.name.matches("api-core") }) {
 
 project('api-places') {
     dependencies {
-        compile group: 'instagram-system', name: 'instagram-system-data-client', version: instagramVersion
-        compile group: 'article-system', name: 'article-system-link-client', version: articleVersion
-        compile group: 'article-system', name: 'article-system-data-client', version: articleVersion
-
         compile group: 'file-service', name: 'file-service-client', version: fileVersion
 
+        compile group: 'instagram-system', name: 'instagram-system-data-client', version: instagramVersion
+        compile group: 'article-system', name: 'article-system-data-client', version: articleVersion
+
+        // Catalyst Dependency
+        compile group: 'article-system', name: 'article-system-link-client', version: articleVersion
         compile group: 'catalyst', name: 'catalyst-link-client', version: catalystVersion
         compile group: 'catalyst', name: 'catalyst-mutation-client', version: catalystVersion
     }
