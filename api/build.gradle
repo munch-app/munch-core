@@ -43,7 +43,7 @@ project('api-search') {
     dependencies {
         compile group: 'catalyst', name: 'catalyst-edit-core-utils', version: catalystVersion
         compile group: 'catalyst', name: 'catalyst-edit-location-utils', version: catalystVersion
-        
+
         compile group: 'catalyst', name: 'catalyst-lake-airtable', version: catalystVersion
         compile group: 'com.amazonaws', name: 'aws-java-sdk-ssm', version: awsVersion
 
@@ -55,7 +55,7 @@ project('api-search') {
 project('api-feed') {
     dependencies {
         compile project(':api:api-users')
-        
+
         compile group: 'munch-feed', name: 'munch-feed-client', version: feedVersion
     }
 }
@@ -86,12 +86,6 @@ project('api-contents') {
     }
 }
 
-project('api-vouchers') {
-    dependencies {
-        compile group: 'catalyst', name: 'catalyst-lake-airtable', version: catalystVersion
-    }
-}
-
 dependencies {
     compile group: 'com.amazonaws', name: 'aws-java-sdk-ssm', version: awsVersion
 
@@ -103,7 +97,6 @@ dependencies {
     compile project(':api:api-search')
     compile project(':api:api-feed')
     compile project(':api:api-locations')
-    compile project(':api:api-vouchers')
 }
 
 apply plugin: 'application'
