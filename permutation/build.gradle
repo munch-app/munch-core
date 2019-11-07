@@ -1,8 +1,0 @@
-dependencies {
-    compile group: 'munch.restful', name: 'restful-client', version: restfulVersion
-    compile group: 'com.google.inject', name: 'guice', version: guiceVersion
-    compile group: 'catalyst', name: 'catalyst-utils', version: catalystVersion
-
-    compile project(':api:api-core')
-    compile project(':api:api-search')
-}

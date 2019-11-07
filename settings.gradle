@@ -14,26 +14,3 @@ include 'api:api-creators'
 include 'api:api-contents'
 include 'api:api-locations'
 include 'api:api-vouchers'
-
-/**
- * Munch App Post-Ignatius Database Engine
- */
-include 'database'
-
-/**
- * Munch App Website
- */
-include 'website'
-
-/**
- * Munch Search Permutation Engine
- * build for SEO, directly and only used by sitemap
- */
-include 'permutation'
-
-/**
- * Munch App Website Sitemap
- * build for SEO for dynamic data
- * Sitemap created is put into AWS s3 www.munch.app-sitemap bucket
- */
-include 'sitemap'
