@@ -1,6 +1,5 @@
 package munch.api.search;
 
-import catalyst.airtable.AirtableModule;
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagement;
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagementClientBuilder;
 import com.amazonaws.services.simplesystemsmanagement.model.GetParameterRequest;
@@ -11,7 +10,10 @@ import munch.api.search.cards.SearchPlaceCard;
 import munch.api.search.plugin.*;
 import munch.api.search.plugin.collection.SearchCollectionHeaderPlugin;
 import munch.api.search.plugin.collection.SearchCollectionItemPlugin;
-import munch.api.search.plugin.home.*;
+import munch.api.search.plugin.home.SearchHomeNearbyPlugin;
+import munch.api.search.plugin.home.SearchHomePopularPlacePlugin;
+import munch.api.search.plugin.home.SearchHomeRecentPlacePlugin;
+import munch.api.search.plugin.home.SearchHomeTabPlugin;
 import munch.api.search.plugin.location.SearchBetweenGongChaPlugin;
 import munch.api.search.plugin.location.SearchBetweenPlugin;
 import munch.api.search.plugin.location.SearchLocationAreaPlugin;
@@ -37,8 +39,6 @@ public final class SearchModule extends ApiServiceModule {
         loaderBinder.addBinding().to(SearchSuggestionTagPlugin.class);
         loaderBinder.addBinding().to(SearchBetweenPlugin.class);
 
-        loaderBinder.addBinding().to(SearchHomeDTJEPlugin.class);
-
         loaderBinder.addBinding().to(SearchHomeTabPlugin.class);
         loaderBinder.addBinding().to(SearchHomeNearbyPlugin.class);
         loaderBinder.addBinding().to(SearchHomeRecentPlacePlugin.class);
@@ -60,8 +60,6 @@ public final class SearchModule extends ApiServiceModule {
         addService(SearchFilterService.class);
 
         addCleaner(SearchPlaceCard.Cleaner.class);
-
-        install(new AirtableModule(getAirtableKey()));
     }
 
     private String getAirtableKey() {

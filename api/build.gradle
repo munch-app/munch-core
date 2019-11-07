@@ -28,13 +28,10 @@ project('api-places') {
         compile group: 'article-system', name: 'article-system-link-client', version: articleVersion
         compile group: 'article-system', name: 'article-system-data-client', version: articleVersion
 
-        compile group: 'munch-suggest', name: 'munch-suggest-client', version: suggestVersion
-
         compile group: 'file-service', name: 'file-service-client', version: fileVersion
 
         compile group: 'catalyst', name: 'catalyst-link-client', version: catalystVersion
         compile group: 'catalyst', name: 'catalyst-mutation-client', version: catalystVersion
-        compile group: 'catalyst', name: 'catalyst-edit-website-utils', version: catalystVersion
     }
 }
 
@@ -43,7 +40,6 @@ project('api-search') {
         compile group: 'catalyst', name: 'catalyst-edit-core-utils', version: catalystVersion
         compile group: 'catalyst', name: 'catalyst-edit-location-utils', version: catalystVersion
 
-        compile group: 'catalyst', name: 'catalyst-lake-airtable', version: catalystVersion
         compile group: 'com.amazonaws', name: 'aws-java-sdk-ssm', version: awsVersion
 
         compile group: 'location-service', name: 'location-service-client', version: locationVersion

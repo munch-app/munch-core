@@ -17,6 +17,5 @@ public final class PlaceModule extends ApiServiceModule {
         addCleaner(ArticleCleaner.class);
 
         addService(PlaceService.class);
-        addService(PlaceSuggestService.class);
     }
 }
