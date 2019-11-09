@@ -68,7 +68,6 @@ include 'api:api-social'
 
 // Deprecating
 include 'api:api-locations'
-include 'api:api-feed'
 include 'api:api-search'
 include 'api:api-places'
 
