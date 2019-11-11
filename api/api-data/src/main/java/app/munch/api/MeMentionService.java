@@ -15,6 +15,7 @@ import javax.inject.Singleton;
  * @author Fuxing Loh
  */
 @Singleton
+@Deprecated
 public final class MeMentionService extends ApiService {
 
     /**
@@ -65,6 +66,7 @@ public final class MeMentionService extends ApiService {
     /**
      * @deprecated migrate to use MentionController
      */
+    @Deprecated
     public Mention post(TransportContext ctx) {
         Mention mention = ctx.bodyAsObject(Mention.class);
 

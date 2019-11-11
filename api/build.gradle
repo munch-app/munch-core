@@ -47,17 +47,10 @@ project('api-search') {
         compile group: 'catalyst', name: 'catalyst-edit-core-utils', version: catalystVersion
         compile group: 'catalyst', name: 'catalyst-edit-location-utils', version: catalystVersion
 
-        compile group: 'catalyst', name: 'catalyst-lake-airtable', version: catalystVersion
         compile group: 'com.amazonaws', name: 'aws-java-sdk-ssm', version: awsVersion1
 
         compile group: 'location-service', name: 'location-service-client', version: locationVersion
         compile group: 'munch-taste', name: 'munch-taste-client', version: tasteVersion
-    }
-}
-
-project('api-feed') {
-    dependencies {
-        compile group: 'munch-feed', name: 'munch-feed-client', version: feedVersion
     }
 }
 
@@ -112,7 +105,6 @@ dependencies {
     // Deprecating
     compile project(':api:api-places')
     compile project(':api:api-search')
-    compile project(':api:api-feed')
     compile project(':api:api-locations')
 
     compile project(':migration')

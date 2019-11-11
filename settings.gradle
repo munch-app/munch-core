@@ -64,7 +64,7 @@ include 'api:api-account'
 include 'api:api-page'
 include 'api:api-place'
 include 'api:api-social'
-// search, filter, trending, between, business
+// search, filter, trending
 
 // Deprecating
 include 'api:api-locations'
@@ -84,12 +84,12 @@ include 'website'
 include 'sitemap'
 
 /**
- * Temporary module for v22 to Post-Ignatius migration service.
- */
-include 'migration'
-
-/**
  * Services, external
  */
 include 'services'
 include 'services:services-instagram'
+
+/**
+ * Temporary module for v22 to Post-Ignatius migration service.
+ */
+include 'migration'

@@ -22,6 +22,7 @@ public class MentionTypeValidator implements ConstraintValidator<ValidMentionTyp
         int count = 0;
         if (mention.getArticle() != null) count++;
         if (mention.getMedia() != null) count++;
+        if (mention.getPost() != null) count++;
 
         if (count != 1) {
             return false;
@@ -29,6 +30,10 @@ public class MentionTypeValidator implements ConstraintValidator<ValidMentionTyp
 
         // Non bidirectional validation
         switch (type) {
+            case POST:
+                return mention.getPost() != null
+                        && mention.getPost().getStatus() == PlacePostStatus.PUBLISHED;
+
             case MEDIA:
                 return mention.getMedia() != null
                         && mention.getMedia().getStatus() == ProfileMediaStatus.PUBLIC;
