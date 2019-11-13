@@ -3,6 +3,7 @@
   <div class="container">
     <masonry-wall ref="wall" id="PlaceImageWall" :items="items" @append="append"
                   :options="{width: 250, lanes:{2:{padding: 8}},min:2, ssr: {default: 2}}">
+
       <template slot-scope="{item, index}">
         <div class="ImageItem hover-pointer" @click="onClickImage(index)">
           <image-size class="border-3" :image="{sizes: item.sizes}" grow="height">
@@ -38,14 +39,14 @@
 </template>
 
 <script>
-  import MasonryWall from "../core/MasonryWall";
+  import MasonryLanes from "../utils/MasonryLanes";
   import ImageSize from "../core/ImageSize";
   import DialogNavigation from "../layouts/DialogNavigation";
   import PlaceImageWallDialog from "./PlaceImageWallDialog";
 
   export default {
     name: "PlaceImageWall",
-    components: {PlaceImageWallDialog, DialogNavigation, ImageSize, MasonryWall},
+    components: {PlaceImageWallDialog, DialogNavigation, ImageSize, MasonryLanes},
     props: {
       placeId: {
         required: true,
