@@ -1,3 +1,4 @@
+<!-- @deprecated -->
 <template>
   <div>
     <div ref="annotation">

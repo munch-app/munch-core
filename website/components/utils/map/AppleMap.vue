@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div ref="map" class="AppleMap"/>
+    <div ref="map" class="wh-100"/>
     <div style="display: none">
       <slot></slot>
     </div>
@@ -117,10 +117,3 @@
     }
   }
 </script>
-
-<style lang="less">
-  .AppleMap {
-    width: 100%;
-    height: 100%;
-  }
-</style>

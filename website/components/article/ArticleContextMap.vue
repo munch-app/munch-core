@@ -23,7 +23,6 @@
 
 <script>
   import AppleMap from "../utils/map/AppleMap";
-  import AppleMapPlaceMarkerAnnotation from "../core/AppleMapPlaceMarkerAnnotation";
   import ArticleContextMapAnnotation from "./ArticleContextMapAnnotation";
 
   function getElementVisibleHeight(el) {
@@ -61,7 +60,7 @@
 
   export default {
     name: "ArticleContextMap",
-    components: {ArticleContextMapAnnotation, AppleMapPlaceMarkerAnnotation, AppleMap},
+    components: {ArticleContextMapAnnotation, AppleMap},
     props: {
       article: {
         type: Object,

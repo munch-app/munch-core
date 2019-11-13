@@ -35,7 +35,7 @@ export default {
       },
     ],
     script: [
-      {src: 'https://cdn.apple-mapkit.com/mk/5.x.x/mapkit.js'},
+      {src: 'https://cdn.apple-mapkit.com/mk/5.23.x/mapkit.js'},
       {src: 'https://www.googletagmanager.com/gtag/js?id=UA-117480436-1'},
     ]
   },

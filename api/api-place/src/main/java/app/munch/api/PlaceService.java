@@ -69,7 +69,7 @@ public final class PlaceService implements TransportService {
             PATH("/:id", () -> {
                 GET("", this::idGet);
                 POST("/revisions", this::idRevisionsPost);
-                GET("/mentions", this::idMentionsGet);
+                GET("/mentions", this::idMentionsQuery);
             });
         });
     }
@@ -166,8 +166,6 @@ public final class PlaceService implements TransportService {
             Hibernate.initialize(place.getCreatedBy());
             ObjectNode node = JsonUtils.valueToTree(place);
             Map<String, String> cursor = new HashMap<>();
-
-            // TODO(fuxing): E.g. extra['mentions']
 
             if (fields.contains("affiliates")) {
                 EntityStream.of(() -> {
@@ -282,7 +280,7 @@ public final class PlaceService implements TransportService {
         return place;
     }
 
-    public TransportList idMentionsGet(TransportContext ctx) {
+    public TransportList idMentionsQuery(TransportContext ctx) {
         final String id = ctx.pathString("id");
         TransportCursor cursor = ctx.queryCursor();
         return mentionQuery.queryByPlace(id, cursor);
