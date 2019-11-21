@@ -49,7 +49,7 @@ export default {
       }
     }
   },
-  loading: {color: '#0A6284'},
+  loading: {color: '#07F'},
   router: {
     // scrollBehavior: () => ({x: 0, y: 0})
   },

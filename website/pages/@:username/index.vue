@@ -79,11 +79,11 @@
 
     <div class="pb-256">
       <div v-if="focused.path === ''">
-        <div v-if="profile.medias.length > 0 || profile.articles.length > 0">
-          <div class="mt-24 mb-48" v-if="profile.articles.length > 0">
+        <div v-if="medias.length > 0 || articles.length > 0">
+          <div class="mt-24 mb-48" v-if="articles.length > 0">
             <h3>{{profile.name}} articles</h3>
             <div class="mt-24">
-              <horizontal-list :items="profile.articles">
+              <horizontal-list :items="articles">
                 <template v-slot:default="{item}">
                   <article-card :article="item"/>
                 </template>
@@ -91,11 +91,11 @@
             </div>
           </div>
 
-          <div class="mt-24 mb-48" v-if="profile.medias.length > 0">
+          <div class="mt-24 mb-48" v-if="medias.length > 0">
             <h3>{{profile.name}} images</h3>
             <div class="mt-24">
               <div class="flex-wrap m--12">
-                <div class="p-12 flex-2 flex-3 flex-4 flex-5" v-for="media in profile.medias" :key="media.id">
+                <div class="p-12 flex-2 flex-3 flex-4 flex-5" v-for="media in medias" :key="media.id">
                   <profile-media :media="media"/>
                 </div>
               </div>
@@ -117,9 +117,9 @@
       </div>
 
       <div class="mt-48" v-else-if="focused.path === '/articles'">
-        <div v-if="profile.articles.length > 0">
+        <div v-if="articles.length > 0">
           <div class="flex-1-2-3 m--16">
-            <div v-for="article in profile.articles" :key="article.id" class="p-16">
+            <div v-for="article in articles" :key="article.id" class="p-16">
               <article-card :article="article"/>
             </div>
           </div>
@@ -140,9 +140,9 @@
       </div>
 
       <div class="mt-48" v-else-if="focused.path === '/medias'">
-        <div v-if="profile.medias.length > 0">
+        <div v-if="medias.length > 0">
           <div class="flex-wrap m--12">
-            <div class="p-12 flex-2 flex-3 flex-4 flex-5" v-for="media in profile.medias" :key="media.id">
+            <div class="p-12 flex-2 flex-3 flex-4 flex-5" v-for="media in medias" :key="media.id">
               <profile-media :media="media"/>
             </div>
           </div>
@@ -192,9 +192,14 @@
       })
     },
     asyncData({$api, params: {username}}) {
-      return $api.get(`/profiles/${username}`, {params: {fields: 'articles,medias'}})
-        .then(({data: profile, cursor}) => {
-          return {profile, cursor}
+      return $api.get(`/profiles/${username}`, {params: {fields: 'extra.articles,extra.medias'}})
+        .then(({data: profile, extra, cursor}) => {
+          return {
+            profile,
+            articles: extra?.articles || [],
+            medias: extra?.medias || [],
+            cursor
+          }
         });
     },
     data() {
@@ -209,8 +214,6 @@
         '@:username-articles': navigations[1],
         '@:username-medias': navigations[2],
       }
-
-      console.log(this.$route.name)
 
       return {
         loading: {
@@ -244,7 +247,7 @@
         this.$api.get(`/profiles/${this.profile.username}/articles`, {
           params: {size: 15, cursor: this.cursor['next.articles']}
         }).then(({data: articles, cursor}) => {
-          this.profile.articles.push(...articles)
+          this.articles.push(...articles)
           this.cursor['next.articles'] = cursor.next
           this.loading.articles = false
         }).catch(error => this.$store.dispatch('addError', error))
@@ -255,7 +258,7 @@
         this.$api.get(`/profiles/${this.profile.username}/medias`, {
           params: {size: 15, cursor: this.cursor['next.medias']}
         }).then(({data: medias, cursor}) => {
-          this.profile.medias.push(...medias)
+          this.medias.push(...medias)
           this.cursor['next.medias'] = cursor.next
           this.loading.medias = false
         }).catch(error => this.$store.dispatch('addError', error))
