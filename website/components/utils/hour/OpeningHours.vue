@@ -1,7 +1,7 @@
 <template>
   <div class="OpeningHours hover-pointer" @click="expanded = !expanded">
-    <div v-if="!expanded" class="text-ellipsis-1l flex-align-center">
-      <div class="text-uppercase">{{todayDay}}:</div>
+    <div v-if="!expanded" class="text-ellipsis-1l flex">
+      <div class="text-uppercase text-nowrap">{{todayDay}}:</div>
       <div class="ml-4">{{todayText}}</div>
       <div class="ml-8">
         <simple-svg class="wh-16px" fill="black" :filepath="require('~/assets/icon/icons8-expand-arrow.svg')"/>
