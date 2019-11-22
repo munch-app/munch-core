@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "Tag")
-public final class Tag {
+public final class Tag implements ElasticSerializable {
 
     @NotNull
     @Pattern(regexp = "^[0-9a-hjkmnp-tv-z]{12}4$")

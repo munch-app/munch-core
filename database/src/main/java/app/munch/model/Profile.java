@@ -30,7 +30,7 @@ import java.util.Set;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "Profile")
-public final class Profile {
+public final class Profile implements ElasticSerializable {
 
     /**
      * Admin Id must be used for internal resources with no public facing entities<br>

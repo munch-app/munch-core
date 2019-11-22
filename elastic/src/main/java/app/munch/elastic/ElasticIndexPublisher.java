@@ -28,6 +28,8 @@ public final class ElasticIndexPublisher extends SqsPublisher<DocumentIndexMessa
         super(client, ConfigFactory.load().getString("services.sqs.index.url"));
     }
 
+    // TODO(fuxing): queue elastic serializable
+
     public void queue(Place place) {
         queue(ElasticDocumentType.PLACE, place.getId());
     }

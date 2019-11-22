@@ -35,6 +35,8 @@ public final class ElasticSerializableClient {
             return placeSerializer.serialize((Place) serializable);
         }
 
+        // TODO(fuxing): all the required serializer
+
         throw new IllegalStateException("No serializer found for: " + serializable.getClass().getSimpleName());
     }
 }

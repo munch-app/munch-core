@@ -32,7 +32,7 @@ import java.util.Set;
 @Entity
 @Table(name = "Publication")
 @TypeDef(name = "Publication.TagsType", typeClass = Publication.TagsType.class)
-public final class Publication {
+public final class Publication implements ElasticSerializable {
 
     @NotNull
     @Pattern(regexp = "^[0-9a-hjkmnp-tv-z]{12}5$")

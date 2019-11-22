@@ -22,7 +22,7 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "Article")
-public final class Article extends ArticleModel {
+public final class Article extends ArticleModel implements ElasticSerializable {
 
     @NotNull
     @Pattern(regexp = "^[0-9a-hjkmnp-tv-z]{12}1$")
