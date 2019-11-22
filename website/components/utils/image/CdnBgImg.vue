@@ -1,23 +1,19 @@
 <!--
   Image served from cdn.munch.app
 
-  For CdnImg.vue,
-  Image controls the size of the container.
+  For CdnBgImage.vue,
+  Content control the size of the image.
 -->
 <template>
-  <div class="relative wh-100 lh-0">
-    <img v-if="url" :src="url" :alt="alt" :style="{objectFit, width, height}"/>
-    <div class="slot absolute-0 wh-100">
-      <slot></slot>
-    </div>
+  <div :style="{backgroundImage: `url('${url}')`}">
+    <slot></slot>
   </div>
 </template>
 
 <script>
   export default {
-    name: "CdnImg",
+    name: "CdnBgImg",
     props: {
-      alt: String,
       image: {
         type: Object,
         default: undefined
@@ -31,25 +27,6 @@
         type: String,
         default: '640x640'
       },
-      /**
-       * cover
-       * contain
-       * fill
-       * none
-       * scale-down
-       */
-      objectFit: {
-        type: String,
-        default: 'cover'
-      },
-      width: {
-        type: String,
-        default: '100%'
-      },
-      height: {
-        type: String,
-        default: '100%'
-      }
     },
     computed: {
       url() {
@@ -74,8 +51,9 @@
 </script>
 
 <style scoped lang="less">
-  .slot > * {
-    height: 100%;
-    width: 100%;
+  div {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
   }
 </style>

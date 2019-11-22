@@ -5,7 +5,7 @@
         <slot name="item" v-bind:item="items[i]" :index="i">{{items[i]}}</slot>
       </div>
 
-      <div ref="spacers" class="Spacers" :data-lane="index"
+      <div ref="spacers" class="Spacers index--1" :data-lane="index"
            v-observe-visibility="{callback: (v) => v && fill(),throttle:300}"
       />
     </div>
@@ -13,8 +13,6 @@
 </template>
 
 <script>
-
-
   const newLanes = (count) => {
     const lanes = []
     for (let i = 0; i < count; i++) {
@@ -48,12 +46,18 @@
        *     min: 1, min number of lanes
        * }
        */
-      options: Object,
+      options: {
+        type: Object,
+        required: false
+      },
 
       /**
        * Persistence of Masonry Wall in vuex store
        */
-      persistence: Object,
+      persistence: {
+        type: Object,
+        required: false
+      },
     },
     data() {
       const count = this.options && this.options.ssr && this.options.ssr.default || 0
