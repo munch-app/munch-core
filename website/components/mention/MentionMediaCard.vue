@@ -1,8 +1,10 @@
 <template>
   <div>
-    <nuxt-link  :to="`/@${media.profile.username}/${media.id}`" class="text-decoration-none">
-      <cdn-img :image="media.images[0]">
-      </cdn-img>
+    <nuxt-link :to="`/@${media.profile.username}/${media.id}`" class="text-decoration-none">
+      <div class="aspect" :style="{paddingTop}">
+        <cdn-img v-if="image" :image="image">
+        </cdn-img>
+      </div>
 
       <div class="p-0-16 pt-16">
         <template v-for="(node, index) in media.content">
@@ -36,9 +38,17 @@
       media() {
         return this.mention.media
       },
+      image() {
+        const images = this.media?.images
+        return images && images?.length > 0 && images[0]
+      },
       count() {
         return this.media.images?.length || 0
-      }
+      },
+      paddingTop() {
+        const image = this.image
+        return `${image.height / image.width * 100}%`
+      },
     }
   }
 </script>
