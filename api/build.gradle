@@ -54,13 +54,6 @@ project('api-search') {
     }
 }
 
-project('api-locations') {
-    dependencies {
-        compile group: 'location-service', name: 'location-service-client', version: locationVersion
-
-    }
-}
-
 project('api-data') {
     dependencies {
         compile project(':image')
@@ -105,7 +98,6 @@ dependencies {
     // Deprecating
     compile project(':api:api-places')
     compile project(':api:api-search')
-    compile project(':api:api-locations')
 
     compile project(':migration')
 }

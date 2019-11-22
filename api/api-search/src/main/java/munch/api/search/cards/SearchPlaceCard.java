@@ -1,12 +1,7 @@
 package munch.api.search.cards;
 
 
-import munch.api.ObjectCleaner;
-import munch.api.core.PlaceCleaner;
 import munch.data.place.Place;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
 /**
  * Created by: Fuxing
@@ -33,26 +28,5 @@ public final class SearchPlaceCard implements SearchCard {
 
     public Place getPlace() {
         return place;
-    }
-
-    @Singleton
-    public static class Cleaner extends ObjectCleaner<SearchPlaceCard> {
-
-        private final PlaceCleaner placeCleaner;
-
-        @Inject
-        public Cleaner(PlaceCleaner placeCleaner) {
-            this.placeCleaner = placeCleaner;
-        }
-
-        @Override
-        protected Class<SearchPlaceCard> getClazz() {
-            return SearchPlaceCard.class;
-        }
-
-        @Override
-        protected void clean(SearchPlaceCard data) {
-            placeCleaner.clean(data.getPlace());
-        }
     }
 }

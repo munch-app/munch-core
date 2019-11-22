@@ -2,7 +2,6 @@ package munch.api.search;
 
 import app.munch.api.ApiServiceModule;
 import com.google.inject.multibindings.Multibinder;
-import munch.api.search.cards.SearchPlaceCard;
 import munch.api.search.plugin.*;
 import munch.api.search.plugin.collection.SearchCollectionHeaderPlugin;
 import munch.api.search.plugin.collection.SearchCollectionItemPlugin;
@@ -48,7 +47,5 @@ public final class SearchModule extends ApiServiceModule {
         addDeprecatedService(SearchService.class);
         addDeprecatedService(SuggestService.class);
         addDeprecatedService(SearchFilterService.class);
-
-        addCleaner(SearchPlaceCard.Cleaner.class);
     }
 }

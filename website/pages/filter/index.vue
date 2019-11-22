@@ -1,8 +1,6 @@
 <template>
   <div>
-    <div>
-      2 Lanes Design
-    </div>
+
   </div>
 </template>
 
