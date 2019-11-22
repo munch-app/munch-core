@@ -162,10 +162,11 @@ public final class PlaceService implements TransportService {
             Place place = entityManager.find(Place.class, id);
             if (place == null) return null;
 
+            TransportResult.Builder builder = TransportResult.builder();
+
             Hibernate.initialize(place.getImage());
             Hibernate.initialize(place.getCreatedBy());
             ObjectNode node = JsonUtils.valueToTree(place);
-            Map<String, String> cursor = new HashMap<>();
 
             if (fields.contains("affiliates")) {
                 EntityStream.of(() -> {
@@ -175,17 +176,19 @@ public final class PlaceService implements TransportService {
                             .setParameter("place", place)
                             .setMaxResults(20)
                             .getResultList();
-                }).cursor(20, (placeAffiliate, builder) -> {
-                    builder.put("uid", placeAffiliate.getUid());
+                }).cursor(20, (placeAffiliate, c) -> {
+                    c.put("uid", placeAffiliate.getUid());
                 }).consume((affiliates, affiliatesCursor) -> {
                     node.set("affiliates", JsonUtils.valueToTree(affiliates));
+
                     if (affiliatesCursor != null) {
-                        cursor.put("next.affiliates", affiliatesCursor.get("next"));
+                        builder.cursor("next.affiliates", affiliatesCursor.get("next"));
                     }
                 });
             }
 
             if (fields.contains("images")) {
+                // Deprecated this
                 EntityStream.of(() -> {
                     return entityManager.createQuery("SELECT " +
                             "pi.uid AS uid, " +
@@ -196,14 +199,14 @@ public final class PlaceService implements TransportService {
                             .setParameter("place", place)
                             .setMaxResults(8)
                             .getResultList();
-                }).cursor(8, (tuple, builder) -> {
-                    builder.put("uid", tuple.get("uid"));
+                }).cursor(8, (tuple, c) -> {
+                    c.put("uid", tuple.get("uid"));
                 }).map(tuple -> {
                     return tuple.get("image", Image.class);
                 }).consume((images, imagesCursor) -> {
                     node.set("images", JsonUtils.valueToTree(images));
                     if (imagesCursor != null) {
-                        cursor.put("next.images", imagesCursor.get("next"));
+                        builder.cursor("next.images", imagesCursor.get("next"));
                     }
                 });
             }
@@ -227,9 +230,9 @@ public final class PlaceService implements TransportService {
                             .setParameter("place", place)
                             .setMaxResults(8)
                             .getResultList();
-                }).cursor(8, (tuple, builder) -> {
-                    builder.put("uid", tuple.get("c_uid", String.class));
-                    builder.put("position", tuple.get("c_position", Long.class));
+                }).cursor(8, (tuple, c) -> {
+                    c.put("uid", tuple.get("c_uid", String.class));
+                    c.put("position", tuple.get("c_position", Long.class));
                 }).map(tuple -> {
                     Article article = new Article();
                     article.setId(tuple.get("a_id", String.class));
@@ -243,14 +246,22 @@ public final class PlaceService implements TransportService {
                 }).consume((articles, articleCursor) -> {
                     node.set("articles", JsonUtils.valueToTree(articles));
                     if (articleCursor != null) {
-                        cursor.put("next.articles", articleCursor.get("next"));
+                        builder.cursor("next.articles", articleCursor.get("next"));
                     }
                 });
             }
 
-            return TransportResult.builder()
+            if (fields.contains("extra.mentions")) {
+                TransportList mentions = mentionQuery.queryByPlace(id, TransportCursor.EMPTY);
+                builder.extra("mentions", mentions);
+
+                if (mentions.getCursorNext() != null) {
+                    builder.cursor("next.mentions", mentions.getCursorNext());
+                }
+            }
+
+            return builder
                     .data(node)
-                    .cursor(cursor)
                     .build();
         });
     }

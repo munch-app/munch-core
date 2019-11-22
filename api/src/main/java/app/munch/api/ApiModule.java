@@ -8,7 +8,6 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import munch.api.core.CoreModule;
-import munch.api.feed.FeedModule;
 import munch.api.location.LocationModule;
 import munch.api.search.SearchModule;
 
@@ -40,10 +39,8 @@ public class ApiModule extends AbstractModule {
         install(new MigrationModule());
 
         install(new SearchModule());
-        install(new FeedModule());
         install(new LocationModule());
     }
-
 
     /**
      * Start api server with predefined modules

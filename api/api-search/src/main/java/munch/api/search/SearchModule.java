@@ -1,17 +1,14 @@
 package munch.api.search;
 
-import catalyst.airtable.AirtableModule;
-import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagement;
-import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagementClientBuilder;
-import com.amazonaws.services.simplesystemsmanagement.model.GetParameterRequest;
-import com.amazonaws.services.simplesystemsmanagement.model.GetParameterResult;
-import com.google.inject.multibindings.Multibinder;
 import app.munch.api.ApiServiceModule;
+import com.google.inject.multibindings.Multibinder;
 import munch.api.search.cards.SearchPlaceCard;
 import munch.api.search.plugin.*;
 import munch.api.search.plugin.collection.SearchCollectionHeaderPlugin;
 import munch.api.search.plugin.collection.SearchCollectionItemPlugin;
-import munch.api.search.plugin.home.*;
+import munch.api.search.plugin.home.SearchHomeNearbyPlugin;
+import munch.api.search.plugin.home.SearchHomePopularPlacePlugin;
+import munch.api.search.plugin.home.SearchHomeRecentPlacePlugin;
 import munch.api.search.plugin.location.SearchBetweenPlugin;
 import munch.api.search.plugin.location.SearchLocationAreaPlugin;
 import munch.api.search.plugin.location.SearchLocationBannerPlugin;
@@ -37,12 +34,9 @@ public final class SearchModule extends ApiServiceModule {
         loaderBinder.addBinding().to(SearchSuggestionTagPlugin.class);
         loaderBinder.addBinding().to(SearchBetweenPlugin.class);
 
-        loaderBinder.addBinding().to(SearchHomeDTJEPlugin.class);
-
         loaderBinder.addBinding().to(SearchHomeNearbyPlugin.class);
         loaderBinder.addBinding().to(SearchHomeRecentPlacePlugin.class);
         loaderBinder.addBinding().to(SearchHomePopularPlacePlugin.class);
-//        loaderBinder.addBinding().to(SearchHomeAwardCollectionPlugin.class);
         loaderBinder.addBinding().to(SearchHomeSeriesPlugin.class);
 
         loaderBinder.addBinding().to(SearchLocationBannerPlugin.class);
@@ -56,16 +50,5 @@ public final class SearchModule extends ApiServiceModule {
         addDeprecatedService(SearchFilterService.class);
 
         addCleaner(SearchPlaceCard.Cleaner.class);
-
-        install(new AirtableModule(getAirtableKey()));
-    }
-
-    private String getAirtableKey() {
-        AWSSimpleSystemsManagement client = AWSSimpleSystemsManagementClientBuilder.defaultClient();
-        GetParameterResult result = client.getParameter(new GetParameterRequest()
-                .withName("munch-corpus.AirtableKey")
-                .withWithDecryption(true));
-
-        return result.getParameter().getValue();
     }
 }

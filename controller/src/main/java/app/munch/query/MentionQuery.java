@@ -77,6 +77,9 @@ public final class MentionQuery extends AbstractQuery {
                 break;
 
             case ARTICLE:
+                mention.getArticle().setContent(null);
+                break;
+
             case POST:
                 break;
         }
