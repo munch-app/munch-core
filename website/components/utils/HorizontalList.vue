@@ -9,7 +9,7 @@
 
     <div class="Parent">
       <div class="Scrollable flex" ref="scrollable" :class="_options.list.class">
-        <div v-for="item in items" :key="_options.mapKey(item)" ref="item" class="Item" :class="_itemClass">
+        <div v-for="item in items" :key="_options.mapKey(item)" ref="item" class="Item index-content" :class="_itemClass">
           <slot v-bind:item="item"></slot>
         </div>
 

@@ -1,12 +1,12 @@
 <template>
   <div>
     <div class="container">
+      <place-banner :place="place"  :mentions="extra.mentions"/>
+    </div>
+
+    <div class="container">
       <div class="flex m--16">
         <div class="p-16 mt-24 pb-64 flex-grow">
-          <section v-if="place.images && place.images.length" class="mb-32">
-            <place-images :images="place.images"/>
-          </section>
-
           <section v-if="place.status && place.status.type !== 'OPEN'" class="mb-32" @click="onSuggestEdit">
             <place-status :status="place.status"/>
           </section>
@@ -98,7 +98,7 @@
 
     <div class="container">
       <div class="mt-24 mb-64">
-        <place-mentions :place="place"/>
+        <place-mentions :place="place" :mentions="extra.mentions" :cursor="cursor && cursor['next.mentions']"/>
       </div>
     </div>
 
@@ -116,7 +116,6 @@
   import PlaceAside from "../components/places/PlaceAside";
   import AppleMap from "../components/utils/map/AppleMap";
   import AppleMapPinAnnotation from "../components/utils/map/AppleMapPinAnnotation";
-  import PlaceImages from "../components/places/PlaceImages";
   import PlaceStatus from "../components/places/PlaceStatus";
   import PlaceArticles from "../components/places/PlaceArticles";
   import PlaceCreatedBy from "../components/places/PlaceCreatedBy";
@@ -125,9 +124,11 @@
   import ArticleCard from "../components/article/ArticleCard";
   import Advert from "../components/utils/ads/Advert";
   import PlaceMentions from "../components/places/PlaceMentions";
+  import PlaceBanner from "../components/places/PlaceBanner";
 
   export default {
     components: {
+      PlaceBanner,
       PlaceMentions,
       Advert,
       ArticleCard,
@@ -136,7 +137,6 @@
       PlaceCreatedBy,
       PlaceArticles,
       PlaceStatus,
-      PlaceImages,
       AppleMapPinAnnotation,
       AppleMap,
       PlaceAside
@@ -164,9 +164,9 @@
       })
     },
     asyncData({$api, error, params: {id}}) {
-      return $api.get(`/places/${id}`, {params: {fields: 'articles,affiliates,images'}})
-        .then(({data: place}) => {
-          return {place}
+      return $api.get(`/places/${id}`, {params: {fields: 'articles,affiliates,extra.mentions'}})
+        .then(({data: place, extra, cursor}) => {
+          return {place, extra, cursor}
         })
         .catch(err => {
           if (err.response.status === 404) {
@@ -241,29 +241,4 @@
       }
     }
   }
-
-  /*section {*/
-  /*  @media (min-width: 992px) {*/
-  /*    max-width: calc(100% - 300px - 24px);*/
-  /*  }*/
-  /*}*/
-
-  /*aside {*/
-  /*  @media (min-width: 992px) {*/
-  /*    width: 300px;*/
-
-  /*    position: sticky;*/
-  /*    top: calc(24px + 72px !*Header72px*!);*/
-  /*    !*left: calc(100vw - 300px - 24px);*!*/
-  /*  }*/
-
-  /*  @media (min-width: 1200px) {*/
-  /*    !*left: calc(100vw - 300px - 80px);*!*/
-  /*  }*/
-
-  /*  @media (min-width: 1400px) {*/
-  /*    !*left: initial;*!*/
-  /*    !*right: calc((100vw - 1400px) / 2 + 80px);*!*/
-  /*  }*/
-  /*}*/
 </style>

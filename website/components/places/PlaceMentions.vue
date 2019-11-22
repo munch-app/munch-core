@@ -11,7 +11,7 @@
     </div>
 
     <client-only>
-      <div class="flex-center p-24" v-if="hasNext">
+      <div class="flex-center p-24" v-if="hasNext && loading">
         <beat-loader color="#07F" size="16px"/>
       </div>
     </client-only>
@@ -29,6 +29,13 @@
       place: {
         type: Object,
         required: true
+      },
+      mentions: {
+        type: Array,
+        required: true
+      },
+      cursor: {
+        type: String
       }
     },
     data() {
@@ -44,13 +51,12 @@
 
         api: {
           params: {
-            types: 'MEDIA,POST,ARTICLE',
             size: 20,
-            cursor: undefined
+            cursor: this.cursor
           }
         },
 
-        items: [],
+        items: [...this.mentions],
         loading: false,
       }
     },
@@ -59,19 +65,18 @@
         return this.items.length > 0
       },
       hasNext() {
-        if (this.api.params.cursor === undefined) {
-          return true
-        }
         return !!this.api.params.cursor
       }
     },
-    mounted() {
-      this.append()
-    },
     methods: {
       append() {
+        if (!this.hasNext) {
+          return
+        }
+
         if (this.loading) return
         this.loading = true
+
 
         this.$api.get(`/places/${this.place.id}/mentions`, {params: this.api.params})
           .then(({data, cursor}) => {
@@ -79,7 +84,6 @@
             this.api.params.cursor = cursor?.next || false
 
             this.loading = false
-            this.$refs.masonry.fill()
           })
       }
     }
