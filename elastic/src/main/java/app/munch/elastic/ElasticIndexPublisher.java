@@ -49,9 +49,10 @@ public final class ElasticIndexPublisher extends SqsPublisher<DocumentIndexMessa
     }
 
     private void queue(ElasticDocumentType type, String id) {
-        DocumentIndexMessage message = new DocumentIndexMessage();
-        message.setType(type);
-        message.setId(id);
-        publish(message);
+        // TODO(fuxing): Add back when enabled
+//        DocumentIndexMessage message = new DocumentIndexMessage();
+//        message.setType(type);
+//        message.setId(id);
+//        publish(message);
     }
 }

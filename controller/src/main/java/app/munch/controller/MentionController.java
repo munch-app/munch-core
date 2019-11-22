@@ -13,7 +13,7 @@ import java.util.Objects;
  * @since 2019-10-25 at 15:07
  */
 @Singleton
-public class MentionController extends AbstractController{
+public class MentionController extends AbstractController {
 
     public Mention add(Place place, Article article, Profile.Supplier createdBy) {
         return provider.reduce(entityManager -> {
@@ -85,7 +85,7 @@ public class MentionController extends AbstractController{
 
     public Mention put(EntityManager entityManager, Place place, Image image, Profile createdBy) {
         List<PlacePost> posts = entityManager.createQuery("FROM PlacePost " +
-                "WHERE :image IN images " +
+                "WHERE (:image) IN elements(images) " +
                 "AND place = :place", PlacePost.class)
                 .setParameter("place", place)
                 .setParameter("image", image)
@@ -100,6 +100,8 @@ public class MentionController extends AbstractController{
         post.setImages(List.of(image));
         post.setProfile(image.getProfile());
         post.setStatus(PlacePostStatus.PUBLISHED);
+        entityManager.persist(post);
+
         return add(entityManager, place, post, createdBy);
     }
 

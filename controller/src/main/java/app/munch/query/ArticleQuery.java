@@ -56,15 +56,15 @@ public final class ArticleQuery extends AbstractQuery {
                 .consume(consumer)
                 .where("status = :status", "status", status)
                 .predicate(cursor.has("updatedAt", "id"), query -> {
-                    query.where("(updatedAt < :updatedAt OR (updatedAt = :updatedAt AND id < :id))",
-                            "updatedAt", cursor.getDate("updatedAt"), "id", cursor.get("id")
+                    query.where("(publishedAt < :publishedAt OR (publishedAt = :publishedAt AND id < :id))",
+                            "publishedAt", cursor.getDate("publishedAt"), "id", cursor.get("id")
                     );
                 })
-                .orderBy("updatedAt DESC, id DESC")
+                .orderBy("publishedAt DESC, id DESC")
                 .asStream((article, builder) -> {
                     builder.putAll(cursor);
                     builder.put("id", article.getId());
-                    builder.put("updatedAt", article.getUpdatedAt().getTime());
+                    builder.put("publishedAt", article.getPublishedAt().getTime());
                 })
                 .peek(article -> {
                     article.setContent(null);
@@ -73,7 +73,6 @@ public final class ArticleQuery extends AbstractQuery {
 
     @Singleton
     public static final class ImageQuery {
-
         public TransportList<ImageGroup> query(EntityManager entityManager, Article article, TransportCursor cursor) {
             ArticleRevision revision = entityManager.createQuery("FROM ArticleRevision " +
                     "WHERE article = :article " +
