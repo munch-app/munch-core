@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.fuxing.err.ValidationException;
-import dev.fuxing.utils.KeyUtils;
 import dev.fuxing.validator.ValidEnum;
 
 import javax.persistence.*;
@@ -118,7 +117,7 @@ public final class Tag implements ElasticSerializable {
 
     @PrePersist
     void prePersist() {
-        setId(KeyUtils.nextL(12, '4'));
+        setId(L13Id.TAG.randomId());
         setCreatedAt(new Timestamp(System.currentTimeMillis()));
 
         preUpdate();

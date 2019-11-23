@@ -211,7 +211,7 @@ public final class ProfileMedia {
 
     @PrePersist
     void prePersist() {
-        setId(KeyUtils.nextL(15, 's'));
+        setId(L16Id.MEDIA.randomId());
         preUpdate();
     }
 

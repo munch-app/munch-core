@@ -3,7 +3,6 @@ package app.munch.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.fuxing.err.ValidationException;
-import dev.fuxing.utils.KeyUtils;
 import dev.fuxing.validator.ValidEnum;
 
 import javax.persistence.*;
@@ -94,7 +93,7 @@ public final class Article extends ArticleModel implements ElasticSerializable {
     @PrePersist
     void prePersist() {
         if (getId() == null) {
-            setId(KeyUtils.nextL(12, '1'));
+            setId(L13Id.ARTICLE.randomId());
         }
         if (getCreatedAt() == null) {
             setCreatedAt(new Timestamp(System.currentTimeMillis()));
@@ -105,7 +104,7 @@ public final class Article extends ArticleModel implements ElasticSerializable {
 
     @PreUpdate
     void preUpdate() {
-        setSlug(KeyUtils.generateSlug(getTitle(), 200));
+        setSlug(Model.generateSlug(getTitle(), 200));
         setUpdatedAt(new Timestamp(System.currentTimeMillis()));
 
         if (getStatus() == ArticleStatus.PUBLISHED) {

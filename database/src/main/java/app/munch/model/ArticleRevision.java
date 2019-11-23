@@ -107,7 +107,7 @@ public final class ArticleRevision extends ArticleModel {
         // Initialising some required Article data
         assert article != null;
         if (article.getId() == null) {
-            article.setId(KeyUtils.nextL(12, '1'));
+            article.setId(L13Id.ARTICLE.randomId());
         }
 
         long millis = System.currentTimeMillis();

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.fuxing.err.ValidationException;
 import dev.fuxing.postgres.PojoSetUserType;
-import dev.fuxing.utils.KeyUtils;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
@@ -134,7 +133,7 @@ public final class Publication implements ElasticSerializable {
 
     @PrePersist
     void prePersist() {
-        setId(KeyUtils.nextL(12, '5'));
+        setId(L13Id.PUBLICATION.randomId());
         setCreatedAt(new Timestamp(System.currentTimeMillis()));
 
         preUpdate();

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.fuxing.err.ValidationException;
-import dev.fuxing.utils.KeyUtils;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -174,7 +173,7 @@ public final class Place extends PlaceModel implements ElasticSerializable {
     @PrePersist
     void prePersist() {
         if (getId() == null) {
-            setId(KeyUtils.nextL(12, '0'));
+            setId(L13Id.PLACE.randomId());
         }
 
         if (getCreatedAt() == null) {
@@ -194,8 +193,8 @@ public final class Place extends PlaceModel implements ElasticSerializable {
 
     @PreUpdate
     void preUpdate() {
-        setSlug(KeyUtils.generateSlug(getName(), 200));
-        setSynonyms(cleanSynonyms(getSynonyms()));
+        setSlug(Model.generateSlug(getName(), 200));
+        setSynonyms(Model.cleanSynonyms(getSynonyms(), 4));
 
         if (getUpdatedAt() == null) {
             setUpdatedAt(new Timestamp(System.currentTimeMillis()));

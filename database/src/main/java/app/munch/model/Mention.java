@@ -4,7 +4,6 @@ import app.munch.model.annotation.ValidMentionType;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.fuxing.err.ValidationException;
-import dev.fuxing.utils.KeyUtils;
 import dev.fuxing.validator.ValidEnum;
 
 import javax.persistence.*;
@@ -189,7 +188,7 @@ public final class Mention implements ElasticSerializable {
 
     @PrePersist
     void prePersist() {
-        setId(KeyUtils.nextL(15, 'm'));
+        setId(L16Id.MENTION.randomId());
         setCreatedAt(new Timestamp(System.currentTimeMillis()));
 
         preUpdate();

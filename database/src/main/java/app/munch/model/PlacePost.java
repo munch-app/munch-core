@@ -4,7 +4,6 @@ import app.munch.model.annotation.ValidPlacePost;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.fuxing.err.ValidationException;
-import dev.fuxing.utils.KeyUtils;
 import dev.fuxing.validator.ValidEnum;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -138,7 +137,7 @@ public final class PlacePost {
 
     @PrePersist
     void prePersist() {
-        setId(KeyUtils.nextL(15, 'p'));
+        setId(L16Id.POST.randomId());
         setCreatedAt(new Timestamp(System.currentTimeMillis()));
 
         preUpdate();

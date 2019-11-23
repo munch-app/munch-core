@@ -2,6 +2,8 @@ package app.munch.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import dev.fuxing.utils.KeyUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -34,6 +36,13 @@ public enum L16Id {
     L16Id(String postfix) {
         this.postfix = postfix;
         this.regex = "^[0-9a-hjkmnp-tv-z]{15}" + postfix + "$";
+    }
+
+    /**
+     * @return generate random id for current L16Id enum type
+     */
+    public String randomId() {
+        return RandomStringUtils.random(15, KeyUtils.CROCKFORD_CHARCTERS) + postfix;
     }
 
     @Override

@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.fuxing.err.ValidationException;
 import dev.fuxing.utils.KeyUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -13,7 +12,6 @@ import javax.validation.constraints.Pattern;
 import javax.validation.groups.Default;
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.stream.Collectors;
 
 /**
  * Created by: Fuxing
@@ -108,9 +106,8 @@ public final class PlaceRevision extends PlaceModel {
     void prePersist() {
         // Initialising some required Place data
         assert place != null;
-
         if (place.getId() == null) {
-            place.setId(KeyUtils.nextL(12, '0'));
+            place.setId(L13Id.PLACE.randomId());
         }
 
         setId(place.getId());
@@ -127,10 +124,7 @@ public final class PlaceRevision extends PlaceModel {
 
     @PreUpdate
     void preUpdate() {
-        setSynonyms(getSynonyms().stream()
-                .map(StringUtils::lowerCase)
-                .map(StringUtils::trim)
-                .collect(Collectors.toSet()));
+        setSynonyms(Model.cleanSynonyms(getSynonyms(), 4));
 
         ValidationException.validate(this, Default.class, Groups.PlaceDefault.class);
     }

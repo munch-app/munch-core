@@ -16,11 +16,8 @@ import javax.persistence.MappedSuperclass;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
-import java.util.Comparator;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * @see ArticleModel for reasons why it's design like this.
@@ -373,20 +370,8 @@ public abstract class PlaceModel {
     }
 
     private static boolean equalsSynonyms(Set<String> left, Set<String> right) {
-        Set<String> lhs = cleanSynonyms(left);
-        Set<String> rhs = cleanSynonyms(right);
+        Set<String> lhs = Model.cleanSynonyms(left, 4);
+        Set<String> rhs = Model.cleanSynonyms(right, 4);
         return lhs.equals(rhs);
-    }
-
-    protected static Set<String> cleanSynonyms(Set<String> synonyms) {
-        if (synonyms == null) return Set.of();
-
-        return synonyms.stream()
-                .map(StringUtils::lowerCase)
-                .map(StringUtils::trim)
-                .filter(StringUtils::isNotBlank)
-                .sorted(Comparator.comparingInt(String::length))
-                .limit(4)
-                .collect(Collectors.toCollection(HashSet::new));
     }
 }
