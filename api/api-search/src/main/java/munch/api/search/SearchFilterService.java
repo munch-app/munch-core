@@ -22,14 +22,12 @@ public final class SearchFilterService extends ApiService {
     private final FilterResultDelegator resultDelegator;
 
     private final FilterAreaDatabase areaDatabase;
-    private final FilterBetweenDatabase betweenDatabase;
 
     @Inject
-    public SearchFilterService(SearchRequest.Factory searchRequestFactory, FilterResultDelegator resultDelegator, FilterAreaDatabase areaDatabase, FilterBetweenDatabase betweenDatabase) {
+    public SearchFilterService(SearchRequest.Factory searchRequestFactory, FilterResultDelegator resultDelegator, FilterAreaDatabase areaDatabase) {
         this.searchRequestFactory = searchRequestFactory;
         this.resultDelegator = resultDelegator;
         this.areaDatabase = areaDatabase;
-        this.betweenDatabase = betweenDatabase;
     }
 
     @Override
@@ -38,7 +36,6 @@ public final class SearchFilterService extends ApiService {
             POST("", this::post);
             GET("/areas", this::getAreas);
             POST("/areas/search", this::searchAreas);
-            POST("/between/search", this::betweenSearch);
         });
     }
 
@@ -62,9 +59,5 @@ public final class SearchFilterService extends ApiService {
         JsonNode json = call.bodyAsJson();
         String text = json.path("text").asText();
         return areaDatabase.search(text, 20);
-    }
-
-    public List<SearchQuery.Filter.Location.Point> betweenSearch(JsonCall call) {
-        return betweenDatabase.search(call);
     }
 }
