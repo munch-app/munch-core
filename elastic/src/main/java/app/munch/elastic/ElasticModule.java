@@ -1,7 +1,11 @@
 package app.munch.elastic;
 
+import app.munch.elastic.serializer.PlaceSerializer;
+import app.munch.elastic.serializer.Serializer;
+import app.munch.model.ElasticDocumentType;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import com.google.inject.multibindings.MapBinder;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.apache.http.HttpHost;
@@ -20,6 +24,15 @@ import java.io.IOException;
  * Project: munch-core
  */
 public final class ElasticModule extends AbstractModule {
+
+    @Override
+    protected void configure() {
+        MapBinder<ElasticDocumentType, Serializer> serializerBinder = MapBinder.newMapBinder(
+                binder(), ElasticDocumentType.class, Serializer.class
+        );
+        serializerBinder.addBinding(ElasticDocumentType.PLACE).to(PlaceSerializer.class);
+//        serializerBinder.addBinding(ElasticDocumentType.LOCATION).to(LocationSerializer.class);
+    }
 
     @Inject
     void shutdownHook(RestHighLevelClient client) {

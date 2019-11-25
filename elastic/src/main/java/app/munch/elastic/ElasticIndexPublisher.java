@@ -28,8 +28,6 @@ public final class ElasticIndexPublisher extends SqsPublisher<DocumentIndexMessa
         super(client, ConfigFactory.load().getString("services.sqs.index.url"));
     }
 
-    // TODO(fuxing): queue elastic serializable
-
     public void queue(Place place) {
         queue(ElasticDocumentType.PLACE, place.getId());
     }
@@ -50,11 +48,18 @@ public final class ElasticIndexPublisher extends SqsPublisher<DocumentIndexMessa
         queue(ElasticDocumentType.PUBLICATION, publication.getId());
     }
 
+    public void queue(Profile profile) {
+        queue(ElasticDocumentType.PROFILE, profile.getUsername());
+    }
+
+    public void queue(Location location) {
+        queue(ElasticDocumentType.LOCATION, location.getId());
+    }
+
     private void queue(ElasticDocumentType type, String id) {
-        // TODO(fuxing): Add back when enabled
-//        DocumentIndexMessage message = new DocumentIndexMessage();
-//        message.setType(type);
-//        message.setId(id);
-//        publish(message);
+        DocumentIndexMessage message = new DocumentIndexMessage();
+        message.setType(type);
+        message.setId(id);
+        publish(message);
     }
 }

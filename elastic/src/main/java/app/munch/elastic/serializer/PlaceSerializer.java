@@ -15,8 +15,9 @@ import java.util.Objects;
  * Time: 10:24 pm
  */
 @Singleton
-public final class PlaceSerializer implements Serializer, TimingsSerializer, SuggestSerializer {
+public final class PlaceSerializer implements Serializer<Place>, TimingsSerializer, SuggestSerializer {
 
+    @Override
     public ElasticDocument serialize(Place place) {
         // Basic strict validation.
         Objects.requireNonNull(place.getId());

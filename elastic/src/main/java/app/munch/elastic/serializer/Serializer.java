@@ -1,6 +1,8 @@
 package app.munch.elastic.serializer;
 
+import app.munch.model.ElasticDocument;
 import app.munch.model.ElasticDocumentType;
+import app.munch.model.ElasticSerializable;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Objects;
@@ -11,7 +13,13 @@ import java.util.function.Consumer;
  * Date: 10/9/19
  * Time: 4:23 pm
  */
-public interface Serializer {
+public interface Serializer<T extends ElasticSerializable> {
+
+    /**
+     * @param data to serialize into document
+     * @return serialized document
+     */
+    ElasticDocument serialize(T data);
 
     default String createKey(Consumer<Builder> consumer) {
         Builder builder = new Builder();

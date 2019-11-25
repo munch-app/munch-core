@@ -1,12 +1,13 @@
 package app.munch.elastic;
 
-import app.munch.elastic.serializer.PlaceSerializer;
+import app.munch.elastic.serializer.Serializer;
 import app.munch.model.ElasticDocument;
+import app.munch.model.ElasticDocumentType;
 import app.munch.model.ElasticSerializable;
-import app.munch.model.Place;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.Map;
 
 /**
  * Created by: Fuxing
@@ -16,13 +17,13 @@ import javax.inject.Singleton;
 @Singleton
 public final class ElasticSerializableClient {
 
-    private final PlaceSerializer placeSerializer;
     private final ElasticDocumentClient documentClient;
+    private final Map<ElasticDocumentType, Serializer> serializers;
 
     @Inject
-    ElasticSerializableClient(PlaceSerializer placeSerializer, ElasticDocumentClient documentClient) {
-        this.placeSerializer = placeSerializer;
+    ElasticSerializableClient(ElasticDocumentClient documentClient, Map<ElasticDocumentType, Serializer> serializers) {
         this.documentClient = documentClient;
+        this.serializers = serializers;
     }
 
     public void put(ElasticSerializable serializable) {
@@ -30,12 +31,12 @@ public final class ElasticSerializableClient {
         documentClient.put(document);
     }
 
+    @SuppressWarnings("unchecked")
     private ElasticDocument serialize(ElasticSerializable serializable) {
-        if (serializable instanceof Place) {
-            return placeSerializer.serialize((Place) serializable);
+        Serializer serializer = serializers.get(serializable.getElasticDocumentType());
+        if (serializer != null) {
+            return serializer.serialize(serializable);
         }
-
-        // TODO(fuxing): all the required serializer
 
         throw new IllegalStateException("No serializer found for: " + serializable.getClass().getSimpleName());
     }
