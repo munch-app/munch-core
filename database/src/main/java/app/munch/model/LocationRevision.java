@@ -104,6 +104,7 @@ public final class LocationRevision extends LocationModel {
         assert location != null;
         if (location.getId() == null) {
             location.setId(L13Id.LOCATION.randomId());
+            location.setCreatedBy(getCreatedBy());
         }
 
         setId(location.getId());

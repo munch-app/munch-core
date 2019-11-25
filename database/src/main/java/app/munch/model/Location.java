@@ -21,7 +21,6 @@ import java.util.Date;
 @Entity
 @Table(name = "Location")
 public final class Location extends LocationModel implements ElasticSerializable {
-    // TODO(fuxing): Location Model, Migration required
 
     @NotNull
     @Pattern(regexp = "^[0-9a-hjkmnp-tv-z]{12}2$")
