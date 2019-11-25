@@ -40,6 +40,11 @@ public enum ElasticDocumentType {
     PUBLICATION("PUBLICATION"),
 
     /**
+     * @see Profile
+     */
+    PROFILE("PROFILE"),
+
+    /**
      * Not Yet Implemented
      */
     BRAND("BRAND"),

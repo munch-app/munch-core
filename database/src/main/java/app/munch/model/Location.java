@@ -143,4 +143,9 @@ public final class Location extends LocationModel implements ElasticSerializable
 
         ValidationException.validate(this, Default.class);
     }
+
+    @Override
+    public ElasticDocumentType getElasticDocumentType() {
+        return ElasticDocumentType.LOCATION;
+    }
 }

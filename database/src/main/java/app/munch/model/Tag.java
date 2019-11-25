@@ -148,4 +148,9 @@ public final class Tag implements ElasticSerializable {
 
         return lhs.equals(rhs);
     }
+
+    @Override
+    public ElasticDocumentType getElasticDocumentType() {
+        return ElasticDocumentType.TAG;
+    }
 }

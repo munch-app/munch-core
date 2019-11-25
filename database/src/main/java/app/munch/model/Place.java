@@ -202,4 +202,9 @@ public final class Place extends PlaceModel implements ElasticSerializable {
 
         ValidationException.validate(this, Default.class, Groups.PlaceDefault.class);
     }
+
+    @Override
+    public ElasticDocumentType getElasticDocumentType() {
+        return ElasticDocumentType.PLACE;
+    }
 }

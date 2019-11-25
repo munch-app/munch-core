@@ -182,6 +182,11 @@ public final class Profile implements ElasticSerializable {
         ValidationException.validate(this, Default.class);
     }
 
+    @Override
+    public ElasticDocumentType getElasticDocumentType() {
+        return ElasticDocumentType.PROFILE;
+    }
+
     /**
      * @param entityManager to use
      * @param accountId     to match

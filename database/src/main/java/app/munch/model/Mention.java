@@ -199,4 +199,9 @@ public final class Mention implements ElasticSerializable {
         setUpdatedAt(new Timestamp(System.currentTimeMillis()));
         ValidationException.validate(this, Default.class);
     }
+
+    @Override
+    public ElasticDocumentType getElasticDocumentType() {
+        return ElasticDocumentType.MENTION;
+    }
 }

@@ -131,6 +131,12 @@ public final class Publication implements ElasticSerializable {
         this.createdAt = createdAt;
     }
 
+    public static final class TagsType extends PojoSetUserType<Tag> {
+        public TagsType() {
+            super(Tag.class);
+        }
+    }
+
     @PrePersist
     void prePersist() {
         setId(L13Id.PUBLICATION.randomId());
@@ -145,9 +151,9 @@ public final class Publication implements ElasticSerializable {
         ValidationException.validate(this, Default.class);
     }
 
-    public static final class TagsType extends PojoSetUserType<Tag> {
-        public TagsType() {
-            super(Tag.class);
-        }
+
+    @Override
+    public ElasticDocumentType getElasticDocumentType() {
+        return ElasticDocumentType.PUBLICATION;
     }
 }

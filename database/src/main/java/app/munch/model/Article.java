@@ -114,4 +114,9 @@ public final class Article extends ArticleModel implements ElasticSerializable {
             ValidationException.validate(this, Default.class);
         }
     }
+
+    @Override
+    public ElasticDocumentType getElasticDocumentType() {
+        return ElasticDocumentType.ARTICLE;
+    }
 }
