@@ -1,11 +1,13 @@
 package app.munch.geometry;
 
+import dev.fuxing.err.ValidationException;
 import dev.fuxing.utils.JsonUtils;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Fuxing Loh
@@ -120,5 +122,108 @@ class MultiPolygonTest {
 
         assertEquals(100.2, list.get(4).getLongitude());
         assertEquals(0.2, list.get(4).getLatitude());
+    }
+
+    @Test
+    void invalidLT4() {
+        MultiPolygon multiPolygon = new MultiPolygon();
+        multiPolygon.setCoordinates(List.of(
+                List.of(
+                        List.of(
+                                new Coordinate(102.0, 2.0),
+                                new Coordinate(103.0, 2.0),
+                                new Coordinate(103.0, 3.0),
+                                new Coordinate(102.0, 3.0),
+                                new Coordinate(102.0, 2.0)
+                        )
+                ),
+                List.of(
+                        List.of(
+                                new Coordinate(100.0, 0.0),
+                                new Coordinate(101.0, 0.0),
+                                new Coordinate(100.0, 0.0)
+                        ),
+                        List.of(
+                                new Coordinate(100.2, 0.2),
+                                new Coordinate(100.8, 0.2),
+                                new Coordinate(100.8, 0.8),
+                                new Coordinate(100.2, 0.8),
+                                new Coordinate(100.2, 0.2)
+                        )
+                )
+        ));
+
+        assertThrows(ValidationException.class, () -> {
+            ValidationException.validate(multiPolygon);
+        });
+    }
+
+    @Test
+    void invalidFirstLast() {
+        MultiPolygon multiPolygon = new MultiPolygon();
+        multiPolygon.setCoordinates(List.of(
+                List.of(
+                        List.of(
+                                new Coordinate(102.0, 2.0),
+                                new Coordinate(103.0, 2.0),
+                                new Coordinate(103.0, 3.0),
+                                new Coordinate(102.0, 3.0),
+                                new Coordinate(102.0, 2.0)
+                        )
+                ),
+                List.of(
+                        List.of(
+                                new Coordinate(100.0, 0.0),
+                                new Coordinate(101.0, 0.0),
+                                new Coordinate(101.0, 1.0),
+                                new Coordinate(100.0, 1.0)
+                        ),
+                        List.of(
+                                new Coordinate(100.2, 0.2),
+                                new Coordinate(100.8, 0.2),
+                                new Coordinate(100.8, 0.8),
+                                new Coordinate(100.2, 0.8),
+                                new Coordinate(100.2, 0.2)
+                        )
+                )
+        ));
+
+        assertThrows(ValidationException.class, () -> {
+            ValidationException.validate(multiPolygon);
+        });
+    }
+
+    @Test
+    void valid() {
+        MultiPolygon multiPolygon = new MultiPolygon();
+        multiPolygon.setCoordinates(List.of(
+                List.of(
+                        List.of(
+                                new Coordinate(102.0, 2.0),
+                                new Coordinate(103.0, 2.0),
+                                new Coordinate(103.0, 3.0),
+                                new Coordinate(102.0, 3.0),
+                                new Coordinate(102.0, 2.0)
+                        )
+                ),
+                List.of(
+                        List.of(
+                                new Coordinate(100.0, 0.0),
+                                new Coordinate(101.0, 0.0),
+                                new Coordinate(101.0, 1.0),
+                                new Coordinate(100.0, 1.0),
+                                new Coordinate(100.0, 0.0)
+                        ),
+                        List.of(
+                                new Coordinate(100.2, 0.2),
+                                new Coordinate(100.8, 0.2),
+                                new Coordinate(100.8, 0.8),
+                                new Coordinate(100.2, 0.8),
+                                new Coordinate(100.2, 0.2)
+                        )
+                )
+        ));
+
+        ValidationException.validate(multiPolygon);
     }
 }

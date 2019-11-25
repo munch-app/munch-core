@@ -1,5 +1,6 @@
 package app.munch.geometry;
 
+import app.munch.geometry.annotation.ValidPolygon;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonTypeName;
@@ -15,6 +16,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonTypeName("polygon")
+@ValidPolygon
 public final class Polygon implements Geometry<List<List<Coordinate>>> {
 
     @NotNull
