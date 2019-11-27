@@ -1,16 +1,21 @@
 package app.munch.model;
 
+import app.munch.geometry.Geometry;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import dev.fuxing.validator.ValidEnum;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * Created by: Fuxing
@@ -23,20 +28,24 @@ public final class ElasticDocument {
 
     /**
      * Elastic type that is being indexed.
+     * Persisted at '_type', as all elastic variable will be prefixed with '_'
      */
     @ValidEnum
-    private ElasticDocumentType type;
+    @JsonProperty("_type")
+    private ElasticDocumentType elasticType;
 
     /**
      * Elastic unique key with type information.
      * E.g. PLACE_1234567890100
      * E.g. LOCATION_1234567890302
      * <p>
-     * This field is not auto field because it don't know whether id or uid is the unique key
+     * This field is not an auto generated field because it don't know whether id or uid is the unique key
+     * Persisted at '_key', as all elastic variable will be prefixed with '_'
      */
-    @Length(max = 255)
     @NotNull
-    private String key;
+    @Length(max = 255)
+    @JsonProperty("_key")
+    private String elasticKey;
 
     /**
      * 'id' and 'uid' both exists because different data type use different key type.
@@ -49,6 +58,9 @@ public final class ElasticDocument {
      */
     @Length(max = 200)
     private String uid;
+
+    @Length(max = 100)
+    private String type;
 
     @Length(max = 255)
     private String slug;
@@ -81,8 +93,13 @@ public final class ElasticDocument {
     @Valid
     private Status status;
 
+    @Valid
+    private Profile profile;
+
+    @Valid
     private Location location;
 
+    @Valid
     private Price price;
 
     private Date publishedAt;
@@ -103,20 +120,34 @@ public final class ElasticDocument {
     @Valid
     private Timings timings;
 
-    public ElasticDocumentType getType() {
-        return type;
+    public ElasticDocument() {
     }
 
-    public void setType(ElasticDocumentType type) {
-        this.type = type;
+    public ElasticDocument(ElasticDocumentType type, Consumer<KeyBuilder> consumer) {
+        setElasticType(type);
+        setElasticKey(consumer);
     }
 
-    public String getKey() {
-        return key;
+    public ElasticDocumentType getElasticType() {
+        return elasticType;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setElasticType(ElasticDocumentType elasticType) {
+        this.elasticType = elasticType;
+    }
+
+    public String getElasticKey() {
+        return elasticKey;
+    }
+
+    public void setElasticKey(String elasticKey) {
+        this.elasticKey = elasticKey;
+    }
+
+    public void setElasticKey(Consumer<KeyBuilder> consumer) {
+        KeyBuilder builder = new KeyBuilder();
+        consumer.accept(builder);
+        setElasticKey(builder.build());
     }
 
     public String getId() {
@@ -133,6 +164,14 @@ public final class ElasticDocument {
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getSlug() {
@@ -191,14 +230,6 @@ public final class ElasticDocument {
         this.important = important;
     }
 
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
     public Set<String> getSynonyms() {
         return synonyms;
     }
@@ -221,6 +252,22 @@ public final class ElasticDocument {
 
     public void setHours(Set<Hour> hours) {
         this.hours = hours;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public Profile getProfile() {
+        return profile;
+    }
+
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
 
     public Location getLocation() {
@@ -271,6 +318,12 @@ public final class ElasticDocument {
         this.suggest = suggest;
     }
 
+    public void setSuggest(Consumer<SuggestBuilder> consumer) {
+        SuggestBuilder builder = new SuggestBuilder();
+        consumer.accept(builder);
+        setSuggest(builder.build());
+    }
+
     public Timings getTimings() {
         return timings;
     }
@@ -291,9 +344,22 @@ public final class ElasticDocument {
         @Length(max = 255)
         private String address;
 
+        /**
+         * Support latitude longitude geo_point only
+         */
         @Length(max = 255)
         @Pattern(regexp = "^[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?),\\s*[-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)$")
         private String latLng;
+
+        /**
+         * Supports 3 types of geo types: geo_shape
+         *
+         * @see app.munch.geometry.Point
+         * @see app.munch.geometry.Polygon
+         * @see app.munch.geometry.MultiPolygon
+         */
+        @Valid
+        private Geometry geometry;
 
         public String getUnitNumber() {
             return unitNumber;
@@ -325,6 +391,14 @@ public final class ElasticDocument {
 
         public void setLatLng(String latLng) {
             this.latLng = latLng;
+        }
+
+        public Geometry getGeometry() {
+            return geometry;
+        }
+
+        public void setGeometry(Geometry geometry) {
+            this.geometry = geometry;
         }
     }
 
@@ -520,6 +594,95 @@ public final class ElasticDocument {
             public int hashCode() {
                 return Objects.hash(gte, lte);
             }
+        }
+    }
+
+    /**
+     * Key builder
+     */
+    public static final class KeyBuilder {
+        private ElasticDocumentType type;
+        private String id;
+        private String uid;
+
+        public KeyBuilder type(ElasticDocumentType type) {
+            this.type = type;
+            return this;
+        }
+
+        public KeyBuilder id(String id) {
+            this.id = id;
+            return this;
+        }
+
+        public KeyBuilder uid(String uid) {
+            this.uid = uid;
+            return this;
+        }
+
+        public String build() {
+            Objects.requireNonNull(type);
+            if (type.toString().equals("null")) {
+                throw new IllegalStateException("ElasticDocumentType cannot be null.");
+            }
+
+            if (StringUtils.isNoneBlank(uid, id)) {
+                return id + "_" + uid + "_" + type.toString();
+            }
+
+            if (uid != null) {
+                return uid + "_" + type.toString();
+            }
+
+            if (id != null) {
+                return id + "_" + type.toString();
+            }
+
+            throw new IllegalStateException("id or uid is required to create elastic key.");
+        }
+    }
+
+    /**
+     * Suggest Builder
+     */
+    public static final class SuggestBuilder {
+        private ElasticDocumentType type;
+        private String latLng;
+        private Set<String> inputs = new HashSet<>();
+
+        public SuggestBuilder type(ElasticDocumentType type) {
+            this.type = type;
+            return this;
+        }
+
+        public SuggestBuilder latLng(String latLng) {
+            this.latLng = latLng;
+            return this;
+        }
+
+        public SuggestBuilder input(String input) {
+            this.inputs.add(StringUtils.lowerCase(input));
+            return this;
+        }
+
+        public SuggestBuilder inputs(Set<String> inputs) {
+            inputs.stream()
+                    .map(StringUtils::lowerCase)
+                    .forEach(s -> this.inputs.add(s));
+            return this;
+        }
+
+        Suggest build() {
+            Objects.requireNonNull(type);
+
+            Suggest.Contexts contexts = new Suggest.Contexts();
+            contexts.setType(type);
+            contexts.setLatLng(latLng);
+
+            Suggest suggest = new Suggest();
+            suggest.setInput(inputs);
+            suggest.setContexts(contexts);
+            return suggest;
         }
     }
 }

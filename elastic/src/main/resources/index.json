@@ -16,16 +16,19 @@
           }
         ]
       },
-      "type": {
+      "_type": {
         "type": "keyword"
       },
-      "key": {
+      "_key": {
         "type": "keyword"
       },
       "id": {
         "type": "keyword"
       },
       "uid": {
+        "type": "keyword"
+      },
+      "type": {
         "type": "keyword"
       },
       "name": {
@@ -130,6 +133,9 @@
           },
           "latLng": {
             "type": "geo_point"
+          },
+          "geometry": {
+            "type": "geo_shape"
           }
         }
       },

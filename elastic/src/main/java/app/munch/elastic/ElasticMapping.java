@@ -32,6 +32,8 @@ public final class ElasticMapping {
      */
     public static final String INDEX_NAME = "munch";
 
+    // TODO(fuxing): alternative index name? or better abstraction of such index? e.g calling them 'search' and 'filter'
+
     private final RestHighLevelClient client;
 
     @Inject

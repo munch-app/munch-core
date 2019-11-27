@@ -15,22 +15,20 @@ import java.util.Objects;
  * Time: 10:24 pm
  */
 @Singleton
-public final class PlaceSerializer implements Serializer<Place>, TimingsSerializer, SuggestSerializer {
+public final class PlaceSerializer implements Serializer<Place>, TimingsSerializer {
 
     @Override
     public ElasticDocument serialize(Place place) {
-        // Basic strict validation.
-        Objects.requireNonNull(place.getId());
-        Objects.requireNonNull(place.getCreatedAt());
-        Objects.requireNonNull(place.getUpdatedAt());
-        Objects.requireNonNull(place.getLocation());
-
-        ElasticDocument document = new ElasticDocument();
-        document.setType(ElasticDocumentType.PLACE);
-        document.setKey(createKey(builder -> {
+        ElasticDocument document = new ElasticDocument(ElasticDocumentType.PLACE, builder -> {
             builder.type(ElasticDocumentType.PLACE);
             builder.id(place.getId());
-        }));
+        });
+
+        document.setSuggest(builder -> {
+            builder.type(ElasticDocumentType.PLACE);
+            builder.latLng(place.getLocation().getLatLng());
+            builder.input(place.getName());
+        });
 
         document.setId(place.getId());
         document.setSlug(place.getSlug());
@@ -53,32 +51,28 @@ public final class PlaceSerializer implements Serializer<Place>, TimingsSerializ
         document.setUpdatedAt(place.getUpdatedAt());
         document.setCreatedAt(place.getCreatedAt());
 
-        // Special Objects
-        document.setSuggest(serializeSuggest(builder -> {
-            builder.type(ElasticDocumentType.PLACE);
-            builder.latLng(place.getLocation().getLatLng());
-            builder.input(place.getName());
-        }));
         document.setTimings(serializeTimings(place.getHours()));
         return document;
     }
 
     @NotNull
-    private ElasticDocument.Location serializeLocation(Place.Location placeLocation) {
+    private ElasticDocument.Location serializeLocation(Place.Location data) {
+        Objects.requireNonNull(data);
+
         ElasticDocument.Location location = new ElasticDocument.Location();
-        location.setLatLng(placeLocation.getLatLng());
-        location.setAddress(placeLocation.getAddress());
-        location.setPostcode(placeLocation.getPostcode());
-        location.setUnitNumber(placeLocation.getUnitNumber());
+        location.setLatLng(data.getLatLng());
+        location.setAddress(data.getAddress());
+        location.setPostcode(data.getPostcode());
+        location.setUnitNumber(data.getUnitNumber());
         return location;
     }
 
     @Nullable
-    private ElasticDocument.Price serializePrice(Place.Price placePrice) {
-        if (placePrice == null) return null;
+    private ElasticDocument.Price serializePrice(Place.Price data) {
+        if (data == null) return null;
 
         ElasticDocument.Price price = new ElasticDocument.Price();
-        price.setPerPax(placePrice.getPerPax());
+        price.setPerPax(data.getPerPax());
         return price;
     }
 }

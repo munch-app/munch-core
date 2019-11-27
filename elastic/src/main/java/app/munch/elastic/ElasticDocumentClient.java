@@ -49,8 +49,10 @@ public final class ElasticDocumentClient {
 
         try {
             String source = JsonUtils.toString(object);
+
+            // TODO(fuxing): index name abstraction
             IndexRequest request = new IndexRequest(ElasticMapping.INDEX_NAME);
-            request.id(object.getKey());
+            request.id(object.getElasticKey());
             request.source(source, XContentType.JSON);
 
             IndexResponse response = client.index(request, RequestOptions.DEFAULT);
