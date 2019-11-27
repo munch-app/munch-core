@@ -38,6 +38,9 @@ public final class ElasticSerializableClient {
             return serializer.serialize(serializable);
         }
 
+        // TODO(fuxing): ability to delete data that already exist?
+        // TODO(fuxing): can be done by throwing an exception
+
         throw new IllegalStateException("No serializer found for: " + serializable.getClass().getSimpleName());
     }
 }

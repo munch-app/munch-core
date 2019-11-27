@@ -11,6 +11,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.groups.Default;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -206,5 +207,10 @@ public final class Place extends PlaceModel implements ElasticSerializable {
     @Override
     public ElasticDocumentType getElasticDocumentType() {
         return ElasticDocumentType.PLACE;
+    }
+
+    @Override
+    public Map<String, String> getElasticDocumentKeys() {
+        return Map.of("id", getId());
     }
 }

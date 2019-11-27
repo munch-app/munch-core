@@ -2,6 +2,8 @@ package app.munch.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.util.Map;
+
 /**
  * Used to mark that can be mapped into ElasticDocument
  * <p>
@@ -13,4 +15,7 @@ public interface ElasticSerializable {
 
     @JsonIgnore
     ElasticDocumentType getElasticDocumentType();
+
+    @JsonIgnore
+    Map<String, String> getElasticDocumentKeys();
 }

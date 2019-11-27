@@ -17,15 +17,15 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * This class is used to assist in the creation of elastic index.
- * <p>
- * Created By: Fuxing Loh
- * Date: 10/3/2017
- * Time: 11:22 PM
- * Project: munch-core
+ * For elastic v7.1, hosted on AWS.
+ *
+ * @author Fuxing Loh
+ * @since 2017-03-10 at 23:22
  */
 @Singleton
 public final class ElasticMapping {
     private static final Logger logger = LoggerFactory.getLogger(ElasticMapping.class);
+
     /**
      * Current index name.
      * for v7.1
@@ -40,8 +40,8 @@ public final class ElasticMapping {
     }
 
     /**
-     * @throws RuntimeException if failed to create or validate
      * @return result as JsonNode
+     * @throws RuntimeException if failed to create or validate
      */
     public CreateIndexResponse create() throws RuntimeException, IOException {
         String json = getIndexJson();
@@ -53,6 +53,12 @@ public final class ElasticMapping {
         return client.indices().create(request, RequestOptions.DEFAULT);
     }
 
+    /**
+     * Note: dynamic: false because only those present are indexed, the rest are ignored but still stored.
+     *
+     * @return elastic index in json
+     * @throws IOException internal read error
+     */
     @SuppressWarnings("UnstableApiUsage")
     private static String getIndexJson() throws IOException {
         URL url = Resources.getResource("index.json");

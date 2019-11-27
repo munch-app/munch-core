@@ -30,7 +30,7 @@ import java.util.Date;
         @UniqueConstraint(name = "uk_nvs8jmndqnhmzn8q", columnNames = {"place_id", "post_id"}),
 })
 @ValidMentionType
-public final class Mention implements ElasticSerializable {
+public final class Mention {
     // TODO(fuxing): Future: EditLocking (type: Mention), to prevent it from unwanted editing.
 
     /**
@@ -198,10 +198,5 @@ public final class Mention implements ElasticSerializable {
     void preUpdate() {
         setUpdatedAt(new Timestamp(System.currentTimeMillis()));
         ValidationException.validate(this, Default.class);
-    }
-
-    @Override
-    public ElasticDocumentType getElasticDocumentType() {
-        return ElasticDocumentType.MENTION;
     }
 }

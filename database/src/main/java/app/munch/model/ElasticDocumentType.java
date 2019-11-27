@@ -30,11 +30,6 @@ public enum ElasticDocumentType {
     ARTICLE("ARTICLE"),
 
     /**
-     * @see Mention
-     */
-    MENTION("MENTION"),
-
-    /**
      * @see Publication
      */
     PUBLICATION("PUBLICATION"),

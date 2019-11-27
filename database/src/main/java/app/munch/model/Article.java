@@ -11,6 +11,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.groups.Default;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Created by: Fuxing
@@ -118,5 +119,10 @@ public final class Article extends ArticleModel implements ElasticSerializable {
     @Override
     public ElasticDocumentType getElasticDocumentType() {
         return ElasticDocumentType.ARTICLE;
+    }
+
+    @Override
+    public Map<String, String> getElasticDocumentKeys() {
+        return Map.of("id", getId());
     }
 }

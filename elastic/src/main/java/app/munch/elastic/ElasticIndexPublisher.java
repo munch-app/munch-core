@@ -8,6 +8,7 @@ import software.amazon.awssdk.services.sqs.SqsClient;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.Map;
 
 /**
  * Use-case:
@@ -28,38 +29,14 @@ public final class ElasticIndexPublisher extends SqsPublisher<DocumentIndexMessa
         super(client, ConfigFactory.load().getString("services.sqs.index.url"));
     }
 
-    public void queue(Place place) {
-        queue(ElasticDocumentType.PLACE, place.getId());
+    public void queue(ElasticSerializable serializable) {
+        queue(serializable.getElasticDocumentType(), serializable.getElasticDocumentKeys());
     }
 
-    public void queue(Tag tag) {
-        queue(ElasticDocumentType.TAG, tag.getId());
-    }
-
-    public void queue(Article article) {
-        queue(ElasticDocumentType.ARTICLE, article.getId());
-    }
-
-    public void queue(Mention mention) {
-        queue(ElasticDocumentType.MENTION, mention.getId());
-    }
-
-    public void queue(Publication publication) {
-        queue(ElasticDocumentType.PUBLICATION, publication.getId());
-    }
-
-    public void queue(Profile profile) {
-        queue(ElasticDocumentType.PROFILE, profile.getUsername());
-    }
-
-    public void queue(Location location) {
-        queue(ElasticDocumentType.LOCATION, location.getId());
-    }
-
-    private void queue(ElasticDocumentType type, String id) {
+    private void queue(ElasticDocumentType type, Map<String, String> keys) {
         DocumentIndexMessage message = new DocumentIndexMessage();
         message.setType(type);
-        message.setId(id);
+        message.setKeys(keys);
         publish(message);
     }
 }

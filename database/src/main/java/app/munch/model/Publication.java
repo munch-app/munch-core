@@ -15,6 +15,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.groups.Default;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -155,5 +156,10 @@ public final class Publication implements ElasticSerializable {
     @Override
     public ElasticDocumentType getElasticDocumentType() {
         return ElasticDocumentType.PUBLICATION;
+    }
+
+    @Override
+    public Map<String, String> getElasticDocumentKeys() {
+        return Map.of("id", getId());
     }
 }

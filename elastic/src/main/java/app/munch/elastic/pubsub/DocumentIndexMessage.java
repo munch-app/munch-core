@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.fuxing.pubsub.TransportMessage;
 
 import javax.annotation.Nullable;
+import java.util.Map;
 
 /**
  * @author Fuxing Loh
@@ -17,7 +18,7 @@ import javax.annotation.Nullable;
 public class DocumentIndexMessage implements TransportMessage {
 
     private ElasticDocumentType type;
-    private String id;
+    private Map<String, String> keys;
 
     public ElasticDocumentType getType() {
         return type;
@@ -27,12 +28,12 @@ public class DocumentIndexMessage implements TransportMessage {
         this.type = type;
     }
 
-    public String getId() {
-        return id;
+    public Map<String, String> getKeys() {
+        return keys;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setKeys(Map<String, String> keys) {
+        this.keys = keys;
     }
 
     @Nullable

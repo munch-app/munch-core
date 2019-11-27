@@ -1,7 +1,6 @@
 package app.munch.elastic;
 
-import app.munch.elastic.serializer.PlaceSerializer;
-import app.munch.elastic.serializer.Serializer;
+import app.munch.elastic.serializer.*;
 import app.munch.model.ElasticDocumentType;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
@@ -30,8 +29,13 @@ public final class ElasticModule extends AbstractModule {
         MapBinder<ElasticDocumentType, Serializer> serializerBinder = MapBinder.newMapBinder(
                 binder(), ElasticDocumentType.class, Serializer.class
         );
+
+        serializerBinder.addBinding(ElasticDocumentType.ARTICLE).to(ArticleSerializer.class);
+        serializerBinder.addBinding(ElasticDocumentType.LOCATION).to(LocationSerializer.class);
         serializerBinder.addBinding(ElasticDocumentType.PLACE).to(PlaceSerializer.class);
-//        serializerBinder.addBinding(ElasticDocumentType.LOCATION).to(LocationSerializer.class);
+        serializerBinder.addBinding(ElasticDocumentType.PROFILE).to(ProfileSerializer.class);
+        serializerBinder.addBinding(ElasticDocumentType.PUBLICATION).to(PublicationSerializer.class);
+        serializerBinder.addBinding(ElasticDocumentType.TAG).to(TagSerializer.class);
     }
 
     @Inject

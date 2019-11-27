@@ -72,11 +72,9 @@ public final class SearchQuery implements Query {
     public enum Type {
         PLACE("PLACE"),
 
-        ARTICLE("ARTICLE"),
-
-        MENTION("MENTION"),
-
         LOCATION("LOCATION"),
+
+        ARTICLE("ARTICLE"),
 
         UNKNOWN_TO_SDK_VERSION(null);
 

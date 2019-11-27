@@ -11,6 +11,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.groups.Default;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * @author Fuxing Loh
@@ -147,5 +148,10 @@ public final class Location extends LocationModel implements ElasticSerializable
     @Override
     public ElasticDocumentType getElasticDocumentType() {
         return ElasticDocumentType.LOCATION;
+    }
+
+    @Override
+    public Map<String, String> getElasticDocumentKeys() {
+        return Map.of("id", getId());
     }
 }

@@ -19,6 +19,7 @@ import javax.validation.groups.Default;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -185,6 +186,11 @@ public final class Profile implements ElasticSerializable {
     @Override
     public ElasticDocumentType getElasticDocumentType() {
         return ElasticDocumentType.PROFILE;
+    }
+
+    @Override
+    public Map<String, String> getElasticDocumentKeys() {
+        return Map.of("uid", getUid());
     }
 
     /**

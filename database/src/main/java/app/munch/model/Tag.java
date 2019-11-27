@@ -13,6 +13,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.groups.Default;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -152,5 +153,10 @@ public final class Tag implements ElasticSerializable {
     @Override
     public ElasticDocumentType getElasticDocumentType() {
         return ElasticDocumentType.TAG;
+    }
+
+    @Override
+    public Map<String, String> getElasticDocumentKeys() {
+        return Map.of("id", getId());
     }
 }
