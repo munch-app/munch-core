@@ -1,5 +1,6 @@
 package app.munch.elastic;
 
+import app.munch.elastic.serializer.DeleteException;
 import app.munch.elastic.serializer.Serializer;
 import app.munch.model.ElasticDocument;
 import app.munch.model.ElasticDocumentType;
@@ -18,6 +19,7 @@ import java.util.Map;
 public final class ElasticSerializableClient {
 
     private final ElasticDocumentClient documentClient;
+
     private final Map<ElasticDocumentType, Serializer> serializers;
 
     @Inject
@@ -27,19 +29,24 @@ public final class ElasticSerializableClient {
     }
 
     public void put(ElasticSerializable serializable) {
-        ElasticDocument document = serialize(serializable);
-        documentClient.put(document);
+        try {
+            ElasticDocument document = serialize(serializable);
+            ElasticIndex.getIndexes(document.getElasticType()).forEach(index -> {
+                documentClient.put(index, document);
+            });
+        } catch (DeleteException e) {
+            ElasticIndex.getIndexes(e.getType()).forEach(index -> {
+                documentClient.delete(index, e.getKey());
+            });
+        }
     }
 
     @SuppressWarnings("unchecked")
-    private ElasticDocument serialize(ElasticSerializable serializable) {
+    private ElasticDocument serialize(ElasticSerializable serializable) throws DeleteException {
         Serializer serializer = serializers.get(serializable.getElasticDocumentType());
         if (serializer != null) {
             return serializer.serialize(serializable);
         }
-
-        // TODO(fuxing): ability to delete data that already exist?
-        // TODO(fuxing): can be done by throwing an exception
 
         throw new IllegalStateException("No serializer found for: " + serializable.getClass().getSimpleName());
     }

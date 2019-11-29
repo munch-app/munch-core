@@ -15,7 +15,7 @@ import java.util.Map;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class DocumentIndexMessage implements TransportMessage {
+public class IndexMessage implements TransportMessage {
 
     private ElasticDocumentType type;
     private Map<String, String> keys;

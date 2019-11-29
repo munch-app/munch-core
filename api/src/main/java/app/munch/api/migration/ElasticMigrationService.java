@@ -1,5 +1,6 @@
 package app.munch.api.migration;
 
+import app.munch.elastic.ElasticIndex;
 import app.munch.elastic.ElasticMapping;
 import dev.fuxing.transport.service.TransportContext;
 import dev.fuxing.transport.service.TransportResult;
@@ -32,7 +33,9 @@ public final class ElasticMigrationService implements TransportService {
     }
 
     public TransportResult setup(TransportContext ctx) throws IOException {
-        mapping.create();
+        for (ElasticIndex index : ElasticIndex.values()) {
+            mapping.create(index);
+        }
         return TransportResult.ok();
     }
 }

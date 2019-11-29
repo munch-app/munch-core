@@ -1,6 +1,7 @@
 package app.munch.elastic.serializer;
 
 import app.munch.model.Article;
+import app.munch.model.ArticleStatus;
 import app.munch.model.ElasticDocument;
 import app.munch.model.ElasticDocumentType;
 
@@ -13,11 +14,15 @@ import javax.inject.Singleton;
 @Singleton
 public final class ArticleSerializer implements Serializer<Article> {
     @Override
-    public ElasticDocument serialize(Article article) {
+    public ElasticDocument serialize(Article article) throws DeleteException {
         ElasticDocument document = new ElasticDocument(ElasticDocumentType.ARTICLE, builder -> {
             builder.type(ElasticDocumentType.ARTICLE);
             builder.id(article.getId());
         });
+
+        if (article.getStatus() != ArticleStatus.PUBLISHED) {
+            throw new DeleteException(document);
+        }
 
         document.setSuggest(builder -> {
             builder.type(ElasticDocumentType.ARTICLE);

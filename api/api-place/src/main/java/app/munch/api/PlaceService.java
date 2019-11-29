@@ -1,5 +1,6 @@
 package app.munch.api;
 
+import app.munch.elastic.ElasticIndex;
 import app.munch.elastic.ElasticQueryClient;
 import app.munch.elastic.ElasticSerializableClient;
 import app.munch.controller.PlaceController;
@@ -97,7 +98,7 @@ public final class PlaceService implements TransportService {
         String text = ctx.queryString("text");
 
         String name = "suggest-places";
-        ElasticQueryClient.Response response = queryClient.search(builder -> {
+        ElasticQueryClient.Response response = queryClient.search(ElasticIndex.PLACE, builder -> {
             SuggestionBuilder termSuggestionBuilder = SuggestBuilders
                     .completionSuggestion("suggest")
                     .prefix(text)
@@ -126,7 +127,7 @@ public final class PlaceService implements TransportService {
             return List.of();
         }
 
-        ElasticQueryClient.Response response = queryClient.search(builder -> {
+        ElasticQueryClient.Response response = queryClient.search(ElasticIndex.PLACE, builder -> {
             builder.fetchSource(fields.split(", *"), null);
             builder.from(from);
             builder.size(size);

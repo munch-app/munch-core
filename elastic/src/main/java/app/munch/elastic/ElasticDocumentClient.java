@@ -40,19 +40,19 @@ public final class ElasticDocumentClient {
     }
 
     /**
-     * @param object elastic object to persist
+     * @param index    to persist document to
+     * @param document elastic object into index
      * @throws ElasticException                 wrapped exception
      * @throws dev.fuxing.err.NotFoundException when object cannot be found
      */
-    public void put(ElasticDocument object) throws ElasticException {
-        ValidationException.validate(object);
+    public void put(ElasticIndex index, ElasticDocument document) throws ElasticException {
+        ValidationException.validate(document);
 
         try {
-            String source = JsonUtils.toString(object);
+            String source = JsonUtils.toString(document);
 
-            // TODO(fuxing): index name abstraction
-            IndexRequest request = new IndexRequest(ElasticMapping.INDEX_NAME);
-            request.id(object.getElasticKey());
+            IndexRequest request = new IndexRequest(index.getValue());
+            request.id(document.getElasticKey());
             request.source(source, XContentType.JSON);
 
             IndexResponse response = client.index(request, RequestOptions.DEFAULT);
@@ -74,15 +74,16 @@ public final class ElasticDocumentClient {
     }
 
     /**
-     * @param key in the IndexObject
+     * @param index to persist document to
+     * @param key   of the document
      * @return data if exists
      * @throws ElasticException                 wrapped exception
      * @throws dev.fuxing.err.NotFoundException when object cannot be found
      */
     @Nullable
-    public ElasticDocument get(String key) {
+    public ElasticDocument get(ElasticIndex index, String key) {
         try {
-            GetRequest request = new GetRequest(ElasticMapping.INDEX_NAME, key);
+            GetRequest request = new GetRequest(index.getValue(), key);
             GetResponse response = client.get(request, RequestOptions.DEFAULT);
 
             if (response.isExists()) {
@@ -97,13 +98,14 @@ public final class ElasticDocumentClient {
     }
 
     /**
-     * @param key in the IndexObject
+     * @param index to delete document from
+     * @param key   of the document
      * @throws ElasticException                 wrapped exception
      * @throws dev.fuxing.err.NotFoundException when object cannot be found
      */
-    public void delete(String key) {
+    public void delete(ElasticIndex index, String key) {
         try {
-            DeleteRequest request = new DeleteRequest(ElasticMapping.INDEX_NAME, key);
+            DeleteRequest request = new DeleteRequest(index.getValue(), key);
             DeleteResponse response = client.delete(request, RequestOptions.DEFAULT);
             switch (response.getResult()) {
                 case DELETED:

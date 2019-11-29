@@ -26,14 +26,6 @@ import java.nio.charset.StandardCharsets;
 public final class ElasticMapping {
     private static final Logger logger = LoggerFactory.getLogger(ElasticMapping.class);
 
-    /**
-     * Current index name.
-     * for v7.1
-     */
-    public static final String INDEX_NAME = "munch";
-
-    // TODO(fuxing): alternative index name? or better abstraction of such index? e.g calling them 'search' and 'filter'
-
     private final RestHighLevelClient client;
 
     @Inject
@@ -42,14 +34,16 @@ public final class ElasticMapping {
     }
 
     /**
+     * @param index to setup
      * @return result as JsonNode
      * @throws RuntimeException if failed to create or validate
      */
-    public CreateIndexResponse create() throws RuntimeException, IOException {
+    public CreateIndexResponse create(ElasticIndex index) throws RuntimeException, IOException {
         String json = getIndexJson();
         logger.info("Creating index: {}", json);
 
-        CreateIndexRequest request = new CreateIndexRequest(INDEX_NAME);
+
+        CreateIndexRequest request = new CreateIndexRequest(index.getValue());
         request.source(json, XContentType.JSON);
 
         return client.indices().create(request, RequestOptions.DEFAULT);

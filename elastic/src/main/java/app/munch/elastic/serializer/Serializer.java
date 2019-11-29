@@ -14,6 +14,6 @@ public interface Serializer<T extends ElasticSerializable> {
      * @param data to serialize into document
      * @return serialized document
      */
-    ElasticDocument serialize(T data);
+    ElasticDocument serialize(T data) throws DeleteException;
 
 }

@@ -37,14 +37,14 @@ public final class ElasticQueryClient {
         this.client = client;
     }
 
-    public Response search(Consumer<SearchSourceBuilder> consumer) {
+    public Response search(ElasticIndex index, Consumer<SearchSourceBuilder> consumer) {
         SearchSourceBuilder builder = new SearchSourceBuilder();
         consumer.accept(builder);
-        return search(builder);
+        return search(index, builder);
     }
 
-    public Response search(SearchSourceBuilder builder) {
-        SearchRequest request = new SearchRequest(ElasticMapping.INDEX_NAME);
+    public Response search(ElasticIndex index, SearchSourceBuilder builder) {
+        SearchRequest request = new SearchRequest(index.getValue());
         request.source(builder);
 
         try {
@@ -55,14 +55,14 @@ public final class ElasticQueryClient {
         }
     }
 
-    public Long count(Consumer<SearchSourceBuilder> consumer) {
+    public Long count(ElasticIndex index, Consumer<SearchSourceBuilder> consumer) {
         SearchSourceBuilder builder = new SearchSourceBuilder();
         consumer.accept(builder);
-        return count(builder);
+        return count(index, builder);
     }
 
-    public Long count(SearchSourceBuilder builder) {
-        CountRequest request = new CountRequest(ElasticMapping.INDEX_NAME);
+    public Long count(ElasticIndex index, SearchSourceBuilder builder) {
+        CountRequest request = new CountRequest(index.getValue());
         request.source(builder);
 
         try {

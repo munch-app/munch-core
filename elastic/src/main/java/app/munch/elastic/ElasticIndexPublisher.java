@@ -1,6 +1,6 @@
 package app.munch.elastic;
 
-import app.munch.elastic.pubsub.DocumentIndexMessage;
+import app.munch.elastic.pubsub.IndexMessage;
 import app.munch.elastic.pubsub.SqsPublisher;
 import app.munch.model.*;
 import com.typesafe.config.ConfigFactory;
@@ -22,7 +22,7 @@ import java.util.Map;
  * @since 2019-09-10 at 20:31
  */
 @Singleton
-public final class ElasticIndexPublisher extends SqsPublisher<DocumentIndexMessage> {
+public final class ElasticIndexPublisher extends SqsPublisher<IndexMessage> {
 
     @Inject
     public ElasticIndexPublisher(SqsClient client) {
@@ -34,7 +34,7 @@ public final class ElasticIndexPublisher extends SqsPublisher<DocumentIndexMessa
     }
 
     private void queue(ElasticDocumentType type, Map<String, String> keys) {
-        DocumentIndexMessage message = new DocumentIndexMessage();
+        IndexMessage message = new IndexMessage();
         message.setType(type);
         message.setKeys(keys);
         publish(message);
