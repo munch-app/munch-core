@@ -5,7 +5,6 @@ import app.munch.controller.RestrictionController;
 import app.munch.exception.RestrictionException;
 import app.munch.model.*;
 import app.munch.query.ArticleQuery;
-import app.munch.query.MediaQuery;
 import com.fasterxml.jackson.databind.JsonNode;
 import dev.fuxing.err.ForbiddenException;
 import dev.fuxing.transport.TransportCursor;
@@ -156,6 +155,7 @@ public final class ArticleService extends ApiService {
             return result(builder -> {
                 builder.data(article);
 
+                // TODO(fuxing): bug with this?
                 if (fields.contains("extra.profile.articles")) {
                     TransportCursor cursor = TransportCursor.size(
                             ctx.queryInt("extra.profile.articles.size", 5)
@@ -168,20 +168,20 @@ public final class ArticleService extends ApiService {
                     });
                 }
 
-                if (fields.contains("extra.profile.medias")) {
-                    TransportCursor cursor = TransportCursor.size(
-                            ctx.queryInt("extra.profile.medias.size", 5)
-                    );
-
-                    MediaQuery.query(entityManager, cursor, query -> {
-                        query.where("profile", article.getProfile());
-                    }).peek(media -> {
-                        media.setSocial(null);
-                        media.setMetric(null);
-                    }).consume((medias, c) -> {
-                        builder.extra("profile.medias", medias);
-                    });
-                }
+//                if (fields.contains("extra.profile.medias")) {
+//                    TransportCursor cursor = TransportCursor.size(
+//                            ctx.queryInt("extra.profile.medias.size", 5)
+//                    );
+//
+//                    MediaQuery.query(entityManager, cursor, query -> {
+//                        query.where("profile", article.getProfile());
+//                    }).peek(media -> {
+//                        media.setSocial(null);
+//                        media.setMetric(null);
+//                    }).consume((medias, c) -> {
+//                        builder.extra("profile.medias", medias);
+//                    });
+//                }
             });
         });
     }
