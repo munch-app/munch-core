@@ -1,0 +1,8 @@
+dependencies {
+    compile project(':utils')
+    compile project(':database')
+    compile project(':elastic')
+}
+
+apply from: (project.rootDir.toString() + '/worker/worker.gradle')
+mainClassName = 'app.munch.worker.ElasticIndexWorker'

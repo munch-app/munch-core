@@ -48,6 +48,8 @@ include 'worker:worker-profile-media'
 include 'worker:worker-mention'
 include 'worker:worker-place'
 
+include 'worker:worker-elastic-index'
+
 /**
  * Munch Public API
  * Split into their various top level modules
